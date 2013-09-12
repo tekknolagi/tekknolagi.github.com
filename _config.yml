@@ -5,6 +5,10 @@ permalink: /:categories/:year/:month/:day/:title
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
 pygments: true
 
+permalink : pretty
+post_dirs : false
+relative_permalinks: true
+
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
 #
@@ -108,9 +112,6 @@ JB :
 
   pages_list :
     provider : "custom"   
-
-  permalink : pretty_flat
-  post_dirs : false
 
   #
   # Setting any helper's provider to 'custom' will bypass the helper code
