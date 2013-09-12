@@ -110,7 +110,7 @@ JB :
     provider : "custom"   
 
 #  permalink : /:title
-#  permalink : pretty
+  permalink : pretty_flat
   post_dirs : true
 
   #
