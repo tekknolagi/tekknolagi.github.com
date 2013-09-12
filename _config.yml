@@ -108,6 +108,9 @@ JB :
 
   pages_list :
     provider : "custom"   
+
+  permalink: /blog/:title
+
   #
   # Setting any helper's provider to 'custom' will bypass the helper code
   # and include your custom code. Your custom file must be defined at:
