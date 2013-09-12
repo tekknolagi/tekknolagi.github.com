@@ -5,8 +5,8 @@ layout: post
 slug: botnet-ads
 title: Renting a botnet to make money
 wordpress_id: 1273
-categories:
-- general
+
+
 ---
 
 As of June 2012, the end of the school year last year, I was effective webmaster of the Paly Voice, my high school's strictly online publication. In order to try and cover hosting/domain costs, I put up one Google AdSense ad on the sidebar of stories.

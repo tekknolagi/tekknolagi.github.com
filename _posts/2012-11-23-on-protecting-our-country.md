@@ -4,9 +4,6 @@ date: 2012-11-23 00:21:23
 layout: post
 slug: on-protecting-our-country
 title: On protecting our country
-wordpress_id: 1496
-categories:
-- general
 ---
 
 Mr Leahey is up to no good again, it seems. Check out this news from CNET: [Senate bill rewrite lets feds read your e-mail without warrants](http://news.cnet.com/8301-13578_3-57552225-38/senate-bill-rewrite-lets-feds-read-your-e-mail-without-warrants/). Most of you reading this blog would find the event linked disturbing. I believe the same thing; email is and should remain absolutely private. It's not because "I have something to hide" at all — there are in fact [plenty of arguments](http://papers.ssrn.com/sol3/papers.cfm?abstract_id=998565&) for privacy. It's the reason people don't shower in public.

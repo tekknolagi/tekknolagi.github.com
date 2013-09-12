@@ -5,8 +5,8 @@ layout: post
 slug: dns-tunneling
 title: DNS tunneling, or, how to get around Gogo
 wordpress_id: 1212
-categories:
-- general
+
+
 ---
 
 We all hate those paywalls that companies put up in airports, airplanes, lounges, or what have you. Fortunately (and thanks to [kryo.se](http://kryo.se)), there is a tool that can get you around that. This is a concise and easy to follow tutorial on how to set a tool called `iodine` up.

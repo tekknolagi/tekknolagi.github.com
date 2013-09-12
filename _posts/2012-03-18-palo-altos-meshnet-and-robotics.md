@@ -5,8 +5,8 @@ layout: post
 slug: palo-altos-meshnet-and-robotics
 title: Palo Alto's Meshnet and Robotics
 wordpress_id: 1080
-categories:
-- general
+
+
 ---
 
 Hey guys!

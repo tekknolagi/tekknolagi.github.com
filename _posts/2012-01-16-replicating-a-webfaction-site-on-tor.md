@@ -5,8 +5,8 @@ layout: post
 slug: replicating-a-webfaction-site-on-tor
 title: Replicating a Webfaction Site on Tor
 wordpress_id: 980
-categories:
-- general
+
+
 ---
 
 If you have a website hosted on Webfaction (or any other name-based virtual host, for that matter), and want to create a .onion copy of that website, then this guide is for you. After the break!

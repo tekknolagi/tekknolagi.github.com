@@ -5,8 +5,8 @@ layout: post
 slug: a-quest-for-anonymity
 title: A quest for anonymity
 wordpress_id: 1294
-categories:
-- general
+
+
 ---
 
 With all of the recent laws and acts that try to nullify internet privacy and anonymity, it's beginning to seem impossible to remain anonymous. However, with all of the tools available to people today, it's easier than ever. It just requires consistency and a decent amount of intelligence.

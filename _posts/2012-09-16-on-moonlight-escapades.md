@@ -5,8 +5,8 @@ layout: post
 slug: on-moonlight-escapades
 title: On moonlight escapades
 wordpress_id: 1301
-categories:
-- general
+
+
 ---
 
 Today's my birthday, but I decided to have my party yesterday. It was a small get-together of six people, which dropped down to three who slept over.

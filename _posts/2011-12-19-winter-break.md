@@ -5,8 +5,8 @@ layout: post
 slug: winter-break
 title: Winter Break (will update)
 wordpress_id: 837
-categories:
-- general
+
+
 ---
 
 I'm documenting our trip to Buenos Aires, Argentina, and Patagonia, Argentina. We'll be traveling with our close friends, the Kleins. I cut off the post since it has a lot of pictures and text; it now won't hog bandwidth on load.

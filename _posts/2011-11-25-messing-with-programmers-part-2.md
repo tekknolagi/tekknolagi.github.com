@@ -5,8 +5,8 @@ layout: post
 slug: messing-with-programmers-part-2
 title: Messing With Programmers Part 2
 wordpress_id: 729
-categories:
-- general
+
+
 ---
 
 If I really hate a particular C programmer, I'll litter some of these statements around `stdio.h` and other headers...

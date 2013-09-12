@@ -5,8 +5,8 @@ layout: post
 slug: meet-brightswipe
 title: Meet Brightswipe, a new torrent indexer
 wordpress_id: 1250
-categories:
-- general
+
+
 ---
 
 Since I posted in July about the private torrent indexer, I've been working on something called Brightswipe. [Brightswipe](http://brightswipe.com) is a beautiful, fast, and open-source indexer written in Ruby/Sinatra.

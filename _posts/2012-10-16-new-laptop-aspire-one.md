@@ -5,8 +5,8 @@ layout: post
 slug: new-laptop-aspire-one
 title: New laptop - Aspire One
 wordpress_id: 1443
-categories:
-- general
+
+
 ---
 
 I recently changed my primary laptop, and actually my development flow with it. I'm programming (and writing this article) on the [Acer Aspire One](http://www.amazon.com/Acer-AOD150-1165-10-1-Inch-Sapphire-Blue/dp/B001QFZFS0/ref=sr_1_1?ie=UTF8&qid=1350408431&sr=8-1&keywords=acer+aspire+one+10.1), a pretty slick little netbook. It has a 10.1" screen, relatively cramped keyboard, and okay battery life.

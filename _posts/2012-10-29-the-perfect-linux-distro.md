@@ -5,8 +5,8 @@ layout: post
 slug: the-perfect-linux-distro
 title: The perfect Linux distro
 wordpress_id: 1429
-categories:
-- general
+
+
 ---
 
 I recently found the subreddit [/r/DistroHopping](http://reddit.com/r/distrohopping), and was subsequently made a moderator. This brought me back to the days (well, six months ago) when I would hop almost daily between distributions, trying to find one that works for me.

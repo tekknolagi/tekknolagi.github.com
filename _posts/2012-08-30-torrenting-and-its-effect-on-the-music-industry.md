@@ -5,8 +5,8 @@ layout: post
 slug: torrenting-and-its-effect-on-the-music-industry
 title: Torrenting and its effect on the music industry
 wordpress_id: 1261
-categories:
-- general
+
+
 ---
 
 Hi, Arcade Fire! I'm Max Bernstein, an independent blogger and programmer. I was listening to your music (Sprawl II) in Aspen, Colorado, and I suddenly realized that it would be SUPER interesting to see firsthand how BitTorrent could affect profits.

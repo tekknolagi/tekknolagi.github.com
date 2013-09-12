@@ -5,8 +5,8 @@ layout: post
 slug: trig-with-baked-goods
 title: Trig with Baked Goods
 wordpress_id: 565
-categories:
-- general
+
+
 ---
 
 It is given that brownies complement cookies, and that 

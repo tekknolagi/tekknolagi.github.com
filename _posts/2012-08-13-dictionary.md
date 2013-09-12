@@ -5,8 +5,8 @@ layout: post
 slug: dictionary
 title: Dictionary
 wordpress_id: 1206
-categories:
-- general
+
+
 ---
 
 There's this game my family plays, either alone or with other families, and it's called dictionary. I'm not convinced that my dad didn't just make that name up.

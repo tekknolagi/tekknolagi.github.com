@@ -109,7 +109,9 @@ JB :
   pages_list :
     provider : "custom"   
 
-  permalink: /blog/:title
+#  permalink : /:title
+#  permalink : pretty
+  post_dirs : true
 
   #
   # Setting any helper's provider to 'custom' will bypass the helper code
