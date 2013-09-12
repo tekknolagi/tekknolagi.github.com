@@ -1,0 +1,20 @@
+  {% for post in posts_collate  %}
+ 
+    {% if forloop.first %}
+      <h2>{{this_year}}</h2>
+      <h3>{{this_month}}</h3>
+      <dl>
+    {% endif %}
+  
+    <dt>
+      <a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a>
+    </dt>
+    <dd>
+      <span>{{ post.date | date: "%B %e, %Y" }}</span>
+    </dd>
+
+    {% if forloop.last %}
+      </dl>
+    {% endif %}
+  {% endfor %}
+{% assign posts_collate = nil %}
