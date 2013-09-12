@@ -4,19 +4,24 @@ title: Home
 ---
 {% include JB/setup %}
 
+<link rel="stylesheet" type="text/css" href="/assets/css/custom.css" />
+
 <div class="span12 welcome-message">
   <h1>I'm Max Bernstein.</h1>
   <h1>I'm a programmer &amp; photographer from Palo Alto.</h1>
 </div>
-<div class="span4">
-  <p>I taught myself how to <a href="http://github.com/tekknolagi">code</a>, and enjoy taking on freelance projects.</p>
-  <p>For fun, I read, write, and bike.</p>
-  <p>I <a href="http://photos.bernsteinbear.com/post/52445522971">hosted a hackathon</a> and plan on hosting more... they are great fun!</p>
-  <p>If you want to contact me, <a href="mailto:&#116;&#101;&#107;&#107;&#110;&#111;&#108;&#097;&#103;&#105;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;"> send me an email</a> or find me on <a href="https://twitter.com/#!/mrmaxbernstein">Twitter</a>.</p>
+<div class="span12">
+  <div class="span4">
+    <p>I taught myself how to <a href="http://github.com/tekknolagi">code</a>, and enjoy taking on freelance projects.</p>
+    <p>For fun, I read, write, and bike.</p>
+    <p>I <a href="http://photos.bernsteinbear.com/post/52445522971">hosted a hackathon</a> and plan on hosting more... they are great fun!</p>
+    <p>If you want to contact me, <a href="mailto:&#116;&#101;&#107;&#107;&#110;&#111;&#108;&#097;&#103;&#105;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;"> send me an email</a> or find me on <a href="https://twitter.com/#!/mrmaxbernstein">Twitter</a>.</p>
+  </div>
+  <div class="span4 pull-right thumbnail with-caption" id="latest-photo"><p>My latest photo<small>Max</small></p></div>
 </div>
-<div class="span4" id="latest-photo"></div>
-<div class="span4" style="text-align: right;">My latest photo</div>
+
 <script type="text/javascript" src="http://photos.bernsteinbear.com/api/read/json"></script>
 <script type="text/javascript">
-  document.getElementById("latest-photo").innerHTML = "<a href='http://photos.bernsteinbear.com'><img src='" + tumblr_api_read['posts'][0]['photo-url-500'] + "' /></a>";
+  var photo = $("#latest-photo");
+  photo.html("<a href='http://photos.bernsteinbear.com'><img src='" + tumblr_api_read['posts'][0]['photo-url-500'] + "' /></a>"+photo.html());
 </script>
