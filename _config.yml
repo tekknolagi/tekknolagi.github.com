@@ -5,7 +5,7 @@ permalink: /:categories/:year/:month/:day/:title
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
 pygments: true
 
-permalink : pretty
+permalink : permalink: /blog/:year/:month/:title/
 post_dirs : false
 relative_permalinks: true
 
