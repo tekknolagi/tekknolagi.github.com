@@ -35,7 +35,7 @@ Many public proxies float around the internet, allowing you to proxy over HTTP, 
 
 Tor is a curious creature. It's a bit of software that allows users to forward their web browsing through random layers of computers, confusing the heck out of anybody that wants to trace an internet request back to you. It's essentially a network of chained proxies. Let's take a look at this diagram.
 
-![](http://wp.bernsteinbear.com/wp-content/uploads/2012/09/how_tor_works.png)](http://wp.bernsteinbear.com/wp-content/uploads/2012/09/how_tor_works.png)
+![](/assets/img/uploads/2012/09/how_tor_works.png)](http://wp.bernsteinbear.com/wp-content/uploads/2012/09/how_tor_works.png)
 Courtesy of torproject.org
 
 

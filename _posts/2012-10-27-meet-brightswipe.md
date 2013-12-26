@@ -28,7 +28,7 @@ I wrote a comment on the post, explaining how I already had written an applicati
 I happily complied. Within another few hours, I got an email from a guy named [Ashraful](http://madebyargon.com). He said that he'd seen my comment, and was willing to design for me. I told him that I had a $0 budget, but would happy to code for design.
 
 He agreed, and within a week I had a running design for Brightswipe:
-![](http://wp.bernsteinbear.com/wp-content/uploads/2012/08/brightswipe-home-1024x619.jpg)](http://wp.bernsteinbear.com/wp-content/uploads/2012/08/brightswipe-home.jpg)
+![](/assets/img/uploads/2012/08/brightswipe-home-1024x619.jpg)](http://wp.bernsteinbear.com/wp-content/uploads/2012/08/brightswipe-home.jpg)
 
 It turned out that Ashraful wasn't so great with CSS, so all I had was a PSD and an image render. I'm not great with CSS either, unfortunately.
 

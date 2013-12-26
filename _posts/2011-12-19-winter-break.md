@@ -112,7 +112,7 @@ After the hike, we had lunch on the rocks (just cheese&arugula; sandwiches, but 
 **Day 10**
 We left Los Cerros, and drove 8 hours to a remote part in Chile; the nearest village was two hours away. We stayed in Patagonia Camp, a collection of yurts! For those of you unfamiliar with yurts, they look like this:
 
-![](http://wp.bernsteinbear.com/wp-content/uploads/2011/12/Patagonia-Camp-Yurt-300x200.jpg)
+![](/assets/img/uploads/2011/12/Patagonia-Camp-Yurt-300x200.jpg)
 
 We hiked some more, on the right hand side of a 4 day trail called the "w" for its shape around the peaks in the park.
 

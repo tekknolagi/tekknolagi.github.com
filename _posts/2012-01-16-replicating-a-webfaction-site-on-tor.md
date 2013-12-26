@@ -19,7 +19,7 @@ First, let's get some definitions straight.
 
 **Tor:** Service that allows your web traffic is sent through around three random computers before reaching its target, in order to preserve anonymity. Illustration (click to enlarge):
 
-![](http://wp.bernsteinbear.com/wp-content/uploads/2012/01/Tor-HTTP-Transmission-300x113.png)
+![](/assets/img/uploads/2012/01/Tor-HTTP-Transmission-300x113.png)
 
 **.onion:** A domain that is resolved using a series of queries on the Tor network.
 
@@ -88,7 +88,7 @@ I started Tor by running:
 
 And the process spewed out some stuff like this:
 
-![](http://wp.bernsteinbear.com/wp-content/uploads/2012/01/Screen-shot-2012-01-16-at-4.15.23-PM-300x80.png)
+![](/assets/img/uploads/2012/01/Screen-shot-2012-01-16-at-4.15.23-PM-300x80.png)
 
 Then, I opened up my Control Panel (Webfaction's unique panel), and configured my BernsteinBear website to also serve my .onion domain. I just added a domain (`.onion`)
     

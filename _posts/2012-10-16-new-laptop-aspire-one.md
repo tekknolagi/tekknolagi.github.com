@@ -21,5 +21,5 @@ I installed Linux Mint on it (pretty easy on the eyes), completely wiping Window
 
 In a few months I'll post again with an update, but for now it's working swell. I love my desktop theme!
 
-![](http://wp.bernsteinbear.com/wp-content/uploads/2012/10/2012-10-16-104630_1024x600_scrot.png)]
+![](/assets/img/uploads/2012/10/2012-10-16-104630_1024x600_scrot.png)]
 

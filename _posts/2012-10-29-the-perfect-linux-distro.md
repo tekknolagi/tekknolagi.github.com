@@ -13,7 +13,7 @@ I recently found the subreddit [/r/DistroHopping](http://reddit.com/r/distrohopp
 
 I never actually found the "perfect distro" that I needed, but hopefully from my analysis here I can help myself and others.
 
-I started to use Ubuntu back in the days when Ubuntu 6 was hot stuff:![](http://wp.bernsteinbear.com/wp-content/uploads/2012/10/Screenshot.png)
+I started to use Ubuntu back in the days when Ubuntu 6 was hot stuff:![](/assets/img/uploads/2012/10/Screenshot.png)
 
 This was my first exposure to Linux, coming from Mac OS and Windows XP/ME. It was 2008 or so, and I was vacationing in California with my family (we used to live in California, moved to Connecticut, kept the house, and eventually moved back). Our neighbors had a tutor over who was teaching programming. I decided to jump in on the class. He required that we work in a Linux environment, so I installed the latest Ubuntu in a VM.
 
@@ -23,7 +23,7 @@ I migrated to the command line almost exclusively, and became a huge fan of apti
 
 Either way, a pretty (but functional) UI is a big thing for me. I don't want to be working, staring at an eyesore. So let's keep that in mind... there should be a relatively simple UI, but things should be within reach, and preferably keyboard accessible.
 
-After some time with Ubuntu, I got sick of looking at it, and moved to Fedora. Fedora was coming out with version 11 at the time, I think:![](http://wp.bernsteinbear.com/wp-content/uploads/2012/10/fedora_screenshot.png)
+After some time with Ubuntu, I got sick of looking at it, and moved to Fedora. Fedora was coming out with version 11 at the time, I think:![](/assets/img/uploads/2012/10/fedora_screenshot.png)
 
 The blue color scheme was refreshing... at the time I did not know about skins and theming. The switch to Fedora was for no reason exciting except for the novelty of a new OS. I learned to use yum with ease, and then the fun was over. It became in essence the same as Ubuntu.
 
@@ -31,9 +31,9 @@ Of course! They both used GNOME2. I switched to KDE, but found my hardware could
 
 A problem arose: neither of these OSes is programmer-centric. Everybody thinks, "Oh, just use some distribution of Linux! They're all for programmers." But they're really not. Linux is great for development, but there is no OS (that I've found) that is perfectly programmer-centric: console always at the ready, system monitoring in the background, minimalist UI, and a hacker "feel."
 
-I stopped using Linux for a few years, just programming in whatever Unix-based environment Mac OS X has. I moved to Palo Alto from Greenwich, Connecticut. Joined the robotics team. Became a lot more involved in anything and everything technical. Acquired a six year old HP Compaq, and installed Linux Mint. ![](http://wp.bernsteinbear.com/wp-content/uploads/2012/10/Linux-Mint-13-RC-Cinnamon-Screenshot-Tour-20-1024x576.jpg)
+I stopped using Linux for a few years, just programming in whatever Unix-based environment Mac OS X has. I moved to Palo Alto from Greenwich, Connecticut. Joined the robotics team. Became a lot more involved in anything and everything technical. Acquired a six year old HP Compaq, and installed Linux Mint. ![](/assets/img/uploads/2012/10/Linux-Mint-13-RC-Cinnamon-Screenshot-Tour-20-1024x576.jpg)
 
-For our onboard robotics laptop that was going to be used for image processing, we installed Trisquel. ![](http://wp.bernsteinbear.com/wp-content/uploads/2012/10/linux-screenshot-trisquel-5-5-03.jpg)
+For our onboard robotics laptop that was going to be used for image processing, we installed Trisquel. ![](/assets/img/uploads/2012/10/linux-screenshot-trisquel-5-5-03.jpg)
 
 I was happier with Mint than with Trisquel; Trisquel wasn't as familiar, was a tad too "beautiful" for my taste, and didn't feel like a solid distro. I don't really know what I mean by solid, but it didn't feel serious enough for me. It's the reason I can't do development on Mac OS X. Mint felt like a prettier Ubuntu with GNOME2.
 
