@@ -8,6 +8,8 @@ tags: []
 
 {% include JB/setup %}
 
+**NOTE:** A previous version of the post had incorrect math; this was due to faulty JavaScript used to add the numbers up. The current and correct version is below. If the numbers do not seem different, please clear your browser cache and refresh.
+
 I just finished applying to college. It feels great. I can get some work done now. Before that, however, I've been meaning to figure out exactly how much it cost to apply to college. Here's the breakdown. All figures are in USD.
 
 **Schools applied to**
@@ -48,7 +50,7 @@ My case is extreme (due to extenuating circumstances for some test dates), so my
 
 **Tests reported**
 
-| Qty | # Tests | Test | Report fee |
+| Qty sent | # Tests to send | Test | Report fee |
 | --- | --- | --- | --- |
 | 16 | 2 | ACT | $12 |
 | 1 | 1 | SAT | $11.25 |
