@@ -125,10 +125,49 @@ Took a 4 hour flight to Santiago, from there to Dallas, and then to SFO. It's go
 
 These photos were either taken from a website (and cited) or by Rebecca, Emma, my father (Stuart), or me.
 
+<iframe align="center" src="http://www.flickr.com/slideShow/index.gne?group_id=&amp;user_id=78444242@N04&amp;set_id=72157639756360323&amp;text=" frameBorder="0" width="700" height="700" scrolling="no">
+</iframe>
+
+<!--
+
 <script type="text/javscript" src="{{ ASSET_PATH }}/js/galleria/galleria-1.2.9.min.js"></script>
 
-<div id="galleria">
-  *gallery coming soon*
+<div id="blueimp-gallery" class="blueimp-gallery">
+    <div class="slides"></div>
+    <h3 class="title"></h3>
+    <a class="prev">‹</a>
+    <a class="next">›</a>
+    <a class="close">×</a>
+    <a class="play-pause"></a>
+    <ol class="indicator"></ol>
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body next"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left prev">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-primary next">
+                        Next
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- \[gallery link="file" order="ASC" orderby="post_date"\] -->
 
+<div id="links">
+  {% for image in site.data.argentina_photos %}
+    <a href="{{ image.link }}" title="{{ image.caption }}" data-gallery>
+        <img src="{{ img.link | thumbnail }}" alt="{{ image.caption }}">
+    </a>
+  {% endfor %}
+</div>
+-->

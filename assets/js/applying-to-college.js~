@@ -1,6 +1,0 @@
-console.log($('table tbody').map(function (ind, val) {
-    $val = $(val);
-    return $val.children('tr').map(function (ind2, val2) {
-	
-    }).children('td :nth-child(4)');
-}).get());
