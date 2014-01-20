@@ -3,9 +3,25 @@ layout: page
 title: Blog
 header: Blog
 group: navigation
+blog_page: false
 permalink: blog/
 ---
 {% include JB/setup %}
 
+<!--
+<div id="page-holder">
+  <div id="post-list" style="display: none;">
+    <ul></ul>
+  </div>
+  <div id="post-single" style="display: none;">
+    <div id="post-nav"><a href="#">Back</a></div>
+    <h2 id="post-title"></h3>
+    <div id="post-body"></div>
+  </div>
+</div>
+-->
+
+
 {% assign posts_collate = site.posts %}
 {% include JB/posts_collate %}
+

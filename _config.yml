@@ -4,7 +4,7 @@
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
 pygments: true
 
-permalink : /blog/:title/
+permalink : '/blog/:title'
 post_dirs : false
 
 # Themes are encouraged to use these universal variables 

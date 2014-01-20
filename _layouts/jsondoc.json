@@ -1,0 +1,8 @@
+[{% for post in site.posts %}
+{"title":"{{ post.title }}",
+"link":"{{ post.url | replace: '/blog/', '/blog/#/' }}",
+"body": {{ post.content | jsonify }}
+}{% if post != site.posts.last %},{% endif %}{% endfor %}
+]
+
+

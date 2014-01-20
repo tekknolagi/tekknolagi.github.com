@@ -15,12 +15,14 @@
     <![endif]-->
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    {% if page.blog_page %}
+    <script src="/assets/js/routie.min.js"></script>
+    <script src="/assets/js/posts.js"></script>
+    {% endif %}
 
     <!-- Le styles -->
     <link href="{{ ASSET_PATH }}/bootstrap/css/bootstrap.2.2.2.min.css" rel="stylesheet">
     <link href="{{ ASSET_PATH }}/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
-    <link href="/assets/css/bootstrap-image-gallery.min.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/blueimp-gallery.min.css" rel="stylesheet" type="text/css">
 
     <!-- Le fav and touch icons -->
   <!-- Update these with your own images
@@ -64,7 +66,5 @@
     </div>
 
     {% include JB/analytics %}
-    <script type="text/javascript" src="/assets/js/blueimp-gallery.min.js"></script>
-    <script type="text/javascript" src="/assets/js/bootstrap-image-gallery.min.js"></script>
   </body>
 </html>
