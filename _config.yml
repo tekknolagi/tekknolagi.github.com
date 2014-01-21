@@ -94,7 +94,8 @@ JB :
   analytics :
     provider : google 
     google : 
-        tracking_id : 'UA-26440738-1'
+        tracking_id : UA-26440738-1
+        domain: bernsteinbear.com
 
   # Settings for sharing helper. 
   # Sharing is for things like tweet, plusone, like, reddit buttons etc.
