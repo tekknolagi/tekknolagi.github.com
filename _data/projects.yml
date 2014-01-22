@@ -1,16 +1,4 @@
 -
-  name: DogeChain enhancer
-  img_link: /assets/img/dogechainsorter.png
-  desc_1: Chrome extension to enhance your viewing experience on <a href="http://dogechain.info">DogeChain.info</a>.
-  desc_2: Good for showing the current USD/DOGE price and seeing how much your balance is worth.
-  link: http://github.com/tekknolagi/dogechainsorter
--
-  name: RedditGfycat
-  img_link: /assets/img/redditgfycat.png
-  desc_1: Chrome extension to load all Reddit .gif posts through <a href="http://gfycat.com/">Gfycat</a> WebM.
-  desc_2: Good for people with slower internet connections.
-  link: https://chrome.google.com/webstore/detail/reddit-gfycat/jolmbfapckpelnpfdobdmoeimkmfkecb
--
   name: Glug.rb
   img_link: /assets/img/glug.png
   desc_1: Anonymous and feature-rich bulletin board system! People can post whatever they want!
@@ -26,7 +14,7 @@
   name: jobspot
   img_link: /assets/img/jobspot.png
   desc_1: A project initially developed with a company in mind.
-  desc_2: Development stopped, and not publicly visible &mdash; but great code.
+  desc_2: Development stopped, and not publicly visible &mdash; but it was a great learning experience.
   link: http://github.com/tekknolagi
 -
   name: Brightswipe
@@ -40,3 +28,15 @@
   desc_1: Senior webmaster for the 24/7 source for Palo Alto High School news.
   desc_2: 
   link: http://palyvoice.com
+-
+  name: DogeChain enhancer
+  img_link: /assets/img/dogechainsorter.png
+  desc_1: Chrome extension to enhance your viewing experience on <a href="http://dogechain.info">DogeChain.info</a>.
+  desc_2: Good for showing the current USD/DOGE price and seeing how much your balance is worth.
+  link: http://github.com/tekknolagi/dogechainsorter
+-
+  name: RedditGfycat
+  img_link: /assets/img/redditgfycat.png
+  desc_1: Chrome extension to load all Reddit .gif posts through <a href="http://gfycat.com/">Gfycat</a> WebM.
+  desc_2: Good for people with slower internet connections.
+  link: https://chrome.google.com/webstore/detail/reddit-gfycat/jolmbfapckpelnpfdobdmoeimkmfkecb
