@@ -1,0 +1,16 @@
+-
+  title: Blog
+  url: /blog/
+  group: navigation
+-
+  title: Projects
+  url: /projects/
+  group: navigation
+-
+  title: Resume
+  url: /resume/
+  group: navigation
+-
+  title: Photos
+  url: http://photos.bernsteinbear.com
+  group: navigation
