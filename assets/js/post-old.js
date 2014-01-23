@@ -8,7 +8,6 @@
  */
 
 window.posts = [];
-window.baseUrl = '/blog/#/';
 
 var PostList = function PostListF () {
     var postList = $("#post-list");
@@ -23,7 +22,7 @@ var SinglePost = function SinglePostF (link) {
     postList.hide();
     postSingle.show();
 
-    link = window.baseUrl + link;
+    link = '/blog/#/'+link;
 
     var found = false;
     $.each(window.posts, function (ind, post) {
@@ -39,37 +38,34 @@ var SinglePost = function SinglePostF (link) {
     }
 };
 
-var appendPost = function appendPostF (post, postList, listUl) {
-    var listEl = $("<li/>");
-
-    post.link = window.baseUrl + post.link;
-
-    $("<a/>", {
-	href: post.link,
-	html: post.title
-    }).appendTo(listEl);
-
-    listEl.appendTo(listUl);
-};
-
-var appendPosts = function appendPostsF (postList) {
-    var postList = $("#post-list");
-    var listUl = postList.find("ul");
-    $.each(window.posts, function (ind, post) {
-	appendPost(post, postList, listUl);
-    });
-};
-
 $(document).ready(function () {
-    $.getJSON("/posts.json").success(function (data) {
-	window.posts = data;
-	appendPosts(window.posts);
+    $.ajax({
+	url: '/posts.json',
+	type: "GET",
+	dataType: "text",
+	success: function(data) {
+	    window.posts = JSON.parse(data);
 
-	routie({
-	    "": PostList,
-	    "/:id": SinglePost
-	});
-    }).fail(function (err) {
-	console.log(err);
+	    $.each(window.posts, function (ind, post) {
+		var postList = $("#post-list");
+		var listUL = postList.find("ul");
+		var listEl = $("<li/>");
+
+		$("<a/>", {
+		    href: post.link,
+		    html: post.title
+		}).appendTo(listEl);
+
+		listEl.appendTo(listUL);
+	    });
+
+	    routie({
+		'': PostList,
+		'/:link': SinglePost
+	    });
+	},
+	fail: function (err) {
+	    console.log(err);
+	}
     });
 });
