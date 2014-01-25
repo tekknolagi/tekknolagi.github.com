@@ -15,3 +15,8 @@
   display: inline-block;
   color: #999;
 }
+
+.inline-photo {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
