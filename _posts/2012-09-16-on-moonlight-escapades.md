@@ -29,10 +29,10 @@ Five minutes and several bent fingernails later, all the pins were out, and I st
 
 I whispered down to Leah, Sophia, and Nick, relaying my discovery. We all agreed that I should go over to my parents' room and softly knock until they opened our balcony door to let me in. I did so, and the conversation with my sleepy mother went something like this:
 
-Mom: (rubbing her eyes sleepily) What... how did you get up here?
-Me: Don't worry about it. Can I go and let everyone else in?
-Mom: (still rubbing her eyes) Sure... but what time is it?
-Me: Eh, roughly midnight. Not sure exactly. I don't have a watch on and everybody's phones are inside. I'm going to go downstairs and let people in now. Thanks!
+Mom: (rubbing her eyes sleepily) What... how did you get up here?<br />
+Me: Don't worry about it. Can I go and let everyone else in?<br />
+Mom: (still rubbing her eyes) Sure... but what time is it?<br />
+Me: Eh, roughly midnight. Not sure exactly. I don't have a watch on and everybody's phones are inside. I'm going to go downstairs and let people in now. Thanks!<br />
 Mom: ...alright, I'm going back to bed.
 
 She yawned, and walked back into her room. Everybody was relieved that we didn't have to spend the night outside, and everything went better than expected.
