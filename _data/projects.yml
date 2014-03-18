@@ -35,6 +35,12 @@
   desc_2: 
   link: http://palyvoice.com
 -
+  name: Paly Archives
+  img_link: /assets/img/projects/screens.palyvoice.png
+  desc_1: Screenshot and post archive for Paly publications.
+  desc_2: Still in development.
+  link: http://screens.palyvoice.com
+-
   name: doge_api
   img_link: /assets/img/projects/doge_api.png
   desc_1: An API wrapper for <a href="http://dogeapi.com">DogeAPI.com<a> and <a href="http://dogechain.info">DogeChain.info</a> in the form of a RubyGem.
