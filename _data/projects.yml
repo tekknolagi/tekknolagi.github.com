@@ -5,6 +5,12 @@
   desc_2: <del>Nothing horrific. Yet.</del> Here be dragons.
   link: http://glug.bernsteinbear.com
 -
+  name: Paly.io
+  img_link: /assets/img/projects/paly.io.png
+  desc_1: Paly's URL shortener.
+  desc_2: Includes an API, Chrome extension, and QR codes.
+  link: http://paly.io
+-
   name: Share a Banana
   img_link: /assets/img/projects/shareabanana.png
   desc_1: Share virtual bananas with your friends!
