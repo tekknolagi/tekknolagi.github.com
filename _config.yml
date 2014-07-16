@@ -3,6 +3,7 @@
 
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md", "bernsteinbear.com"]
 highlighter: pygments
+markdown: kramdown
 
 relative_permalinks: true
 
