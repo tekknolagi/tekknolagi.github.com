@@ -39,7 +39,7 @@ This tutorial is for people who are running *NIX or OS X. It is not for absolute
   `-mmcblk0p5 179:5    0  1.7G  0 part /</pre>
   * NOTE: Your `/dev/sda` may have completely different partitioning. That's totally fine.
   * NOTE: `/dev/sda` is the USB drive (with high capacity) and `/dev/mmcblk0` is the SD card (with lower capacity).
-3. We're going to add a new Linux partition. Run `cfdisk`.
+3. We're going to add a new Linux partition. Run `cfdisk /dev/sda`.
 4. Type `d` or select the `Delete` button at the bottom of the screen, deleting all of the partitions until you see just one line that says `Pri/Log     Free Space                             61918.16` (or something similar - the size may vary).
 5. Type `n` or select the `New` button at the bottom of the screen to add a new partition. Select `Primary` and use the default size if you want the partition to consume the whole disk.
 6. When you are satisfied with your partitioning, select `Write` at the bottom of the screen. It will confirm that you want to destroy data; type `yes`.
