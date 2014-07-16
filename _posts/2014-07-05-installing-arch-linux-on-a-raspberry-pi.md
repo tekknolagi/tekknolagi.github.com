@@ -22,7 +22,7 @@ This tutorial is for people who are running *NIX or OS X. It is not for absolute
 
 ![](/assets/img/blog/arch_pi/pi_time.jpg)
 
-### Getting the base image on a USB drive and expanding the partition
+### Getting the base image on a USB drive
 
 0. Put the SD card and USB drive into the Pi and boot it up.
 1. Login with `root`/`root`.
