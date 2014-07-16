@@ -1,8 +1,8 @@
 # This is the default format. 
 # For more see: http://jekyllrb.com/docs/permalinks/
 
-exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
-pygments: true
+exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md", "bernsteinbear.com"]
+highlighter: pygments
 
 relative_permalinks: true
 

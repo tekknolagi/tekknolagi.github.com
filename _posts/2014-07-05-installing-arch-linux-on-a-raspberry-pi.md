@@ -2,6 +2,7 @@
 layout: post
 title: "Installing Arch Linux on a Raspberry Pi"
 ---
+
 {% include JB/setup %}
 
 This tutorial is for people who are running *NIX or OS X. It is not for absolute beginners, as it does not hold your hand throughout.
