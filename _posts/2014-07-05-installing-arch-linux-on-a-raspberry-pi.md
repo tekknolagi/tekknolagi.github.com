@@ -55,7 +55,7 @@ This tutorial is for people who are running *NIX or OS X. It is not for absolute
   `-mmcblk0p5 179:5    0  1.7G  0 part /</pre>
 8. Write an `ext4` filesystem to the disk. Run `mkfs.ext4 /dev/sda1` (or whatever your partition is called).
 9. Run `mount /dev/sda1 /mnt` to mount your USB drive on the folder `/mnt`.
-10. Run `cp -R /{bin,etc,home,lib,opt,root,sbin,srv,usr,var} /mnt/` to copy the necessary files onto your USB drive.
+10. Run `cp -R /{bin,etc,home,lib,opt,root,sbin,srv,usr,var} /mnt/` to copy the necessary files onto your USB drive. You can also use `rsync` if you prefer.
 11. Run `nano /boot/cmdline.txt` to open up the boot configuration of the Pi.
 12. Change `root=/dev/mmcblk0p5` to `root=/dev/sda1` to change the location of the root filesystem to your USB drive.
 13. Reboot and watch the changes take effect! The output of my `lsblk` looks like this:
