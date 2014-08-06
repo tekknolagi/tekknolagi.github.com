@@ -1,4 +1,10 @@
 -
+  name: Carp VM
+  img_link: /assets/img/projects/carpvm.png
+  desc_1: A tiny virtual machine in C.
+  desc_2: Under heavy development.
+  link: http://bernsteinbear.com/carp
+-
   name: Glug.rb
   img_link: /assets/img/projects/glug.png
   desc_1: Anonymous and feature-rich bulletin board system! People can post whatever they want!
@@ -16,12 +22,6 @@
   desc_1: Share virtual bananas with your friends!
   desc_2: A product of the first 2013 hackathon.
   link: http://shareabanana.com
--
-  name: Carp VM
-  img_link: /assets/img/projects/carpvm.png
-  desc_1: A tiny virtual machine in C.
-  desc_2: Under heavy development.
-  link: http://bernsteinbear.com/carp
 -
   name: jobspot
   img_link: /assets/img/projects/jobspot.png
