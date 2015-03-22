@@ -62,10 +62,14 @@ $img-width-front: $img-width * 0.5;
 
         max-width: $img-width-front + $text-width;
 
+	.project-text {
+	    justify-content: center;
+	}
+
         .project-img {
             width: $img-width-front;
 
-            img {
+            img {		
                 width: $img-width-front;
             }
         }
