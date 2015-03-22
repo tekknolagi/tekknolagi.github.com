@@ -54,8 +54,8 @@ $text-width: 400px;
     }
 }
 
+/* Make styles different on the front page. */
 $img-width-front: $img-width * 0.5;
-
 .column, .center {
     .project-item.front-page {
         @extend .project-item;
