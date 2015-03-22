@@ -1,9 +1,33 @@
 ---
-layout: default
+layout: none
+title: Home
+permalink: /
 ---
 
-<div class="home">
-  {% for link in site.data.links %}
-  <a href="{{ link.link }}">{{ link.name }}</a>
-  {% endfor %}
+<div class="center">
+  <div class="project-item">
+    <div class="project-text">
+      <p>
+	Hi! I'm Maxwell Bernstein.
+      </p>
+
+      <p>
+	I'm a <a href="http://github.com/{{ site.github_username }}">programmer</a>
+	and <a href="{{ site.photos_link }}">photographer</a> from Palo Alto.
+      </p>
+
+      <p>
+	I taught myself how to code, and enjoy working on
+	<a href="/projects">programming projects</a> of all sorts.
+      </p>
+
+      <p>
+	Check out my most recent photo on the right!
+      </p>
+    </div>
+
+    <div class="project-img">
+      <img src="http://bernsteinbear.com/assets/img/projects/carpvm.png" />
+    </div>
+  </div>
 </div>

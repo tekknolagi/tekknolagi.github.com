@@ -1,0 +1,23 @@
+---
+layout: none
+title: Projects
+permalink: projects/
+---
+
+<div class="column">
+  <h2><a href="/">Home</a></h2>
+
+  {% for project in site.data.projects %}
+  <div class="project-item">
+    <div class="project-img">
+      <img src="/assets/img/projects/{{ project.img_link }}" />
+    </div>
+    <div class="project-text">
+      <b>{{ project.name }}</b>
+      <p>{% if project.desc1 %} {{ project.desc1 }}<br /> {% endif %}
+	{% if project.desc2 %} <br /> {{ project.desc2 }} {% endif %}</p>
+      <p><a href="{{ project.link }}">{{ project.name }}</a></p>
+    </div>
+  </div>
+  {% endfor %}
+</div>

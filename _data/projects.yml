@@ -1,0 +1,63 @@
+- name: Carp VM
+  img_link: carpvm.png
+  desc1: A tiny virtual machine in C.
+  desc2: On ice while I rethink the design.
+  link: http://bernsteinbear.com/carp
+- name: Glug.rb
+  img_link: glug.png
+  desc1: Anonymous and feature-rich bulletin board system! People can post whatever they want!
+  desc2: <del>Nothing horrific. Yet.</del> Here be dragons.
+  link: http://glug.bernsteinbear.com
+- name: Paly.io
+  img_link: paly.io.png
+  desc1: Paly's URL shortener.
+  desc2: Includes an API, Chrome extension, and QR codes.
+  link: http://paly.io
+-
+  name: Share a Banana
+  img_link: shareabanana.png
+  desc1: Share virtual bananas with your friends!
+  desc2: A product of the first 2013 hackathon.
+  link: http://shareabanana.com
+-
+  name: jobspot
+  img_link: jobspot.png
+  desc1: A project initially developed with a company in mind.
+  desc2: Development stopped, and not publicly visible &mdash; but it was a great learning experience.
+  link: http://github.com/tekknolagi
+-
+  name: Brightswipe
+  img_link: brightswipe.png
+  desc1: Post and search for torrents! This is for legal filesharing only.
+  desc2: On ice.
+  link: http://brightswipe.com
+-
+  name: The Paly Voice
+  img_link: palyvoice.png
+  desc1: Senior webmaster for the 24/7 source for Palo Alto High School news.
+  desc2: 
+  link: http://palyvoice.com
+-
+  name: Paly Archives
+  img_link: screens.palyvoice.png
+  desc1: Screenshot and post archive for Paly publications.
+  desc2: Still in development.
+  link: http://screens.palyvoice.com
+-
+  name: doge_api
+  img_link: doge_api.png
+  desc1: An API wrapper for <a href="http://dogeapi.com">DogeAPI.com<a> and <a href="http://dogechain.info">DogeChain.info</a> in the form of a RubyGem.
+  desc2: 
+  link: https://rubygems.org/gems/doge_api
+-
+  name: DogeChain enhancer
+  img_link: dogechainsorter.png
+  desc1: Chrome extension to enhance your viewing experience on <a href="http://dogechain.info">DogeChain.info</a>.
+  desc2: Good for showing the current USD/DOGE price and seeing how much your balance is worth.
+  link: http://github.com/tekknolagi/dogechainsorter
+-
+  name: RedditGfycat
+  img_link: redditgfycat.png
+  desc1: Chrome extension to load all Reddit .gif posts through <a href="http://gfycat.com/">Gfycat</a> WebM.
+  desc2: Good for people with slower internet connections.
+  link: https://chrome.google.com/webstore/detail/reddit-gfycat/jolmbfapckpelnpfdobdmoeimkmfkecb
