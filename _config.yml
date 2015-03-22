@@ -2,8 +2,8 @@
 title: Maxwell Bernstein
 email: max@bernsteinbear.com
 description: Programmer, photographer, and xyz.
-baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://bernsteinbear.com" # the base hostname & protocol for your site
+baseurl: ""
+url: "http://bernsteinbear.com"
 twitter_username: tekknolagi
 github_username: tekknolagi
 photos_link: http://photos.bernsteinbear.com

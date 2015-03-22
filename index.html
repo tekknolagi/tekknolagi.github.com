@@ -7,34 +7,27 @@ permalink: /
 <div class="center">
   <div class="project-item front-page">
     <div class="project-text">
-      <p>
-        Hi! I'm Maxwell Bernstein.
-      </p>
-
+      <p>Hi! I'm Maxwell Bernstein.</p>
       <p>
         I'm a <a href="http://github.com/{{ site.github_username }}">programmer</a>
         and <a href="{{ site.photos_link }}">photographer</a> from Palo Alto.
       </p>
-
       <p>
         I taught myself how to code, and enjoy working on
         <a href="/projects">programming projects</a> of all sorts.
       </p>
-
-      <p>
-        Check out my most recent photo on the right!
-      </p>
+      <p>Check out my most recent photo on the right!</p>
     </div>
 
     <div class="project-img">
-      <a href="http://photos.bernsteinbear.com">
+      <a href="{{ site.photos_link }}">
         <img id="latest-photo" src="" />
       </a>
     </div>
   </div>
 </div>
 
-<script type="text/javascript" src="http://photos.bernsteinbear.com/api/read/json"></script>
+<script type="text/javascript" src="{{ site.photos_link }}/api/read/json"></script>
 <script type="text/javascript">
  var photo = document.getElementById("latest-photo");
  photo.setAttribute("src", tumblr_api_read['posts'][0]['photo-url-500']);
