@@ -5,7 +5,7 @@ permalink: /
 ---
 
 <div class="center">
-  <div class="project-item">
+  <div class="project-item front-page">
     <div class="project-text">
       <p>
 	Hi! I'm Maxwell Bernstein.
@@ -27,7 +27,15 @@ permalink: /
     </div>
 
     <div class="project-img">
-      <img src="{{ site.project_img_path }}carpvm.png" />
+      <a href="http://photos.bernsteinbear.com">
+	<img id="latest-photo" src="" />
+      </a>
     </div>
   </div>
 </div>
+
+<script type="text/javascript" src="http://photos.bernsteinbear.com/api/read/json"></script>
+<script type="text/javascript">
+ var photo = document.getElementById("latest-photo");
+ photo.setAttribute("src", tumblr_api_read['posts'][0]['photo-url-500']);
+</script>
