@@ -10,7 +10,7 @@ permalink: projects/
   {% for project in site.data.projects %}
   <div class="project-item">
     <div class="project-img">
-      <img src="/assets/img/projects/{{ project.img_link }}" />
+      <img src="{{ site.project_img_path }}{{ project.img_link }}" />
     </div>
     <div class="project-text">
       <b>{{ project.name }}</b>

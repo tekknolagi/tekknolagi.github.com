@@ -8,6 +8,7 @@ twitter_username: tekknolagi
 github_username: tekknolagi
 photos_link: http://photos.bernsteinbear.com
 
+project_img_path: /assets/img/projects/
 relative_permalinks: true
 
 # Build settings
