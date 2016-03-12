@@ -1,34 +1,86 @@
----
-layout: none
-title: Home
-permalink: /
----
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Maxwell Bernstein</title>
+    <style type="text/css">
+     body {
+       margin: 40px auto;
+       max-width: 650px;
+       line-height: 1.6;
+       font-size: 18px;
+       color: #444;
+       padding: 0 10px;
+     }
+     h1, h2, h2 {
+       line-height: 1.2;
+     }
+     aside {
+       margin-top: -20px;
+       margin-bottom: -10px;
+       margin-left: 20px;
+       font-style: italic;
+     }
+    </style>
+  </head>
+  <body>
+    <h2>I'm Maxwell Bernstein.</h2>
+    <p>
+      I am a <a href="https://github.com/tekknolagi">programmer</a> and
+      student at Tufts University.
+      I like to <a href="https://photos.bernsteinbear.com">take photos</a>
+      and ride bikes in the hills near my house.
+    </p>
+    <p>
+      You can <a href="mailto:contact@bernsteinbear.com">email me</a>
+      if you so desire.
+    </p>
 
-<div class="center">
-  <div class="project-item front-page">
-    <div class="project-text">
-      <p>Hi! I'm Maxwell Bernstein.</p>
-      <p>
-        I'm a <a href="http://github.com/{{ site.github_username }}">programmer</a>
-        and <a href="{{ site.photos_link }}">photographer</a> from Palo Alto.
-      </p>
-      <p>
-        I taught myself how to code, and enjoy working on
-        <a href="/projects">programming projects</a> of all sorts.
-      </p>
-      <p>Check out my most recent photo on the right!</p>
-    </div>
+    <h2>I like making things.</h2>
+    <p>
+      That's probably an understatement. Here are some of my favorite projects:
+      <ul>
+        <li>
+          A <a href="https://github.com/TheiaRT/tracer">distributed ray tracer</a> that
+          I made with friends for a concurrent programming course
+        </li>
+        <li>
+          A probably bug-ridden <a href="https://github.com/tekknolagi/ssock">C sockets library</a>
+          that I made for <a href="https://hacktoberfest.digitalocean.com">Hacktoberfest</a> in
+          2014
+        </li>
+        <li>
+          A song database <a href="https://github.com/tekknolagi/comp15-songsearch">search
+          engine</a> that I made for my data structures class
+        </li>
+      </ul>
+    </p>
 
-    <div class="project-img">
-      <a href="{{ site.photos_link }}">
-        <img id="latest-photo" src="" />
-      </a>
-    </div>
-  </div>
-</div>
-
-<script type="text/javascript" src="{{ site.photos_link }}/api/read/json"></script>
-<script type="text/javascript">
- var photo = document.getElementById("latest-photo");
- photo.setAttribute("src", tumblr_api_read['posts'][0]['photo-url-500']);
-</script>
+    <h2>I've really enjoyed my classes.</h2>
+    <p>
+      Here are some of my favorite classes:
+      <ul>
+        <li>
+          <i>Compilers</i>, a class about &mdash; guess what? &mdash; building compilers!
+          We built one in ML.
+        </li>
+        <li>
+          <i>Security CTF</i>, a half-credit course in which we build a secure
+          device, swap with another school, and then break into theirs
+        </li>
+        <li>
+          <i>Concurrent Programming</i>, a class all about multithreading
+          and parallel computation
+        </li>
+        <li>
+          <i>Operating Systems</i>, a class that does an in-depth study of Linux
+          and common operating systems constructs
+        </li>
+        <li>
+          <i>Machine Structure &amp; Intel Assembly Programming</i>, in which
+          students spend around 40 hours per week writing lots of C
+        </li>
+      </ul>
+    </p>
+  </body>
+</html>
