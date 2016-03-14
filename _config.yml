@@ -1,0 +1,14 @@
+# Site settings
+title: Maxwell Bernstein
+email: max@bernsteinbear.com
+description: Programmer, photographer, and xyz.
+baseurl: ""
+url: "http://beta.bernsteinbear.com"
+twitter_username: tekknolagi
+github_username: tekknolagi
+photos_link: http://photos.bernsteinbear.com
+
+project_img_path: /assets/img/projects/
+
+# Build settings
+markdown: kramdown

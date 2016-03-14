@@ -1,0 +1,105 @@
+@mixin display-flex() {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+@mixin flex-align($where) {
+    -ms-flex-align: $where;
+    -webkit-align-items: $where;
+    -webkit-box-align: $where;
+    align-items: $where;
+}
+
+@mixin justify-content($where) {
+    -webkit-justify-content: $where;
+    justify-content: $where;
+}
+
+/* The wrapping div that the body will be in. */
+.container {
+    height: 100%;
+
+    @include display-flex();
+    @include flex-align(center);
+    @include justify-content(center);
+}
+
+$img-width: 400px;
+$text-width: 400px;
+
+/* .center is both vertically and horizontally centered. */
+/* .column is a column of text that fills up as much vertical space as possible. */
+.column, .center {
+    flex: 0 0 auto;
+    margin: auto;
+
+    .project-item {
+        display: flex;
+        flex-direction: row;
+
+        flex-wrap: wrap;
+        max-width: $img-width + $text-width;
+
+        .project-img {
+            display: flex;
+            flex-direction: column;
+
+            width: $img-width;
+            max-width: 100%;
+
+            img {
+                width: $img-width;
+                max-width: 100%;
+            }
+        }
+
+        .project-text {
+            display: flex;
+            flex-direction: column;
+
+            width: $text-width;
+            max-width: 100%;
+        }
+    }
+}
+
+/* Make styles different on the front page. */
+$img-width-front: $img-width * 0.5;
+.column, .center {
+    .project-item.front-page {
+        @extend .project-item;
+
+        max-width: $img-width-front + $text-width;
+
+	.project-text {
+	    justify-content: center;
+	}
+
+        .project-img {
+            width: $img-width-front;
+
+            img {		
+                width: $img-width-front;
+            }
+        }
+    }
+}
+
+/* Make sure .column doesn't start in the middle of the page. */
+.column {
+    height: 100%;
+}
+
+/* Make sure the content shows up full screen on mobile. */
+@media all and (max-width: 800px) {
+    .container, .center, .column {
+        width: 100%;
+    }
+
+    .project-text, .project-img {
+	color: red;
+    	@include justify-content(center);
+	/*text-align: center;*/
+    }
+}
