@@ -9,3 +9,6 @@ post_dirs: false
 
 # Build settings
 markdown: kramdown
+
+gems:
+  - jekyll-feed
