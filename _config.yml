@@ -1,8 +1,12 @@
 # Site settings
 title: Maxwell Bernstein
+author: Maxwell Bernstein
 email: max@bernsteinbear.com
 baseurl: ""
 url: "http://bernsteinbear.com"
+
+twitter:
+  username: tekknolagi
 
 permalink: '/blog/:title'
 post_dirs: false
@@ -12,3 +16,5 @@ markdown: kramdown
 
 gems:
   - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
