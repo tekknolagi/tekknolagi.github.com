@@ -14,6 +14,10 @@ post_dirs: false
 
 # Build settings
 markdown: kramdown
+kramdown:
+  input: GFM # GitHub Flavored Markdown
+  hard_wrap: false
+highlighter: rouge
 
 gems:
   - jekyll-feed
