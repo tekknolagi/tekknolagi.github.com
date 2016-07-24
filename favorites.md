@@ -1,4 +1,5 @@
 ---
+layout: post
 ---
 Here are some of my favorite personal websites:
 
