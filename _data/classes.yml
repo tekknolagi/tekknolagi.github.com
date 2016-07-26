@@ -1,0 +1,17 @@
+- name: Compilers
+  prof: Sam Guyer
+  desc: a class about &mdash; guess what? &mdash; building compilers in ML
+- name: Security CTF
+  prof: Ming Chow
+  desc: a half-credit course in which we build a secure device, swap with
+        another school, and then break into theirs
+- name: Concurrent Programming
+  prof: Mark Sheldon
+  desc: a class all about multithreading and parallel computation
+- name: Operating Systems
+  prof: Alva Couch
+  desc: a class that does an in-depth study of Linux and common operating
+        systems constructs
+- name: Machine Structure &amp; Intel Assembly Programming
+  prof: Mark Sheldon
+  desc: in which students spend around 40 hours per week writing lots of C

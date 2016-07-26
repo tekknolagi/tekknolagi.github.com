@@ -58,27 +58,8 @@ layout: default
 <p>
   Here are some of my favorites:
   <ul>
-    <li>
-      <i>Compilers</i> with Sam Guyer, a class about &mdash; guess what?
-      &mdash; building compilers in ML
-    </li>
-    <li>
-      <i>Security CTF</i> with Ming Chow, a half-credit course in which we
-      build a secure device, swap with another school, and then break into
-      theirs
-    </li>
-    <li>
-      <i>Concurrent Programming</i> with Mark Sheldon, a class all about
-      multithreading and parallel computation
-    </li>
-    <li>
-      <i>Operating Systems</i> with Alva Couch, a class that does an
-      in-depth study of Linux and common operating systems constructs
-    </li>
-    <li>
-      <i>Machine Structure &amp; Intel Assembly Programming</i> with Mark
-      Sheldon, in which students spend around 40 hours per week writing lots
-      of C
-    </li>
+    {% for class in site.data.classes %}
+    <li><i>{{ class.name }}</i> with {{ class.prof }}, {{ class.desc }}</li>
+    {% endfor %}
   </ul>
 </p>
