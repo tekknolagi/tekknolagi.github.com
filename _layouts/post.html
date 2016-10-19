@@ -1,53 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="{{ site.author }}" />
-    <meta name="author" content="{{ site.author_nickname }}" />
-    <meta name="contact" content="{{ site.email }}" />
-    <meta name="description" content="Max Bernstein's personal website." />
-    <meta name="keywords" content="max bernstein, maxwell bernstein, programming, computer science, compsci, website" />
-    <meta name="generator" content="Jekyll" />
-    <meta name="language" content="English" />
-    <meta name="og:type" content="website" />
-    {% seo %}
+    {% include seo.md %}
+    {% include css.md %}
     <style type="text/css">
-      body {
-        margin: 40px auto;
-        max-width: 650px;
-        line-height: 1.6;
-        font-size: 18px;
-        color: #444;
-        padding: 0 10px;
-      }
-      h1, h2, h2 {
-        line-height: 1.2;
-      }
       h2 {
-        text-align: center;
-      }
-      aside {
-        margin-top: -20px;
-        margin-bottom: -10px;
-        margin-left: 20px;
-        font-style: italic;
-      }
-      img, code, pre {
-        max-width: 650px;
-      }
-      pre {
-        overflow-x: auto;
-        word-wrap: normal;
-        overflow-wrap: normal;
-        white-space: pre-wrap;
-        display: block;
-      }
-      footer hr {
-        margin-top: 40px;
+          text-align: center;
       }
     </style>
-  </head>
+   </head>
   <body>
     <a href="/">home</a>
     <h2>{{ page.title }}</h2>
@@ -55,23 +16,6 @@
       {{ content }}
     </div>
     <a href="/">home</a>
-    <footer>
-      <hr>
-      I stole some CSS from <a href="http://bettermotherfuckingwebsite.com">
-        Better Motherfucking Website</a>.
-    </footer>
-    <script type="text/javascript">
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-       })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-      ga('create', 'UA-26440738-1', 'auto');
-      ga('send', 'pageview');
-    </script>
-    <script type="text/javascript">
-        window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(r?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","removeEventProperty","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
-        heap.load("2503633427");
-    </script>
- </body>
+    {% include footer.md %}
+  </body>
 </html>
