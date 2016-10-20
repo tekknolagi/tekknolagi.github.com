@@ -27,7 +27,7 @@ Here are some of my favorite films:
   {% endfor %}
 </ul>
 
-Here are some of my favorite classical music pieces:
+Here is some of my favorite music:
 
 <ul>
   {% for composer in site.data.classical_composers %}
