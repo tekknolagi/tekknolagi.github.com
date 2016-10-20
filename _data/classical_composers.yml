@@ -30,3 +30,12 @@
         conductor: Giuseppe Sinopoli
       - name: Requiem
         conductor: Semyon Bychkov
+- composer: Johannes Brahms
+  pieces:
+      - name: Violin Concerto in D major
+        conductor: Carlo Maria Giulini
+        soloist: Itzhak Perlman
+- composer: Ludwig van Beethoven
+  pieces:
+      - name: Symphony 9
+        conductor: Josef Krips
