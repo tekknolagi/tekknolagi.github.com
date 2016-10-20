@@ -24,3 +24,9 @@
   pieces:
       - name: Vltava
         from: Má vlast
+- composer: Giuseppe Verdi
+  pieces:
+      - name: Nabucco
+        conductor: Giuseppe Sinopoli
+      - name: Requiem
+        conductor: Semyon Bychkov
