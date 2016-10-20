@@ -26,3 +26,6 @@ Here are some of my favorite films:
   <li>{{ film.title }}</li>
   {% endfor %}
 </ul>
+
+My favorite tea is currently {{ site.data.other.tea.maker }}'s
+<i>{{site.data.other.tea.name}}</i>.
