@@ -1,0 +1,26 @@
+- composer: Edvard Grieg
+  pieces:
+      - name: Peer Gynt Suite
+        conductor: Guillermo Garcia Calvo
+- composer: Richard Wagner
+  pieces:
+      - name: Siegfried
+        act: 3
+        conductor: Christian Thielemann
+- composer: W.A. Mozart
+  pieces:
+      - name: Clarinet Concerto in A major
+- composer: Jean Sibelius
+  pieces:
+      - name: Karelia Suite
+      - name: Finlanda
+- composer: Antonín Dvořák
+  pieces:
+      - name: Cello Concerto in B minor
+        conductor: Paavo Järvi
+      - name: Symphony 9 -- New World
+        conductor: Herbert von Karajan
+- composer: Bedřich Smetana
+  pieces:
+      - name: Vltava
+        from: Má vlast

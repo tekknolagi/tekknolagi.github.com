@@ -27,5 +27,17 @@ Here are some of my favorite films:
   {% endfor %}
 </ul>
 
+Here are some of my favorite classical music pieces:
+
+<ul>
+  {% for composer in site.data.classical_composers %}
+    {% for piece in composer.pieces %}
+      <li>
+        <i>{{ piece.name }}</i> by {{ composer.composer }}{% if piece.conductor %}, conducted by {{ piece.conductor }}{% endif %}
+      </li>
+    {% endfor %}
+  {% endfor %}
+</ul>
+
 My favorite tea is currently {{ site.data.other.tea.maker }}'s
 <i>{{site.data.other.tea.name}}</i>.
