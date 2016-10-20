@@ -1,6 +1,9 @@
 - name: Compilers
   prof: Sam Guyer
   desc: a class about &mdash; guess what? &mdash; building compilers in ML
+- name: Programming Languages
+  prof: Kathleen Fisher
+  desc: a class about building, proving, and comparing programming languages
 - name: Security CTF
   prof: Ming Chow
   desc: a half-credit course in which we build a secure device, swap with
@@ -14,4 +17,5 @@
         systems constructs
 - name: Machine Structure &amp; Intel Assembly Programming
   prof: Mark Sheldon
-  desc: in which students spend around 40 hours per week writing lots of C
+  desc: in which students spend around 40 hours per week writing obscene
+        quantities of C
