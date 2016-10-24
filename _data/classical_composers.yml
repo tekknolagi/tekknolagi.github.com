@@ -39,3 +39,11 @@
   pieces:
       - name: Symphony 9
         conductor: Josef Krips
+- composer: Pyotr Ilyich Tchaikovsky
+  pieces:
+      - name: Waltz of the Flowers
+        conductor: Bramwell Tovey
+- composer: Gioachino Rossini
+  pieces:
+      - name: La Gazza Ladra
+        conductor: Sir Thomas Beecham
