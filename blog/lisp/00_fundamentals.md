@@ -22,7 +22,8 @@ you want to follow along in C... well, good luck. It'll be a lot more code.
 
 I'm going to build up the interpreter in stages, starting with symbols and
 other literals, then moving to simple math, then finally writing the features
-to support a metacircular evaluator.
+to support a metacircular evaluator (meaning that you can write *another* Lisp
+interpreter in the Lisp you just wrote!).
 
 Let's begin!
 
@@ -154,8 +155,13 @@ Here's `SyntaxError`:
 exception SyntaxError of string;;
 ```
 
-Let's give it a whirl! Write a main function to be called on program start, and
-have it call `read_sexp`:
+For those unfamiliar with exceptions, they are a construct that changes the
+flow of execution in a program. When `raise`d, they halt the program flow and
+go "up the chain" in function calls until they find a place that specifically
+looks out for them. If they don't find one (as in this case), OCaml just stops.
+
+Let's give our program a whirl! Write a main function to be called on program
+start, and have it call `read_sexp`:
 
 ```ocaml
 let main =
@@ -186,6 +192,7 @@ Cool! Looks like it works. But what happens if we try and enter a non-number?
 $ ocaml 00_helloworld.ml
 > k
 Exception: SyntaxError "Unexpected char k".
+$
 ```
 
 Perfect. Now let's make it a REPL! How do we loop in OCaml? Recursion, of
@@ -214,6 +221,7 @@ $ ocaml 00_helloworld.ml
 > 5
 5
 > Exception: End_of_file.
+$
 ```
 
 It looks like OCaml's I/O functions raise the `End_of_file` exception if it
