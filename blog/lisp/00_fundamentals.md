@@ -212,7 +212,7 @@ It looks like OCaml's I/O functions raise the `End_of_file` exception if it
 encounters EOF (aka me hitting `^D` or trying to pipe in a file), which we
 could handle if we wanted. But I think this is fine for now.
 
-Download the code <a href="00_fundamentals.ml">here</a> if you want to mess
+Download the code <a href="../00_fundamentals.ml">here</a> if you want to mess
 with it.
 
 Next up, symbols.
