@@ -195,8 +195,19 @@ Exception: SyntaxError "Unexpected char k".
 $
 ```
 
-Perfect. Now let's make it a REPL! How do we loop in OCaml? Recursion, of
-course!
+And what happens if we try and enter a negative number?
+
+```
+$ ocaml 00_helloworld.ml
+> -123
+Exception: SyntaxError "Unexpected char -".
+$
+```
+
+Well, we don't actually handle negative numbers right now. That's definitely
+something that can be improved in the future.
+
+Now let's make it a REPL! How do we loop in OCaml? Recursion, of course!
 
 ```ocaml
 let rec repl stm =
