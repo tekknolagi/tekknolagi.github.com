@@ -1,11 +1,19 @@
 ---
-title: "Lisp Part 0: Fundamentals"
+title: "Writing a Lisp, Part 0: Fundamentals"
 layout: post
 permalink: "blog/lisp/00_fundamentals/"
 ---
 
 So you want to write a Lisp interpreter. I did too, and then I wanted to write
 about it, so here we are with this post series.
+
+I initially wanted to write a Lisp interpreter as an exercise. I decided to
+write V1 in C. After much pointer shenanigans and a unholy amounts of curly
+braces later, it worked &mdash; but was significantly longer and harder to read
+than a Lisp interpreter should be. So I decided to write V2 in OCaml, a
+functional programming language descended from SML. The SML family of languages
+has some features like pattern matching and an extensive type system that make
+writing interpreters and compilers an absolute dream.
 
 I'm going to walk through writing a fully-functional Lisp interpreter in OCaml.
 If you're following along with the OCaml, great. If you want to try and build
