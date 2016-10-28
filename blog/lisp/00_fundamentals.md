@@ -1,6 +1,7 @@
 ---
 title: "Lisp Part 0: Fundamentals"
 layout: post
+permalink: "blog/lisp/00_fundamentals/"
 ---
 
 So you want to write a Lisp interpreter. I did too, and then I wanted to write
