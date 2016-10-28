@@ -8,7 +8,7 @@ So you want to write a Lisp interpreter. I did too, and then I wanted to write
 about it, so here we are with this post series.
 
 I initially wanted to write a Lisp interpreter as an exercise. I decided to
-write V1 in C. After much pointer shenanigans and a unholy amounts of curly
+write V1 in C. After much pointer shenanigans and an unholy amount of curly
 braces later, it worked &mdash; but was significantly longer and harder to read
 than a Lisp interpreter should be. So I decided to write V2 in OCaml, a
 functional programming language descended from SML. The SML family of languages
@@ -242,4 +242,4 @@ could handle if we wanted. But I think this is fine for now.
 Download the code <a href="../00_fundamentals.ml">here</a> if you want to mess
 with it.
 
-Next up, symbols.
+Next up, booleans.
