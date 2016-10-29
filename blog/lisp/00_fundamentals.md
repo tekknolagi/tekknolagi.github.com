@@ -242,4 +242,4 @@ could handle if we wanted. But I think this is fine for now.
 Download the code <a href="../00_fundamentals.ml">here</a> if you want to mess
 with it.
 
-Next up, booleans.
+Next up, <a href="../01_booleans/">booleans</a>.
