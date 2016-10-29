@@ -140,7 +140,10 @@ let rec read_sexp stm =
   else raise (SyntaxError ("Unexpected char " ^ (Char.escaped c)));;
 ```
 
-Alright, that was a lot at once. Let's break it down.
+where `Char.escaped` turns a character into a string consisting of only that
+character.
+
+That was a lot at once. Let's break it down.
 
 I defined several helper functions (`is_digit`, `read_fixnum`) *inside of*
 `read_sexp` because they'll only really be useful there.

@@ -96,9 +96,6 @@ digit:
   else if c = '#' then [...]
 ```
 
-where `Char.escaped` turns a character into a string consisting of only that
-character.
-
 Here's what an interaction with our new REPL looks like:
 
 ```
