@@ -136,7 +136,7 @@ let rec read_sexp stm =
   eat_whitespace stm;
   let c = read_char stm in
   if is_digit c
-  then let _ = unread_char stm c in read_fixnum ""
+  then read_fixnum (Char.escaped c)
   else raise (SyntaxError ("Unexpected char " ^ (Char.escaped c)));;
 ```
 

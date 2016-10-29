@@ -92,13 +92,12 @@ do this we'll have to make sure that we check for a negative sign *or* a
 digit:
 
 ```ocaml
-  if is_digit c then let _ = unread_char stm c in read_fixnum ""
-  else if c = '-' then read_fixnum "-"
+  if (is_digit c) || (c = '-') then read_fixnum (Char.escaped c)
   else if c = '#' then [...]
 ```
 
-All we really need to do is give the integer we're reading a starting value of
-`"-"`.
+where `Char.escaped` turns a character into a string consisting of only that
+character.
 
 Here's what an interaction with our new REPL looks like:
 
