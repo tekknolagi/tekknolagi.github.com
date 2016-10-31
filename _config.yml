@@ -25,3 +25,14 @@ gems:
   - jekyll-seo-tag
   - jekyll-sitemap
   - rouge
+
+collections:
+    blog_lisp:
+        output: true
+        permalink: /blog/lisp/:path/
+
+defaults:
+    - scope:
+        collection: blog_lisp
+      values:
+        layout: post

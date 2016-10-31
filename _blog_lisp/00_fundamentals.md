@@ -1,7 +1,6 @@
 ---
 title: "Writing a Lisp, Part 0: Fundamentals"
-layout: post
-permalink: "blog/lisp/00_fundamentals/"
+codelink: /resources/lisp/00_fundamentals.ml
 ---
 
 So you want to write a Lisp interpreter. I did too, and then I wanted to write
@@ -242,7 +241,7 @@ It looks like OCaml's I/O functions raise the `End_of_file` exception if it
 encounters EOF (aka me hitting `^D` or trying to pipe in a file), which we
 could handle if we wanted. But I think this is fine for now.
 
-Download the code <a href="../00_fundamentals.ml">here</a> if you want to mess
+Download the code <a href="{{ page.codelink }}">here</a> if you want to mess
 with it.
 
 Next up, <a href="../01_booleans/">booleans</a>.

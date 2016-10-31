@@ -1,7 +1,6 @@
 ---
 title: "Writing a Lisp, Part 1: Booleans"
-layout: post
-permalink: "blog/lisp/01_booleans/"
+codelink: /resources/lisp/01_booleans.ml
 ---
 
 Last time we wrote a simple interpreter that could read in numbers. That's cool
@@ -116,7 +115,7 @@ $
 At some point we should probably handle the `int_of_string` parse failure. But
 it works!
 
-Download the code <a href="../01_booleans.ml">here</a> if you want to mess with
-it.
+Download the code <a href="{{ page.codelink }}">here</a> if you want to mess
+with it.
 
 Next up, symbols.
