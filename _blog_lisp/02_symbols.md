@@ -108,4 +108,7 @@ $
 Great -- It prints everything out all nicely. Now that we have symbols,
 booleans, and ints, we can finally build up to collections of all of the above!
 
+Download the code <a href="{{ page.codelink }}">here</a> if you want to mess
+with it.
+
 Next up, lists.
