@@ -7,12 +7,12 @@
     <link rel="stylesheet" type="text/css" href="/css/github.css" />
    </head>
   <body>
-    <a href="/">home</a>
+    {% include back_link.md %}
     <h2 class="post-title">{{ page.title }}</h2>
     <div class="container">
       {{ content }}
     </div>
-    <a href="/">home</a>
+    {% include back_link.md %}
     {% include footer.md %}
   </body>
 </html>

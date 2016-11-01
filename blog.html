@@ -1,6 +1,7 @@
 ---
 title: Blog
 layout: post
+blog_index: true
 permalink: blog/
 ---
 
@@ -11,11 +12,4 @@ permalink: blog/
 </ul>
 
 <h2 class="post-title">Writing a Lisp, the series</h2>
-
-<ul>
-    {% for post in site.blog_lisp %}
-    {% if post.index != true %}
-    <li><a href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endif %}
-    {% endfor %}
-</ul>
+{% include lisp_post_list.md %}
