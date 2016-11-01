@@ -1,14 +1,21 @@
 ---
-layout: post
 title: Blog
-header: Blog
-group: navigation
-blog_page: false
+layout: post
 permalink: blog/
 ---
 
 <ul>
     {% for post in site.posts %}
     <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+</ul>
+
+<h2 class="post-title">Writing a Lisp, the series</h2>
+
+<ul>
+    {% for post in site.blog_lisp %}
+    {% if post.index != true %}
+    <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endif %}
     {% endfor %}
 </ul>
