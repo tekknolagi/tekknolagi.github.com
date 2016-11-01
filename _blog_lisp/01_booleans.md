@@ -91,17 +91,19 @@ do this we'll have to make sure that we check for a negative sign *or* a
 digit:
 
 ```ocaml
-  if (is_digit c) || (c = '-') then read_fixnum (Char.escaped c)
+  if (is_digit c) || (c = '~') then read_fixnum (Char.escaped (if c='~' then '-' else c))
   else if c = '#' then [...]
 ```
 
-Here's what an interaction with our new REPL looks like:
+So we're not actually using the usual minus sign, `-`, for negative numbers.
+We're using the tilde, SML-style, because it makes parsing symbols (next) just
+a little bit easier. Here's what an interaction with our new REPL looks like:
 
 ```
 $ ocaml 01_booleans.ml
 > 14
 14
-> -123
+> ~123
 -123
 > #t
 #t
@@ -118,4 +120,4 @@ it works!
 Download the code <a href="{{ page.codelink }}">here</a> if you want to mess
 with it.
 
-Next up, symbols.
+Next up, <a href="../02_symbols/">symbols</a>.

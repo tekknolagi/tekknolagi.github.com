@@ -4,9 +4,12 @@ type stream =
 (*
 let print_stream stm =
     let _ = Printf.printf "{ line=%d, chr=" stm.line_num in
-    let _ = print_string (String.concat " " (List.map Char.escaped stm.chr)) in
+    let _ = print_string (String.concat " " (List.map stringOfChar stm.chr)) in
     Printf.printf ", chan=stdin }\n";;
 *)
+
+let stringOfChar c =
+    String.make 1 c;;
 
 let read_char stm =
     match stm.chr with
@@ -34,6 +37,7 @@ let rec eat_whitespace stm =
 type lobject =
   | Fixnum of int
   | Boolean of bool
+  | Symbol of string
 
 exception SyntaxError of string;;
 
@@ -45,25 +49,45 @@ let rec read_sexp stm =
   let rec read_fixnum acc =
     let nc = read_char stm in
     if is_digit nc
-    then read_fixnum (acc ^ (Char.escaped nc))
+    then read_fixnum (acc ^ stringOfChar nc)
     else
       let _ = unread_char stm nc in
       Fixnum(int_of_string acc)
   in
+  let is_symstartchar =
+      let isalpha = function | 'A'..'Z'|'a'..'z' -> true
+                             | _ -> false
+      in
+      function | '*'|'/'|'>'|'<'|'='|'?'|'!'|'-'|'+' -> true
+               | c -> isalpha c
+  in
+  let rec read_symbol () =
+      let is_delimiter = function | '('|')'|'{'|'}'|'"'|';' -> true
+                                  | c -> is_white c
+      in
+      let nc = read_char stm in
+      if is_delimiter nc
+      then let _ = unread_char stm nc in ""
+      else stringOfChar nc ^ read_symbol ()
+  in
   eat_whitespace stm;
   let c = read_char stm in
-  if (is_digit c) || (c = '~') then read_fixnum (Char.escaped (if c='~' then '-' else c))
+  if is_symstartchar c
+  then Symbol(stringOfChar c ^ read_symbol ())
+  else if is_digit c || c='~'
+  then read_fixnum (stringOfChar (if c='~' then '-' else c))
   else if c = '#' then
       match (read_char stm) with
       | 't' -> Boolean(true)
       | 'f' -> Boolean(false)
-      | x -> raise (SyntaxError ("Invalid boolean literal " ^ (Char.escaped x)))
-  else raise (SyntaxError ("Unexpected char " ^ (Char.escaped c)));;
+      | x -> raise (SyntaxError ("Invalid boolean literal " ^ (stringOfChar x)))
+  else raise (SyntaxError ("Unexpected char " ^ (stringOfChar c)));;
 
 let rec print_sexp e =
     match e with
     | Fixnum(v) -> print_int v
     | Boolean(b) -> print_string (if b then "#t" else "#f")
+    | Symbol(s) -> print_string s
 
 let rec repl stm =
   print_string "> ";
