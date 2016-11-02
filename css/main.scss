@@ -24,10 +24,9 @@ img, code, pre {
     max-width: 650px;
 }
 pre {
-    overflow-x: auto;
+    overflow: auto;
     word-wrap: normal;
-    overflow-wrap: normal;
-    white-space: pre-wrap;
+    white-space: pre;
     display: block;
     padding: 15px;
 }
