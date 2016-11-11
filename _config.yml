@@ -10,7 +10,7 @@ url: "http://bernsteinbear.com"
 twitter:
   username: tekknolagi
 
-permalink: '/blog/:title'
+permalink: '/blog/:title/'
 post_dirs: false
 
 # Build settings
