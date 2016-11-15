@@ -11,6 +11,7 @@ Here are some of my favorite personal websites:
   {% endfor %}
 </ul>
 
+<!--
 Here are some of my favorite books:
 
 <ul>
@@ -26,6 +27,7 @@ Here are some of my favorite films:
   <li>{{ film.title }}</li>
   {% endfor %}
 </ul>
+-->
 
 Here is some of my favorite music:
 
