@@ -3,7 +3,7 @@ layout: post
 title: Favorite Things
 ---
 
-Here are some of my favorite personal websites:
+Here are some personal websites I think look good:
 
 <ul>
   {% for website in site.data.sites %}
