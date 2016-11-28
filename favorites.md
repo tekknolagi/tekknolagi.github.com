@@ -51,9 +51,6 @@ I am currently listening to some newer music, too:
   {% endfor %}
 </ul>
 
-My favorite tea is currently {{ site.data.other.tea.maker }}'s
-<i>{{site.data.other.tea.name}}</i>.
-
 Here are some personal websites I think look good:
 
 <ul>
@@ -61,3 +58,6 @@ Here are some personal websites I think look good:
   <li><a href="http://{{ website.url }}/">{{ website.url }}</a></li>
   {% endfor %}
 </ul>
+
+My favorite tea is currently {{ site.data.other.tea.maker }}'s
+<i>{{ site.data.other.tea.name }}</i>.
