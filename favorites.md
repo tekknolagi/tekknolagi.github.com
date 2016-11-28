@@ -3,14 +3,6 @@ layout: post
 title: Favorite Things
 ---
 
-Here are some personal websites I think look good:
-
-<ul>
-  {% for website in site.data.sites %}
-  <li><a href="http://{{ website.url }}/">{{ website.url }}</a></li>
-  {% endfor %}
-</ul>
-
 <!--
 Here are some of my favorite books:
 
@@ -41,5 +33,31 @@ Here is some of my favorite music:
   {% endfor %}
 </ul>
 
+I am currently listening to some newer music, too:
+
+<ul>
+  {% for item in site.data.other.current_music %}
+    <li>
+    {% if item.smallcaps %}
+    <i style="font-variant: small-caps;">
+    {% else %}
+    <i>
+    {% endif %}
+    {{ item.group.name }}</i>
+    {% if item.group.english_name %}
+    <i>({{ item.group.english_name }})</i>
+    {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+
 My favorite tea is currently {{ site.data.other.tea.maker }}'s
 <i>{{site.data.other.tea.name}}</i>.
+
+Here are some personal websites I think look good:
+
+<ul>
+  {% for website in site.data.sites %}
+  <li><a href="http://{{ website.url }}/">{{ website.url }}</a></li>
+  {% endfor %}
+</ul>

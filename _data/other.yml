@@ -1,3 +1,19 @@
 tea:
     maker: Stash Tea
     name: Double Bergamot Earl Grey
+
+current_music:
+    - group:
+          name: Отава ё
+          english_name: Otava Yo
+      smallcaps: true
+    - group:
+          name: Dire Straits
+    - group:
+          name: Gipsy Kings
+    - group:
+          name: ZZ Top
+    - group:
+          name: Ленинград
+          english_name: Leningrad
+      smallcaps: true
