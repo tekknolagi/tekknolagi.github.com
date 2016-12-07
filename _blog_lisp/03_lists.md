@@ -7,6 +7,7 @@ Last time we added symbols to our interpreter, so that leaves us currently with
 symbols, integers, and booleans. That's great and all, but isn't the whole
 point of Lisp to have lists? 'bout time we added those.
 
+<!--
 In Lisp you can reason about two types of lists: normal lists, which get
 evaluated, and quoted lists, which are (for the time being) data, and do not
 get evaluated.
@@ -19,8 +20,9 @@ get evaluated.
 The difference in syntax is just one little single quote, but they are very
 different. The former is a function call, while the latter is just a collection
 of elements. The fun part about Lisp: they're stored nearly identically.
+-->
 
-The other fun part about Lisp: lists don't technically exist. Instead what we
+The fun part about Lisp: lists don't technically exist. Instead what we
 have are called <a href="https://en.wikipedia.org/wiki/Cons">cons cells</a>:
 
 <figure style="display: block; margin: 0 auto; max-width: 400px;" >
