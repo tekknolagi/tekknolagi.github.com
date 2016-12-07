@@ -2,9 +2,17 @@
 <html lang="en">
   <head>
     {% include seo.md %}
-    <link rel="stylesheet" type="text/css" href="/css/main.css" />
-    <link rel="stylesheet" type="text/css" href="/css/post.css" />
-    <link rel="stylesheet" type="text/css" href="/css/github.css" />
+    <link rel="stylesheet" href="/css/main.css" media="none"
+                                          onload="if(media!='all')media='all'">
+    <noscript><link rel="stylesheet" href="main.css"></noscript>
+
+    <link rel="stylesheet" href="/css/post.css" media="none"
+                                          onload="if(media!='all')media='all'">
+    <noscript><link rel="stylesheet" href="post.css"></noscript>
+
+    <link rel="stylesheet" href="/css/github.css" media="none"
+                                          onload="if(media!='all')media='all'">
+    <noscript><link rel="stylesheet" href="github.css"></noscript>
    </head>
   <body>
     {% include navbar.md %}

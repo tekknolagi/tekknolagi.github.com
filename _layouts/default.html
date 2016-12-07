@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     {% include seo.md %}
-    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/main.css" media="none"
+                                          onload="if(media!='all')media='all'">
+    <noscript><link rel="stylesheet" href="main.css"></noscript>
   </head>
   <body>
     <h2>{{ page.title }}</h2>
