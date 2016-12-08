@@ -338,4 +338,4 @@ pairs for us. It shouldn't be a great need until then.
 Download the code <a href="{{ page.codelink }}">here</a> if you want to mess
 with it.
 
-Next up, evaluation.
+Next up, environments.
