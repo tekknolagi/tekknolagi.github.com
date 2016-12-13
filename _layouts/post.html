@@ -10,11 +10,13 @@
     <link rel="prefetch" href="/favorites">
    </head>
   <body>
-    {% include navbar.md %}
-    <h2 class="post-title">{{ page.title }}</h2>
-    <div class="container">
-      {{ content }}
+    <div class="pagecontents">
+        {% include navbar.md %}
+        <h2 class="post-title">{{ page.title }}</h2>
+        <div class="container">
+            {{ content }}
+        </div>
+        {% include footer.md %}
     </div>
-    {% include footer.md %}
   </body>
 </html>

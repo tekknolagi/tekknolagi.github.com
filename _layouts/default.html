@@ -6,10 +6,12 @@
     <link rel="prefetch" href="/blog" />
   </head>
   <body>
-    <h2>{{ page.title }}</h2>
-    <div class="container">
-      {{ content }}
+    <div class="pagecontents">
+        <h2>{{ page.title }}</h2>
+        <div class="container">
+            {{ content }}
+        </div>
+        {% include footer.md %}
     </div>
-    {% include footer.md %}
   </body>
 </html>

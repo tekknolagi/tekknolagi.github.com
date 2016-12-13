@@ -4,6 +4,9 @@
 @charset "utf-8";
 
 body {
+    width: 100vw;
+}
+div.pagecontents {
     margin: 40px auto;
     max-width: 650px;
     line-height: 1.2;
