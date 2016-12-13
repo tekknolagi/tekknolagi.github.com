@@ -5,6 +5,9 @@
 
 body {
     width: 100vw;
+    /* Hacky solution that stops the page from side-scrolling. I don't plan on
+       having content that requires scrolling side-to-side. */
+    overflow-x: hidden;
 }
 div.pagecontents {
     margin: 40px auto;
