@@ -132,7 +132,6 @@ easier but the jobs of the Lisp programmers harder.
 For now that's just fine! After we finish our bare-bones one-file
 implementation, we'll walk through modularizing and improving the interpreter.
 
-Download the code <a href="{{ page.codelink }}">here</a> if you want to mess
-with it.
+Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
-Next up, if-statements.
+Next up, [if-expressions](../05_if/).
