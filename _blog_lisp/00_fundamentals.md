@@ -3,16 +3,20 @@ title: "Writing a Lisp, Part 0: Fundamentals"
 codelink: /resources/lisp/00_fundamentals.ml
 ---
 
-So you want to write a Lisp interpreter. I did too, and then I wanted to write
-about it, so here we are with this post series.
+So you want to write a [Lisp
+interpreter](https://en.wikipedia.org/wiki/Lisp_(programming_language)). I did
+too, and then I wanted to write about it, so here we are with this post series.
 
 I initially wanted to write a Lisp interpreter as an exercise. I decided to
-write V1 in C. After much pointer shenanigans and an unholy amount of curly
-braces later, it worked &mdash; but was significantly longer and harder to read
-than a Lisp interpreter should be. So I decided to write V2 in OCaml, a
-functional programming language descended from SML. The SML family of languages
-has some features like pattern matching and an extensive type system that make
-writing interpreters and compilers an absolute dream.
+write V1 in C (based on these two series of [blog](http://www.lwh.jp/lisp/)
+[posts](http://peter.michaux.ca/articles/scheme-from-scratch-introduction)).
+After much pointer shenanigans and an unholy amount of curly braces later, it
+worked &mdash; but was significantly longer and harder to read than a Lisp
+interpreter should be. So I decided to write V2 in
+[OCaml](http://www.ocaml.org/), a functional programming language descended
+from [SML](https://en.wikipedia.org/wiki/Standard_ML). The SML family of
+languages has some features like pattern matching and an extensive type system
+that make writing interpreters and compilers an absolute dream.
 
 I'm going to walk through writing a fully-functional Lisp interpreter in OCaml.
 If you're following along with the OCaml, great. If you want to try and build
@@ -38,8 +42,8 @@ $
 ```
 
 So it seems reasonable to have our main file consist of a function that can
-read an expression, evaluate it, print it, and continue. A Read-Eval-Print-Loop
-(REPL).
+read an expression, evaluate it, print it, and continue. A [Read-Eval-Print-Loop
+(REPL)](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop).
 
 I found OCaml rather lacking in stream features, so I looked around the
 internet and found this [lovely blog
@@ -109,7 +113,8 @@ non-whitespace character, at which point it will push it back on the buffer.
 See, told you it would be useful.
 
 One last thing: we'll want a type system to keep all of our different types of
-expressions straight. Right now we only have numbers, but we'll add more later.
+[expressions](https://www.cs.sfu.ca/CourseCentral/310/pwfong/Lisp/1/tutorial1.html)
+straight. Right now we only have numbers, but we'll add more later.
 
 ```ocaml
 type lobject =
@@ -150,8 +155,8 @@ I defined several helper functions (`is_digit`, `read_fixnum`) *inside of*
 After the definitions we eat whitespace, then try and read in a number. If it
 fails, we just raise a `SyntaxError`. Oh well!
 
-Speaking of `SyntaxError`s, it's really easy to define your own exceptions.
-Here's `SyntaxError`:
+Speaking of `SyntaxError`s, it's really easy to define your own
+[exceptions](https://en.wikipedia.org/wiki/Exception_handling):
 
 ```ocaml
 exception SyntaxError of string;;
@@ -182,7 +187,7 @@ prompt will appear *after* you type your number in.
 And let's run it!
 
 ```
-$ ocaml 00_helloworld.ml
+$ ocaml 00_fundamentals.ml
 > 4
 Your int: 4
 $
@@ -191,7 +196,7 @@ $
 Cool! Looks like it works. But what happens if we try and enter a non-number?
 
 ```
-$ ocaml 00_helloworld.ml
+$ ocaml 00_fundamentals.ml
 > k
 Exception: SyntaxError "Unexpected char k".
 $
@@ -200,7 +205,7 @@ $
 And what happens if we try and enter a negative number?
 
 ```
-$ ocaml 00_helloworld.ml
+$ ocaml 00_fundamentals.ml
 > -123
 Exception: SyntaxError "Unexpected char -".
 $
@@ -228,7 +233,7 @@ let main =
 And that seems to work just fine:
 
 ```
-$ ocaml 00_helloworld.ml
+$ ocaml 00_fundamentals.ml
 > 4
 4
 > 5
