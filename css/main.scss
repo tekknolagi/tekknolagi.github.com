@@ -8,6 +8,7 @@ body {
     /* Hacky solution that stops the page from side-scrolling. I don't plan on
        having content that requires scrolling side-to-side. */
     overflow-x: hidden;
+    font-family: "Times New Roman", Times, serif;
 }
 div.pagecontents {
     margin: 20px auto 0px auto;
