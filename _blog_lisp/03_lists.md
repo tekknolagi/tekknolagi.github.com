@@ -23,7 +23,7 @@ of elements. The fun part about Lisp: they're stored nearly identically.
 -->
 
 The fun part about Lisp: lists don't technically exist. Instead what we
-have are called <a href="https://en.wikipedia.org/wiki/Cons">cons cells</a>:
+have are called [cons cells](https://en.wikipedia.org/wiki/Cons):
 
 <figure style="display: block; margin: 0 auto; max-width: 400px;" >
   <img style="max-width: 400px;" src="/assets/img/lisp/03_lists_cons.svg" />
@@ -31,9 +31,11 @@ have are called <a href="https://en.wikipedia.org/wiki/Cons">cons cells</a>:
               Wikipedia.</figcaption>
 </figure>
 
-That's a fancy way to say that the only compound data type in our language is a
-pair, and lists are pairs all the way down. If you had a function called `pair`
-that constructed a pair out of its two arguments, it would look like this:
+That's a fancy way to say that the only [compound data
+type](https://en.wikipedia.org/wiki/Composite_data_type) in our language is a
+[pair](https://docs.racket-lang.org/guide/pairs.html), and lists are pairs all
+the way down. If you had a function called `pair` that constructed a pair out
+of its two arguments, it would look like this:
 
 ```scheme
 (pair 42 (pair 69 (pair 613 nil)))

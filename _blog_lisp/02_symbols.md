@@ -5,7 +5,8 @@ codelink: /resources/lisp/02_symbols.ml
 
 Last time we added booleans and negative numbers to our interpreter. But
 booleans and negatives are kind of boring and we'll certainly need more
-features for a full Lisp. So that brings us to symbols.
+features for a full Lisp. So that brings us to
+[symbols](http://stackoverflow.com/questions/8846628/what-exactly-is-a-symbol-in-lisp-scheme).
 
 What is a symbol in Lisp? Well, it's anything that can be used as a name. So
 things like `hello`, `+`, and `my-god-you've-gotten-fat` all work. Yes, with

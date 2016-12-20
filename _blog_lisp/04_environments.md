@@ -10,7 +10,8 @@ full Lisp. Let's put them to good use!
 Having data is one thing, but in most programming languages you can put that
 data somewhere like a variable or a register or something. Our Lisp is going
 to support variables. In order to do that, we're going to need to build
-something called an *environment*.
+something called an
+[environment](http://www.cs.cornell.edu/courses/cs312/2004fa/lectures/rec21.html).
 
 An environment is no more than a mapping of names to values:
 
@@ -43,7 +44,7 @@ And that reads in English like "look up the value attached to the key 'name'".
 
 The only problem with this is that our environment has to have one single type.
 If we were to try and build an environment that can contain both `5` and
-`"Gerald"`, we would have to wrap them in some kind of wrapper type. Good news
+`"Alice"`, we would have to wrap them in some kind of wrapper type. Good news
 --- we have one!
 
 If we adapt `bind` and `lookup` to conform to OCaml's requirements, it would
@@ -69,7 +70,7 @@ about if we just have a list of tuples? That way the empty environment is just
 
 ```ocaml
 Pair(Pair(Symbol "numOfCars", Fixnum 5),
-Pair(Pair(Symbol "name",      Symbol "Gerald"),
+Pair(Pair(Symbol "name",      Symbol "Alice"),
      Nil))
 ```
 
@@ -115,7 +116,8 @@ environment --- it just puts a new key-value pair right at the front and moves
 along.
 
 So right now we've got a rather flat model for environments. Most traditional
-Lisps and other programming languages have environments as groups of *frames*,
+Lisps and other programming languages have environments as groups of
+[frames](https://mitpress.mit.edu/sicp/full-text/book/book-Z-H-21.html#%_sec_3.2),
 which themselves group variables together. That's really helpful when the
 programming language allows for variable mutation. In this Lisp, however, all
 variables will be immutable. This makes our jobs as language implementers
