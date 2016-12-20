@@ -162,8 +162,8 @@ let rec print_sexp e =
     | Pair(a, b) ->
             print_string "(";
             print_sexp a;
-            print_string " ";
-            print_sexp b );
+            print_string " . ";
+            print_sexp b;
             print_string ")";;
 ```
 
@@ -177,7 +177,7 @@ Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
 (Fixnum _|Boolean _|Symbol _)
 > (42 69 613)
-(42 (69 (613 nil)))
+(42 . (69 . (613 . nil)))
 >
 ```
 
