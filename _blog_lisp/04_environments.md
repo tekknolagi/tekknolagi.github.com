@@ -74,8 +74,14 @@ Pair(Pair(Symbol "name",      Symbol "Alice"),
      Nil))
 ```
 
-Okay, kind of gross looking --- I'll admit it. But let's write `lookup` and
-make our lives easier.
+ In Lisp syntax, this looks like:
+
+```scheme
+((numOfCars . 5) (name . Alice))
+```
+
+Okay, so the OCaml is kind of gross looking --- I'll admit it. But let's write
+`lookup` and make our lives easier.
 
 In a `Nil` environment, nothing exists. So if we try and look something up, it
 should raise an error. How about a new exception?
