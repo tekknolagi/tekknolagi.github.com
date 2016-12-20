@@ -1,0 +1,3 @@
+[submodule "resources/lisp"]
+	path = resources/lisp
+	url = git@github.com:tekknolagi/blog-lisp.git
