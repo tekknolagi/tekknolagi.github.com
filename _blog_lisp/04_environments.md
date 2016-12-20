@@ -50,9 +50,9 @@ If we adapt `bind` and `lookup` to conform to OCaml's requirements, it would
 look something like this:
 
 ```ocaml
-bind("numOfCars", Fixnum(5), lispEnv)
+bind("numOfCars", (Fixnum 5), lispEnv)
   (* Returns: myLispEnv{numOfCars->Fixnum(5)} *)
-bind("name", Symbol("Alice"), lispEnv)
+bind("name", (Symbol "Alice"), lispEnv)
   (* Returns: myEnv{name->Symbol("Alice")} *)
 
 lookup("numOfCars", lispEnv) (* Returns: Fixnum(5) *)
