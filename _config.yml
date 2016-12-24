@@ -36,10 +36,10 @@ collections:
 
 defaults:
     - scope:
-        collection: blog_lisp
+          type: blog_lisp
       values:
-        layout: post
+          layout: post
     - scope:
-        collection: recipes
+          type: recipes
       values:
           layout: recipe
