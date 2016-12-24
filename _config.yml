@@ -30,9 +30,16 @@ collections:
     blog_lisp:
         output: true
         permalink: /blog/lisp/:path/
+    recipes:
+        output: true
+        permalink: /recipes/:path/
 
 defaults:
     - scope:
         collection: blog_lisp
       values:
         layout: post
+    - scope:
+        collection: recipes
+      values:
+          layout: recipe
