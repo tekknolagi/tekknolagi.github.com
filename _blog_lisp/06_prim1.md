@@ -4,7 +4,7 @@ codelink: /resources/lisp/06_prim1.ml
 ---
 
 Last time we added environments to our Lisp, but they are not much use in their
-current state - there'sn o way to interact with them from inside the REPL. So
+current state - there's no way to interact with them from inside the REPL. So
 this time we're going to add a primitive, `val`, to define variables. We'll use
 `val` like so:
 
