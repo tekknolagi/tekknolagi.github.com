@@ -77,6 +77,8 @@ task :create_post, [:date, :title, :category, :content] do |t, args|
     puts "CATEGORY is a string; nil or empty for no category"
     exit 1
   end
+
+  title = args.title
   if (args.date != nil and args.date != "nil" and args.date != "" and args.date.match(/[0-9]+-[0-9]+-[0-9]+/) == nil) then
     puts "Error: date not understood"
     puts "Usage: create_post[date,title,category,content]"
@@ -85,16 +87,14 @@ task :create_post, [:date, :title, :category, :content] do |t, args|
     puts "CATEGORY is a string; nil or empty for no category"
     puts ""
 
-    title = args.title || "title"
-
-    puts "Examples: create_post[\"\",\"#{args.title}\"]"
-    puts "          create_post[nil,\"#{args.title}\"]"
-    puts "          create_post[,\"#{args.title}\"]"
-    puts "          create_post[#{Time.new.strftime("%Y-%m-%d")},\"#{args.title}\"]"
+    puts "Examples: create_post[\"\",\"#{title}\"]"
+    puts "          create_post[nil,\"#{title}\"]"
+    puts "          create_post[,\"#{title}\"]"
+    puts "          create_post[#{Time.new.strftime("%Y-%m-%d")},\"#{title}\"]"
     exit 1
   end
 
-  post_title = args.title
+  post_title = title
   post_date = (args.date != "" and args.date != "nil") ? args.date : Time.new.strftime("%Y-%m-%d %H:%M:%S %Z")
 
   # the destination directory is <<category>>/$post_dir, if category is non-nil
