@@ -169,4 +169,4 @@ $
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
-Next up, primitives II.
+Next up, [primitives II](../07_prim2/).
