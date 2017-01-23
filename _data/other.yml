@@ -17,3 +17,21 @@ current_music:
           name: Ленинград
           english_name: Leningrad
       smallcaps: true
+    - group:
+          name: Gorillaz
+    - group:
+          name: Kanye West
+    - group:
+          name: Daft Punk
+    - group:
+          name: The xx
+    - group:
+          name: Нейромонах Феофан
+          english_name: Neuromonakh Feofan
+      smallcaps: true
+    - group:
+          name: Florence + The Machine
+    - group:
+          name: Mumford & Sons
+    - group:
+          name: Punch Brothers
