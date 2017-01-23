@@ -156,7 +156,7 @@ primitives to their names instead of manually writing out `Pair(Symbol "+",
 Primitive(Symbol "+", ...`.
 
 Also note that we've only defined `+` for `Fixnum`s, but we could also easily
-define it for `Symbols` by having it concatenate their string values. Food for
+define it for `Symbol`s by having it concatenate their string values. Food for
 thought.
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
