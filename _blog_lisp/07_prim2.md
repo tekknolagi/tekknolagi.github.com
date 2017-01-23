@@ -14,8 +14,8 @@ let rec eval_sexp sexp env =
                  | [Symbol "if"; cond; iftrue; iffalse] ->
                          eval_sexp (eval_if cond iftrue iffalse) env
                  | [Symbol "env"] -> (env, env)
-                 | [Symbol "pair"; car; cdr] ->  (* new! *)
-                         (Pair(car, cdr), env)   (* new! *)
+                 | [Symbol "pair"; car; cdr] ->
+                         (Pair(car, cdr), env)
                  | [Symbol "val"; Symbol name; exp] ->
                          let (expval, _) = eval_sexp exp env in
                          let env' = bind (name, expval, env) in
