@@ -1,6 +1,7 @@
 ---
 title: "Writing a Lisp, Part 0: Fundamentals"
 codelink: /resources/lisp/00_fundamentals.ml
+date: Oct 27, 2016
 ---
 
 So you want to write a [Lisp

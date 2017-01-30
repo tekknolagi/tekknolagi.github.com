@@ -1,6 +1,7 @@
 ---
 title: "Writing a Lisp, Part 3: Lists"
 codelink: /resources/lisp/03_lists.ml
+date: Dec 6, 2016
 ---
 
 Last time we added symbols to our interpreter, so that leaves us currently with
