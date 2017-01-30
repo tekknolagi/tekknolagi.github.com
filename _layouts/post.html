@@ -13,6 +13,9 @@
     <div class="pagecontents">
         {% include navbar.md %}
         <h2 class="post-title">{{ page.title }}</h2>
+        {% if page.index != true %}
+            <div class="post-inline-date"><i>{{ page.date | date: '%B %-d, %Y' }}</i></div>
+        {% endif %}
         <div class="container">
             {{ content }}
         </div>
