@@ -10,6 +10,10 @@ url: "http://bernsteinbear.com"
 twitter:
   username: tekknolagi
 
+github:
+  repository_url: https://github.com/tekknolagi/tekknolagi.github.com
+  branch: master
+
 permalink: '/blog/:title/'
 post_dirs: false
 
