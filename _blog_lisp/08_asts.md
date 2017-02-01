@@ -87,9 +87,9 @@ of them briefly:
 * `If` holds an if-expression --- condition, expression to be evaluated if
   true, expression to be evaluated if false.
 * `And` and `Or` hold two conditions (expressions).
-* `Call` is synonymous with *call*, for the most part. It calls either
-  primitive procedures or closures with the specified arguments (also called
-  [actual parameters](https://chortle.ccsu.edu/java5/Notes/chap34A/ch34A_3.html)).
+* `Apply` and `Call` are synonymous, for the most part. They call either
+  primitive procedures or closures (coming soon) with the specified arguments
+  (also called [actual parameters](https://chortle.ccsu.edu/java5/Notes/chap34A/ch34A_3.html)).
 * `Defexp`s are kind of weird and more of a design choice than anything else.
   We have two classes of expression: those that modify the environment, and
   those that do not. Previously, this was implicit --- you had to check if the
