@@ -5,4 +5,4 @@ permalink: projects/
 
 Projects page has been removed (and some projects moved to the home page), but
 this page remains to avoid link rot. If you'd like to check out my projects,
-please see the <a href="/">home page</a>.
+please see the [home page](/).
