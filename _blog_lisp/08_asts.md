@@ -58,6 +58,7 @@ and exp =
   | If of exp * exp * exp
   | And of exp * exp
   | Or of exp * exp
+  | Apply of exp * exp
   | Call of exp * exp list
   | Defexp of def
 
