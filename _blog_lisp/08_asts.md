@@ -353,4 +353,4 @@ let basis =
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
-Next up, quote.
+Next up, [quote](../09_quote/).
