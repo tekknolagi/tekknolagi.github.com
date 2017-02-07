@@ -214,4 +214,4 @@ $
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
-Next up, let.
+Next up, [closures](../10_closures/).
