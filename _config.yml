@@ -6,6 +6,7 @@ email: max@bernsteinbear.com
 description: "Max Bernstein's personal website and blog"
 baseurl: ""
 url: "https://bernsteinbear.com"
+exclude: [vendor]
 
 twitter:
   username: tekknolagi
