@@ -4,10 +4,7 @@
 @charset "utf-8";
 
 body {
-    width: 98vw; /* Hopefully helps avoid zoom issues with small viewports. */
-    /* Hacky solution that stops the page from side-scrolling. I don't plan on
-       having content that requires scrolling side-to-side. */
-    overflow-x: hidden;
+    margin: 0;
     font-family: "Times New Roman", Times, serif;
 }
 div.pagecontents {
