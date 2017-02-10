@@ -7,6 +7,7 @@ description: "Max Bernstein's personal website and blog"
 baseurl: ""
 url: "https://bernsteinbear.com"
 exclude: [vendor]
+include: [.well-known]
 
 twitter:
   username: tekknolagi
