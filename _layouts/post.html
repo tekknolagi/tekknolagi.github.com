@@ -2,9 +2,11 @@
 <html lang="en">
   <head>
     {% include seo.md %}
-    <link rel="stylesheet" type="text/css" href="/css/main.css" />
-    <link rel="stylesheet" type="text/css" href="/css/post.css" />
-    <link rel="stylesheet" type="text/css" href="/css/github.css" />
+    <style type="text/css">
+        {% asset main %}
+        {% asset post %}
+        {% asset github %}
+    </style>
    </head>
   <body>
     <div class="pagecontents">

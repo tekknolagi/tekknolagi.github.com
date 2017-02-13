@@ -27,10 +27,18 @@ kramdown:
 highlighter: rouge
 
 gems:
+  - jekyll-assets
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-sitemap
   - rouge
+
+assets:
+  prefix: "/assets"
+  sources:
+    - assets/css
+    - assets/img
+    - assets/js
 
 collections:
     blog_lisp:
