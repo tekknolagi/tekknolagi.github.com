@@ -155,6 +155,50 @@ This is because we have no error handling at the moment, in two senses:
 
 Both of these are suboptimal and should be touched on in future posts.
 
+### Mutually recursive functions, sort of
+
+I've also done a sneaky thing in supporting mutually recursive functions. I
+added an OCaml function `extend` that takes two environments and stacks them,
+so that the contents of both are queryable.
+
+We then use this `extend` function when evaluating a closure --- we evaluate
+the closure in the combined closure environment and current evaluation
+environment:
+
+```ocaml
+let extend newenv oldenv =
+  List.fold_right (fun (b, v) acc -> bindloc (b, v, acc)) newenv oldenv
+
+let rec evalexp exp env =
+  let evalapply f vs =
+    match f with
+    | Primitive (_, f) -> f vs
+    | Closure (ns, e, clenv) ->
+        evalexp e (extend (bindlist ns vs clenv) env)
+    | _ -> raise (TypeError "(apply prim '(args)) or (prim args)")
+  in
+  [...]
+```
+
+Why is this important? Well, consider the following (admittedly contrived)
+case:
+
+```scheme
+(define f (x)
+  (if (< x 2)
+      1
+      (g (- x 1))))
+
+(define g (x)
+  (if (< x 2)
+      3
+      (f (- x 2))))
+```
+
+It won't work unless `f` and `g` know about one another at evaluation time.
+We'll see a more useful, real-world example of mutually recursive functions in
+the next section.
+
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
 That just about wraps up our Lisp implementation -- it can now be considered
