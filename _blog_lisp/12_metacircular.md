@@ -1,7 +1,8 @@
 ---
 title: "Writing a Lisp, Part 12: Metacircular Evaluator"
 codelink: /resources/lisp/12_metacircular.ml
-date: Feb 9, 2017
+lispcodelink: /resources/lisp/12_metacircular.lsp
+date: Mar 1, 2017
 ---
 
 <!--
@@ -233,7 +234,7 @@ So I've added the pass-throughs for `+`, `*`, `-`, and `<` so we can write
 factorial. Here's what it looks like:
 
 ```
-$ cat 12_metacircular.scm
+$ cat 12_metacircular.lsp
 [...]
 (eval. '((label fact
                 (lambda (x)
@@ -241,7 +242,7 @@ $ cat 12_metacircular.scm
                         (#t (* x (fact (- x 1)))))))
          5)
        '())
-$ ocaml 12_metacircular.ml < 12_metacircular.scm
+$ ocaml 12_metacircular.ml < 12_metacircular.lsp
 > #<closure>
 > #<closure>
 > #<closure>
