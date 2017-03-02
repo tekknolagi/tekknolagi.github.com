@@ -159,9 +159,4 @@ Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
 That just about wraps up our Lisp implementation -- it can now be considered
 reasonably fully complete (minus I/O and all that). For some proof of that...
-next up, the metacircular evaluator.
-
-<!--
-http://inst.eecs.berkeley.edu/~cs61a/su10/resources/sp11-Jordy/mce.html
-http://ep.yimg.com/ty/cdn/paulgraham/jmc.lisp
--->
+next up, the [metacircular evaluator](../12_metacircular/).
