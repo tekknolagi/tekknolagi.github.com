@@ -1,7 +1,8 @@
 ---
 title: "Writing a Lisp, Part 10: Closures"
-codelink: /resources/lisp/10_closures.ml
+author: Maxwell Bernstein
 date: Feb 7, 2017
+codelink: /resources/lisp/10_closures.ml
 ---
 
 Isn't it about time we were able to define our own functions? I think so.
@@ -69,7 +70,7 @@ right subtrees of any given node, because (as above) this would take infinite
 space.
 
 In OCaml, we'll solve this problem with `ref`s, which are sort of like OCaml's
-well-typechecked version of pointers. <sup>[1](#refs)</sup>
+well-typechecked version of pointers. [^refs]
 
 I propose that we change our environment to have the following type:
 
@@ -94,7 +95,7 @@ modifications in **bold**):
 
 These updates allow us to "close the loop" and make `fact` self-aware. In our
 case, "unspecified value" means using the `option` type
-<sup>[2](#option-type)</sup>, and we'll have a `ref` pointing to that.
+[^option-type], and we'll have a `ref` pointing to that.
 
 With those ideas in mind, let's get cracking with some code. `bind` remains
 largely the same:
@@ -173,7 +174,7 @@ action when applied to values, at which point:
 
 1. The values they are applied to are matched with the formal parameters
 2. That new environment is combined with the captured environment
-3. The body is evaluated in that new combined environment, and 
+3. The body is evaluated in that new combined environment, and
 4. A value is returned
 
 And that's closures in a nutshell. So let's hop to it.
@@ -379,8 +380,8 @@ let evaldef def env =
 The only tricky thing is the `match`, which *should* be unnecessary --- we know
 that there's only one way a `Lambda` can evaluate: to a `Closure`! But OCaml's
 type system doesn't know that. In order to make it understand, we'd need to
-convert our types to polymorphic variants.<sup>[3](#polymorphic-variants)</sup>
-Only then could we write something like:
+convert our types to polymorphic variants. [^polymorphic-variants] Only then
+could we write something like:
 
 ```ocaml
 [...]
@@ -397,24 +398,24 @@ reason to download the code [here]({{ page.codelink }}) and mess with it.
 
 Next up, [primitives III](../11_prim3/).
 
-<br /><br />
+<br />
 <hr style="width: 100px;" />
-
 <!-- Footnotes -->
-<sup><a name="refs">1</a></sup>
-`ref`s are probably not implemented as you'd expect. Since fields of OCaml
-records are the only things in the language that can be declared mutable with
-the `mut` keyword, a `ref` is a record with just one field: `contents`.
-Declared mutable, of course.
 
-<sup><a name="option-type">2</a></sup>
-[Here](http://ocaml-lib.sourceforge.net/doc/Option.html) is the API for OCaml's
-`option` type, and also some [reading](https://wiki.haskell.org/Maybe) on
-Haskell's `Maybe` monad.
+[^refs]:
+    `ref`s are probably not implemented as you'd expect. Since fields of OCaml
+    records are the only things in the language that can be declared mutable with
+    the `mut` keyword, a `ref` is a record with just one field: `contents`.
+    Declared mutable, of course.
 
-<sup><a name="polymorphic-variants">3</a></sup>
-Polymorphic variants are fun because they solve a bunch of nasty little type
-problems we have. They're also not fun because they're probably unfamiliar to
-OCaml newcomers, and require typing a bunch of backticks everywhere.
-[Here](http://stackoverflow.com/questions/9367181/variants-or-polymorphic-variants)'s
-an interesting StackOverflow question about them if you want to read some more.
+[^option-type]:
+    [Here](http://ocaml-lib.sourceforge.net/doc/Option.html) is the API for OCaml's
+    `option` type, and also some [reading](https://wiki.haskell.org/Maybe) on
+    Haskell's `Maybe` monad.
+
+[^polymorphic-variants]:
+    Polymorphic variants are fun because they solve a bunch of nasty little type
+    problems we have. They're also not fun because they're probably unfamiliar to
+    OCaml newcomers, and require typing a bunch of backticks everywhere.
+    [Here](http://stackoverflow.com/questions/9367181/variants-or-polymorphic-variants)'s
+    an interesting StackOverflow question about them if you want to read some more.

@@ -1,7 +1,8 @@
 ---
 title: "Writing a Lisp, Part 0: Fundamentals"
-codelink: /resources/lisp/00_fundamentals.ml
+author: Maxwell Bernstein
 date: Oct 27, 2016
+codelink: /resources/lisp/00_fundamentals.ml
 ---
 
 So you want to write a [Lisp
@@ -10,8 +11,8 @@ too, and then I wanted to write about it, so here we are with this post series.
 
 I initially wanted to write a Lisp interpreter as an exercise. I decided to
 write V1 in C (based on these two series of [blog](http://www.lwh.jp/lisp/)
-[posts](http://peter.michaux.ca/articles/scheme-from-scratch-introduction)).
-<sup>[1](#other-resources)</sup> After much pointer shenanigans and an unholy
+[posts](http://peter.michaux.ca/articles/scheme-from-scratch-introduction)).[^other-resources]
+After much pointer shenanigans and an unholy
 amount of curly braces later, it worked &mdash; but was significantly longer
 and harder to read than a Lisp interpreter should be. So I decided to write V2
 in [OCaml](http://www.ocaml.org/), a functional programming language descended
@@ -252,16 +253,16 @@ with it.
 
 Next up, <a href="../01_booleans/">booleans</a>.
 
-<br /><br />
+<br />
 <hr style="width: 100px;" />
-
 <!-- Footnotes -->
-<sup><a name="other-resources">1</a></sup>
-Here are some other resources or series you may find helpful in writing a Lisp
-interpreter.
 
-1. [lwh.jp](http://www.lwh.jp/lisp/) (C)
-2. [*Scheme from Scratch* by Peter Michaux](http://peter.michaux.ca/articles/scheme-from-scratch-introduction) (C)
-3. [*Build Your Own Lisp* by Daniel Holden](http://buildyourownlisp.com/contents) (C)
-4. [*Lisp interpreter in 90 lines of C++* by Anthony C. Hay](http://howtowriteaprogram.blogspot.com/2010/11/lisp-interpreter-in-90-lines-of-c.html)
-5. [*mal* by kanaka](https://github.com/kanaka/mal/blob/master/process/guide.md)
+[^other-resources]:
+    Here are some other resources or series you may find helpful in writing a
+    Lisp interpreter.
+
+    * [lwh.jp](http://www.lwh.jp/lisp/) (C)
+    * [*Scheme from Scratch* by Peter Michaux](http://peter.michaux.ca/articles/scheme-from-scratch-introduction) (C)
+    * [*Build Your Own Lisp* by Daniel Holden](http://buildyourownlisp.com/contents) (C)
+    * [*Lisp interpreter in 90 lines of C++* by Anthony C. Hay](http://howtowriteaprogram.blogspot.com/2010/11/lisp-interpreter-in-90-lines-of-c.html)
+    * [*mal* by kanaka](https://github.com/kanaka/mal/blob/master/process/guide.md)

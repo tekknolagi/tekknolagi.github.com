@@ -1,7 +1,8 @@
 ---
 title: "Writing a Lisp, Part 11: Primitives III"
-codelink: /resources/lisp/11_prim3.ml
+author: Maxwell Bernstein
 date: Feb 9, 2017
+codelink: /resources/lisp/11_prim3.ml
 ---
 
 In order to have a complete Lisp, to be able to write a metacircular evaluator,

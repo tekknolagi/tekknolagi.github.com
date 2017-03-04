@@ -1,7 +1,8 @@
 ---
 title: "Writing a Lisp, Part 1: Booleans"
-codelink: /resources/lisp/01_booleans.ml
+author: Maxwell Bernstein
 date: Oct 28, 2016
+codelink: /resources/lisp/01_booleans.ml
 ---
 
 Last time we wrote a simple interpreter that could read in numbers. That's cool
