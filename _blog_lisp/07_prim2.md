@@ -1,7 +1,8 @@
 ---
 title: "Writing a Lisp, Part 7: Primitives 2"
-codelink: /resources/lisp/07_prim2.ml
+author: Maxwell Bernstein
 date: Jan 18, 2017
+codelink: /resources/lisp/07_prim2.ml
 ---
 
 Right now the way we handle evaluation of primitive functions is less than
@@ -31,7 +32,7 @@ there's even a bug in the code above. Can you spot it?
 
 **I've forgotten to evaluate the `car` and `cdr` in the `pair` primitive.**
 `pair` should evaluate its arguments and make the values into the pair --- not
-the original expressions. <sup>[1](#opsem)</sup>
+the original expressions. [^opsem]
 
 In this post we will explore a means for having the same plumbing for all
 primitive functions. For example... what if we could store them in an
@@ -168,40 +169,39 @@ Certainly not me. It's messy and occasionally difficult to get right. So:
 
 Next up, [ASTs](../08_asts/).
 
-<br /><br />
+<br />
 <hr style="width: 100px;" />
-
 <!-- Footnotes -->
 
-<sup><a name="opsem">1</a></sup>
-There is a formal and programming-language independent way to specify the
-expected behavior of a programming language called [Big-Step Operational
-Semantics](http://www.cs.tufts.edu/comp/105/lectures/opsem.pdf). With this, it
-would have been clear that `pair` should definitely evaluate each of its
-arguments, then form a `Pair` of the values. We could completely write out the
-expected behavior of this Lisp before ever sitting down to write the
-interpreter, and that would be great in theory, but it would mean a couple of
-bad things for us in practice:
+[^opsem]:
+    There is a formal and programming-language independent way to specify the
+    expected behavior of a programming language called [Big-Step Operational
+    Semantics](http://www.cs.tufts.edu/comp/105/lectures/opsem.pdf). With this, it
+    would have been clear that `pair` should definitely evaluate each of its
+    arguments, then form a `Pair` of the values. We could completely write out the
+    expected behavior of this Lisp before ever sitting down to write the
+    interpreter, and that would be great in theory, but it would mean a couple of
+    bad things for us in practice:
 
-* People reading this series would not be able to jump right in and learn about
-building a simple interpreter
-* It would be a huge hurdle for people who have not studied any math or formal
-logic 
+    * People reading this series would not be able to jump right in and learn about
+    building a simple interpreter
+    * It would be a huge hurdle for people who have not studied any math or formal
+    logic
 
-I plan on introducing operational semantics at some point in this series, time
-permitting --- but there are so many other exciting topics! <sup>[2](#roadmap)</sup>
+    I plan on introducing operational semantics at some point in this series, time
+    permitting --- but there are so many other exciting topics! [^roadmap]
 
-<sup><a name="roadmap">2</a></sup>
-Can footnotes have footnotes? I want to cover so many topics in this series,
-such as (in no particular order):
+[^roadmap]:
+    Can footnotes have footnotes? I want to cover so many topics in this series,
+    such as (in no particular order):
 
-* A modular interpreter, with different approaches to a Reader, Printer,
-  Evaluator, ErrorHandler, etc
-* Additional syntax or syntactic sugar
-* Testing
-* Type checking
-* Type inference
-* Compilation to a reasonable architecture (as in, not x86)
-* Operational semantics
-* A metacircular evaluator (i.e. this Lisp written in itself!)
-* ...and more!
+    * A modular interpreter, with different approaches to a Reader, Printer,
+      Evaluator, ErrorHandler, etc
+    * Additional syntax or syntactic sugar
+    * Testing
+    * Type checking
+    * Type inference
+    * Compilation to a reasonable architecture (as in, not x86)
+    * Operational semantics
+    * A metacircular evaluator (i.e. this Lisp written in itself!)
+    * ...and more!

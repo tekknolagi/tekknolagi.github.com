@@ -1,7 +1,8 @@
 ---
 title: "Writing a Lisp, Part 6: Primitives 1"
-codelink: /resources/lisp/06_prim1.ml
+author: Maxwell Bernstein
 date: Dec 27, 2016
+codelink: /resources/lisp/06_prim1.ml
 ---
 
 Last time we added environments to our Lisp, but they are not much use in their

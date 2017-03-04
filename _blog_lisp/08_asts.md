@@ -1,7 +1,8 @@
 ---
 title: "Writing a Lisp, Part 8: ASTs"
-codelink: /resources/lisp/08_asts.ml
+author: Maxwell Bernstein
 date: Jan 31, 2017
+codelink: /resources/lisp/08_asts.ml
 ---
 
 *Heads up: this will be a bit of a long post compared to previous posts. We've

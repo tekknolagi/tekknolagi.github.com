@@ -1,7 +1,8 @@
 ---
 title: "Writing a Lisp, Part 4: Environments"
-codelink: /resources/lisp/04_environments.ml
+author: Maxwell Bernstein
 date: Dec 19, 2016
+codelink: /resources/lisp/04_environments.ml
 ---
 
 Last time we added pairs (and therefore also lists) to our interpreter. That's

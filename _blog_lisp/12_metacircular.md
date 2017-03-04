@@ -1,8 +1,9 @@
 ---
 title: "Writing a Lisp, Part 12: Metacircular Evaluator"
+author: Maxwell Bernstein
+date: Mar 1, 2017
 codelink: /resources/lisp/12_metacircular.ml
 lispcodelink: /resources/lisp/12_metacircular.lsp
-date: Mar 1, 2017
 ---
 
 <!--
@@ -278,4 +279,4 @@ Download the code [here (ml)]({{ page.codelink }}) and
 
 And there you have it --- reasonable proof that our Lisp implemementation can
 be considered feature complete. Now we can move on to features that make the
-language easier to use, like let.
+language easier to use, like [let](../13_let/).
