@@ -269,7 +269,7 @@ $
 Yeah, that looks weird. Turns out `eval.` can only evaluate one expression at a
 time. Understandable. So `label` is less of a `define` and more of a "recursive
 lambda". It needs to be applied immediately --- there's no `val`, there's no
-`define`, and it can't stand alone and evaluate into a closure. 
+`define`, and it can't stand alone and evaluate into a closure.
 
 Adding a `begin` statement that allows for imperative programs would be another
 feature, but we've chosen not to include it for simplicity's sake.
