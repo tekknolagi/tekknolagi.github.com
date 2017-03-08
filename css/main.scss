@@ -4,8 +4,8 @@
 @charset "utf-8";
 
 body {
-    margin: 0;
-    font-family: "Times New Roman", Times, serif;
+    /* margin: 0; */
+    font-family: serif;
 }
 div.pagecontents {
     margin: 20px auto 0px auto;
@@ -38,6 +38,9 @@ pre {
     white-space: pre;
     display: block;
     padding: 15px;
+}
+div.footnotes ol {
+    padding-left: 0;
 }
 footer hr {
     margin-top: 40px;
