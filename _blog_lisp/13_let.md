@@ -5,17 +5,21 @@ date: Mar 4, 2017
 codelink: /resources/lisp/13_let.ml
 ---
 
-Aside from using `val`, which has the side-effect of mutating its current
-environment, we have no good way of defining variables. Most functional
-languages (SML, OCaml, Haskell, every single Lisp) have a form of expression
-called `let` that is used to bind a name to a value *only* in a given
-expression. Here's what it looks like in two different languages:
+Here we are, here we are, with a fully-functional programming language. And
+yet, aside from using `val`, we have no good way of defining variables.
+Additionally, `val` has the side-effect of mutating its current environment --
+something we would rather avoid (at least for now).
+
+Most functional languages (SML, OCaml, Haskell, every single Lisp) have a
+solution to this problem: they have a form of expression called `let` that is
+used to bind a name to a value *only* in a given expression. Here's what it
+looks like in two different languages:
 
 ```ocaml
 (* OCaml *)
 let x = 4 in
-let y = 5 in
-y * x
+  let y = 5 in
+    y * x
 ```
 
 ```common-lisp
@@ -63,10 +67,11 @@ lambda-expression uses. Right now, every single lambda-expression captures a
 copy of the existing environment. That's a *lot* of wasted space ---
 let-expressions are used often.
 
-Another thing you should be wondering about the choice in implementation: does
-it matter?
+Another thing you should be wondering about the choice in implementation: is
+there a difference between the two lambda representations above?
 
-Not really. Let's have a look:
+Not really, even considering exceptional cases like two variables with the same
+name. Let's have a look:
 
 ```
 $ ocaml 13_let.ml
@@ -79,10 +84,15 @@ $
 ```
 
 Even though we don't check for duplicate variable names in lambda-expressions,
-the results end up the same.
+the results end up the same --- the inner (last) `x` is the one that is most
+recently bound, and therefore used when evaluating the expression.
 
-Either way, what we're going to do is less clever --- just add a new AST
-constructor. Evaluate them differently from other types of expression.
+Either way, what we're going to do in our implementation is less clever ---
+just add a new AST constructor and evaluate them differently from other types
+of expression.
+
+Yes, this is "lame" because it adds more features without "needing" to. But it
+saves AST transform headache and gives some performance wins.
 
 ```ocaml
 [...]
