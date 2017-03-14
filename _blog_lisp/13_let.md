@@ -103,7 +103,7 @@ performance wins. [^lowering]
 
 ```ocaml
 [...]
-and let_kind = LET | LETSTAR
+and let_kind = LET | LETSTAR | LETREC
 and exp =
   | Literal of value
   | Var of name
@@ -117,8 +117,8 @@ and exp =
   | Defexp of def
 ```
 
-The weird bit is the `let_kind`. Ignore `LETSTAR` for now --- I'll touch on it
-toward the end of this post.
+The weird bit is the `let_kind`. Ignore `LETSTAR` and `LETREC` for now --- I'll
+touch on them toward the end of this post.
 
 Now of course we have to go and patch all the non-exhaustive warnings that come
 up.
@@ -134,7 +134,11 @@ let rec string_exp =
   [...]
   | Lambda (ns, e) ->  "(lambda (" ^ spacesep ns ^ ") " ^ string_exp e ^ ")"
   | Let (kind, bs, e) ->
-      let str = match kind with | LET -> "let" | LETSTAR -> "let*" in
+      let str = match kind with
+                | LET -> "let"
+                | LETSTAR -> "let*"
+                | LETREC -> "letrec"
+      in
       let bindings = spacesep (List.map string_of_binding bs) in
       "(" ^ str ^ " (" ^ bindings ^ ") " ^ string_exp e ^ ")"
   [...]
@@ -155,10 +159,9 @@ let rec assert_unique = function
 
 let rec build_ast sexp =
   [...]
-  let valid_let = function | "let" | "let*" -> true | _ -> false in
-  let to_kind = function | "let" -> LET | "let*" -> LETSTAR
-                         | _ -> raise (TypeError "Unknown let")
-  in
+  let let_kinds = ["let", LET; "let*", LETSTAR; "letrec", LETREC] in
+  let valid_let s = List.mem_assoc s let_kinds in
+  let to_kind s = List.assoc s let_kinds in
   match sexp with
   [...]
   | Pair _ when is_list sexp ->
@@ -171,12 +174,17 @@ let rec build_ast sexp =
           in
           let bindings = List.map mkbinding (pair_to_list bindings) in
           let () = assert_unique (List.map fst bindings) in
-          Let (to_kind s, bindings, (build_ast exp))
+          Let (to_kind s, bindings, build_ast exp)
       [...]
 ```
 
-This code handles both `let` and `let*`, converting them into their appropriate
-representations.
+I set up `let_kinds` as an association list [^alist] and then make helper
+functions (`valid_let`, to check if an symbol is "let", "let\*", or "letrec";
+`to_kind` to transform a symbol into its equivalent constructor) to use down
+below.
+
+This code handles `let`, `let*`, and `letrec`, converting them into their
+appropriate representations.
 
 Note that I've also added a uniqueness constraint on the bindings -- each of
 the names *must* be distinct from all others. This gets rid of some nastiness
@@ -193,10 +201,11 @@ let rec evalexp exp env =
   [...]
   let rec ev = function
     [...]
-    | Let (LET, bs, e) ->
+    | Let (LET, bs, body) ->
         let evbinding (n, e) = n, ref (Some (ev e)) in
-        evalexp e (extend (List.map evbinding bs) env)
-    | Let (LETSTAR, bs, e) -> failwith "Not yet implemented"
+        evalexp body (extend (List.map evbinding bs) env)
+    | Let (LETSTAR, bs, body) -> failwith "Not yet implemented"
+    | Let (LETREC, bs, body) -> failwith "Not yet implemented"
     | Defexp d -> raise ThisCan'tHappenError
   in ev exp
 ```
@@ -222,6 +231,8 @@ $ ocaml 13_let.ml
 Exception: NotFound "x".
 $ ocaml 13_let.ml
 > (let* ((x 4) (y x)) y)
+Exception: Failure "Not yet implemented".
+> (letrec () 'anything-here)
 Exception: Failure "Not yet implemented".
 $
 ```
@@ -256,12 +267,13 @@ implementation instead:
 let rec evalexp exp env =
   [...]
   let rec ev = function
-    | Let (LET, bs, e) ->
+    | Let (LET, bs, body) ->
         let evbinding (n, e) = n, ref (Some (ev e)) in
-        evalexp e (extend (List.map evbinding bs) env)
-    | Let (LETSTAR, bs, e) ->                           (* NEW! *)
-        let evbinding acc (n, e) = bind(n, evalexp e acc, acc) in
-        evalexp e (extend (List.fold_left evbinding [] bs) env)
+        evalexp body (extend (List.map evbinding bs) env)
+    | Let (LETSTAR, bs, body) ->                           (* NEW! *)
+        let evbinding acc (n, e) = bind (n, evalexp e acc, acc) in
+        evalexp body (extend (List.fold_left evbinding [] bs) env)
+    | Let (LETREC, bs, body) -> failwith "Not yet implemented"
     | Defexp d -> raise ThisCan'tHappenError
   in ev exp
 ```
@@ -270,10 +282,143 @@ With `fold_left`, we make sure that we evaluate each of the bindings in order,
 and in the environment created by evaluating the previous bindings. Ahh,
 functional programming... where would I be without you?
 
-There's a third type of let-expression, `letrec`, that is like `let*` but it
-allows a binding to reference any (even the current binding!) --- not just
-bindings that precede it. I've not implemented `letrec` in this post. It's not
-much more complicated (just some futzing with `bindloc` and `mkloc`).
+On another note, according to most of the implementations that I looked up when
+writing this post, `let*` does not normally have a distinct variable
+requirement, but lets later bindings shadow previous ones. This allows for
+imperative-esque things like:
+
+```scheme
+; Not allowed in our interpreter:
+(let ((x 5)
+      (x (factorial x))
+      (x (sqrt x))
+      (x (to-string x)))
+  (print x))
+```
+
+Since we handled distinct names at the AST building level and treated all the
+let-expressions as the same, ours will be a wee bit different. If you feel
+compelled to change the interpreter so that binding uniqueness is checked at
+evaluation-time instead of at AST-build-time, go right ahead. It shouldn't be
+too much of a hassle or break any code we're going to write.
+
+Let's test out `let*` now:
+
+```
+$ ocaml 13_let.ml
+> (let* ((x 4) (y x)) y)
+4
+> Exception: End_of_file.
+$
+```
+
+Swell.
+
+The third type of let-expression, `letrec`, is like `let*` but it allows a
+binding to reference any (even the current binding!) --- not just bindings that
+precede it. The caveat, though, is that the values have to be
+lambda-expressions. Otherwise we'd run into weird issues with topologically
+sorting the variables so they can be properly recursively defined... bunch of
+nonsense. It looks like this:
+
+```scheme
+(letrec ((f (lambda (x) (g (+ x 1))))
+         (g (lambda (x) (+ x 3))))
+  (f 0))
+; => 4
+```
+
+or even:
+
+```scheme
+(letrec ((factorial (lambda (x)
+                        (if (< x 2)
+                           1
+                           (* x (factorial (- x 1)))))))
+  (factorial 5))
+; => 120
+```
+
+It's what we *should* have used in the last post, instead of adding that ugly
+hack to `evalapply`:
+
+```ocaml
+let rec evalexp exp env =
+  let evalapply f vs =
+    match f with
+      | Primitive (_, f) -> f vs
+      | Closure (ns, e, clenv) ->
+          (*        vvvvvvv     ugly!! wrong!!     vvvv *)
+          evalexp e (extend (bindlist ns vs clenv) env)
+  [...]
+```
+
+So let's revert `evalapply` to its normal happy self:
+
+```ocaml
+let rec evalexp exp env =
+  let evalapply f vs =
+    match f with
+    | Primitive (_, f) -> f vs
+    | Closure (ns, e, clenv) -> evalexp e (bindlist ns vs clenv)
+  [...]
+```
+
+<img class="post-inline-image" src="/assets/img/lisp/bob-ross.gif" />
+
+...and get crackalackin' on `letrec`. First let's modify `mkloc` so that it can
+take any argument and just returns a new empty ("unspecified") reference:
+
+```ocaml
+let mkloc () = ref None    (* OLD *)
+let mkloc _ = ref None     (* NEW *)
+```
+
+We're not doing this to save source code space. That would be silly. We're
+doing this so that we can more easily use it in mapping functions without
+wrapping it in an anonymous function. You'll see what I mean in a second:
+
+```ocaml
+let rec evalexp exp env =
+  [...]
+  let rec unzip ls = (List.map fst ls, List.map snd ls) in
+  let rec ev = function
+    [...]
+    | Let (LETREC, bs, body) ->
+        let names, values = unzip bs in
+        let env' = bindloclist names (List.map mkloc values) env in
+        let updates = List.map (fun (n, e) -> n, Some (evalexp e env')) bs in
+        let () = List.iter (fun (n, v) -> (List.assoc n env') := v) updates in
+        evalexp body env'
+    | Defexp d -> raise ThisCan'tHappenError
+  in ev exp
+```
+
+`unzip` is your standard unzip function. It takes a list of tuples and returns
+two lists. The first list is all of the first elements and the second list is
+all of the second elements. This implementation makes two passes over the list
+but oh well. It's readable.
+
+Here's how `letrec` works, in neatly enumerated steps [^nr]:
+
+1. Use `unzip` to break apart the bindings given to `letrec` into lists of
+   names and values.
+2. Make a list of empty ("unspecified") locations by mapping `mkloc` over the
+   values (this is just `List.map mkloc values`).
+3. Bind the list of names to those empty values, attaching the resulting new
+   environment to the current one.
+4. Evaluate each of the expressions, making a neat little `option ref` box for
+   them one by one.
+5. Put all of those values from Step 4 into their proper boxes.
+6. Evaluate the body of the `letrec` in the new environment.
+
+
+
+
+
+You're probably wondering why not do the let-expressions post first and *then*
+do recursive functions? Yeah, well. I didn't think of that. That's part of the
+fun of this series, I think. I'm a real human and I make mistakes!
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
@@ -289,6 +434,13 @@ I'm not entirely sure what's up next. We'll see!
     (like one with all the `let`s transformed into `lambda`s). AST lowering is
     one of many common compiler stages in the process of producing machine
     code.
+
+[^alist]:
+    thing
+
+[^nr]:
+    Thanks to [Norman Ramsey](http://www.cs.tufts.edu/~nr/), whose clear code
+    and explanations helped fix a bug or two in this implementation.
 
 <!--
     http://tmcnab.github.io/Hyperglot/
