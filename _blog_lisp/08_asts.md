@@ -191,13 +191,12 @@ environment and the other does not. I propose the following structure to manage
 this:
 
 ```ocaml
-(* inside the repl function *)
-[...]
-let ast = build_ast (read_sexp stm) in
-let (res, env') = eval ast env in
-let () = print_endline (string_of_value res) in
-repl stm env'
-[...]
+let rec repl stm env =
+  [...]
+  let ast = build_ast (read_sexp stm) in
+  let (result, env') = eval ast env in
+  let () = print_endline (string_val result) in
+  repl stm env'
 ```
 
 Notice that we just have one `eval` --- `eval` can decide what kind of

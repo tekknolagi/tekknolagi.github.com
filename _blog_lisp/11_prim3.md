@@ -13,13 +13,14 @@ According to [this StackOverflow answer](http://stackoverflow.com/a/3484206),
 the required functions for building a Lisp are:
 
 1. `atom?`
-2. `car`
-3. `cdr`
-4. `cons`/`pair` -- done
-5. `quote` -- done
-6. `cond`/`if` -- done
-7. `lambda` -- done
-8. `label`/`define` -- done
+2. `eq`
+3. `car`
+4. `cdr`
+5. `cons`/`pair` -- done
+6. `quote` -- done
+7. `cond`/`if` -- done
+8. `lambda` -- done
+9. `label`/`define` -- done
 
 Although with some [fun mathy things](http://mvanier.livejournal.com/2897.html)
 you can do away with `define`.
@@ -33,7 +34,7 @@ The proposed Lisp *also* does not have the boolean type, and that is because
 the symbol/atom `t` is considered truthy, and everything else considered
 falsey.
 
-In any case, let's add `atom?`, `car`, and `cdr`:
+In any case, let's add `atom?`, `car`, `cdr`, and `eq`:
 
 ```ocaml
 let basis =
@@ -51,11 +52,16 @@ let basis =
     | [_] -> Boolean true
     | _ -> raise (TypeError "(atom? something)")
   in
+  let prim_eq = function
+    | [a; b] -> Boolean (a=b)
+    | _ -> raise (TypeError "(eq a b)")
+  in
   [...]
   List.fold_left newprim [] [
     [...]
     ("car", prim_car);
     ("cdr", prim_cdr);
+    ("eq", prim_eq);
     ("atom?", prim_atomp)
   ]
 ```

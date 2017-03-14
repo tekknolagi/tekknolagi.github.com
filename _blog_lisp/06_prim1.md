@@ -154,7 +154,7 @@ let rec eval_sexp sexp env =
     | _ -> (sexp, env)
 ```
 
-Well, two lines, if (like me) you are loathe to break the column boundary. And
+Well, two lines, if (like me) you are loath to break the column boundary. And
 let's see it in action:
 
 ```

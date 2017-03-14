@@ -97,49 +97,7 @@ These updates allow us to "close the loop" and make `fact` self-aware. In our
 case, "unspecified value" means using the `option` type
 [^option-type], and we'll have a `ref` pointing to that.
 
-With those ideas in mind, let's get cracking with some code. `bind` remains
-largely the same:
-
-```ocaml
-let bind (n, v, e) = (n, ref (Some v))::e
-```
-
-Only now we're sprinkling in `ref`s and `option`s. We'll also introduce two
-other functions, `mkloc` and `bindloc`, which we'll use later on:
-
-```ocaml
-let mkloc () = ref None
-let bindloc (n, vor, e) = (n, vor)::e
-
-(* Signature of bindloc: *)
-val bindloc : name * 'a option ref * a env -> 'a env
-```
-
-Next comes `lookup`, which is also modified to deal with `ref`s and `option`s:
-
-```ocaml
-exception UnspecifiedValue of string
-
-let rec lookup = function
-  | (n, []) -> raise (NotFound n)
-  | (n, (n', v)::_) when n=n' ->
-     begin
-       match !v with
-       | Some v' -> v'
-       | None -> raise (UnspecifiedValue n)
-     end
-  | (n, (n', _)::bs) -> lookup (n, bs)
-```
-
-We've got one more case to handle now --- when the value at a location is
-`None`. In that case, we should raise an `UnspecifiedValue` exception.
-Otherwise, we'll just do as we did before, albeit now with some more
-complexity.
-
-Last, we've got a `bindlist` function whose sole purpose is to bind a bunch of
-`name`s to a bunch of `value`s (putting them in `option ref`s along the way).
-That's all for environments... for now.
-
+Look for these modifications and additions to the environment functions below.
 
 ### What are closures anyway?
 
@@ -257,10 +215,60 @@ let rec evalexp exp env =
   in ev exp
 ```
 
-Which it turns out is surprisingly easy to do. Okay but we still don't know how
-to evaluate `Closure`s... currently `Call` and `Apply` both use `evalapply`,
-but that only has a case for`Primitive`s. It'll need to be able to handle
-`Closure`s as well:
+Creating closures is surprisingly easy to do! Now before we try and evaluate
+them, let's get cracking with some environment code.
+
+`bind` remains largely the same:
+
+```ocaml
+let bind (n, v, e) = (n, ref (Some v))::e
+```
+
+Only now we're sprinkling in `ref`s and `option`s. We'll also introduce two
+other functions, `mkloc` and `bindloc`, which we'll use later on:
+
+```ocaml
+let mkloc () = ref None
+let bindloc (n, vor, e) = (n, vor)::e
+
+(* Signature of bindloc: *)
+val bindloc : name * 'a option ref * a env -> 'a env
+```
+
+Next comes `lookup`, which is also modified to deal with `ref`s and `option`s:
+
+```ocaml
+exception UnspecifiedValue of string
+
+let rec lookup = function
+  | (n, []) -> raise (NotFound n)
+  | (n, (n', v)::_) when n=n' ->
+     begin
+       match !v with
+       | Some v' -> v'
+       | None -> raise (UnspecifiedValue n)
+     end
+  | (n, (n', _)::bs) -> lookup (n, bs)
+```
+
+We've got one more case to handle now --- when the value at a location is
+`None`. In that case, we should raise an `UnspecifiedValue` exception.
+Otherwise, we'll just do as we did before, albeit now with some more
+complexity.
+
+Last, we've got a `bindlist` function whose sole purpose is to bind a bunch of
+`name`s to a bunch of `value`s (putting them in `option ref`s along the way).
+
+```ocaml
+let bindlist ns vs env =
+  List.fold_left2 (fun acc n v -> bind (n, v, acc)) env ns vs
+```
+
+That's all for environments... for now.
+
+Okay but we still don't know how to evaluate `Closure`s... currently `Call` and
+`Apply` both use `evalapply`, but that only has a case for `Primitive`s. It'll
+need to be able to handle `Closure`s as well:
 
 ```ocaml
 let rec evalexp exp env =

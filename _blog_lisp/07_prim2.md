@@ -71,6 +71,10 @@ type lobject =
   | Primitive of string * (lobject list -> lobject)     (* NEW *)
 ```
 
+I store the name as a string in the `Primitive` constructor because it makes
+for cleaner printing. If I can say `#<primitive:list>` instead of
+`#<primitive>` with not much additional effort, why not go ahead and do that?
+
 The difference in this implementation is that we would just have to handle
 *special forms* separately. A special form is a type of expression that does
 not follow the normal rules of evaluation (evaluate the arguments, then apply
