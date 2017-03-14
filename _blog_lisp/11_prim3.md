@@ -1,5 +1,5 @@
 ---
-title: "Writing a Lisp, Part 11: Primitives III"
+title: "Writing a Lisp, Part 11: Primitives 3"
 author: Maxwell Bernstein
 date: Feb 9, 2017
 codelink: /resources/lisp/11_prim3.ml
