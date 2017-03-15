@@ -1,7 +1,7 @@
 ---
 title: "Writing a Lisp, Part 13: Let"
 author: Maxwell Bernstein
-date: Mar 4, 2017
+date: Mar 14, 2017
 codelink: /resources/lisp/13_let.ml
 ---
 
@@ -424,13 +424,14 @@ Here's how `letrec` works, in neatly enumerated steps [^nr]:
 6. Evaluate the body of the `letrec` in the new environment with all of the
    values resolved.
 
-
-<!-- TODO: explain more, maybe draw a diagram, wrap up -->
-
+At some point when I figure out a good way of making diagrams, or perhaps when
+I find a good enough one online, I will include a diagram here. Call that a
+TODO.
 
 You're probably wondering why not do the let-expressions post first and *then*
-do recursive functions? Yeah, well. I didn't think of that. That's part of the
-fun of this series, I think. I'm a real human and I make mistakes!
+do mutually recursive functions in the metacircular evaluator? Yeah, well. I
+didn't think of that. That's part of the fun of this series, I think. I'm a
+real human and I make mistakes. Why hide them?
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
