@@ -57,23 +57,24 @@ Lisp<sub>0</sub> as a special form.
 pg's Lisp uses `cond` to invert the truthiness of `x`.
 
 ```scheme
+(val cons pair)
+
 (define append. (x y)
   (cond ((null. x) y)
         (#t (cons (car x)
                   (append. (cdr x) y)))))
 ```
 
-This is the simple non-tail-recursive version of `append`.
+In order to give `list` access to `pair`, we have to make an alias and call it
+`cons`. This is the simple non-tail-recursive version of `append`.
 
 ```scheme
-(val cons pair)
-
 (define list. (x y)
   (cons x (cons y '())))
 ```
 
-In order to give `list` access to `pair`, we have to make an alias and call it
-`cons`. We could also just dispatch to the built-in `list` function.
+We could also just dispatch to the built-in `list` function instead of using
+`cons`.
 
 ```scheme
 (define pair. (x y)

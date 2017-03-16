@@ -3,6 +3,7 @@ title: "Writing a Lisp, Part 13: Let"
 author: Maxwell Bernstein
 date: Mar 14, 2017
 codelink: /resources/lisp/13_let.ml
+lispcodelink: /resources/lisp/13_let.lsp
 ---
 
 Here we are, here we are, with a fully-functional programming language. And
@@ -433,9 +434,36 @@ do mutually recursive functions in the metacircular evaluator? Yeah, well. I
 didn't think of that. That's part of the fun of this series, I think. I'm a
 real human and I make mistakes. Why hide them?
 
-Download the code [here]({{ page.codelink }}) if you want to mess with it.
+I've fixed the metacircular evaluator now, and the results don't look too
+shabby:
 
-I'm not entirely sure what's up next. We'll see!
+```scheme
+(define eval. (e env)
+   (letrec (
+        (eval-cond. (lambda (c a)
+            (cond ((null. c) 'error)
+                  ((eval. (caar c) a)  (eval. (cadar c) a))
+                  (#t (eval-cond. (cdr c) a)))))
+
+        (map-eval. (lambda (exps env)
+          (cond ((null. exps) '())
+                (#t (cons (eval.  (car exps) env)
+                          (map-eval. (cdr exps) env))))))
+            )
+
+      (cond
+        ((sym? e) (lookup. e env))
+        [...]
+```
+
+You can see we now define `eval-cond.` and `map-eval.` as lambda-expressions
+inside a `letrec` in `eval.`, instead of as two mutually recursive auxiliary
+functions. How wonderful!
+
+Download the code [here (ml)]({{ page.codelink }}) and
+[here (lisp)]({{ page.lispcodelink }}) if you want to mess with it.
+
+Next up, [comments](../14_comments/).
 
 <br />
 <hr style="width: 100px;" />
