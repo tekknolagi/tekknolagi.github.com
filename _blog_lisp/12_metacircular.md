@@ -280,4 +280,4 @@ Download the code [here (ml)]({{ page.codelink }}) and
 
 And there you have it --- reasonable proof that our Lisp implemementation can
 be considered feature complete. Now we can move on to features that make the
-language easier to use, like let.
+language easier to use, like [let](../13_let/).
