@@ -289,7 +289,18 @@ result of `ev c`. That would be neat.
 Also note that `and` and `or` are not short-circuiting here, but rather
 evaluate both expressions and then `&&` the resulting booleans. That's because
 I'm lazy and don't want to write more code. In this language with no side
-effects, the only difference is in performance.
+effects, ~~the only difference is in performance~~.
+
+*EDIT: The difference is not only in performance. That's just plain wrong.
+Consider the following example:*
+
+```scheme
+(or #t (if your-mom 3 4))
+```
+
+*With a short-circuting Lisp, there is no error. With an eagerly-evaluating
+Lisp, there is an error -- since the condition must be a boolean expression,
+and `your-mom` isn't even defined. No offense to your mother intended.*
 
 Also note that I added in a case for `env`, which would have otherwise been
 homeless in this new AST representation. Since `env` is more for debugging (at
