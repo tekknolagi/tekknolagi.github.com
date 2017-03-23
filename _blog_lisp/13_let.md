@@ -284,6 +284,9 @@ let rec evalexp exp env =
   in ev exp
 ```
 
+*EDIT: Turns out there's a glaring issue in the `let*` implementation above.
+See [16: Standard Library](../16_stdlib/) for corrections.*
+
 With `fold_left`, we make sure that we evaluate each of the bindings in order,
 and in the environment created by evaluating the previous bindings. Ahh,
 functional programming... where would I be without you?
