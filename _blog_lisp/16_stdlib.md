@@ -1,7 +1,7 @@
 ---
 title: "Writing a Lisp, Part 16: Standard Library"
 author: Maxwell Bernstein
-date: Mar 19, 2017
+date: Mar 22, 2017
 codelink: /resources/lisp/16_stdlib.ml
 ---
 
