@@ -298,10 +298,10 @@ imperative-esque things like:
 
 ```scheme
 ; Not allowed in our interpreter:
-(let ((x 5)
-      (x (factorial x))
-      (x (sqrt x))
-      (x (to-string x)))
+(let* ((x 5)
+       (x (factorial x))
+       (x (sqrt x))
+       (x (to-string x)))
   (print x))
 ```
 
