@@ -18,6 +18,7 @@ layout: none
         </item>
         {% endfor %}
         {% for post in site.blog_lisp %}
+        {% if post.index != true %}
         <item>
             <title>{{ post.title | xml_escape }}</title>
             <description>{{ post.content | xml_escape }}</description>
@@ -25,6 +26,7 @@ layout: none
             <link>{{ site.url }}/{{ post.url }}</link>
             <guid isPermaLink="true">{{ site.url }}/{{ post.url }}</guid>
         </item>
+        {% endif %}
         {% endfor %}
     </channel>
 </rss>
