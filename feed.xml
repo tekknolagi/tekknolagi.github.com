@@ -8,7 +8,7 @@ layout: none
         <description>{{ site.description | xml_escape }}</description>
         <link>{{ site.url }}</link>
         <atom:link href="{{ site.url }}/feed.xml" rel="self" type="application/rss+xml" />
-        {% for post in site.posts limit:10 %}
+        {% for post in site.posts %}
         <item>
             <title>{{ post.title | xml_escape }}</title>
             <description>{{ post.content | xml_escape }}</description>
@@ -17,7 +17,7 @@ layout: none
             <guid isPermaLink="true">{{ site.url }}/{{ post.url }}</guid>
         </item>
         {% endfor %}
-        {% for post in site.blog_lisp limit:10 %}
+        {% for post in site.blog_lisp %}
         <item>
             <title>{{ post.title | xml_escape }}</title>
             <description>{{ post.content | xml_escape }}</description>
