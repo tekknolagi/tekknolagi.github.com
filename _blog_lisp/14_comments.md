@@ -26,7 +26,7 @@ $
 ```
 
 While that comment is not at all useful, it *does* get ignored when evaluating
-the expression, which is what we want. Buf enough fluffing about. The
+the expression, which is what we want. But enough fluffing about. The
 implementation is a grand total of 4 lines:
 
 ```ocaml
