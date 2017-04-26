@@ -48,7 +48,7 @@ separate preprocessing step entirely --- but this is fine for now.
 
 Since we now support comments, I've transferred the comments from the
 metacircular evaluator post into the new-and-improved version with `letrec`!
-The results can be found [here (lisp)]({{ post.lispcodelink }}).
+The results can be found [here (lisp)]({{ page.lispcodelink }}).
 
 Download the code [here (ml)]({{ page.codelink }}) if you want to mess with it.
 
