@@ -1,7 +1,7 @@
 ---
 title: "Writing a Lisp, Part 17: Modules"
 author: Maxwell Bernstein
-date: April 26, 2017
+date: May 2, 2017
 codelink: /resources/lisp/17_modules.ml
 ---
 
