@@ -300,4 +300,5 @@ this one in the future.
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
-Next up, the post I have been waiting quite some time for: modules.
+Next up, the post I have been waiting quite some time for:
+[modules](../17_modules/).
