@@ -35,3 +35,11 @@ current_music:
           name: Mumford & Sons
     - group:
           name: Punch Brothers
+
+cool_artists:
+    - group:
+        name: Klunk
+        link: https://klunk.bandcamp.com/
+    - group:
+        name: Le Skeleton Band
+        link: https://leskeletonband.bandcamp.com/

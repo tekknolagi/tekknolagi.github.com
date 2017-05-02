@@ -51,6 +51,16 @@ I am currently listening to some newer music, too:
   {% endfor %}
 </ul>
 
+Here's some awesomely weird music that I found:
+
+<ul>
+  {% for item in site.data.other.cool_artists %}
+    <li>
+      <a href="{{ item.group.link }}">{{ item.group.name }}</a>
+    </li>
+  {% endfor %}
+</ul>
+
 Here are some personal websites I think look good:
 
 <ul>
