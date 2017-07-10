@@ -35,6 +35,8 @@ current_music:
           name: Mumford & Sons
     - group:
           name: Punch Brothers
+    - group:
+          name: Muse
 
 cool_artists:
     - group:
