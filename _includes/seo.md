@@ -9,3 +9,4 @@
     <meta name="language" content="English" />
     <meta name="og:type" content="website" />
     {% seo %}
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
