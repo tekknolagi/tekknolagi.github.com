@@ -1,9 +1,12 @@
-- name: Compilers
-  prof: Sam Guyer
-  desc: a class about &mdash; guess what? &mdash; building compilers in ML
+- name: Functional Programming
+  prof: Torsten Grust
+  desc: a class that dives deep into Haskell's type system and some FP theory
 - name: Programming Languages
   prof: Kathleen Fisher
   desc: a class about building, proving, and comparing programming languages
+- name: Compilers
+  prof: Sam Guyer
+  desc: a class about &mdash; guess what? &mdash; building compilers in ML
 - name: Security CTF
   prof: Ming Chow
   desc: a half-credit course in which we build a secure device, swap with
