@@ -1,6 +1,5 @@
 ---
 title: Stickers
-permalink: stickers/
 ---
 
 You can buy stickers online on my stickermule store:

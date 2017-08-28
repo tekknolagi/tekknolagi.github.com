@@ -1,6 +1,5 @@
 ---
 title: Tufts Faculty Casualties
-permalink: tufts-casualties/
 ---
 
 <table>

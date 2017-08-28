@@ -1,6 +1,5 @@
 ---
 title: Resume
-permalink: resume/
 ---
 
 Resume has been removed, but this page remains to avoid link rot. If you'd like
