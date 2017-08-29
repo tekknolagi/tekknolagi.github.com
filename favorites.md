@@ -61,13 +61,15 @@ Here's some awesomely weird music that I found:
   {% endfor %}
 </ul>
 
-Here are some personal websites I think look good:
+Here are some websites I think look good:
 
 <ul>
   {% for website in site.data.sites %}
   <li><a href="http://{{ website.url }}/">{{ website.url }}</a></li>
   {% endfor %}
 </ul>
+
+In particular, I enjoy the data density and easy readability of the NASA page.
 
 My favorite tea is currently {{ site.data.other.tea.maker }}'s
 <i>{{ site.data.other.tea.name }}</i>.
