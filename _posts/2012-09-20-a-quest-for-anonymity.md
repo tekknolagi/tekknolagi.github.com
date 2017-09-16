@@ -92,6 +92,13 @@ Be safe. Don't do stupid stuff. It will come back and bite you in the ass.
 
 You can definitely go to a drug store and buy a prepaid credit card with cash, or a SIM card for a phone. I suppose you can pay for things, but it's still riskier than free stuff. Having an anonymous phone would be awesome.
 
+**Edit 2**
+
+Eric Carrell reached out to me and suggested that I link to [this blog
+post](https://www.cloudwards.net/how-to-set-up-a-strong-password/) about
+password strength. After a brief read, I think it's a nice suggestion. THanks,
+Eric!
+
 
 ### Addendum
 
