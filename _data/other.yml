@@ -37,6 +37,10 @@ current_music:
           name: Punch Brothers
     - group:
           name: Muse
+    - group:
+          name: First Aid Kit
+    - group:
+          name: Elvis Crespo
 
 cool_artists:
     - group:
