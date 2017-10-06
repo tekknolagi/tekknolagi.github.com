@@ -1,6 +1,6 @@
 <ul>
 {% for post in site.blog_lisp %}
-{% if post.index != true %}
+{% if post.index != true and post.draft != true %}
     <li>
         <div class="post-date"><i>{{ post.date | date: '%B %-d, %Y' }}</i></div>
         <a href="{{ post.url }}">{{ post.title }}</a>

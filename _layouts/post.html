@@ -11,9 +11,12 @@
         {% include navbar.md %}
         <h2 class="post-title">{{ page.title }}</h2>
         {% if page.index != true %}
-            <div class="post-inline-date"><i>{{ page.date | date: '%B %-d, %Y' }}</i></div>
+        <div class="post-inline-date"><i>{{ page.date | date: '%B %-d, %Y' }}</i></div>
         {% endif %}
         <div class="container">
+            {% if page.co_author %}
+            <div class="post-co-author">With co-author <i>{{ page.co_author }}</i>!</div>
+            {% endif %}
             {{ content }}
         </div>
         {% include footer.md %}
