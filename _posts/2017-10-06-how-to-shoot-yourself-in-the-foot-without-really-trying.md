@@ -103,7 +103,7 @@ class Datum {
 };
 ```
 
-and call it a day. Explicit ensures that the type must match the constructor
+and call it a day. `explicit` ensures that the type must match the constructor
 parameter exactly. This way, a compile-error is raised when students attempt
 the above code. Another solution, I suppose, is to stop using C++ entirely.
 
