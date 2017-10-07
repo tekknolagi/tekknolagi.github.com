@@ -3,7 +3,6 @@ title: "How to shoot yourself in the foot without really trying"
 layout: post
 date: 2017-10-06 11:42:09 EDT
 co_author: Aubrey Anderson
-draft: true
 ---
 
 I am a teaching assistant for the Data Structures course at my school. I wrote
