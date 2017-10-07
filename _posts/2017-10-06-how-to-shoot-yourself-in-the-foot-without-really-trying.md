@@ -43,7 +43,8 @@ The first students started posting on the online course forum with problems
 like "I am trying to print the top `Datum` on the stack but no matter its
 value, the program always prints `true`". Then people came into office hours
 because they could not fix their bugs, and I noticed that at least four people
-had the same problem. Aubrey and I started investigating what was going wrong.
+had the same problem. I grabbed Aubrey, another TA, and we started
+investigating what was going wrong.
 
 After around 20 minutes, we managed to narrow the problem down to a very
 minimal test case:
@@ -63,7 +64,7 @@ thought, "But Max, that won't even compile. The right side of that expression
 returns a pointer, and the left side is not even close to a pointer."
 
 That's true! But as we discovered, the [C++11 standard (PDF)][1] has implicit
-type conversions in constructors:
+type conversions:
 
 > <h4>4.12 Boolean conversions</h4>
 > A prvalue of arithmetic, unscoped enumeration, pointer, or pointer to member
@@ -72,6 +73,8 @@ type conversions in constructors:
 > converted to true. For direct-initialization (8.5), a prvalue of type
 > std::nullptr_t can be converted to a prvalue of type bool; the resulting
 > value is false.
+
+and in our case this happens in the copy-initialization of `d`.
 
 So what does that mean? It means that the right side (of type `Datum *`), did
 not match against `Datum(int)`, `Datum(std::string)`, or `Datum(const char *)`,
@@ -100,7 +103,8 @@ class Datum {
 };
 ```
 
-and call it a day. This way, a compile-error is raised when students attempt
+and call it a day. Explicit ensures that the type must match the constructor
+parameter exactly. This way, a compile-error is raised when students attempt
 the above code. Another solution, I suppose, is to stop using C++ entirely.
 
 [1]: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3690.pdf
