@@ -74,7 +74,7 @@ type conversions:
 > std::nullptr_t can be converted to a prvalue of type bool; the resulting
 > value is false.
 
-and in our case this happens in the copy-initialization of `d`.
+and in our case this happens in the [copy-initialization][2] of `d`.
 
 So what does that mean? It means that the right side (of type `Datum *`), did
 not match against `Datum(int)`, `Datum(std::string)`, or `Datum(const char *)`,
@@ -108,3 +108,4 @@ parameter exactly. This way, a compile-error is raised when students attempt
 the above code. Another solution, I suppose, is to stop using C++ entirely.
 
 [1]: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3690.pdf
+[2]: http://en.cppreference.com/w/cpp/language/copy_initialization
