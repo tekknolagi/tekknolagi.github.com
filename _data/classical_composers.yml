@@ -10,6 +10,7 @@
 - composer: W.A. Mozart
   pieces:
       - name: Clarinet Concerto in A major
+      - name: Symphony No. 25 in G minor
 - composer: Jean Sibelius
   pieces:
       - name: Karelia Suite
@@ -18,7 +19,7 @@
   pieces:
       - name: Cello Concerto in B minor
         conductor: Paavo Järvi
-      - name: Symphony 9 -- New World
+      - name: Symphony No. 9 -- New World
         conductor: Herbert von Karajan
 - composer: Bedřich Smetana
   pieces:
@@ -37,7 +38,7 @@
         soloist: Itzhak Perlman
 - composer: Ludwig van Beethoven
   pieces:
-      - name: Symphony 9
+      - name: Symphony No. 9
         conductor: Josef Krips
 - composer: Pyotr Ilyich Tchaikovsky
   pieces:
