@@ -9,8 +9,11 @@
         conductor: Christian Thielemann
 - composer: W.A. Mozart
   pieces:
-      - name: Clarinet Concerto in A major
-      - name: Symphony No. 25 in G minor
+      - name: Clarinet Concerto in A (K622)
+      - name: Bassoon Concerto in B-flat (K1-191, K6-186e)
+      - name: Oboe Concerto in C (K1-314, K6-285d)
+      - name: Symphony No. 25 in G minor (K1-183, K6-173dB)
+      - name: Die Entführung aus dem Serail (K384)
 - composer: Jean Sibelius
   pieces:
       - name: Karelia Suite
