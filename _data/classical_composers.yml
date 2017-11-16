@@ -14,6 +14,9 @@
       - name: Oboe Concerto in C (K1-314, K6-285d)
       - name: Symphony No. 25 in G minor (K1-183, K6-173dB)
       - name: Die Entführung aus dem Serail (K384)
+      - name: |
+          Sinfonia Concertante for Violin, Viola, and Orchestra in E-flat
+          (K1-364, K6-320d)
 - composer: Jean Sibelius
   pieces:
       - name: Karelia Suite
