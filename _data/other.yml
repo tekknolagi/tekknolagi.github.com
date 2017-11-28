@@ -43,6 +43,8 @@ current_music:
           name: First Aid Kit
     - group:
           name: Elvis Crespo
+    - group:
+          name: Kishore Kumar
 
 cool_artists:
     - group:
