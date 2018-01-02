@@ -66,3 +66,8 @@
   pieces:
       - name: 1. Violinkonzert
         soloist: Hilary Hahn
+- composer: Leoš Janáček
+  pieces:
+      - name: Sinfonietta
+        conductor: Sir Charles Mackerras
+      - name: In the Mists
