@@ -27,7 +27,7 @@ Here is some of my favorite music:
   {% for composer in site.data.classical_composers %}
     {% for piece in composer.pieces %}
       <li>
-        <i>{{ piece.name }}</i> by {{ composer.composer }}{% if piece.conductor %}, conducted by {{ piece.conductor }}{% endif %}
+        <i>{{ piece.name }}</i> by {{ composer.composer }}{% if piece.conductor %}, conducted by {{ piece.conductor }}{% endif %}{% if piece.director %}, directed by {{ piece.director }}{% endif %}
       </li>
     {% endfor %}
   {% endfor %}
