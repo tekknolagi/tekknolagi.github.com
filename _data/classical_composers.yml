@@ -59,6 +59,7 @@
   pieces:
       - name: Háry János
       - name: Cello Sonata
+      - name: Dances of Galánta
 - composer: Camille Saint-Saëns
   pieces:
       - name: Cellokoncert Nr 1 a-mol op.33
@@ -75,4 +76,8 @@
 - composer: Mikhail Glinka
   pieces:
       - name: Ruslan and Lyudmila
+        director: Valery Gergiev
+- composer: Nikolai Rimsky-Korsavov
+  pieces:
+      - name: Scheherazade
         director: Valery Gergiev
