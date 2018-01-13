@@ -4,25 +4,15 @@ layout: post
 date: 2018-01-12 19:19:27 PST
 ---
 
-I am Computer Science Teaching Fellow at Tufts. Every so often, somebody comes
-up to me and expresses some form of the same kind of anxiety, frustration,
-worry --- whatever you want to call it --- centered around one thing: _"Oh
-gosh. Everyone here knows more than me and they understand things so quickly
-and they solve problems so fast."_
+I am a Computer Science Teaching Fellow at Tufts. Every so often, somebody
+comes up to me and expresses some form of the same kind of anxiety,
+frustration, worry --- whatever you want to call it --- centered around one
+thing: _"Oh gosh. Everyone here knows more than me and they understand things
+so quickly and they solve problems so fast."_
 
 First, I want to address the comparison to other people. Don't do that! You are
 a different human, a different mass of cells and meat and fluids, with a
 different background, a different history, and a different brain.
-
-<!--
-Your concern may stem from fears about grades or your grade point average, but
-it is important to remember that these are inherently flawed metrics. Grading
-is a system that comes from attempting to pick out the common parts of a
-curriculum and find out if the teacher succeeded at teaching - - - but at scale.
-It is a reduction of many other signals.  A grade does not represent your
-knowledge of the material, your problem-solving ability, or your worth as a
-person. It is one datapoint.
--->
 
 Second, I want to address the notion that everyone knows more than you. Other
 people be better than you at something. You will be better than other people at
@@ -35,9 +25,10 @@ Third, I want to tell my story.
 
 ### I am not special.
 
-I wrote my first line of code when I was around the age of nine. For some
-reason, people attribute a lot of meaning to that, but it all comes down to
-weirdly specific and lucky combination of factors:
+I am the product of many happy coincidences. I wrote my first line of code when
+I was around the age of nine. For some reason, people attribute a lot of
+meaning to that, but my interest in programming all comes down to weirdly
+specific and lucky combination of factors:
 
 * I did not play videogames, but somehow I wanted to make them
 * I had the wherewithal to ask my fourth grade teacher how to make videogames
@@ -54,7 +45,8 @@ weirdly specific and lucky combination of factors:
 
 Without any one of those having occurred, I might not have started to write
 code in the first place. Which might have been better for my long-term mental
-health, because *I have been confused for ages*.
+health, because I consistently frustrate myself trying and failing to
+understand concepts or complete projects.
 
 
 ### I have been confused for ages.
