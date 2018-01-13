@@ -44,7 +44,7 @@ weirdly specific and lucky combination of factors:
 * He had enough patience to go home and poke around on the internet for a bit
   and recommend Scratch
 * My dad bought an [OLPC]
-* The OLPC had a small Python-esque interpreter called Pippy installed
+* The OLPC had a small Python-esque interpreter called [Pippy] installed
 * I had enough time to sneak down and use the family computer at night when
   nobody was monitoring it
 * We traveled back to California every once in a while
@@ -140,7 +140,7 @@ I should have been working at my summer job, something clicked and I wrote a
 small program that accomplished part of his suggested task. It was not
 Turing-complete, but it *worked*.
 
-Another English class came along. In this one, the teacher had an idea of "20%
+Another English class came along. In this one, my teacher had an idea of "20%
 projects", the kind that Google encourages. One day a week, we got to work on
 projects of our choosing --- so long as we wrote them up for the end of the
 semester. I chose to re-write my crappy "programming language" as an actual
@@ -195,13 +195,15 @@ There are so many wonderfully talented people who I know and admire. They
 suffer from the same feelings of inadequacy that I do. That many people do. I
 have occasionally been part of the reason for these feelings. I want to open up
 and make it clear that I did not learn how to program in a vacuum and certainly
-do not feel like I know what I am doing most of the time.
+do not feel like I know what I am doing most of the time. I'm confused. And
+that's okay.
 
 <br /><br />
 This post resulted from a conversation with [Margaret Gorguissian][Margaret].
 Thank you so much!
 
 [OLPC]: https://en.wikipedia.org/wiki/One_Laptop_per_Child
+[Pippy]: http://wiki.laptop.org/go/Pippy
 [Margaret]: http://teragr.am
 [SICP]: https://mitpress.mit.edu/sicp/full-text/book/book.html
 [StackOverflow]: https://stackoverflow.com/q/6887471/569183
