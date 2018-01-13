@@ -15,10 +15,10 @@ a different human, a different mass of cells and meat and fluids, with a
 different background, a different history, and a different brain.
 
 Second, I want to address the notion that everyone knows more than you. Other
-people be better than you at something. You will be better than other people at
-something else. This is normal. This is expected. We all go to school to learn
-and become better. Learning to become okay with this feels like a superpower. I
-am still working at it.
+people will be better than you at something. You will be better than other
+people at something else. This is normal. This is expected. We all go to school
+to learn and become better. Learning to become okay with this feels like a
+superpower. I am still working at it.
 
 Third, I want to tell my story.
 
