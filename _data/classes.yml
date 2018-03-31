@@ -1,3 +1,6 @@
+- name: Internet-scale Distributed Systems
+  prof: Noah Mendelsohn
+  desc: a class that explores how systems are designed and implemented
 - name: Functional Programming
   prof: Torsten Grust
   desc: a class that dives deep into Haskell's type system and some FP theory
