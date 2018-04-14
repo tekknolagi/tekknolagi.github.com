@@ -59,6 +59,8 @@ EOF. Since I hadn't applied any of my knowledge from the operating systems
 class recently, I decided to write this program in C. I'll explain it top-down
 in the comments.
 
+(Massive props to Tom Hebb, by the way, for helping me figure out I was doing.)
+
 ```c
 #include <stdio.h> /* for fputc, file pointers */
 #include <unistd.h> /* for execv, pipe, read, dup2, close */
