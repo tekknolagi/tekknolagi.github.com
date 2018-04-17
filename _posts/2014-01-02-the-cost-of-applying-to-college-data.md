@@ -61,7 +61,6 @@ source: ACT and SAT websites
 
 Dang. Applying to college is expensive.
 
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js">
-</script>
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 <script type="text/javascript" src="/assets/js/applying-to-college.js">
 </script>
