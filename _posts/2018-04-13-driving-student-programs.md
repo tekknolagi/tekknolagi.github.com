@@ -106,10 +106,13 @@ int main(int argc, char *argv[]) {
 
     /* The parent will write to the child's stdin. */
     int child_stdin[2];
+    make_pipe(child_stdin);
 
     /* The child will write to the parent's stdout/stderr. */
     int child_stdout[2];
+    make_pipe(child_stdout);
     int child_stderr[2];
+    make_pipe(child_stderr);
 
     /* Fork. */
     if ((childpid = fork()) == -1) {
