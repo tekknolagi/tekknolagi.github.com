@@ -45,6 +45,18 @@ current_music:
           name: Elvis Crespo
     - group:
           name: Kishore Kumar
+    - group:
+          name: Run the Jewels
+    - group:
+          name: A Tribe Called Quest
+    - group:
+          name: Balkan Beat Box
+    - group:
+          name: Arcade Fire
+    - group:
+          name: Paul Simon
+    - group:
+          name: Ladysmith Black Mambazo
 
 cool_artists:
     - group:
