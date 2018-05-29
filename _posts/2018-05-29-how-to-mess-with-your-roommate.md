@@ -287,7 +287,8 @@ There is some strange binary difference I don't understand yet.
 
 I decided to fight back further before Chris found out about the one-letter
 differential described above. I reverted all of my changes and decided to make
-a patch to `zenity` instead. Here's what I did:
+a patch to `zenity` instead. Major props to Tom Hebb (like in every other
+technical post I write) for helping me with this. Here's what I did:
 
 1. Configure `apt` to download source packages (in this case, adding a
    `deb-src` line to `/etc/apt/sources.list`)
