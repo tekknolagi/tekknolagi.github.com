@@ -7,6 +7,8 @@ date: 2018-05-29 15:00:00 PDT
 Before I explain what I did to hurt poor Logan, I must explain our apartment's
 media setup. You will see why shortly.
 
+Logan, if you're reading this, I hope you're more entertained than not.
+
 ### The media setup
 
 We have a computer running Ubuntu desktop connected to a TV. This acts as our
@@ -279,6 +281,7 @@ never display.
 
 TODO: Figure out the difference between the ELF executable in
 `/usr/sbin/zenity` and `/usr/bin/rpmdb-client`, which was created by Chris.
+There is some strange binary difference I don't understand yet.
 
 #### Step 4
 
@@ -335,7 +338,12 @@ a patch to `zenity` instead. Here's what I did:
 This patch changes `zenity` so that if it notices the message contains the text
 "max" or "Max", it quietly does nothing.
 
-So far (end of March 2018), Chris has not noticed that I have modified the
-binary. Logan has also therefore not noticed any messages that include my name.
-There is as of yet no end in sight to the prank, unless I decide to tell him
-when we graduate.
+UPDATE: So far (end of March 2018), Chris has not noticed that I have modified
+the binary. Logan has also therefore not noticed any messages that include my
+name.  There is as of yet no end in sight to the prank, unless I decide to tell
+him when we graduate.
+
+UPDATE: We graduated and all parted ways. Though Logan and I will be living
+together again next year, we will likely not be in the house enough to carry on
+this prank. I decided to publish this post before attempting further
+shenanigans.
