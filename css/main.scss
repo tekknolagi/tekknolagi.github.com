@@ -88,3 +88,15 @@ table {
       margin-top: 0; }
     table tr th :last-child, table tr td :last-child {
       margin-bottom: 0; }
+
+/* Thanks to
+https://css-tricks.com/snippets/css/prevent-superscripts-and-subscripts-from-affecting-line-height/
+*/
+sup, sub {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+}
+sub {
+  top: 0.4em;
+}
