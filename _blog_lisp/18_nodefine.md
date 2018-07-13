@@ -171,4 +171,4 @@ Netherlands!
 In the next chapter, I *actually* plan on replacing the reader with a much
 better-designed lexer/parser.
 
-[rein-lisp]: http://www.reinvanderwoerd.nl/blog/2017/04/21/writing-a-lisp-debugger/
+[rein-lisp]: http://www.reinvanderwoerd.nl/blog/2017/04/21/writing-a-lisp-debugger
