@@ -1,7 +1,8 @@
 ---
 title: "JumboSmash: a technical retrospective"
 layout: post
-date: 2018-07-12 10:08:20 PDT
+date: 2018-07-13 14:39:00 PDT
+co_author: Zach Kirsch
 ---
 
 ### Intro
@@ -25,12 +26,12 @@ senior hook-up app.
       PJ Ryan's. Wild.
 
 In previous years, JumboSmash has had a wide range of incarnations. In its
-first year, it was a web form that people could fill out, and somebody made
-matches by hand. Then it launched the following year as a website with similar
-functionality. Last year, for Spring 2017, it was re-made as a Tinder-style
-mobile app (iOS and Android). Regardless of whether it makes much practical
-sense[^raze-it], a different team creates the JumboSmash product anew every
-year.
+first year, it was a web form that people could fill out, and someone or
+something matched people up. Then it launched the following year as a website
+with similar functionality. Last year, for Spring 2017, it was re-made as a
+Tinder-style mobile app (iOS and Android). Regardless of whether it makes much
+practical sense[^raze-it], a different team creates the JumboSmash product anew
+every year.
 
 [^raze-it]: People are divided on this. At some level, creating an app from the
       ground up increases the sense of ownership and pride when it succeeds. It
@@ -38,18 +39,27 @@ year.
       foundation instead of focusing on new and exciting developments. I got my
       ear talked off by both parties.
 
+      This is likely the first year that it would have made any sense to re-use
+      something from the past year's JumboSmash project. Even if we wanted to,
+      though, last year's team forbade us from using any of it.
+
 This year, we decided to keep the Tinder functionality (swiping, matching,
 chatting with matches) and add on some other fun features:
 
 * Reacting on other people's profiles, as on Facebook and Slack
 * Adding tags to the bio, including some riotous tags by Sophie Lehrenbaum
 * Senior bucket list items
-* A "senior goal" as part of the user bio
-* {some other stuff}
-* Pre-setup blocking
-* Bans
-
-{some other stuff about what we developed and how}
+* A "senior goal" as part of the user bio ("I want to eat pizza on the roof of
+  the English building")
+* The schedule for senior week and allowing users to display which events they
+  were going to, and see who else was attending
+* GIF support in chat
+* Allowing users to pre-emptively block people they know they won't want to
+  see, even if the other person has not signed up for JumboSmash yet
+* Admin bans for users that do bad things
+* LDAP support for log-in
+* Pre-registration for people with senior standing that weren't listed as such
+  in LDAP (e.g. people taking a 5th year)
 
 ### Massive scaling problems
 
@@ -64,7 +74,7 @@ fine --- I learned that the server was falling over from two sources:
 
 1. Heroku's load monitoring page told me there was a large and increasing
    amount of API timeouts
-2. My email and Facebook messenger inboxes began to blow up from people
+1. My email and Facebook messenger inboxes began to blow up from people
    complaining
 
 I quickly notified the rest of the team, who promptly left the party and
@@ -82,6 +92,12 @@ Winnona and Chris used regular expressions to make short work of the server
 logs, making a sorted list of the endpoints that took the most time to produce
 results. As it turned out, `/users/swipable` and `/users/me` both took
 incredible amounts of time to do anything.
+
+(`/users/swipable` returns a list of all of the users that can be swiped on by
+the current user. This excludes people who have been banned, the user has
+blocked, the users who have blocked the current user, people that have already
+been matched with, etc. `/users/me` returns information about the current
+user.)
 
 To add more detail to our analysis, I wrapped all of the routes with an
 `inspect` function wrapper:
@@ -111,10 +127,10 @@ understand what was happening. It also allowed us to quickly eyeball slow
 routes by doing something like `heroku logs --tail | grep DELTA` to see what
 was taking a long time without any extraneous request information.
 
-As we found out , requests that time out do not even make it into the Heroku
-logs, because it wouldn't make sense to add an "elapsed time" field to the
-request --- but they are still included in our logs. So this additional level
-of logging turned up routes that *didn't even show up* in the Heroku logs
+As we found out, requests that time out do not even make it into the Heroku
+logs --- but they are still included in our logs, because the process isn't
+killed. Just the proxy between the user and our process. So this additional
+level of logging turned up routes that *didn't even show up* in the Heroku logs
 because they were timing out. `/users`, for example, frequently took upwards of
 *thirty seconds* to execute. Absolutely inexcusable, particularly at this
 scale.
@@ -185,8 +201,9 @@ max@localhost:jumbosmash> describe users_matches;
 
 Notice that the `matches` table doesn't have two columns like `user_a` and
 `user_b` to contain the two people contained in a match. We wanted matches to
-be extensible to N people, where N was, say, three. This initially complicated
-matters, but in the end was reasonably easily optimized.
+be extensible to N people, where N was, say, three. So we created a so-called
+"many to many" relationship using the `users_matches` auxiliary table. This
+initially complicated matters, but in the end was reasonably easily optimized.
 
 ### Fixing the slow endpoints
 
@@ -208,8 +225,20 @@ def users_get_swipable():
     active_matches = me.matches  # makes a couple DB queries
 
     for user in users:
-        some_sanity_checks(user)
+        # Can't swipe on self
+        if user.id == g.u.id:
+            continue
+
+        # User must have accepted code of conduct
+        if not user.accepted_coc:
+            continue
+
+        more_sanity_checks(user)
+
         swipe = most_recent_swipe_between(me, user)  # makes DB query
+
+        # User shouldn't appear if you right swiped on them, or if you
+        # unmatched the most recent match you had, etc
         some_sanity_checks(swipe)  # makes a couple DB queries
 
     # ...
@@ -222,7 +251,11 @@ on JumboSmash. This is, uh, bad. Consider:
 * 300 (at the time) concurrent users
 * a simple DB query takes on the order of 30ms
 
-You do the math. We did and it wasn't pretty.
+You do the math. We did and it wasn't pretty:
+
+1 API call = (300 users in the DB) * (5 DB queries) * (30 ms per DB query) = 45 seconds
+
+And, you know, Heroku times out after 30 seconds.
 
 Perhaps the worst part of this, though, is that this entire route could be
 transformed into a handful of medium-complicated SQL queries. We only didn't do
@@ -233,17 +266,21 @@ test data or any automated tests for the API, we completely failed to notice
 that this route performed terribly. If latent performance issues constitute
 technical debt, this was technical poverty.
 
-So, as happens in all my stories, we called in the big guns: Tom and Logan.
-Bless them. Tom and I got to work transforming the fustercluck of an endpoint
-into one large SQLAlchemy expression that resulted in a reasonably fast SQL
-query. After some time I left him to it to analyze the rest of the codebase.
+So, as happens in all my stories, we called in the big guns: [Tom Hebb][tom]
+and [Logan Garbarini][logan]. Bless them. Tom and I got to work transforming
+the fustercluck of an endpoint into one large SQLAlchemy expression that
+resulted in a reasonably fast SQL query. After some time I left him to it to
+analyze the rest of the codebase.
+
+[tom]: https://tchebb.me/
+[logan]: https://logangarbarini.com/
 
 As we found out later on in the process, the resulting SQLAlchemy concoction
 was *heinous*, coming in at 55 non-blank lines. Thankfully, it only took one
 other all-nighter with Logan much later on to tame it to something "reasonable"
 like 48 non-blank lines (including some comments).
 
-#### `/users` makes at least one query per user
+#### `/users` makes at least one query per user in the database
 
 Turns out, we made a similar mistake in `/users`. Upon inspection, the mistake
 is painfully obvious. It's funny how such a short bit of code can be so
@@ -272,7 +309,7 @@ def users():
 
 Ignore for a minute the opaque `serialize` function. Take a look at the rest of
 the endpoint. For every user, it queries the `react`s the current user has made
-on their profile. That's pretty heinous, and also easily avoidable with SQL.
+on their profile. That's pretty atrocious, and also easily avoidable with SQL.
 Our hot-patch fix, though, was to more or less do the query in Python:
 
 ```python
@@ -297,6 +334,7 @@ def users():
 ```
 
 This takes the number of queries (again, ignoring `serialize`) to two. Total.
+We'll talk about `serialize` in a second.
 
 #### Serialize all the things
 
@@ -349,12 +387,12 @@ have explained that in the code, probably.
 
 Readability aside, it has some subtle performance implications. Consider, for
 example, that there are some fields on objects that shouldn't be serialized. On
-user objects, the world probably shouldn't know about `firebase_uid`. That's
-sensitive information. In fact, the world probably shouldn't know about most of
-the fields on the user object, so we only ever want to serialize the so called
-"safe fields" of a database object (in general). So we decided to add a field
-called `__safe_fields__` to every class that represents a table in the
-database. For `User`, this looks like this:
+user objects, the world probably shouldn't know about a user's `session_key`
+(used to log in). That's sensitive information. In fact, the world probably
+shouldn't know about most of the fields on the user object, so we only ever
+want to serialize the so called "safe fields" of a database object (in
+general). So we decided to add a field called `__safe_fields__` to every class
+that represents a table in the database. For `User`, this looks like this:
 
 ```python
 class User(MyBase, db.Model):
@@ -394,14 +432,15 @@ into one large SQL query instead. But here we are.
 
 Now consider what happens when a `Match` is serialized, for example in the
 event that `/users/me` is requested and the endpoint has to display all of the
-user's `active_matches`:
+user's `active_matches` (matches haven't been unmatched, members have not been
+blocked, etc... the matches that should be displayed to the user):
 
 1. Serialize the user, including all the fetches above
 1. Additionally, fetch all of the user's `match`es via the `users_matches`
    table and serialize them
-   1. For each serialized `match`, since `users` is considered a "safe field",
-      of a `match`, every user present in the match is re-fetched and
-      re-reserialized (including all the fetches above)
+   * For each serialized `match`, since `users` is considered a "safe field" of
+     a `match`, every user present in the match is re-fetched and
+     re-reserialized (including all the fetches above)
 1. For each blocked `user`, re-fetch and re-serialize
 1. For each `user` who `react`ed on their profile, re-fetch and re-serialize
 
@@ -436,11 +475,8 @@ that route as the primary source of truth for displaying user information, so
 we couldn't neuter it too much. And our primary purpose was to get people
 swiping and matching, not reach engineering perfection. As such, we chose a
 quick and dirty solution: stuff the response in a Redis cache with a five
-minute TTL.
-
-Anyone who writes code for a living, or even as a hobby, or even who wrote
-50 lines of code ten years ago will have just gasped at that solution. But
-it worked.
+minute TTL. This introduced some new problems, like caching profile images and
+bios that used to be more dynamic, but it worked.
 
 #### Stop requesting `/users` so much and return relevant information elsewhere
 
@@ -454,24 +490,101 @@ compatibility: in the notification payloads, in `/users/swipable`, in new
 match notifications, etc. This strategy really helped take some load off of the
 extraordinarily expensive routes.
 
+#### Database indexes, holy shit
+
+I don't know what happened to us, but up until the end we lived in a world
+where database indexes didn't exist. It wasn't until the `swipes` table was
+growing approaching millions of rows that we realized that an index on the
+`created_at` column would be helpful. Or that an index on `users.email` would
+speed up literally every endpoint that required authentication. This turns a
+linear lookup and string comparison into at **most** a *O(log n)* B-Tree
+search. You could even make it a *O(1)* lookup using a hash table index.
+
+Simple database indexes are so easy to set up and save so much time. Use them!
+
 ### Logging on the front-end
 
 Readers of this post at this point will probably be asking, "what do you mean,
 the new version of the app?" Well. As it turns out, the problems weren't *all*
 to do with the server.
 
-One of the major client-side problems involved logging every request to the
-server and its corresponding response to the console. This was an excellent
-idea in development, because it enabled us to quickly debug both requests and
-responses. This was not such an idea in production, because logging is fast on
-the simulator and slow on real devices. Which is funny, because there were *no
-real consoles* on our users' devices.
+The mobile app was made with React Native, and we used the popular package
+Redux to manage the "global state" of the app. This global state included
+information about the current user (their name, bio, pictures, etc), as well as
+similar information for every other user that was using our app.
+
+We used another nifty package called `redux-logger`, which was extraordinarily
+helpful during development. Every time our global Redux state changed,
+`redux-logger` would log three things to the console: the old state, the action
+that caused the state to change, and the new state that resulted from that
+action. At least one part of the state was changed when a network request was
+dispatched or returned; each network request caused two state changes, and by
+extension, for the global state to be logged to the console four times.
+
+And when you're swiping on people three times person second, you're logging the
+global state to the console *12 times per second*.
+
+Though we didn't know this at at the time, this logging was happening even when
+there was no console to receive the logs (e.g. on an actual phone). In our
+development using mobile phone simulators, this caused no issues at all. When
+testing on real devices, this caused no issues at all. Even once we had shipped
+to the App Store and used the app (before everyone else had signed up), there
+were no issues. Why not?
+
+Because the global state was small. We only had a couple of users (just the
+JumboSmash team) using the app. So even though we were logging every user's
+information a dozen times a second, there still wasn't that much to log, so we
+didn't notice any problems.
+
+Everything changed once the app was released, three hundred people signed up,
+and the fire nation attacked. Every phone was constantly trying to log every
+other user's information to an imaginary console, and with many users, the
+phones just couldn't handle it. To say the app was sluggish would be an
+understatement; it was unusable.
 
 One of the major client-side speedups came from only logging if the app was in
 development mode. Aside from that, the new version tried its best to help
 reduce server load using the method described in the section above.
 
+### Test with life-like conditions
+
+We would have discovered almost every one of our problems ahead of time had one
+of us set some time aside to set up a thousand fake users and see how the app
+worked. We thought about doing it, but decided that ultimately it would take
+too much time. Big oops. So, life lesson: test with realistic conditions. Make
+sure your service can handle the load required of it.
+
 ### Learning to say 'fuck it'
+
+Boy, were most people super jazzed about the app. Much of the feedback we got
+was to the tune of
+
+> "I hope that things are going better today! i know that you and your team
+> have put in so much time and energy into the jumbo smash app and i'm sure you
+> have the capacity to turn it around. and if not, that's very okay! you all
+> did a lot of very hard work to get to this point!!!!"
+
+or
+
+> "the app is insanely good considering yall did it in a few months for free
+> during school ... good shit"
+
+or
+
+> "I really appreciate the block feature btw"
+
+or even just
+
+> "thanks for making the app. Great work 👍👍"
+
+We got high fives that week from people we didn't know existed.
+
+And yet, the complaints about the initial downtime and occasional error rolled
+in. Sarcastic, acidic, biting complaints. We got them in person, by email, by
+Facebook Messenger, as app reviews, and even by text. Somehow our cell phone
+numbers got around. This was extraordinarily disheartening for everybody on the
+team. We had to set up a rotating schedule to respond to emails because it was
+too soul-crushing for anybody to do for an extended period of time.
 
 Look, learning technical things about problem solving and API design is great,
 but it's not the most important thing. We developed a free app over the course
@@ -479,23 +592,11 @@ of the year, occasionally each pouring upwards of 20 hours per week into it. We
 did this with no compensation or expectation of a reward. We did this *for our
 classmates*. And maybe for the occasional high five.
 
-And yet, the complaints rolled in. Sarcastic, acidic, biting complaints. We got
-them by email, by Facebook Messenger, as app reviews, and even by text. Somehow
-our cell phone numbers got around. This was extraordinarily disheartening for
-everybody on the team. We had to set up a rotating schedule to respond to
-emails because it was too soul-crushing for anybody to do for an extended
-period of time.
-
 At some point we all got together and decided to just stop responding. Who
 cares if someone has duplicate pictures in their profile only sometimes because
 some kind of obscure network race condition? Not us. It was senior week, and,
 being seniors, we deserved to enjoy it at least a little. So we sat back, had a
 beer or three, and enjoyed one another's company.
-
-### Uh, some kind of conclusion?
-
-{hmm}
-
 
 <br />
 <hr style="width: 100px;" />
