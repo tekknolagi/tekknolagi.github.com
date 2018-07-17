@@ -521,7 +521,7 @@ action. At least one part of the state was changed when a network request was
 dispatched or returned; each network request caused two state changes, and by
 extension, for the global state to be logged to the console four times.
 
-And when you're swiping on people three times person second, you're logging the
+And when you're swiping on people three times per second, you're logging the
 global state to the console *12 times per second*.
 
 Though we didn't know this at at the time, this logging was happening even when
