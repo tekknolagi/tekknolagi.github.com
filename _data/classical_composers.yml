@@ -17,6 +17,7 @@
       - name: |
           Sinfonia Concertante for Violin, Viola, and Orchestra in E-flat
           (K1-364, K6-320d)
+      - name: Don Giovanni (K527)
 - composer: Jean Sibelius
   pieces:
       - name: Karelia Suite
@@ -81,3 +82,8 @@
   pieces:
       - name: Scheherazade
         director: Valery Gergiev
+- composer: Giacomo Puccini
+  pieces:
+      - name: Turandot
+        conductor: Zubin Mehta
+        soloist: Andrea Bocelli
