@@ -68,3 +68,12 @@ cool_artists:
 
 status:
     text: I work at Facebook as a software engineer.
+
+open_source:
+    - name: Reason
+      url: https://github.com/facebook/reason
+    - name: Clang
+      url: https://clang.llvm.org/
+      commits:
+          - shortname: rC345558
+            url: https://reviews.llvm.org/rC345558

@@ -79,3 +79,19 @@ Here are some of my favorites:
 <del>It's not very interesting just yet.</del> <a href="/blog/">Things are
     happening.</a>
 </p>
+
+<h2>Sometimes I contribute to open source projects.</h2>
+<ul>
+    {% for project in site.data.other.open_source %}
+    <li><a href="{{ project.url }}">{{ project.name }}</a>
+        {% if project.commits | size > 0 %}
+        ({% for commit in project.commits %}<a href="{{ commit.url }}">{{ commit.shortname }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %})
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+
+<!--
+<p>"Am Heimcomputer sitz' ich hier / Und programmier' die Zukunft mir" –
+Kraftwerk: Heimcomputer (1981)</p>
+-->
