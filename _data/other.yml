@@ -77,3 +77,8 @@ open_source:
       commits:
           - shortname: rC345558
             url: https://reviews.llvm.org/rC345558
+    - name: Pyre
+      url: https://pyre-check.org/
+      commits:
+          - shortname: Refactor protocol inference
+            url: https://github.com/facebook/pyre-check/commit/f14577db5940c0b4087fffe209786cd4075f37df
