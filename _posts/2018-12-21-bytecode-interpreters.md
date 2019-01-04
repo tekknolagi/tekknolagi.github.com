@@ -176,7 +176,8 @@ class Instruction:
         return Instruction(self.opcode, arg)
 
     def __eq__(self, other):
-        return self.opcode == other.opcode
+        assert(isinstance(other, Instruction))
+        return self.opcode == other.opcode and self.arg == other.arg
 ```
 
 The plan is to declare one `Instruction` instance per opcode, naming its
@@ -287,11 +288,10 @@ def eval(code):
         return stack[-1]
 ```
 
-Remember that instruction equality is just on the opcode, not the argument,
-since we defined our own `__eq__` on `Instruction`. Also note, since it will
-come in handy later, that `eval` returns the value on the top of the stack.
-This is the beginning of our calling convention, which we'll flesh out more as
-the post continues. Let's see if this whole thing works, end to end.
+Note, since it will come in handy later, that `eval` returns the value on the
+top of the stack.  This is the beginning of our calling convention, which we'll
+flesh out more as the post continues. Let's see if this whole thing works, end
+to end.
 
 ```python
 assert eval(compile(5)) == 5
