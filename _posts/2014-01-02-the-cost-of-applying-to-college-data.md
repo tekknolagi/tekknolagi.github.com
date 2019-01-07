@@ -5,6 +5,11 @@ description: ""
 category: 
 tags: []
 ---
+<style>
+  table {
+    border-collapse: collapse;
+  }
+</style>
 
 **NOTE:** A previous version of the post had incorrect math; this was due to faulty JavaScript used to add the numbers up. The current and correct version is below. If the numbers do not seem different, please clear your browser cache and refresh.
 
