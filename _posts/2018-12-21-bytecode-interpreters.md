@@ -1024,6 +1024,7 @@ are a few I can think of:
   or Lua or something
 * Similar to above: target [OPy][opy] so you can run compiled programs with
   Andy Chu's VM
-* Attempt to recreate this is a strongly-typed language
+* Implement this is a statically-typed language like OCaml, SML, Haskell,
+  Rust, Swift, etc
 
 [opy]: https://github.com/oilshell/oil/tree/master/opy
