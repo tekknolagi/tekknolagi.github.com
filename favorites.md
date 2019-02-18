@@ -21,6 +21,14 @@ Here are some of my favorite films:
 </ul>
 -->
 
+I found this website called [LibraryThing](https://www.librarything.com/home)
+that allows you to catalog, organize, and search your library -- and many
+others. The following button links to my profile.
+
+<a href="http://www.librarything.com/profile/tekknolagi">
+    <img src="/assets/img/librarything.png" />
+</a>
+
 Here is some of my favorite music:
 
 <ul>
