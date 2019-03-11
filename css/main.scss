@@ -30,8 +30,8 @@ h1, h2, h2 {
     line-height: 1.2;
 }
 aside {
-    margin-top: -20px;
-    margin-bottom: -10px;
+/* margin-top: -20px;
+    margin-bottom: -10px; */
     margin-left: 20px;
     font-style: italic;
 }
@@ -60,7 +60,7 @@ footer hr {
     margin-top: 40px;
 }
 /* Inline code */
-p code, li code {
+p code, li code, aside code {
     color: green;
 }
 table {

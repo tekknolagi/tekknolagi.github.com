@@ -2,7 +2,7 @@
 title: "JumboSmash: a technical retrospective"
 layout: post
 date: 2018-07-13 14:39:00 PDT
-co_author: Zach Kirsch
+co_authors: Zach Kirsch
 ---
 
 ### Intro

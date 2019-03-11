@@ -13,10 +13,18 @@
         {% if page.index != true %}
         <div class="post-inline-date"><i>{{ page.date | date: '%B %-d, %Y' }}</i></div>
         {% endif %}
-        <div class="container">
-            {% if page.co_author %}
-            <div class="post-co-author">With co-author <i>{{ page.co_author }}</i>!</div>
+        <div class="post-co-authors">
+        {% if page.co_authors %}
+            {% assign author_list = page.co_authors | split: ", " %}
+            {% assign num_authors = author_list | size %}
+            {% if num_authors > 1 %}
+                With co-authors <i>{{ author_list | join: ", "}}</i>!
+            {% else %}
+                With co-author <i>{{ author_list | join: ", "}}</i>!
             {% endif %}
+        {% endif %}
+        </div>
+        <div class="container">
             {{ content }}
         </div>
         {% include footer.md %}
