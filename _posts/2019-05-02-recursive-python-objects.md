@@ -20,6 +20,16 @@ ls.append(ls)
 >>>
 ```
 
+`dict` is similarly easy:
+
+```python
+d = {}
+d['key'] = d
+>>> d
+{'key': {...}}
+>>>
+```
+
 Making a self-referential `tuple` is a little bit tricker because tuples cannot
 be modified after they are constructed (unless you use the C-API, in which case
 this is much easier --- but that's cheating). In order to close the loop, we're
@@ -57,19 +67,14 @@ class C:
 >>>
 ```
 
-and `dict`:
+Note that simpler solutions like directly adding to the set (below) don't work
+because `set`s are not hashable, and hashable containers like `tuple` depend on
+the hashes of their contents.
 
 ```python
-class C:
-    def __init__(self):
-        self.val = {'key': self}
-
-    def __repr__(self):
-        return self.val.__repr__()
-
->>> C()
-{'key': {...}}
->>>
+s = set()
+s.add(s)  # nope
+s.add((s,))  # still nope
 ```
 
 There's not a whole lot of point in doing this, but it was a fun exercise.
