@@ -82,3 +82,8 @@ open_source:
       commits:
           - shortname: Refactor protocol inference
             url: https://github.com/facebook/pyre-check/commit/f14577db5940c0b4087fffe209786cd4075f37df
+    - name: CPython
+      url: https://www.python.org/
+      commits:
+          - shortname: bpo-36929
+            url: https://github.com/python/cpython/pull/13392
