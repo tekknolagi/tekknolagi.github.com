@@ -84,7 +84,8 @@ Here are some of my favorites:
 <ul>
     {% for project in site.data.other.open_source %}
     <li><a href="{{ project.url }}">{{ project.name }}</a>
-        {% if project.commits | size > 0 %}
+        {% assign num_commits = project.commits | size %}
+        {% if num_commits > 0 %}
         ({% for commit in project.commits %}<a href="{{ commit.url }}">{{ commit.shortname }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %})
         {% endif %}
     </li>
