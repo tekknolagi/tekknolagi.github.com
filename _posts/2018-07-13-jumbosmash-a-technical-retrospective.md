@@ -78,8 +78,8 @@ fine --- I learned that the server was falling over from two sources:
    complaining
 
 I quickly notified the rest of the team, who promptly left the party and
-started toward Computer Science building. It was about 1am at this point. They
-arrived (uh, "extremely tired" from partying) and we got to work.
+started toward the Computer Science building. It was about 1am at this point.
+They arrived (uh, "extremely tired" from partying) and we got to work.
 
 The first order of business was to increase the resources available on Heroku
 as a temporary stopgap. We increased the number of web workers from 10 to 50
