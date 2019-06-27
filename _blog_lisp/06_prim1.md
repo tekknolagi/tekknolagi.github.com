@@ -171,4 +171,4 @@ $
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
-Next up, [primitives II](../07_prim2/).
+Next up, [primitives II]({% link _blog_lisp/07_prim2.md %}).

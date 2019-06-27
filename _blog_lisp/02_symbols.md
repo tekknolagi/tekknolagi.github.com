@@ -114,4 +114,4 @@ booleans, and ints, we can finally build up to collections of all of the above!
 Download the code <a href="{{ page.codelink }}">here</a> if you want to mess
 with it.
 
-Next up, <a href="../03_lists/">lists</a>.
+Next up, [lists]({% link _blog_lisp/03_lists.md %}).

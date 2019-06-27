@@ -215,4 +215,4 @@ $
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
-Next up, [closures](../10_closures/).
+Next up, [closures]({% link _blog_lisp/10_closures.md %}).

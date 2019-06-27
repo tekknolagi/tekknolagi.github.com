@@ -210,4 +210,4 @@ Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
 That just about wraps up our Lisp implementation -- it can now be considered
 reasonably fully complete (minus I/O and all that). For some proof of that...
-next up, the [metacircular evaluator](../12_metacircular/).
+next up, the [metacircular evaluator]({% link _blog_lisp/12_metacircular.md %}).

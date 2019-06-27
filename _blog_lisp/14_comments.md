@@ -52,4 +52,5 @@ The results can be found [here (lisp)]({{ page.lispcodelink }}).
 
 Download the code [here (ml)]({{ page.codelink }}) if you want to mess with it.
 
-Next up, [printing](../15_io/). How else are we going to debug our code? /s
+Next up, [printing]({% link _blog_lisp/15_io.md %}). How else are we going to
+debug our code? /s

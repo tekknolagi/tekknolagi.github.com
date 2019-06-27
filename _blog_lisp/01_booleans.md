@@ -122,4 +122,4 @@ it works!
 Download the code <a href="{{ page.codelink }}">here</a> if you want to mess
 with it.
 
-Next up, <a href="../02_symbols/">symbols</a>.
+Next up, [symbols]({% link _blog_lisp/02_symbols.md %}).

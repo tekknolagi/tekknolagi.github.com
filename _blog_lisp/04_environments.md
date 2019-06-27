@@ -136,4 +136,4 @@ implementation, we'll walk through modularizing and improving the interpreter.
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
-Next up, [if-expressions](../05_if/).
+Next up, [if-expressions]({% link _blog_lisp/05_if.md %}).

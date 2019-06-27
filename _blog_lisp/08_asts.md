@@ -364,4 +364,4 @@ let basis =
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
-Next up, [quote](../09_quote/).
+Next up, [quote]({% link _blog_lisp/09_quote.md %}).

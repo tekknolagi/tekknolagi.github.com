@@ -466,7 +466,7 @@ functions. How wonderful!
 Download the code [here (ml)]({{ page.codelink }}) and
 [here (lisp)]({{ page.lispcodelink }}) if you want to mess with it.
 
-Next up, [comments](../14_comments/).
+Next up, [comments]({% link _blog_lisp/14_comments.md %}).
 
 <br />
 <hr style="width: 100px;" />
