@@ -16,5 +16,3 @@ creator: Marcella Bernstein
 9. Optional: Pecans
 10. Olive oil
 11. Reduced balsamic vinaigrette
-
-*Special notes:* Everything must be at its seasonal peak.
