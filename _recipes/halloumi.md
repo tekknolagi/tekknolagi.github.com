@@ -3,9 +3,7 @@ title: Halloumi
 creator: Max Bernstein
 ---
 
-*Quantity:*
-
-Serves three.
+*Quantity:* Serves three.
 
 *Ingredients:*
 
