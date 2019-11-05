@@ -81,3 +81,14 @@ In particular, I enjoy the data density and easy readability of the NASA page.
 
 My favorite tea is currently {{ site.data.other.tea.maker }}'s
 <i>{{ site.data.other.tea.name }}</i>.
+
+<p>
+I took some wonderful classes while I was at Tufts. I wholeheartedly recommend
+the following:
+</p>
+<ul>
+    {% for class in site.data.classes %}
+    <li><i>{{ class.name }}</i> with {{ class.prof }}, {{ class.desc }}</li>
+    {% endfor %}
+</ul>
+
