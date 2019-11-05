@@ -87,3 +87,5 @@ open_source:
       commits:
           - shortname: bpo-36929
             url: https://github.com/python/cpython/pull/13392
+          - shortname: bpo-38648
+            url: https://github.com/python/cpython/pull/17002
