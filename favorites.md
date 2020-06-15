@@ -92,3 +92,32 @@ the following:
     {% endfor %}
 </ul>
 
+I like music featuring the [hammered dulcimer](https://en.wikipedia.org/wiki/Hammered_dulcimer).
+Below is a collection of music (mostly film scores) that includes at least a
+little bit of hammered dulcimer in it:
+
+* *Hary Janos* (Zoltán Kodály), where I first heard it
+* Various tracks from The Grand Budapest Hotel (Alexandre Desplat), such as:
+  * *Mr. Moustafa*
+  * *A Prayer for Madame D*
+  * *Daylight Express to Lutz*
+  * ... and many more
+* *Discombobulate* (Hans Zimmer), from Sherlock Holmes -- the Robert Downey Jr
+  version
+* *The Dragon Book* (John Powell), from How to Train Your Dragon
+* Various tracks from The Man From U.N.C.L.E (Daniel Pemberton)
+  * *His Name Is Napoleon Solo*
+  * *Signori Toileto Italiano*
+  * *Laced Drinks*
+  * *Drums of War*
+* *Snow Plane* (Thomas Newman), from Spectre
+
+Thanks to [this website][cimbalom0] for linking some that were harder for me to
+find (and others not included here). Also thanks to [this website][cimbalom1]
+with help identifying tracks in The Man From U.N.C.L.E. As a sidebar, I would
+one day also like to catalogue music that has a sort of horse
+galloping/trotting feel found in *Breaking Out* (U.N.C.L.E) or *Two Mules for
+Sister Sara* (Sherlock Holmes).
+
+[cimbalom0]: https://web.archive.org/web/20200615181712/https://manufacturing.dustystrings.com/blog/hammered-dulcimer-film-scores
+[cimbalom1]: http://web.archive.org/web/20191228224428/https://moviemusicuk.us/2015/08/17/the-man-from-u-n-c-l-e-daniel-pemberton/
