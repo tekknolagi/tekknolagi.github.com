@@ -66,9 +66,6 @@ cool_artists:
         name: Le Skeleton Band
         link: https://leskeletonband.bandcamp.com/
 
-status:
-    text: I work at Instagram as a software engineer.
-
 open_source:
     - name: Reason
       url: https://github.com/facebook/reason
