@@ -14,6 +14,9 @@ to find great stuff.
 * Abdulaziz Ghuloum's [minimal Scheme to x86 compiler](/assets/img/11-ghuloum.pdf)
 * Nora Sandler's [minimal C compiler](https://norasandler.com/2017/11/29/Write-a-Compiler.html)
 * Jack Crenshaw's [let's build a compiler](https://compilers.iecc.com/crenshaw/)
+* [Recursive descent parsing](http://web.archive.org/web/20170712044658/https://ryanflannery.net/teaching/common/recursive-descent-parsing/)
+  in C. Note that this just verifies the input string, and more has to be done
+  to build a tree out of the input.
 
 ## Lisp specific
 
