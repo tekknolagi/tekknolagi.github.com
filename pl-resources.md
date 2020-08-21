@@ -48,6 +48,7 @@ Resources on representing small values efficiently.
   (PDF), which introduces this in a compiler setting
 * Chicken Scheme's [data representation](https://wiki.call-cc.org/man/4/Data%20representation)
 * Guile Scheme's [Faster Integers](https://www.gnu.org/software/guile/manual/html_node/Faster-Integers.html)
+* Femtolisp [object implementation](https://github.com/JeffBezanson/femtolisp/blob/master/flisp.h)
 
 ## Game Boy Emulators
 
