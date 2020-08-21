@@ -36,6 +36,18 @@ to find great stuff.
 * My own [bytecode compiler/VM](https://bernsteinbear.com/blog/bytecode-interpreters/)
   blog post
 
+### Pointer tagging and NaN boxing
+
+Resources on representing small values efficiently.
+
+* nikic's [Pointer magic...](https://nikic.github.io/2012/02/02/Pointer-magic-for-efficient-dynamic-value-representations.html)
+* Sean's [NaN-Boxing](https://sean.cm/a/nan-boxing)
+* zuiderkwast's [nanbox](https://github.com/zuiderkwast/nanbox)
+* albertnetymk's [NaN Boxing](http://albertnetymk.github.io/2016/08/06/nan_boxing/)
+* Ghuloum's [Incremental approach](http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf)
+  (PDF), which introduces this in a compiler setting
+* Chicken Scheme's [data representation](https://wiki.call-cc.org/man/4/Data%20representation)
+
 ## Game Boy Emulators
 
 * The [Pan Docs](http://problemkaputt.de/pandocs.htm) (newer version
