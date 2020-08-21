@@ -47,6 +47,7 @@ Resources on representing small values efficiently.
 * Ghuloum's [Incremental approach](http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf)
   (PDF), which introduces this in a compiler setting
 * Chicken Scheme's [data representation](https://wiki.call-cc.org/man/4/Data%20representation)
+* Guile Scheme's [Faster Integers](https://www.gnu.org/software/guile/manual/html_node/Faster-Integers.html)
 
 ## Game Boy Emulators
 
