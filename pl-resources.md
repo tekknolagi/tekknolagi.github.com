@@ -17,6 +17,7 @@ to find great stuff.
 * [Recursive descent parsing](http://web.archive.org/web/20170712044658/https://ryanflannery.net/teaching/common/recursive-descent-parsing/)
   in C. Note that this just verifies the input string, and more has to be done
   to build a tree out of the input.
+* Vidar Hokstad's [Writing a compiler in Ruby, bottom up](http://hokstad.com/compiler)
 
 ## Lisp specific
 
@@ -27,6 +28,8 @@ to find great stuff.
 * Anthony C. Hay's fairly readable [Lisp interpreter in 90 lines of C++](http://howtowriteaprogram.blogspot.com/2010/11/lisp-interpreter-in-90-lines-of-c.html)
 * My own [Writing a Lisp](https://bernsteinbear.com/blog/lisp/) blog post
   series
+* carld's [Lisp in less than 200 lines of C](https://carld.github.io/2017/06/20/lisp-in-less-than-200-lines-of-c.html)
+* UTexas's [A simple scheme compiler](https://www.cs.utexas.edu/ftp/garbage/cs345/schintro-v14/schintro_142.html#SEC271)
 
 ## Runtimes
 
@@ -35,6 +38,7 @@ to find great stuff.
   managed runtimes
 * My own [bytecode compiler/VM](https://bernsteinbear.com/blog/bytecode-interpreters/)
   blog post
+* Justin Meiners and Ryan Pendelton's [Write your own virtual machine](https://justinmeiners.github.io/lc3-vm/)
 
 ### Pointer tagging and NaN boxing
 
@@ -49,6 +53,20 @@ Resources on representing small values efficiently.
 * Chicken Scheme's [data representation](https://wiki.call-cc.org/man/4/Data%20representation)
 * Guile Scheme's [Faster Integers](https://www.gnu.org/software/guile/manual/html_node/Faster-Integers.html)
 * Femtolisp [object implementation](https://github.com/JeffBezanson/femtolisp/blob/master/flisp.h)
+
+### Just-In-Time compilers
+
+Small JITs to help understand the basics. Note that these implementations tend
+to focus on the compiling ASTs or IRs to machine code, rather than the parts of
+the JIT that offer the most performance: inline caching and code inlining.
+Compiling is great but unless you're producing good machine code, it may not do
+a whole lot.
+
+* Antonio Cuni's [jit30min](https://github.com/antocuni/jit30min)
+* Christian Stigen Larsen's [Writing a basic x86-64 JIT compiler from scratch in stock Python](https://csl.name/post/python-jit/)
+* My very undocumented (but hopefully readable)
+  [implementation](https://github.com/tekknolagi/ghuloum) of the Ghuloum
+  compiler
 
 ## Game Boy Emulators
 
