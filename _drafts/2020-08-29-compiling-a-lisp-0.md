@@ -116,7 +116,12 @@ With optional add-ons also described in the initial paper:
 * Heap overflow handler and garbage collector
 * Stack overflow handler
 * Improved code generation
+
+And optional add-ons not described in the original paper:
+
 * An intermediate representation for optimization
+* Generate executables and write them to disk
+* An interpreter with optional just-in-time compiler
 
 You may have noticed that this is a *lot* of steps, and there are some steps
 that I intend to take but have completely omitted because I want to roll them
@@ -132,4 +137,5 @@ is good news: I've already written the compiler up to compiling heap allocation
 (still working on procedure calls), and even if I don't finish this series
 there is still Ghuloum's excellent paper to learn from.
 
-Next up, compiling integers.
+Next up, [the smallest program]({% link
+_drafts/2020-08-29-compiling-a-lisp-1.md %}).
