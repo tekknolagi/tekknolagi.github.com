@@ -38,9 +38,10 @@ const int kProgramSize = sizeof program;
 typedef int (*JitFunction)();
 
 int main() {
-  void *memory = mmap(/*addr=*/NULL, kProgramSize, PROT_READ | PROT_WRITE,
-                      MAP_ANONYMOUS | MAP_PRIVATE,
-                      /*filedes=*/-1, /*off=*/0);
+  void *memory = mmap(/*addr=*/NULL, /*length=*/kProgramSize,
+                      /*prot=*/PROT_READ | PROT_WRITE,
+                      /*flags=*/MAP_ANONYMOUS | MAP_PRIVATE,
+                      /*filedes=*/-1, /*offset=*/0);
   memcpy(memory, program, kProgramSize);
   int result = mprotect(memory, kProgramSize, PROT_EXEC);
   assert(result == 0 && "mprotect failed");
