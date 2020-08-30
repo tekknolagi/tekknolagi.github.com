@@ -17,6 +17,10 @@ assets/img/11-ghuloum.pdf %}), with several key differences:
   text assembly
 * Our implementation may omit some runtime data structures
 
+See [my implementation](https://github.com/tekknolagi/ghuloum) for reference,
+but note that it may be incomplete and also may look a little bit different
+than the compiler detailed in these posts.
+
 You probably have a couple questions, like *why Lisp?* and *why compile
 directly to x86-64?* and *why C?* and *come on, another Lisp series?*, and
 those are all very reasonable questions that will be answered in due time.
