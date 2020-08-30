@@ -118,7 +118,8 @@ The next 4 bytes are the number, going from least significant byte to most
 significant byte.
 
 Finally, `0xc3` is the instruction for `ret`. `ret` fetches the return address
-of the function that called our function off the stack, and jumps to it.
+of the function that called our function off the stack, and jumps to it. This
+transfers control back to the `main` function of the C program.
 
 When you put all of that together, you get a very small but well-formed program
 that returns `42`.
