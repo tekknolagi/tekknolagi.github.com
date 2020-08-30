@@ -90,10 +90,11 @@ returns `42`[^3].
 
 This is as good a method as any for doing some initial research for what
 instructions you want to emit. You'll have to look a little further afield
-(like in this [quick reference](https://c9x.me/x86/) or the official Intel
-x86-64 manual) if you want to figure out how to encode instructions without
-manually having a table for all the variations you want. We'll touch more on
-that later.
+(like in this [quick reference](https://c9x.me/x86/) or the [official Intel
+x86-64
+manual](https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf))
+if you want to figure out how to encode instructions without manually having a
+table for all the variations you want. We'll touch more on that later.
 
 In this machine code, `0xb8` is the instruction for "move the following 32-bit
 integer to the register `eax`". It's a special case of the `mov` instruction.
