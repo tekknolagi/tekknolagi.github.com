@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: Favorite Things
 ---
 
@@ -69,7 +69,7 @@ Here's some awesomely weird music that I found:
   {% endfor %}
 </ul>
 
-Here are some websites I think look good:
+Here are some websites I like:
 
 <ul>
   {% for website in site.data.sites %}
