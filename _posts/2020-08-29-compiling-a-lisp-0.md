@@ -142,4 +142,4 @@ is good news: I've already written the compiler up to compiling heap allocation
 there is still Ghuloum's excellent paper to learn from.
 
 Next up, [the smallest program]({% link
-_drafts/2020-08-29-compiling-a-lisp-1.md %}).
+_posts/2020-08-29-compiling-a-lisp-1.md %}).
