@@ -1,5 +1,5 @@
 ---
-title: "Compiling a Lisp 1: The smallest program"
+title: "Compiling a Lisp: The smallest program"
 layout: post
 date: 2020-08-29 20:49:00 PDT
 ---
