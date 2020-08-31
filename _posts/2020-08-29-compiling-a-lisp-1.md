@@ -255,7 +255,8 @@ That was a lot of words for explaining `return 42`. Hopefully they were helpful
 words. With this small demo, we've gotten used to some building blocks that
 we'll use when compiling and executing Lisp programs.
 
-Next up, compiling integers.
+Next up, [compiling integers]({% link _posts/2020-08-31-compiling-a-lisp-2.md
+%}).
 
 <br />
 <hr style="width: 100px;" />
