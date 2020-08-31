@@ -5,8 +5,7 @@ date: 2020-08-29 13:16:00 PDT
 ---
 
 In my [last series]({% link _blog_lisp/index.md %}), I wrote about building a
-Lisp interpreter in OCaml. This time, we're going to write a compiler for a
-Lisp dialect.
+Lisp interpreter. This time, we're going to write a Lisp compiler.
 
 This series is an adaptation of Abdulaziz Ghuloum's excellent paper [An
 Incremental Approach to Compiler Construction]({% link
