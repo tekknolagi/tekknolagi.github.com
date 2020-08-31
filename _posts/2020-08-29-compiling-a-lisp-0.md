@@ -1,5 +1,5 @@
 ---
-title: "Compiling a Lisp: Post 0"
+title: "Compiling a Lisp"
 layout: post
 date: 2020-08-29 13:16:00 PDT
 ---
