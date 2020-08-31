@@ -76,6 +76,8 @@ int Buffer_make_executable(Buffer *buf) {
   return result;
 }
 
+byte Buffer_at8(Buffer *buf, size_t pos) { return buf->address[pos]; }
+
 void Buffer_at_put8(Buffer *buf, size_t pos, byte b) { buf->address[pos] = b; }
 
 word max(word left, word right) { return left > right ? left : right; }
@@ -229,11 +231,73 @@ void Testing_expect_buffer_equals_bytes(Buffer *buf, byte *arr,
 
 // Tests
 
+TEST encode_positive_integer(void) {
+  ASSERT_EQ(Object_encode_integer(0), 0x0);
+  ASSERT_EQ(Object_encode_integer(1), 0x4);
+  ASSERT_EQ(Object_encode_integer(10), 0x28);
+  PASS();
+}
+
+TEST encode_negative_integer(void) {
+  ASSERT_EQ(0x0, Object_encode_integer(0));
+  ASSERT_EQ(Object_encode_integer(-1), (word)0xfffffffffffffffc);
+  ASSERT_EQ(Object_encode_integer(-10), (word)0xffffffffffffffd8);
+  PASS();
+}
+
+TEST buffer_write8_increases_length(void) {
+  Buffer buf;
+  Buffer_init(&buf, 5);
+  ASSERT_EQ(buf.len, 0);
+  Buffer_write8(&buf, 0xdb);
+  ASSERT_EQ(Buffer_at8(&buf, 0), 0xdb);
+  ASSERT_EQ(buf.len, 1);
+  Buffer_deinit(&buf);
+  PASS();
+}
+
+TEST buffer_write8_expands_buffer(void) {
+  Buffer buf;
+  Buffer_init(&buf, 1);
+  ASSERT_EQ(buf.capacity, 1);
+  ASSERT_EQ(buf.len, 0);
+  Buffer_write8(&buf, 0xdb);
+  Buffer_write8(&buf, 0xef);
+  ASSERT(buf.capacity > 1);
+  ASSERT_EQ(buf.len, 2);
+  Buffer_deinit(&buf);
+  PASS();
+}
+
+TEST buffer_write32_expands_buffer(void) {
+  Buffer buf;
+  Buffer_init(&buf, 1);
+  ASSERT_EQ(buf.capacity, 1);
+  ASSERT_EQ(buf.len, 0);
+  Buffer_write32(&buf, 0xdeadbeef);
+  ASSERT(buf.capacity > 1);
+  ASSERT_EQ(buf.len, 4);
+  Buffer_deinit(&buf);
+  PASS();
+}
+
+TEST buffer_write32_writes_little_endian(void) {
+  Buffer buf;
+  Buffer_init(&buf, 4);
+  Buffer_write32(&buf, 0xdeadbeef);
+  ASSERT_EQ(Buffer_at8(&buf, 0), 0xef);
+  ASSERT_EQ(Buffer_at8(&buf, 1), 0xbe);
+  ASSERT_EQ(Buffer_at8(&buf, 2), 0xad);
+  ASSERT_EQ(Buffer_at8(&buf, 3), 0xde);
+  Buffer_deinit(&buf);
+  PASS();
+}
+
 TEST compile_positive_integer(void) {
   word value = 123;
   ASTNode *node = AST_new_integer(value);
   Buffer buf;
-  Buffer_init(&buf, 100);
+  Buffer_init(&buf, 1);
   int compile_result = Compile_function(&buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov eax, imm(123); ret
@@ -249,7 +313,7 @@ TEST compile_negative_integer(void) {
   word value = -123;
   ASTNode *node = AST_new_integer(value);
   Buffer buf;
-  Buffer_init(&buf, 100);
+  Buffer_init(&buf, 1);
   int compile_result = Compile_function(&buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov eax, imm(-123); ret
@@ -259,6 +323,18 @@ TEST compile_negative_integer(void) {
   word result = Testing_execute_expr(&buf);
   ASSERT_EQ(result, Object_encode_integer(value));
   PASS();
+}
+
+SUITE(object_tests) {
+  RUN_TEST(encode_positive_integer);
+  RUN_TEST(encode_negative_integer);
+}
+
+SUITE(buffer_tests) {
+  RUN_TEST(buffer_write8_increases_length);
+  RUN_TEST(buffer_write8_expands_buffer);
+  RUN_TEST(buffer_write32_expands_buffer);
+  RUN_TEST(buffer_write32_writes_little_endian);
 }
 
 SUITE(compiler_tests) {
@@ -272,6 +348,8 @@ GREATEST_MAIN_DEFS();
 
 int main(int argc, char **argv) {
   GREATEST_MAIN_BEGIN();
+  RUN_SUITE(object_tests);
+  RUN_SUITE(buffer_tests);
   RUN_SUITE(compiler_tests);
   GREATEST_MAIN_END();
 }

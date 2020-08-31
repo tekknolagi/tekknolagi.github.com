@@ -1,7 +1,7 @@
 ---
 title: "Compiling a Lisp 2: Integers"
 layout: post
-date: 2020-08-29 23:03:00 PDT
+date: 2020-08-31 09:46:00 PDT
 ---
 
 Welcome back. Today we're going to get some satisfaction by adding the first
@@ -338,10 +338,17 @@ Boom. Two instructions. One `mov`, one `ret`. The REX prefix is used in x86-64
 to denote that the following instruction, which might have been decoded as
 something else in x86-32, means something different in 64-bit mode.
 
-In this `mov`'s case, it is the difference between `mov eax, IMM` and `mov rax,
-IMM`.
+In this particular `mov`'s case, it is the difference between `mov eax, IMM`
+and `mov rax, IMM`.
 
 ### Compiling our first program
+
+Now that we can emit instructions, it's time to choose what instructions to
+emit based on the input program. We have a very restricted set of input
+programs (yes, several billion of them, if you're being persnickety about the
+range of possible integers) so the implementation is short and sweet.
+
+If we see a literal integer, encode it and put it in `rax`. Done.
 
 ```c
 // Compile
@@ -357,8 +364,9 @@ int Compile_expr(Buffer *buf, ASTNode *node) {
 
 int Compile_function(Buffer *buf, ASTNode *node) {
   int result = Compile_expr(buf, node);
-  if (result != 0)
+  if (result != 0) {
     return result;
+  }
   Emit_ret(buf);
   return 0;
 }
@@ -366,23 +374,25 @@ int Compile_function(Buffer *buf, ASTNode *node) {
 // End Compile
 ```
 
+I make a distinction between `expr` and `function` because we don't *always*
+want to `ret`. We only want to `ret` the result of a function body, which might
+be composed of several nested expressions. This divide will become clearer as
+we add more expression types.
+
 ### Making sure it works
+
+Our compiler is all well and good, but it's notably more complicated than the
+mini JIT demo from the last post. It's one thing to test *that* by manually
+checking the return code of `main`, but I think we should have some regression
+tests to keep us honest as we go forth and break things.
+
+For that, I've written some testing utilities to help check that we generated
+the right code, and also to execute the JITed code and return the result.
 
 ```c
 typedef int (*JitFunction)();
 
 // Testing
-
-word Testing_execute_expr(Buffer *buf) {
-  assert(buf != NULL);
-  assert(buf->address != NULL);
-  assert(buf->state == kExecutable);
-  // The pointer-pointer cast is allowed but the underlying
-  // data-to-function-pointer back-and-forth is only guaranteed to work on
-  // POSIX systems (because of eg dlsym).
-  JitFunction function = *(JitFunction *)(&buf->address);
-  return function();
-}
 
 void Testing_print_hex_array(FILE *fp, byte *arr, size_t arr_size) {
   for (size_t i = 0; i < arr_size; i++) {
@@ -413,15 +423,100 @@ void Testing_expect_buffer_equals_bytes(Buffer *buf, byte *arr,
 #define EXPECT_EQUALS_BYTES(buf, arr)                                          \
   Testing_expect_buffer_equals_bytes((buf), (arr), sizeof arr)
 
-// End Testing
+word Testing_execute_expr(Buffer *buf) {
+  assert(buf != NULL);
+  assert(buf->address != NULL);
+  assert(buf->state == kExecutable);
+  // The pointer-pointer cast is allowed but the underlying
+  // data-to-function-pointer back-and-forth is only guaranteed to work on
+  // POSIX systems (because of eg dlsym).
+  JitFunction function = *(JitFunction *)(&buf->address);
+  return function();
+}
 
+// End Testing
+```
+
+Even though this only prints out hex representations of the generated code,
+it's very helpful. I often paste the difference into `rasm2` (part of the
+radare2 suite), Cutter (also part of the radare2 suite), or [this online
+disassembler](https://defuse.ca/online-x86-assembler.htm). If the instructions
+look super unfamiliar, it means we messed up the encoding!
+
+Since we have our utilities, we're going to use the `greatest.h` testing API to
+write some unit tests for our compiler and compiler utilities.
+
+```c
 // Tests
+
+TEST encode_positive_integer(void) {
+  ASSERT_EQ(0x0, Object_encode_integer(0));
+  ASSERT_EQ(0x4, Object_encode_integer(1));
+  ASSERT_EQ(0x28, Object_encode_integer(10));
+  PASS();
+}
+
+TEST encode_negative_integer(void) {
+  ASSERT_EQ(0x0, Object_encode_integer(0));
+  ASSERT_EQ((word)0xfffffffffffffffc, Object_encode_integer(-1));
+  ASSERT_EQ((word)0xffffffffffffffd8, Object_encode_integer(-10));
+  PASS();
+}
+
+TEST buffer_write8_increases_length(void) {
+  Buffer buf;
+  Buffer_init(&buf, 5);
+  ASSERT_EQ(buf.len, 0);
+  Buffer_write8(&buf, 0xdb);
+  ASSERT_EQ(Buffer_at8(&buf, 0), 0xdb);
+  ASSERT_EQ(buf.len, 1);
+  Buffer_deinit(&buf);
+  PASS();
+}
+
+TEST buffer_write8_expands_buffer(void) {
+  Buffer buf;
+  Buffer_init(&buf, 1);
+  ASSERT_EQ(buf.capacity, 1);
+  ASSERT_EQ(buf.len, 0);
+  Buffer_write8(&buf, 0xdb);
+  Buffer_write8(&buf, 0xef);
+  ASSERT(buf.capacity > 1);
+  ASSERT_EQ(buf.len, 2);
+  Buffer_deinit(&buf);
+  PASS();
+}
+
+TEST buffer_write32_expands_buffer(void) {
+  Buffer buf;
+  Buffer_init(&buf, 1);
+  ASSERT_EQ(buf.capacity, 1);
+  ASSERT_EQ(buf.len, 0);
+  Buffer_write32(&buf, 0xdeadbeef);
+  ASSERT(buf.capacity > 1);
+  ASSERT_EQ(buf.len, 4);
+  Buffer_deinit(&buf);
+  PASS();
+}
+
+TEST buffer_write32_writes_little_endian(void) {
+  Buffer buf;
+  Buffer_init(&buf, 4);
+  Buffer_write32(&buf, 0xdeadbeef);
+  ASSERT_EQ(Buffer_at8(&buf, 0), 0xef);
+  ASSERT_EQ(Buffer_at8(&buf, 1), 0xbe);
+  ASSERT_EQ(Buffer_at8(&buf, 2), 0xad);
+  ASSERT_EQ(Buffer_at8(&buf, 3), 0xde);
+  Buffer_deinit(&buf);
+  PASS();
+}
+
 
 TEST compile_positive_integer(void) {
   word value = 123;
   ASTNode *node = AST_new_integer(value);
   Buffer buf;
-  Buffer_init(&buf, 100);
+  Buffer_init(&buf, 10);
   int compile_result = Compile_function(&buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov eax, imm(123); ret
@@ -449,6 +544,18 @@ TEST compile_negative_integer(void) {
   PASS();
 }
 
+SUITE(object_tests) {
+  RUN_TEST(encode_positive_integer);
+  RUN_TEST(encode_negative_integer);
+}
+
+SUITE(buffer_tests) {
+  RUN_TEST(buffer_write8_increases_length);
+  RUN_TEST(buffer_write8_expands_buffer);
+  RUN_TEST(buffer_write32_expands_buffer);
+  RUN_TEST(buffer_write32_writes_little_endian);
+}
+
 SUITE(compiler_tests) {
   RUN_TEST(compile_positive_integer);
   RUN_TEST(compile_negative_integer);
@@ -460,10 +567,28 @@ GREATEST_MAIN_DEFS();
 
 int main(int argc, char **argv) {
   GREATEST_MAIN_BEGIN();
+  RUN_SUITE(object_tests);
+  RUN_SUITE(buffer_tests);
   RUN_SUITE(compiler_tests);
   GREATEST_MAIN_END();
 }
 ```
+
+These tests pass, at least for me. And no Valgrind errors, either! The full
+source for this post can be put together by putting together the individual
+code snippets back to back, in order. I recommend following along and typing it
+manually, to get the full educational experience, but if you must copy and
+paste it should still work. :)
+
+If you want to convince yourself the tests work, modify the values we're
+checking against in some places. Then you'll see the test fail. Never trust a
+test suite that you haven't seen fail... it might not be running the tests!
+
+I think there is also a way to use `greatest.h` to do setup and teardown so we
+don't have to do all that buffer machinery, but I haven't figured out an
+ergonomic way to do that yet.
+
+Next time on Dragon Ball Z, we'll compile some other immediate constants.
 
 
 <br />
