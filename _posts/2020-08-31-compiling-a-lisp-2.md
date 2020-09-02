@@ -47,14 +47,15 @@ In this diagram, we have some pointer templates composed of `0`s, `1`s, and
 `X`s. `0` refers to a 0 bit and `1` refers to a 1 bit.
 
 `X` is a placeholder that refers to payload data for that value. For *immediate
-values* -- values whose data are part of the pointer itself -- the `X`s refer
+values* --- values whose data are part of the pointer itself --- the `X`s refer
 to the data. For heap-allocated objects, it is the pointer address.
 
 It's important to note that we can only accomplish this tagging scheme because
 on modern computer systems the lower 3 bits of heap-allocated pointers are `0`
-because allocations are *word-aligned* -- meaning that all pointers are numbers
-that are multiples of 8. This lets us a) differentiate real pointers from
-fake pointers and b) stuff some additional data there in the real pointers.
+because allocations are *word-aligned* --- meaning that all pointers are
+numbers that are multiples of 8. This lets us a) differentiate real pointers
+from fake pointers and b) stuff some additional data there in the real
+pointers.
 
 These tags let us quickly distinguish objects from one another. Just check the
 lower bits:
@@ -99,7 +100,7 @@ const int kWordSize = sizeof(word);                // bytes
 const int kBitsPerWord = kWordSize * kBitsPerByte; // bits
 ```
 
-Ignore `greatest.h` -- that is a header-only library I use for lightweight
+Ignore `greatest.h` --- that is a header-only library I use for lightweight
 testing.
 
 `word` and `uword` are type aliases that I will use throughout the codebase to

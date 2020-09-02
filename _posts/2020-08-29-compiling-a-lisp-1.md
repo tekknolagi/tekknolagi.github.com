@@ -106,8 +106,8 @@ is also the register conventionally used for return values, but that could vary
 between [calling
 conventions](https://en.wikipedia.org/wiki/X86_calling_conventions). It's not
 important to know all the details of every calling convention, but it *is*
-important to know that a calling convention is just that -- a convention. It is
-an agreement between the people who write functions and the people who call
+important to know that a calling convention is just that --- a convention. It
+is an agreement between the people who write functions and the people who call
 functions about how data gets passed around. In this case, we are moving `42`
 into `eax` because `eax` is the return register in the [System V
 AMD64](https://en.wikipedia.org/wiki/X86_calling_conventions#System_V_AMD64_ABI)
