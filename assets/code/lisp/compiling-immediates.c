@@ -1,3 +1,7 @@
+// vim: set tabstop=2 shiftwidth=2 textwidth=79 expandtab:
+// gcc -O2 -g -Wall -Wextra -pedantic -fno-strict-aliasing
+// assets/code/lisp/compiling-immediates.c
+
 #include <assert.h>   // for assert
 #include <stdbool.h>  // for bool
 #include <stddef.h>   // for NULL
@@ -16,8 +20,8 @@ const int kBitsPerByte = 8;                        // bits
 const int kWordSize = sizeof(word);                // bytes
 const int kBitsPerWord = kWordSize * kBitsPerByte; // bits
 
-const unsigned int kIntegerTag = 0x0; // 0b00
-const unsigned int kIntegerMask = 0x3;
+const unsigned int kIntegerTag = 0x0;     // 0b00
+const unsigned int kIntegerTagMask = 0x3; // 0b11
 const unsigned int kIntegerShift = 2;
 const unsigned int kIntegerBits = kBitsPerWord - kIntegerShift;
 const word kIntegerMax = (1LL << (kIntegerBits - 1)) - 1;
@@ -45,17 +49,19 @@ word Object_encode_char(char value) {
   return ((word)value << kCharShift) | kCharTag;
 }
 
-char Object_decode_char(word value) { return (char)(value >> kCharShift); }
+char Object_decode_char(word value) {
+  return (value >> kCharShift) & kCharMask;
+}
 
 word Object_encode_bool(bool value) {
   return ((word)value << kBoolShift) | kBoolTag;
 }
 
+bool Object_decode_bool(word value) { return value & kBoolMask; }
+
 word Object_true() { return Object_encode_bool(true); }
 
 word Object_false() { return Object_encode_bool(false); }
-
-bool Object_decode_bool(word value) { return value & kBoolMask; }
 
 word Object_nil() { return 0x2f; }
 
@@ -167,35 +173,10 @@ void Emit_ret(Buffer *buf) { Buffer_write8(buf, 0xc3); }
 
 // AST
 
-typedef enum {
-  kInteger,
-  kChar,
-  kBool,
-  kNil,
-} ASTNodeType;
-
-struct ASTNode;
 typedef struct ASTNode ASTNode;
 
-ASTNodeType AST_type_of(ASTNode *node) {
-  uword address = (uword)node;
-  if ((address & kIntegerMask) == kIntegerTag) {
-    return kInteger;
-  }
-  if ((address & kImmediateTagMask) == kCharTag) {
-    return kChar;
-  }
-  if ((address & kImmediateTagMask) == kBoolTag) {
-    return kBool;
-  }
-  if (address == (uword)Object_nil()) {
-    return kNil;
-  }
-  assert(0 && "unexpected node type");
-}
-
 bool AST_is_integer(ASTNode *node) {
-  return ((word)node & kIntegerMask) == kIntegerTag;
+  return ((word)node & kIntegerTagMask) == kIntegerTag;
 }
 
 word AST_get_integer(ASTNode *node) {
@@ -228,7 +209,7 @@ ASTNode *AST_new_bool(bool value) {
 
 bool AST_is_nil(ASTNode *node) { return (word)node == Object_nil(); }
 
-ASTNode *AST_new_nil() { return (ASTNode *)Object_nil(); }
+ASTNode *AST_nil() { return (ASTNode *)Object_nil(); }
 
 // End AST
 
@@ -454,7 +435,7 @@ TEST compile_false(Buffer *buf) {
 }
 
 TEST compile_nil(Buffer *buf) {
-  ASTNode *node = AST_new_nil();
+  ASTNode *node = AST_nil();
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov eax, imm(nil); ret
