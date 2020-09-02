@@ -153,10 +153,6 @@ object.
 ```c
 // AST
 
-typedef enum {
-  kInteger,
-} ASTNodeType;
-
 struct ASTNode;
 typedef struct ASTNode ASTNode;
 
@@ -164,15 +160,9 @@ ASTNode *AST_new_integer(word value) {
   return (ASTNode *)Object_encode_integer(value);
 }
 
-ASTNodeType AST_type_of(ASTNode *node) {
-  uint64_t address = (uint64_t)node;
-  if ((address & kIntegerTagMask) == kIntegerTag) {
-    return kInteger;
-  }
-  assert(0 && "unexpected node type");
+bool AST_is_integer(ASTNode *node) {
+  return ((word)node & kIntegerTagMask) == kIntegerTag;
 }
-
-bool AST_is_integer(ASTNode *node) { return AST_type_of(node) == kInteger; }
 
 word AST_get_integer(ASTNode *node) { return (word)node >> kIntegerShift; }
 
