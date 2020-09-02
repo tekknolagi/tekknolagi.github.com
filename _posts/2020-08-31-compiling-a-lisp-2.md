@@ -51,10 +51,10 @@ values* -- values whose data are part of the pointer itself -- the `X`s refer
 to the data. For heap-allocated objects, it is the pointer address.
 
 It's important to note that we can only accomplish this tagging scheme because
-on modern computer systems the lower 3 bits of heap-allocated pointers are
-*word-aligned* -- meaning that all pointers are numbers that are multiples of
-eight. This lets us a) differentiate real pointers from fake pointers and b)
-stuff some additional data there in the real pointers.
+on modern computer systems the lower 3 bits of heap-allocated pointers are `0`
+because allocations are *word-aligned* -- meaning that all pointers are numbers
+that are multiples of 8. This lets us a) differentiate real pointers from
+fake pointers and b) stuff some additional data there in the real pointers.
 
 These tags let us quickly distinguish objects from one another. Just check the
 lower bits:
