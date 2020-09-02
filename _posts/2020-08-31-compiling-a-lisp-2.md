@@ -112,7 +112,7 @@ word, and the number of bits in a word.
 
 ```c
 const unsigned int kIntegerTag = 0x0;
-const unsigned int kIntegerMask = 0x3;
+const unsigned int kIntegerTagMask = 0x3;
 const unsigned int kIntegerShift = 2;
 const unsigned int kIntegerBits = kBitsPerWord - kIntegerShift;
 const word kIntegerMax = (1LL << (kIntegerBits - 1)) - 1;
@@ -165,7 +165,7 @@ ASTNode *AST_new_integer(word value) {
 
 ASTNodeType AST_type_of(ASTNode *node) {
   uint64_t address = (uint64_t)node;
-  if ((address & kIntegerMask) == kIntegerTag) {
+  if ((address & kIntegerTagMask) == kIntegerTag) {
     return kInteger;
   }
   assert(0 && "unexpected node type");
