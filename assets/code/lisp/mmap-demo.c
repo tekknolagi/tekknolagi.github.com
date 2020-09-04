@@ -28,5 +28,6 @@ int main() {
   assert(return_code == 42 && "the assembly was wrong");
   result = munmap(memory, kProgramSize);
   assert(result == 0 && "munmap failed");
-  return return_code;
+  // Return 0 so we can run this as a test and not stop Make
+  return 0;
 }
