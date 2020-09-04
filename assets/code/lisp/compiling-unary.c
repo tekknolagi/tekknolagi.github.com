@@ -215,6 +215,27 @@ void Emit_sub_reg_imm32(Buffer *buf, Register dst, int32_t src) {
   Buffer_write32(buf, src);
 }
 
+void Emit_shl_reg_imm8(Buffer *buf, Register dst, int8_t bits) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0xc1);
+  Buffer_write8(buf, 0xe0 + dst);
+  Buffer_write8(buf, bits);
+}
+
+void Emit_shr_reg_imm8(Buffer *buf, Register dst, int8_t bits) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0xc1);
+  Buffer_write8(buf, 0xe8 + dst);
+  Buffer_write8(buf, bits);
+}
+
+void Emit_or_reg_imm8(Buffer *buf, Register dst, uint8_t tag) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0x83);
+  Buffer_write8(buf, 0xc8 + dst);
+  Buffer_write8(buf, tag);
+}
+
 // End Emit
 
 // AST
@@ -352,6 +373,17 @@ int Compile_call(Buffer *buf, ASTNode *fnexpr, ASTNode *argsexpr) {
     if (AST_symbol_matches(fnexpr, "sub1")) {
       _(Compile_expr(buf, operand1(argsexpr)));
       Emit_sub_reg_imm32(buf, kRax, Object_encode_integer(1));
+      return 0;
+    }
+    if (AST_symbol_matches(fnexpr, "integer->char")) {
+      _(Compile_expr(buf, operand1(argsexpr)));
+      Emit_shl_reg_imm8(buf, kRax, kCharShift - kIntegerShift);
+      Emit_or_reg_imm8(buf, kRax, kCharTag);
+      return 0;
+    }
+    if (AST_symbol_matches(fnexpr, "char->integer")) {
+      _(Compile_expr(buf, operand1(argsexpr)));
+      Emit_shr_reg_imm8(buf, kRax, kCharShift - kIntegerShift);
       return 0;
     }
   }
@@ -683,6 +715,36 @@ TEST compile_unary_sub1(Buffer *buf) {
   PASS();
 }
 
+TEST compile_unary_integer_to_char(Buffer *buf) {
+  ASTNode *node = Testing_new_unary_call("integer->char", AST_new_integer(97));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // mov rax, imm(97); shl rax, 6; or rax, 0xf; ret
+  byte expected[] = {0x48, 0xc7, 0xc0, 0x84, 0x01, 0x00, 0x00, 0x48,
+                     0xc1, 0xe0, 0x06, 0x48, 0x83, 0xc8, 0xf,  0xc3};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_encode_char('a'));
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_unary_char_to_integer(Buffer *buf) {
+  ASTNode *node = Testing_new_unary_call("char->integer", AST_new_char('a'));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // mov rax, imm('a'); shr rax, 6; ret
+  byte expected[] = {0x48, 0xc7, 0xc0, 0x0f, 0x61, 0x00,
+                     0x00, 0x48, 0xc1, 0xe8, 0x06, 0xc3};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_encode_integer(97));
+  AST_heap_free(node);
+  PASS();
+}
+
 SUITE(object_tests) {
   RUN_TEST(encode_positive_integer);
   RUN_TEST(encode_negative_integer);
@@ -716,6 +778,8 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_nil);
   RUN_BUFFER_TEST(compile_unary_add1);
   RUN_BUFFER_TEST(compile_unary_sub1);
+  RUN_BUFFER_TEST(compile_unary_integer_to_char);
+  RUN_BUFFER_TEST(compile_unary_char_to_integer);
 }
 
 // End Tests
