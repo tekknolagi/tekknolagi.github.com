@@ -53,6 +53,11 @@ be represented as a small, compact, dynamically typed language. Many
 interpreter implementations are under 200 lines. I don't think this compiler
 will be that short, though.
 
+For questions, comments, and suggestions please post on [this sr.ht
+elist](https://lists.sr.ht/~max/compiling-lisp). It's a public inbox that I can
+use to discuss and receive patches. I got the idea from [Chris
+Wellons](https://nullprogram.com/).
+
 ### Background knowledge
 
 In order to get the most out of this series, I recommend having at least passing
