@@ -1,6 +1,6 @@
 // vim: set tabstop=2 shiftwidth=2 textwidth=79 expandtab:
 // gcc -O2 -g -Wall -Wextra -pedantic -fno-strict-aliasing
-// assets/code/lisp/compiling-immediates.c
+//   assets/code/lisp/compiling-unary.c
 
 #include <assert.h>   // for assert
 #include <stdbool.h>  // for bool
@@ -466,7 +466,7 @@ int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args) {
     }
     if (AST_symbol_matches(callable, "zero?")) {
       _(Compile_expr(buf, operand1(args)));
-      Compile_compare_imm32(buf, 0);
+      Compile_compare_imm32(buf, Object_encode_integer(0));
       return 0;
     }
     if (AST_symbol_matches(callable, "not")) {
@@ -1019,7 +1019,7 @@ TEST compile_unary_booleanp_with_boolean_returns_true(Buffer *buf) {
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 9f 00 00 00    mov    rax,0x9f
-  // 7:  48 83 e0 1f             and    rax,0x3f
+  // 7:  48 83 e0 3f             and    rax,0x3f
   // b:  48 3d 1f 00 00 00       cmp    rax,0x0000001f
   // 11: 48 c7 c0 00 00 00 00    mov    rax,0x0
   // 18: 0f 94 c0                sete   al
@@ -1042,7 +1042,7 @@ TEST compile_unary_booleanp_with_non_boolean_returns_false(Buffer *buf) {
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 14 00 00 00    mov    rax,0x14
-  // 7:  48 83 e0 1f             and    rax,0x3f
+  // 7:  48 83 e0 3f             and    rax,0x3f
   // b:  48 3d 1f 00 00 00       cmp    rax,0x0000001f
   // 11: 48 c7 c0 00 00 00 00    mov    rax,0x0
   // 18: 0f 94 c0                sete   al
