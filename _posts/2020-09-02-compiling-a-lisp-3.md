@@ -180,7 +180,7 @@ immediate and then writing the address immediately back with
 The testing is also so much the same --- so much so, that I'll only include the
 test for compiling characters. The other code is available from
 [assets/code/lisp](https://github.com/tekknolagi/tekknolagi.github.com/blob/6a38feeb4dc63a528877a17f576756d36ba985cd/assets/code/lisp/compiling-immediates.c)
-if you must copy it.
+if you would like a reference.
 
 ```c
 TEST compile_char(Buffer *buf) {
