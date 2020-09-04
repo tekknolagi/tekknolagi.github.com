@@ -174,7 +174,7 @@ typedef enum {
   kCh,
   kDh,
   kBh,
-} RegisterPiece;
+} PartialRegister;
 
 typedef enum {
   kOverflow = 0,
@@ -268,7 +268,7 @@ void Emit_cmp_reg_imm32(Buffer *buf, Register left, int32_t right) {
   Buffer_write32(buf, right);
 }
 
-void Emit_setcc_imm8(Buffer *buf, Condition cond, RegisterPiece dst) {
+void Emit_setcc_imm8(Buffer *buf, Condition cond, PartialRegister dst) {
   Buffer_write8(buf, 0x0f);
   Buffer_write8(buf, 0x90 + cond);
   Buffer_write8(buf, 0xc0 + dst);
