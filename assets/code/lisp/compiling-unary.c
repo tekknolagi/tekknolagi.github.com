@@ -261,6 +261,13 @@ void Emit_or_reg_imm8(Buffer *buf, Register dst, uint8_t tag) {
   Buffer_write8(buf, tag);
 }
 
+void Emit_and_reg_imm8(Buffer *buf, Register dst, uint8_t tag) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0x83);
+  Buffer_write8(buf, 0xe0 + dst);
+  Buffer_write8(buf, tag);
+}
+
 void Emit_cmp_reg_imm32(Buffer *buf, Register left, int32_t right) {
   Buffer_write8(buf, kRexPrefix);
   if (left == kRax) {
@@ -453,6 +460,18 @@ int Compile_call(Buffer *buf, ASTNode *fnexpr, ASTNode *argsexpr) {
       // All non #f values are truthy
       // ...this might be a problem if we want to make nil falsey
       Compile_compare_imm32(buf, Object_false());
+      return 0;
+    }
+    if (AST_symbol_matches(fnexpr, "integer?")) {
+      _(Compile_expr(buf, operand1(argsexpr)));
+      Emit_and_reg_imm8(buf, kRax, kIntegerTagMask);
+      Compile_compare_imm32(buf, kIntegerTag);
+      return 0;
+    }
+    if (AST_symbol_matches(fnexpr, "boolean?")) {
+      _(Compile_expr(buf, operand1(argsexpr)));
+      Emit_and_reg_imm8(buf, kRax, kImmediateTagMask);
+      Compile_compare_imm32(buf, kBoolTag);
       return 0;
     }
   }
@@ -946,6 +965,98 @@ TEST compile_unary_not_with_non_false_returns_false(Buffer *buf) {
   PASS();
 }
 
+TEST compile_unary_integerp_with_integer_returns_true(Buffer *buf) {
+  ASTNode *node = Testing_new_unary_call("integer?", AST_new_integer(5));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // 0:  48 c7 c0 14 00 00 00    mov    rax,0x14
+  // 7:  48 83 e0 03             and    rax,0x3
+  // b:  48 3d 00 00 00 00       cmp    rax,0x00000000
+  // 11: 48 c7 c0 00 00 00 00    mov    rax,0x0
+  // 18: 0f 94 c0                sete   al
+  // 1b: 48 c1 e0 07             shl    rax,0x7
+  // 1f: 48 83 c8 1f             or     rax,0x1f
+  byte expected[] = {0x48, 0xc7, 0xc0, 0x14, 0x00, 0x00, 0x00, 0x48, 0x83,
+                     0xe0, 0x03, 0x48, 0x3d, 0x00, 0x00, 0x00, 0x00, 0x48,
+                     0xc7, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x0f, 0x94, 0xc0,
+                     0x48, 0xc1, 0xe0, 0x07, 0x48, 0x83, 0xc8, 0x1f};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_true());
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_unary_integerp_with_non_integer_returns_false(Buffer *buf) {
+  ASTNode *node = Testing_new_unary_call("integer?", AST_nil());
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // 0:  48 c7 c0 2f 00 00 00    mov    rax,0x2f
+  // 7:  48 83 e0 03             and    rax,0x3
+  // b:  48 3d 00 00 00 00       cmp    rax,0x00000000
+  // 11: 48 c7 c0 00 00 00 00    mov    rax,0x0
+  // 18: 0f 94 c0                sete   al
+  // 1b: 48 c1 e0 07             shl    rax,0x7
+  // 1f: 48 83 c8 1f             or     rax,0x1f
+  byte expected[] = {0x48, 0xc7, 0xc0, 0x2f, 0x00, 0x00, 0x00, 0x48, 0x83,
+                     0xe0, 0x03, 0x48, 0x3d, 0x00, 0x00, 0x00, 0x00, 0x48,
+                     0xc7, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x0f, 0x94, 0xc0,
+                     0x48, 0xc1, 0xe0, 0x07, 0x48, 0x83, 0xc8, 0x1f};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_false());
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_unary_booleanp_with_boolean_returns_true(Buffer *buf) {
+  ASTNode *node = Testing_new_unary_call("boolean?", AST_new_bool(true));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // 0:  48 c7 c0 9f 00 00 00    mov    rax,0x9f
+  // 7:  48 83 e0 1f             and    rax,0x3f
+  // b:  48 3d 1f 00 00 00       cmp    rax,0x0000001f
+  // 11: 48 c7 c0 00 00 00 00    mov    rax,0x0
+  // 18: 0f 94 c0                sete   al
+  // 1b: 48 c1 e0 07             shl    rax,0x7
+  // 1f: 48 83 c8 1f             or     rax,0x1f
+  byte expected[] = {0x48, 0xc7, 0xc0, 0x9f, 0x00, 0x00, 0x00, 0x48, 0x83,
+                     0xe0, 0x3f, 0x48, 0x3d, 0x1f, 0x00, 0x00, 0x00, 0x48,
+                     0xc7, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x0f, 0x94, 0xc0,
+                     0x48, 0xc1, 0xe0, 0x07, 0x48, 0x83, 0xc8, 0x1f};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_true());
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_unary_booleanp_with_non_boolean_returns_false(Buffer *buf) {
+  ASTNode *node = Testing_new_unary_call("boolean?", AST_new_integer(5));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // 0:  48 c7 c0 14 00 00 00    mov    rax,0x14
+  // 7:  48 83 e0 1f             and    rax,0x3f
+  // b:  48 3d 1f 00 00 00       cmp    rax,0x0000001f
+  // 11: 48 c7 c0 00 00 00 00    mov    rax,0x0
+  // 18: 0f 94 c0                sete   al
+  // 1b: 48 c1 e0 07             shl    rax,0x7
+  // 1f: 48 83 c8 1f             or     rax,0x1f
+  byte expected[] = {0x48, 0xc7, 0xc0, 0x14, 0x00, 0x00, 0x00, 0x48, 0x83,
+                     0xe0, 0x3f, 0x48, 0x3d, 0x1f, 0x00, 0x00, 0x00, 0x48,
+                     0xc7, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x0f, 0x94, 0xc0,
+                     0x48, 0xc1, 0xe0, 0x07, 0x48, 0x83, 0xc8, 0x1f};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_false());
+  AST_heap_free(node);
+  PASS();
+}
+
 SUITE(object_tests) {
   RUN_TEST(encode_positive_integer);
   RUN_TEST(encode_negative_integer);
@@ -987,6 +1098,10 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_unary_zerop_with_non_zero_returns_false);
   RUN_BUFFER_TEST(compile_unary_not_with_false_returns_true);
   RUN_BUFFER_TEST(compile_unary_not_with_non_false_returns_false);
+  RUN_BUFFER_TEST(compile_unary_integerp_with_integer_returns_true);
+  RUN_BUFFER_TEST(compile_unary_integerp_with_non_integer_returns_false);
+  RUN_BUFFER_TEST(compile_unary_booleanp_with_boolean_returns_true);
+  RUN_BUFFER_TEST(compile_unary_booleanp_with_non_boolean_returns_false);
 }
 
 // End Tests
