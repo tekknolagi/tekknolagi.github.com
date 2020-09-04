@@ -72,19 +72,6 @@ uword Object_nil() { return 0x2f; }
 
 uword Object_address(uword obj) { return obj & kHeapPtrMask; }
 
-uword *_Object_at_offset_ptr(uword obj, word offset) {
-  uword *address = (uword *)Object_address(obj);
-  return &address[offset];
-}
-
-uword Object_at_offset(uword obj, word offset) {
-  return *_Object_at_offset_ptr(obj, offset);
-}
-
-void Object_at_offset_put(uword obj, word offset, uword value) {
-  *_Object_at_offset_ptr(obj, offset) = value;
-}
-
 // End Objects
 
 // Buffer
@@ -293,6 +280,16 @@ void Emit_setcc_imm8(Buffer *buf, Condition cond, RegisterPiece dst) {
 
 typedef struct ASTNode ASTNode;
 
+typedef struct Pair {
+  ASTNode *car;
+  ASTNode *cdr;
+} Pair;
+
+typedef struct Symbol {
+  word length;
+  char cstr[];
+} Symbol;
+
 bool AST_is_integer(ASTNode *node) {
   return ((uword)node & kIntegerTagMask) == kIntegerTag;
 }
@@ -338,7 +335,7 @@ ASTNode *AST_heap_alloc(unsigned char tag, uword size) {
 bool AST_is_heap_object(ASTNode *node) {
   // For some reason masking out the tag first and then doing the comparison
   // makes this branchless
-  unsigned char tag = (uword)node & kHeapTagMask;
+  unsigned char tag = Object_address((uword)node);
   // Heap object tags are between 0b001 and 0b110 except for 0b100 (which is an
   // integer)
   return (tag & kIntegerTagMask) > 0 && (tag & kImmediateTagMask) != 0x7;
@@ -350,37 +347,42 @@ bool AST_is_pair(ASTNode *node) {
   return ((uword)node & kHeapTagMask) == kPairTag;
 }
 
-ASTNode *AST_pair_car(ASTNode *node) {
-  return (ASTNode *)Object_at_offset((uword)node, 0);
+Pair *AST_as_pair(ASTNode *node) {
+  assert(AST_is_pair(node));
+  return (Pair *)Object_address((uword)node);
 }
+
+ASTNode *AST_pair_car(ASTNode *node) { return AST_as_pair(node)->car; }
 
 void AST_pair_set_car(ASTNode *node, ASTNode *car) {
-  Object_at_offset_put((uword)node, 0, (uword)car);
+  AST_as_pair(node)->car = car;
 }
 
-ASTNode *AST_pair_cdr(ASTNode *node) {
-  return (ASTNode *)Object_at_offset((uword)node, 1);
-}
+ASTNode *AST_pair_cdr(ASTNode *node) { return AST_as_pair(node)->cdr; }
 
 void AST_pair_set_cdr(ASTNode *node, ASTNode *cdr) {
-  Object_at_offset_put((uword)node, 1, (uword)cdr);
+  AST_as_pair(node)->cdr = cdr;
 }
 
 void AST_heap_free(ASTNode *node) {
-  if (!AST_is_heap_object(node))
+  if (!AST_is_heap_object(node)) {
     return;
+  }
   if (AST_is_pair(node)) {
     AST_heap_free(AST_pair_car(node));
     AST_heap_free(AST_pair_cdr(node));
   }
-  free((ASTNode *)Object_address((uword)node));
+  free((void *)Object_address((uword)node));
 }
+
+Symbol *AST_as_symbol(ASTNode *node);
 
 ASTNode *AST_new_symbol(const char *str) {
   word data_length = strlen(str) + 1; // for NUL
   ASTNode *node = AST_heap_alloc(kSymbolTag, kWordSize + data_length);
-  Object_at_offset_put((uword)node, 0, Object_encode_integer(data_length));
-  memcpy(_Object_at_offset_ptr((uword)node, 1), str, data_length);
+  Symbol *s = AST_as_symbol(node);
+  s->length = data_length;
+  memcpy(s->cstr, str, data_length);
   return node;
 }
 
@@ -388,13 +390,17 @@ bool AST_is_symbol(ASTNode *node) {
   return ((uword)node & kHeapTagMask) == kSymbolTag;
 }
 
-const char *AST_symbol_ref(ASTNode *node) {
-  return (const char *)_Object_at_offset_ptr((uword)node, 1);
+Symbol *AST_as_symbol(ASTNode *node) {
+  assert(AST_is_symbol(node));
+  return (Symbol *)Object_address((uword)node);
+}
+
+const char *AST_symbol_cstr(ASTNode *node) {
+  return (const char *)AST_as_symbol(node)->cstr;
 }
 
 bool AST_symbol_matches(ASTNode *node, const char *cstr) {
-  assert(AST_is_symbol(node));
-  return strcmp(AST_symbol_ref(node), cstr) == 0;
+  return strcmp(AST_symbol_cstr(node), cstr) == 0;
 }
 
 // End AST
@@ -643,7 +649,7 @@ TEST ast_new_symbol(void) {
   const char *value = "my symbol";
   ASTNode *node = AST_new_symbol(value);
   ASSERT(AST_is_symbol(node));
-  ASSERT_STR_EQ(AST_symbol_ref(node), value);
+  ASSERT_STR_EQ(AST_symbol_cstr(node), value);
   AST_heap_free(node);
   PASS();
 }
