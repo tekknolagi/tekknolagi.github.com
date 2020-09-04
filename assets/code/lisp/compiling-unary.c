@@ -448,6 +448,13 @@ int Compile_call(Buffer *buf, ASTNode *fnexpr, ASTNode *argsexpr) {
       Compile_compare_imm32(buf, 0);
       return 0;
     }
+    if (AST_symbol_matches(fnexpr, "not")) {
+      _(Compile_expr(buf, operand1(argsexpr)));
+      // All non #f values are truthy
+      // ...this might be a problem if we want to make nil falsey
+      Compile_compare_imm32(buf, Object_false());
+      return 0;
+    }
   }
   assert(0 && "unexpected call type");
 }
@@ -895,6 +902,50 @@ TEST compile_unary_zerop_with_non_zero_returns_false(Buffer *buf) {
   PASS();
 }
 
+TEST compile_unary_not_with_false_returns_true(Buffer *buf) {
+  ASTNode *node = Testing_new_unary_call("not", AST_new_bool(false));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // 0:  48 c7 c0 1f 00 00 00    mov    rax,0x1f
+  // 7:  48 3d 1f 00 00 00       cmp    rax,0x0000001f
+  // d:  48 c7 c0 00 00 00 00    mov    rax,0x0
+  // 14: 0f 94 c0                sete   al
+  // 17: 48 c1 e0 07             shl    rax,0x7
+  // 1b: 48 83 c8 1f             or     rax,0x1f
+  byte expected[] = {0x48, 0xc7, 0xc0, 0x1f, 0x00, 0x00, 0x00, 0x48,
+                     0x3d, 0x1f, 0x00, 0x00, 0x00, 0x48, 0xc7, 0xc0,
+                     0x00, 0x00, 0x00, 0x00, 0x0f, 0x94, 0xc0, 0x48,
+                     0xc1, 0xe0, 0x07, 0x48, 0x83, 0xc8, 0x1f};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_true());
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_unary_not_with_non_false_returns_false(Buffer *buf) {
+  ASTNode *node = Testing_new_unary_call("not", AST_new_integer(5));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // 0:  48 c7 c0 14 00 00 00    mov    rax,0x14
+  // 7:  48 3d 1f 00 00 00       cmp    rax,0x0000001f
+  // d:  48 c7 c0 00 00 00 00    mov    rax,0x0
+  // 14: 0f 94 c0                sete   al
+  // 17: 48 c1 e0 07             shl    rax,0x7
+  // 1b: 48 83 c8 1f             or     rax,0x1f
+  byte expected[] = {0x48, 0xc7, 0xc0, 0x14, 0x00, 0x00, 0x00, 0x48,
+                     0x3d, 0x1f, 0x00, 0x00, 0x00, 0x48, 0xc7, 0xc0,
+                     0x00, 0x00, 0x00, 0x00, 0x0f, 0x94, 0xc0, 0x48,
+                     0xc1, 0xe0, 0x07, 0x48, 0x83, 0xc8, 0x1f};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_false());
+  AST_heap_free(node);
+  PASS();
+}
+
 SUITE(object_tests) {
   RUN_TEST(encode_positive_integer);
   RUN_TEST(encode_negative_integer);
@@ -934,6 +985,8 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_unary_nilp_with_non_nil_returns_false);
   RUN_BUFFER_TEST(compile_unary_zerop_with_zero_returns_true);
   RUN_BUFFER_TEST(compile_unary_zerop_with_non_zero_returns_false);
+  RUN_BUFFER_TEST(compile_unary_not_with_false_returns_true);
+  RUN_BUFFER_TEST(compile_unary_not_with_non_false_returns_false);
 }
 
 // End Tests
