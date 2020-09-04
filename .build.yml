@@ -1,0 +1,10 @@
+image: alpine/edge
+packages:
+- gcc
+tasks:
+- build: |
+   cd bernsteinbear.com/assets/code/lisp
+   make
+- test: |
+   cd bernsteinbear.com/assets/code/lisp
+   make test
