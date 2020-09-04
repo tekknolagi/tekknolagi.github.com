@@ -664,7 +664,7 @@ elist](https://lists.sr.ht/~max/compiling-lisp)! Next time, binary primitives.
 <hr style="width: 100px;" />
 <!-- Footnotes -->
 
-[^1]: There's a lot of dispute about what to call these two objects. The
+[^1]: There's a long-running dispute about what to call these two objects. The
       original Lisp machine (the IBM 704) had a particular hardware layout that
       led to the creation of the names `car` and `cdr`. Nobody uses this
       hardware anymore, so the names are historical. Some people call them
