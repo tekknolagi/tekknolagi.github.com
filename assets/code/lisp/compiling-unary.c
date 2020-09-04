@@ -505,9 +505,7 @@ int Compile_expr(Buffer *buf, ASTNode *node) {
 }
 
 int Compile_function(Buffer *buf, ASTNode *node) {
-  int result = Compile_expr(buf, node);
-  if (result != 0)
-    return result;
+  _(Compile_expr(buf, node));
   Emit_ret(buf);
   return 0;
 }
