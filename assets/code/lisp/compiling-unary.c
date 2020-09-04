@@ -70,7 +70,7 @@ uword Object_false() { return Object_encode_bool(false); }
 
 uword Object_nil() { return 0x2f; }
 
-uword Object_address(uword obj) { return obj & kHeapPtrMask; }
+uword Object_address(void *obj) { return (uword)obj & kHeapPtrMask; }
 
 // End Objects
 
@@ -335,7 +335,7 @@ ASTNode *AST_heap_alloc(unsigned char tag, uword size) {
 bool AST_is_heap_object(ASTNode *node) {
   // For some reason masking out the tag first and then doing the comparison
   // makes this branchless
-  unsigned char tag = Object_address((uword)node);
+  unsigned char tag = (uword)node & kHeapTagMask;
   // Heap object tags are between 0b001 and 0b110 except for 0b100 (which is an
   // integer)
   return (tag & kIntegerTagMask) > 0 && (tag & kImmediateTagMask) != 0x7;
@@ -349,7 +349,7 @@ bool AST_is_pair(ASTNode *node) {
 
 Pair *AST_as_pair(ASTNode *node) {
   assert(AST_is_pair(node));
-  return (Pair *)Object_address((uword)node);
+  return (Pair *)Object_address(node);
 }
 
 ASTNode *AST_pair_car(ASTNode *node) { return AST_as_pair(node)->car; }
@@ -372,7 +372,7 @@ void AST_heap_free(ASTNode *node) {
     AST_heap_free(AST_pair_car(node));
     AST_heap_free(AST_pair_cdr(node));
   }
-  free((void *)Object_address((uword)node));
+  free((void *)Object_address(node));
 }
 
 Symbol *AST_as_symbol(ASTNode *node);
@@ -392,7 +392,7 @@ bool AST_is_symbol(ASTNode *node) {
 
 Symbol *AST_as_symbol(ASTNode *node) {
   assert(AST_is_symbol(node));
-  return (Symbol *)Object_address((uword)node);
+  return (Symbol *)Object_address(node);
 }
 
 const char *AST_symbol_cstr(ASTNode *node) {
@@ -614,7 +614,7 @@ TEST decode_bool(void) {
 }
 
 TEST address(void) {
-  ASSERT_EQ(Object_address(0xFF01), 0xFF00);
+  ASSERT_EQ(Object_address((void *)0xFF01), 0xFF00);
   PASS();
 }
 
