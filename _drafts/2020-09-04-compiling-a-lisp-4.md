@@ -603,7 +603,28 @@ TEST compile_unary_add1(Buffer *buf) {
 }
 ```
 
-Second, the test for `boolean?`.
+Second, a test of nested expressions:
+
+```c
+TEST compile_unary_add1_nested(Buffer *buf) {
+  ASTNode *node = Testing_unary_call(
+      "add1", Testing_unary_call("add1", AST_new_integer(123)));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // mov rax, imm(123); add rax, imm(1); add rax, imm(1); ret
+  byte expected[] = {0x48, 0xc7, 0xc0, 0xec, 0x01, 0x00, 0x00,
+                     0x48, 0x05, 0x04, 0x00, 0x00, 0x00, 0x48,
+                     0x05, 0x04, 0x00, 0x00, 0x00, 0xc3};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_encode_integer(125));
+  AST_heap_free(node);
+  PASS();
+}
+```
+
+Third, the test for `boolean?`.
 
 ```c
 TEST compile_unary_booleanp_with_non_boolean_returns_false(Buffer *buf) {
