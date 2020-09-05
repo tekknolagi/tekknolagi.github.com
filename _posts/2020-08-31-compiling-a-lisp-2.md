@@ -392,34 +392,8 @@ typedef int (*JitFunction)();
 
 // Testing
 
-void Testing_print_hex_array(FILE *fp, byte *arr, size_t arr_size) {
-  for (size_t i = 0; i < arr_size; i++) {
-    fprintf(fp, "%.2x ", arr[i]);
-  }
-}
-
-void Testing_expect_buffer_equals_bytes(Buffer *buf, byte *arr,
-                                        size_t arr_size) {
-  if (buf->len < arr_size || buf->len > arr_size) {
-    fprintf(
-        stderr,
-        "NOT EQUAL. Expected array of size %ld but found array of size %ld.\n",
-        arr_size, buf->len);
-    return;
-  }
-  int result = memcmp(buf->address, arr, arr_size);
-  if (result == 0) {
-    return;
-  }
-  fprintf(stderr, "NOT EQUAL. Expected: ");
-  Testing_print_hex_array(stderr, arr, arr_size);
-  fprintf(stderr, "\n           Found:    ");
-  Testing_print_hex_array(stderr, buf->address, buf->len);
-  fprintf(stderr, "\n");
-}
-
 #define EXPECT_EQUALS_BYTES(buf, arr)                                          \
-  Testing_expect_buffer_equals_bytes((buf), (arr), sizeof arr)
+  ASSERT_MEM_EQ(arr, (buf)->address, sizeof arr)
 
 word Testing_execute_expr(Buffer *buf) {
   assert(buf != NULL);
@@ -435,11 +409,12 @@ word Testing_execute_expr(Buffer *buf) {
 // End Testing
 ```
 
-Even though this only prints out hex representations of the generated code,
-it's very helpful. I often paste the difference into `rasm2` (part of the
-radare2 suite), Cutter (also part of the radare2 suite), or [this online
-disassembler](https://defuse.ca/online-x86-assembler.htm). If the instructions
-look super unfamiliar, it means we messed up the encoding!
+`ASSERT_MEM_EQ` will check the generated code and point out any differences if
+it finds them. Even though this only prints out hex representations of the
+generated code, it's very helpful. I often paste unexpected output into `rasm2`
+(part of the radare2 suite), Cutter (also part of the radare2 suite), or [this
+online disassembler](https://defuse.ca/online-x86-assembler.htm). If the
+instructions look super unfamiliar, it means we messed up the encoding!
 
 Since we have our utilities, we're going to use the `greatest.h` testing API to
 write some unit tests for our compiler and compiler utilities.
