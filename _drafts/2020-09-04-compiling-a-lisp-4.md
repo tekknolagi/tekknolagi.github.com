@@ -332,25 +332,25 @@ Pair *program = AST_new_pair(AST_new_symbol("add1"), args);
 This is a little wordy. We can make some utilities to trim the length down.
 
 ```c
-ASTNode *Testing_list1(ASTNode *item0) {
+ASTNode *list1(ASTNode *item0) {
   return AST_new_pair(item0, AST_nil());
 }
 
-ASTNode *Testing_list2(ASTNode *item0, ASTNode *item1) {
-  return AST_new_pair(item0, Testing_list1(item1));
+ASTNode *list2(ASTNode *item0, ASTNode *item1) {
+  return AST_new_pair(item0, list1(item1));
 }
 
-ASTNode *Testing_unary_call(const char *name, ASTNode *arg) {
-  return Testing_list2(AST_new_symbol(name), arg);
+ASTNode *new_unary_call(const char *name, ASTNode *arg) {
+  return list2(AST_new_symbol(name), arg);
 }
 ```
 
 And now we can represent the program as:
 
 ```c
-Testing_list2(AST_new_symbol("add1"), AST_new_integer(5));
+list2(AST_new_symbol("add1"), AST_new_integer(5));
 // or, shorter,
-Testing_unary_call("add1", AST_new_integer(5));
+new_unary_call("add1", AST_new_integer(5));
 ```
 
 This is great news because we'll be adding many tests today.
@@ -588,7 +588,7 @@ First, the simplest test for `add1`.
 
 ```c
 TEST compile_unary_add1(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("add1", AST_new_integer(123));
+  ASTNode *node = new_unary_call("add1", AST_new_integer(123));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov rax, imm(123); add rax, imm(1); ret
@@ -607,8 +607,8 @@ Second, a test of nested expressions:
 
 ```c
 TEST compile_unary_add1_nested(Buffer *buf) {
-  ASTNode *node = Testing_unary_call(
-      "add1", Testing_unary_call("add1", AST_new_integer(123)));
+  ASTNode *node = new_unary_call(
+      "add1", new_unary_call("add1", AST_new_integer(123)));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov rax, imm(123); add rax, imm(1); add rax, imm(1); ret
@@ -628,7 +628,7 @@ Third, the test for `boolean?`.
 
 ```c
 TEST compile_unary_booleanp_with_non_boolean_returns_false(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("boolean?", AST_new_integer(5));
+  ASTNode *node = new_unary_call("boolean?", AST_new_integer(5));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 14 00 00 00    mov    rax,0x14
@@ -669,7 +669,8 @@ elist](https://lists.sr.ht/~max/compiling-lisp)! Next time, binary primitives.
       led to the creation of the names `car` and `cdr`. Nobody uses this
       hardware anymore, so the names are historical. Some people call them
       `first`/`fst` and `second`/`snd`. Others call them `head`/`hd` and
-      `tail`/`tl`.
+      `tail`/`tl`. Some people have [other
+      ideas](https://twitter.com/iximeow/status/1302065940712927232).
 
 [^2]: If you said "to preserve the tag" or "adding 1 would make it a pair" or
       some variant on that, you're correct! Otherwise, I recommend going back

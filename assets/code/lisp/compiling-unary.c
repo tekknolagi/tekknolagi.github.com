@@ -541,12 +541,6 @@ uword Testing_execute_expr(Buffer *buf) {
   return function();
 }
 
-void Testing_print_hex_array(FILE *fp, byte *arr, size_t arr_size) {
-  for (size_t i = 0; i < arr_size; i++) {
-    fprintf(fp, "%.2x ", arr[i]);
-  }
-}
-
 #define EXPECT_EQUALS_BYTES(buf, arr)                                          \
   ASSERT_MEM_EQ(arr, (buf)->address, sizeof arr)
 
@@ -558,16 +552,16 @@ void Testing_print_hex_array(FILE *fp, byte *arr, size_t arr_size) {
     Buffer_deinit(&buf);                                                       \
   } while (0)
 
-ASTNode *Testing_list1(ASTNode *item0) {
+ASTNode *list1(ASTNode *item0) {
   return AST_new_pair(item0, AST_nil());
 }
 
-ASTNode *Testing_list2(ASTNode *item0, ASTNode *item1) {
-  return AST_new_pair(item0, Testing_list1(item1));
+ASTNode *list2(ASTNode *item0, ASTNode *item1) {
+  return AST_new_pair(item0, list1(item1));
 }
 
-ASTNode *Testing_unary_call(const char *name, ASTNode *arg) {
-  return Testing_list2(AST_new_symbol(name), arg);
+ASTNode *new_unary_call(const char *name, ASTNode *arg) {
+  return list2(AST_new_symbol(name), arg);
 }
 
 // End Testing
@@ -777,7 +771,7 @@ TEST compile_nil(Buffer *buf) {
 }
 
 TEST compile_unary_add1(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("add1", AST_new_integer(123));
+  ASTNode *node = new_unary_call("add1", AST_new_integer(123));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov rax, imm(123); add rax, imm(1); ret
@@ -792,8 +786,8 @@ TEST compile_unary_add1(Buffer *buf) {
 }
 
 TEST compile_unary_add1_nested(Buffer *buf) {
-  ASTNode *node = Testing_unary_call(
-      "add1", Testing_unary_call("add1", AST_new_integer(123)));
+  ASTNode *node = new_unary_call(
+      "add1", new_unary_call("add1", AST_new_integer(123)));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov rax, imm(123); add rax, imm(1); add rax, imm(1); ret
@@ -809,7 +803,7 @@ TEST compile_unary_add1_nested(Buffer *buf) {
 }
 
 TEST compile_unary_sub1(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("sub1", AST_new_integer(123));
+  ASTNode *node = new_unary_call("sub1", AST_new_integer(123));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov rax, imm(123); sub rax, imm(1); ret
@@ -824,7 +818,7 @@ TEST compile_unary_sub1(Buffer *buf) {
 }
 
 TEST compile_unary_integer_to_char(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("integer->char", AST_new_integer(97));
+  ASTNode *node = new_unary_call("integer->char", AST_new_integer(97));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov rax, imm(97); shl rax, 6; or rax, 0xf; ret
@@ -839,7 +833,7 @@ TEST compile_unary_integer_to_char(Buffer *buf) {
 }
 
 TEST compile_unary_char_to_integer(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("char->integer", AST_new_char('a'));
+  ASTNode *node = new_unary_call("char->integer", AST_new_char('a'));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // mov rax, imm('a'); shr rax, 6; ret
@@ -854,7 +848,7 @@ TEST compile_unary_char_to_integer(Buffer *buf) {
 }
 
 TEST compile_unary_nilp_with_nil_returns_true(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("nil?", AST_nil());
+  ASTNode *node = new_unary_call("nil?", AST_nil());
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 2f 00 00 00    mov    rax,0x2f
@@ -876,7 +870,7 @@ TEST compile_unary_nilp_with_nil_returns_true(Buffer *buf) {
 }
 
 TEST compile_unary_nilp_with_non_nil_returns_false(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("nil?", AST_new_integer(5));
+  ASTNode *node = new_unary_call("nil?", AST_new_integer(5));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 14 00 00 00    mov    rax,0x14
@@ -898,7 +892,7 @@ TEST compile_unary_nilp_with_non_nil_returns_false(Buffer *buf) {
 }
 
 TEST compile_unary_zerop_with_zero_returns_true(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("zero?", AST_new_integer(0));
+  ASTNode *node = new_unary_call("zero?", AST_new_integer(0));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 00 00 00 00    mov    rax,0x0
@@ -920,7 +914,7 @@ TEST compile_unary_zerop_with_zero_returns_true(Buffer *buf) {
 }
 
 TEST compile_unary_zerop_with_non_zero_returns_false(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("zero?", AST_new_integer(5));
+  ASTNode *node = new_unary_call("zero?", AST_new_integer(5));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 14 00 00 00    mov    rax,0x14
@@ -942,7 +936,7 @@ TEST compile_unary_zerop_with_non_zero_returns_false(Buffer *buf) {
 }
 
 TEST compile_unary_not_with_false_returns_true(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("not", AST_new_bool(false));
+  ASTNode *node = new_unary_call("not", AST_new_bool(false));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 1f 00 00 00    mov    rax,0x1f
@@ -964,7 +958,7 @@ TEST compile_unary_not_with_false_returns_true(Buffer *buf) {
 }
 
 TEST compile_unary_not_with_non_false_returns_false(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("not", AST_new_integer(5));
+  ASTNode *node = new_unary_call("not", AST_new_integer(5));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 14 00 00 00    mov    rax,0x14
@@ -986,7 +980,7 @@ TEST compile_unary_not_with_non_false_returns_false(Buffer *buf) {
 }
 
 TEST compile_unary_integerp_with_integer_returns_true(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("integer?", AST_new_integer(5));
+  ASTNode *node = new_unary_call("integer?", AST_new_integer(5));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 14 00 00 00    mov    rax,0x14
@@ -1009,7 +1003,7 @@ TEST compile_unary_integerp_with_integer_returns_true(Buffer *buf) {
 }
 
 TEST compile_unary_integerp_with_non_integer_returns_false(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("integer?", AST_nil());
+  ASTNode *node = new_unary_call("integer?", AST_nil());
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 2f 00 00 00    mov    rax,0x2f
@@ -1032,7 +1026,7 @@ TEST compile_unary_integerp_with_non_integer_returns_false(Buffer *buf) {
 }
 
 TEST compile_unary_booleanp_with_boolean_returns_true(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("boolean?", AST_new_bool(true));
+  ASTNode *node = new_unary_call("boolean?", AST_new_bool(true));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 9f 00 00 00    mov    rax,0x9f
@@ -1055,7 +1049,7 @@ TEST compile_unary_booleanp_with_boolean_returns_true(Buffer *buf) {
 }
 
 TEST compile_unary_booleanp_with_non_boolean_returns_false(Buffer *buf) {
-  ASTNode *node = Testing_unary_call("boolean?", AST_new_integer(5));
+  ASTNode *node = new_unary_call("boolean?", AST_new_integer(5));
   int compile_result = Compile_function(buf, node);
   ASSERT_EQ(compile_result, 0);
   // 0:  48 c7 c0 14 00 00 00    mov    rax,0x14
