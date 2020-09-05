@@ -6,9 +6,14 @@ date: 2020-09-02 00:45:00 PDT
 
 ([previous]({% link _posts/2020-08-31-compiling-a-lisp-2.md %}))
 
-In today's relatively short post, we'll add the rest of the immediate types.
-Encoding them is not as straightforward as with integers, but I'll include a
-small diagram to help out.
+Welcome back to the "Compiling a Lisp" series. Last time, we compiled integer
+literals. In today's relatively short post, we'll add the rest of the immediate
+types. Our programs will look like this:
+
+* `'a'`
+* `true`
+* `false`
+* `nil` or `()`
 
 In addition, since we're not adding too much exciting stuff today, I made
 writing tests a little bit easier by adding *fixtures*. Now, if we want, we can

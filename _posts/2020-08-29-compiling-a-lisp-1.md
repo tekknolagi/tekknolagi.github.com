@@ -6,10 +6,10 @@ date: 2020-08-29 20:49:00 PDT
 
 ([previous]({% link _posts/2020-08-29-compiling-a-lisp-0.md %}))
 
-Welcome to the first post. We're going to write a small program today. Before
-we actually compile anything, though, let's build up a bit of a foundation for
-code execution. That way, we can see the code compile *and* run and be
-satisfied with the results of both.
+Welcome to the first post in the "Compiling a Lisp" series. We're going to
+write a small program today. Before we actually compile anything, though, let's
+build up a bit of a foundation for code execution. That way, we can see the
+code compile *and* run *and* be satisfied with the results of both.
 
 Instead of compiling to disk, like most compilers you may be familiar with
 (GCC, Clang, DMD, Python, etc), we're going to compile in memory. This means

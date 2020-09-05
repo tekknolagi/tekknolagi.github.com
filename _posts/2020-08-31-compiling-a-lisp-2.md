@@ -6,8 +6,9 @@ date: 2020-08-31 09:46:00 PDT
 
 ([previous]({% link _posts/2020-08-29-compiling-a-lisp-1.md %}))
 
-Welcome back. Today we're going to get some satisfaction by adding the first
-part of our language: integers. Our programs will look like this:
+Welcome back to the "Compiling a Lisp" series. Last time we made a small code
+execution demo. Today we're going to add the first part of our language:
+integer literals. Our programs will look like this:
 
 * `123`
 * `-10`
