@@ -7,13 +7,15 @@ date: 2020-09-04 09:45:00 PDT
 ([previous]({% link _posts/2020-09-02-compiling-a-lisp-3.md %}))
 
 Last time, we finished adding the rest of the constants as tagged pointer
-immediates. Since it's not very useful to have only values, without a way to
-operate on them, we're going to add some *primitive unary functions*.
+immediates. Since it's not very useful to have only values (no way to operate
+on them), we're going to add some *primitive unary functions*.
 
 "Primitive" means here that they are built into the compiler, so we won't
 actually compile the call to an assembly procedure call. This is also called a
 *compiler intrinsic*. "Unary" means the functions will take only one argument.
-"Function" means the usual, I guess.
+"Function" is a bit of a misnomer because these functions won't be real values
+that you can pass around as variables. You'll only be able to use them as
+literal names in calls.
 
 Though we're still not adding a reader/parser, we can imagine the syntax for
 this looks like the following:
@@ -22,7 +24,7 @@ this looks like the following:
 (integer? (integer->char (add1 96)))
 ```
 
-Ooh, *nested* function calls and subexpressions.
+Today we also tackle *nested* function calls and subexpressions.
 
 Adding function calls will require adding a new compiler datastructure, an
 addition to the AST, but *not* to the compiled code. The compiled code will
@@ -86,42 +88,42 @@ whatever you like. Regardless of name, they could be represented as a C struct
 like this:
 
 ```c
-struct object {
-  struct object *car;
-  struct object *cdr;
-};
+typedef struct Pair {
+  ASTNode *car;
+  ASTNode *cdr;
+} Pair;
 ```
 
-This is useful for holding pairs of integers (coordinates, complex numbers,
-...) but it is also incredibly useful for making linked lists. Linked lists in
-Lisp are comprised of a `car` holding an object and the `cdr` holding another
-list. Eventually the last `cdr` holds `nil`, signifying the end of the list.
-Take a look at this handy diagram.
+This is useful for holding pairs of objects (think coordinates, complex
+numbers, ...) but it is also incredibly useful for making linked lists. Linked
+lists in Lisp are comprised of a `car` holding an object and the `cdr` holding
+another list. Eventually the last `cdr` holds `nil`, signifying the end of the
+list. Take a look at this handy diagram.
 
 <figure style="display: block; margin: 0 auto; max-width: 400px;" >
   <img style="max-width: 400px;" src="/assets/img/lisp/03_lists_cons.svg" />
-  <figcaption>Fig. 1 - Cons cell diagram of our above list, courtesy of
-              Wikipedia.</figcaption>
+  <figcaption>Fig. 1 - Cons cell list, courtesy of Wikipedia.</figcaption>
 </figure>
 
 This represents the list `(list 42 69 613)`, which can also be denoted `(cons
 42 (cons 69 (cons 613 nil)))`.
 
-These lists can be used to represent the syntax trees of Lisp (a property
-called [homoiconicity](https://en.wikipedia.org/wiki/Homoiconicity)), and
-therefore we'll need to implement pairs to compile Lisp programs.
+We'll use these lists to represent the syntax trees for Lisp, so we'll need to
+implement pairs to compile list programs.
 
 ### Implementing pairs
 
 In previous posts we implemented the immediate types the same way in the
 compiler and in the compiled code. I originally wrote this post doing the same
-thing: manually laying out struct fields myself, reading and writing from
-offsets manually. The motivation was to get you familiar with the memory
-layout, but ultimately it ended up being too much content too fast.
+thing: manually laying out object offsets myself, reading and writing from
+objects manually. The motivation was to get you familiar with the memory
+layout in the compiled code, but ultimately it ended up being too much content
+too fast. We'll get to memory layouts when we start allocating pairs in the
+compiled code.
 
-We're going to use C structs instead. This makes the code a little bit easier
-to read, but the interface is the same, as far as the compiler is concerned.
-We'll still tag the pointers, though.
+In the compiler we're going to use C structs instead of manual memory layout.
+This makes the code a little bit easier to read. We'll still tag the pointers,
+though.
 
 ```c
 const unsigned int kPairTag = 0x1;        // 0b001
@@ -228,7 +230,7 @@ reference to an object, **make sure you own it**. Otherwise you'll get a double
 free. In practice this shouldn't bite us too much because each program is one
 big tree.
 
-### Symbols
+### Implementing symbols
 
 We also need symbols! I mean, we could try mapping all the functions we need to
 integers, but that wouldn't be very fun. Who wants to try and debug a program
@@ -421,15 +423,27 @@ an error. We don't have any non-aborting error cases just yet, but I got tired
 of writing `if (result != 0) return result;` over and over again.
 
 Note that there is no runtime error checking. Our compiler will allow `(add1
-nil)` to slip through and do nothing. This isn't ideal, but we don't have the
-facilities for error reporting just yet.
+nil)` to slip through and mangle the pointer. This isn't ideal, but we don't
+have the facilities for error reporting just yet.
 
-`sub1` is similar, except it uses the `sub` instruction. You could also just
-use `add` with the immediate representation of `-1`.
+`sub1` is similar to `add1`, except it uses the `sub` instruction. You could
+also just use `add` with the immediate representation of `-1`.
 
 `integer->char` is different. We have to change the tag of the object. In order
 to do that, we shift the integer left and then drop the character tag onto it.
 This is made simple by integers having a `0b00` tag (nothing to mask out).
+
+Here's a small diagram showing the transitions when converting `97` to `'a'`:
+
+```
+High                                                           Low
+0000000000000000000000000000000000000000000000000000000[1100001]00  Integer
+0000000000000000000000000000000000000000000000000[1100001]00000000  Shifted
+0000000000000000000000000000000000000000000000000[1100001]00001111  Character
+```
+
+where the number in enclosed in `[`brackets`]` is `97`. And here's the code to
+emit assembly that does just that:
 
 ```c
     if (AST_symbol_matches(callable, "integer->char")) {
@@ -455,13 +469,7 @@ to use `cmp` *and* `setcc`. The basic idea is:
 * If they're equal (this means the result was 0), set `al` to 1
 * Shift left and tag it with the bool tag
 
-The `cmp` leaves a bit set in the flags register, which `setcc` then checks.
-`setcc`, by the way, is the name for the group of instructions that set a
-register if some condition happened. It took me a long time to realize that
-since people normally write `sete` or `setnz` or something. And *cc* means
-"condition code".
-
-And `al` is the name for the lower 8 bits of `rax`. There's also `ah` (for the
+`al` is the name for the lower 8 bits of `rax`. There's also `ah` (for the
 next 8 bits, but not the highest bits), `cl`/`ch`, etc.
 
 ```c
@@ -475,6 +483,12 @@ next 8 bits, but not the highest bits), `cl`/`ch`, etc.
       return 0;
     }
 ```
+
+The `cmp` leaves a bit set (ZF) in the flags register, which `setcc` then
+checks. `setcc`, by the way, is the name for the group of instructions that set
+a register if some condition happened. It took me a long time to realize that
+since people normally write `sete` or `setnz` or something. And *cc* means
+"condition code".
 
 If you want to simplify your life --- we're going to do a lot of comparisons
 today -- we can extract that into a function that compares `rax` with some
