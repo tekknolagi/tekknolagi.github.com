@@ -1,7 +1,7 @@
 ---
 title: "Compiling a Lisp: Primitive unary functions"
 layout: post
-date: 2020-09-04 09:45:00 PDT
+date: 2020-09-05 14:00:00 PDT
 ---
 
 ([previous]({% link _posts/2020-09-02-compiling-a-lisp-3.md %}))
