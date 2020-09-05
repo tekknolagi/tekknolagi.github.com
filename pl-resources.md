@@ -106,6 +106,8 @@ a whole lot.
   * NOTE: This has one [bug](https://github.com/gb-archive/salvage/issues/1)
     that someone and I independently found. The [original repo](https://github.com/phire/Kea)
     has fixed the bug but not the page linked above.
+* This [summary blog post](https://dandigit.com/posts/bigboy-writing-a-gameboy-emulator)
+  explaining GPU modes
 * And of course [/r/emudev](https://old.reddit.com/r/EmuDev/)
 
 [This](https://nullprogram.com/blog/2017/11/03/) is a potentially fun way to
