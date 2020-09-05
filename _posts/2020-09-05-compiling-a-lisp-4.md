@@ -419,7 +419,7 @@ representation of 1, ie `1 << 2`. Think about why! When you have an idea, click
 the footnote.[^2]
 
 If you're wondering what the underscore (`_`) function is, it's a macro that I
-made to test the return value of the compile expression and return if ther was
+made to test the return value of the compile expression and return if there was
 an error. We don't have any non-aborting error cases just yet, but I got tired
 of writing `if (result != 0) return result;` over and over again.
 
