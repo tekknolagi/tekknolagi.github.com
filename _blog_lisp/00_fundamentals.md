@@ -15,7 +15,7 @@ write V1 in C (based on these two series of [blog](http://www.lwh.jp/lisp/)
 After much pointer shenanigans and an unholy
 amount of curly braces later, it worked &mdash; but was significantly longer
 and harder to read than a Lisp interpreter should be. So I decided to write V2
-in [OCaml](http://www.ocaml.org/), a functional programming language descended
+in [OCaml](https://www.ocaml.org/), a functional programming language descended
 from [SML](https://en.wikipedia.org/wiki/Standard_ML). The SML family of
 languages has some features like pattern matching and an extensive type system
 that make writing interpreters and compilers an absolute dream.
@@ -261,7 +261,7 @@ Next up, [booleans]({% link _blog_lisp/01_booleans.md %}).
     Here are some other resources or series you may find helpful in writing a
     Lisp interpreter.
 
-    * [lwh.jp](http://www.lwh.jp/lisp/) (C)
+    * [lwh.jp](https://www.lwh.jp/lisp/) (C)
     * [*Scheme from Scratch* by Peter Michaux](http://peter.michaux.ca/articles/scheme-from-scratch-introduction) (C)
     * [*Build Your Own Lisp* by Daniel Holden](http://buildyourownlisp.com/contents) (C)
     * [*Lisp interpreter in 90 lines of C++* by Anthony C. Hay](http://howtowriteaprogram.blogspot.com/2010/11/lisp-interpreter-in-90-lines-of-c.html)

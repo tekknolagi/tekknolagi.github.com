@@ -196,8 +196,8 @@ Thank you so much!
 
 [OLPC]: https://en.wikipedia.org/wiki/One_Laptop_per_Child
 [Pippy]: http://wiki.laptop.org/go/Pippy
-[Margaret]: http://teragr.am
-[SICP]: https://mitpress.mit.edu/sicp/full-text/book/book.html
+[Margaret]: https://teragr.am
+[SICP]: https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html
 [StackOverflow]: https://stackoverflow.com/q/6887471/569183
 
 <br />
