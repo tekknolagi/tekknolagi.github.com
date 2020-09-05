@@ -6,9 +6,10 @@ date: 2020-09-05 14:00:00 PDT
 
 ([previous]({% link _posts/2020-09-02-compiling-a-lisp-3.md %}))
 
-Last time, we finished adding the rest of the constants as tagged pointer
-immediates. Since it's not very useful to have only values (no way to operate
-on them), we're going to add some *primitive unary functions*.
+Welcome back to the "Compiling a Lisp" series. Last time, we finished adding
+the rest of the constants as tagged pointer immediates. Since it's not very
+useful to have only values (no way to operate on them), we're going to add some
+*primitive unary functions*.
 
 "Primitive" means here that they are built into the compiler, so we won't
 actually compile the call to an assembly procedure call. This is also called a
