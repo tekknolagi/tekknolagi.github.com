@@ -180,12 +180,12 @@ Next up, [ASTs]({% link _blog_lisp/08_asts.md %}).
 [^opsem]:
     There is a formal and programming-language independent way to specify the
     expected behavior of a programming language called [Big-Step Operational
-    Semantics](http://www.cs.tufts.edu/comp/105/lectures/opsem.pdf). With this, it
-    would have been clear that `pair` should definitely evaluate each of its
-    arguments, then form a `Pair` of the values. We could completely write out the
-    expected behavior of this Lisp before ever sitting down to write the
-    interpreter, and that would be great in theory, but it would mean a couple of
-    bad things for us in practice:
+    Semantics](http://web.archive.org/web/20150323191125/https://www.cs.tufts.edu/comp/105/lectures/opsem.pdf).
+    With this, it would have been clear that `pair` should definitely evaluate
+    each of its arguments, then form a `Pair` of the values. We could
+    completely write out the expected behavior of this Lisp before ever sitting
+    down to write the interpreter, and that would be great in theory, but it
+    would mean a couple of bad things for us in practice:
 
     * People reading this series would not be able to jump right in and learn about
     building a simple interpreter

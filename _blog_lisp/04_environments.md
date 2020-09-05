@@ -125,7 +125,7 @@ along.
 
 So right now we've got a rather flat model for environments. Most traditional
 Lisps and other programming languages have environments as groups of
-[frames](https://mitpress.mit.edu/sicp/full-text/book/book-Z-H-21.html#%_sec_3.2),
+[frames](http://web.archive.org/web/20160305071303/https://mitpress.mit.edu/sicp/full-text/book/book-Z-H-21.html),
 which themselves group variables together. That's really helpful when the
 programming language allows for variable mutation. In this Lisp, however, all
 variables will be immutable. This makes our jobs as language implementers

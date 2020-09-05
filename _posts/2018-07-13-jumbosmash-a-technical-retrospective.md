@@ -10,7 +10,7 @@ co_authors: Zach Kirsch
 This past year, I had the honor and pleasure to work on the JumboSmash app with
 
 * [Winnona DeSombre](https://winnona.github.io/)
-* [Shanshan Duan](https://shanshanduan.info/)
+* Shanshan Duan
 * [Chris Gregory](http://chrisgregory.me/)
 * [Zach Kirsch](http://zachkirsch.com/)
 * [Emily Lin](http://emilyjlin.com/)
@@ -418,7 +418,7 @@ formats the full name from the `preferred_name` and `surname` constituent
 parts. Every access of `profile_reacts` makes a database query.  Perhaps you
 can see where this is going...
 
-[python-properties]: http://stackabuse.com/python-properties/
+[python-properties]: http://web.archive.org/web/20180717030835/http://stackabuse.com/python-properties/
 
 A call to `serialize(some_user)` makes the following queries:
 
