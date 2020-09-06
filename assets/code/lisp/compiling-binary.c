@@ -107,7 +107,7 @@ void Buffer_init(Buffer *result, size_t capacity) {
 }
 
 void Buffer_deinit(Buffer *buf) {
-  munmap(buf->address, buf->len);
+  munmap(buf->address, buf->capacity);
   buf->address = NULL;
   buf->len = 0;
   buf->capacity = 0;
