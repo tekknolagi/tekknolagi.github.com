@@ -128,7 +128,7 @@ though.
 
 ```c
 const unsigned int kPairTag = 0x1;        // 0b001
-const uword kHeapTagMask = ((uword)0x7);  // 0b000...001
+const uword kHeapTagMask = ((uword)0x7);  // 0b000...0111
 const uword kHeapPtrMask = ~kHeapTagMask; // 0b1111...1000
 ```
 
