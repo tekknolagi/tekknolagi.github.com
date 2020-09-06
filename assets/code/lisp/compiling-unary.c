@@ -107,7 +107,7 @@ void Buffer_init(Buffer *result, size_t capacity) {
 }
 
 void Buffer_deinit(Buffer *buf) {
-  munmap(buf->address, buf->len);
+  munmap(buf->address, buf->capacity);
   buf->address = NULL;
   buf->len = 0;
   buf->capacity = 0;
@@ -133,7 +133,7 @@ void Buffer_ensure_capacity(Buffer *buf, word additional_capacity) {
       max(buf->capacity * 2, buf->capacity + additional_capacity);
   byte *address = Buffer_alloc_writable(new_capacity);
   memcpy(address, buf->address, buf->len);
-  int result = munmap(buf->address, buf->len);
+  int result = munmap(buf->address, buf->capacity);
   assert(result == 0 && "munmap failed");
   buf->address = address;
   buf->capacity = new_capacity;
