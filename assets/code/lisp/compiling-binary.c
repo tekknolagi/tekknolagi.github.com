@@ -322,6 +322,16 @@ void Emit_sub_reg_indirect(Buffer *buf, Register dst, Indirect src) {
   Buffer_write8(buf, disp8(src.disp));
 }
 
+// mul rax, [src+disp]
+// or
+// mul disp(%src), %rax
+void Emit_mul_reg_indirect(Buffer *buf, Indirect src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0xf7);
+  Buffer_write8(buf, 0x60 + src.reg);
+  Buffer_write8(buf, disp8(src.disp));
+}
+
 // End Emit
 
 // AST
@@ -551,6 +561,17 @@ int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
                               /*src=*/kRax);
       _(Compile_expr(buf, operand1(args), stack_index - kWordSize));
       Emit_sub_reg_indirect(buf, /*dst=*/kRax, /*src=*/Ind(kRbp, stack_index));
+      return 0;
+    }
+    if (AST_symbol_matches(callable, "*")) {
+      _(Compile_expr(buf, operand2(args), stack_index));
+      // Remove the tag so that the result is still only tagged with 0b00
+      // instead of 0b0000
+      Emit_shr_reg_imm8(buf, kRax, kIntegerShift);
+      Emit_store_reg_indirect(buf, /*dst=*/Ind(kRbp, stack_index),
+                              /*src=*/kRax);
+      _(Compile_expr(buf, operand1(args), stack_index - kWordSize));
+      Emit_mul_reg_indirect(buf, /*src=*/Ind(kRbp, stack_index));
       return 0;
     }
   }
@@ -1292,6 +1313,30 @@ TEST compile_binary_minus_nested(Buffer *buf) {
   PASS();
 }
 
+TEST compile_binary_mul(Buffer *buf) {
+  ASTNode *node = new_binary_call("*", AST_new_integer(5), AST_new_integer(8));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ_FMT(Object_encode_integer(40), result, "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_binary_mul_nested(Buffer *buf) {
+  ASTNode *node = new_binary_call(
+      "*", new_binary_call("*", AST_new_integer(1), AST_new_integer(2)),
+      new_binary_call("*", AST_new_integer(3), AST_new_integer(4)));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ_FMT(Object_encode_integer(24), result, "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+
 SUITE(object_tests) {
   RUN_TEST(encode_positive_integer);
   RUN_TEST(encode_negative_integer);
@@ -1342,6 +1387,8 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_binary_plus_nested);
   RUN_BUFFER_TEST(compile_binary_minus);
   RUN_BUFFER_TEST(compile_binary_minus_nested);
+  RUN_BUFFER_TEST(compile_binary_mul);
+  RUN_BUFFER_TEST(compile_binary_mul_nested);
 }
 
 // End Tests
