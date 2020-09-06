@@ -332,6 +332,16 @@ void Emit_mul_reg_indirect(Buffer *buf, Indirect src) {
   Buffer_write8(buf, disp8(src.disp));
 }
 
+// cmp left, [right+disp]
+// or
+// cmp disp(%right), %left
+void Emit_cmp_reg_indirect(Buffer *buf, Register left, Indirect right) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0x3b);
+  Buffer_write8(buf, 0x40 + left * 8 + right.reg);
+  Buffer_write8(buf, disp8(right.disp));
+}
+
 // End Emit
 
 // AST
@@ -572,6 +582,18 @@ int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
                               /*src=*/kRax);
       _(Compile_expr(buf, operand1(args), stack_index - kWordSize));
       Emit_mul_reg_indirect(buf, /*src=*/Ind(kRbp, stack_index));
+      return 0;
+    }
+    if (AST_symbol_matches(callable, "=")) {
+      _(Compile_expr(buf, operand2(args), stack_index));
+      Emit_store_reg_indirect(buf, /*dst=*/Ind(kRbp, stack_index),
+                              /*src=*/kRax);
+      _(Compile_expr(buf, operand1(args), stack_index - kWordSize));
+      Emit_cmp_reg_indirect(buf, kRax, Ind(kRbp, stack_index));
+      Emit_mov_reg_imm32(buf, kRax, 0);
+      Emit_setcc_imm8(buf, kEqual, kAl);
+      Emit_shl_reg_imm8(buf, kRax, kBoolShift);
+      Emit_or_reg_imm8(buf, kRax, kBoolTag);
       return 0;
     }
   }
@@ -1337,6 +1359,28 @@ TEST compile_binary_mul_nested(Buffer *buf) {
   PASS();
 }
 
+TEST compile_binary_eq_with_same_address_returns_true(Buffer *buf) {
+  ASTNode *node = new_binary_call("=", AST_new_integer(5), AST_new_integer(5));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ_FMT(Object_true(), result, "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_binary_eq_with_different_address_returns_false(Buffer *buf) {
+  ASTNode *node = new_binary_call("=", AST_new_integer(5), AST_new_integer(4));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ_FMT(Object_false(), result, "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+
 SUITE(object_tests) {
   RUN_TEST(encode_positive_integer);
   RUN_TEST(encode_negative_integer);
@@ -1389,6 +1433,8 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_binary_minus_nested);
   RUN_BUFFER_TEST(compile_binary_mul);
   RUN_BUFFER_TEST(compile_binary_mul_nested);
+  RUN_BUFFER_TEST(compile_binary_eq_with_same_address_returns_true);
+  RUN_BUFFER_TEST(compile_binary_eq_with_different_address_returns_false);
 }
 
 // End Tests
