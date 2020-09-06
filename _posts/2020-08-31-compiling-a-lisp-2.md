@@ -187,7 +187,7 @@ typedef unsigned char byte;
 
 typedef enum {
   kWritable,
-  kExecutable,
+  kExecutable
 } BufferState;
 
 typedef struct {
@@ -236,6 +236,8 @@ going to `memcpy` whole blocks in. So let's add some APIs for incremental
 writing.
 
 ```c
+byte Buffer_at8(Buffer *buf, size_t pos) { return buf->address[pos]; }
+
 void Buffer_at_put8(Buffer *buf, size_t pos, byte b) { buf->address[pos] = b; }
 ```
 
@@ -315,7 +317,7 @@ typedef enum {
   kRsp,
   kRbp,
   kRsi,
-  kRdi,
+  kRdi
 } Register;
 
 static const byte kRexPrefix = 0x48;
