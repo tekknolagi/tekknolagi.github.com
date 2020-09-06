@@ -1,6 +1,6 @@
 OUT = bin
 CFLAGS = -O0 -g -Wall -Wextra -pedantic -fno-strict-aliasing
-TARGETS = mmap-demo compiling-integers compiling-immediates compiling-unary
+TARGETS = mmap-demo compiling-integers compiling-immediates compiling-unary elf-demo
 BINARIES = $(addprefix $(OUT)/, $(TARGETS))
 TESTS = $(addprefix test-, $(TARGETS))
 
@@ -20,6 +20,9 @@ clean:
 
 $(OUT)/%: %.c greatest.h
 	$(CC) $(CFLAGS) $< -o $@
+
+$(OUT)/elf-demo: elf-demo.c greatest.h
+	$(CC) $(CFLAGS) $< -o $@ -lelf
 
 test-%: $(OUT)/%
 	./$<
