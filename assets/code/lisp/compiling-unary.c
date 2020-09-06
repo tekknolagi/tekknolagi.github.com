@@ -39,7 +39,7 @@ const unsigned int kBoolShift = 7;
 
 const unsigned int kPairTag = 0x1;        // 0b001
 const unsigned int kSymbolTag = 0x5;      // 0b101
-const uword kHeapTagMask = ((uword)0x7);  // 0b000...001
+const uword kHeapTagMask = ((uword)0x7);  // 0b000...111
 const uword kHeapPtrMask = ~kHeapTagMask; // 0b1111...1000
 
 uword Object_encode_integer(word value) {
