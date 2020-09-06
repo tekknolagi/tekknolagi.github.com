@@ -202,7 +202,7 @@ typedef struct Indirect {
   int8_t disp;
 } Indirect;
 
-Indirect MkIndirect(Register reg, int8_t disp) {
+Indirect Ind(Register reg, int8_t disp) {
   return (Indirect){.reg = reg, .disp = disp};
 }
 
@@ -292,16 +292,32 @@ void Emit_setcc_imm8(Buffer *buf, Condition cond, PartialRegister dst) {
 
 uint8_t disp8(int8_t disp) { return disp >= 0 ? disp : 0x100 + disp; }
 
-void Emit_mov_reg_to_mem_at_reg(Buffer *buf, Indirect dst, Register src) {
+// mov [dst+disp], src
+// or
+// mov %src, disp(%dst)
+void Emit_store_reg_indirect(Buffer *buf, Indirect dst, Register src) {
   Buffer_write8(buf, kRexPrefix);
   Buffer_write8(buf, 0x89);
   Buffer_write8(buf, 0x40 + src * 8 + dst.reg);
   Buffer_write8(buf, disp8(dst.disp));
 }
 
-void Emit_add_reg_mem_at_reg(Buffer *buf, Register dst, Indirect src) {
+// add dst, [src+disp]
+// or
+// add disp(%src), %dst
+void Emit_add_reg_indirect(Buffer *buf, Register dst, Indirect src) {
   Buffer_write8(buf, kRexPrefix);
   Buffer_write8(buf, 0x03);
+  Buffer_write8(buf, 0x40 + dst * 8 + src.reg);
+  Buffer_write8(buf, disp8(src.disp));
+}
+
+// sub dst, [src+disp]
+// or
+// sub disp(%src), %dst
+void Emit_sub_reg_indirect(Buffer *buf, Register dst, Indirect src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0x2b);
   Buffer_write8(buf, 0x40 + dst * 8 + src.reg);
   Buffer_write8(buf, disp8(src.disp));
 }
@@ -523,11 +539,18 @@ int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
     }
     if (AST_symbol_matches(callable, "+")) {
       _(Compile_expr(buf, operand2(args), stack_index));
-      Emit_mov_reg_to_mem_at_reg(buf, /*dst=*/MkIndirect(kRbp, stack_index),
-                                 /*src=*/kRax);
+      Emit_store_reg_indirect(buf, /*dst=*/Ind(kRbp, stack_index),
+                              /*src=*/kRax);
       _(Compile_expr(buf, operand1(args), stack_index - kWordSize));
-      Emit_add_reg_mem_at_reg(buf, /*dst=*/kRax,
-                              /*src=*/MkIndirect(kRbp, stack_index));
+      Emit_add_reg_indirect(buf, /*dst=*/kRax, /*src=*/Ind(kRbp, stack_index));
+      return 0;
+    }
+    if (AST_symbol_matches(callable, "-")) {
+      _(Compile_expr(buf, operand2(args), stack_index));
+      Emit_store_reg_indirect(buf, /*dst=*/Ind(kRbp, stack_index),
+                              /*src=*/kRax);
+      _(Compile_expr(buf, operand1(args), stack_index - kWordSize));
+      Emit_sub_reg_indirect(buf, /*dst=*/kRax, /*src=*/Ind(kRbp, stack_index));
       return 0;
     }
   }
@@ -1213,6 +1236,62 @@ TEST compile_binary_plus_nested(Buffer *buf) {
   PASS();
 }
 
+TEST compile_binary_minus(Buffer *buf) {
+  ASTNode *node = new_binary_call("-", AST_new_integer(5), AST_new_integer(8));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  byte expected[] = {
+      // 0:  48 c7 c0 20 00 00 00    mov    rax,0x20
+      0x48, 0xc7, 0xc0, 0x20, 0x00, 0x00, 0x00,
+      // 7:  48 89 45 f8             mov    QWORD PTR [rbp-0x8],rax
+      0x48, 0x89, 0x45, 0xf8,
+      // b:  48 c7 c0 14 00 00 00    mov    rax,0x14
+      0x48, 0xc7, 0xc0, 0x14, 0x00, 0x00, 0x00,
+      // 12: 48 2b 45 f8             add    rax,QWORD PTR [rbp-0x8]
+      0x48, 0x2b, 0x45, 0xf8};
+  EXPECT_FUNCTION_CONTAINS_CODE(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_encode_integer(-3));
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_binary_minus_nested(Buffer *buf) {
+  ASTNode *node = new_binary_call(
+      "-", new_binary_call("-", AST_new_integer(5), AST_new_integer(1)),
+      new_binary_call("-", AST_new_integer(4), AST_new_integer(3)));
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  byte expected[] = {
+      // 4:  48 c7 c0 0c 00 00 00    mov    rax,0xc
+      0x48, 0xc7, 0xc0, 0x0c, 0x00, 0x00, 0x00,
+      // b:  48 89 45 f8             mov    QWORD PTR [rbp-0x8],rax
+      0x48, 0x89, 0x45, 0xf8,
+      // f:  48 c7 c0 10 00 00 00    mov    rax,0x10
+      0x48, 0xc7, 0xc0, 0x10, 0x00, 0x00, 0x00,
+      // 16: 48 2b 45 f8             add    rax,QWORD PTR [rbp-0x8]
+      0x48, 0x2b, 0x45, 0xf8,
+      // 1a: 48 89 45 f8             mov    QWORD PTR [rbp-0x8],rax
+      0x48, 0x89, 0x45, 0xf8,
+      // 1e: 48 c7 c0 04 00 00 00    mov    rax,0x4
+      0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
+      // 25: 48 89 45 f0             mov    QWORD PTR [rbp-0x10],rax
+      0x48, 0x89, 0x45, 0xf0,
+      // 29: 48 c7 c0 14 00 00 00    mov    rax,0x14
+      0x48, 0xc7, 0xc0, 0x14, 0x00, 0x00, 0x00,
+      // 30: 48 2b 45 f0             add    rax,QWORD PTR [rbp-0x10]
+      0x48, 0x2b, 0x45, 0xf0,
+      // 34: 48 2b 45 f8             add    rax,QWORD PTR [rbp-0x8]
+      0x48, 0x2b, 0x45, 0xf8};
+  EXPECT_FUNCTION_CONTAINS_CODE(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ(result, Object_encode_integer(3));
+  AST_heap_free(node);
+  PASS();
+}
+
 SUITE(object_tests) {
   RUN_TEST(encode_positive_integer);
   RUN_TEST(encode_negative_integer);
@@ -1261,6 +1340,8 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_unary_booleanp_with_non_boolean_returns_false);
   RUN_BUFFER_TEST(compile_binary_plus);
   RUN_BUFFER_TEST(compile_binary_plus_nested);
+  RUN_BUFFER_TEST(compile_binary_minus);
+  RUN_BUFFER_TEST(compile_binary_minus_nested);
 }
 
 // End Tests
