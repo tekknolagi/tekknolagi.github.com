@@ -4,7 +4,7 @@ layout: post
 date: 2020-09-02 00:45:00 PDT
 ---
 
-([previous]({% link _posts/2020-08-31-compiling-a-lisp-2.md %}))
+*[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-08-31-compiling-a-lisp-2.md %})*
 
 Welcome back to the "Compiling a Lisp" series. Last time, we compiled integer
 literals. In today's relatively short post, we'll add the rest of the immediate

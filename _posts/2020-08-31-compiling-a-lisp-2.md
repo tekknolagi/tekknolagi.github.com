@@ -4,7 +4,7 @@ layout: post
 date: 2020-08-31 09:46:00 PDT
 ---
 
-([previous]({% link _posts/2020-08-29-compiling-a-lisp-1.md %}))
+*[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-08-29-compiling-a-lisp-1.md %})*
 
 Welcome back to the "Compiling a Lisp" series. Last time we made a small code
 execution demo. Today we're going to add the first part of our language:
@@ -561,7 +561,8 @@ I think there is also a way to use `greatest.h` to do setup and teardown so we
 don't have to do all that buffer machinery, but I haven't figured out an
 ergonomic way to do that yet.
 
-Next time on Dragon Ball Z, we'll compile some other immediate constants.
+Next time on Dragon Ball Z, we'll [compile some other immediate constants]({%
+link _posts/2020-09-02-compiling-a-lisp-3.md %}).
 
 
 <br />
