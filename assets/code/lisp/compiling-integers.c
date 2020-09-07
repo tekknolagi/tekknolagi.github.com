@@ -198,34 +198,8 @@ word Testing_execute_expr(Buffer *buf) {
   return function();
 }
 
-void Testing_print_hex_array(FILE *fp, byte *arr, size_t arr_size) {
-  for (size_t i = 0; i < arr_size; i++) {
-    fprintf(fp, "%.2x ", arr[i]);
-  }
-}
-
-void Testing_expect_buffer_equals_bytes(Buffer *buf, byte *arr,
-                                        size_t arr_size) {
-  if (buf->len < arr_size || buf->len > arr_size) {
-    fprintf(
-        stderr,
-        "NOT EQUAL. Expected array of size %ld but found array of size %ld.\n",
-        arr_size, buf->len);
-    return;
-  }
-  int result = memcmp(buf->address, arr, arr_size);
-  if (result == 0) {
-    return;
-  }
-  fprintf(stderr, "NOT EQUAL. Expected: ");
-  Testing_print_hex_array(stderr, arr, arr_size);
-  fprintf(stderr, "\n           Found:    ");
-  Testing_print_hex_array(stderr, buf->address, buf->len);
-  fprintf(stderr, "\n");
-}
-
 #define EXPECT_EQUALS_BYTES(buf, arr)                                          \
-  Testing_expect_buffer_equals_bytes((buf), (arr), sizeof arr)
+  ASSERT_MEM_EQ((arr), (buf)->address, sizeof arr)
 
 // End Testing
 
