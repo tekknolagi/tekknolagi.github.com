@@ -187,7 +187,7 @@ typedef unsigned char byte;
 
 typedef enum {
   kWritable,
-  kExecutable
+  kExecutable,
 } BufferState;
 
 typedef struct {
@@ -317,7 +317,7 @@ typedef enum {
   kRsp,
   kRbp,
   kRsi,
-  kRdi
+  kRdi,
 } Register;
 
 static const byte kRexPrefix = 0x48;
