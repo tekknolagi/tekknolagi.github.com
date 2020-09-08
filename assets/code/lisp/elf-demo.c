@@ -1,198 +1,141 @@
 // vim: set tabstop=2 shiftwidth=2 textwidth=79 expandtab:
+#include <assert.h>
 #include <err.h>
 #include <fcntl.h>
-#include <libelf.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-#define LOADADDR 0x08048000
-
 // clang-format off
 unsigned char code[] = {
-    // mov eax, 42 (0x2a)
-    0xb8, 0x2a, 0x00, 0x00, 0x00,
-    // ret
-    0xc3,
+  // mov rax, 60
+  0x48, 0xc7, 0xc0, 0x3c, 0x00, 0x00, 0x00,
+  // mov rdi, 42
+  0x48, 0xc7, 0xc7, 0x2a, 0x00, 0x00, 0x00,
+  // syscall
+  0x0f, 0x05,
 };
-
-char string_table[] = {
-  /* Offset 0 */ '\0',
-  /* Offset 1 */ '.', 'f', 'o', 'o', '\0',
-  /* Offset 6 */ '.', 's', 'h', 's', 't', 'r', 't', 'a', 'b', '\0',
-  /* Offset 16 */ 'm', 'a', 'i', 'n', '\0',
-  /* Offset 21 */ '.', 's', 'y', 'm', 't', 'a', 'b', '\0',
-};
-
 // clang-format on
+
+int db(int fd, unsigned char value) {
+  if (fd == -1)
+    return sizeof value;
+  return write(fd, &value, 1);
+}
+
+static const unsigned kBitsPerByte = 8;
+
+int dw(int fd, uint16_t value) {
+  if (fd == -1)
+    return sizeof value;
+  for (unsigned i = 0; i < sizeof value; i++) {
+    db(fd, (value >> (i * kBitsPerByte)) & 0xff);
+  }
+  return sizeof value;
+}
+
+int dd(int fd, uint32_t value) {
+  if (fd == -1)
+    return sizeof value;
+  for (unsigned i = 0; i < sizeof value; i++) {
+    db(fd, (value >> (i * kBitsPerByte)) & 0xff);
+  }
+  return sizeof value;
+}
+
+int dq(int fd, uint64_t value) {
+  if (fd == -1)
+    return sizeof value;
+  for (unsigned i = 0; i < sizeof value; i++) {
+    db(fd, (value >> (i * kBitsPerByte)) & 0xff);
+  }
+  return sizeof value;
+}
+
+typedef struct offsets {
+  int64_t entry;
+  int64_t phoff;
+  int64_t ehsize;
+  int64_t phentsize;
+  int64_t filesize;
+} offsets;
+
+offsets writeprogram(int fd, int64_t entry, int64_t phoff, int64_t ehsize,
+                     int64_t phentsize, int64_t filesize) {
+  int32_t org = 0x08048000;
+  // ehdr:
+  int64_t off = org;
+  int64_t ehdr = off;
+  off += db(fd, 0x7f); // e_ident
+  off += db(fd, 'E');
+  off += db(fd, 'L');
+  off += db(fd, 'F');
+  off += db(fd, 2);
+  off += db(fd, 1);
+  off += db(fd, 1);
+  off += db(fd, 0);
+  // times 8 db; padding?
+  for (int i = 0; i < 8; i++) {
+    off += db(fd, 0);
+  }
+  off += dw(fd, 2);         // e_type
+  off += dw(fd, 62);        // e_machine (x86_64)
+  off += dd(fd, 1);         // e_version
+  off += dq(fd, entry);     // e_entry: address of _start
+  off += dq(fd, phoff);     // e_phoff: relative offset to phdr
+  off += dq(fd, 0);         // e_shoff
+  off += dd(fd, 0);         // e_flags
+  off += dw(fd, ehsize);    // e_ehsize: ehdrsize
+  off += dw(fd, phentsize); // e_phentsize: phdrsize
+  off += dw(fd, 1);         // e_phnum
+  off += dw(fd, 0);         // e_shentsize
+  off += dw(fd, 0);         // e_shnum
+  off += dw(fd, 0);         // e_shstrndx
+  offsets result = {
+      .entry = 0, .phoff = 0, .ehsize = 0, .phentsize = 0, .filesize = 0};
+  result.ehsize = off - ehdr;
+
+  // phdr:
+  result.phoff = off - org;
+  int64_t phdr = off;
+  off += dd(fd, 1);        // p_type
+  off += dd(fd, 5);        // p_flags
+  off += dq(fd, 0);        // p_offset
+  off += dq(fd, org);      // p_vaddr
+  off += dq(fd, org);      // p_paddr
+  off += dq(fd, filesize); // p_filesz: filesize
+  off += dq(fd, filesize); // p_memsz: filesize
+  off += dq(fd, 0x1000);   // p_align
+  result.phentsize = off - phdr;
+
+  // _start:
+  result.entry = off;
+  for (unsigned i = 0; i < sizeof code; i++) {
+    off += db(fd, code[i]);
+  }
+
+  result.filesize = off - org;
+  // assert(result.filesize == 91);
+  return result;
+}
 
 int main(int argc, char **argv) {
   if (argc != 2) {
     errx(EXIT_FAILURE, "usage: %s file-name", argv[0]);
   }
-  if (elf_version(EV_CURRENT) == EV_NONE) {
-    errx(EXIT_FAILURE, "ELF library initialization failed: %s", elf_errmsg(-1));
-  }
+  const char *filename = argv[1];
+
+  offsets result = writeprogram(-1, -1, -1, -1, -1, -1);
+
   int fd;
-  if ((fd = open(argv[1], O_WRONLY | O_CREAT, 0777)) < 0) {
+  if ((fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0) {
     err(EXIT_FAILURE, "open '%s' failed", argv[1]);
   }
-  Elf *e;
-  if ((e = elf_begin(fd, ELF_C_WRITE, NULL)) == NULL) {
-    errx(EXIT_FAILURE, "elf_begin() failed: %s", elf_errmsg(-1));
-  }
-  Elf64_Ehdr *ehdr;
-  if ((ehdr = elf64_newehdr(e)) == NULL) {
-    errx(EXIT_FAILURE, "elf64_newehdr() failed: %s", elf_errmsg(-1));
-  }
 
-  // size_t ehdrsz = elf64_fsize(ELF_T_EHDR, 1, EV_CURRENT);
-  // size_t phdrsz = elf64_fsize(ELF_T_PHDR, 1, EV_CURRENT);
+  writeprogram(fd, result.entry, result.phoff, result.ehsize, result.phentsize,
+               result.filesize);
 
-  ehdr->e_ident[EI_DATA] = ELFDATA2LSB;
-  ehdr->e_ident[EI_CLASS] = ELFCLASS64;
-  ehdr->e_machine = EM_X86_64;
-  ehdr->e_type = ET_REL;
-  ehdr->e_entry = 0; // LOADADDR + ehdrsz + phdrsz;
-
-  uint16_t code_section_index;
-
-  {
-    Elf_Scn *section;
-    if ((section = elf_newscn(e)) == NULL) {
-      errx(EXIT_FAILURE, "elf_newscn() failed: %s", elf_errmsg(-1));
-    }
-    Elf_Data *data;
-    if ((data = elf_newdata(section)) == NULL) {
-      errx(EXIT_FAILURE, "elf_newdata() failed: %s", elf_errmsg(-1));
-    }
-
-    data->d_align = 8;
-    data->d_off = 0LL;
-    data->d_buf = code;
-    data->d_type = ELF_T_BYTE;
-    data->d_size = sizeof code;
-    data->d_version = EV_CURRENT;
-
-    code_section_index = elf_ndxscn(section);
-
-    Elf64_Shdr *shdr;
-    if ((shdr = elf64_getshdr(section)) == NULL) {
-      errx(EXIT_FAILURE, "elf64_getshdr() failed: %s", elf_errmsg(-1));
-    }
-
-    shdr->sh_name = 16;
-    shdr->sh_type = SHT_PROGBITS;
-    shdr->sh_flags = SHF_ALLOC | SHF_EXECINSTR;
-    shdr->sh_entsize = 0;
-    shdr->sh_addr = 0; // LOADADDR + ehdrsz + phdrsz;
-  }
-
-  {
-    Elf_Scn *section;
-    if ((section = elf_newscn(e)) == NULL) {
-      errx(EXIT_FAILURE, "elf_newscn() failed: %s", elf_errmsg(-1));
-    }
-    Elf_Data *data;
-    if ((data = elf_newdata(section)) == NULL) {
-      errx(EXIT_FAILURE, "elf_newdata() failed: %s", elf_errmsg(-1));
-    }
-
-    data->d_align = 1;
-    data->d_buf = string_table;
-    data->d_off = 0LL;
-    data->d_size = sizeof string_table;
-    data->d_type = ELF_T_BYTE;
-    data->d_version = EV_CURRENT;
-
-    ehdr->e_shstrndx = elf_ndxscn(section);
-
-    Elf64_Shdr *shdr;
-    if ((shdr = elf64_getshdr(section)) == NULL) {
-      errx(EXIT_FAILURE, "elf64_getshdr() failed: %s", elf_errmsg(-1));
-    }
-
-    shdr->sh_name = 6;
-    shdr->sh_type = SHT_STRTAB;
-    shdr->sh_flags = SHF_STRINGS | SHF_ALLOC;
-    shdr->sh_entsize = 0;
-  }
-
-  {
-    Elf_Scn *section;
-    if ((section = elf_newscn(e)) == NULL) {
-      errx(EXIT_FAILURE, "elf_newscn() failed: %s", elf_errmsg(-1));
-    }
-    Elf_Data *data;
-    if ((data = elf_newdata(section)) == NULL) {
-      errx(EXIT_FAILURE, "elf_newdata() failed: %s", elf_errmsg(-1));
-    }
-
-    Elf64_Sym symtab[] = {
-        {.st_name = 1,
-         .st_info = ELF64_ST_INFO(STB_GLOBAL, STT_FUNC),
-         .st_other = ELF64_ST_VISIBILITY(STV_DEFAULT),
-         .st_shndx = code_section_index,
-         .st_value = 0, /* address? */
-         .st_size = sizeof code},
-    };
-
-    data->d_align = 1;
-    data->d_buf = symtab;
-    data->d_off = 0LL;
-    data->d_size = sizeof symtab;
-    data->d_type = ELF_T_SYM;
-    data->d_version = EV_CURRENT;
-
-    Elf64_Shdr *shdr;
-    if ((shdr = elf64_getshdr(section)) == NULL) {
-      errx(EXIT_FAILURE, "elf64_getshdr() failed: %s", elf_errmsg(-1));
-    }
-
-    shdr->sh_name = 21;
-    shdr->sh_type = SHT_SYMTAB;
-    shdr->sh_flags = SHF_STRINGS | SHF_ALLOC;
-    shdr->sh_entsize = 0;
-  }
-
-  if (elf_update(e, ELF_C_NULL) < 0) {
-    errx(EXIT_FAILURE, "elf_update(NULL) failed: %s", elf_errmsg(-1));
-  }
-
-  // {
-  //   Elf64_Phdr *phdr;
-  //   if ((phdr = elf64_newphdr(e, 1)) == NULL) {
-  //     errx(EXIT_FAILURE, "elf64_newphdr() failed: %s", elf_errmsg(-1));
-  //   }
-  //   phdr->p_type = PT_PHDR;
-  //   phdr->p_offset = ehdr->e_phoff;
-  //   phdr->p_filesz = elf64_fsize(ELF_T_PHDR, 1, EV_CURRENT);
-  // }
-
-  //{
-  //  Elf64_Phdr *phdr;
-  //  if ((phdr = elf64_newphdr(e, 1)) == NULL) {
-  //    errx(EXIT_FAILURE, "elf64_newphdr %s\n", elf_errmsg(-1));
-  //  }
-
-  //  phdr->p_type = PT_LOAD;
-  //  phdr->p_offset = 0;
-  //  phdr->p_filesz = ehdrsz + phdrsz + sizeof(code);
-  //  phdr->p_memsz = phdr->p_filesz;
-  //  phdr->p_vaddr = LOADADDR;
-  //  phdr->p_paddr = phdr->p_vaddr;
-  //  phdr->p_align = 4;
-  //  phdr->p_flags = PF_X | PF_R;
-  //}
-
-  elf_flagphdr(e, ELF_C_SET, ELF_F_DIRTY);
-
-  if (elf_update(e, ELF_C_WRITE) < 0) {
-    errx(EXIT_FAILURE, "elf_update() failed: %s", elf_errmsg(-1));
-  }
-
-  elf_end(e);
   close(fd);
-
   return EXIT_SUCCESS;
 }
