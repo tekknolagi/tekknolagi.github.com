@@ -8,7 +8,7 @@ date: 2020-09-06 9:00:00 PDT
 
 Welcome back to the "Compiling a Lisp" series. Last time, we added some
 primitive unary instructions like `add1` and `integer->char`. This time, we're
-going to add some primitive *binary* functions like `+` and `>`. After this
+going to add some primitive *binary* functions like `+` and `<`. After this
 post, we'll be able to write programs like:
 
 ```common-lisp
@@ -21,8 +21,7 @@ work. If we were to na&iuml;vely write something like the following to
 implement `+`, then `rax` would get overwritten:
 
 ```c
-int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
-                 word stack_index) {
+int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args) {
   if (AST_is_symbol(callable)) {
     // ...
     if (AST_symbol_matches(callable, "+")) {
@@ -42,12 +41,13 @@ We could try and work around this by adding some kind of register allocation
 algorithm. Or, simpler, we could decide to allocate all intermediate values on
 the stack and move on with our lives. I prefer the latter.
 
-### Register allocation
+### Stack background info
 
 Let's take a look at the stack at the moment we enter the compiled program:
 
 ```
-+------------------+ High addresses
+|                  | High addresses
++------------------+
 |  main            |
 +------------------+ |
 |  ~ some data ~   | |
@@ -60,21 +60,23 @@ Let's take a look at the stack at the moment we enter the compiled program:
 +------------------+
 |  Testing_exe...  | rsp
 +------------------+
+|                  | <-- Our frame!
 |                  | Low addresses
 ```
 
 Where `rsp` denotes the 64 bit register for the Stack Pointer.
 
-Refresher: the call stack grows *down*. Why? Check out this [StackOverflow
-answer](https://stackoverflow.com/a/54391533/569183) that quotes an architect
-on the Intel 4004 and 8080 architectures.
+> Refresher: the call stack grows *down*. Why? Check out this [StackOverflow
+> answer](https://stackoverflow.com/a/54391533/569183) that quotes an architect
+> on the Intel 4004 and 8080 architectures. It's stayed the same ever since.
 
-We have `rsp` pointing at a return address inside the function
+We have `rsp` pointing at a return address somewhere inside the function
 `Testing_execute_expr`, since that's what called our Lisp entrypoint. We have
-some data above `rsp` that we're not allowed to poke at, and we have this empty
-space below `rsp` that is in our current *stack frame*. I say "empty" because
-we haven't yet stored anything there, but because it's necessarily zero-ed out.
-I don't think there are any guarantees about the values in this stack frame.
+some data "above" (higher addresses) `rsp` that we're not allowed to poke at,
+and we have this empty space "below" (lower addresses) `rsp` that is in our
+current *stack frame*. I say "empty" because we haven't yet stored anything
+there, not because it's necessarily zero-ed out.  I don't think there are any
+guarantees about the values in this stack frame.
 
 We can use our stack frame to write and read values for our current Lisp
 program. With every recursive subexpression, we can allocate a little more
@@ -88,9 +90,9 @@ mov [rsp-8], 0x4
 ```
 
 This puts the integer `4` at displacement `-8` from `rsp`. On the stack diagram
-above, it would be at the slot labeled "Low addresses". It's also possible
-to read with a positive or zero displacement, but those point to previous stack
-frames and the return address, respectively. So let's avoid manipulating those.
+above, it would be at the slot labeled "Our frame". It's also possible to read
+with a positive or zero displacement, but those point to previous stack frames
+and the return address, respectively. So let's avoid manipulating those.
 
 > Note that I used a multiple of 8. Not every store has to be a to an address
 > that is a multiple of 8, but it is natural and I think also *faster* to store
@@ -108,7 +110,8 @@ that program should:
 So after compiling that, the stack will look like this:
 
 ```
-+------------------+ High addresses
+|                  | High addresses
++------------------+
 |  Testing_exe...  | RSP
 +------------------+
 |  0x8             | RSP-8 (result of compile(2))
@@ -142,12 +145,11 @@ ret
 ```
 
 The first three instructions, called the *prologue*, save `rbp` to the stack,
-and then set `rbp` to the current stack pointer. Then `rsp` is freely
-changeable and it's still possible to maintain references to variables on the
-stack without adjusting them.
+and then set `rbp` to the current stack pointer. Then it's possible to maintain
+references to variables on the stack even as `rsp` changes.
 
 The last three instructions, called the *epilogue*, fetch the old `rbp` that we
-saved to the stack, writes it back into `rbp`, then exit the call.
+saved to the stack, write it back into `rbp`, then exit the call.
 
 To confirm this for yourself, check out this [sample compiled C
 code](https://godbolt.org/z/qPM8Mh). Look at the disassembly following the
@@ -162,8 +164,8 @@ We'll call this state the `stack_index` --- Ghuloum calls it `si` --- and we'll
 pass it around as a parameter. Whatever it's called, it points to the first
 writable (unused) index in the stack at any given point.
 
-In compiled function, the first writable index is `-kWordSize` (`-8`), since
-the base pointers is at `0`.
+In compiled functions, the first writable index is `-kWordSize` (`-8`), since
+the base pointers is already at `0`.
 
 ```c
 int Compile_function(Buffer *buf, ASTNode *node) {
@@ -174,7 +176,26 @@ int Compile_function(Buffer *buf, ASTNode *node) {
 }
 ```
 
-I've also gone ahead and added the prologue and epilogue.
+I've also gone ahead and added the prologue and epilogue. They're stored in
+static arrays. This makes them easier to modify, and also makes them accessible
+to testing helpers. The testing helpers can use these arrays to make testing
+easier for us --- we can check if our expected code is book-ended by this code.
+
+```c
+static const byte kFunctionPrologue[] = {
+    // push rbp
+    0x55,
+    // mov rbp, rsp
+    kRexPrefix, 0x89, 0xe5,
+};
+
+static const byte kFunctionEpilogue[] = {
+    // pop rbp
+    0x5d,
+    // ret
+    0xc3,
+};
+```
 
 For `Compile_expr`, we just pass this new stack index through.
 
@@ -210,7 +231,7 @@ below that on the stack. For the *second* recursive call to `Compile_expr`, the
 compiler has to bump `stack_index`, since we've stored the result of the first
 compiled call at `stack_index`.
 
-Take a look:
+Take a look at our implementation of binary add:
 
 ```c
 int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
@@ -231,8 +252,8 @@ int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
 }
 ```
 
-In this snippet, `Ind` stands for "indirect". This is a function that makes a
-struct --- it's an easy and readable way to represent (register, displacement)
+In this snippet, `Ind` stands for "indirect", and is a constructor for a
+struct. This an easy and readable way to represent (register, displacement)
 pairs for use in reading from and writing to memory. We'll cover this more
 detail in the instruction encoding.
 
@@ -307,7 +328,7 @@ I would have used the same name in the struct and the constructor but
 unfortunately that's not allowed.
 
 Here's an implementation of an opcode that uses this `Indirect` type. This
-emits code for `mov [dst+disp], src`.
+emits code for instructions of the form `mov [reg+disp], src`.
 
 ```c
 uint8_t disp8(int8_t disp) { return disp >= 0 ? disp : 0x100 + disp; }
@@ -372,6 +393,8 @@ TEST compile_binary_lt_with_left_greater_than_right_returns_false(Buffer *buf)
   PASS();
 }
 ```
+
+There are more tests in the implementation, as usual. Take a look if you like.
 
 This has been a more complicated post than the previous ones, I think. The
 stack allocation may not make sense immediately. It might take some time to
