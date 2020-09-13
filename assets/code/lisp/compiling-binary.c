@@ -481,6 +481,62 @@ bool AST_symbol_matches(ASTNode *node, const char *cstr) {
   return strcmp(AST_symbol_cstr(node), cstr) == 0;
 }
 
+int node_to_str(ASTNode *node, char *buf, word size);
+
+int list_to_str(ASTNode *node, char *buf, word size) {
+  if (AST_is_pair(node)) {
+    word result = 0;
+    result += snprintf(buf + result, size, " ");
+    result += node_to_str(AST_pair_car(node), buf + result, size);
+    result += list_to_str(AST_pair_cdr(node), buf + result, size);
+    return result;
+  }
+  if (AST_is_nil(node)) {
+    return snprintf(buf, size, ")");
+  }
+  word result = 0;
+  result += snprintf(buf + result, size, " . ");
+  result += node_to_str(node, buf + result, size);
+  result += snprintf(buf + result, size, ")");
+  return result;
+}
+
+int node_to_str(ASTNode *node, char *buf, word size) {
+  assert(node != NULL);
+  if (AST_is_integer(node)) {
+    return snprintf(buf, size, "%ld", AST_get_integer(node));
+  }
+  if (AST_is_char(node)) {
+    return snprintf(buf, size, "'%c'", AST_get_char(node));
+  }
+  if (AST_is_bool(node)) {
+    return snprintf(buf, size, "%s", AST_get_bool(node) ? "true" : "false");
+  }
+  if (AST_is_nil(node)) {
+    return snprintf(buf, size, "nil");
+  }
+  if (AST_is_pair(node)) {
+    word result = 0;
+    result += snprintf(buf + result, size, "(");
+    result += node_to_str(AST_pair_car(node), buf + result, size);
+    result += list_to_str(AST_pair_cdr(node), buf + result, size);
+    return result;
+  }
+  if (AST_is_symbol(node)) {
+    return snprintf(buf, size, "%s", AST_symbol_cstr(node));
+  }
+  assert(0 && "unknown ast");
+}
+
+char *AST_to_cstr(ASTNode *node) {
+  int size = node_to_str(node, NULL, 0);
+  char *buf = malloc(size + 1);
+  assert(buf != NULL);
+  node_to_str(node, buf, size + 1);
+  buf[size] = '\0';
+  return buf;
+}
+
 // End AST
 
 // Compile
