@@ -673,7 +673,8 @@ to make sure the text and the binary representations in the test don't go out
 of sync because that can be *very* confusing...
 
 Anyway, that's a wrap for today. Send your comments [on the
-elist](https://lists.sr.ht/~max/compiling-lisp)! Next time, binary primitives.
+elist](https://lists.sr.ht/~max/compiling-lisp)! Next time,
+[binary primitives]({% link _posts/2020-09-15-compiling-a-lisp-5.md %}).
 
 <br />
 <hr style="width: 100px;" />

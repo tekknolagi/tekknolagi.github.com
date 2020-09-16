@@ -1,7 +1,7 @@
 ---
 title: "Compiling a Lisp: Primitive binary functions"
 layout: post
-date: 2020-09-06 9:00:00 PDT
+date: 2020-09-015 22:00:00 PDT
 ---
 
 *[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-09-05-compiling-a-lisp-4.md %})*
