@@ -1,9 +1,11 @@
+#define _GNU_SOURCE
 #include <assert.h>   // for assert
 #include <stdbool.h>  // for bool
 #include <stddef.h>   // for NULL
 #include <stdint.h>   // for int32_t, etc
 #include <string.h>   // for memcpy
 #include <sys/mman.h> // for mmap
+#undef _GNU_SOURCE
 
 #include "greatest.h"
 

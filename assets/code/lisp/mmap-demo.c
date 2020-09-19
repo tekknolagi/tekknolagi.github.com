@@ -1,7 +1,9 @@
+#define _GNU_SOURCE
 #include <assert.h>   /* for assert */
 #include <stddef.h>   /* for NULL */
 #include <string.h>   /* for memcpy */
 #include <sys/mman.h> /* for mmap */
+#undef _GNU_SOURCE
 
 // clang-format off
 const unsigned char program[] = {
