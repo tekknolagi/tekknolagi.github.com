@@ -651,6 +651,16 @@ ASTNode *read_rec(char *input, word *pos) {
     advance(pos); // skip '\''
     return read_char(input, pos);
   }
+  if (c == '#' && input[*pos + 1] == 't') {
+    advance(pos); // skip '#'
+    advance(pos); // skip 't'
+    return AST_new_bool(true);
+  }
+  if (c == '#' && input[*pos + 1] == 'f') {
+    advance(pos); // skip '#'
+    advance(pos); // skip 'f'
+    return AST_new_bool(false);
+  }
   if (c == '(') {
     advance(pos); // skip '('
     return read_list(input, pos);
@@ -1026,17 +1036,6 @@ TEST ast_new_symbol(void) {
     ASSERT_STR_EQ(AST_symbol_cstr(__tmp), cstr);                               \
   } while (0);
 
-TEST read_with_char_returns_char(void) {
-  char *input = "'a'";
-  ASTNode *node = Reader_read(input);
-  ASSERT_IS_CHAR_EQ(node, 'a');
-  ASSERT(AST_is_error(Reader_read("''")));
-  ASSERT(AST_is_error(Reader_read("'aa'")));
-  ASSERT(AST_is_error(Reader_read("'aa")));
-  AST_heap_free(node);
-  PASS();
-}
-
 TEST read_with_integer_returns_integer(void) {
   char *input = "1234";
   ASTNode *node = Reader_read(input);
@@ -1082,6 +1081,26 @@ TEST read_with_symbol_with_trailing_digits(void) {
   ASTNode *node = Reader_read(input);
   ASSERT_IS_SYM_EQ(node, "add1");
   AST_heap_free(node);
+  PASS();
+}
+
+TEST read_with_char_returns_char(void) {
+  char *input = "'a'";
+  ASTNode *node = Reader_read(input);
+  ASSERT_IS_CHAR_EQ(node, 'a');
+  ASSERT(AST_is_error(Reader_read("''")));
+  ASSERT(AST_is_error(Reader_read("'aa'")));
+  ASSERT(AST_is_error(Reader_read("'aa")));
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST read_with_bool_returns_bool(void) {
+  ASSERT_EQ(Reader_read("#t"), AST_new_bool(true));
+  ASSERT_EQ(Reader_read("#f"), AST_new_bool(false));
+  ASSERT(AST_is_error(Reader_read("#")));
+  ASSERT(AST_is_error(Reader_read("#x")));
+  ASSERT(AST_is_error(Reader_read("##")));
   PASS();
 }
 
@@ -1755,7 +1774,6 @@ SUITE(ast_tests) {
 }
 
 SUITE(reader_tests) {
-  RUN_TEST(read_with_char_returns_char);
   RUN_TEST(read_with_integer_returns_integer);
   RUN_TEST(read_with_negative_integer_returns_integer);
   RUN_TEST(read_with_positive_integer_returns_integer);
@@ -1765,6 +1783,8 @@ SUITE(reader_tests) {
   RUN_TEST(read_with_nil_returns_nil);
   RUN_TEST(read_with_list_returns_list);
   RUN_TEST(read_with_nested_list_returns_list);
+  RUN_TEST(read_with_char_returns_char);
+  RUN_TEST(read_with_bool_returns_bool);
 }
 
 SUITE(buffer_tests) {
