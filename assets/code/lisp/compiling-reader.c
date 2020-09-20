@@ -595,6 +595,19 @@ ASTNode *read_symbol(char *input, word *pos) {
   return AST_new_symbol(buf);
 }
 
+ASTNode *read_char(char *input, word *pos) {
+  char c = input[*pos];
+  if (c == '\'') {
+    return AST_error();
+  }
+  advance(pos);
+  if (input[*pos] != '\'') {
+    return AST_error();
+  }
+  advance(pos);
+  return AST_new_char(c);
+}
+
 char skip_whitespace(char *input, word *pos) {
   char c = '\0';
   while (isspace(c = input[*pos])) {
@@ -633,6 +646,10 @@ ASTNode *read_rec(char *input, word *pos) {
   }
   if (starts_symbol(c)) {
     return read_symbol(input, pos);
+  }
+  if (c == '\'') {
+    advance(pos); // skip '\''
+    return read_char(input, pos);
   }
   if (c == '(') {
     advance(pos); // skip '('
@@ -979,19 +996,46 @@ TEST ast_new_symbol(void) {
   PASS();
 }
 
-#define ASSERT_IS_SYM_EQ(node, cstr)                                           \
+#define ASSERT_IS_CHAR_EQ(node, c)                                             \
   do {                                                                         \
     ASTNode *__tmp = node;                                                     \
-    ASSERT(AST_is_symbol(__tmp));                                              \
-    ASSERT_STR_EQ(AST_symbol_cstr(__tmp), cstr);                               \
+    if (AST_is_error(__tmp)) {                                                 \
+      fprintf(stderr, "Expected a char but got an error.\n");                  \
+    }                                                                          \
+    ASSERT(AST_is_char(__tmp));                                                \
+    ASSERT_EQ(AST_get_char(__tmp), c);                                         \
   } while (0);
 
 #define ASSERT_IS_INT_EQ(node, val)                                            \
   do {                                                                         \
     ASTNode *__tmp = node;                                                     \
+    if (AST_is_error(__tmp)) {                                                 \
+      fprintf(stderr, "Expected an int but got an error.\n");                  \
+    }                                                                          \
     ASSERT(AST_is_integer(__tmp));                                             \
     ASSERT_EQ(AST_get_integer(__tmp), val);                                    \
   } while (0);
+
+#define ASSERT_IS_SYM_EQ(node, cstr)                                           \
+  do {                                                                         \
+    ASTNode *__tmp = node;                                                     \
+    if (AST_is_error(__tmp)) {                                                 \
+      fprintf(stderr, "Expected a symbol but got an error.\n");                \
+    }                                                                          \
+    ASSERT(AST_is_symbol(__tmp));                                              \
+    ASSERT_STR_EQ(AST_symbol_cstr(__tmp), cstr);                               \
+  } while (0);
+
+TEST read_with_char_returns_char(void) {
+  char *input = "'a'";
+  ASTNode *node = Reader_read(input);
+  ASSERT_IS_CHAR_EQ(node, 'a');
+  ASSERT(AST_is_error(Reader_read("''")));
+  ASSERT(AST_is_error(Reader_read("'aa'")));
+  ASSERT(AST_is_error(Reader_read("'aa")));
+  AST_heap_free(node);
+  PASS();
+}
 
 TEST read_with_integer_returns_integer(void) {
   char *input = "1234";
@@ -1711,6 +1755,7 @@ SUITE(ast_tests) {
 }
 
 SUITE(reader_tests) {
+  RUN_TEST(read_with_char_returns_char);
   RUN_TEST(read_with_integer_returns_integer);
   RUN_TEST(read_with_negative_integer_returns_integer);
   RUN_TEST(read_with_positive_integer_returns_integer);
