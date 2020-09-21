@@ -210,6 +210,20 @@ ASTNode *read_rec(char *input, word *pos) {
   if (starts_symbol(c)) {
     return read_symbol(input, pos);
   }
+  if (c == '\'') {
+    advance(pos); // skip '\''
+    return read_char(input, pos);
+  }
+  if (c == '#' && input[*pos + 1] == 't') {
+    advance(pos); // skip '#'
+    advance(pos); // skip 't'
+    return AST_new_bool(true);
+  }
+  if (c == '#' && input[*pos + 1] == 'f') {
+    advance(pos); // skip '#'
+    advance(pos); // skip 'f'
+    return AST_new_bool(false);
+  }
   if (c == '(') {
     advance(pos); // skip '('
     return read_list(input, pos);
@@ -273,6 +287,29 @@ of size 32. Oh well.
 
 Note that symbols can also have trailing numbers in them, just not at the front
 --- like `add1`.
+
+For characters, we only have three potential input characters to look at:
+quote, char, quote. No need for a loop:
+
+```c
+ASTNode *read_char(char *input, word *pos) {
+  char c = input[*pos];
+  if (c == '\'') {
+    return AST_error();
+  }
+  advance(pos);
+  if (input[*pos] != '\'') {
+    return AST_error();
+  }
+  advance(pos);
+  return AST_new_char(c);
+}
+```
+
+This means that input like `''` or `'aa'` will be an error.
+
+For booleans, we can tackle those inline because there's only two cases and
+they're both trivial. Check for `#t` and `#f`. Done.
 
 And last, for lists, it means we recursively build up pairs until we get to
 `nil`:
@@ -455,6 +492,8 @@ lisp> 1
 48 c7 c0 04 00 00 00 
 lisp> (add1 1)
 48 c7 c0 04 00 00 00 48 05 04 00 00 00 
+lisp> 'a'
+48 c7 c0 0f 61 00 00
 lisp> Goodbye.
 sequoia% 
 ```
