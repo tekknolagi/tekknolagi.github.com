@@ -5,5 +5,6 @@
   <a href="/favorites/">favorites</a>
   <a href="/excollege/">my class</a>
   <a href="/pl-resources/">pl resources</a>
+  <a href="/feed.xml">rss</a>
   <!--<a class="newlink" href="/recipes/">recipes</a> -->
 </div>
