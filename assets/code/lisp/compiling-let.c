@@ -14,6 +14,8 @@
 
 #include "greatest.h"
 
+#define WARN_UNUSED __attribute__((warn_unused_result))
+
 // Objects
 
 typedef int64_t word;
@@ -722,7 +724,8 @@ bool Env_find(Env *env, const char *key, word *result) {
 
 // Compile
 
-int Compile_expr(Buffer *buf, ASTNode *node, word stack_index, Env *varenv);
+WARN_UNUSED int Compile_expr(Buffer *buf, ASTNode *node, word stack_index,
+                             Env *varenv);
 
 ASTNode *operand1(ASTNode *args) { return AST_pair_car(args); }
 
@@ -743,8 +746,8 @@ void Compile_compare_imm32(Buffer *buf, int32_t value) {
   Emit_or_reg_imm8(buf, kRax, kBoolTag);
 }
 
-int Compile_let(Buffer *buf, ASTNode *bindings, ASTNode *body, word stack_index,
-                Env *varenv) {
+WARN_UNUSED int Compile_let(Buffer *buf, ASTNode *bindings, ASTNode *body,
+                            word stack_index, Env *varenv) {
   if (AST_is_nil(bindings)) {
     // Base case: no bindings. Emit the body.
     _(Compile_expr(buf, body, stack_index, varenv));
@@ -766,8 +769,8 @@ int Compile_let(Buffer *buf, ASTNode *bindings, ASTNode *body, word stack_index,
   return 0;
 }
 
-int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
-                 word stack_index, Env *varenv) {
+WARN_UNUSED int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
+                             word stack_index, Env *varenv) {
   if (AST_is_symbol(callable)) {
     if (AST_symbol_matches(callable, "add1")) {
       _(Compile_expr(buf, operand1(args), stack_index, varenv));
@@ -878,7 +881,8 @@ int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
   assert(0 && "unexpected call type");
 }
 
-int Compile_expr(Buffer *buf, ASTNode *node, word stack_index, Env *varenv) {
+WARN_UNUSED int Compile_expr(Buffer *buf, ASTNode *node, word stack_index,
+                             Env *varenv) {
   if (AST_is_integer(node)) {
     word value = AST_get_integer(node);
     Emit_mov_reg_imm32(buf, kRax, Object_encode_integer(value));
@@ -930,7 +934,7 @@ static const byte kFunctionEpilogue[] = {
     0xc3,
 };
 
-int Compile_function(Buffer *buf, ASTNode *node) {
+WARN_UNUSED int Compile_function(Buffer *buf, ASTNode *node) {
   Buffer_write_arr(buf, kFunctionPrologue, sizeof kFunctionPrologue);
   _(Compile_expr(buf, node, -kWordSize, /*varenv=*/NULL));
   Buffer_write_arr(buf, kFunctionEpilogue, sizeof kFunctionEpilogue);
