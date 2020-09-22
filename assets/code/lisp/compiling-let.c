@@ -57,12 +57,20 @@ uword Object_encode_integer(word value) {
 
 word Object_decode_integer(uword value) { return (word)value >> kIntegerShift; }
 
+bool Object_is_integer(uword value) {
+  return (value & kIntegerTagMask) == kIntegerTag;
+}
+
 uword Object_encode_char(char value) {
   return ((uword)value << kCharShift) | kCharTag;
 }
 
 char Object_decode_char(uword value) {
   return (value >> kCharShift) & kCharMask;
+}
+
+bool Object_is_char(uword value) {
+  return (value & kImmediateTagMask) == kCharTag;
 }
 
 uword Object_encode_bool(bool value) {
@@ -1952,6 +1960,14 @@ SUITE(compiler_tests) {
 
 typedef void (*REPL_Callback)(char *);
 
+void print_value(uword object) {
+  if (Object_is_integer(object)) {
+    fprintf(stderr, "%ld", Object_decode_integer(object));
+    return;
+  }
+  fprintf(stderr, "Unexpected value.");
+}
+
 void print_assembly(char *line) {
   // Parse the line
   ASTNode *node = Reader_read(line);
@@ -1976,6 +1992,37 @@ void print_assembly(char *line) {
   for (size_t i = 0; i < buf.len; i++) {
     fprintf(stderr, "%.02x ", buf.address[i]);
   }
+  fprintf(stderr, "\n");
+
+  // Clean up
+  Buffer_deinit(&buf);
+}
+
+void evaluate_expr(char *line) {
+  // Parse the line
+  ASTNode *node = Reader_read(line);
+  if (AST_is_error(node)) {
+    fprintf(stderr, "Parse error.\n");
+    return;
+  }
+
+  // Compile the line
+  Buffer buf;
+  Buffer_init(&buf, 1);
+  int compile_result = Compile_function(&buf, node);
+  AST_heap_free(node);
+  if (compile_result < 0) {
+    fprintf(stderr, "Compile error.\n");
+    Buffer_deinit(&buf);
+    return;
+  }
+
+  // Execute the code
+  Buffer_make_executable(&buf);
+  uword result = Testing_execute_expr(&buf);
+
+  // Print the result
+  print_value(result);
   fprintf(stderr, "\n");
 
   // Clean up
@@ -2014,8 +2061,13 @@ int run_tests(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
-  if (argc == 2 && strcmp(argv[1], "--repl-assembly") == 0) {
-    return repl(print_assembly);
+  if (argc == 2) {
+    if (strcmp(argv[1], "--repl-assembly") == 0) {
+      return repl(print_assembly);
+    }
+    if (strcmp(argv[1], "--repl-eval") == 0) {
+      return repl(evaluate_expr);
+    }
   }
   return run_tests(argc, argv);
 }
