@@ -555,13 +555,16 @@ char *AST_to_cstr(ASTNode *node) {
 
 void advance(word *pos) { ++*pos; }
 
+char next(char *input, word *pos) {
+  advance(pos);
+  return input[*pos];
+}
+
 ASTNode *read_integer(char *input, word *pos, int sign) {
-  char c = '\0';
   word result = 0;
-  while (isdigit(c = input[*pos])) {
+  for (char c = input[*pos]; isdigit(c); c = next(input, pos)) {
     result *= 10;
     result += c - '0';
-    advance(pos);
   }
   return AST_new_integer(sign * result);
 }
@@ -587,9 +590,9 @@ const word ATOM_MAX = 32;
 ASTNode *read_symbol(char *input, word *pos) {
   char buf[ATOM_MAX + 1]; // +1 for NUL
   word length = 0;
-  while (length < ATOM_MAX && is_symbol_char(buf[length] = input[*pos])) {
+  for (length = 0; length < ATOM_MAX && is_symbol_char(input[*pos]); length++) {
+    buf[length] = input[*pos];
     advance(pos);
-    length++;
   }
   buf[length] = '\0';
   return AST_new_symbol(buf);
@@ -610,8 +613,8 @@ ASTNode *read_char(char *input, word *pos) {
 
 char skip_whitespace(char *input, word *pos) {
   char c = '\0';
-  while (isspace(c = input[*pos])) {
-    advance(pos);
+  for (c = input[*pos]; isspace(c); c = next(input, pos)) {
+    ;
   }
   return c;
 }

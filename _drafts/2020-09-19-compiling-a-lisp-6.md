@@ -23,11 +23,11 @@ Check out this imaginary demo:
 
 ```
 lisp> 1
-; mov rax, 0x2
+; mov rax, 0x4
 => 1
 lisp> (add1 1)
-; mov rax, 0x2
-; add rax, 0x2
+; mov rax, 0x4
+; add rax, 0x4
 => 2
 lisp>
 ```
@@ -166,10 +166,15 @@ and then returns the next non-whitespace character.
 ```c
 void advance(word *pos) { ++*pos; }
 
+char next(char *input, word *pos) {
+  advance(pos);
+  return input[*pos];
+}
+
 char skip_whitespace(char *input, word *pos) {
   char c = '\0';
-  while (isspace(c = input[*pos])) {
-    advance(pos);
+  for (c = input[*pos]; isspace(c); c = next(input, pos)) {
+    ;
   }
   return c;
 }
@@ -249,10 +254,9 @@ speak):
 ASTNode *read_integer(char *input, word *pos, int sign) {
   char c = '\0';
   word result = 0;
-  while (isdigit(c = input[*pos])) {
+  for (char c = input[*pos]; isdigit(c); c = next(input, pos)) {
     result *= 10;
     result += c - '0';
-    advance(pos);
   }
   return AST_new_integer(sign * result);
 }
@@ -273,9 +277,9 @@ bool is_symbol_char(char c) {
 ASTNode *read_symbol(char *input, word *pos) {
   char buf[ATOM_MAX + 1]; // +1 for NUL
   word length = 0;
-  while (length < ATOM_MAX && is_symbol_char(buf[length] = input[*pos])) {
+  for (length = 0; length < ATOM_MAX && is_symbol_char(input[*pos]); length++) {
+    buf[length] = input[*pos];
     advance(pos);
-    length++;
   }
   buf[length] = '\0';
   return AST_new_symbol(buf);
