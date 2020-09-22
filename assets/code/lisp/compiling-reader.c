@@ -806,8 +806,6 @@ int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
       return 0;
     }
   }
-  assert(AST_pair_cdr(args) == AST_nil() &&
-         "only unary function calls supported");
   assert(0 && "unexpected call type");
 }
 
