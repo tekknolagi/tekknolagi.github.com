@@ -5,7 +5,7 @@ name: Max Bernstein's Blog
 author: Max Bernstein
 author_nickname: Max Bernstein
 email: max@bernsteinbear.com
-description: "Max Bernstein's personal website and blog"
+description: ""
 baseurl: ""
 url: "https://bernsteinbear.com"
 exclude: [vendor]
