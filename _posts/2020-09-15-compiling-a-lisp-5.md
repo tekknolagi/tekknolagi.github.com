@@ -415,7 +415,9 @@ This has been a more complicated post than the previous ones, I think. The
 stack allocation may not make sense immediately. It might take some time to
 sink in. Try writing some of the code yourself and see if that helps.
 
-Next time we'll add the ability to bind variables using `let`. See you then!
+Next time we'll add ~~the ability to bind variables using `let`~~ [a parser]({%
+link _posts/2020-09-21-compiling-a-lisp-6.md %}) so we can input expressions
+more easily. See you then!
 
 <br />
 <hr style="width: 100px;" />

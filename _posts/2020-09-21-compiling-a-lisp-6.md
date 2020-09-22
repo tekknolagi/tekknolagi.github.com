@@ -1,7 +1,7 @@
 ---
 title: "Compiling a Lisp: Reader"
 layout: post
-date: 2020-09-19 10:00:00 PDT
+date: 2020-09-21 22:00:00 PDT
 ---
 
 *[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-09-15-compiling-a-lisp-5.md %})*
