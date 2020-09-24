@@ -2,6 +2,9 @@
 // gcc -O2 -g -Wall -Wextra -pedantic -fno-strict-aliasing
 //   assets/code/lisp/compiling-reader.c
 
+// In general: https://course.ccs.neu.edu/cs4410sp20/#%28part._lectures%29
+// https://course.ccs.neu.edu/cs4410sp20/lec_let-and-stack_notes.html#%28part._let._.Growing_the_language__adding_let%29
+
 #define _GNU_SOURCE
 #include <assert.h>   // for assert
 #include <stdbool.h>  // for bool
@@ -746,26 +749,30 @@ void Compile_compare_imm32(Buffer *buf, int32_t value) {
   Emit_or_reg_imm8(buf, kRax, kBoolTag);
 }
 
+// This is let, not let*. Therefore we keep track of two environments -- the
+// parent environment, for evaluating the bindings, and the body environment,
+// which will have all of the bindings in addition to the parent. This makes
+// programs like (let ((a 1) (b a)) b) fail.
 WARN_UNUSED int Compile_let(Buffer *buf, ASTNode *bindings, ASTNode *body,
-                            word stack_index, Env *varenv) {
+                            word stack_index, Env *binding_env, Env *body_env) {
   if (AST_is_nil(bindings)) {
-    // Base case: no bindings. Emit the body.
-    _(Compile_expr(buf, body, stack_index, varenv));
+    // Base case: no bindings. Compile the body
+    _(Compile_expr(buf, body, stack_index, body_env));
     return 0;
   }
-  // Get the next binding.
+  // Get the next binding
   ASTNode *binding = AST_pair_car(bindings);
   ASTNode *name = AST_pair_car(binding);
   assert(AST_is_symbol(name));
-  ASTNode *expr = AST_pair_car(AST_pair_cdr(binding));
-  // Compile the binding expression.
-  _(Compile_expr(buf, expr, stack_index, varenv));
+  ASTNode *binding_expr = AST_pair_car(AST_pair_cdr(binding));
+  // Compile the binding expression
+  _(Compile_expr(buf, binding_expr, stack_index, binding_env));
   Emit_store_reg_indirect(buf, /*dst=*/Ind(kRbp, stack_index),
                           /*src=*/kRax);
-  // Bind the name.
-  Env entry = Env_new(AST_symbol_cstr(name), stack_index, varenv);
+  // Bind the name
+  Env entry = Env_new(AST_symbol_cstr(name), stack_index, body_env);
   _(Compile_let(buf, AST_pair_cdr(bindings), body, stack_index - kWordSize,
-                &entry));
+                /*binding_env=*/binding_env, /*body_env=*/&entry));
   return 0;
 }
 
@@ -875,7 +882,9 @@ WARN_UNUSED int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
     }
     if (AST_symbol_matches(callable, "let")) {
       return Compile_let(buf, /*bindings=*/operand1(args),
-                         /*body=*/operand2(args), stack_index, varenv);
+                         /*body=*/operand2(args), stack_index,
+                         /*binding_env=*/varenv,
+                         /*body_env=*/varenv);
     }
   }
   assert(0 && "unexpected call type");
@@ -1883,6 +1892,14 @@ TEST compile_nested_let(Buffer *buf) {
   PASS();
 }
 
+TEST compile_let_is_not_let_star(Buffer *buf) {
+  ASTNode *node = Reader_read("(let ((a 1) (b a)) a)");
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, -1);
+  AST_heap_free(node);
+  PASS();
+}
+
 SUITE(object_tests) {
   RUN_TEST(encode_positive_integer);
   RUN_TEST(encode_negative_integer);
@@ -1958,6 +1975,7 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_let_with_one_binding);
   RUN_BUFFER_TEST(compile_let_with_multiple_bindings);
   RUN_BUFFER_TEST(compile_nested_let);
+  RUN_BUFFER_TEST(compile_let_is_not_let_star);
 }
 
 // End Tests
