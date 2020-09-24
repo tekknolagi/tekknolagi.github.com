@@ -9,5 +9,3 @@
 {% endif %}
 {% endfor %}
 </ul>
-
-And more to come.
