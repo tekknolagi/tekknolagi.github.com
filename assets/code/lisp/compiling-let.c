@@ -971,7 +971,7 @@ TEST Testing_expect_function_has_contents(Buffer *buf, byte *arr,
                                           size_t arr_size) {
   size_t total_size =
       sizeof kFunctionPrologue + arr_size + sizeof kFunctionEpilogue;
-  ASSERT_EQ(total_size, buf->len);
+  ASSERT_EQ_FMT(total_size, buf->len, "%ld");
 
   byte *ptr = buf->address;
   ASSERT_MEM_EQ(kFunctionPrologue, ptr, sizeof kFunctionPrologue);
@@ -1848,6 +1848,40 @@ TEST compile_binary_lt_with_left_greater_than_right_returns_false(Buffer *buf) {
   PASS();
 }
 
+TEST compile_symbol_in_env_returns_value(Buffer *buf) {
+  ASTNode *node = AST_new_symbol("hello");
+  Env env0 = Env_new("hello", 33, NULL);
+  Env env1 = Env_new("world", 66, &env0);
+  int compile_result = Compile_expr(buf, node, -kWordSize, &env1);
+  ASSERT_EQ(compile_result, 0);
+  byte expected[] = {// mov rax, [rbp+33]
+                     0x48, 0x8b, 0x45, 33};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_symbol_in_env_returns_first_value(Buffer *buf) {
+  ASTNode *node = AST_new_symbol("hello");
+  Env env0 = Env_new("hello", 55, NULL);
+  Env env1 = Env_new("hello", 66, &env0);
+  int compile_result = Compile_expr(buf, node, -kWordSize, &env1);
+  ASSERT_EQ(compile_result, 0);
+  byte expected[] = {// mov rax, [rbp+66]
+                     0x48, 0x8b, 0x45, 66};
+  EXPECT_EQUALS_BYTES(buf, expected);
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_symbol_not_in_env_raises_compile_error(Buffer *buf) {
+  ASTNode *node = AST_new_symbol("hello");
+  int compile_result = Compile_expr(buf, node, -kWordSize, NULL);
+  ASSERT_EQ(compile_result, -1);
+  AST_heap_free(node);
+  PASS();
+}
+
 TEST compile_let_with_no_bindings(Buffer *buf) {
   ASTNode *node = Reader_read("(let () (+ 1 2))");
   int compile_result = Compile_function(buf, node);
@@ -1971,6 +2005,9 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_binary_lt_with_left_less_than_right_returns_true);
   RUN_BUFFER_TEST(compile_binary_lt_with_left_equal_to_right_returns_false);
   RUN_BUFFER_TEST(compile_binary_lt_with_left_greater_than_right_returns_false);
+  RUN_BUFFER_TEST(compile_symbol_in_env_returns_value);
+  RUN_BUFFER_TEST(compile_symbol_in_env_returns_first_value);
+  RUN_BUFFER_TEST(compile_symbol_not_in_env_raises_compile_error);
   RUN_BUFFER_TEST(compile_let_with_no_bindings);
   RUN_BUFFER_TEST(compile_let_with_one_binding);
   RUN_BUFFER_TEST(compile_let_with_multiple_bindings);
