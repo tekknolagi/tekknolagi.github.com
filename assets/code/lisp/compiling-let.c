@@ -709,7 +709,7 @@ typedef struct Env {
   struct Env *prev;
 } Env;
 
-Env Env_new(const char *name, word value, Env *prev) {
+Env Env_bind(const char *name, word value, Env *prev) {
   return (Env){.name = name, .value = value, .prev = prev};
 }
 
@@ -770,7 +770,7 @@ WARN_UNUSED int Compile_let(Buffer *buf, ASTNode *bindings, ASTNode *body,
   Emit_store_reg_indirect(buf, /*dst=*/Ind(kRbp, stack_index),
                           /*src=*/kRax);
   // Bind the name
-  Env entry = Env_new(AST_symbol_cstr(name), stack_index, body_env);
+  Env entry = Env_bind(AST_symbol_cstr(name), stack_index, body_env);
   _(Compile_let(buf, AST_pair_cdr(bindings), body, stack_index - kWordSize,
                 /*binding_env=*/binding_env, /*body_env=*/&entry));
   return 0;
@@ -1850,8 +1850,8 @@ TEST compile_binary_lt_with_left_greater_than_right_returns_false(Buffer *buf) {
 
 TEST compile_symbol_in_env_returns_value(Buffer *buf) {
   ASTNode *node = AST_new_symbol("hello");
-  Env env0 = Env_new("hello", 33, NULL);
-  Env env1 = Env_new("world", 66, &env0);
+  Env env0 = Env_bind("hello", 33, /*prev=*/NULL);
+  Env env1 = Env_bind("world", 66, &env0);
   int compile_result = Compile_expr(buf, node, -kWordSize, &env1);
   ASSERT_EQ(compile_result, 0);
   byte expected[] = {// mov rax, [rbp+33]
@@ -1863,8 +1863,8 @@ TEST compile_symbol_in_env_returns_value(Buffer *buf) {
 
 TEST compile_symbol_in_env_returns_first_value(Buffer *buf) {
   ASTNode *node = AST_new_symbol("hello");
-  Env env0 = Env_new("hello", 55, NULL);
-  Env env1 = Env_new("hello", 66, &env0);
+  Env env0 = Env_bind("hello", 55, /*prev=*/NULL);
+  Env env1 = Env_bind("hello", 66, &env0);
   int compile_result = Compile_expr(buf, node, -kWordSize, &env1);
   ASSERT_EQ(compile_result, 0);
   byte expected[] = {// mov rax, [rbp+66]
