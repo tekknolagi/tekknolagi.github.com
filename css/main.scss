@@ -20,11 +20,23 @@ div.navbar {
     /* Thanks, oilshell.org, for inspiration. */
     background-color: #DEE;
 }
+li.post-item {
+    display: table;
+    width: 100%;
+}
+a.post-title {
+    display: table-cell;
+}
+a.post-title span {
+    float: left;
+    vertical-align: top;
+}
 div.post-date {
-    display: inline-block;
+    display: table-cell;
+    vertical-align: top;
+}
+div.post-date i {
     float: right;
-    padding-left: 10px;
-    padding-right: 20px;
 }
 h1, h2, h2 {
     line-height: 1.2;
