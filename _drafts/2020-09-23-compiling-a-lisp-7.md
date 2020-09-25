@@ -98,7 +98,87 @@ typedef struct Env {
 
 I've done the usual thing and overloaded `Env` to mean both "a node in the
 environment" and "a whole environment". While one little `Env` struct only
-holds a one name and one value, it also points to the rest of them.
+holds a one name and one value, it also points to the rest of them, eventually
+ending with `NULL`.
 
 This `Env` will map names (symbols) to *stack offsets*. This is because we're
 going to continue our strategy of *not doing register allocation*.
+
+To manipulate this data structure, we will also have two functions[^1]:
+
+```c
+Env Env_bind(const char *name, word value, Env *prev);
+bool Env_find(Env *env, const char *key, word *result);
+```
+
+`Env_bind` creates a new node from the given name and value, borrowing a
+reference to the name, and prepends it to `prev`. Instead of returning an
+`Env*`, it returns a whole struct. We'll learn more about why later, but the
+"TL;DR" is that I think it requires less manual cleanup.
+
+`Env_find` takes an `Env*` and searches through the linked list for a `name`
+matching the given `key`. If it finds a match, it returns `true` and stores the
+`value` in `*result`. Otherwise, it returns `false`.
+
+We can stop at the first match because Lisp allows name *shadowing*. Shadowing
+occurs when a binding at a inner scope has the same name as a binding at an
+outer scope. The inner binding takes precedence:
+
+```common-lisp
+(let ((a 1))
+  (let ((a 2))
+    a))
+; => 2
+```
+
+Alright, now we've got names and data structures. Let's implement some name
+resolution and name binding.
+
+### Compiling name resolution
+
+Up until now, `Compile_expr` could only compile integers, characters, booleans,
+`nil`, and some primitive call expressions (via `Compile_call`). Now we're
+going to add a new case: symbols.
+
+When a symbol is compiled, the compiler will look up its stack offset in the
+current environment and emit a load. This opcode, `Emit_load_reg_indirect`, is
+very similar to `Emit_add_reg_indirect` that we implemented for primitive
+binary functions.
+
+```c
+WARN_UNUSED int Compile_expr(Buffer *buf, ASTNode *node, word stack_index,
+                             Env *varenv) {
+  // ...
+  if (AST_is_symbol(node)) {
+    const char *symbol = AST_symbol_cstr(node);
+    word value;
+    if (Env_find(varenv, symbol, &value)) {
+      Emit_load_reg_indirect(buf, /*dst=*/kRax, /*src=*/Ind(kRbp, value));
+      return 0;
+    }
+    return -1;
+  }
+  assert(0 && "unexpected node type");
+}
+```
+
+If the variable is not in the environment, this is a compiler error and we
+return `-1` to signal that. This is not a tremendously helpful signal. Maybe
+soon we will add more helpful error messages.
+
+Ah, yes, `varenv`. You will, like I had to, go and add an `Env*` parameter to
+all relevant `Compile_XYZ` functions and then plumb it through the recursive
+calls. Have fun!
+
+
+
+
+
+
+<br />
+<hr style="width: 100px;" />
+<!-- Footnotes -->
+
+[^1]: While I am very pleased with the `bind`/`find` symmetry, I am less
+      pleased with the `Env`/`bool` asymmetry. Maybe I should have gone for
+      `Node`.
