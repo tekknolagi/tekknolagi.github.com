@@ -348,7 +348,7 @@ up one way or another.
 Negative integers originally parsed as symbols until I figured out I had to
 flip the case order:
 
-```
+```c
 TEST read_with_negative_integer_returns_integer(void) {
   char *input = "-1234";
   ASTNode *node = Reader_read(input);
@@ -375,7 +375,7 @@ TEST read_with_leading_whitespace_ignores_whitespace(void) {
 
 And also whitespace in lists:
 
-```
+```c
 TEST read_with_list_returns_list(void) {
   char *input = "( 1 2 0 )";
   ASTNode *node = Reader_read(input);
