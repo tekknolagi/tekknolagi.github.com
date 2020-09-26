@@ -760,6 +760,7 @@ WARN_UNUSED int Compile_let(Buffer *buf, ASTNode *bindings, ASTNode *body,
     _(Compile_expr(buf, body, stack_index, body_env));
     return 0;
   }
+  assert(AST_is_pair(bindings));
   // Get the next binding
   ASTNode *binding = AST_pair_car(bindings);
   ASTNode *name = AST_pair_car(binding);
