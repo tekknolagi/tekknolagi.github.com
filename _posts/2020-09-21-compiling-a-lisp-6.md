@@ -512,7 +512,7 @@ assembly to the screen, like a debugging trace. This should be straightforward
 enough since we already have very specific opcode implementations.
 
 Anyway, thanks for reading. Next time we'll get back to compiling and tackle
-let-expressions.
+[let-expressions]({% link _posts/2020-10-01-compiling-a-lisp-7.md %}).
 
 <br />
 <hr style="width: 100px;" />
