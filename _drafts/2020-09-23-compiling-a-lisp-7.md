@@ -131,6 +131,43 @@ outer scope. The inner binding takes precedence:
 ; => 2
 ```
 
+Let's learn about how these functions are implemented.
+
+### Name binding implementation
+
+`Env_bind` is a little silly looking, but it's equivalent to prepending a
+node onto a chain of linked-list nodes. It returns a struct `Env` containing
+the parameters passed to the function. I opted *not* to return a heap pointer
+(allocated with `malloc`, etc) so that this can be easily stored in a
+stack-allocated variable.
+
+```c
+Env Env_bind(const char *name, word value, Env *prev) {
+  return (Env){.name = name, .value = value, .prev = prev};
+}
+```
+
+*Note* that we're **pre**pending, not **ap**pending, so that names we add deeper
+in a let chain shadow names from outside.
+
+`Env_find` does a recursive linear search through the linked list nodes. It may
+look familiar to you if you've already written such a function in your life.
+
+```c
+bool Env_find(Env *env, const char *key, word *result) {
+  if (env == NULL)
+    return false;
+  if (strcmp(env->name, key) == 0) {
+    *result = env->value;
+    return true;
+  }
+  return Env_find(env->prev, key, result);
+}
+```
+
+We search for the node with the string `key` and return the stack offset associated
+with it.
+
 Alright, now we've got names and data structures. Let's implement some name
 resolution and name binding.
 
@@ -146,8 +183,8 @@ very similar to `Emit_add_reg_indirect` that we implemented for primitive
 binary functions.
 
 ```c
-WARN_UNUSED int Compile_expr(Buffer *buf, ASTNode *node, word stack_index,
-                             Env *varenv) {
+int Compile_expr(Buffer *buf, ASTNode *node, word stack_index,
+                 Env *varenv) {
   // ...
   if (AST_is_symbol(node)) {
     const char *symbol = AST_symbol_cstr(node);
