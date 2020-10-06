@@ -88,13 +88,16 @@ that the features we have already build continue to work as expected.
 
 I plan on adhering to this rough plan:
 
-1. Compile integers
-1. Compile other immediate constants (booleans, ASCII characters, the empty
-   list)
-1. Compile unary primitives (`add1`, `sub1`, `integer->char`, `char->integer`,
-   `null?`, `zero?`, etc)
-1. Compile binary primitives (`+`, `-`, `*`, `/`, `=`, etc) 
-1. Compile local variables (`let`-expressions)
+1. [Compile integers]({% link _posts/2020-08-31-compiling-a-lisp-2.md %})
+1. [Compile other immediate constants]({% link _posts/2020-09-02-compiling-a-lisp-3.md %})
+   (booleans, ASCII characters, the empty list)
+1. [Compile unary primitives]({% link _posts/2020-09-05-compiling-a-lisp-4.md %})
+   (`add1`, `sub1`, `integer->char`, `char->integer`, `null?`, `zero?`, etc)
+1. [Compile binary primitives]({% link _posts/2020-09-15-compiling-a-lisp-5.md %})
+   (`+`, `-`, `*`, `/`, `=`, etc)
+1. [Read expressions from strings]({% link _posts/2020-09-21-compiling-a-lisp-6.md %})
+1. [Compile local variables]({% link _posts/2020-10-01-compiling-a-lisp-7.md %})
+   (`let`-expressions)
 1. Compile conditional expressions (`if`-expressions)
 1. Compile heap allocation (`cons`, strings, symbols, etc)
 1. Compile `label` procedure calls
