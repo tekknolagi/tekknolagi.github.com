@@ -1,5 +1,5 @@
 ---
-title: Writing a Lisp, the series
+title: Lisp implementations
 permalink: /blog/lisp/
 index: true
 ---
@@ -17,4 +17,8 @@ index: true
     <cite>-- Kurt Vonnegut, modified by Darius Bacon</cite>
 </div>
 
-{% include lisp_post_list.md %}
+<h2 class="post-title">Compiling a Lisp, the series</h2>
+{% include compiling_a_lisp.md %}
+
+<h2 class="post-title">Writing a Lisp, the series</h2>
+{% include writing_a_lisp.md %}
