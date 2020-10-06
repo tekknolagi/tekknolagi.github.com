@@ -2,7 +2,7 @@
 title: "Compiling a Lisp: Overture"
 layout: post
 date: 2020-08-29 13:16:00 PDT
-tags: lisp, compiler, x86-64
+description: Overture to our small Lisp to x86-64 compiler
 ---
 
 In my [last series]({% link _blog_lisp/index.md %}), I wrote about building a

@@ -2,6 +2,7 @@
 title: "Compiling a Lisp: Integers"
 layout: post
 date: 2020-08-31 09:46:00 PDT
+description: Compiling Lisp integers to x86-64
 ---
 
 <span data-nosnippet>

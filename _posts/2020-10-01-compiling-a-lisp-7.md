@@ -2,6 +2,7 @@
 title: "Compiling a Lisp: Let"
 layout: post
 date: 2020-10-01 09:00:00 PDT
+description: Compiling Lisp let expressions to x86-64
 ---
 
 <span data-nosnippet>

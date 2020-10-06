@@ -2,6 +2,7 @@
 title: "Compiling a Lisp: Reader"
 layout: post
 date: 2020-09-21 22:00:00 PDT
+description: Adding a reader to our Lisp compiler
 ---
 
 <span data-nosnippet>
