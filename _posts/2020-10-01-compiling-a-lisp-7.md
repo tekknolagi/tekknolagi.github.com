@@ -4,7 +4,9 @@ layout: post
 date: 2020-10-01 09:00:00 PDT
 ---
 
+<span data-nosnippet>
 *[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-09-21-compiling-a-lisp-6.md %})*
+</span>
 
 Welcome back to the "Compiling a Lisp" series. Last time we added a reader
 (also known as a parser) to our compiler. This time we're going to compile a

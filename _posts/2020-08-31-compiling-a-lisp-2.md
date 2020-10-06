@@ -4,7 +4,9 @@ layout: post
 date: 2020-08-31 09:46:00 PDT
 ---
 
+<span data-nosnippet>
 *[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-08-29-compiling-a-lisp-1.md %})*
+</span>
 
 Welcome back to the "Compiling a Lisp" series. Last time we made a small code
 execution demo. Today we're going to add the first part of our language:

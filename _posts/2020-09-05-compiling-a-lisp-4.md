@@ -4,7 +4,9 @@ layout: post
 date: 2020-09-05 14:00:00 PDT
 ---
 
+<span data-nosnippet>
 *[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-09-02-compiling-a-lisp-3.md %})*
+</span>
 
 Welcome back to the "Compiling a Lisp" series. Last time, we finished adding
 the rest of the constants as tagged pointer immediates. Since it's not very

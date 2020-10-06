@@ -4,7 +4,9 @@ layout: post
 date: 2020-09-21 22:00:00 PDT
 ---
 
+<span data-nosnippet>
 *[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-09-15-compiling-a-lisp-5.md %})*
+</span>
 
 Welcome back to the "Compiling a Lisp" series. This time I want to take a break
 from compiling and finally add a *reader*. I'm finally getting frustrated
