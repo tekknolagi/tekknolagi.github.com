@@ -21,7 +21,7 @@ For example:
 Binds `a` to `1` and `b` to `2`, but only for the body of the `let` --- the
 rest of the S-expression --- and then executes the body.
 
-This is similar in C to opening a new block:
+This is similar to this very rough translated code in C:
 
 ```c
 int result;
@@ -31,9 +31,6 @@ int result;
   result = a + b;
 }
 ```
-
-but it's a little different because C has a divide between *statements* and
-*expressions*, whereas Lisp does not.
 
 It's *also* different because let-expressions do not make previous binding
 names available to expressions being bound. For example, the following program
@@ -47,9 +44,10 @@ should fail because it cannot find the name `a`:
 There is a form that makes bindings available serially, but that is called
 `let*` and we are not implementing that today.
 
-For completeness' sake, there is also `let rec`, which makes names available
-serially and also within the same binding. This is useful for binding recursive
-or mutually recursive functions. Again, we are not implementing that today.
+For completeness' sake, there is also `letrec`, which makes names available to
+all bindings, including within the same binding. This is useful for binding
+recursive or mutually recursive functions. Again, we are not implementing that
+today.
 
 ### Name binding implementation strategy
 
@@ -79,9 +77,10 @@ table involves a linear scan, checking if keys match.
 > high overhead despite being technically constant time; they incur higher
 > space cost per entry.
 >
-> For a compiler as small as this, a tuned hash table could easily be as long
-> as the rest of the compiler. Since we're also compiling small *programs*,
-> we'll worry about time complexity later. It is only an implementation detail.
+> For a compiler as small as this, a tuned hash table implementation could
+> easily be as many lines of code as the rest of the compiler. Since we're also
+> compiling small *programs*, we'll worry about time complexity later. It is
+> only an implementation detail.
 
 In order to do this, we'll first draw up an association list. We'll use a
 linked list, just like cons cells:
@@ -234,7 +233,7 @@ int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
 
 We have two cases to handle: no bindings and some bindings. We'll tackle these
 recursively, with no bindings being the base case. For that reason, I added a
-helper function `Compile_let`.
+helper function `Compile_let`[^2].
 
 As with all of the other compiler functions, we pass it an machine code buffer,
 a stack index, and an environment. Unlike other functions, we passed it two
@@ -309,6 +308,11 @@ stack location with the binding name in the environment:
 Note that we're binding it in the `body_env` because we want this to be
 available to the body, but not the other bindings.
 
+Also note that since this new binding is created in a way that does not modify
+`body_env` (`entry` only points to `body_env`), it will automatically be
+cleaned up at the end of this invocation of `Compile_let`. This is a little
+subtle in C but it's clearer in more functional languages.
+
 At this point we've done all the work required for one binding. All that's left
 to do is emit a recursive call to handle the rest -- the `cdr` of `bindings`.
 We'll decrement the `stack_index` since we just used the current `stack_index`.
@@ -362,7 +366,7 @@ all get sequential locations on the stack.
 
 A thought exercise for the reader: what would it mean to compile `let*`? What
 modifications would you make to the `Compile_let` function? Take a look at the
-footnote[^2] if you want to double check your answer. I'm not going to
+footnote[^3] if you want to double check your answer. I'm not going to
 implement it in my compiler, though. Too lazy.
 
 ### Testing
@@ -452,7 +456,19 @@ forget to tell your friends you love them.
       pleased with the `Env`/`bool` asymmetry. Maybe I should have gone for
       `Node`.
 
-[^2]: To compile `let*`, you could do one of two things: you could remove the
+[^2]: If you're a seasoned Lisper, you may be wondering why I don't rewrite
+      `let` to `lambda` and use my implementation of closures to solve this
+      problem.  Well, right now we don't have support for closures because I'm
+      following the Ghuloum tutorial and that requires a lot of
+      to-be-implemented machinery.
+
+      Even if we did have that machinery and rewrote `let` to `lambda`, the
+      compiler would generate unnecessarily slow code. Without an optimizer to
+      transform the `lambda`s back into `let`s, the na&iuml;ve implementation
+      would output `call` instructions. And if we had the optimizer, well, we'd
+      be back where we started with our `let` implementation.
+
+[^3]: To compile `let*`, you could do one of two things: you could remove the
       second environment parameter and compile the bindings in the same
       environment as you compile the body. Alternatively, you could get fancy
       and make an AST rewriter that rewrites `(let* ((a 1) (b a)) xyz)` to

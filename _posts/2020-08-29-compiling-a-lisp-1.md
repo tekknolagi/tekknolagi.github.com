@@ -56,6 +56,17 @@ int main() {
 }
 ```
 
+This C program:
+
+1. Allocates writable memory (`mmap`)
+1. Copies a program into it (`memcpy`)
+1. Makes the memory executable (`mprotect`)
+1. Calls the memory as a function
+1. Deallocates memory (`munmap`)
+
+The order of those steps is important! This C program will fail, usually with a
+segmentation fault, if you mix them up or skip one of them.
+
 If you want to understand the pointer shenanigans see the footnote[^2], but if
 you would like to ignore it and pretend I never did that please keep reading.
 The program works, though:
