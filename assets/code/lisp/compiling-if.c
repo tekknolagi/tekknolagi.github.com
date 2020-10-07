@@ -816,15 +816,15 @@ WARN_UNUSED int Compile_let(Buffer *buf, ASTNode *bindings, ASTNode *body,
 
 const word kLabelPlaceholder = 0xdeadbeef;
 
-WARN_UNUSED int Compile_if(Buffer *buf, ASTNode *cond, ASTNode *iftrue,
-                           ASTNode *iffalse, word stack_index, Env *varenv) {
+WARN_UNUSED int Compile_if(Buffer *buf, ASTNode *cond, ASTNode *consequent,
+                           ASTNode *alternate, word stack_index, Env *varenv) {
   _(Compile_expr(buf, cond, stack_index, varenv));
   Emit_cmp_reg_imm32(buf, kRax, Object_false());
-  word iffalse_pos = Emit_jcc(buf, kEqual, kLabelPlaceholder); // je iffalse
-  _(Compile_expr(buf, iftrue, stack_index, varenv));
+  word alternate_pos = Emit_jcc(buf, kEqual, kLabelPlaceholder); // je alternate
+  _(Compile_expr(buf, consequent, stack_index, varenv));
   word end_pos = Emit_jmp(buf, kLabelPlaceholder); // jmp end
-  Emit_backpatch_imm32(buf, iffalse_pos);          // iffalse:
-  _(Compile_expr(buf, iffalse, stack_index, varenv));
+  Emit_backpatch_imm32(buf, alternate_pos);        // alternate:
+  _(Compile_expr(buf, alternate, stack_index, varenv));
   Emit_backpatch_imm32(buf, end_pos); // end:
   return 0;
 }
@@ -941,8 +941,8 @@ WARN_UNUSED int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
     }
     if (AST_symbol_matches(callable, "if")) {
       return Compile_if(buf, /*condition=*/operand1(args),
-                        /*iftrue=*/operand2(args), /*iffalse=*/operand3(args),
-                        stack_index, varenv);
+                        /*consequent=*/operand2(args),
+                        /*alternate=*/operand3(args), stack_index, varenv);
     }
   }
   assert(0 && "unexpected call type");
@@ -2001,13 +2001,13 @@ TEST compile_if_with_true_cond(Buffer *buf) {
       0x48, 0xc7, 0xc0, 0x9f, 0x00, 0x00, 0x00,
       // cmp rax, 0x1f
       0x48, 0x3d, 0x1f, 0x00, 0x00, 0x00,
-      // je iffalse
+      // je alternate
       0x0f, 0x84, 0x0c, 0x00, 0x00, 0x00,
       // mov rax, compile(1)
       0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
       // jmp end
       0xe9, 0x07, 0x00, 0x00, 0x00,
-      // iffalse:
+      // alternate:
       // mov rax, compile(2)
       0x48, 0xc7, 0xc0, 0x08, 0x00, 0x00, 0x00
       // end:
@@ -2029,13 +2029,13 @@ TEST compile_if_with_false_cond(Buffer *buf) {
       0x48, 0xc7, 0xc0, 0x1f, 0x00, 0x00, 0x00,
       // cmp rax, 0x1f
       0x48, 0x3d, 0x1f, 0x00, 0x00, 0x00,
-      // je iffalse
+      // je alternate
       0x0f, 0x84, 0x0c, 0x00, 0x00, 0x00,
       // mov rax, compile(1)
       0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
       // jmp end
       0xe9, 0x07, 0x00, 0x00, 0x00,
-      // iffalse:
+      // alternate:
       // mov rax, compile(2)
       0x48, 0xc7, 0xc0, 0x08, 0x00, 0x00, 0x00
       // end:
