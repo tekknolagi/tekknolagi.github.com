@@ -388,18 +388,18 @@ static uint32_t disp32(int32_t disp) {
   return disp >= 0 ? disp : 0x100000000 + disp;
 }
 
-word Emit_jcc(Buffer *buf, Condition cond, int32_t disp) {
+word Emit_jcc(Buffer *buf, Condition cond, int32_t offset) {
   Buffer_write8(buf, 0x0f);
   Buffer_write8(buf, 0x80 + cond);
   word pos = Buffer_len(buf);
-  Buffer_write32(buf, disp32(disp));
+  Buffer_write32(buf, disp32(offset));
   return pos;
 }
 
-word Emit_jmp(Buffer *buf, int32_t disp) {
+word Emit_jmp(Buffer *buf, int32_t offset) {
   Buffer_write8(buf, 0xe9);
   word pos = Buffer_len(buf);
-  Buffer_write32(buf, disp32(disp));
+  Buffer_write32(buf, disp32(offset));
   return pos;
 }
 
