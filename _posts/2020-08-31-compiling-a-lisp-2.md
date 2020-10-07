@@ -35,7 +35,7 @@ tagging scheme up front. That way it's easier to reason about than if I draw it
 out post-by-post.
 
 ```
-High							     Low
+High                                                         Low
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX00  Integer
 0000000000000000000000000000000000000000000000000XXXXXXX00001111  Character
 00000000000000000000000000000000000000000000000000000000X0011111  Boolean

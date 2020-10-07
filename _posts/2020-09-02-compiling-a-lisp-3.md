@@ -30,7 +30,7 @@ Since we're coming back to the pointer tagging scheme, I've reproduced the
 post below.
 
 ```
-High							     Low
+High                                                         Low
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX00  Integer
 0000000000000000000000000000000000000000000000000XXXXXXX00001111  Character
 00000000000000000000000000000000000000000000000000000000X0011111  Boolean
@@ -50,7 +50,7 @@ Also notice that among those immediates, they can be discriminated by the two
 bits just above those four:
 
 ```
-High							     Low
+High                                                             Low
 0000000000000000000000000000000000000000000000000XXXXXXX00[00][1111]  Character
 00000000000000000000000000000000000000000000000000000000X0[01][1111]  Boolean
 0000000000000000000000000000000000000000000000000000000000[10][1111]  Nil

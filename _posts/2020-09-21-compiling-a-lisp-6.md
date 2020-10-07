@@ -68,7 +68,7 @@ previous posts, but now with a new entry (denoted by `<-`). This new entry
 shows the encoding for the canonical `Error` object.
 
 ```
-High							     Low
+High                                                         Low
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX00  Integer
 0000000000000000000000000000000000000000000000000XXXXXXX00001111  Character
 00000000000000000000000000000000000000000000000000000000X0011111  Boolean
