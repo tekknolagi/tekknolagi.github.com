@@ -630,6 +630,7 @@ bool starts_symbol(char c) {
   case '+':
   case '-':
   case '*':
+  case '<':
   case '>':
   case '=':
   case '?':
@@ -2048,6 +2049,17 @@ TEST compile_if_with_false_cond(Buffer *buf) {
   PASS();
 }
 
+TEST compile_nested_if(Buffer *buf) {
+  ASTNode *node = Reader_read("(if (< 1 2) (if #f 3 4) 5)");
+  int compile_result = Compile_function(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_expr(buf);
+  ASSERT_EQ_FMT(Object_encode_integer(4), result, "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+
 SUITE(object_tests) {
   RUN_TEST(encode_positive_integer);
   RUN_TEST(encode_negative_integer);
@@ -2129,6 +2141,7 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_let_is_not_let_star);
   RUN_BUFFER_TEST(compile_if_with_true_cond);
   RUN_BUFFER_TEST(compile_if_with_false_cond);
+  RUN_BUFFER_TEST(compile_nested_if);
 }
 
 // End Tests
