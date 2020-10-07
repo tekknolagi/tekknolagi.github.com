@@ -197,6 +197,9 @@ Instead of having a `Label` struct, though, I opted to just have a function to
 backpatch forward jumps explicitly. If you prefer to port `Label` to C, be my
 guest. I found it very finicky[^1].
 
+Also, instead of `bind`, I opted for a more explicit `backpatch`. This makes it
+clearer what is happening, I think.
+
 This explicit backpatch approach requires manually tracking the offsets (like
 `alternate_pos` and `end_pos`) inside the jump instructions. We'll need those
 offsets to backpatch them later. This means functions like `Emit_jcc` and
@@ -249,6 +252,19 @@ Then, we write that value in. `Buffer_at_put32` and `disp32` are similar to
 their 8-bit equivalents.
 
 Congratulations! You have implemented `if`.
+
+### A fun diagram
+
+Radare2 has a tool called [Cutter](https://cutter.re/) for reverse engineering
+and binary analysis. I decided to use it on the compiled output of a function
+containing an `if` expression. It produced this pretty graph!
+
+<figure style="display: block; margin: 0 auto; max-width: 600px;">
+  <img style="max-width: 600px;" src="{% link assets/img/lisp/callgraph.svg %}" />
+  <figcaption>Fig. 1 - Call graph as produced by Cutter.</figcaption>
+</figure>
+
+It's prettier in the tool, trust me.
 
 ### Tests
 
@@ -334,4 +350,5 @@ Next time on PBS, heap allocation.
       [cleanup]: https://stackoverflow.com/questions/34574933/a-good-and-idiomatic-way-to-use-gcc-and-clang-attribute-cleanup-and-point
 
 [^2]: By "contributions" I mean thoughtful comments, questions, and
-      appreciation.
+      appreciation. Feel free to chime in on Twitter, HN, Reddit, lobste.rs,
+      the [mailing list](https://lists.sr.ht/~max/compiling-lisp)...
