@@ -1,7 +1,7 @@
 ---
 title: "Compiling a Lisp: If"
 layout: post
-date: 2020-10-06 00:30:00 PT
+date: 2020-10-07 11:00:00 PT
 description: Compiling Lisp if-expressions to x86-64
 ---
 

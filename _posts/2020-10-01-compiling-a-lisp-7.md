@@ -448,8 +448,9 @@ TEST compile_let_is_not_let_star(Buffer *buf) {
 ### Next time
 
 That's a wrap, folks. Time to `let` go. Har har har. Next time we'll add
-`if`-expressions, so our programs can make decisions! Have a great day. Don't
-forget to tell your friends you love them.
+[`if`-expressions]({% link _posts/2020-10-07-compiling-a-lisp-8.md %}), so our
+programs can make decisions! Have a great day. Don't forget to tell your
+friends you love them.
 
 <br />
 <hr style="width: 100px;" />

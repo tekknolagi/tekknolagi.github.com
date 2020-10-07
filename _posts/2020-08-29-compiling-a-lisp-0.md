@@ -99,7 +99,8 @@ I plan on adhering to this rough plan:
 1. [Read expressions from strings]({% link _posts/2020-09-21-compiling-a-lisp-6.md %})
 1. [Compile local variables]({% link _posts/2020-10-01-compiling-a-lisp-7.md %})
    (`let`-expressions)
-1. Compile conditional expressions (`if`-expressions)
+1. [Compile conditional expressions]({% link _posts/2020-10-07-compiling-a-lisp-8.md %})
+   (`if`-expressions)
 1. Compile heap allocation (`cons`, strings, symbols, etc)
 1. Compile `label` procedure calls
 1. Compile closures
