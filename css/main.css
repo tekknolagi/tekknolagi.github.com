@@ -1,18 +1,13 @@
----
-# Only the main Sass file needs front matter (the dashes are enough)
----
-@charset "utf-8";
-
 body {
-    /* margin: 0; */
     font-family: serif;
 }
 div.pagecontents {
-    margin: 20px auto 0px auto;
-    max-width: 650px;
+    margin: 30px auto 0px auto;
     line-height: 1.2;
     font-size: 16px;
-    padding: 10px;
+}
+div.pagecontents, code, pre {
+    max-width: 650px;
 }
 div.navbar {
     display: inline-block;
@@ -24,31 +19,14 @@ li.post-item {
     display: table;
     width: 100%;
 }
-a.post-title {
-    display: table-cell;
-}
 a.post-title span {
     float: left;
-    vertical-align: top;
-}
-div.post-date {
-    display: table-cell;
-    vertical-align: top;
 }
 div.post-date i {
     float: right;
 }
 h1, h2, h2 {
     line-height: 1.2;
-}
-aside {
-/* margin-top: -20px;
-    margin-bottom: -10px; */
-    margin-left: 20px;
-    font-style: italic;
-}
-code, pre {
-    max-width: 650px;
 }
 pre {
     overflow: auto;
@@ -72,7 +50,7 @@ footer hr {
     margin-top: 40px;
 }
 /* Inline code */
-p code, li code, aside code {
+p code, li code {
     color: green;
 }
 table {

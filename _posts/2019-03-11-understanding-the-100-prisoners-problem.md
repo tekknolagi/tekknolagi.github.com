@@ -158,8 +158,8 @@ This turns the `results` from above into an array like this:
 
 which has dimensions `results_bin[max_tries][num_boxes]`.
 
-<aside>If you are unfamiliar with the term <i>binarize</i>, I was too until
-last night. It means <i>reduce to a success/failure value</i>.</aside>
+> If you are unfamiliar with the term *binarize*, I was too until last night.
+> It means *reduce to a success/failure value*.
 
 There are three interesting regions of this data, identifiable even before
 plotting:
@@ -187,10 +187,9 @@ plt.show()
 
 [![](/assets/img/prisoners.png)](/assets/img/prisoners.png)
 
-<aside>Note that this graph was generated with <code>1000</code> samples, and
-intervals of <code>1</code> for <code>max_tries_options</code> and
-<code>num_box_options</code>, which is different than the above code snippets.
-It took a while to generate the data.</aside>
+> Note that this graph was generated with `1000` samples, and intervals of `1`
+> for `max_tries_options` and `num_box_options`, which is different than the
+> above code snippets.  It took a while to generate the data.
 
 On the x-axis we have the total number of both people and boxes and on the
 y-axis we have the maximum number of tries that each person is given to find
