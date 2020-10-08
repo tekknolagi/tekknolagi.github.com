@@ -3,30 +3,12 @@ layout: default
 title: Favorite Things
 ---
 
-<!--
-Here are some of my favorite books:
-
-<ul>
-  {% for book in site.data.books %}
-  <li><i>{{ book.title }}</i> by {{ book.author }}</li>
-  {% endfor %}
-</ul>
-
-Here are some of my favorite films:
-
-<ul>
-  {% for film in site.data.films %}
-  <li>{{ film.title }}</li>
-  {% endfor %}
-</ul>
--->
-
 I found this website called [LibraryThing](https://www.librarything.com/home)
 that allows you to catalog, organize, and search your library -- and many
 others. The following button links to my profile.
 
 <a href="http://www.librarything.com/profile/tekknolagi">
-    <img src="/assets/img/librarything.png" />
+  <img src="/assets/img/librarything.png" />
 </a>
 
 Here is some of my favorite music:
@@ -43,54 +25,93 @@ Here is some of my favorite music:
 
 I am currently listening to some newer music, too:
 
-<ul>
-  {% for item in site.data.other.current_music %}
-    <li>
-    {% if item.smallcaps %}
-    <i style="font-variant: small-caps;">
-    {% else %}
-    <i>
-    {% endif %}
-    {{ item.group.name }}</i>
-    {% if item.group.english_name %}
-    <i>({{ item.group.english_name }})</i>
-    {% endif %}
-    </li>
-  {% endfor %}
-</ul>
+* <i style="font-variant: small-caps;">Отава ё</i> *(Otava Yo)*
+* *Dire Straits*
+* *Gipsy Kings*
+* *ZZ Top*
+* *Gorillaz*
+* *Kanye West*
+* *Jay Z*
+* *Daft Punk*
+* <i style="font-variant: small-caps;">Нейромонах Феофан</i> *(Neuromonakh Feofan)*
+* *Florence + The Machine*
+* *Mumford & Sons*
+* *Punch Brothers*
+* *Muse*
+* *First Aid Kit*
+* *Elvis Crespo*
+* *Kishore Kumar*
+* *Run the Jewels*
+* *A Tribe Called Quest*
+* *Balkan Beat Box*
+* *Arcade Fire*
+* *Paul Simon*
+* *Ladysmith Black Mambazo*
 
-Here's some awesomely weird music that I found:
+Here's some awesome other music that I found:
 
-<ul>
-  {% for item in site.data.other.cool_artists %}
-    <li>
-      <a href="{{ item.group.link }}">{{ item.group.name }}</a>
-    </li>
-  {% endfor %}
-</ul>
+* [Klunk](https://klunk.bandcamp.com/)
+* [Le Skeleton Band](https://leskeletonband.bandcamp.com/)
 
 Here are some websites I like:
 
-<ul>
-  {% for website in site.data.sites %}
-  <li><a href="http://{{ website.url }}">{{ website.url }}</a></li>
-  {% endfor %}
-</ul>
+* [defunkt.io](http://defunkt.io)
+* [henrik.nyh.se](http://henrik.nyh.se)
+* [mattyoho.com](http://mattyoho.com)
+* [paulstamatiou.com](http://paulstamatiou.com)
+* [paperplanes.de](http://paperplanes.de)
+* [klepas.org](http://klepas.org)
+* [jigarpatel.in](http://jigarpatel.in)
+* [blog.jupo.org](http://blog.jupo.org)
+* [sbin.dk](http://sbin.dk)
+* [bouk.co](http://bouk.co)
+* [jbalogh.me](http://jbalogh.me)
+* [oilshell.org](http://oilshell.org)
+* [danluu.com](http://danluu.com)
+* [eev.ee](http://eev.ee)
+* [willium.com](http://willium.com)
+* [www.chriskrycho.com](http://www.chriskrycho.com)
+* [michaelrbernste.in](http://michaelrbernste.in)
+* [ruudvanasseldonk.com](http://ruudvanasseldonk.com)
+* [nullprogram.com](http://nullprogram.com)
+* [tonsky.me](http://tonsky.me)
+* [klingt.net](http://klingt.net)
+* [sockpuppet.org](http://sockpuppet.org)
+* [blog.lizzie.io](http://blog.lizzie.io)
+* [www.soimort.org](http://www.soimort.org)
+* [www.sigbus.info](http://www.sigbus.info)
+* [c9x.me](http://c9x.me)
+* [willcrichton.net/notes/](http://willcrichton.net/notes/)
+* [research.swtch.com/vgo-intro](http://research.swtch.com/vgo-intro)
+* [argumatronic.com/](http://argumatronic.com/)
+* [mmarfil.com](http://mmarfil.com)
+* [tonsky.me](http://tonsky.me)
+* [dump.mntmn.com/interim-paper/](http://dump.mntmn.com/interim-paper/)
+* [elly.town](http://elly.town)
+* [tinyprojects.dev](http://tinyprojects.dev)
+* [webring.xxiivv.com/](http://webring.xxiivv.com/)
+* [tinyprojects.dev](http://tinyprojects.dev)
+* [www.distinctly.pink](http://www.distinctly.pink)
 
-In particular, I enjoy the data density and easy readability of the NASA page.
+My favorite tea is currently Stash Tea's *Double Bergamot Earl Grey*.
 
-My favorite tea is currently {{ site.data.other.tea.maker }}'s
-<i>{{ site.data.other.tea.name }}</i>.
-
-<p>
 I took some wonderful classes while I was at Tufts. I wholeheartedly recommend
 the following:
-</p>
-<ul>
-    {% for class in site.data.classes %}
-    <li><i>{{ class.name }}</i> with {{ class.prof }}, {{ class.desc }}</li>
-    {% endfor %}
-</ul>
+
+* *Internet-scale Distributed Systems* with Noah Mendelsohn, a class that
+  explores how systems are designed and implemented
+* *Functional Programming* with Torsten Grust, a class that dives deep into
+  Haskell's type system and some FP theory
+* *Programming Languages* with Kathleen Fisher, a class about building,
+  proving, and comparing programming languages
+* *Compilers* with Sam Guyer, a class about --- guess what? --- building
+  compilers in ML
+* *Security CTF* with Ming Chow, a half-credit course in which we build a
+  secure device, swap with another school, and then break into theirs
+* *Concurrent Programming* with Mark Sheldon, a class all about concurrency,
+  multithreading, and parallel computation
+* *Machine Structure &amp; Intel Assembly Programming* with Mark Sheldon, in
+  which students spend around 40 hours per week writing obscene quantities of C
 
 I like music featuring the [hammered dulcimer](https://en.wikipedia.org/wiki/Hammered_dulcimer).
 Below is a collection of music (mostly film scores) that includes at least a
