@@ -152,3 +152,17 @@ there is still Ghuloum's excellent paper to learn from.
 
 Next up, [the smallest program]({% link
 _posts/2020-08-29-compiling-a-lisp-1.md %}).
+
+<hr style="width: 100px;" />
+<!-- Footnotes -->
+
+Here are some other links you might find useful or interesting while following
+along with this series:
+
+* Nada Amin's [implementation](https://github.com/namin/inc) of the original
+  paper
+* Rui Ueyama's Ghuloum-style [C compiler](https://github.com/rui314/chibicc)
+* UMD's Ghuloum-style
+  [compiler course](https://www.cs.umd.edu/class/fall2020/cmsc430/Notes.html)
+  and associated
+  [lectures](https://www.youtube.com/channel/UCfZ7HFoaeSA7zPoGelA3aiw/videos)
