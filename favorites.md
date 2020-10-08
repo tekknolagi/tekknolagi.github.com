@@ -13,15 +13,40 @@ others. The following button links to my profile.
 
 Here is some of my favorite music:
 
-<ul>
-  {% for composer in site.data.classical_composers %}
-    {% for piece in composer.pieces %}
-      <li>
-        <i>{{ piece.name }}</i> by {{ composer.composer }}{% if piece.conductor %}, conducted by {{ piece.conductor }}{% endif %}{% if piece.director %}, directed by {{ piece.director }}{% endif %}
-      </li>
-    {% endfor %}
-  {% endfor %}
-</ul>
+* *Peer Gynt Suite* by Edvard Grieg, conducted by Guillermo Garcia Calvo
+* *Siegfried* by Richard Wagner, conducted by Christian Thielemann
+* *Clarinet Concerto in A (K622)* by W.A. Mozart
+* *Bassoon Concerto in B-flat (K1-191, K6-186e)* by W.A. Mozart
+* *Oboe Concerto in C (K1-314, K6-285d)* by W.A. Mozart
+* *Symphony No. 25 in G minor (K1-183, K6-173dB)* by W.A. Mozart
+* *Die Entführung aus dem Serail (K384)* by W.A. Mozart
+* *Sinfonia Concertante for Violin, Viola, and Orchestra in E-flat (K1-364,
+  K6-320d)* by W.A. Mozart
+* *Don Giovanni (K527)* by W.A. Mozart
+- *Karelia Suite* by Jean Sibelius
+- *Finlandia* by Jean Sibelius
+* *Cello Concerto in B minor* by Antonín Dvořák, conducted by Paavo Järvi
+* *Symphony No. 9 -- New World* by Antonín Dvořák, conducted by Herbert von
+  Karajan
+* *Vltava* by Bedřich Smetana
+* *Má vlast* by Bedřich Smetana
+* *Nabucco* by Giuseppe Verdi, conducted by Giuseppe Sinopoli
+* *Requiem* by Giuseppe Verdi, conducted by Semyon Bychkov
+* *Violin Concerto in D major* by Johannes Brahms, conducted by Carlo Maria
+  Giulini, with soloist Itzhak Perlman
+* *Symphonies 3, 9* by Ludwig van Beethoven, conducted by Josef Krips
+* *La Gazza Ladra* by Gioachino Rossini, conducted by Sir Thomas Beecham
+* *Háry János* by Zoltán Kodály
+* *Cello Sonata* by Zoltán Kodály
+* *Dances of Galánta* by Zoltán Kodály
+* *Cellokoncert Nr 1 a-mol op.33* by Camille Saint-Saëns, with soloist Sol
+  Gabetta
+* *1. Violinkonzert* by Max Bruch, with soloist Hilary Hahn
+* *Sinfonietta* by Leoš Janáček, with conductor Sir Charles Mackerras
+* *In the Mists* by Leoš Janáček
+* *Ruslan and Lyudmila* by Mikhail Glinka, with director Valery Gergiev
+* *Scheherazade* by Nikolai Rimsky-Korsakov, with director Valery Gergiev
+* *Turandot* by Giacomo Puccini, conducted by Zubin Mehta
 
 I am currently listening to some newer music, too:
 
