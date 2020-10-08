@@ -1159,6 +1159,16 @@ TEST Testing_expect_entry_has_contents(Buffer *buf, byte *arr,
     Buffer_deinit(&buf);                                                       \
   } while (0)
 
+#define RUN_HEAP_TEST(test_name)                                               \
+  do {                                                                         \
+    Buffer buf;                                                                \
+    Buffer_init(&buf, 1);                                                      \
+    uword *heap = malloc(1000 * kWordSize);                                    \
+    GREATEST_RUN_TESTp(test_name, &buf, heap);                                 \
+    free(heap);                                                                \
+    Buffer_deinit(&buf);                                                       \
+  } while (0)
+
 ASTNode *list1(ASTNode *item0) { return AST_new_pair(item0, AST_nil()); }
 
 ASTNode *list2(ASTNode *item0, ASTNode *item1) {
@@ -2163,7 +2173,7 @@ TEST compile_nested_if(Buffer *buf) {
   PASS();
 }
 
-TEST compile_cons(Buffer *buf) {
+TEST compile_cons(Buffer *buf, uword *heap) {
   ASTNode *node = Reader_read("(cons 1 2)");
   int compile_result = Compile_entry(buf, node);
   ASSERT_EQ(compile_result, 0);
@@ -2187,17 +2197,15 @@ TEST compile_cons(Buffer *buf) {
   // clang-format on
   EXPECT_ENTRY_CONTAINS_CODE(buf, expected);
   Buffer_make_executable(buf);
-  uword *heap = malloc(2 * kWordSize);
   uword result = Testing_execute_entry(buf, heap);
   ASSERT(Object_is_pair(result));
   ASSERT_EQ_FMT(Object_encode_integer(1), Object_pair_car(result), "0x%lx");
   ASSERT_EQ_FMT(Object_encode_integer(2), Object_pair_cdr(result), "0x%lx");
-  free(heap);
   AST_heap_free(node);
   PASS();
 }
 
-TEST compile_car(Buffer *buf) {
+TEST compile_car(Buffer *buf, uword *heap) {
   ASTNode *node = Reader_read("(car (cons 1 2))");
   int compile_result = Compile_entry(buf, node);
   ASSERT_EQ(compile_result, 0);
@@ -2223,15 +2231,13 @@ TEST compile_car(Buffer *buf) {
   // clang-format on
   EXPECT_ENTRY_CONTAINS_CODE(buf, expected);
   Buffer_make_executable(buf);
-  uword *heap = malloc(2 * kWordSize);
   uword result = Testing_execute_entry(buf, heap);
   ASSERT_EQ_FMT(Object_encode_integer(1), result, "0x%lx");
-  free(heap);
   AST_heap_free(node);
   PASS();
 }
 
-TEST compile_cdr(Buffer *buf) {
+TEST compile_cdr(Buffer *buf, uword *heap) {
   ASTNode *node = Reader_read("(cdr (cons 1 2))");
   int compile_result = Compile_entry(buf, node);
   ASSERT_EQ(compile_result, 0);
@@ -2257,10 +2263,8 @@ TEST compile_cdr(Buffer *buf) {
   // clang-format on
   EXPECT_ENTRY_CONTAINS_CODE(buf, expected);
   Buffer_make_executable(buf);
-  uword *heap = malloc(2 * kWordSize);
   uword result = Testing_execute_entry(buf, heap);
   ASSERT_EQ_FMT(Object_encode_integer(2), result, "0x%lx");
-  free(heap);
   AST_heap_free(node);
   PASS();
 }
@@ -2347,9 +2351,9 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_if_with_true_cond);
   RUN_BUFFER_TEST(compile_if_with_false_cond);
   RUN_BUFFER_TEST(compile_nested_if);
-  RUN_BUFFER_TEST(compile_cons);
-  RUN_BUFFER_TEST(compile_car);
-  RUN_BUFFER_TEST(compile_cdr);
+  RUN_HEAP_TEST(compile_cons);
+  RUN_HEAP_TEST(compile_car);
+  RUN_HEAP_TEST(compile_cdr);
 }
 
 // End Tests
