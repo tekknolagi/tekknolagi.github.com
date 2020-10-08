@@ -41,13 +41,3 @@ collections:
     recipes:
         output: true
         permalink: /recipes/:path/
-
-defaults:
-    - scope:
-          type: blog_lisp
-      values:
-          layout: post
-    - scope:
-          type: recipes
-      values:
-          layout: recipe

@@ -4,6 +4,7 @@ author: Maxwell Bernstein
 date: Mar 15, 2017
 codelink: /resources/lisp/14_comments.ml
 lispcodelink: /resources/lisp/14_comments.lsp
+layout: post
 ---
 
 It would be really nice if we could document our code in line. Right? I mean,

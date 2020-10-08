@@ -3,6 +3,7 @@ title: "Writing a Lisp, Part 2: Symbols"
 author: Maxwell Bernstein
 date: Nov 1, 2016
 codelink: /resources/lisp/02_symbols.ml
+layout: post
 ---
 
 Last time we added booleans and negative numbers to our interpreter. But

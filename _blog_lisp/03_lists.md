@@ -3,6 +3,7 @@ title: "Writing a Lisp, Part 3: Lists"
 author: Maxwell Bernstein
 date: Dec 6, 2016
 codelink: /resources/lisp/03_lists.ml
+layout: post
 ---
 
 Last time we added symbols to our interpreter, so that leaves us currently with

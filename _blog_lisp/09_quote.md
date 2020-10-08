@@ -3,6 +3,7 @@ title: "Writing a Lisp, Part 9: Quote"
 author: Maxwell Bernstein
 date: Feb 1, 2017
 codelink: /resources/lisp/09_quote.ml
+layout: post
 ---
 
 Welcome back! I promise this post won't be nearly as long as the post about

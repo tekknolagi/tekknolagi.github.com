@@ -3,6 +3,7 @@ title: "Writing a Lisp, Part 10: Closures"
 author: Maxwell Bernstein
 date: Feb 7, 2017
 codelink: /resources/lisp/10_closures.ml
+layout: post
 ---
 
 Isn't it about time we were able to define our own functions? I think so.

@@ -4,6 +4,7 @@ author: Maxwell Bernstein
 date: Mar 14, 2017
 codelink: /resources/lisp/13_let.ml
 lispcodelink: /resources/lisp/13_let.lsp
+layout: post
 ---
 
 Here we are, here we are, with a fully-functional programming language. And

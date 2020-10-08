@@ -3,6 +3,7 @@ title: "Writing a Lisp, Part 7: Primitives 2"
 author: Maxwell Bernstein
 date: Jan 18, 2017
 codelink: /resources/lisp/07_prim2.ml
+layout: post
 ---
 
 Right now the way we handle evaluation of primitive functions is less than

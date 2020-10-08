@@ -3,6 +3,7 @@ title: "Writing a Lisp, Part 0: Fundamentals"
 author: Maxwell Bernstein
 date: Oct 27, 2016
 codelink: /resources/lisp/00_fundamentals.ml
+layout: post
 ---
 
 So you want to write a [Lisp

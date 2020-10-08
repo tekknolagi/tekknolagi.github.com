@@ -3,6 +3,7 @@ title: "Writing a Lisp, Part 17: Modules"
 author: Maxwell Bernstein
 date: May 2, 2017
 codelink: /resources/lisp/17_modules.ml
+layout: post
 ---
 
 Right now we have a fully functional (in the general sense, not the math/CS

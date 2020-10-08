@@ -2,6 +2,7 @@
 title: Lisp implementations
 permalink: /blog/lisp/
 index: true
+layout: post
 ---
 
 <div style="text-align: center;">

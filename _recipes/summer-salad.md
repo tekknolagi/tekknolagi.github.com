@@ -1,6 +1,7 @@
 ---
 title: Summer Salad
 creator: Marcella Bernstein
+layout: recipe
 ---
 
 *Ingredients:*

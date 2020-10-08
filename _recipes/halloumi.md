@@ -1,6 +1,7 @@
 ---
 title: Halloumi
 creator: Max Bernstein
+layout: recipe
 ---
 
 *Quantity:* Serves three.

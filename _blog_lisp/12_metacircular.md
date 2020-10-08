@@ -4,6 +4,7 @@ author: Maxwell Bernstein
 date: Mar 1, 2017
 codelink: /resources/lisp/12_metacircular.ml
 lispcodelink: /resources/lisp/12_metacircular.lsp
+layout: post
 ---
 
 <!--

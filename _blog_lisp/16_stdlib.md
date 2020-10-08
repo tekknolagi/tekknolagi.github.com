@@ -3,6 +3,7 @@ title: "Writing a Lisp, Part 16: Standard Library"
 author: Maxwell Bernstein
 date: Mar 22, 2017
 codelink: /resources/lisp/16_stdlib.ml
+layout: post
 ---
 
 We've gotten to the point where we can define some useful utility functions

@@ -3,6 +3,7 @@ title: "Writing a Lisp, Part 18: No Define"
 author: Maxwell Bernstein
 date: May 11, 2017
 codelink: /resources/lisp/18_nodefine.ml
+layout: post
 ---
 
 Okay so I lied. Since I'm studying abroad -- so not coding much -- and also
