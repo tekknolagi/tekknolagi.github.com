@@ -74,18 +74,11 @@ university policy.
 </p>
 
 <h2>Sometimes I contribute to open source projects.</h2>
-<ul>
-    {% for project in site.data.other.open_source %}
-    <li><a href="{{ project.url }}">{{ project.name }}</a>
-        {% assign num_commits = project.commits | size %}
-        {% if num_commits > 0 %}
-        ({% for commit in project.commits %}<a href="{{ commit.url }}">{{ commit.shortname }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %})
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
-
-<!--
-<p>"Am Heimcomputer sitz' ich hier / Und programmier' die Zukunft mir" –
-Kraftwerk: Heimcomputer (1981)</p>
--->
+* [Reason](https://github.com/facebook/reason)
+* [Clang](https://clang.llvm.org/)
+  ([rC345558](https://reviews.llvm.org/rC345558))
+* [Pyre](https://pyre-check.org/)
+  ([Refactor protocol inference](https://github.com/facebook/pyre-check/commit/f14577db5940c0b4087fffe209786cd4075f37df))
+* [CPython](https://www.python.org/)
+  ([bpo-36929](https://github.com/python/cpython/pull/13392),
+  [bpo-38648](https://github.com/python/cpython/pull/17002))
