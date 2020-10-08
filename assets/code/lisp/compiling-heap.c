@@ -54,6 +54,9 @@ const unsigned int kSymbolTag = 0x5;      // 0b101
 const uword kHeapTagMask = ((uword)0x7);  // 0b000...111
 const uword kHeapPtrMask = ~kHeapTagMask; // 0b1111...1000
 
+static const int kCarOffset = 0;
+static const int kCdrOffset = 1;
+
 uword Object_encode_integer(word value) {
   assert(value < kIntegerMax && "too big");
   assert(value > kIntegerMin && "too small");
@@ -98,12 +101,12 @@ bool Object_is_pair(uword value) { return (value & kHeapTagMask) == kPairTag; }
 
 uword Object_pair_car(uword value) {
   assert(Object_is_pair(value));
-  return ((uword *)Object_address((void *)value))[0];
+  return ((uword *)Object_address((void *)value))[kCarOffset];
 }
 
 uword Object_pair_cdr(uword value) {
   assert(Object_is_pair(value));
-  return ((uword *)Object_address((void *)value))[1];
+  return ((uword *)Object_address((void *)value))[kCdrOffset];
 }
 
 // End Objects
@@ -852,10 +855,12 @@ WARN_UNUSED int Compile_cons(Buffer *buf, ASTNode *car, ASTNode *cdr,
                              int stack_index, Env *varenv) {
   // Compile and store car
   _(Compile_expr(buf, car, stack_index, varenv));
-  Emit_store_reg_indirect(buf, /*dst=*/Ind(kRsi, 0), /*src=*/kRax);
+  Emit_store_reg_indirect(buf, /*dst=*/Ind(kRsi, kCarOffset * kWordSize),
+                          /*src=*/kRax);
   // Compile and store cdr
   _(Compile_expr(buf, cdr, stack_index, varenv));
-  Emit_store_reg_indirect(buf, /*dst=*/Ind(kRsi, kWordSize), /*src=*/kRax);
+  Emit_store_reg_indirect(buf, /*dst=*/Ind(kRsi, kCdrOffset * kWordSize),
+                          /*src=*/kRax);
   // Store tagged pointer in rax
   Emit_mov_reg_reg(buf, /*dst=*/kRax, /*src=*/kRsi);
   Emit_or_reg_imm8(buf, /*dst=*/kRax, 1);
@@ -983,6 +988,20 @@ WARN_UNUSED int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
       return Compile_cons(buf, /*car=*/operand1(args), /*cdr=*/operand2(args),
                           stack_index, varenv);
     }
+    if (AST_symbol_matches(callable, "car")) {
+      _(Compile_expr(buf, operand1(args), stack_index, varenv));
+      Emit_load_reg_indirect(
+          buf, /*dst=*/kRax,
+          /*src=*/Ind(kRax, (kCarOffset * kWordSize) - kPairTag));
+      return 0;
+    }
+    if (AST_symbol_matches(callable, "cdr")) {
+      _(Compile_expr(buf, operand1(args), stack_index, varenv));
+      Emit_load_reg_indirect(
+          buf, /*dst=*/kRax,
+          /*src=*/Ind(kRax, (kCdrOffset * kWordSize) - kPairTag));
+      return 0;
+    }
   }
   assert(0 && "unexpected call type");
 }
@@ -1047,9 +1066,16 @@ WARN_UNUSED int Compile_function(Buffer *buf, ASTNode *node) {
   return 0;
 }
 
+static const byte kEntryPrologue[] = {
+    // Save the heap in rsi, our global heap pointer
+    // mov rsi, rdi
+    0x48,
+    0x89,
+    0xfe,
+};
+
 WARN_UNUSED int Compile_entry(Buffer *buf, ASTNode *node) {
-  // Save the heap in rsi, our global heap pointer
-  Emit_mov_reg_reg(buf, /*dst=*/kRsi, /*src=*/kRdi);
+  Buffer_write_arr(buf, kEntryPrologue, sizeof kEntryPrologue);
   return Compile_function(buf, node);
 }
 
@@ -1098,11 +1124,32 @@ TEST Testing_expect_function_has_contents(Buffer *buf, byte *arr,
   PASS();
 }
 
+TEST Testing_expect_entry_has_contents(Buffer *buf, byte *arr,
+                                       size_t arr_size) {
+  word total_size = sizeof kEntryPrologue + sizeof kFunctionPrologue +
+                    arr_size + sizeof kFunctionEpilogue;
+  ASSERT_EQ_FMT(total_size, Buffer_len(buf), "%ld");
+
+  byte *ptr = buf->address;
+  ASSERT_MEM_EQ(kEntryPrologue, ptr, sizeof kEntryPrologue);
+  ptr += sizeof kEntryPrologue;
+  ASSERT_MEM_EQ(kFunctionPrologue, ptr, sizeof kFunctionPrologue);
+  ptr += sizeof kFunctionPrologue;
+  ASSERT_MEM_EQ(arr, ptr, arr_size);
+  ptr += arr_size;
+  ASSERT_MEM_EQ(kFunctionEpilogue, ptr, sizeof kFunctionEpilogue);
+  ptr += sizeof kFunctionEpilogue;
+  PASS();
+}
+
 #define EXPECT_EQUALS_BYTES(buf, arr)                                          \
   ASSERT_MEM_EQ(arr, (buf)->address, sizeof arr)
 
 #define EXPECT_FUNCTION_CONTAINS_CODE(buf, arr)                                \
   CHECK_CALL(Testing_expect_function_has_contents(buf, arr, sizeof arr))
+
+#define EXPECT_ENTRY_CONTAINS_CODE(buf, arr)                                   \
+  CHECK_CALL(Testing_expect_entry_has_contents(buf, arr, sizeof arr))
 
 #define RUN_BUFFER_TEST(test_name)                                             \
   do {                                                                         \
@@ -2122,12 +2169,6 @@ TEST compile_cons(Buffer *buf) {
   ASSERT_EQ(compile_result, 0);
   // clang-format off
   byte expected[] = {
-      // mov rsi, rdi
-      0x48, 0x89, 0xfe,
-      // push rbp
-      0x55,
-      // mov rbp, rsp
-      0x48, 0x89, 0xe5,
       // mov rax, 0x2
       0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
       // mov [rsi], rax
@@ -2144,13 +2185,81 @@ TEST compile_cons(Buffer *buf) {
       0x48, 0x81, 0xc6, 0x10, 0x00, 0x00, 0x00,
   };
   // clang-format on
-  EXPECT_EQUALS_BYTES(buf, expected);
+  EXPECT_ENTRY_CONTAINS_CODE(buf, expected);
   Buffer_make_executable(buf);
   uword *heap = malloc(2 * kWordSize);
   uword result = Testing_execute_entry(buf, heap);
   ASSERT(Object_is_pair(result));
   ASSERT_EQ_FMT(Object_encode_integer(1), Object_pair_car(result), "0x%lx");
   ASSERT_EQ_FMT(Object_encode_integer(2), Object_pair_cdr(result), "0x%lx");
+  free(heap);
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_car(Buffer *buf) {
+  ASTNode *node = Reader_read("(car (cons 1 2))");
+  int compile_result = Compile_entry(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // clang-format off
+  byte expected[] = {
+      // mov rax, 0x2
+      0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
+      // mov [rsi], rax
+      0x48, 0x89, 0x46, 0x00,
+      // mov rax, 0x4
+      0x48, 0xc7, 0xc0, 0x08, 0x00, 0x00, 0x00,
+      // mov [rsi+kWordSize], rax
+      0x48, 0x89, 0x46, 0x08,
+      // mov rax, rsi
+      0x48, 0x89, 0xf0,
+      // or rax, kPairTag
+      0x48, 0x83, 0xc8, 0x01,
+      // add rsi, 2*kWordSize
+      0x48, 0x81, 0xc6, 0x10, 0x00, 0x00, 0x00,
+      // mov rax, [rax-1]
+      0x48, 0x8b, 0x40, 0xff,
+  };
+  // clang-format on
+  EXPECT_ENTRY_CONTAINS_CODE(buf, expected);
+  Buffer_make_executable(buf);
+  uword *heap = malloc(2 * kWordSize);
+  uword result = Testing_execute_entry(buf, heap);
+  ASSERT_EQ_FMT(Object_encode_integer(1), result, "0x%lx");
+  free(heap);
+  AST_heap_free(node);
+  PASS();
+}
+
+TEST compile_cdr(Buffer *buf) {
+  ASTNode *node = Reader_read("(cdr (cons 1 2))");
+  int compile_result = Compile_entry(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // clang-format off
+  byte expected[] = {
+      // mov rax, 0x2
+      0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
+      // mov [rsi], rax
+      0x48, 0x89, 0x46, 0x00,
+      // mov rax, 0x4
+      0x48, 0xc7, 0xc0, 0x08, 0x00, 0x00, 0x00,
+      // mov [rsi+kWordSize], rax
+      0x48, 0x89, 0x46, 0x08,
+      // mov rax, rsi
+      0x48, 0x89, 0xf0,
+      // or rax, kPairTag
+      0x48, 0x83, 0xc8, 0x01,
+      // add rsi, 2*kWordSize
+      0x48, 0x81, 0xc6, 0x10, 0x00, 0x00, 0x00,
+      // mov rax, [rax+7]
+      0x48, 0x8b, 0x40, 0x07,
+  };
+  // clang-format on
+  EXPECT_ENTRY_CONTAINS_CODE(buf, expected);
+  Buffer_make_executable(buf);
+  uword *heap = malloc(2 * kWordSize);
+  uword result = Testing_execute_entry(buf, heap);
+  ASSERT_EQ_FMT(Object_encode_integer(2), result, "0x%lx");
   free(heap);
   AST_heap_free(node);
   PASS();
@@ -2239,6 +2348,8 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_if_with_false_cond);
   RUN_BUFFER_TEST(compile_nested_if);
   RUN_BUFFER_TEST(compile_cons);
+  RUN_BUFFER_TEST(compile_car);
+  RUN_BUFFER_TEST(compile_cdr);
 }
 
 // End Tests
