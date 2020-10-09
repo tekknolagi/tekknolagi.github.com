@@ -1,0 +1,30 @@
+(?)
+Copy "Hello, world!" to clipboard
+
+## Window options ##
+[ ]
+No titlebar [ ]
+No scrollbar [ ]
+No menu
+[ ]
+No move [ ]
+No resize [ ]
+No collapse
+[ ]
+No close [ ]
+No nav [ ]
+No background
+[ ]
+No bring to front
+
+## Widgets ##
+
+## Layout & Scrolling ##
+
+## Popups & Modal windows ##
+
+## Columns ##
+
+## Filtering ##
+
+## Inputs, Navigation & Focus ##

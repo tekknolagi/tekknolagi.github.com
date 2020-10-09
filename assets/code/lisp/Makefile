@@ -1,8 +1,8 @@
 OUT = bin
-CFLAGS = -O0 -g -Wall -Wextra -pedantic -fno-strict-aliasing -std=c99
+CFLAGS = -O0 -g -Wall -Wextra -pedantic -fno-strict-aliasing
 TARGETS = mmap-demo compiling-integers compiling-immediates compiling-unary \
 	  compiling-binary compiling-reader compiling-let compiling-if \
-		compiling-heap
+		compiling-heap live-programming
 BINARIES = $(addprefix $(OUT)/, $(TARGETS))
 TESTS = $(addprefix test-, $(TARGETS))
 
@@ -21,7 +21,14 @@ clean:
 	rm $(OUT)/*
 
 $(OUT)/%: %.c greatest.h
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) -std=c99 $(CFLAGS) $< -o $@
+
+IMGUI = imgui.cpp imgui_draw.cpp imgui_widgets.cpp imgui_impl_opengl3.cpp imgui_impl_sdl.cpp
+PKGS = $(shell pkg-config --cflags sdl2)
+LIBS = $(shell pkg-config --libs sdl2) $(shell pkg-config --libs glew)
+
+$(OUT)/live-programming: live-programming.cpp
+	$(CXX) -std=c++11 $(CFLAGS) $(PKGS) $< -o $@ $(IMGUI) $(LIBS)
 
 test-%: $(OUT)/%
 	./$<
