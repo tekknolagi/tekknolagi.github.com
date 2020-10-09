@@ -2,11 +2,6 @@
 title: Stickers
 ---
 
-You can buy stickers online on my stickermule store:
-
-* [Norman drawing](https://www.stickermule.com/marketplace/11532-norman)
-* [Make Halligan Great Again](https://www.stickermule.com/marketplace/15895-make-halligan-great-again)
-
-Note that prices will be higher than from my bulk orders due to a combination
-of stickermule charging more and there being slight markup. I sell the bulk
-orders at cost.
+Stickers page has been removed because StickerMule no longer has custom sticker
+sales but this page remains to avoid link rot. If you can recommend me a
+similar sticker store, I can put some of the designs back up.
