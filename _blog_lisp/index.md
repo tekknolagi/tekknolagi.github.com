@@ -2,7 +2,7 @@
 title: Lisp implementations
 permalink: /blog/lisp/
 index: true
-layout: post
+layout: page
 ---
 
 <div style="text-align: center;">
@@ -18,8 +18,8 @@ layout: post
     <cite>-- Kurt Vonnegut, modified by Darius Bacon</cite>
 </div>
 
-<h2 class="post-title">Compiling a Lisp, the series</h2>
+<h2>Compiling a Lisp, the series</h2>
 {% include compiling_a_lisp.md %}
 
-<h2 class="post-title">Writing a Lisp, the series</h2>
+<h2>Writing a Lisp, the series</h2>
 {% include writing_a_lisp.md %}

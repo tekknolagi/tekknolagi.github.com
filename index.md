@@ -1,6 +1,6 @@
 ---
 title:
-layout: default
+layout: page
 ---
 
 <h1>I'm Max Bernstein.</h1>
