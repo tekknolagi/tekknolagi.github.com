@@ -3,7 +3,7 @@ title:
 layout: default
 ---
 
-# I'm Max Bernstein.
+<h1>I'm Max Bernstein.</h1>
 
 I am a human and [programmer](https://github.com/tekknolagi). I like to read
 books, take photos and ride bikes in the hills near my house. I work at
