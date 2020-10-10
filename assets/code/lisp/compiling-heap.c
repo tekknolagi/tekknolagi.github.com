@@ -54,8 +54,11 @@ const unsigned int kSymbolTag = 0x5;      // 0b101
 const uword kHeapTagMask = ((uword)0x7);  // 0b000...111
 const uword kHeapPtrMask = ~kHeapTagMask; // 0b1111...1000
 
-static const int kCarOffset = 0;
-static const int kCdrOffset = 1;
+const int kCarIndex = 0;
+const int kCarOffset = kCarIndex * kWordSize;
+const int kCdrIndex = kCarIndex + 1;
+const int kCdrOffset = kCdrIndex * kWordSize;
+const int kPairSize = kCdrOffset + kWordSize;
 
 uword Object_encode_integer(word value) {
   assert(value < kIntegerMax && "too big");
@@ -101,12 +104,12 @@ bool Object_is_pair(uword value) { return (value & kHeapTagMask) == kPairTag; }
 
 uword Object_pair_car(uword value) {
   assert(Object_is_pair(value));
-  return ((uword *)Object_address((void *)value))[kCarOffset];
+  return ((uword *)Object_address((void *)value))[kCarIndex];
 }
 
 uword Object_pair_cdr(uword value) {
   assert(Object_is_pair(value));
-  return ((uword *)Object_address((void *)value))[kCdrOffset];
+  return ((uword *)Object_address((void *)value))[kCdrIndex];
 }
 
 // End Objects
@@ -253,7 +256,7 @@ Indirect Ind(Register reg, int8_t disp) {
   return (Indirect){.reg = reg, .disp = disp};
 }
 
-static const byte kRexPrefix = 0x48;
+const byte kRexPrefix = 0x48;
 
 void Emit_mov_reg_imm32(Buffer *buf, Register dst, int32_t src) {
   Buffer_write8(buf, kRexPrefix);
@@ -399,9 +402,7 @@ void Emit_load_reg_indirect(Buffer *buf, Register dst, Indirect src) {
   Buffer_write8(buf, disp8(src.disp));
 }
 
-static uint32_t disp32(int32_t disp) {
-  return disp >= 0 ? disp : 0x100000000 + disp;
-}
+uint32_t disp32(int32_t disp) { return disp >= 0 ? disp : 0x100000000 + disp; }
 
 word Emit_jcc(Buffer *buf, Condition cond, int32_t offset) {
   Buffer_write8(buf, 0x0f);
@@ -851,21 +852,26 @@ WARN_UNUSED int Compile_if(Buffer *buf, ASTNode *cond, ASTNode *consequent,
   return 0;
 }
 
+const Register kHeapPointer = kRsi;
+
 WARN_UNUSED int Compile_cons(Buffer *buf, ASTNode *car, ASTNode *cdr,
                              int stack_index, Env *varenv) {
   // Compile and store car
   _(Compile_expr(buf, car, stack_index, varenv));
-  Emit_store_reg_indirect(buf, /*dst=*/Ind(kRsi, kCarOffset * kWordSize),
+  Emit_store_reg_indirect(buf,
+                          /*dst=*/Ind(kHeapPointer, kCarOffset),
                           /*src=*/kRax);
   // Compile and store cdr
   _(Compile_expr(buf, cdr, stack_index, varenv));
-  Emit_store_reg_indirect(buf, /*dst=*/Ind(kRsi, kCdrOffset * kWordSize),
+  Emit_store_reg_indirect(buf,
+                          /*dst=*/Ind(kHeapPointer, kCdrOffset),
                           /*src=*/kRax);
   // Store tagged pointer in rax
-  Emit_mov_reg_reg(buf, /*dst=*/kRax, /*src=*/kRsi);
-  Emit_or_reg_imm8(buf, /*dst=*/kRax, 1);
+  // TODO(max): Rewrite as lea rax, [rsi+kPairTag]
+  Emit_mov_reg_reg(buf, /*dst=*/kRax, /*src=*/kHeapPointer);
+  Emit_or_reg_imm8(buf, /*dst=*/kRax, kPairTag);
   // Bump the heap pointer
-  Emit_add_reg_imm32(buf, /*dst=*/kRsi, 2 * kWordSize);
+  Emit_add_reg_imm32(buf, /*dst=*/kHeapPointer, kPairSize);
   return 0;
 }
 
@@ -990,16 +996,14 @@ WARN_UNUSED int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
     }
     if (AST_symbol_matches(callable, "car")) {
       _(Compile_expr(buf, operand1(args), stack_index, varenv));
-      Emit_load_reg_indirect(
-          buf, /*dst=*/kRax,
-          /*src=*/Ind(kRax, (kCarOffset * kWordSize) - kPairTag));
+      Emit_load_reg_indirect(buf, /*dst=*/kRax,
+                             /*src=*/Ind(kRax, kCarOffset - kPairTag));
       return 0;
     }
     if (AST_symbol_matches(callable, "cdr")) {
       _(Compile_expr(buf, operand1(args), stack_index, varenv));
-      Emit_load_reg_indirect(
-          buf, /*dst=*/kRax,
-          /*src=*/Ind(kRax, (kCdrOffset * kWordSize) - kPairTag));
+      Emit_load_reg_indirect(buf, /*dst=*/kRax,
+                             /*src=*/Ind(kRax, kCdrOffset - kPairTag));
       return 0;
     }
   }
@@ -1043,7 +1047,12 @@ WARN_UNUSED int Compile_expr(Buffer *buf, ASTNode *node, word stack_index,
   assert(0 && "unexpected node type");
 }
 
-static const byte kFunctionPrologue[] = {
+const byte kFunctionPrologue[] = {
+    // Save the heap in rsi, our global heap pointer
+    // mov rsi, rdi
+    0x48,
+    0x89,
+    0xfe,
     // push rbp
     0x55,
     // mov rbp, rsp
@@ -1052,31 +1061,18 @@ static const byte kFunctionPrologue[] = {
     0xe5,
 };
 
-static const byte kFunctionEpilogue[] = {
+const byte kFunctionEpilogue[] = {
     // pop rbp
     0x5d,
     // ret
     0xc3,
 };
 
-WARN_UNUSED int Compile_function(Buffer *buf, ASTNode *node) {
+WARN_UNUSED int Compile_entry(Buffer *buf, ASTNode *node) {
   Buffer_write_arr(buf, kFunctionPrologue, sizeof kFunctionPrologue);
   _(Compile_expr(buf, node, -kWordSize, /*varenv=*/NULL));
   Buffer_write_arr(buf, kFunctionEpilogue, sizeof kFunctionEpilogue);
   return 0;
-}
-
-static const byte kEntryPrologue[] = {
-    // Save the heap in rsi, our global heap pointer
-    // mov rsi, rdi
-    0x48,
-    0x89,
-    0xfe,
-};
-
-WARN_UNUSED int Compile_entry(Buffer *buf, ASTNode *node) {
-  Buffer_write_arr(buf, kEntryPrologue, sizeof kEntryPrologue);
-  return Compile_function(buf, node);
 }
 
 // End Compile
@@ -1102,13 +1098,11 @@ uword Testing_execute_expr(Buffer *buf) {
 
 TEST Testing_expect_entry_has_contents(Buffer *buf, byte *arr,
                                        size_t arr_size) {
-  word total_size = sizeof kEntryPrologue + sizeof kFunctionPrologue +
-                    arr_size + sizeof kFunctionEpilogue;
+  word total_size =
+      sizeof kFunctionPrologue + arr_size + sizeof kFunctionEpilogue;
   ASSERT_EQ_FMT(total_size, Buffer_len(buf), "%ld");
 
   byte *ptr = buf->address;
-  ASSERT_MEM_EQ(kEntryPrologue, ptr, sizeof kEntryPrologue);
-  ptr += sizeof kEntryPrologue;
   ASSERT_MEM_EQ(kFunctionPrologue, ptr, sizeof kFunctionPrologue);
   ptr += sizeof kFunctionPrologue;
   ASSERT_MEM_EQ(arr, ptr, arr_size);
@@ -2178,6 +2172,20 @@ TEST compile_cons(Buffer *buf, uword *heap) {
   PASS();
 }
 
+TEST compile_two_cons(Buffer *buf, uword *heap) {
+  ASTNode *node = Reader_read(
+      "(let ((a (cons 1 2)) (b (cons 3 4))) (cons (cdr a) (cdr b)))");
+  int compile_result = Compile_entry(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_entry(buf, heap);
+  ASSERT(Object_is_pair(result));
+  ASSERT_EQ_FMT(Object_encode_integer(2), Object_pair_car(result), "0x%lx");
+  ASSERT_EQ_FMT(Object_encode_integer(4), Object_pair_cdr(result), "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+
 TEST compile_car(Buffer *buf, uword *heap) {
   ASTNode *node = Reader_read("(car (cons 1 2))");
   int compile_result = Compile_entry(buf, node);
@@ -2325,6 +2333,7 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_if_with_false_cond);
   RUN_BUFFER_TEST(compile_nested_if);
   RUN_HEAP_TEST(compile_cons);
+  RUN_HEAP_TEST(compile_two_cons);
   RUN_HEAP_TEST(compile_car);
   RUN_HEAP_TEST(compile_cdr);
 }
@@ -2336,6 +2345,14 @@ typedef void (*REPL_Callback)(char *);
 void print_value(uword object) {
   if (Object_is_integer(object)) {
     fprintf(stderr, "%ld", Object_decode_integer(object));
+    return;
+  }
+  if (Object_is_pair(object)) {
+    fprintf(stderr, "(");
+    print_value(Object_pair_car(object));
+    fprintf(stderr, " . ");
+    print_value(Object_pair_cdr(object));
+    fprintf(stderr, ")");
     return;
   }
   fprintf(stderr, "Unexpected value.");
@@ -2371,7 +2388,12 @@ void print_assembly(char *line) {
   Buffer_deinit(&buf);
 }
 
+uword *heap = NULL;
+
 void evaluate_expr(char *line) {
+  if (!heap) {
+    heap = malloc(1000 * kWordSize);
+  }
   // Parse the line
   ASTNode *node = Reader_read(line);
   if (AST_is_error(node)) {
@@ -2382,7 +2404,7 @@ void evaluate_expr(char *line) {
   // Compile the line
   Buffer buf;
   Buffer_init(&buf, 1);
-  int compile_result = Compile_function(&buf, node);
+  int compile_result = Compile_entry(&buf, node);
   AST_heap_free(node);
   if (compile_result < 0) {
     fprintf(stderr, "Compile error.\n");
@@ -2392,7 +2414,7 @@ void evaluate_expr(char *line) {
 
   // Execute the code
   Buffer_make_executable(&buf);
-  uword result = Testing_execute_expr(&buf);
+  uword result = Testing_execute_entry(&buf, heap);
 
   // Print the result
   print_value(result);
@@ -2412,6 +2434,7 @@ int repl(REPL_Callback callback) {
     if (nchars < 0) {
       fprintf(stderr, "Goodbye.\n");
       free(line);
+      free(heap);
       break;
     }
 
