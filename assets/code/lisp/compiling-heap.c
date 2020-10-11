@@ -1050,7 +1050,7 @@ WARN_UNUSED int Compile_expr(Buffer *buf, ASTNode *node, word stack_index,
 const byte kFunctionPrologue[] = {
     // Save the heap in rsi, our global heap pointer
     // mov rsi, rdi
-    0x48,
+    kRexPrefix,
     0x89,
     0xfe,
     // push rbp

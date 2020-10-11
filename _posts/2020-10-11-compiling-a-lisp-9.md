@@ -164,6 +164,16 @@ Implementing `cdr` is very similar, except we'll be doing `mov rax,
 Now that we've gotten our minds around the abstract solution to the problem, we
 should write some code.
 
+First off, here is the addition to the prologue I mentioned earlier:
+
+```c
+const byte kEntryPrologue[] = {
+  // Save the heap in rsi, our global heap pointer
+  // mov rsi, rdi
+  kRexPrefix, 0x89, 0xfe,
+};
+```
+
 Let's once more add an entry to `Compile_call`.
 
 ```c
