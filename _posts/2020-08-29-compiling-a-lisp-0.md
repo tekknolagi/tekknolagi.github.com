@@ -101,7 +101,9 @@ I plan on adhering to this rough plan:
    (`let`-expressions)
 1. [Compile conditional expressions]({% link _posts/2020-10-07-compiling-a-lisp-8.md %})
    (`if`-expressions)
-1. Compile heap allocation (`cons`, strings, symbols, etc)
+1. [Compile heap allocation]({% link _posts/2020-10-11-compiling-a-lisp-9.md %})
+   (`cons`)
+1. Compile heap allocation (strings, symbols, etc)
 1. Compile `label` procedure calls
 1. Compile closures
 1. Add tail-call optimization

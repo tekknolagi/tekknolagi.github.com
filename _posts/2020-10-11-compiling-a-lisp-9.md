@@ -1,7 +1,7 @@
 ---
 title: "Compiling a Lisp: Heap allocation"
 layout: post
-date: 2020-10-07 23:30:36 PDT
+date: 2020-10-11 00:00:00 PT
 ---
 
 <span data-nosnippet>

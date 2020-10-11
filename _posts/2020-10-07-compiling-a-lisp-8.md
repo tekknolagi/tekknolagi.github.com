@@ -337,7 +337,7 @@ initially.
 Anyway, that's all for today. This post was made possible by contributions[^2]
 to my blog from Viewers Like You. Thank you.
 
-Next time on PBS, heap allocation.
+Next time on PBS, [heap allocation]({% link _posts/2020-10-11-compiling-a-lisp-9.md %}).
 
 <br />
 <hr style="width: 100px;" />
