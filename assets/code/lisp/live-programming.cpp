@@ -86,6 +86,7 @@ extern "C" bool AST_is_char(ASTNode *node);
 extern "C" bool AST_is_bool(ASTNode *node);
 extern "C" bool AST_is_pair(ASTNode *node);
 extern "C" bool AST_is_nil(ASTNode *node);
+extern "C" bool AST_is_error(ASTNode *node);
 extern "C" bool AST_is_symbol(ASTNode *node);
 extern "C" word AST_get_integer(ASTNode *node);
 extern "C" char AST_get_char(ASTNode *node);
@@ -113,6 +114,9 @@ void AST_display(ASTNode *node) {
   }
   if (AST_is_symbol(node)) {
     return ImGui::Text("%s (symbol)", AST_symbol_cstr(node));
+  }
+  if (AST_is_error(node)) {
+    return ImGui::Text("Error");
   }
   if (AST_is_pair(node)) {
     if (ImGui::TreeNode("pair")) {
