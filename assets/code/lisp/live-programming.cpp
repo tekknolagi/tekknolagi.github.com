@@ -81,10 +81,53 @@ extern "C" void Buffer_deinit(Buffer *buf);
 extern "C" word Buffer_len(Buffer *buf);
 extern "C" int Buffer_make_executable(Buffer *buf);
 extern "C" bool AST_is_error(ASTNode *node);
+extern "C" bool AST_is_integer(ASTNode *node);
+extern "C" bool AST_is_char(ASTNode *node);
+extern "C" bool AST_is_bool(ASTNode *node);
+extern "C" bool AST_is_pair(ASTNode *node);
+extern "C" bool AST_is_nil(ASTNode *node);
+extern "C" bool AST_is_symbol(ASTNode *node);
+extern "C" word AST_get_integer(ASTNode *node);
+extern "C" char AST_get_char(ASTNode *node);
+extern "C" bool AST_get_bool(ASTNode *node);
+extern "C" ASTNode *AST_pair_car(ASTNode *node);
+extern "C" ASTNode *AST_pair_cdr(ASTNode *node);
+extern "C" const char *AST_symbol_cstr(ASTNode *node);
 extern "C" void AST_heap_free(ASTNode *node);
 extern "C" ASTNode *Reader_read(char *input);
 extern "C" WARN_UNUSED int Compile_entry(Buffer *buf, ASTNode *node);
 extern "C" uword Testing_execute_entry(Buffer *buf, uword *heap);
+
+void AST_display(ASTNode *node) {
+  if (AST_is_integer(node)) {
+    return ImGui::Text("%ld (int)", AST_get_integer(node));
+  }
+  if (AST_is_char(node)) {
+    return ImGui::Text("'%c' (char)", AST_get_char(node));
+  }
+  if (AST_is_bool(node)) {
+    return ImGui::Text("%s (bool)", AST_get_bool(node) ? "#t" : "#f");
+  }
+  if (AST_is_nil(node)) {
+    return ImGui::Text("(nil)");
+  }
+  if (AST_is_symbol(node)) {
+    return ImGui::Text("%s (symbol)", AST_symbol_cstr(node));
+  }
+  if (AST_is_pair(node)) {
+    if (ImGui::TreeNode("pair")) {
+      ImGui::Text("car:");
+      ImGui::SameLine();
+      AST_display(AST_pair_car(node));
+      ImGui::Text("cdr:");
+      ImGui::SameLine();
+      AST_display(AST_pair_cdr(node));
+      ImGui::TreePop();
+    }
+    return;
+  }
+  return ImGui::Text("Unknown result: %p", reinterpret_cast<void *>(node));
+}
 
 int main() {
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) !=
@@ -262,7 +305,7 @@ int main() {
 
       ImGui::SetNextItemOpen(true, ImGuiCond_Appearing);
       if (ImGui::TreeNode("AST")) {
-        ImGui::Text("Result: %p", reinterpret_cast<void *>(node));
+        AST_display(node);
         ImGui::TreePop();
       }
 
