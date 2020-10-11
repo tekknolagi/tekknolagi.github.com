@@ -517,6 +517,8 @@ enough since we already have very specific opcode implementations.
 Anyway, thanks for reading. Next time we'll get back to compiling and tackle
 [let-expressions]({% link _posts/2020-10-01-compiling-a-lisp-7.md %}).
 
+{% include compiling_a_lisp_toc.md %}
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->

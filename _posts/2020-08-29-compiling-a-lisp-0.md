@@ -155,6 +155,8 @@ there is still Ghuloum's excellent paper to learn from.
 Next up, [the smallest program]({% link
 _posts/2020-08-29-compiling-a-lisp-1.md %}).
 
+{% include compiling_a_lisp_toc.md %}
+
 <hr style="width: 100px;" />
 <!-- Footnotes -->
 

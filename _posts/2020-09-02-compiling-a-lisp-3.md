@@ -218,3 +218,5 @@ RUN_BUFFER_TEST(compile_char);
 Anyway, that's a wrap for today. Next time we'll [add some unary primitives]({%
 link _posts/2020-09-05-compiling-a-lisp-4.md %}) for querying and manipulating
 the objects we have already.
+
+{% include compiling_a_lisp_toc.md %}

@@ -569,6 +569,7 @@ ergonomic way to do that yet.
 Next time on Dragon Ball Z, we'll [compile some other immediate constants]({%
 link _posts/2020-09-02-compiling-a-lisp-3.md %}).
 
+{% include compiling_a_lisp_toc.md %}
 
 <br />
 <hr style="width: 100px;" />

@@ -272,6 +272,8 @@ we'll use when compiling and executing Lisp programs.
 Next up, [compiling integers]({% link _posts/2020-08-31-compiling-a-lisp-2.md
 %}).
 
+{% include compiling_a_lisp_toc.md %}
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->

@@ -344,3 +344,5 @@ TEST compile_car(Buffer *buf, uword *heap) {
 I didn't cover variable-length objects in this post because I wanted to focus
 on the basics of allocating and poking at allocated data structures. Next time,
 we'll add symbols and strings.
+
+{% include compiling_a_lisp_toc.md %}

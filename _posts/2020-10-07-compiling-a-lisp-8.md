@@ -339,6 +339,8 @@ to my blog from Viewers Like You. Thank you.
 
 Next time on PBS, [heap allocation]({% link _posts/2020-10-11-compiling-a-lisp-9.md %}).
 
+{% include compiling_a_lisp_toc.md %}
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->

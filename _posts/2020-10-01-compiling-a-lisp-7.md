@@ -452,6 +452,8 @@ That's a wrap, folks. Time to `let` go. Har har har. Next time we'll add
 programs can make decisions! Have a great day. Don't forget to tell your
 friends you love them.
 
+{% include compiling_a_lisp_toc.md %}
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
