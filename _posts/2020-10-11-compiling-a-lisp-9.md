@@ -2,6 +2,7 @@
 title: "Compiling a Lisp: Heap allocation"
 layout: post
 date: 2020-10-11 00:00:00 PT
+description: Compiling Lisp cons, car, and cdr to x86-64
 ---
 
 <span data-nosnippet>
