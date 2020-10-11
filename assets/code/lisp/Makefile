@@ -23,12 +23,15 @@ clean:
 $(OUT)/%: %.c greatest.h
 	$(CC) -std=c99 $(CFLAGS) $< -o $@
 
+$(OUT)/%.o: %.c greatest.h
+	$(CC) -std=c99 $(CFLAGS) $< -o $@ -c
+
 IMGUI = imgui.cpp imgui_draw.cpp imgui_widgets.cpp imgui_impl_opengl3.cpp imgui_impl_sdl.cpp
 PKGS = $(shell pkg-config --cflags sdl2)
 LIBS = $(shell pkg-config --libs sdl2) $(shell pkg-config --libs glew)
 
-$(OUT)/live-programming: live-programming.cpp
-	$(CXX) -std=c++11 $(CFLAGS) $(PKGS) $< -o $@ $(IMGUI) $(LIBS)
+$(OUT)/live-programming: $(OUT)/compiling-heap.o live-programming.cpp
+	$(CXX) -std=c++11 $(CFLAGS) $(PKGS) $^ -o $@ $(IMGUI) $(LIBS)
 
 test-%: $(OUT)/%
 	./$<

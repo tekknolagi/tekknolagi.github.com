@@ -707,9 +707,11 @@ ASTNode *read_list(char *input, word *pos) {
     return AST_nil();
   }
   ASTNode *car = read_rec(input, pos);
-  assert(car != AST_error());
+  if (AST_is_error(car))
+    return car;
   ASTNode *cdr = read_list(input, pos);
-  assert(cdr != AST_error());
+  if (AST_is_error(cdr))
+    return cdr;
   return AST_new_pair(car, cdr);
 }
 
@@ -2456,7 +2458,9 @@ int run_tests(int argc, char **argv) {
   GREATEST_MAIN_END();
 }
 
-int main(int argc, char **argv) {
+#define WEAK __attribute__((visibility("default"))) __attribute__((weak))
+
+WEAK int main(int argc, char **argv) {
   if (argc == 2) {
     if (strcmp(argv[1], "--repl-assembly") == 0) {
       return repl(print_assembly);
