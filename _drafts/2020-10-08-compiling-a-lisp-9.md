@@ -9,7 +9,7 @@ date: 2020-10-07 23:30:36 PDT
 </span>
 
 Welcome back to the "Compiling a Lisp" series. Last time we added support for
-`if` expressions. This time we're going add support for heap allocation.
+`if` expressions. This time we're going add support for basic heap allocation.
 
 Heap allocation comes in a couple of forms, but the one we care about right now
 is the `cons` primitive. Much like `AST_new_pair` in the compiler, `cons`
@@ -46,7 +46,8 @@ the pointer, somewhere in the middle of the `car`. This will give us bad data.
 
 To make things more concrete, imagine our pair is allocated at `0x10000`. Our
 `car` lives at `*(0x10000)` (using C notation) and our `cdr` lives at
-`*(0x10000 + kWordSize)`. The tagged pointer in this case would be `0x10001`.
+`*(0x10000 + kWordSize)`. The tagged pointer in this case would be `0x10001`
+and `kWordSize` is 8.
 
 ### Allocating some memory
 
@@ -54,7 +55,7 @@ We *could* make a call to `malloc` whenever we need a new object. This has a
 couple of downfalls, notably that `malloc` does a lot of internal bookkeeping
 that we really don't need, and that there's no good way to keep track of what
 memory we have allocated and needs garbage collecting (which we'll handle
-later). It also has the unfortnuate property of requiring C functional call
+later). It also has the unfortunate property of requiring C functional call
 infrastructure, which we don't have yet.
 
 What we're going to do instead is allocate a big slab of memory at the
@@ -85,11 +86,10 @@ pair        heap
 
 Notice how the `heap` pointer has been moved over 2 words, and the `pair`
 pointer is the returned cons cell. Although we'll tag the `pair` pointer, I am
-point it at the beginning of the `car` for clarity.
+pointing it at the beginning of the `car` for clarity in the diagram.
 
 In order to get this big slab of memory in the first place, we'll have the
-outside C code (right now, that's our test handler) call `malloc` on some
-amount of space.
+outside C code (right now, that's our test handler) call `malloc`.
 
 You're probably wondering what we're going to do when we run out of memory. At
 some point in this series we'll have a garbage collector that can reclaim some
@@ -101,10 +101,10 @@ buffer.
 
 ### Implementation strategy
 
-In order to make allocation fast and easy, we're going to keep the heap pointer
-in a register. Our compiler emits instructions that use `rbp`, `rsp`, and
-`rax`, so we'll have to pick another one. Ghuloum uses `rsi`, so we'll use that
-as well.
+In order to make allocation from that big buffer fast and easy, we're going to
+keep the heap pointer in a register. Our compiler emits instructions that use
+`rbp`, `rsp`, and `rax`, so we'll have to pick another one. Ghuloum uses `rsi`,
+so we'll use that as well.
 
 In order to get the heap pointer in `rsi` in the first place, we'll have to
 capture it from the outside C code. To do this, we'll add a parameter to our
@@ -152,13 +152,16 @@ Once we have pairs allocated, it's kind of useless unless we can also poke at
 their elements.
 
 To implement `car`, we'll remove the tag from the pointer and read from the
-memory pointed to by the register: `mov rax, [Ptr+Car-Tag]`. You can also do this
-with a `sub rax, Tag` and then a `mov`.
+memory pointed to by the register: `mov rax, [Ptr+Car-Tag]`. You can also do
+this with a `sub rax, Tag` and then a `mov`.
 
 Implementing `cdr` is very similar, except we'll be doing `mov rax,
 [Ptr+Cdr-Tag]`.
 
 ### Brass tacks
+
+Now that we've gotten our minds around the abstract solution to the problem, we
+should write some code.
 
 Let's once more add an entry to `Compile_call`.
 
@@ -206,6 +209,10 @@ int Compile_cons(Buffer *buf, ASTNode *car, ASTNode *cdr,
   return 0;
 }
 ```
+
+Note that even though we're compiling two expressions one right after another,
+we don't need to bump `stack_index` or anything. This is because we're storing
+the results not on the stack but in the pair.
 
 As promised, here is the new instruction to move data between registers:
 
