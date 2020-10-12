@@ -275,8 +275,10 @@ tests a buffer *and* a heap. I call it --- wait for it --- `RUN_HEAP_TEST`.
 Anyway, here's a test that we can allocate pairs. To fully test it, I've added
 some helpers for poking at object internals: `Object_pair_car` and
 `Object_pair_cdr`. Note that these may be the same as but are not necessarily
-the same as the corresponding AST functions. The C compiler could
-hypothetically re-order struct elements, I think.
+the same as the corresponding AST functions. ~~The C compiler could
+hypothetically re-order struct elements, I think~~. *Joker_vD* on Hacker News
+points out that C compilers are not permitted to re-order elements, but may
+insert padding for alignment.
 
 ```c
 TEST compile_cons(Buffer *buf, uword *heap) {
