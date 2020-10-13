@@ -856,15 +856,18 @@ const Register kHeapPointer = kRsi;
 
 WARN_UNUSED int Compile_cons(Buffer *buf, ASTNode *car, ASTNode *cdr,
                              int stack_index, Env *varenv) {
-  // Compile and store car
+  // Compile and store car on the stack
   _(Compile_expr(buf, car, stack_index, varenv));
   Emit_store_reg_indirect(buf,
-                          /*dst=*/Ind(kHeapPointer, kCarOffset),
+                          /*dst=*/Ind(kRbp, stack_index),
                           /*src=*/kRax);
   // Compile and store cdr
-  _(Compile_expr(buf, cdr, stack_index, varenv));
-  Emit_store_reg_indirect(buf,
-                          /*dst=*/Ind(kHeapPointer, kCdrOffset),
+  _(Compile_expr(buf, cdr, stack_index - kWordSize, varenv));
+  Emit_store_reg_indirect(buf, /*dst=*/Ind(kHeapPointer, kCdrOffset),
+                          /*src=*/kRax);
+  // Fetch car and store in the heap
+  Emit_load_reg_indirect(buf, /*dst=*/kRax, /*src=*/Ind(kRbp, stack_index));
+  Emit_store_reg_indirect(buf, /*dst=*/Ind(kHeapPointer, kCarOffset),
                           /*src=*/kRax);
   // Store tagged pointer in rax
   // TODO(max): Rewrite as lea rax, [rsi+kPairTag]
@@ -2148,12 +2151,16 @@ TEST compile_cons(Buffer *buf, uword *heap) {
   byte expected[] = {
       // mov rax, 0x2
       0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
-      // mov [rsi], rax
-      0x48, 0x89, 0x46, 0x00,
+      // mov [rbp-8], rax
+      0x48, 0x89, 0x45, 0xf8,
       // mov rax, 0x4
       0x48, 0xc7, 0xc0, 0x08, 0x00, 0x00, 0x00,
-      // mov [rsi+kWordSize], rax
+      // mov [rsi+Cdr], rax
       0x48, 0x89, 0x46, 0x08,
+      // mov rax, [rbp-8]
+      0x48, 0x8b, 0x45, 0xf8,
+      // mov [rsi+Car], rax
+      0x48, 0x89, 0x46, 0x00,
       // mov rax, rsi
       0x48, 0x89, 0xf0,
       // or rax, kPairTag
@@ -2186,6 +2193,27 @@ TEST compile_two_cons(Buffer *buf, uword *heap) {
   PASS();
 }
 
+TEST compile_nested_cons(Buffer *buf, uword *heap) {
+  ASTNode *node = Reader_read("(cons (cons 1 2) (cons 3 4))");
+  int compile_result = Compile_entry(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_entry(buf, heap);
+  ASSERT(Object_is_pair(result));
+  ASSERT(Object_is_pair(Object_pair_car(result)));
+  ASSERT_EQ_FMT(Object_encode_integer(1),
+                Object_pair_car(Object_pair_car(result)), "0x%lx");
+  ASSERT_EQ_FMT(Object_encode_integer(2),
+                Object_pair_cdr(Object_pair_car(result)), "0x%lx");
+  ASSERT(Object_is_pair(Object_pair_cdr(result)));
+  ASSERT_EQ_FMT(Object_encode_integer(3),
+                Object_pair_car(Object_pair_cdr(result)), "0x%lx");
+  ASSERT_EQ_FMT(Object_encode_integer(4),
+                Object_pair_cdr(Object_pair_cdr(result)), "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+
 TEST compile_car(Buffer *buf, uword *heap) {
   ASTNode *node = Reader_read("(car (cons 1 2))");
   int compile_result = Compile_entry(buf, node);
@@ -2194,12 +2222,16 @@ TEST compile_car(Buffer *buf, uword *heap) {
   byte expected[] = {
       // mov rax, 0x2
       0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
-      // mov [rsi], rax
-      0x48, 0x89, 0x46, 0x00,
+      // mov [rbp-8], rax
+      0x48, 0x89, 0x45, 0xf8,
       // mov rax, 0x4
       0x48, 0xc7, 0xc0, 0x08, 0x00, 0x00, 0x00,
-      // mov [rsi+kWordSize], rax
+      // mov [rsi+Cdr], rax
       0x48, 0x89, 0x46, 0x08,
+      // mov rax, [rbp-8]
+      0x48, 0x8b, 0x45, 0xf8,
+      // mov [rsi+Car], rax
+      0x48, 0x89, 0x46, 0x00,
       // mov rax, rsi
       0x48, 0x89, 0xf0,
       // or rax, kPairTag
@@ -2226,12 +2258,16 @@ TEST compile_cdr(Buffer *buf, uword *heap) {
   byte expected[] = {
       // mov rax, 0x2
       0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
-      // mov [rsi], rax
-      0x48, 0x89, 0x46, 0x00,
+      // mov [rbp-8], rax
+      0x48, 0x89, 0x45, 0xf8,
       // mov rax, 0x4
       0x48, 0xc7, 0xc0, 0x08, 0x00, 0x00, 0x00,
-      // mov [rsi+kWordSize], rax
+      // mov [rsi+Cdr], rax
       0x48, 0x89, 0x46, 0x08,
+      // mov rax, [rbp-8]
+      0x48, 0x8b, 0x45, 0xf8,
+      // mov [rsi+Car], rax
+      0x48, 0x89, 0x46, 0x00,
       // mov rax, rsi
       0x48, 0x89, 0xf0,
       // or rax, kPairTag
@@ -2334,6 +2370,7 @@ SUITE(compiler_tests) {
   RUN_BUFFER_TEST(compile_nested_if);
   RUN_HEAP_TEST(compile_cons);
   RUN_HEAP_TEST(compile_two_cons);
+  RUN_HEAP_TEST(compile_nested_cons);
   RUN_HEAP_TEST(compile_car);
   RUN_HEAP_TEST(compile_cdr);
 }
