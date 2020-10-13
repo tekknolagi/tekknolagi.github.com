@@ -202,15 +202,18 @@ const Register kHeapPointer = kRsi;
 
 int Compile_cons(Buffer *buf, ASTNode *car, ASTNode *cdr,
                  int stack_index, Env *varenv) {
-  // Compile and store car
+  // Compile and store car on the stack
   _(Compile_expr(buf, car, stack_index, varenv));
   Emit_store_reg_indirect(buf,
-                          /*dst=*/Ind(kHeapPointer, kCarOffset),
+                          /*dst=*/Ind(kRbp, stack_index),
                           /*src=*/kRax);
   // Compile and store cdr
-  _(Compile_expr(buf, cdr, stack_index, varenv));
-  Emit_store_reg_indirect(buf,
-                          /*dst=*/Ind(kHeapPointer, kCdrOffset),
+  _(Compile_expr(buf, cdr, stack_index - kWordSize, varenv));
+  Emit_store_reg_indirect(buf, /*dst=*/Ind(kHeapPointer, kCdrOffset),
+                          /*src=*/kRax);
+  // Fetch car and store in the heap
+  Emit_load_reg_indirect(buf, /*dst=*/kRax, /*src=*/Ind(kRbp, stack_index));
+  Emit_store_reg_indirect(buf, /*dst=*/Ind(kHeapPointer, kCarOffset),
                           /*src=*/kRax);
   // Store tagged pointer in rax
   Emit_mov_reg_reg(buf, /*dst=*/kRax, /*src=*/kHeapPointer);
@@ -221,9 +224,15 @@ int Compile_cons(Buffer *buf, ASTNode *car, ASTNode *cdr,
 }
 ```
 
-Note that even though we're compiling two expressions one right after another,
+~~Note that even though we're compiling two expressions one right after another,
 we don't need to bump `stack_index` or anything. This is because we're storing
-the results not on the stack but in the pair.
+the results not on the stack but in the pair~~.
+
+As it turns out, we *do* need to store one of the intermediates on the stack
+because otherwise we risk overwriting random data in the heap. As [Leonard
+Sch&uuml;tz](https://github.com/KCreate) pointed out to me, the previous
+version of this code would fail if either the `car` or `cdr` expressions
+modified the heap pointer. Thank you for the correction!
 
 As promised, here is the new instruction to move data between registers:
 
@@ -289,12 +298,16 @@ TEST compile_cons(Buffer *buf, uword *heap) {
   byte expected[] = {
       // mov rax, 0x2
       0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
-      // mov [rsi], rax
-      0x48, 0x89, 0x46, 0x00,
+      // mov [rbp-8], rax
+      0x48, 0x89, 0x45, 0xf8,
       // mov rax, 0x4
       0x48, 0xc7, 0xc0, 0x08, 0x00, 0x00, 0x00,
-      // mov [rsi+kWordSize], rax
+      // mov [rsi+Cdr], rax
       0x48, 0x89, 0x46, 0x08,
+      // mov rax, [rbp-8]
+      0x48, 0x8b, 0x45, 0xf8,
+      // mov [rsi+Car], rax
+      0x48, 0x89, 0x46, 0x00,
       // mov rax, rsi
       0x48, 0x89, 0xf0,
       // or rax, kPairTag
@@ -314,6 +327,31 @@ TEST compile_cons(Buffer *buf, uword *heap) {
 }
 ```
 
+Here is a test for that tricky nested `cons` case that messed me up originally:
+
+```c
+TEST compile_nested_cons(Buffer *buf, uword *heap) {
+  ASTNode *node = Reader_read("(cons (cons 1 2) (cons 3 4))");
+  int compile_result = Compile_entry(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_entry(buf, heap);
+  ASSERT(Object_is_pair(result));
+  ASSERT(Object_is_pair(Object_pair_car(result)));
+  ASSERT_EQ_FMT(Object_encode_integer(1),
+                Object_pair_car(Object_pair_car(result)), "0x%lx");
+  ASSERT_EQ_FMT(Object_encode_integer(2),
+                Object_pair_cdr(Object_pair_car(result)), "0x%lx");
+  ASSERT(Object_is_pair(Object_pair_cdr(result)));
+  ASSERT_EQ_FMT(Object_encode_integer(3),
+                Object_pair_car(Object_pair_cdr(result)), "0x%lx");
+  ASSERT_EQ_FMT(Object_encode_integer(4),
+                Object_pair_cdr(Object_pair_cdr(result)), "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+```
+
 Here's a test for reading the `car` of a pair. The test for `cdr` is so similar
 I will not include it here.
 
@@ -326,12 +364,16 @@ TEST compile_car(Buffer *buf, uword *heap) {
   byte expected[] = {
       // mov rax, 0x2
       0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
-      // mov [rsi], rax
-      0x48, 0x89, 0x46, 0x00,
+      // mov [rbp-8], rax
+      0x48, 0x89, 0x45, 0xf8,
       // mov rax, 0x4
       0x48, 0xc7, 0xc0, 0x08, 0x00, 0x00, 0x00,
-      // mov [rsi+kWordSize], rax
+      // mov [rsi+Cdr], rax
       0x48, 0x89, 0x46, 0x08,
+      // mov rax, [rbp-8]
+      0x48, 0x8b, 0x45, 0xf8,
+      // mov [rsi+Car], rax
+      0x48, 0x89, 0x46, 0x00,
       // mov rax, rsi
       0x48, 0x89, 0xf0,
       // or rax, kPairTag
