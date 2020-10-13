@@ -72,6 +72,7 @@ I am currently listening to some newer music, too:
 * *Arcade Fire*
 * *Paul Simon*
 * *Ladysmith Black Mambazo*
+* *ⵜⵏⵔⵓⵏ (Tinariwen)*
 
 Here's some awesome other music that I found:
 
