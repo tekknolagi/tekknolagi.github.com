@@ -298,19 +298,19 @@ typedef enum {
   kIndexRdi
 } Index;
 
-void Emit_mov_reg_imm32(Buffer *buf, Register dst, int32_t src) {
-  Buffer_write8(buf, kRexPrefix);
-  Buffer_write8(buf, 0xc7);
-  Buffer_write8(buf, 0xc0 + dst);
-  Buffer_write32(buf, src);
-}
-
 byte modrm(byte mod, byte rm, byte reg) {
   return ((mod & 0x3) << 6) | ((reg & 0x7) << 3) | (rm & 0x7);
 }
 
 byte sib(Register base, Index index, Scale scale) {
   return ((scale & 0x3) << 6) | ((index & 0x7) << 3) | (base & 0x7);
+}
+
+void Emit_mov_reg_imm32(Buffer *buf, Register dst, int32_t src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0xc7);
+  Buffer_write8(buf, modrm(/*direct*/ 3, dst, 0));
+  Buffer_write32(buf, src);
 }
 
 void Emit_ret(Buffer *buf) { Buffer_write8(buf, 0xc3); }
@@ -323,7 +323,7 @@ void Emit_add_reg_imm32(Buffer *buf, Register dst, int32_t src) {
     Buffer_write8(buf, 0x05);
   } else {
     Buffer_write8(buf, 0x81);
-    Buffer_write8(buf, 0xc0 + dst);
+    Buffer_write8(buf, modrm(/*direct*/ 3, dst, 0));
   }
   Buffer_write32(buf, src);
 }
@@ -336,7 +336,7 @@ void Emit_sub_reg_imm32(Buffer *buf, Register dst, int32_t src) {
     Buffer_write8(buf, 0x2d);
   } else {
     Buffer_write8(buf, 0x81);
-    Buffer_write8(buf, 0xe8 + dst);
+    Buffer_write8(buf, modrm(/*direct*/ 3, dst, 5));
   }
   Buffer_write32(buf, src);
 }
@@ -344,28 +344,28 @@ void Emit_sub_reg_imm32(Buffer *buf, Register dst, int32_t src) {
 void Emit_shl_reg_imm8(Buffer *buf, Register dst, int8_t bits) {
   Buffer_write8(buf, kRexPrefix);
   Buffer_write8(buf, 0xc1);
-  Buffer_write8(buf, 0xe0 + dst);
+  Buffer_write8(buf, modrm(/*direct*/ 3, dst, 4));
   Buffer_write8(buf, bits);
 }
 
 void Emit_shr_reg_imm8(Buffer *buf, Register dst, int8_t bits) {
   Buffer_write8(buf, kRexPrefix);
   Buffer_write8(buf, 0xc1);
-  Buffer_write8(buf, 0xe8 + dst);
+  Buffer_write8(buf, modrm(/*direct*/ 3, dst, 5));
   Buffer_write8(buf, bits);
 }
 
 void Emit_or_reg_imm8(Buffer *buf, Register dst, uint8_t tag) {
   Buffer_write8(buf, kRexPrefix);
   Buffer_write8(buf, 0x83);
-  Buffer_write8(buf, 0xc8 + dst);
+  Buffer_write8(buf, modrm(/*direct*/ 3, dst, 1));
   Buffer_write8(buf, tag);
 }
 
 void Emit_and_reg_imm8(Buffer *buf, Register dst, uint8_t tag) {
   Buffer_write8(buf, kRexPrefix);
   Buffer_write8(buf, 0x83);
-  Buffer_write8(buf, 0xe0 + dst);
+  Buffer_write8(buf, modrm(/*direct*/ 3, dst, 4));
   Buffer_write8(buf, tag);
 }
 
@@ -377,15 +377,16 @@ void Emit_cmp_reg_imm32(Buffer *buf, Register left, int32_t right) {
     Buffer_write8(buf, 0x3d);
   } else {
     Buffer_write8(buf, 0x81);
-    Buffer_write8(buf, 0xf8 + left);
+    Buffer_write8(buf, modrm(/*direct*/ 3, left, 7));
   }
   Buffer_write32(buf, right);
 }
 
 void Emit_setcc_imm8(Buffer *buf, Condition cond, PartialRegister dst) {
+  // TODO(max): Emit a REX prefix if we need anything above RDI.
   Buffer_write8(buf, 0x0f);
   Buffer_write8(buf, 0x90 + cond);
-  Buffer_write8(buf, 0xc0 + dst);
+  Buffer_write8(buf, 0xc0 + (dst & 0x7));
 }
 
 uint8_t disp8(int8_t disp) { return disp >= 0 ? disp : 0x100 + disp; }
