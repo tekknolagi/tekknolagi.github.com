@@ -137,29 +137,283 @@ Cloutier's aforementioned web docs:
 <td>Valid</td>
 <td>Valid</td>
 <td>Move <em>r32</em> to <em>r/m32.</em></td></tr>
-<tr>
-<td>REX.W + 89 /<em>r</em></td>
-<td>MOV <em>r/m64,r64</em></td>
-<td>MR</td>
-<td>Valid</td>
-<td>N.E.</td>
-<td>Move <em>r64</em> to <em>r/m64.</em></td></tr>
-<tr>
-<td>8A /<em>r</em></td>
-<td>MOV <em>r8,r/m8</em></td>
-<td>RM</td>
-<td>Valid</td>
-<td>Valid</td>
-<td>Move <em>r/m8</em> to <em>r8.</em></td></tr>
-<tr>
-<td>REX + 8A /<em>r</em></td>
-<td>MOV <em>r8***,r/m8***</em></td>
-<td>RM</td>
-<td>Valid</td>
-<td>N.E.</td>
-<td>Move <em>r/m8</em> to <em>r8.</em></td></tr>
 <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+<tr>
+<td>C7 /<em>0 id</em></td>
+<td>MOV <em>r/m32, imm32</em></td>
+<td>MI</td>
+<td>Valid</td>
+<td>Valid</td>
+<td>Move <em>imm32</em> to <em>r/m32.</em></td></tr>
+<tr>
+<td>REX.W + C7 /<em>0 id</em></td>
+<td>MOV <em>r/m64, imm32</em></td>
+<td>MI</td>
+<td>Valid</td>
+<td>N.E.</td>
+<td>Move <em>imm32 sign extended to 64-bits</em> to <em>r/m64.</em></td></tr>
 </table>
+
+If you take a look at the last entry in the table, you'll see `REX.W + C7 /0
+id`. Does that look familiar? Maybe, if you squint a little?
+
+It turns out, that's the description for encoding the instruction we originally
+wanted, and had a bad encoder for. Let's try and figure out how to use this to
+make our encoder better. In order to do that, we'll need to first understand a
+general layout for Intel instructions.
+
+### Instruction encoding, big picture
+
+All Intel x86-64 instructions follow this general format:
+
+* *optional* instruction prefix (1 byte)
+* opcode (1, 2, or 3 bytes)
+* *if required,* Mod-Reg/Opcode-R/M, also known as ModR/M (1 byte)
+* *if required,* Scale-Index-Base, also known as SIB (1 byte)
+* displacement (1, 2, or 4 bytes, or none)
+* immediate data (1, 2, or 4 bytes, or none)
+
+I found this information at the very beginning of Volume 2, Chapter 2 (page
+527) in a section called "Instruction format for protected mode, real-address
+mode, and virtual-8086 mode".
+
+You, like me, may be wondering about the difference between "optional", "if
+required", and "..., or none". I have no explanation, sorry.
+
+I'm going to briefly explain each component here, followed up with a
+piece-by-piece dissection of the particular MOV instruction we want, so we get
+some hands-on practice.
+
+#### Instruction prefixes
+
+There are a couple kind of instruction prefixes, like REX (Section 2.2.1) and
+VEX (Section 2.3). We're going to focus on REX prefixes, since they are needed
+for many (most?) x86-64 instructions, and we're not emitting vector
+instructions.
+
+The REX prefixes are used to indicate that an instruction, which might normally
+refer to a 32-bit register, should instead refer to a 64-bit register. Also
+some other things but we're mostly concerned with register sizes.
+
+#### Opcode
+
+Take a look at Section 2.1.2 (page 529) for a brief explanation of opcodes. THe
+gist is that the opcode is the *meat* of the instruction. It's what makes a MOV
+a MOV and not a HALT. The other fields all modify the meaning given by this
+field.
+
+#### ModR/M and SIB
+
+Take a look at Section 2.1.3 (page 529) for a brief explanation of ModR/M and
+SIB bytes. The gist is that they encode what register sources and destinations
+to use.
+
+#### Displacement and immediates
+
+Take a look at Section 2.1.4 (page 529) for a brief explanation of displacement
+and immediate bytes. The gist is that they encode literal numbers used in the
+instructions that don't encode registers or anything.
+
+If you're confused, that's okay. It should maybe get clearer once we get our
+hands dirty. Reading all of this information in a vacuum is moderately useless
+if it's your first time dealing with assembly like this, but I included this
+first to help explain how to use the reference.
+
+### Encoding, piece by piece
+
+Got all that? Maybe? No? Yeah, me neither. But let's forge ahead anyway. Here's
+the instruction we're going to encode: `REX.W + C7 /0 id`.
+
+#### REX.W
+
+First, let's figure out `REX.W`. According to Section 2.2.1, which explains REX
+prefixes in some detail, there are a couple of different prefixes. There's a
+helpful table (Table 2-4, page 535) documenting them. Here's a bit diagram with
+the same information:
+
+```
+High           Low
+[0100][W][R][X][B]
+```
+
+In English, and zero-indexed:
+
+* Bits 7-4 are always `0b0100`.
+* Bit 3 is the W prefix. If it's 1, it means the operands are 64 bits. If it's
+  0, "operand size [is] determined by CS.D". Not sure what that means.
+* Bits 2, 1, and 0 are other types of REX prefixes that we may not end up
+  using, so I am omitting them here. Please read further in the manual if you
+  are curious!
+
+This MOV instruction calls for REX.W, which means this byte will look like
+`0b01001000`, also known as our friend `0x48`. Mystery number one, solved!
+
+#### C7
+
+This is a hexadecimal literal `0xc7`. It is the *opcode*. There are a couple of
+other entries with the opcode `C7`, modified by other bytes in the instruction
+(ModR/M, SIB, REX, ...). Write it to the instruction stream. Mystery number
+two, solved!
+
+#### /0
+
+There's a snippet in Section 2.1.5 that explains this notation:
+
+> If the instruction does not require a second operand, then the Reg/Opcode
+> field may be used as an opcode extension. This use is represented by the
+> sixth row in the tables (labeled "/digit (Opcode)"). Note that values in row
+> six are represented in decimal form.
+
+This is a little confusing because this operation clearly *does* have a second
+operand, denoted by the "MI" in the table, which shows Operand 1 being
+`ModRM:r/m (w)` and Operand 2 being `imm8/16/32/64`. I think it's because it
+doesn't have a second *register* operand that this space is free --- the
+immediate is in a different place in the instruction.
+
+In any case, this means that we have to make sure to put decimal `0` in the
+`reg` part of the ModR/M byte.
+
+#### id
+
+*id* refers to an immediate *double word* (32 bits). It's called a *double*
+word because, a word (*iw*) is 16 bits. In increasing order of size, we have:
+
+* *ib*, byte (1 byte)
+* *iw*, word (2 bytes)
+* *id*, double word (4 bytes)
+* *io*, quad word (8 bytes)
+
+This means we have to write our 32-bit value out to the instruction stream.
+These notations and encodings are explained further in Section 3.1.1.1 (page
+596).
+
+This is how you read the table! Slowly, piece by piece, and with a nice cup of
+tea to help you in trying times. Now that we've read the table, let's go on and
+write some code.
+
+### Encoding, programatically
+
+While writing code, you will often need to reference *two more tables* than the
+ones we have looked at so far. These tables are Table 2-2 "32-Bit Addressing
+Forms with the ModR/M Byte" (page 532) and Table 2-3 "32-Bit Addressing Forms
+with the SIB Byte" (page 533). Although the tables describe 32-bit quantities,
+with the REX prefix all the Es get replaced with Rs and all of a sudden they
+can describe 64-bit quantities.
+
+These tables are super helpful when figuring out how to put together ModR/M and
+SIB bytes.
+
+Let's start the encoding process by revisiting `Emit_mov_reg_imm32`/`REX.W + C7
+/0 id`:
+
+```c
+void Emit_mov_reg_imm32(Buffer *buf, Register dst, int32_t src) {
+  // ...
+}
+```
+
+Given a register `dst` and an immediate 32-bit integer `src`, we're going to
+encode this instruction. Let's do all the steps in order.
+
+#### REX prefix
+
+Since the instruction calls for REX.W, we can keep the first line the same as
+before:
+
+```c
+void Emit_mov_reg_imm32(Buffer *buf, Register dst, int32_t src) {
+  Buffer_write8(buf, kRexPrefix);
+  // ...
+}
+```
+
+Nice.
+
+#### Opcode
+
+This opcode is `0xc7`, so we'll write that directly:
+
+```c
+void Emit_mov_reg_imm32(Buffer *buf, Register dst, int32_t src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0xc7);
+  // ...
+}
+```
+
+Also the same as before. Nice.
+
+#### ModR/M byte
+
+ModR/M bytes are where the code gets a little different. We want an abstraction
+to build them for us, instead of manually slinging integers like some kind of
+animal.
+
+To do that, we should know how they are put together. ModR/M bytes are
+comprised of:
+
+* *mod* (high 2 bits), which describes what big row to use in the ModR/M table
+* *reg* (middle 3 bits), which either describes the second register operand
+  *or* an opcode extension (like `/0` above)
+* *rm* (low 3 bits), which describes the first operand
+
+This means we can write a function `modrm` that puts these values together for
+us:
+
+```c
+byte modrm(byte mod, byte rm, byte reg) {
+  return ((mod & 0x3) << 6) | ((reg & 0x7) << 3) | (rm & 0x7);
+}
+```
+
+The order of the parameters is a little different than the order of the bits. I
+did this because it looks a little more natural when calling the function from
+its callers. Maybe I'll change it later because it's too confusing.
+
+For this instruction, we're going to:
+
+* pass `0b11` (3) as *mod*, because we want to move directly into a 64-bit
+  register, as opposed to `[reg]`, which means that we want to dereference the
+  value in the pointer
+* pass the destination register `dst` as *rm*, since it's the first operand
+* pass `0b000` (0) as *reg*, since the `/0` above told us to
+
+That ends up looking like this:
+
+```c
+void Emit_mov_reg_imm32(Buffer *buf, Register dst, int32_t src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0xc7);
+  Buffer_write8(buf, modrm(/*direct*/ 3, dst, 0));
+  // ...
+}
+```
+
+I haven't put a datatype for *mod*s together because I don't know if I'd be
+able to express it well. So for now I just added a comment.
+
+#### Immediate value
+
+Last, we have the immediate value. As I said above, all this entails is writing
+out a 32-bit quantity as we have always done:
+
+```c
+void Emit_mov_reg_imm32(Buffer *buf, Register dst, int32_t src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0xc7);
+  Buffer_write8(buf, modrm(/*direct*/ 3, dst, 0));
+  Buffer_write32(buf, src);
+}
+```
+
+And there you have it! It took us 2500 words to get us to these measly four
+bytes. The real success is the friends we made along the way.
+
+### Further instructions
+
+"But Max," you say, "this produces literally the same output as before with all
+cases! What gives?"
+
 
 <br />
 <hr style="width: 100px;" />
