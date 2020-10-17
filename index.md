@@ -50,4 +50,5 @@ That's probably an understatement. Here are some of my favorite projects:
   ([Refactor protocol inference](https://github.com/facebook/pyre-check/commit/f14577db5940c0b4087fffe209786cd4075f37df))
 * [CPython](https://www.python.org/)
   ([bpo-36929](https://github.com/python/cpython/pull/13392),
-  [bpo-38648](https://github.com/python/cpython/pull/17002))
+  [bpo-38648](https://github.com/python/cpython/pull/17002),
+  [bpo-42065](https://github.com/python/cpython/pull/19940))
