@@ -412,7 +412,215 @@ bytes. The real success is the friends we made along the way.
 ### Further instructions
 
 "But Max," you say, "this produces literally the same output as before with all
-cases! What gives?"
+cases! Why go to all this trouble? What gives?"
+
+Well, dear reader, having a mod of 3 (direct) means that there is no
+special-case escape hatch when `dst` is RSP. This is unlike the other mods,
+where there's this `[--][--]` in the table where RSP should be. That funky
+symbol indicates that there must be a Scale-Index-Base (SIB) byte following the
+ModR/M byte.
+
+This is where an instruction like `Emit_store_reg_indirect` (`mov [REG+disp],
+src`) goes horribly awry with the homebrew encoding scheme I cooked up. When
+the `dst` in that instruction is RSP, it's expected that the next byte is the
+SIB. And when you output other data instead (say, an immediate 8-bit
+displacement), you get really funky addressing modes. Like what the heck is
+this?
+
+```
+mov qword [rsp + rax*2 - 8], rax
+```
+
+This is actual disassembled assembly that I got from running my binary code
+through `rasm2`. Our compiler *definitely* does not emit anything that
+complicated, which is how I found out things were wrong.
+
+Okay, so it's wrong. We can't just blindly multiply and add things. So what do
+we do?
+
+#### The SIB byte
+
+Take a look at Table 2-2 (page 532) again. See that trying to use RSP with any
+sort of displacement requires the SIB.
+
+Now take a look at Table 2-3 (page 533) again. We'll use this to put together
+the SIB.
+
+We know from Section 2.1.3 that the SIB, like the ModR/M, is comprised of three
+fields:
+
+* *scale* (high 2 bits), specifies the scale factor
+* *index* (middle 3 bits), specifies the register number of the index register
+* *base* (low 3 bits), specifies the register number of the base register
+
+Intel's language is not so clear and is kind of circular. Let's take a look at
+sample instruction to clear things up:
+
+````
+mov [base + index*scale + disp], src
+```
+
+Note that while *index* and *base* refer to registers, *scale* refers to one
+of 1, 2, 4, or 8, and *disp* is some immediate value.
+
+This is a compact way of specifying a memory offset. It's convenient for
+reading from and writing to arrays and structs. It's also going to be necessary
+for us if we want to write to and read from random offsets from the stack
+pointer, RSP.
+
+So let's try and encode that `Emit_store_reg_indirect`.
+
+#### Encoding the indirect mov
+
+Let's start by going back to the table enumerating all the kinds of MOV
+instructions (page 1209). The specific opcode we're looking for is `REX.W + 89
+/r`, or `MOV r/m64, r64`.
+
+We already know what REX.W means:
+
+```c
+void Emit_store_reg_indirect(Buffer *buf, Indirect dst, Register src) {
+  Buffer_write8(buf, kRexPrefix);
+  // ...
+}
+```
+
+And next up is the literal `0x89`, so we can write that straight out:
+
+```c
+void Emit_store_reg_indirect(Buffer *buf, Indirect dst, Register src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0x89);
+  // ...
+}
+```
+
+So far, so good. Looking familiar. Now that we have both the instruction prefix
+and the opcode, it's time to write the ModR/M byte. Our ModR/M will contain
+the following information:
+
+* *mod* of 1, since we want an 8-bit displacement
+* *reg* of whatever register the second operand is, since we have two register
+  operands (the opcode field says `/r`)
+* *rm* of whatever register the first operand is
+
+Alright, let's put that together with our handy-dandy ModR/M function.
+
+```c
+void Emit_store_reg_indirect(Buffer *buf, Indirect dst, Register src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0x89);
+  // Wrong!
+  Buffer_write8(buf, modrm(/*disp8*/ 1, dst.reg, src));
+  // ...
+}
+```
+
+But no, this is wrong. As it turns out, you still have do this special thing
+when `dst.reg` is RSP, as I keep mentioning. In that case, `rm` must be the
+special *none* value (as specified by the table). Then you also have to write a
+SIB byte.
+
+```c
+void Emit_store_reg_indirect(Buffer *buf, Indirect dst, Register src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0x89);
+  if (dst.reg == kRsp) {
+    Buffer_write8(buf, modrm(/*disp8*/ 1, kIndexNone, src));
+    // ...
+  } else {
+    Buffer_write8(buf, modrm(/*disp8*/ 1, dst.reg, src));
+  }
+  // ...
+}
+```
+
+Let's go ahead and write that SIB byte. I made a `sib` helper function like
+`modrm`, with two small differences: the parameters are in order of high to
+low, and the parameters have their own special types instead of just being
+`byte`s.
+
+```c
+typedef enum {
+  Scale1 = 0,
+  Scale2,
+  Scale4,
+  Scale8,
+} Scale;
+
+typedef enum {
+  kIndexRax = 0,
+  kIndexRcx,
+  kIndexRdx,
+  kIndexRbx,
+  kIndexNone,
+  kIndexRbp,
+  kIndexRsi,
+  kIndexRdi
+} Index;
+
+byte sib(Register base, Index index, Scale scale) {
+  return ((scale & 0x3) << 6) | ((index & 0x7) << 3) | (base & 0x7);
+}
+```
+
+I made all these datatypes to help readability, but you don't have to use them
+if you don't want to. The `Index` one is the only one that has a small gotcha:
+where `kIndexRsp` should be is `kIndexNone` because you can't use RSP as an
+index register.
+
+Let's use this function to write a SIB byte in `Emit_store_reg_indirect`:
+
+```c
+void Emit_store_reg_indirect(Buffer *buf, Indirect dst, Register src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0x89);
+  if (dst.reg == kRsp) {
+    Buffer_write8(buf, modrm(/*disp8*/ 1, kIndexNone, src));
+    Buffer_write8(buf, sib(kRsp, kIndexNone, Scale1));
+  } else {
+    Buffer_write8(buf, modrm(/*disp8*/ 1, dst.reg, src));
+  }
+  // ...
+}
+```
+
+This is a very verbose way of saying `[rsp+DISP]`, but it'll do. All that's
+left now is to encode that displacement. To do that, we'll just write it out:
+
+```c
+void Emit_store_reg_indirect(Buffer *buf, Indirect dst, Register src) {
+  Buffer_write8(buf, kRexPrefix);
+  Buffer_write8(buf, 0x89);
+  if (dst.reg == kRsp) {
+    Buffer_write8(buf, modrm(/*disp8*/ 1, kIndexNone, src));
+    Buffer_write8(buf, sib(kRsp, kIndexNone, Scale1));
+  } else {
+    Buffer_write8(buf, modrm(/*disp8*/ 1, dst.reg, src));
+  }
+  Buffer_write8(buf, disp8(indirect.disp));
+}
+```
+
+Very nice. Now it's your turn to go forth and convert the rest of the assembly
+functions in your compiler! I found it very helpful to extract the
+`modrm`/`sib`/`disp8` calls into a helper function, because they're mostly the
+same and very repetitive.
+
+### What did we learn?
+
+This was a very long post. The longest post in the whole series so far, even.
+We should probably have some concrete takeaways.
+
+If you read this post through, you should have gleaned some facts and lessons
+about:
+
+* Intel x86-64 instruction encoding terminology and details, and
+* how to read dense tables in the Intel Developers Manual
+* maybe some third thing, too, I dunno --- this post was kind of a lot
+
+Hopefully you enjoyed it. I'm going to go try and get a good night's sleep.
+Until next time, when we'll implement procedure calls!
 
 
 <br />
