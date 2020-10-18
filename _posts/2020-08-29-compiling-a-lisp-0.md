@@ -5,6 +5,9 @@ date: 2020-08-29 13:16:00 PDT
 description: Overture to our small Lisp to x86-64 compiler
 ---
 
+<div style="width: 80%; margin: 0 auto;"><i>Many thanks to Kartik Agaram and
+Leonard Sch&uuml;tz for proofreading these posts.</i></div>
+
 In my [last series]({% link _blog_lisp/index.md %}), I wrote about building a
 Lisp interpreter. This time, we're going to write a Lisp compiler.
 
