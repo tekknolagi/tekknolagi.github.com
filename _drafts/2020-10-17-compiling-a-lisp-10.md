@@ -5,6 +5,10 @@ date: 2020-10-17 11:00:06 PDT
 description: In which we learn a little about x86-64 instruction encoding
 ---
 
+<span data-nosnippet>
+*[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-10-11-compiling-a-lisp-9.md %})*
+</span>
+
 Welcome back to the Compiling a Lisp series. In this thrilling new update, we
 will learn a little bit more about x86-64 instruction encoding instead of
 allocating more interesting things on the heap or adding procedure calls.
