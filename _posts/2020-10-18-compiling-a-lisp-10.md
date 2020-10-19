@@ -72,9 +72,9 @@ they are encoded. The instructions are listed alphabetically and split into
 sections based on the first letter of each instruction name.
 
 Let's take a look at Chapter 3, specifically at the MOV instruction on page
-1209. For those following along who do not want to download a massive PDF, this
-[website](https://www.felixcloutier.com/x86/index.html) has a bunch of the same
-data in HTML form. Here's the [page for
+&nbsp; 1209. For those following along who do not want to download a massive
+PDF, this [website](https://www.felixcloutier.com/x86/index.html) has a bunch
+of the same data in HTML form. Here's the [page for
 MOV](https://www.felixcloutier.com/x86/mov).
 
 This page has every variant of MOV instruction. There are other instructions
