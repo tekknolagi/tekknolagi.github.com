@@ -1,7 +1,7 @@
 ---
 title: "Compiling a Lisp: Instruction encoding interlude"
 layout: post
-date: 2020-10-17 11:00:06 PDT
+date: 2020-10-18 17:00:00 PDT
 description: In which we learn a little about x86-64 instruction encoding
 ---
 
@@ -769,6 +769,7 @@ Here's a fun composite diagram for the road:
   post. If you're seeing this text, it means your browser cannot render SVG.
 </object>
 
+{% include compiling_a_lisp_toc.md %}
 
 <br />
 <hr style="width: 100px;" />
