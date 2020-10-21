@@ -168,7 +168,3 @@ Sister Sara* (Sherlock Holmes).
 
 [cimbalom0]: https://web.archive.org/web/20200615181712/https://manufacturing.dustystrings.com/blog/hammered-dulcimer-film-scores
 [cimbalom1]: http://web.archive.org/web/20191228224428/https://moviemusicuk.us/2015/08/17/the-man-from-u-n-c-l-e-daniel-pemberton/
-
-I decided to join a webring
-
-[&larr; previous](https://hotlinewebring.club/max/previous) &sim; [next &rarr;](https://hotlinewebring.club/max/next)
