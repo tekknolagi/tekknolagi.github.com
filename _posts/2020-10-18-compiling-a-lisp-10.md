@@ -170,7 +170,7 @@ general layout for Intel instructions.
 
 All Intel x86-64 instructions follow this general format:
 
-* *optional* instruction prefix (1 byte)
+* *optional* instruction prefix
 * opcode (1, 2, or 3 bytes)
 * *if required,* Mod-Reg/Opcode-R/M, also known as ModR/M (1 byte)
 * *if required,* Scale-Index-Base, also known as SIB (1 byte)
