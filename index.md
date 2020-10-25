@@ -7,8 +7,9 @@ layout: page
 
 I am a human and [programmer](https://github.com/tekknolagi). I like to read
 books, take photos and ride bikes in the hills near my house. I [tweet
-things](https://twitter.com/tekknolagi) about bread, legumes, and compilers. I
-work at Instagram as a software engineer.
+things](https://twitter.com/tekknolagi) about bread, legumes, and compilers.
+Though my official title is Chief Potato, I work at Instagram as a software
+engineer.
 
 You can [email me](mailto:contact@bernsteinbear.com) if you so desire. I'm
 happy to talk about education, programming languages, cycling, and more.
