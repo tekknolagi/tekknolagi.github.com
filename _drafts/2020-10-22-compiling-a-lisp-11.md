@@ -104,7 +104,8 @@ If we borrow and adapt the excellent diagrams from the Ghuloum tutorial, this
 means that right before we make a procedure call, our stack will look like
 this:
 
-```
+<object class="svg" type="image/svg+xml" data="/assets/img/call-stack-before-call.svg">
+<pre>
                Low address
 
            |   ...            |
@@ -128,15 +129,22 @@ locals|    |   local2         | rsp-16
   base     |   return point   | rsp
 
                High address
-```
+</pre>
+</object>
 
-You can see the return point at `[rsp]`.
+> Stack illustration courtesy of [Leonard][leonard].
+
+[leonard]: https://leonardschuetz.ch/
+
+You can see the first return point at `[rsp]`. This is the return point placed
+by the caller of the *current* function.
 
 Above that are whatever local variables we have declared with `let` or perhaps
 are intermediate values from some computation.
 
-Above that is a blank space reserved for the return point. The `call`
-instruction will fill it in after evaluating all the arguments.
+Above that is a blank space reserved for the second return point. This is the
+return point for the *about-to-be-called* function. The `call` instruction will
+fill in after evaluating all the arguments.
 
 Above the return point are all the outgoing arguments. They will appear as
 locals for the procedure being called.
@@ -156,7 +164,8 @@ After the `call` instruction, the stack will look different. Nothing will have
 actually changed, except for `rsp`. This change to `rsp` means that the callee
 has a different view:
 
-```
+<object class="svg" type="image/svg+xml" data="/assets/img/call-stack-after-call.svg">
+<pre>
                Low address
 
            |   ...            |
@@ -180,11 +189,14 @@ has a different view:
            |   ~~~~~~~~~~~~   |
 
                High address
-```
+</pre>
+</object>
 
-The squiggly tildes (`~`) indicate that the values on the stack are "hidden"
-from view, since they are above `[rsp]`. The called function will *not* be able
-to access those values.
+> Stack illustration courtesy of [Leonard][leonard].
+
+The empty colored in spaces below the return point indicate that the values on
+the stack are "hidden" from view, since they are above (higher addresses than)
+`[rsp]`. The called function will *not* be able to access those values.
 
 If the called function wants to use one of its arguments, it can pull it off
 the stack from its designated location.
