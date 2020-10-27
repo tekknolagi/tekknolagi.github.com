@@ -276,10 +276,14 @@ int Compile_labels(Buffer *buf, ASTNode *bindings, ASTNode *body,
 }
 ```
 
-The jump will be a little bit useless, since there will be no intervening code
-to jump over, but that's alright. We pass in an empty `varenv`, since we are
-not accumulating any locals along the way; only labels. For the same reason, we
-give a `stack_index` of `-kWordSize` --- the first slot.
+We also patch the jump location to the position where we're going to emit the
+body of the `labels`. In the base case with no labels, the jump would be a
+little bit useless, since there would be no intervening code to jump over, but
+that's alright. In most cases, there will be bindings.
+
+We pass in an empty `varenv`, since we are not accumulating any locals along
+the way; only labels. For the same reason, we give a `stack_index` of
+`-kWordSize` --- the first slot.
 
 If we *do* have labels, on the other hand, we should deal with the first label.
 This means:
@@ -346,7 +350,7 @@ int Compile_code(Buffer *buf, ASTNode *code, Env *labels) {
 }
 ```
 
-I said this would be like `let`, and what I meant by that was that, like `let`
+I said this would be like `let`. What I meant by that was that, like `let`
 bodies, code objects have "locals" --- the formal parameters. We have to bind
 the names of the parameters to successive stack locations, as per our calling
 convention.
@@ -370,6 +374,9 @@ of the `push rbp`/`mov rbp, rsp`/`pop rbp` dance because we switched to using
 `rsp` only instead. I alluded to this in the previous instruction encoding
 interlude post.
 
+In the case where we have at least one formals, we bind the name to the stack
+location and go on our merry way.
+
 ```c
 int Compile_code_impl(Buffer *buf, ASTNode *formals, ASTNode *body,
                       word stack_index, Env *varenv, Env *labels) {
@@ -382,5 +389,332 @@ int Compile_code_impl(Buffer *buf, ASTNode *formals, ASTNode *body,
                            stack_index - kWordSize, &entry, labels);
 }
 ```
+
+That's it! That's how you compile procedures.
+
+### Compiling labelcalls
+
+What use are procedures if we can't call them? Let's figure out how to compile
+procedure *calls*.
+
+Code for calling a procedure must put the arguments and return address on the
+stack precisely how the called procedure expects them.
+
+> Getting this contract right can be tricky. I spent several frustrated hours
+> getting this to not crash. Then, even though it didn't crash, it returned bad
+> data. It turns out that I was overwriting the return address by accident and
+> returning to someplace strange instead.
+>
+> Making handmade diagrams that track the changes to `rsp` and the stack
+> *really* helps with understanding calling convention bugs.
+
+We'll start off by dumping yet more code into `Compile_call`. This code will
+look for something of the form `(labelcall name ...)`.
+
+Before calling into a helper function `Compile_labelcall`, we get two bits of
+information ready:
+
+* `arg_stack_index`, which is the first place on the stack where args are
+  supposed to go. Since we're skipping a space for the return address, this is
+  one more than the current (available) slot index.
+* `rsp_adjust`, which is the amount that we're going to have to, well, adjust
+  `rsp`. Without locals from `let` or incoming arguments from a procedure call,
+  this will be `0`. With locals and/or arguments, this will be the total amount
+  of space taken up by those.
+
+Then we call `Compile_labelcall`.
+
+```c
+int Compile_call(Buffer *buf, ASTNode *callable, ASTNode *args,
+                 word stack_index, Env *varenv, Env *labels) {
+    // ...
+    if (AST_symbol_matches(callable, "labelcall")) {
+      ASTNode *label = operand1(args);
+      assert(AST_is_symbol(label));
+      ASTNode *call_args = AST_pair_cdr(args);
+      // Skip a space on the stack to put the return address
+      word arg_stack_index = stack_index - kWordSize;
+      // We enter Compile_call with a stack_index pointing to the next
+      // available spot on the stack. Add kWordSize (stack_index is negative)
+      // so that it is only a multiple of the number of locals N, not N+1.
+      word rsp_adjust = stack_index + kWordSize;
+      return Compile_labelcall(buf, label, call_args, arg_stack_index, varenv,
+                               labels, rsp_adjust);
+    }
+    // ...
+}
+```
+
+`Compile_labelcall` is one of those fun recursive functions we write so
+frequently. Its job is to compile all of the arguments and store their results
+in successive stack locations.
+
+In the base case, it has no arguments to compile. It should just adjust the
+stack pointer, call the procedure, adjust the stack pointer back, and return.
+
+```c
+void Emit_rsp_adjust(Buffer *buf, word adjust) {
+  if (adjust < 0) {
+    Emit_sub_reg_imm32(buf, kRsp, -adjust);
+  } else if (adjust > 0) {
+    Emit_add_reg_imm32(buf, kRsp, adjust);
+  }
+}
+
+int Compile_labelcall(Buffer *buf, ASTNode *callable, ASTNode *args,
+                      word stack_index, Env *varenv, Env *labels,
+                      word rsp_adjust) {
+  if (AST_is_nil(args)) {
+    word code_address;
+    if (!Env_find(labels, AST_symbol_cstr(callable), &code_address)) {
+      return -1;
+    }
+    // Save the locals
+    Emit_rsp_adjust(buf, rsp_adjust);
+    Emit_call_imm32(buf, code_address);
+    // Unsave the locals
+    Emit_rsp_adjust(buf, -rsp_adjust);
+    return 0;
+  }
+  // ...
+}
+```
+
+`Emit_rsp_adjust` is a convenience function that takes some stack adjustment
+delta. If it's negative, it will issue a `sub` instruction. If it's positive,
+an `add`. Otherwise, it'll do nothing.
+
+In the case *with* arguments, we should compile them one at a time:
+
+```c
+int Compile_labelcall(Buffer *buf, ASTNode *callable, ASTNode *args,
+                      word stack_index, Env *varenv, Env *labels,
+                      word rsp_adjust) {
+  // ...
+  assert(AST_is_pair(args));
+  ASTNode *arg = AST_pair_car(args);
+  _(Compile_expr(buf, arg, stack_index, varenv, labels));
+  Emit_store_reg_indirect(buf, Ind(kRsp, stack_index), kRax);
+  return Compile_labelcall(buf, callable, AST_pair_cdr(args),
+                           stack_index - kWordSize, varenv, labels, rsp_adjust);
+}
+```
+
+There, that wasn't so bad, was it? I mean, if you manage to get it right the
+first time. I certainly did not. In fact, I gave up on the first version of
+this compiler many months ago because I could not get procedure calls right.
+With this post, I have now made it past that particular thorny milestone!
+
+Let's test our implementation. Maybe these tests will help you.
+
+### Testing
+
+I won't include all the tests in this post, but a full battery of tests is
+available in `compile-procedures.c`. Here are some of them.
+
+First, we should check that compiling code objects works:
+
+```c
+TEST compile_code_with_two_params(Buffer *buf) {
+  ASTNode *node = Reader_read("(code (x y) (+ x y))");
+  int compile_result = Compile_code(buf, node, /*labels=*/NULL);
+  ASSERT_EQ(compile_result, 0);
+  // clang-format off
+  byte expected[] = {
+      // mov rax, [rsp-16]
+      0x48, 0x8b, 0x44, 0x24, 0xf0,
+      // mov [rsp-24], rax
+      0x48, 0x89, 0x44, 0x24, 0xe8,
+      // mov rax, [rsp-8]
+      0x48, 0x8b, 0x44, 0x24, 0xf8,
+      // add rax, [rsp-24]
+      0x48, 0x03, 0x44, 0x24, 0xe8,
+      // ret
+      0xc3,
+  };
+  // clang-format on
+  EXPECT_EQUALS_BYTES(buf, expected);
+  AST_heap_free(node);
+  PASS();
+}
+```
+
+As expected, this takes the first argument in `[rsp-8]` and second in
+`[rsp-16]`, storing a temporary in `[rsp-24]`. This test does not test
+execution because I did not want to write the testing infrastructure for
+manually setting up procedure calls.
+
+Second, we should check that defining labels works:
+
+```c
+TEST compile_labels_with_one_label(Buffer *buf) {
+  ASTNode *node = Reader_read("(labels ((const (code () 5))) 1)");
+  int compile_result = Compile_entry(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // clang-format off
+  byte expected[] = {
+      // mov rsi, rdi
+      0x48, 0x89, 0xfe,
+      // jmp 0x08
+      0xe9, 0x08, 0x00, 0x00, 0x00,
+      // mov rax, compile(5)
+      0x48, 0xc7, 0xc0, 0x14, 0x00, 0x00, 0x00,
+      // ret
+      0xc3,
+      // mov rax, 0x2
+      0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
+      // ret
+      0xc3,
+  };
+  // clang-format on
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_entry(buf, /*heap=*/NULL);
+  ASSERT_EQ_FMT(Object_encode_integer(1), result, "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+```
+
+This tests for a jump over the compiled procedure bodies (CHECK!), emitting
+compiled procedure bodies (CHECK!), and emitting the body of the `labels` form
+(CHECK!). This one we can execute.
+
+Third, we should check that passing arguments to procedures works:
+
+```c
+TEST compile_labelcall_with_one_param(Buffer *buf) {
+  ASTNode *node = Reader_read("(labels ((id (code (x) x))) (labelcall id 5))");
+  int compile_result = Compile_entry(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // clang-format off
+  byte expected[] = {
+      // mov rsi, rdi
+      0x48, 0x89, 0xfe,
+      // jmp 0x06
+      0xe9, 0x06, 0x00, 0x00, 0x00,
+      // mov rax, [rsp-8]
+      0x48, 0x8b, 0x44, 0x24, 0xf8,
+      // ret
+      0xc3,
+      // mov rax, compile(5)
+      0x48, 0xc7, 0xc0, 0x14, 0x00, 0x00, 0x00,
+      // mov [rsp-16], rax
+      0x48, 0x89, 0x44, 0x24, 0xf0,
+      // call `id`
+      0xe8, 0xe9, 0xff, 0xff, 0xff,
+      // ret
+      0xc3,
+  };
+  // clang-format on
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_entry(buf, /*heap=*/NULL);
+  ASSERT_EQ_FMT(Object_encode_integer(5), result, "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+```
+
+This tests that we put the arguments in the right stack locations (skipping a
+space for the return address), emit a call to the right relative address, and
+that the call returns successfully. All check!!
+
+Fourth, we should check that we adjust the stack when we have locals:
+
+```c
+TEST compile_labelcall_with_one_param_and_locals(Buffer *buf) {
+  ASTNode *node = Reader_read(
+      "(labels ((id (code (x) x))) (let ((a 1)) (labelcall id 5)))");
+  int compile_result = Compile_entry(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  // clang-format off
+  byte expected[] = {
+      // mov rsi, rdi
+      0x48, 0x89, 0xfe,
+      // jmp 0x06
+      0xe9, 0x06, 0x00, 0x00, 0x00,
+      // mov rax, [rsp-8]
+      0x48, 0x8b, 0x44, 0x24, 0xf8,
+      // ret
+      0xc3,
+      // mov rax, compile(1)
+      0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
+      // mov [rsp-8], rax
+      0x48, 0x89, 0x44, 0x24, 0xf8,
+      // mov rax, compile(5)
+      0x48, 0xc7, 0xc0, 0x14, 0x00, 0x00, 0x00,
+      // mov [rsp-24], rax
+      0x48, 0x89, 0x44, 0x24, 0xe8,
+      // sub rsp, 8
+      0x48, 0x81, 0xec, 0x08, 0x00, 0x00, 0x00,
+      // call `id`
+      0xe8, 0xd6, 0xff, 0xff, 0xff,
+      // add rsp, 8
+      0x48, 0x81, 0xc4, 0x08, 0x00, 0x00, 0x00,
+      // ret
+      0xc3,
+  };
+  // clang-format on
+  EXPECT_EQUALS_BYTES(buf, expected);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_entry(buf, /*heap=*/NULL);
+  ASSERT_EQ_FMT(Object_encode_integer(5), result, "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+```
+
+This tests the presence of `sub` and `add` instructions for adjusting `rsp`. It
+also tests that that did not mess up our stack frame for returning to the
+caller of the Lisp entrypoint --- the test harness.
+
+Fifth, we should check that procedures can refer to procedures defined before
+them:
+
+```c
+TEST compile_multilevel_labelcall(Buffer *buf) {
+  ASTNode *node =
+      Reader_read("(labels ((add (code (x y) (+ x y)))"
+                  "         (add2 (code (x y) (labelcall add x y))))"
+                  "    (labelcall add2 1 2))");
+  int compile_result = Compile_entry(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_entry(buf, /*heap=*/NULL);
+  ASSERT_EQ_FMT(Object_encode_integer(3), result, "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+```
+
+And last, but definitely not least, we should check that procedures can refer
+to themselves:
+
+```c
+TEST compile_factorial_labelcall(Buffer *buf) {
+  ASTNode *node = Reader_read(
+      "(labels ((factorial (code (x) "
+      "            (if (< x 2) 1 (* x (labelcall factorial (- x 1)))))))"
+      "    (labelcall factorial 5))");
+  int compile_result = Compile_entry(buf, node);
+  ASSERT_EQ(compile_result, 0);
+  Buffer_make_executable(buf);
+  uword result = Testing_execute_entry(buf, /*heap=*/NULL);
+  ASSERT_EQ_FMT(Object_encode_integer(120), result, "0x%lx");
+  AST_heap_free(node);
+  PASS();
+}
+```
+
+Ugh, beautiful. Recursion works. Factorial works. I'm so happy.
+
+### What's next?
+
+The logical next step in our journey is to compile `lambda` expressions. This
+has some difficulty, notably that `lambda`s can capture variables from outside
+the `lambda`. This means that next time, we will implement closures.
+
+For now, revel in your newfound procedural freedom.
 
 {% include compiling_a_lisp_toc.md %}
