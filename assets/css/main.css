@@ -101,23 +101,6 @@ sub {
   top: 0.4em;
 }
 
-/* Stuff for posts */
-h2.post-title, div.post-inline-date {
-    text-align: center;
-}
-img.post-inline-image {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    max-height: 100%;
-}
-div.post-co-authors {
-    padding-top: 10px;
-}
-
-svg, object.svg, img.svg {
-  filter: invert(100%);
-}
 @media (prefers-color-scheme: dark) {
   body {
     color: white;
@@ -132,7 +115,7 @@ svg, object.svg, img.svg {
   a[href]:visited {
     color: plum;
   }
-  svg, object.svg {
+  svg, object.svg, img.svg {
     filter: invert(100%);
   }
   table tr {
@@ -142,4 +125,18 @@ svg, object.svg, img.svg {
   table tr:nth-child(2n) {
     background-color: #212121;
   }
+}
+
+/* Stuff for posts */
+h2.post-title, div.post-inline-date {
+    text-align: center;
+}
+img.post-inline-image {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+div.post-co-authors {
+    padding-top: 10px;
 }
