@@ -1,19 +1,5 @@
-a[href] {
-  @media (prefers-color-scheme: dark) {
-    color: steelblue;
-
-    &:visited {
-      color: plum;
-    }
-  }
-}
-
 body {
     font-family: serif;
-    @media (prefers-color-scheme: dark) {
-        color: white;
-        background: black;
-    }
 }
 div.pagecontents {
     margin: 30px auto 0px auto;
@@ -28,9 +14,6 @@ div.navbar {
     padding: 10px;
     /* Thanks, oilshell.org, for inspiration. */
     background-color: #DEE;
-    @media (prefers-color-scheme: dark) {
-        background-color: #212121;
-    }
 }
 li.post-item {
     display: table;
@@ -53,9 +36,6 @@ aside {
 }
 code, pre {
     max-width: 650px;
-    @media (prefers-color-scheme: dark) {
-      color: black;
-    }
 }
 pre {
     overflow: auto;
@@ -88,17 +68,10 @@ table {
   table tr {
     border-top: 1px solid #cccccc;
     background-color: white;
-    @media (prefers-color-scheme: dark) {
-        border-top: 1px solid #555;
-        background-color: #121212;
-    }
     margin: 0;
     padding: 0; }
     table tr:nth-child(2n) {
       background-color: #f8f8f8;
-      @media (prefers-color-scheme: dark) {
-        background-color: #212121;
-      }
     }
     table tr th {
       font-weight: bold;
@@ -140,4 +113,33 @@ img.post-inline-image {
 }
 div.post-co-authors {
     padding-top: 10px;
+}
+
+svg, object.svg, img.svg {
+  filter: invert(100%);
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    color: white;
+    background: black;
+  }
+  div.navbar {
+    background-color: #212121;
+  }
+  a[href] {
+    color: steelblue;
+  }
+  a[href]:visited {
+    color: plum;
+  }
+  svg, object.svg {
+    filter: invert(100%);
+  }
+  table tr {
+    border-top: 1px solid #555;
+    background-color: #121212;
+  }
+  table tr:nth-child(2n) {
+    background-color: #212121;
+  }
 }

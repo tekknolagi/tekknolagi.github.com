@@ -785,7 +785,7 @@ Until next time, when we'll implement procedure calls!
 
 Here's a fun composite diagram for the road:
 
-<object type="image/svg+xml" data="/assets/img/composite-instruction-encoding.svg">
+<object class="svg" type="image/svg+xml" data="/assets/img/composite-instruction-encoding.svg">
   This is a composite of all the instruction encoding diagrams present in the
   post. If you're seeing this text, it means your browser cannot render SVG.
 </object>

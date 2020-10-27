@@ -208,3 +208,386 @@
 .highlight {
   background-color: #f8f8f8;
 }
+@media (prefers-color-scheme: dark) {
+  /* Borrowed from https://github.com/StylishThemes/GitHub-Dark */
+  pre.highlight code {
+    /* Needed for non-code blocks */
+    color: lightgrey;
+  }
+
+  .highlight,
+  body.api .highlight,
+  .highlight pre,
+  body.api .highlight pre,
+  .highlight table,
+  body.api .highlight table,
+  body.api pre {
+    background: #111!important;
+    color: #d0d0d0!important
+  }
+
+  .highlight code .hll,
+  .highlight .hll,
+  body.api .highlight .hll {
+    background-color: #404040!important
+  }
+
+  .highlight code .err,
+  .highlight .err,
+  body.api .highlight .err {
+    color: #a61717!important;
+    background-color: #311!important
+  }
+
+  .highlight code .c,
+  .highlight .c,
+  body.api .highlight .c {
+    color: #3677a9!important
+  }
+
+  .highlight code .g,
+  .highlight .g,
+  body.api .highlight .g {
+    color: #d0d0d0!important
+  }
+
+  .highlight code .h,
+  .highlight code .k,
+  .highlight .h,
+  body.api .highlight .h,
+  .highlight .k,
+  body.api .highlight .k {
+    color: #ccc!important
+  }
+
+  .highlight code .l,
+  .highlight .l,
+  body.api .highlight .l {
+    color: #d0d0d0!important
+  }
+
+  .highlight code .m,
+  .highlight .m,
+  body.api .highlight .m {
+    color: #cd2828!important
+  }
+
+  .highlight code .n,
+  .highlight .n,
+  body.api .highlight .n {
+    color: #ccc!important
+  }
+
+  .highlight code .o,
+  .highlight .o,
+  body.api .highlight .o {
+    color: #777!important
+  }
+
+  .highlight code .p,
+  .highlight .p,
+  body.api .highlight .p {
+    color: #e9b96e!important
+  }
+
+  .highlight code .s,
+  .highlight .s,
+  body.api .highlight .s {
+    color: #d2691e!important
+  }
+
+  .highlight code .w,
+  .highlight .w,
+  body.api .highlight .w {
+    color: #666!important
+  }
+
+  .highlight code .x,
+  .highlight .x,
+  body.api .highlight .x {
+    color: #d0d0d0!important
+  }
+
+  .highlight code .cm,
+  .highlight .cm,
+  body.api .highlight .cm {
+    color: #3677a9!important
+  }
+
+  .highlight code .cp,
+  .highlight .cp,
+  body.api .highlight .cp {
+    color: #d2691e!important
+  }
+
+  .highlight code .c1,
+  .highlight .c1,
+  body.api .highlight .c1 {
+    color: #3677a9!important
+  }
+
+  .highlight code .cs,
+  .highlight .cs,
+  body.api .highlight .cs {
+    color: #e50808!important;
+    background-color: #520000!important
+  }
+
+  .highlight code .gd,
+  .highlight .gd,
+  body.api .highlight .gd {
+    color: #d22323!important
+  }
+
+  .highlight code .ge,
+  .highlight .ge,
+  body.api .highlight .ge {
+    color: #d0d0d0!important
+  }
+
+  .highlight code .gr,
+  .highlight .gr,
+  body.api .highlight .gr {
+    color: #d22323!important
+  }
+
+  .highlight code .gh,
+  .highlight .gh,
+  body.api .highlight .gh {
+    color: #fff!important
+  }
+
+  .highlight code .gi,
+  .highlight .gi,
+  body.api .highlight .gi {
+    color: #589819!important
+  }
+
+  .highlight code .go,
+  .highlight .go,
+  body.api .highlight .go {
+    color: #ccc!important
+  }
+
+  .highlight code .gp,
+  .highlight .gp,
+  body.api .highlight .gp {
+    color: #aaa!important
+  }
+
+  .highlight code .gs,
+  .highlight .gs,
+  body.api .highlight .gs {
+    color: #d0d0d0!important
+  }
+
+  .highlight code .gu,
+  .highlight .gu,
+  body.api .highlight .gu {
+    color: #fff!important
+  }
+
+  .highlight code .gt,
+  .highlight .gt,
+  body.api .highlight .gt {
+    color: #d22323!important
+  }
+
+  .highlight code .kc,
+  .highlight code .kd,
+  .highlight code .kn,
+  .highlight code .kp,
+  .highlight code .kr,
+  .highlight code .kt,
+  .highlight .kc,
+  body.api .highlight .kc,
+  .highlight .kd,
+  body.api .highlight .kd,
+  .highlight .kn,
+  body.api .highlight .kn,
+  .highlight .kp,
+  body.api .highlight .kp,
+  .highlight .kr,
+  body.api .highlight .kr,
+  .highlight .kt,
+  body.api .highlight .kt {
+    color: #6ab825!important
+  }
+
+  .highlight code .ld,
+  .highlight .ld,
+  body.api .highlight .ld {
+    color: #d0d0d0!important
+  }
+
+  .highlight code .na,
+  .highlight .na,
+  body.api .highlight .na {
+    color: #bbb!important
+  }
+
+  .highlight code .nb,
+  .highlight .nb,
+  body.api .highlight .nb {
+    color: #24909d!important
+  }
+
+  .highlight code .nc,
+  .highlight .nc,
+  body.api .highlight .nc {
+    color: #447fcf!important
+  }
+
+  .highlight code .no,
+  .highlight .no,
+  body.api .highlight .no {
+    color: #4ca!important
+  }
+
+  .highlight code .nd,
+  .highlight .nd,
+  body.api .highlight .nd {
+    color: orange!important
+  }
+
+  .highlight code .ni,
+  .highlight .ni,
+  body.api .highlight .ni {
+    color: #d0d0d0!important
+  }
+
+  .highlight code .ne,
+  .highlight .ne,
+  body.api .highlight .ne {
+    color: #bbb!important
+  }
+
+  .highlight code .nf,
+  .highlight .nf,
+  body.api .highlight .nf {
+    color: #098!important
+  }
+
+  .highlight code .nl,
+  .highlight .nl,
+  body.api .highlight .nl {
+    color: #d0d0d0!important
+  }
+
+  .highlight code .nn,
+  .highlight .nn,
+  body.api .highlight .nn {
+    color: #447fcf!important
+  }
+
+  .highlight code .nx,
+  .highlight code .py,
+  .highlight .nx,
+  body.api .highlight .nx,
+  .highlight .py,
+  body.api .highlight .py {
+    color: #d0d0d0!important
+  }
+
+  .highlight code .nt,
+  .highlight .nt,
+  body.api .highlight .nt {
+    color: #6ab825!important
+  }
+
+  .highlight code .nv,
+  .highlight .nv,
+  body.api .highlight .nv {
+    color: #4ca!important
+  }
+
+  .highlight code .ow,
+  .highlight .ow,
+  body.api .highlight .ow {
+    color: #6ab825!important
+  }
+
+  .highlight code .mf,
+  .highlight code .mh,
+  .highlight code .mi,
+  .highlight code .mo,
+  .highlight .mf,
+  body.api .highlight .mf,
+  .highlight .mh,
+  body.api .highlight .mh,
+  .highlight .mi,
+  body.api .highlight .mi,
+  .highlight .mo,
+  body.api .highlight .mo {
+    color: #cd2828!important
+  }
+
+  .highlight code .s2,
+  .highlight code .sb,
+  .highlight code .sc,
+  .highlight code .sd,
+  .highlight code .se,
+  .highlight code .sh,
+  .highlight code .si,
+  .highlight .s2,
+  body.api .highlight .s2,
+  .highlight .sb,
+  body.api .highlight .sb,
+  .highlight .sc,
+  body.api .highlight .sc,
+  .highlight .sd,
+  body.api .highlight .sd,
+  .highlight .se,
+  body.api .highlight .se,
+  .highlight .sh,
+  body.api .highlight .sh,
+  .highlight .si,
+  body.api .highlight .si {
+    color: #d2691e!important
+  }
+
+  .highlight code .sx,
+  .highlight .sx,
+  body.api .highlight .sx {
+    color: orange!important
+  }
+
+  .highlight code .sr,
+  .highlight .sr,
+  body.api .highlight .sr {
+    color: #cd2828!important
+  }
+
+  .highlight code .s1,
+  .highlight code .ss,
+  .highlight .s1,
+  body.api .highlight .s1,
+  .highlight .ss,
+  body.api .highlight .ss {
+    color: #d2691e!important
+  }
+
+  .highlight code .bp,
+  .highlight .bp,
+  body.api .highlight .bp {
+    color: #24909d!important
+  }
+
+  .highlight code .vc,
+  .highlight code .vg,
+  .highlight code .vi,
+  .highlight .vc,
+  body.api .highlight .vc,
+  .highlight .vg,
+  body.api .highlight .vg,
+  .highlight .vi,
+  body.api .highlight .vi {
+    color: #4ca!important
+  }
+
+  .highlight code .il,
+  .highlight .il,
+  body.api .highlight .il {
+    color: #cd2828!important
+  }
+}
