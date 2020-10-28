@@ -108,8 +108,8 @@ sub {
 
 @media (prefers-color-scheme: dark) {
   body {
-    color: white;
-    background: black;
+    color: #dfdfdf;
+    background: #101010;
   }
   div.navbar {
     background-color: #212121;
