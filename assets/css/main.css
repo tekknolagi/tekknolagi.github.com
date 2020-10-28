@@ -3,6 +3,8 @@ body {
 }
 div.pagecontents {
     margin: 30px auto 0px auto;
+}
+div.pagecontents p, div.pagecontents li {
     line-height: 1.2;
     font-size: 16px;
 }
@@ -14,6 +16,9 @@ div.navbar {
     padding: 10px;
     /* Thanks, oilshell.org, for inspiration. */
     background-color: #DEE;
+}
+li:not(.post-item) {
+  padding-bottom: 10px;
 }
 li.post-item {
     display: table;
