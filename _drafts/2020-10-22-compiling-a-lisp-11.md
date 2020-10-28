@@ -36,6 +36,7 @@ and even this snazzy factorial function:
 (labels ((factorial (code (x) 
             (if (< x 2) 1 (* x (labelcall factorial (- x 1)))))))
     (labelcall factorial 5))
+; => 120
 ```
 
 These are fairly pedestrian snippets of code but they demonstrate some new
