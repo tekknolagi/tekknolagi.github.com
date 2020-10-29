@@ -781,7 +781,8 @@ about:
 * maybe some third thing, too, I dunno --- this post was kind of a lot
 
 Hopefully you enjoyed it. I'm going to go try and get a good night's sleep.
-Until next time, when we'll implement procedure calls!
+Until next time, when we'll
+[implement procedure calls]({% link _posts/2020-10-29-compiling-a-lisp-11.md %})!
 
 Here's a fun composite diagram for the road:
 

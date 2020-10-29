@@ -1,7 +1,7 @@
 ---
 title: "Compiling a Lisp: Labelled procedure calls"
 layout: post
-date: 2020-10-18 17:00:00 PDT
+date: 2020-10-29 08:00:00 PT
 description: In which we compile procedures and procedure calls to x86-64
 ---
 

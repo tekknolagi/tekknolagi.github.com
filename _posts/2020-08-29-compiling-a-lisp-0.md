@@ -107,7 +107,8 @@ I plan on adhering to this rough plan:
 1. [Compile heap allocation]({% link _posts/2020-10-11-compiling-a-lisp-9.md %})
    (`cons`)
 1. Compile heap allocation (strings, symbols, etc)
-1. Compile `label` procedure calls
+1. [Compile procedure calls]({% link _posts/2020-10-29-compiling-a-lisp-11.md %})
+   (`labels`, `code`, and `labelcall`)
 1. Compile closures
 1. Add tail-call optimization
 1. Compile complex constants (`quote`)
