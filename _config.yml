@@ -11,6 +11,8 @@ url: "https://bernsteinbear.com"
 exclude: [vendor]
 include: [.well-known]
 
+future: false
+
 twitter:
   username: tekknolagi
 
