@@ -71,7 +71,6 @@ something like this:
 
 ```
 mov rsi, rdi  # prologue
-jmp main
 label0:
   label0_code
 label1:
@@ -83,12 +82,19 @@ main:
 You can see that all of the `code` objects will be compiled in sequence,
 followed by the body of the `labels` form.
 
+<strikethrough>
 Because I have not yet figured out how to start executing at somewhere other
 than the beginning of the generated code, and because I don't store generated
 code in any intermediate buffers, and because we don't know the sizes of any
 code in advance, I do this funky thing where I emit a `jmp` to the body code.
 
 If you, dear reader, have a better solution, please let me know.
+</strikethrough>
+
+**Edit:** *jsmith45* gave me the encouragement I needed to work on this again.
+It turns out that storing the code offset of the beginning of the `main_code`
+(the `labels` body) adding that to the `buf->address` works just fine. I'll
+explain more below.
 
 ### A calling convention
 
@@ -225,7 +231,7 @@ the pieces one at a time, top-down.
 
 First, we'll look at the new-and-improved `Compile_entry`, which has been
 updated to handle the `labels` form. This will do the usual Lisp entrypoint
-setup, some checks, and the aforementioned `jmp` to the body of the code.
+setup and some checks about the structure of the AST.
 
 Then, we'll actually look at compiling the `labels`. This means going through
 the bindings one-by-one and compiling their `code` objects.
@@ -244,31 +250,23 @@ the `body`.
 
 ```c
 int Compile_entry(Buffer *buf, ASTNode *node) {
-  Buffer_write_arr(buf, kEntryPrologue, sizeof kEntryPrologue);
   assert(AST_is_pair(node) && "program must have labels");
   // Assume it's (labels ...)
   ASTNode *labels_sym = AST_pair_car(node);
   assert(AST_is_symbol(labels_sym) && "program must have labels");
   assert(AST_symbol_matches(labels_sym, "labels") &&
          "program must have labels");
-  // Jump to body
-  word body_pos = Emit_jmp(buf, kLabelPlaceholder);
   ASTNode *args = AST_pair_cdr(node);
   ASTNode *bindings = operand1(args);
   assert(AST_is_pair(bindings) || AST_is_nil(bindings));
   ASTNode *body = operand2(args);
-  _(Compile_labels(buf, bindings, body, /*labels=*/NULL, body_pos));
-  Buffer_write_arr(buf, kFunctionEpilogue, sizeof kFunctionEpilogue);
-  return 0;
+  return Compile_labels(buf, bindings, body, /*labels=*/NULL);
 }
 ```
 `Compile_entry` dispatches to `Compile_labels` for iterating over all of the
 labels. `Compile_labels` is a recursive function that keeps track of all the
 labels so far in its arguments, so we start it off with an empty `labels`
 environment.
-
-We also pass it the location of the `jmp` so that right before it compiles the
-body, it can patch the jump target.
 
 ### Compiling labels
 
@@ -277,22 +275,24 @@ should just emit the body.
 
 ```c
 int Compile_labels(Buffer *buf, ASTNode *bindings, ASTNode *body,
-                   Env *labels, word body_pos) {
+                   Env *labels) {
   if (AST_is_nil(bindings)) {
-    Emit_backpatch_imm32(buf, body_pos);
+    buf->entrypoint = Buffer_len(buf);
     // Base case: no bindings. Compile the body
+    Buffer_write_arr(buf, kEntryPrologue, sizeof kEntryPrologue);
     _(Compile_expr(buf, body, /*stack_index=*/-kWordSize, /*varenv=*/NULL,
                    labels));
+    Buffer_write_arr(buf, kFunctionEpilogue, sizeof kFunctionEpilogue);
     return 0;
   }
   // ...
 }
 ```
 
-We also patch the jump location to the position where we're going to emit the
-body of the `labels`. In the base case with no labels, the jump would be a
-little bit useless, since there would be no intervening code to jump over, but
-that's alright. In most cases, there will be bindings.
+We also set the buffer entrypoint location to the position where we're going to
+emit the body of the `labels`. We'll use this later when executing, or later in
+the series when we emit ELF binaries. You'll have to add a field `word
+entrypoint` to your `Buffer` struct.
 
 We pass in an empty `varenv`, since we are not accumulating any locals along
 the way; only labels. For the same reason, we give a `stack_index` of
@@ -309,7 +309,7 @@ And then from there we deal with the others recursively.
 
 ```c
 int Compile_labels(Buffer *buf, ASTNode *bindings, ASTNode *body,
-                   Env *labels, word body_pos) {
+                   Env *labels) {
   // ....
   assert(AST_is_pair(bindings));
   // Get the next binding
@@ -322,8 +322,7 @@ int Compile_labels(Buffer *buf, ASTNode *bindings, ASTNode *body,
   Env entry = Env_bind(AST_symbol_cstr(name), function_location, labels);
   // Compile the binding function
   _(Compile_code(buf, binding_code, &entry));
-  _(Compile_labels(buf, AST_pair_cdr(bindings), body, &entry, body_pos));
-  return 0;
+  return Compile_labels(buf, AST_pair_cdr(bindings), body, &entry);
 }
 ```
 
@@ -518,6 +517,23 @@ first time. I certainly did not. In fact, I gave up on the first version of
 this compiler many months ago because I could not get procedure calls right.
 With this post, I have now made it past that particular thorny milestone!
 
+One last thing: we'll need to update the code that converts `buf->address` into
+a function pointer. We have to use the `buf->entrypoint` we set earlier.
+
+```c
+uword Testing_execute_entry(Buffer *buf, uword *heap) {
+  assert(buf != NULL);
+  assert(buf->address != NULL);
+  assert(buf->state == kExecutable);
+  // The pointer-pointer cast is allowed but the underlying
+  // data-to-function-pointer back-and-forth is only guaranteed to work on
+  // POSIX systems (because of eg dlsym).
+  byte *start_address = buf->address + buf->entrypoint;
+  JitFunction function = *(JitFunction *)(&start_address);
+  return function(heap);
+}
+```
+
 Let's test our implementation. Maybe these tests will help you.
 
 ### Testing
@@ -566,14 +582,12 @@ TEST compile_labels_with_one_label(Buffer *buf) {
   ASSERT_EQ(compile_result, 0);
   // clang-format off
   byte expected[] = {
-      // mov rsi, rdi
-      0x48, 0x89, 0xfe,
-      // jmp 0x08
-      0xe9, 0x08, 0x00, 0x00, 0x00,
       // mov rax, compile(5)
       0x48, 0xc7, 0xc0, 0x14, 0x00, 0x00, 0x00,
       // ret
       0xc3,
+      // mov rsi, rdi
+      0x48, 0x89, 0xfe,
       // mov rax, 0x2
       0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
       // ret
@@ -602,20 +616,18 @@ TEST compile_labelcall_with_one_param(Buffer *buf) {
   ASSERT_EQ(compile_result, 0);
   // clang-format off
   byte expected[] = {
-      // mov rsi, rdi
-      0x48, 0x89, 0xfe,
-      // jmp 0x06
-      0xe9, 0x06, 0x00, 0x00, 0x00,
       // mov rax, [rsp-8]
       0x48, 0x8b, 0x44, 0x24, 0xf8,
       // ret
       0xc3,
+      // mov rsi, rdi
+      0x48, 0x89, 0xfe,
       // mov rax, compile(5)
       0x48, 0xc7, 0xc0, 0x14, 0x00, 0x00, 0x00,
       // mov [rsp-16], rax
       0x48, 0x89, 0x44, 0x24, 0xf0,
       // call `id`
-      0xe8, 0xe9, 0xff, 0xff, 0xff,
+      0xe8, 0xe6, 0xff, 0xff, 0xff,
       // ret
       0xc3,
   };
@@ -643,14 +655,12 @@ TEST compile_labelcall_with_one_param_and_locals(Buffer *buf) {
   ASSERT_EQ(compile_result, 0);
   // clang-format off
   byte expected[] = {
-      // mov rsi, rdi
-      0x48, 0x89, 0xfe,
-      // jmp 0x06
-      0xe9, 0x06, 0x00, 0x00, 0x00,
       // mov rax, [rsp-8]
       0x48, 0x8b, 0x44, 0x24, 0xf8,
       // ret
       0xc3,
+      // mov rsi, rdi
+      0x48, 0x89, 0xfe,
       // mov rax, compile(1)
       0x48, 0xc7, 0xc0, 0x04, 0x00, 0x00, 0x00,
       // mov [rsp-8], rax
@@ -662,7 +672,7 @@ TEST compile_labelcall_with_one_param_and_locals(Buffer *buf) {
       // sub rsp, 8
       0x48, 0x81, 0xec, 0x08, 0x00, 0x00, 0x00,
       // call `id`
-      0xe8, 0xd6, 0xff, 0xff, 0xff,
+      0xe8, 0xd3, 0xff, 0xff, 0xff,
       // add rsp, 8
       0x48, 0x81, 0xc4, 0x08, 0x00, 0x00, 0x00,
       // ret
