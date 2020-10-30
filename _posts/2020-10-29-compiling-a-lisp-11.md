@@ -82,14 +82,14 @@ main:
 You can see that all of the `code` objects will be compiled in sequence,
 followed by the body of the `labels` form.
 
-<strikethrough>
+<s>
 Because I have not yet figured out how to start executing at somewhere other
 than the beginning of the generated code, and because I don't store generated
 code in any intermediate buffers, and because we don't know the sizes of any
 code in advance, I do this funky thing where I emit a `jmp` to the body code.
 
 If you, dear reader, have a better solution, please let me know.
-</strikethrough>
+</s>
 
 **Edit:** *jsmith45* gave me the encouragement I needed to work on this again.
 It turns out that storing the code offset of the beginning of the `main_code`
