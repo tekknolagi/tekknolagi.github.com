@@ -18,6 +18,8 @@ to find great stuff.
   in C. Note that this just verifies the input string, and more has to be done
   to build a tree out of the input.
 * Vidar Hokstad's [Writing a compiler in Ruby, bottom up](http://hokstad.com/compiler)
+* My [adaptation](https://bernsteinbear.com/blog/compiling-a-lisp-0/) of
+  Ghuloum's paper
 
 ## Lisp specific
 
@@ -53,6 +55,7 @@ Resources on representing small values efficiently.
 * Chicken Scheme's [data representation](https://wiki.call-cc.org/man/4/Data%20representation)
 * Guile Scheme's [Faster Integers](https://www.gnu.org/software/guile/manual/html_node/Faster-Integers.html)
 * Femtolisp [object implementation](https://github.com/JeffBezanson/femtolisp/blob/master/flisp.h)
+* Leonard Schütz's [NaN Boxing](https://leonardschuetz.ch/blog/nan-boxing/) article
 
 ### Just-In-Time compilers
 
