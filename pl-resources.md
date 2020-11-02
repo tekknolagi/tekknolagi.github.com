@@ -37,6 +37,8 @@ to find great stuff.
 * Rui Ueyama's [minilisp](https://github.com/rui314/minilisp)
 * The [Bones](http://www.call-with-current-continuation.org/bones/) Scheme
   compiler
+* The [lecture notes](https://course.ccs.neu.edu/cs4410sp20/#%28part._lectures%29_)
+  for a course developing a Ghuloum-style compiler
 
 ## Runtimes
 
