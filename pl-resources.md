@@ -20,6 +20,8 @@ to find great stuff.
 * Vidar Hokstad's [Writing a compiler in Ruby, bottom up](http://hokstad.com/compiler)
 * My [adaptation](https://bernsteinbear.com/blog/compiling-a-lisp-0/) of
   Ghuloum's paper
+* Rui Ueyama's [chibicc](https://github.com/rui314/chibicc), a C compiler in
+  the Ghuloum style
 
 ## Lisp specific
 
@@ -32,6 +34,9 @@ to find great stuff.
   series
 * carld's [Lisp in less than 200 lines of C](https://carld.github.io/2017/06/20/lisp-in-less-than-200-lines-of-c.html)
 * UTexas's [A simple scheme compiler](https://www.cs.utexas.edu/ftp/garbage/cs345/schintro-v14/schintro_142.html#SEC271)
+* Rui Ueyama's [minilisp](https://github.com/rui314/minilisp)
+* The [Bones](http://www.call-with-current-continuation.org/bones/) Scheme
+  compiler
 
 ## Runtimes
 
