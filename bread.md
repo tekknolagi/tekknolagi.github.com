@@ -37,6 +37,9 @@ Yeast                1 %
 Sourdough levain    20 %
 ```
 
+I like [King Arthur's](https://www.youtube.com/watch?v=PmxDKuGLWuE) videos on
+shaping and pretty much everything else.
+
 ## White/wheat loaf
 
 ```
@@ -64,6 +67,9 @@ Yeast                1 %
 ```
 
 Additional water, olive oil, salt, and herbs required for topping.
+
+I like how [this man from Genoa](https://www.youtube.com/watch?v=uEKzIshoYiM)
+makes his focaccia. I learned a lot from his shaping and poking and dressing.
 
 ## Miscellaneous
 
