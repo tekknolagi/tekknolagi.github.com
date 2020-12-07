@@ -6,9 +6,16 @@ description: A collection of bread ingredient ratios
 
 I like making bread. This page has some simplified recipes for different tasty
 breads. It's mostly a reference for myself because sometimes I forget the
-ratios, and many a website will list ingredients by volume. Maybe some day I
-will post pictures and more detail. Until then, you can enjoy my [bread
+ratios, and many a website will list ingredients by volume (see below for why
+this matters). Maybe some day I will post pictures and more detail. Until then,
+you can enjoy my [bread
 journey](https://twitter.com/tekknolagi/status/1201209094259888128) on Twitter.
+
+This page does *not* aim to be a complete baking instruction manual. I
+recommend checking out a couple of other instructive recipe pages like [this
+one][ka] first.
+
+[ka]: https://www.kingarthurbaking.com/recipes/no-knead-crusty-white-bread-recipe
 
 ## Notes
 
@@ -80,6 +87,10 @@ This helps avoid flour getting stuck on the bottom of your bowl.
 
 ### Suggested baking tools
 
+Not all of these are required. Some people will tell you to buy a bunch of
+expensive equipment. Bake with what you have, and if you want to incrementally
+improve your tools, go for it.
+
 * Mixing bowl
 * Kitchen scale, ideally accurate to 1g
 * Saran wrap or equivalent, if leaving the dough in the fridge overnight to
@@ -96,3 +107,11 @@ This helps avoid flour getting stuck on the bottom of your bowl.
   probably fine but your bread will spread out more and it will be harder to
   get a nice crust. I also don’t have experience baking bread on just a baking
   sheet. Loaf pans are great for baking loaves.
+
+### Philosophy
+
+A very smart person once asked me, *"Is bread defined by its ingredients?"* I
+would argue that the magic of bread is that it is more than the sum of its
+component parts, and therefore is not entirely defined by its ingredients.
+Timing, folding, shaping, and scoring have huge impact on the final product.
+Put some love into your loaves.
