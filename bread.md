@@ -3,13 +3,13 @@ layout: page
 title: Bread
 ---
 
-## Notes
-
 I like making bread. This page has some simplified recipes for different tasty
 breads. It's mostly a reference for myself because sometimes I forget the
 ratios, and many a website will list ingredients by volume. Maybe some day I
 will post pictures and more detail. Until then, you can enjoy my [bread
 journey](https://twitter.com/tekknolagi/status/1201209094259888128) on Twitter.
+
+## Notes
 
 All the percentages on this page are in terms of mass, not volume. Mass and
 volume are interchangeable for things like water, which are not very
