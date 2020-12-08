@@ -34,14 +34,14 @@ hydration dough, so I use 80% water.
 ## White loaf
 
 ```
-Ingredient       Percent
-----------       -------
-White flour        100 %
-Water               80 %
-Salt                 2 %
-Yeast                1 %
+Ingredient       Quantity
+----------       --------
+White flour         100 %
+Water                80 %
+Salt                  2 %
+Yeast                 1 %
            OR
-Sourdough levain    20 %
+Sourdough levain     20 %
 ```
 
 I like [King Arthur's](https://www.youtube.com/watch?v=PmxDKuGLWuE) videos on
@@ -50,33 +50,55 @@ shaping and pretty much everything else.
 ## White/wheat loaf
 
 ```
-Ingredient       Percent
-----------       -------
-White flour         80 %
-Wheat flour         20 %
-Water               80 %
-Salt                 2 %
-Yeast                1 %
+Ingredient       Quantity
+----------       --------
+White flour          80 %
+Wheat flour          20 %
+Water                80 %
+Salt                  2 %
+Yeast                 1 %
            OR
-Sourdough levain    20 %
+Sourdough levain     20 %
 ```
 
 ## Focaccia
 
 ```
-Ingredient       Percent
-----------       -------
-White flour        100 %
-Water               80 %
-Olive oil            8 %
-Salt                 2 %
-Yeast                1 %
+Ingredient       Quantity
+----------       --------
+White flour         100 %
+Water                80 %
+Olive oil             8 %
+Salt                  2 %
+Yeast                 1 %
 ```
 
 Additional water, olive oil, salt, and herbs required for topping.
 
 I like how [this man from Genoa](https://www.youtube.com/watch?v=uEKzIshoYiM)
 makes his focaccia. I learned a lot from his shaping and poking and dressing.
+
+## Sufganiyot
+
+```
+Ingredient       Quantity
+----------       --------
+AP flour            100 %
+White sugar          20 %
+Water                35 %
+Vegetable oil        12 %    (1/4 cup)
+Vanilla extract     2.6 %    (1 tbsp)
+Eggs                 2 ct
+Salt                  2 %
+Yeast               1.5 %
+```
+
+Mix dry ingredients. Add wet ingredients. Stretch, fold, and rest until
+doubled. Roll to 1/2 inches thick. Cut out circles. Proof. Fry 90 seconds/side.
+Fill. Celebrate.
+
+Sourced from
+[thetasteofkosher.com](https://www.thetasteofkosher.com/sufganiyot-recipe/).
 
 ## Miscellaneous
 
