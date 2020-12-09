@@ -26,7 +26,8 @@ compressible, but not for ingredients like flour.
 You may notice that the percentages do not add up to 100%. This is expected;
 they are percentages of the total flour in the recipe, not the total dough. For
 a recipe that says "100% flour" and "80% water", you can pick 1000g of flour
-and 800g of water.
+and 800g of water. If it says "80% wheat" and "20% white" then the two flours
+together add up to 100% of the total flour.
 
 Water is variable in all of the following recipes. I prefer handling high
 hydration dough, so I use 80% water.
@@ -43,6 +44,8 @@ Yeast                 1 %
            OR
 Sourdough levain     20 %
 ```
+
+Bake 1 hour at 450F. After 20 minutes, remove lid.
 
 I like [King Arthur's](https://www.youtube.com/watch?v=PmxDKuGLWuE) videos on
 shaping and pretty much everything else.
@@ -61,6 +64,8 @@ Yeast                 1 %
 Sourdough levain     20 %
 ```
 
+Bake 1 hour at 450F. After 20 minutes, remove lid.
+
 ## Focaccia
 
 ```
@@ -73,10 +78,33 @@ Salt                  2 %
 Yeast                 1 %
 ```
 
-Additional water, olive oil, salt, and herbs required for topping.
+Additional water, olive oil, salt, and herbs required for topping. Bake 35
+minutes at 425F.
 
 I like how [this man from Genoa](https://www.youtube.com/watch?v=uEKzIshoYiM)
 makes his focaccia. I learned a lot from his shaping and poking and dressing.
+
+## Mostly rye sandwich loaf
+
+```
+Ingredient       Quantity
+----------       --------
+Rye flour            85 %
+White flour          15 %
+Water                80 %
+Honey                 8 %    (as needed)
+Salt                  2 %
+Yeast                 1 %
+```
+
+Stretch and fold as usual, but don't shape. Instead, pat it down into a
+rectangular baking pan. Brush the top with honey. Bake 1 hour at 450F.
+
+## Dinner rolls
+
+See [white/wheat loaf](#whitewheat-loaf). Oil a large pan or baking sheet.
+Shape dough into equal-sized tiny boules. Arrange on the pan. Prove 20 minutes.
+Bake 30 minutes at 325F.
 
 ## Sufganiyot
 
@@ -94,7 +122,7 @@ Yeast               1.5 %
 ```
 
 Mix dry ingredients. Add wet ingredients. Stretch, fold, and rest until
-doubled. Roll to 1/2 inches thick. Cut out circles. Proof. Fry 90 seconds/side.
+doubled. Roll to 1/2 inches thick. Cut out circles. Prove. Fry 90 seconds/side.
 Fill. Celebrate.
 
 Sourced from
