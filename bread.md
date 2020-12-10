@@ -135,6 +135,10 @@ Sourced from
 It's easier to pour flour into water and mix it up than the other way around.
 This helps avoid flour getting stuck on the bottom of your bowl.
 
+Learn to [bake bread on your schedule][hostage].
+
+[hostage]: https://www.kingarthurbaking.com/blog/2020/04/06/dont-be-a-bread-hostage
+
 ### Suggested baking tools
 
 Not all of these are required. Some people will tell you to buy a bunch of
