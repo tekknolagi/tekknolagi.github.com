@@ -53,4 +53,5 @@ That's probably an understatement. Here are some of my favorite projects:
 * [CPython](https://www.python.org/)
   ([bpo-36929](https://github.com/python/cpython/pull/13392),
   [bpo-38648](https://github.com/python/cpython/pull/17002),
-  [bpo-42065](https://github.com/python/cpython/pull/19940))
+  [bpo-42065](https://github.com/python/cpython/pull/19940),
+  [bpo-42199](https://github.com/python/cpython/pull/23031))
