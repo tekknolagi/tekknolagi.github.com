@@ -49,6 +49,18 @@ to find great stuff.
   blog post
 * Justin Meiners and Ryan Pendelton's [Write your own virtual machine](https://justinmeiners.github.io/lc3-vm/)
 
+## Runtime optimization
+
+Here are some resources I have found useful for understanding the ideas and
+research around optimizing dynamic languages.
+
+* [Efficient implementation of the Smalltalk-80 system](https://dl.acm.org/doi/10.1145/800017.800542)
+* [Optinizing dynamically-typed object-oriented languages with polymorphic inline caches](https://bibliography.selflanguage.org/_static/pics.pdf)
+* [An inline cache isn't just a cache](https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache)
+* [Baseline JIT and inline caches](https://blog.pyston.org/2016/06/30/baseline-jit-and-inline-caches/)
+* [Javascript hidden classes and inline caching in V8](https://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html)
+* [Garbage collection in a large LISP system](https://dl.acm.org/doi/10.1145/800055.802040)
+
 ### Pointer tagging and NaN boxing
 
 Resources on representing small values efficiently.
