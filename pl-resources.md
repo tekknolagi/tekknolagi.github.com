@@ -86,9 +86,28 @@ a whole lot.
 
 * Antonio Cuni's [jit30min](https://github.com/antocuni/jit30min)
 * Christian Stigen Larsen's [Writing a basic x86-64 JIT compiler from scratch in stock Python](https://csl.name/post/python-jit/)
+* Ben Hoyt's [Compiling Python syntax to x86-64 assembly for fun and (zero) profit](https://benhoyt.com/writings/pyast64/)
 * My very undocumented (but hopefully readable)
   [implementation](https://github.com/tekknolagi/ghuloum) of the Ghuloum
   compiler
+
+### Assembler libraries
+
+Sometimes you want to generate assembly from a host language. Common use cases
+include compilers, both ahead-of-time and just-in-time. Here are some libraries
+that can help with that.
+
+* [x86-64 assembler in C](https://gist.github.com/tekknolagi/201539673cfcc60df73ef75a8a9b5896),
+  which I forked from the pervognsen's [original](https://gist.github.com/pervognsen/9d815016d8ef39f1b2c8e509ee2cf052)
+* Dart's [multi-arch assembler in C++](https://github.com/dart-lang/sdk/tree/1e24fe7d699a1c36be142afa21859c6a9c82d035/runtime/vm/compiler/assembler)
+  and [relevant constants](https://github.com/dart-lang/sdk/blob/1e24fe7d699a1c36be142afa21859c6a9c82d035/runtime/vm/constants_x64.h),
+  both of which need some extracting from the main project
+* Strongtalk's [x86 assembler in C](https://github.com/talksmall/Strongtalk/tree/39b336f8399230502535e7ac12c9c1814552e6da/vm/asm)
+* AsmJit, a [multi-arch assembler in C++](https://github.com/asmjit/asmjit)
+* [PeachPy](https://github.com/Maratyszcza/PeachPy), an x86-64 assembler in Python
+
+For more inspiration, check out some of the assemblers in runtimes I mention in
+my [Compiling a Lisp](/blog/compiling-a-lisp-8/#assembler-libraries) post.
 
 ## Game Boy Emulators
 

@@ -128,6 +128,8 @@ little tricky to use them for forward jumps. Because we don't know in advance
 how long the intermediate code will be, we'll just stick to generating 32-bit
 relative jumps *always*.
 
+<a name="assembler-libraries"></a>
+
 Virtual Machines like ART, [OpenJDK Hotspot][openjdk-label],
 [SpiderMonkey][spidermonkey-label], V8, [HHVM][hhvm-label], and
 [Strongtalk][strongtalk-label] also use this approach. So do the VM-agnostic
