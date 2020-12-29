@@ -84,6 +84,33 @@ minutes at 425F.
 I like how [this man from Genoa](https://www.youtube.com/watch?v=uEKzIshoYiM)
 makes his focaccia. I learned a lot from his shaping and poking and dressing.
 
+## Ciabatta
+
+Percentages are in terms of total flour *in each subcomponent*. I haven't
+figured out an understandable way to convey this, so I included an "Example"
+column to disambiguate.
+
+```
+Ingredient       Quantity   Example
+----------       --------   -------
+BIGA
+  White flour       100 %     225 g
+  Water              75 %     170 g
+  Yeast             0.1 %   1/8 tsp
+DOUGH
+  Biga              175 %     395 g
+  White flour       100 %     225 g
+  Water              75 %     170 g
+  Salt                2 %       9 g
+  Yeast               1 %       3 g
+```
+
+See the [King Arthur](https://www.kingarthurbaking.com/recipes/rustic-italian-ciabatta-recipe)
+recipe and [pro formulas](https://www.kingarthurbaking.com/pro/formulas/ciabatta).
+They differ a little bit in their hydation but that's fine.
+
+Also make sure to watch [Martin and his kid bake this](https://www.kingarthurbaking.com/videos/martin-bakes-at-home/rustic-italian-ciabatta).
+
 ## Mostly rye sandwich loaf
 
 ```
