@@ -106,7 +106,7 @@ DOUGH
 ```
 
 Make biga overnight. Combine with dough in the morning. Stretch and fold once
-or twice. Don't shape. Gently transfer to counter or floured pan to prove.  a
+or twice. Don't shape. Gently transfer to counter or floured pan to prove a
 little bit. Bake 25 minutes at 425F.
 
 See the [King Arthur](https://www.kingarthurbaking.com/recipes/rustic-italian-ciabatta-recipe)
