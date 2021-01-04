@@ -17,9 +17,6 @@ div.navbar {
     /* Thanks, oilshell.org, for inspiration. */
     background-color: #DEE;
 }
-li:not(.post-item) {
-  padding-bottom: 10px;
-}
 li.post-item {
     display: table;
     width: 100%;
