@@ -60,6 +60,7 @@ research around optimizing dynamic languages.
 * [Baseline JIT and inline caches](https://blog.pyston.org/2016/06/30/baseline-jit-and-inline-caches/)
 * [Javascript hidden classes and inline caching in V8](https://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html)
 * [Garbage collection in a large LISP system](https://dl.acm.org/doi/10.1145/800055.802040)
+* Urs Hölzle's thesis, [Adaptive Optimization for Self](http://i.stanford.edu/pub/cstr/reports/cs/tr/94/1520/CS-TR-94-1520.pdf)
 
 ### Pointer tagging and NaN boxing
 
@@ -128,6 +129,9 @@ write about:
 * JIT intermediate representations and how they help solve problems around
   megamorphic call sites, inlining, etc
 * The GDB JIT interface &amp; maintaining a parseable stack for unwinding
+  * [gdb docs](https://sourceware.org/gdb/current/onlinedocs/gdb/Custom-Debug-Info.html#Custom-Debug-Info)
+  * [pwp](https://pwparchive.wordpress.com/2011/11/20/new-jit-interface-for-gdb/)
+  * [v8](https://v8.dev/docs/gdb-jit)
 
 ## Game Boy Emulators
 
