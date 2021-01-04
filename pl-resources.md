@@ -118,10 +118,14 @@ write about:
 
 * Tagged pointers and small objects (strings, integers, sentinel objects, ...)
 * Assembly interpreters (known to the JDK folks as a "template interpreter")
+  * [template interpreter](https://metebalci.com/blog/demystifying-the-jvm-jvm-variants-cppinterpreter-and-templateinterpreter/)
+  * [source on github](https://github.com/openjdk/jdk/blob/master/src/hotspot/cpu/x86/templateTable_x86.cpp)
 * Inline caching for attribute lookup
 * Inline caching for method lookup &amp; call
   * Including caching JITed assembly stubs &amp; entrypoints instead of just offsets
 * Opcode rewriting and runtime opcode specialization
+  * If the operands to `+` are always ints, it's possible to rewrite to a
+    shorter code path, etc
 * Attaching intrinsic functions or assembly stubs to well-known functions
 * Heap and GC characteristics from the "Garbage collection in a large Lisp
   system" paper
