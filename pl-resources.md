@@ -136,6 +136,9 @@ write about:
   * [gdb docs](https://sourceware.org/gdb/current/onlinedocs/gdb/Custom-Debug-Info.html#Custom-Debug-Info)
   * [pwp](https://pwparchive.wordpress.com/2011/11/20/new-jit-interface-for-gdb/)
   * [v8](https://v8.dev/docs/gdb-jit)
+* Exception handling side-tables instead of block stacks
+  * [jvm explanation](https://www.infoworld.com/article/2076868/how-the-java-virtual-machine-handles-exceptions.html)
+  * [another jvm explanation](https://www.overops.com/blog/the-surprising-truth-of-java-exceptions-what-is-really-going-on-under-the-hood/)
 
 ## Game Boy Emulators
 
