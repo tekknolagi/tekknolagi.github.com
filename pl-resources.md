@@ -75,6 +75,7 @@ Resources on representing small values efficiently.
 * Guile Scheme's [Faster Integers](https://www.gnu.org/software/guile/manual/html_node/Faster-Integers.html)
 * Femtolisp [object implementation](https://github.com/JeffBezanson/femtolisp/blob/master/flisp.h)
 * Leonard Schütz's [NaN Boxing](https://leonardschuetz.ch/blog/nan-boxing/) article
+* Piotr Duperas's [NaN boxing or how to make the world dynamic](https://piotrduperas.com/posts/nan-boxing/)
 
 ### Just-In-Time compilers
 
