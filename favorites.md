@@ -118,6 +118,7 @@ Here are some websites I like:
 * [webring.xxiivv.com/](http://webring.xxiivv.com/)
 * [tinyprojects.dev](http://tinyprojects.dev)
 * [www.distinctly.pink](http://www.distinctly.pink)
+* [cynthia.re](https://cynthia.re/)
 
 My favorite tea is currently Stash Tea's *Double Bergamot Earl Grey*.
 
