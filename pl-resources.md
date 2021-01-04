@@ -110,6 +110,25 @@ that can help with that.
 For more inspiration, check out some of the assemblers in runtimes I mention in
 my [Compiling a Lisp](/blog/compiling-a-lisp-8/#assembler-libraries) post.
 
+### Things I want to write about
+
+I have not written much about runtime optimization yet, but I would like to
+write about:
+
+* Tagged pointers and small objects (strings, integers, sentinel objects, ...)
+* Assembly interpreters (known to the JDK folks as a "template interpreter")
+* Inline caching for attribute lookup
+* Inline caching for method lookup &amp; call
+  * Including caching JITed assembly stubs &amp; entrypoints instead of just offsets
+* Opcode rewriting and runtime opcode specialization
+* Attaching intrinsic functions or assembly stubs to well-known functions
+* Heap and GC characteristics from the "Garbage collection in a large Lisp
+  system" paper
+* Fast paths for common cases ("do less")
+* JIT intermediate representations and how they help solve problems around
+  megamorphic call sites, inlining, etc
+* The GDB JIT interface &amp; maintaining a parseable stack for unwinding
+
 ## Game Boy Emulators
 
 * The [Pan Docs](http://problemkaputt.de/pandocs.htm) (newer version
