@@ -33,7 +33,7 @@ Foo do_add(Foo left, Foo right) {
 The compiler knows precisely what type `left` and `right` are (it's `Foo`) and
 also where the method `add` is in the executable. If the implementation is in
 the header file, it may even be inlined and `do_add` may be optimized to a
-single instruction. Check out the assembly I got with `objdump`:
+single instruction. Check out the assembly from `objdump`:
 
 ```
 0000000000401160 <_Z6do_add3FooS_>:
@@ -49,7 +49,7 @@ All it does is save the parameters to the stack, call `Foo::add`, and then
 restore the stack.
 
 In more dynamic programming languages, it is often impossible to determine at
-runtime startup what type any given variable binding has. I'll use Python as an
+runtime startup what type any given variable binding has. We'll use Python as an
 example to illustrate how dynamism makes this tricky, but this constraint is
 broadly applicable to Ruby, JavaScript, etc.
 
@@ -138,9 +138,9 @@ caching. Extending this example would be an excellent exercise.
 
 ### Objects and types
 
-The design of this runtime involves two types of objects (`int`s and `str`s). I
-implement this as a tagged union, but for the purposes of this blog post the
-representation does not matter very much.
+The design of this runtime involves two types of objects (`int`s and `str`s).
+Objects are implemented as a tagged union, but for the purposes of this blog
+post the representation does not matter very much.
 
 ```c
 typedef enum {
@@ -157,10 +157,10 @@ typedef struct {
 } Object;
 ```
 
-These types have methods on them, such as `add` and `print`. I represent this
-relationship with two levels of tables: a table mapping types to method lists
-(`kTypes`), and a sentinel-terminated table mapping method names to function
-pointers (`kIntMethods` or `kStrMethods`).
+These types have methods on them, such as `add` and `print`. Type/method
+relationships are represented with two levels of tables: a table mapping types
+to method lists (`kTypes`), and a sentinel-terminated table mapping method
+names to function pointers (`kIntMethods` or `kStrMethods`).
 
 ```c
 typedef enum {
@@ -198,13 +198,20 @@ static const MethodDefinition *kTypes[] = {
 };
 ```
 
-While I represent names with an enum (`Symbol`) here, strings would work just
-as well.
+While names are represented with an enum (`Symbol`) here, strings would work
+just as well.
+
+Side note: I represent the type table differently from the method tables. I
+figure the method tables will be sparsely populated (not every type will
+implement every method) but the type table should contain every type. This is
+not an essential design decision.
+
+Let's see how we use these tables in the interpreter.
 
 ### Interpreter
 
-There's no way to call these methods directly, though. For the purposes of this
-demo, the only way to call these methods is through purpose-built opcodes. For
+There's no way to call these methods directly. For the purposes of this demo,
+the only way to call these methods is through purpose-built opcodes. For
 example, the opcode `ADD` takes two arguments. It looks up `kAdd` on the left
 hand side and calls it. `PRINT` is similar.
 
@@ -222,20 +229,48 @@ typedef enum {
   HALT,
 } Opcode;
 ```
-
 Bytecode is represented by a series of opcode/argument pairs, each taking up
 one byte. Only `ARG` needs an argument; the other instructions ignore theirs.
 
-You may wonder, "how is it that there is an instruction for loading arguments
-but no call instruction?" Well, the interpreter does not support calls. There
-is only a function, `eval_code`. It takes an object, evaluates its bytecode
-with the given arguments, and returns.
-
-The implementation is a fairly straightforward `switch` statement. Notice that
-it takes a representation of a function-like thing (`Code`) and an array of
-arguments. `nargs` is only used for bounds checking.
+Let's look at a sample program.
 
 ```c
+byte bytecode[] = {/*0:*/ ARG,   0,
+                   /*2:*/ ARG,   1,
+                   /*4:*/ ADD,   0,
+                   /*6:*/ PRINT, 0,
+                   /*8:*/ HALT,  0};
+```
+
+This program takes its two arguments, adds them together, prints the result,
+and then halts the interpreter.
+
+You may wonder, "how is it that there is an instruction for loading arguments
+but no call instruction?" Well, the interpreter does not support calls. There
+is only a top-level function, `eval_code`. It takes an object, evaluates its
+bytecode with the given arguments, and returns. Extending the interpreter to
+support function calls would be another good exercise.
+
+The interpreter implementation is a fairly straightforward `switch` statement.
+Notice that it takes a representation of a function-like thing (`Code`) and an
+array of arguments. `nargs` is only used for bounds checking.
+
+```c
+typedef unsigned char byte;
+
+typedef struct {
+  ObjectType key;
+  Method value;
+} CachedValue;
+
+typedef struct {
+  // Array of `num_opcodes' (op, arg) pairs (total size `num_opcodes' * 2).
+  byte *bytecode;
+  int num_opcodes;
+  // Array of `num_opcodes' elements.
+  CachedValue *caches;
+} Code;
+
 static unsigned kBytecodeSize = 2;
 
 void eval_code_uncached(Code *code, Object *args, int nargs) {
@@ -277,3 +312,91 @@ void eval_code_uncached(Code *code, Object *args, int nargs) {
   }
 }
 ```
+
+Both `ADD` and `PRINT` make use of `lookup_method` to find out what function
+pointer corresponds to the given `(type, symbol)` pair. Both opcodes throw away
+the result. How sad. Let's figure out how to save some of that data. Maybe we
+can use the `caches` slot in `Code`.
+
+### Inline caching strategy
+
+Since the Smalltalk-80 paper tells us that the receiver type is unlikely to
+change from call to call at a given point in the bytecode, let's cache *one*
+method address per opcode. As with any cache, we'll have to store both a key
+(the object type) and a value (the method address).
+
+There are several states that the cache could be in when entering the an
+opcode:
+
+*If it is empty*, look up the method and store it in the cache using the
+current type as a cache key. Use the cached value.
+
+*If it has an entry and the entry is for the current type*, use the cached
+value.
+
+Last, *if it has an entry and the entry is for a different type*, invalidate
+the cache. Repeat the same steps as in the empty case.
+
+This is a simple *monomorphic* (one element) implementation that should give us
+most of the performance. A good exercise would be to extend this cache system
+to be *polymorphic* (multiple elements) if the interpreter sees many types.
+
+For the purposes of this inline caching demo, we will focus on caching lookups
+in `ADD`. This is a fairly arbitrary choice in our simple runtime, since the
+caching implementation will not differ between opcodes.
+
+### Inline caching implementation
+
+Let's think back to this `CachedValue *caches` array.
+
+```c
+typedef struct {
+  ObjectType key;
+  Method value;
+} CachedValue;
+```
+
+This looks like it'll suit us just fine. Each element has a key and a value.
+Each `Code` object has an array of these, one per opcode.
+
+Let's see what changed in `ADD`.
+
+```c
+void eval_code_cached(Code *code, Object *args, int nargs) {
+  // ...
+#define CACHE_AT(pc) code->caches[(pc) / kBytecodeSize]
+  while (true) {
+    // ...
+    switch (op) {
+      // ...
+      case ADD: {
+        Object right = POP();
+        Object left = POP();
+        CachedValue cached = CACHE_AT(pc);
+        Method method = cached.value;
+        if (method == NULL || cached.key != left.type) {
+          // Case 1 and 3
+          fprintf(stderr, "updating cache at %d\n", pc);
+          method = lookup_method(left.type, kAdd);
+          CACHE_AT(pc) = (CachedValue){.key = left.type, .value = method};
+        } else {
+          // Case 2
+          fprintf(stderr, "using cached value at %d\n", pc);
+        }
+        Object result = (*method)(left, right);
+        PUSH(result);
+        break;
+      }
+      // ...
+    }
+    pc += kBytecodeSize;
+  }
+}
+```
+
+Not much, really, except for the reading and writing to `code->caches`. The
+stack manipulation stays the same.
+
+## Conclusion
+
+some conclusino here?
