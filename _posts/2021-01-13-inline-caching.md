@@ -157,10 +157,8 @@ typedef struct {
 } Object;
 ```
 
-These types have methods on them, such as `add` and `print`. Type/method
-relationships are represented with two levels of tables: a table mapping types
-to method lists (`kTypes`), and a sentinel-terminated table mapping method
-names to function pointers (`kIntMethods` or `kStrMethods`).
+These types have methods on them, such as `add` and `print`. Method names are
+represented with an enum (`Symbol`) though strings would work just as well.
 
 ```c
 typedef enum {
@@ -169,44 +167,17 @@ typedef enum {
 
   kUnknownSymbol = kPrint + 1,
 } Symbol;
-
-// Note: this takes advantage of the fact that in C, not putting anything
-// between the parentheses means that this function can take any number of
-// arguments.
-typedef Object (*Method)();
-
-typedef struct {
-  Symbol name;
-  Method method;
-} MethodDefinition;
-
-static const MethodDefinition kIntMethods[] = {
-    {kAdd, int_add},
-    {kPrint, int_print},
-    {kUnknownSymbol, NULL},
-};
-
-static const MethodDefinition kStrMethods[] = {
-    {kAdd, str_add},
-    {kPrint, str_print},
-    {kUnknownSymbol, NULL},
-};
-
-static const MethodDefinition *kTypes[] = {
-    [kInt] = kIntMethods,
-    [kStr] = kStrMethods,
-};
 ```
 
-While names are represented with an enum (`Symbol`) here, strings would work
-just as well.
+The representation of type information isn't super important. Just know that
+there is a function called `lookup_method` and that it is very slow. Eventually
+we'll want to cache its result.
 
-Side note: I represent the type table differently from the method tables. I
-figure the method tables will be sparsely populated (not every type will
-implement every method) but the type table should contain every type. This is
-not an essential design decision.
+```c
+Method lookup_method(ObjectType type, Symbol name);
+```
 
-Let's see how we use these tables in the interpreter.
+Let's see how we use these `lookup_method` in the interpreter.
 
 ### Interpreter
 
@@ -400,6 +371,10 @@ void eval_code_cached(Code *code, Object *args, int nargs) {
 
 Not much, really, except for the reading and writing to `code->caches`. The
 stack manipulation stays the same.
+
+### Show off main and results
+
+todo blah blah
 
 ## Conclusion
 
