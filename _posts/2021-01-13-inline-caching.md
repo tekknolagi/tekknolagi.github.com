@@ -339,7 +339,11 @@ the cache. Repeat the same steps as in the empty case.
 
 This is a simple *monomorphic* (one element) implementation that should give us
 most of the performance. A good exercise would be to extend this cache system
-to be *polymorphic* (multiple elements) if the interpreter sees many types.
+to be *polymorphic* (multiple elements) if the interpreter sees many types. For
+that you will want to check out [Optimizing Dynamically-Typed Object-Oriented
+Languages With Polymorphic Inline Caches][pic] by Hölzle, Chambers, and Ungar.
+
+[pic]: http://brenocon.com/self%20-%20polymorphic%20inline%20caching%20-%20ecoop91.pdf
 
 For the purposes of this inline caching demo, we will focus on caching lookups
 in `ADD`. This is a fairly arbitrary choice in our simple runtime, since the
