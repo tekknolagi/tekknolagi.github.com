@@ -6,7 +6,7 @@ date: 2020-01-13 11:00:00 PT
 
 Inline caching is a popular technique for runtime optimization. It was first
 introduced in 1984 in Deutsch &amp; Schiffman's paper [Efficient implementation
-of the smalltalk-80 system][smalltalk] but has had a long-lasting legacy in
+of the smalltalk-80 system [PDF]][smalltalk] but has had a long-lasting legacy in
 today's dynamic language implementations. Runtimes like the Hotspot JVM, V8,
 and SpiderMonkey use it to improve the performance of code written for those
 virtual machines.
@@ -16,10 +16,10 @@ virtual machines.
 In this blog post, I will attempt to distill the essence of inline caching
 using a small and relatively useless bytecode interpreter built solely for this
 blog post. It is a technique similar to the ideas from [Inline Caching meets
-Quickening][brunthaler] in that it caches function pointers instead of making
+Quickening [PDF]][ic-quickening] in that it caches function pointers instead of making
 use of a JIT compiler.
 
-[brunthaler]: http://www.complang.tuwien.ac.at/kps09/pdfs/brunthaler.pdf
+[ic-quickening]: http://www.complang.tuwien.ac.at/kps09/pdfs/brunthaler.pdf
 
 ## Background
 
@@ -439,20 +439,26 @@ Hey-ho, looks like it worked.
 
 ## Conclusion
 
-I hope this post helped understand inline caches. There are a number of
-improvements that could be made to this very simple demo. I will list some of
-them below:
+I hope this post helped you understand inline caches. Please write me if it did
+not.
+
+There are a number of improvements that could be made to this very simple demo.
+I will list some of them below:
 
 * Rewrite generic opcodes like `ADD` to type-specialized opcodes like
   `ADD_INT`. These opcodes will still have to check the types passed in, but
   can make use of a direct call instruction or even inline the specialized
   implementation. This technique is mentioned in [Efficient Interpretation
-  using Quickening][brunthaler1] and is used in by the JVM.
+  using Quickening [PDF]][quickening] and is used in by the JVM.
 * Actually store caches inline in the bytecode, instead of off in a side table.
 * Instead of storing cached function pointers, build up a sort of "linked list"
   of assembly stubs that handle different type cases. This is also mentioned in
   the Deutsch &amp; Schiffman paper. See for example [this
   excellent post][assembly] by Matthew Gaudet that explains it with pseudocode.
+* Figure out what happens if the runtime allows for mutable types. How will you
+  invalidate all the relevant caches?
 
-[brunthaler1]: https://publications.sba-research.org/publications/dls10.pdf
+[quickening]: https://publications.sba-research.org/publications/dls10.pdf
 [assembly]: https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache
+
+Maybe I will even write about them in the future.
