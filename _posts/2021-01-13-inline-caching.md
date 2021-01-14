@@ -15,7 +15,11 @@ virtual machines.
 
 In this blog post, I will attempt to distill the essence of inline caching
 using a small and relatively useless bytecode interpreter built solely for this
-blog post.
+blog post. It is a technique similar to the ideas from [Inline Caching meets
+Quickening][brunthaler] in that it caches function pointers instead of making
+use of a JIT compiler.
+
+[brunthaler]: http://www.complang.tuwien.ac.at/kps09/pdfs/brunthaler.pdf
 
 ## Background
 
@@ -299,14 +303,12 @@ method address per opcode. As with any cache, we'll have to store both a key
 There are several states that the cache could be in when entering the an
 opcode:
 
-*If it is empty*, look up the method and store it in the cache using the
-current type as a cache key. Use the cached value.
-
-*If it has an entry and the entry is for the current type*, use the cached
-value.
-
-Last, *if it has an entry and the entry is for a different type*, invalidate
-the cache. Repeat the same steps as in the empty case.
+1. **If it is empty**, look up the method and store it in the cache using the
+   current type as a cache key. Use the cached value.
+1. **If it has an entry and the entry is for the current type**, use the cached
+   value.
+1. Last, **if it has an entry and the entry is for a different type**,
+   invalidate the cache. Repeat the same steps as in the empty case.
 
 This is a simple *monomorphic* (one element) implementation that should give us
 most of the performance. A good exercise would be to extend this cache system
@@ -351,12 +353,8 @@ void eval_code_cached(Code *code, Object *args, int nargs) {
         Method method = cached.value;
         if (method == NULL || cached.key != left.type) {
           // Case 1 and 3
-          fprintf(stderr, "updating cache at %d\n", pc);
           method = lookup_method(left.type, kAdd);
           CACHE_AT(pc) = (CachedValue){.key = left.type, .value = method};
-        } else {
-          // Case 2
-          fprintf(stderr, "using cached value at %d\n", pc);
         }
         Object result = (*method)(left, right);
         PUSH(result);
@@ -369,13 +367,92 @@ void eval_code_cached(Code *code, Object *args, int nargs) {
 }
 ```
 
-Not much, really, except for the reading and writing to `code->caches`. The
-stack manipulation stays the same.
+Now instead of always calling `lookup_method`, we do two quick checks first. If
+we have a cached value and it matches, we use that instead. So not much,
+really, except for the reading and writing to `code->caches`.
 
-### Show off main and results
+### Run a test program and see results
 
-todo blah blah
+Let's put it all together for some satisfying results. We can use the sample
+program from earlier that adds its two arguments.
+
+We'll call it four times. The first time we will call it with integer
+arguments, and it will cache the integer method. The second time, it will use
+the cached integer method. The third time, we will call it with string
+arguments and it will cache the string method. The fourth time, it will use the
+cached string method.
+
+```c
+int main() {
+  byte bytecode[] = {/*0:*/ ARG,   0,
+                     /*2:*/ ARG,   1,
+                     /*4:*/ ADD,   0,
+                     /*6:*/ PRINT, 0,
+                     /*8:*/ HALT,  0};
+  Object int_args[] = {
+      new_int(5),
+      new_int(10),
+  };
+  Object str_args[] = {
+      new_str("hello "),
+      new_str("world"),
+  };
+  Code code = new_code(bytecode, sizeof bytecode / kBytecodeSize);
+  void (*eval)() = eval_code_cached;
+  eval(&code, int_args, ARRAYSIZE(int_args));
+  eval(&code, int_args, ARRAYSIZE(int_args));
+  eval(&code, str_args, ARRAYSIZE(str_args));
+  eval(&code, str_args, ARRAYSIZE(str_args));
+}
+```
+
+And if we run that, we see:
+
+```
+laurel% ./a.out
+int: 15
+int: 15
+str: "hello world"
+str: "hello world"
+```
+
+Which superficially seems like it's working, at least. `5 + 10 == 15` and
+`"hello " + "world" == "hello world"` after all.
+
+To get an insight into the behavior of the caching system, I added some logging
+statements. This will help convince us that the cache code does the right
+thing.
+
+```
+laurel% ./a.out
+updating cache at 4
+int: 15
+using cached value at 4
+int: 15
+updating cache at 4
+str: "hello world"
+using cached value at 4
+str: "hello world"
+```
+
+Hey-ho, looks like it worked.
 
 ## Conclusion
 
-some conclusino here?
+I hope this post helped understand inline caches. There are a number of
+improvements that could be made to this very simple demo. I will list some of
+them below:
+
+* Rewrite generic opcodes like `ADD` to type-specialized opcodes like
+  `ADD_INT`. These opcodes will still have to check the types passed in, but
+  can make use of a direct call instruction or even inline the specialized
+  implementation. This technique is mentioned in [Efficient Interpretation
+  using Quickening][brunthaler1] and is used in by the JVM.
+* Actually store caches inline in the bytecode, instead of off in a side table.
+* Instead of storing cached function pointers, build up a sort of "linked list"
+  of assembly stubs that handle different type cases. This is also mentioned in
+  the Deutsch &amp; Schiffman paper. See for example [this
+  excellent post][assembly] by Matthew Gaudet that explains it with pseudocode.
+
+[brunthaler1]: https://publications.sba-research.org/publications/dls10.pdf
+[assembly]: https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache
