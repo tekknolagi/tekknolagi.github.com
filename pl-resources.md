@@ -55,12 +55,16 @@ Here are some resources I have found useful for understanding the ideas and
 research around optimizing dynamic languages.
 
 * [Efficient implementation of the Smalltalk-80 system](https://dl.acm.org/doi/10.1145/800017.800542)
+* [Efficient interpretation using quickening](https://dl.acm.org/doi/abs/10.1145/1869631.1869633)
+* [Inline caching meets quickening](https://dl.acm.org/doi/10.5555/1883978.1884008)
 * [Optinizing dynamically-typed object-oriented languages with polymorphic inline caches](https://bibliography.selflanguage.org/_static/pics.pdf)
 * [An inline cache isn't just a cache](https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache)
 * [Baseline JIT and inline caches](https://blog.pyston.org/2016/06/30/baseline-jit-and-inline-caches/)
 * [Javascript hidden classes and inline caching in V8](https://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html)
-* [Garbage collection in a large LISP system](https://dl.acm.org/doi/10.1145/800055.802040)
+* [Garbage collection in a large LISP system][large-lisp]
 * Urs Hölzle's thesis, [Adaptive Optimization for Self](http://i.stanford.edu/pub/cstr/reports/cs/tr/94/1520/CS-TR-94-1520.pdf)
+
+[large-lisp]: [https://dl.acm.org/doi/10.1145/800055.802040]
 
 ### Pointer tagging and NaN boxing
 
@@ -127,8 +131,8 @@ write about:
   * If the operands to `+` are always ints, it's possible to rewrite to a
     shorter code path, etc
 * Attaching intrinsic functions or assembly stubs to well-known functions
-* Heap and GC characteristics from the "Garbage collection in a large Lisp
-  system" paper
+* Heap and GC characteristics from [Garbage collection in a large
+  LISP system][large-lisp]
 * Fast paths for common cases ("do less")
 * JIT intermediate representations and how they help solve problems around
   megamorphic call sites, inlining, etc
