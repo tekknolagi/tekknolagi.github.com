@@ -1,7 +1,7 @@
 ---
 title: Inline caching
 layout: post
-date: 2020-01-14 00:00:00 PT
+date: 2021-01-14 00:00:00 PT
 ---
 
 Inline caching is a popular technique for runtime optimization. It was first
