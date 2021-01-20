@@ -143,9 +143,8 @@ write about:
 
 ## Game Boy Emulators
 
-* The [Pan Docs](http://problemkaputt.de/pandocs.htm) (newer version
-  [here](https://gbdev.io/pandocs/)?), which give technical data about the Game
-  Boy hardware, I/O ports, flags, cartridges, memory map, etc
+* The [Pan Docs](https://gbdev.io/pandocs/), which give technical data about
+  the Game Boy hardware, I/O ports, flags, cartridges, memory map, etc
 * This excellent [explanation](https://realboyemulator.wordpress.com/2013/01/03/a-look-at-the-game-boy-bootstrap-let-the-fun-begin/)
   of the boot ROM
 * This [opcode table](https://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html)
@@ -167,7 +166,7 @@ write about:
 * This [Gameboy Overview](https://thomas.spurden.name/gameboy/)
 * blargg's [test ROMs](https://gbdev.gg8.se/files/roms/blargg-gb-tests/)
   which have instruction tests, sound tests, etc
-* gekkio's [emulator](https://github.com/Gekkio/mooneye-gb#accuracy-comparison)
+* gekkio's [emulator](https://github.com/Gekkio/mooneye-gb)
   and his [test ROMs](https://github.com/Gekkio/mooneye-gb/tree/master/tests)
 * This [fairly readable Go emulator](https://github.com/Humpheh/goboy),
   which has helped me make sense of some features
@@ -179,7 +178,7 @@ write about:
   * NOTE: This has one [bug](https://github.com/gb-archive/salvage/issues/1)
     that someone and I independently found. The [original repo](https://github.com/phire/Kea)
     has fixed the bug but not the page linked above.
-* This [summary blog post](https://dandigit.com/posts/bigboy-writing-a-gameboy-emulator)
+* This [summary blog post](http://web.archive.org/web/20200726064933/https://dandigit.com/posts/bigboy-writing-a-gameboy-emulator)
   explaining GPU modes
 * And of course [/r/emudev](https://old.reddit.com/r/EmuDev/)
 

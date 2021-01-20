@@ -89,7 +89,6 @@ Here are some websites I like:
 * [klepas.org](http://klepas.org)
 * [jigarpatel.in](http://jigarpatel.in)
 * [blog.jupo.org](http://blog.jupo.org)
-* [sbin.dk](http://sbin.dk)
 * [bouk.co](http://bouk.co)
 * [jbalogh.me](http://jbalogh.me)
 * [oilshell.org](http://oilshell.org)
