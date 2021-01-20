@@ -24,8 +24,8 @@ That's probably an understatement. Here are some of my favorite projects:
   I taught at Tufts University with [Yuki](https://yzan424.github.io/)
 * The [term paper]({% link dat-paper.html %}) I wrote for COMP 117 IDS
   analyzing Dat and the Beaker browser
-* [Reason](https://facebook.github.io/reason/), a compiler front-end and
-  toolchain for OCaml
+* [Reason](https://reasonml.github.io/), a compiler front-end and toolchain for
+  OCaml
 * An [automatically distributed programming language](https://github.com/tekknolagi/distlisp)
   (2016) for my networks course, with the
   [final writeup [PDF]]({% link resources/comp112-writeup.pdf %})
