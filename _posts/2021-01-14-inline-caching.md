@@ -46,7 +46,7 @@ single instruction. Check out the assembly from `objdump`:
   401168:	48 8d 7c 24 0c       	lea    0xc(%rsp),%rdi
   40116d:	e8 0e 00 00 00       	callq  401180 <_ZN3Foo3addES_>
   401172:	48 83 c4 18          	add    $0x18,%rsp
-  401176:	c3                   	retq   
+  401176:	c3                   	retq
 ```
 
 All it does is save the parameters to the stack, call `Foo::add`, and then
@@ -65,7 +65,7 @@ def do_add(left, right):
 ```
 
 Due to Python's various dynamic features, the compiler cannot in general know
-what type `value` is and therefore what code to run when reading `left.add`.
+what type `left` is and therefore what code to run when reading `left.add`.
 This program will be compiled down to a couple Python bytecode instructions
 that do a very generic `LOAD_METHOD`/`CALL_METHOD` operation:
 
@@ -169,7 +169,7 @@ typedef enum {
   kAdd,
   kPrint,
 
-  kUnknownSymbol = kPrint + 1,
+  kUnknownSymbol,
 } Symbol;
 ```
 
@@ -181,7 +181,7 @@ we'll want to cache its result.
 Method lookup_method(ObjectType type, Symbol name);
 ```
 
-Let's see how we use these `lookup_method` in the interpreter.
+Let's see how we use `lookup_method` in the interpreter.
 
 ### Interpreter
 
@@ -300,8 +300,7 @@ change from call to call at a given point in the bytecode, let's cache *one*
 method address per opcode. As with any cache, we'll have to store both a key
 (the object type) and a value (the method address).
 
-There are several states that the cache could be in when entering the an
-opcode:
+There are several states that the cache could be in when entering an opcode:
 
 1. **If it is empty**, look up the method and store it in the cache using the
    current type as a cache key. Use the cached value.
