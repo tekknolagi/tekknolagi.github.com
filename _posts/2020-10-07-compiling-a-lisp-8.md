@@ -93,7 +93,7 @@ what we're making here. Part of their assembler is some slick C++-y RAII
 infrastucture for emitting code and doing cleanup. Their implementation of
 compiling `if` expressions might look something like:
 
-[dart-assembler]: https://github.com/dart-lang/sdk/blob/2707880f1b486f2a2f87d7e2de7baea12c6ca362/runtime/vm/compiler/assembler/assembler_base.h]
+[dart-assembler]: https://github.com/dart-lang/sdk/blob/2707880f1b486f2a2f87d7e2de7baea12c6ca362/runtime/vm/compiler/assembler/assembler_base.h
 
 ```cpp
 // Made-up APIs to make the Dart code look like our code
