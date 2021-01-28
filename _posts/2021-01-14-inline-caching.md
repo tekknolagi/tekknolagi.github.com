@@ -334,11 +334,11 @@ Each `Code` object has an array of these, one per opcode.
 We have some helpers, `cache_at` and `cache_at_put`, to manipulate the caches.
 
 ```c
-static FORCE_INLINE CachedValue cache_at(Frame *frame) {
+CachedValue cache_at(Frame *frame) {
   return frame->code->caches[frame->pc / kBytecodeSize];
 }
 
-static FORCE_INLINE void cache_at_put(Frame *frame, CachedValue value) {
+void cache_at_put(Frame *frame, CachedValue value) {
   frame->code->caches[frame->pc / kBytecodeSize] = value;
 }
 ```
