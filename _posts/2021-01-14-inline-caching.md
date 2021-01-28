@@ -230,49 +230,44 @@ The interpreter implementation is a fairly straightforward `switch` statement.
 Notice that it takes a representation of a function-like thing (`Code`) and an
 array of arguments. `nargs` is only used for bounds checking.
 
+There's this `Frame` object that is used to keep state like the program counter
+(`pc`) and stack pointer (`stack`). I am omitting some of its helper functions
+(`init_frame`, `push`, `pop`, `peek`) for brevity's sake, but they do nothing
+tricky. Feel free to look in the [repo][repo] for their definitions.
+
 ```c
 typedef unsigned char byte;
 
-typedef struct {
-  ObjectType key;
-  Method value;
-} CachedValue;
+#define STACK_SIZE 100
 
 typedef struct {
-  // Array of `num_opcodes' (op, arg) pairs (total size `num_opcodes' * 2).
-  byte *bytecode;
-  int num_opcodes;
-  // Array of `num_opcodes' elements.
-  CachedValue *caches;
-} Code;
-
-static unsigned kBytecodeSize = 2;
+  Object stack_array[STACK_SIZE];
+  Object *stack;
+  Code *code;
+  int pc;
+} Frame;
 
 void eval_code_uncached(Code *code, Object *args, int nargs) {
-  int pc = 0;
-#define STACK_SIZE 100
-  Object stack_array[STACK_SIZE];
-  Object *stack = stack_array;
-#define PUSH(x) *stack++ = (x)
-#define POP() *--stack
+  Frame frame;
+  init_frame(&frame, code);
   while (true) {
-    Opcode op = code->bytecode[pc];
-    byte arg = code->bytecode[pc + 1];
+    Opcode op = code->bytecode[frame.pc];
+    byte arg = code->bytecode[frame.pc + 1];
     switch (op) {
       case ARG:
         CHECK(arg < nargs && "out of bounds arg");
-        PUSH(args[arg]);
+        push(&frame, args[arg]);
         break;
       case ADD: {
-        Object right = POP();
-        Object left = POP();
+        Object right = pop(&frame);
+        Object left = pop(&frame);
         Method method = lookup_method(left.type, kAdd);
         Object result = (*method)(left, right);
-        PUSH(result);
+        push(&frame, result);
         break;
       }
       case PRINT: {
-        Object obj = POP();
+        Object obj = pop(&frame);
         Method method = lookup_method(obj.type, kPrint);
         (*method)(obj);
         break;
@@ -283,7 +278,7 @@ void eval_code_uncached(Code *code, Object *args, int nargs) {
         fprintf(stderr, "unknown opcode %d\n", op);
         abort();
     }
-    pc += kBytecodeSize;
+    frame.pc += kBytecodeSize;
   }
 }
 ```
@@ -335,33 +330,52 @@ typedef struct {
 This looks like it'll suit us just fine. Each element has a key and a value.
 Each `Code` object has an array of these, one per opcode.
 
-Let's see what changed in `ADD`.
+We have some helpers, `cache_at` and `cache_at_put`, to manipulate the caches.
 
 ```c
+static FORCE_INLINE CachedValue cache_at(Frame *frame) {
+  return frame->code->caches[frame->pc / kBytecodeSize];
+}
+
+static FORCE_INLINE void cache_at_put(Frame *frame, CachedValue value) {
+  frame->code->caches[frame->pc / kBytecodeSize] = value;
+}
+```
+
+These functions are fairly straightforward given our assumption of a cache
+present for every opcode.
+
+Let's see what changed in the `ADD` opcode.
+
+```c
+void do_add_cached(Frame *frame) {
+  Object right = pop(frame);
+  Object left = pop(frame);
+  // NEW STUFF vvvvv
+  CachedValue cached = cache_at(frame);
+  Method method = cached.value;
+  if (method == NULL || cached.key != left.type) {
+    method = lookup_method(left.type, kAdd);
+    cache_at_put(frame, (CachedValue){.key = left.type, .value = method});
+  }
+  // End NEW STUFF ^^^^^
+  Object result = (*method)(left, right);
+  push(frame, result);
+}
+
 void eval_code_cached(Code *code, Object *args, int nargs) {
   // ...
-#define CACHE_AT(pc) code->caches[(pc) / kBytecodeSize]
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD: {
-        Object right = POP();
-        Object left = POP();
-        CachedValue cached = CACHE_AT(pc);
-        Method method = cached.value;
-        if (method == NULL || cached.key != left.type) {
-          // Case 1 and 3
-          method = lookup_method(left.type, kAdd);
-          CACHE_AT(pc) = (CachedValue){.key = left.type, .value = method};
-        }
-        Object result = (*method)(left, right);
-        PUSH(result);
+        do_add_cached(&frame);
         break;
       }
       // ...
     }
-    pc += kBytecodeSize;
+    frame.pc += kBytecodeSize;
   }
 }
 ```
@@ -369,6 +383,9 @@ void eval_code_cached(Code *code, Object *args, int nargs) {
 Now instead of always calling `lookup_method`, we do two quick checks first. If
 we have a cached value and it matches, we use that instead. So not much,
 really, except for the reading and writing to `code->caches`.
+
+I also pulled the code into this function `do_add_cached` because it got a
+little more complicated.
 
 ### Run a test program and see results
 
