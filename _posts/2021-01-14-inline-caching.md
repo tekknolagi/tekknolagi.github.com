@@ -339,8 +339,9 @@ CachedValue cache_at(Frame *frame) {
   return frame->code->caches[frame->pc / kBytecodeSize];
 }
 
-void cache_at_put(Frame *frame, CachedValue value) {
-  frame->code->caches[frame->pc / kBytecodeSize] = value;
+void cache_at_put(Frame *frame, ObjectType key, Method value) {
+  frame->code->caches[frame->pc / kBytecodeSize] =
+      (CachedValue){.key = key, .value = value};
 }
 ```
 
@@ -350,17 +351,9 @@ present for every opcode.
 Let's see what changed in the `ADD` opcode.
 
 ```c
-void do_add_cached(Frame *frame) {
-  Object right = pop(frame);
-  Object left = pop(frame);
-  // NEW STUFF vvvvv
-  CachedValue cached = cache_at(frame);
-  Method method = cached.value;
-  if (method == NULL || cached.key != left.type) {
-    method = lookup_method(left.type, kAdd);
-    cache_at_put(frame, (CachedValue){.key = left.type, .value = method});
-  }
-  // End NEW STUFF ^^^^^
+void add_update_cache(Frame *frame, Object left, Object right) {
+  Method method = lookup_method(left.type, kAdd);
+  cache_at_put(frame, left.type, method);
   Object result = (*method)(left, right);
   push(frame, result);
 }
@@ -372,7 +365,16 @@ void eval_code_cached(Code *code, Object *args, int nargs) {
     switch (op) {
       // ...
       case ADD: {
-        do_add_cached(&frame);
+        Object right = pop(&frame);
+        Object left = pop(&frame);
+        CachedValue cached = cache_at(&frame);
+        Method method = cached.value;
+        if (method == NULL || cached.key != left.type) {
+          add_update_cache(&frame, left, right);
+          break;
+        }
+        Object result = (*method)(left, right);
+        push(&frame, result);
         break;
       }
       // ...
@@ -386,8 +388,9 @@ Now instead of always calling `lookup_method`, we do two quick checks first. If
 we have a cached value and it matches, we use that instead. So not much
 changed, really, except for the reading and writing to `code->caches`.
 
-I also pulled the code into this function `do_add_cached` because it got a
-little more complicated.
+If we don't have a cached value, we call `lookup_method` and store the result
+in the cache. Then we call it. I pulled this slow-path code into the function
+`add_update_cache`.
 
 ### Run a test program and see results
 
