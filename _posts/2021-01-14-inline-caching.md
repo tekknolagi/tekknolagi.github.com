@@ -454,6 +454,53 @@ str: "hello world"
 
 Hey-ho, looks like it worked.
 
+## Performance analysis
+
+Most posts like this end with some kind of performance analysis of the two
+strategies proposed. Perhaps the author will do some kind of rigorous
+statistical analysis of the performance of the code before &amp; after. Perhaps
+the author will run the sample code in a loop 1,000 times and use `time` to
+measure. Most authors do *something*.
+
+Reader, I will not be doing a performance analysis in this post. This tiny
+interpreter has little to no resemblance to real-world runtimes and this tiny
+program has little to no resemblance to real-world workloads. I will, however,
+give you some food for thought:
+
+**If you were building a runtime, how would you know inline caching would help
+you?**
+Profile your code. Use the tools available to you, like Callgrind and Perf. If
+you see your runtime's equivalent of `lookup_method` show up in the profiles,
+consider that you may want a caching strategy. `lookup_method` may not show up
+in all of your profiles. Some benchmarks will have very different workloads
+than other benchmarks.
+
+**How would you measure the impact of inline caching, once added?**
+Profile your code. Did the percent CPU time of `lookup_method` decrease? What
+about overall runtime? It's entirely possible that your benchmark *slowed
+down*. This could be an indicator of polymorphic call sites --- which would
+lead to a lot of overhead from cache eviction. In that case, you may want to
+add a polymorphic inline cache. `printf`-style logging can help a lot in
+understanding the characteristics of your benchmarks.
+
+No matter how you measure impact, it is *not enough* to run the `ADD` handler
+in a tight loop and call it a benchmark. The real-life workload for your
+runtime will undoubtedly look very different. What percent of opcodes executed
+is `ADD`? Ten percent? Five percent? You will be limited by [Amdahl's
+Law][amdahl]. That will be your upper bound on performance improvements.
+
+[amdahl]: https://en.wikipedia.org/wiki/Amdahl%27s_law
+
+**What other performance considerations might you have?**
+Consider your memory constraints. Perhaps you are on a system where memory is a
+concern. Adding inline caches will require additional memory. This might cause
+swapping, if its enabled.
+
+**So without benchmarks, how do you know this is even faster?**
+Don't take my word for it. Benchmark your runtime. Take a look at the
+Smalltalk-80 and Brunthaler papers linked. Take a look at the JVM, V8, MRI,
+Dart, and other runtimes. They all seem to have found inline caching helpful.
+
 ## Conclusion
 
 Inline caches can be a good way to speed up your bytecode interpreter. I hope
