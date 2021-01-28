@@ -2,6 +2,7 @@
 title: Inline caching
 layout: post
 date: 2021-01-14 00:00:00 PT
+description: Optimizing bytecode interpreters by avoiding method lookups
 ---
 
 Inline caching is a popular technique for runtime optimization. It was first
