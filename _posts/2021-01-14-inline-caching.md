@@ -95,11 +95,11 @@ In fact, even if the parameters were typed (which is a new feature in Python
 3), the same code would be generated. Writing `left: Foo` means that `left` is a
 `Foo` *or* a subclass.
 
-This is not a simple process like "fetch the attribute at the given offset
+This is not a simple process like "call the function at the given address
 specified by the type". The runtime has to find out what kind of object `add`
 is. Maybe it's just a function, or maybe it's a `property`, or maybe it's some
 custom descriptor protocol thing. There's no way to just turn this into a
-`mov`!
+`call` instruction!
 
 ... or is there?
 
@@ -185,10 +185,11 @@ Let's see how we use `lookup_method` in the interpreter.
 
 ### Interpreter
 
-There's no way to call these methods directly. For the purposes of this demo,
-the only way to call these methods is through purpose-built opcodes. For
-example, the opcode `ADD` takes two arguments. It looks up `kAdd` on the left
-hand side and calls it. `PRINT` is similar.
+This interpreter provides no way to look up (`LOAD_METHOD`) or call
+(`CALL_METHOD`) the methods directly. For the purposes of this demo, the only
+way to call these methods is through purpose-built opcodes. For example, the
+opcode `ADD` takes two arguments. It looks up `kAdd` on the left hand side and
+calls it. `PRINT` is similar.
 
 There are only two other opcodes, `ARG` and `HALT`.
 
@@ -222,18 +223,18 @@ and then halts the interpreter.
 
 You may wonder, "how is it that there is an instruction for loading arguments
 but no call instruction?" Well, the interpreter does not support calls. There
-is only a top-level function, `eval_code`. It takes an object, evaluates its
-bytecode with the given arguments, and returns. Extending the interpreter to
-support function calls would be another good exercise.
+is only a top-level function, `eval_code_uncached`. It takes an object,
+evaluates its bytecode with the given arguments, and returns. Extending the
+interpreter to support function calls would be another good exercise.
 
 The interpreter implementation is a fairly straightforward `switch` statement.
 Notice that it takes a representation of a function-like thing (`Code`) and an
 array of arguments. `nargs` is only used for bounds checking.
 
-There's this `Frame` object that is used to keep state like the program counter
-(`pc`) and stack pointer (`stack`). I am omitting some of its helper functions
-(`init_frame`, `push`, `pop`, `peek`) for brevity's sake, but they do nothing
-tricky. Feel free to look in the [repo][repo] for their definitions.
+There's also this `Frame` object that is used to keep state like the program
+counter (`pc`) and stack pointer (`stack`). I am omitting some of its helper
+functions (`init_frame`, `push`, `pop`, `peek`) for brevity's sake, but they do
+nothing tricky. Feel free to look in the [repo][repo] for their definitions.
 
 ```c
 typedef unsigned char byte;
@@ -381,8 +382,8 @@ void eval_code_cached(Code *code, Object *args, int nargs) {
 ```
 
 Now instead of always calling `lookup_method`, we do two quick checks first. If
-we have a cached value and it matches, we use that instead. So not much,
-really, except for the reading and writing to `code->caches`.
+we have a cached value and it matches, we use that instead. So not much
+changed, really, except for the reading and writing to `code->caches`.
 
 I also pulled the code into this function `do_add_cached` because it got a
 little more complicated.
