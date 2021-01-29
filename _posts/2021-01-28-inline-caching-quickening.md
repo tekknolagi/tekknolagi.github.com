@@ -56,7 +56,7 @@ handle:
 
 1. Cache is empty
 2. Cache has the wrong key
-3. Cache has right key
+3. Cache has the right key
 
 Since Deutsch &amp; Schiffman found that types don't vary that much, the third
 case is the fast path case. This means that we should do as little as possible
@@ -84,6 +84,38 @@ and only if* there is an entry in the cache at that opcode.
 
 After `ADD` adds something to the cache, it can rewrite itself to `ADD_CACHED`.
 This way, the next time around, we have satisfied the invariant.
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="186pt" height="133pt" viewBox="0.00 0.00 185.95 132.80">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 128.8)">
+<title>G</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-128.8 181.9491,-128.8 181.9491,4 -4,4"/>
+<!-- ADD -->
+<g id="node1" class="node">
+<title>ADD</title>
+<ellipse fill="none" stroke="#000000" cx="76.4729" cy="-106.8" rx="31.9012" ry="18"/>
+<text text-anchor="middle" x="76.4729" y="-102.6" font-family="Times,serif" font-size="14.00" fill="#000000">ADD</text>
+</g>
+<!-- ADD_CACHED -->
+<g id="node2" class="node">
+<title>ADD_CACHED</title>
+<ellipse fill="none" stroke="#000000" cx="76.4729" cy="-18" rx="76.4459" ry="18"/>
+<text text-anchor="middle" x="76.4729" y="-13.8" font-family="Times,serif" font-size="14.00" fill="#000000">ADD_CACHED</text>
+</g>
+<!-- ADD&#45;&gt;ADD_CACHED -->
+<g id="edge1" class="edge">
+<title>ADD-&gt;ADD_CACHED</title>
+<path fill="none" stroke="#000000" d="M76.4729,-88.4006C76.4729,-76.2949 76.4729,-60.2076 76.4729,-46.4674"/>
+<polygon fill="#000000" stroke="#000000" points="79.973,-46.072 76.4729,-36.072 72.973,-46.0721 79.973,-46.072"/>
+<text text-anchor="middle" x="127.211" y="-58.2" font-family="Times,serif" font-size="14.00" fill="#000000">  non-int observed</text>
+</g>
+<!-- ADD_CACHED&#45;&gt;ADD_CACHED -->
+<g id="edge2" class="edge">
+<title>ADD_CACHED-&gt;ADD_CACHED</title>
+<path fill="none" stroke="#000000" d="M145.2582,-26.0063C160.1477,-25.2234 170.9459,-22.5547 170.9459,-18 170.9459,-14.5484 164.7447,-12.1799 155.2612,-10.8943"/>
+<polygon fill="#000000" stroke="#000000" points="155.5318,-7.4046 145.2582,-9.9937 154.904,-14.3764 155.5318,-7.4046"/>
+</g>
+</g>
+</svg>
 
 Let's see how that looks:
 
@@ -195,6 +227,67 @@ never get run.
 I suggest we make `ADD` do the transition. This keeps `ADD_CACHED` fast for
 other types. If `ADD` observes that the left hand side of the operation is an
 integer, it'll call `do_add_int` and rewrite itself.
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="338pt" height="222pt" viewBox="0.00 0.00 338.34 221.60">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 217.6)">
+<title>G</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-217.6 334.3408,-217.6 334.3408,4 -4,4"/>
+<!-- ADD -->
+<g id="node1" class="node">
+<title>ADD</title>
+<ellipse fill="none" stroke="#000000" cx="145.8646" cy="-195.6" rx="31.9012" ry="18"/>
+<text text-anchor="middle" x="145.8646" y="-191.4" font-family="Times,serif" font-size="14.00" fill="#000000">ADD</text>
+</g>
+<!-- ADD_INT -->
+<g id="node2" class="node">
+<title>ADD_INT</title>
+<ellipse fill="none" stroke="#000000" cx="52.8646" cy="-106.8" rx="52.7295" ry="18"/>
+<text text-anchor="middle" x="52.8646" y="-102.6" font-family="Times,serif" font-size="14.00" fill="#000000">ADD_INT</text>
+</g>
+<!-- ADD&#45;&gt;ADD_INT -->
+<g id="edge1" class="edge">
+<title>ADD-&gt;ADD_INT</title>
+<path fill="none" stroke="#000000" d="M129.2381,-179.7243C115.1397,-166.2627 94.6879,-146.7345 78.4957,-131.2736"/>
+<polygon fill="#000000" stroke="#000000" points="80.5851,-128.4293 70.9355,-124.0548 75.751,-133.4921 80.5851,-128.4293"/>
+<text text-anchor="middle" x="147.5224" y="-147" font-family="Times,serif" font-size="14.00" fill="#000000">int observed</text>
+</g>
+<!-- ADD_CACHED -->
+<g id="node3" class="node">
+<title>ADD_CACHED</title>
+<ellipse fill="none" stroke="#000000" cx="145.8646" cy="-18" rx="76.4459" ry="18"/>
+<text text-anchor="middle" x="145.8646" y="-13.8" font-family="Times,serif" font-size="14.00" fill="#000000">ADD_CACHED</text>
+</g>
+<!-- ADD&#45;&gt;ADD_CACHED -->
+<g id="edge2" class="edge">
+<title>ADD-&gt;ADD_CACHED</title>
+<path fill="none" stroke="#000000" d="M166.4552,-181.5644C174.6221,-175.4041 183.7438,-167.727 190.8646,-159.6 222.7179,-123.2457 242.1602,-95.1874 216.8646,-54 212.9363,-47.6038 207.4791,-42.3012 201.3185,-37.9161"/>
+<polygon fill="#000000" stroke="#000000" points="202.9031,-34.7806 192.5592,-32.4885 199.2161,-40.7309 202.9031,-34.7806"/>
+<text text-anchor="middle" x="279.6027" y="-102.6" font-family="Times,serif" font-size="14.00" fill="#000000">  non-int observed</text>
+</g>
+<!-- ADD_INT&#45;&gt;ADD_INT -->
+<g id="edge4" class="edge">
+<title>ADD_INT-&gt;ADD_INT</title>
+<path fill="none" stroke="#000000" d="M100.2223,-115.0092C113.5209,-114.6497 123.7292,-111.9133 123.7292,-106.8 123.7292,-103.0849 118.3403,-100.6245 110.2926,-99.4189"/>
+<polygon fill="#000000" stroke="#000000" points="110.4755,-95.9222 100.2223,-98.5908 109.9018,-102.8986 110.4755,-95.9222"/>
+<text text-anchor="middle" x="163.387" y="-102.6" font-family="Times,serif" font-size="14.00" fill="#000000">int observed</text>
+</g>
+<!-- ADD_INT&#45;&gt;ADD_CACHED -->
+<g id="edge5" class="edge">
+<title>ADD_INT-&gt;ADD_CACHED</title>
+<path fill="none" stroke="#000000" d="M70.7959,-89.6785C84.7668,-76.3385 104.3553,-57.6347 120.0192,-42.6782"/>
+<polygon fill="#000000" stroke="#000000" points="122.5363,-45.1141 127.3518,-35.6768 117.7022,-40.0513 122.5363,-45.1141"/>
+<text text-anchor="middle" x="160.3527" y="-58.2" font-family="Times,serif" font-size="14.00" fill="#000000">non-int observed</text>
+</g>
+<!-- ADD_CACHED&#45;&gt;ADD_CACHED -->
+<g id="edge3" class="edge">
+<title>ADD_CACHED-&gt;ADD_CACHED</title>
+<path fill="none" stroke="#000000" d="M214.6498,-26.0063C229.5394,-25.2234 240.3375,-22.5547 240.3375,-18 240.3375,-14.5484 234.1364,-12.1799 224.6528,-10.8943"/>
+<polygon fill="#000000" stroke="#000000" points="224.9234,-7.4046 214.6498,-9.9937 224.2956,-14.3764 224.9234,-7.4046"/>
+</g>
+</g>
+</svg>
+
+Let's see how that looks in code.
 
 ```c
 void eval_code_quickening(Code *code, Object *args, int nargs) {
