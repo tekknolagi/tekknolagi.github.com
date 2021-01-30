@@ -326,8 +326,29 @@ Back to "why transition from `ADD_INT` to `ADD_CACHED`". Two thoughts:
    poorly if the first time the argument is an integer, but something else
    every subsequent operation. There would be a lot of `lookup_method` calls.
 
-A great extension here would be to add a polymorphic cache.
+A great extension here would be to add a polymorphic cache. Those are designed
+to efficiently handle a small (less than five, normally) amount of repeated
+types at a given point.
 
 ## Why is this faster?
+
+Even if we leave the interpreter in this state, a small C bytecode interpreter,
+we save a couple of instructions and some call overhead in the fast path of
+integer addition. This is a decent win for math-heavy applications.
+
+In the best case, though, we save a great deal of instructions. It's entirely
+possible that the compiler will optimize the entire body of `ADD_INT` to
+something like:
+
+```
+pop rax
+pop rcx
+cmp rax, $IntTag
+jne slow_path
+add rcx
+push rcx
+jmp next_opcode
+slow_path:
+```
 
 ## On code duplication
