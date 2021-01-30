@@ -22,6 +22,8 @@ to find great stuff.
   Ghuloum's paper
 * Rui Ueyama's [chibicc](https://github.com/rui314/chibicc), a C compiler in
   the Ghuloum style
+* [Destination-Passing Style](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/dps-fhpc17.pdf)
+  * I would like to find a better intro resource for this
 
 ## Lisp specific
 
