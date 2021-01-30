@@ -48,6 +48,7 @@ to find great stuff.
 * My own [bytecode compiler/VM](https://bernsteinbear.com/blog/bytecode-interpreters/)
   blog post
 * Justin Meiners and Ryan Pendelton's [Write your own virtual machine](https://justinmeiners.github.io/lc3-vm/)
+* Maxime Chevalier-Boisvert's [website](https://pointersgonewild.com/about/)
 
 ## Runtime optimization
 
@@ -65,6 +66,7 @@ research around optimizing dynamic languages.
 * [An inline cache isn't just a cache](https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache)
 * [Baseline JIT and inline caches](https://blog.pyston.org/2016/06/30/baseline-jit-and-inline-caches/)
 * [Javascript hidden classes and inline caching in V8](https://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html)
+* [Simple and Effective Type Check Removal through Lazy Basic Block Versioning](https://arxiv.org/pdf/1411.0352v2.pdf)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
