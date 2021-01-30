@@ -143,6 +143,14 @@ write about:
   * [jvm explanation](https://www.infoworld.com/article/2076868/how-the-java-virtual-machine-handles-exceptions.html)
   * [another jvm explanation](https://www.overops.com/blog/the-surprising-truth-of-java-exceptions-what-is-really-going-on-under-the-hood/)
 
+## Interesting tools
+
+This is a sort of grab-bag for helpful or interesting tools for programming
+language implementation.
+
+* [Blinkenlights](https://justine.lol/blinkenlights/index.html), a visual
+  x86-64 emulator
+
 ## Game Boy Emulators
 
 * The [Pan Docs](https://gbdev.io/pandocs/), which give technical data about
