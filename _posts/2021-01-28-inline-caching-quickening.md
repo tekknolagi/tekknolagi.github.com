@@ -7,10 +7,16 @@ description: Further optimizing bytecode interpreters by removing branches and i
 
 In my [last post](/blog/inline-caching/) I discussed inline caching as a
 technique for runtime optimization. I ended the post with some extensions to
-the basic technique, like *quickening*.
+the basic technique, like *quickening*. If you have not read the previous post,
+I recommend it. This post will make many references to it.
 
 Quickening involves bytecode rewriting --- self modifying code --- to remove
-some branches and indirection in the common path.
+some branches and indirection in the common path. Stefan Brunthaler writes
+about it in his papers [Efficient Interpretation using Quickening][quickening]
+and [Inline Caching Meets Quickening][ic-quickening].
+
+[quickening]: https://publications.sba-research.org/publications/dls10.pdf
+[ic-quickening]: https://publications.sba-research.org/publications/ecoop10.pdf
 
 ## The problem
 
@@ -349,6 +355,75 @@ add rcx
 push rcx
 jmp next_opcode
 slow_path:
+; ...
 ```
 
-## On code duplication
+It won't look exactly like that, due to our object representation and because
+our `push`/`pop` functions do not operate on the C call stack, but it will be a
+little closer than before. But what if we could fix these issues and trim down
+the code even further?
+
+Then we might have something like the [Dart intermediate
+implementation][dart-il] of addition for small integers on x86-64. The
+following C++ code emits assembly for a specialized small integer handler:
+
+```c++
+void CheckedSmiOpInstr::EmitNativeCode(FlowGraphCompiler* compiler) {
+  // ...
+  Register left = locs()->in(0).reg();
+  Register right = locs()->in(1).reg();
+  // Check both left and right are small integers
+  __ movq(TMP, left);
+  __ orq(TMP, right);
+  __ testq(TMP, compiler::Immediate(kSmiTagMask));
+  __ j(NOT_ZERO, slow_path->entry_label());
+  Register result = locs()->out(0).reg();
+  __ movq(result, left);
+  __ addq(result, right);
+  // ...
+}
+```
+
+This example is a little bit different since it is using an optimizing compiler
+and assumes the input and output are both in registers, but still expresses the
+main ideas.
+
+See also the JVM [template interpreter implementation][jvm-ti] for binary
+operations on small integers:
+
+```c++
+void TemplateTable::iop2(Operation op) {
+  // ...
+  __ pop_i(rdx);
+  __ addl (rax, rdx);
+  // ...
+}
+```
+
+which pops the top of the stack and adds `rax` to it. I think this is because
+the JVM caches the top of the stack in the register `rax` at all times, but I
+have not been able to confirm this. It would explain why it adds `rax` and why
+there is no `push`, though.
+
+[dart-il]: https://github.com/dart-lang/sdk/blob/b1c09ecd8f30adc02f7623f6137e07a51a648dc3/runtime/vm/compiler/backend/il_x64.cc#L3549
+[jvm-ti]: https://github.com/openjdk/jdk/blob/a6d950587bc68f81495660f59169b7f1970076e7/src/hotspot/cpu/x86/templateTable_x86.cpp#L1338
+
+## Exploring further
+
+There are a number of improvements that could be made to this very simple demo.
+I will list some of them below:
+
+* Make a template interpreter like in the JVM. This will allow your specialized
+  opcodes (like `ADD_INT`) directly make use of the call stack.
+* Make a template JIT. This is the "next level up" from a template interpreter.
+  Instead of jumping between opcode handlers in assembly, paste the assembly
+  implementations of the opcodes one after another in memory. This will remove
+  a lot of the interpretive dispatch overhead in the bytecode loop.
+* Special case small integers in your object representation. Why allocate a
+  whole object if you can fit a great deal of integers in a [tagged
+  pointer][tagged-pointer]?  This will simplify some of your math and type
+  checking.
+
+Maybe I will even write about them in the future.
+
+[tagged-pointer]: https://bernsteinbear.com/pl-resources/#pointer-tagging-and-nan-boxing
