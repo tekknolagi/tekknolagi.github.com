@@ -105,6 +105,8 @@ a whole lot.
 * My very undocumented (but hopefully readable)
   [implementation](https://github.com/tekknolagi/ghuloum) of the Ghuloum
   compiler
+* Matt Page's [template\_jit](https://github.com/mpage/template_jit) for
+  CPython, which also contains a readable CFG implementation
 
 ### Assembler libraries
 
