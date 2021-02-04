@@ -21,7 +21,9 @@ and [Inline Caching Meets Quickening][ic-quickening].
 ## The problem
 
 Let's take a look at a fragment of the caching interpreter from the last post
-so we can talk about the problem more concretely.
+so we can talk about the problem more concretely. You can also get the sources
+[from the repo](https://github.com/tekknolagi/icdemo) and open `interpreter.c`
+in your preferred editor.
 
 ```c
 void add_update_cache(Frame *frame, Object left, Object right) {
