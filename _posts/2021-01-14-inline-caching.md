@@ -304,7 +304,7 @@ There are several states that the cache could be in when entering an opcode:
 1. **If it has an entry and the entry is for the current type**, use the cached
    value.
 1. Last, **if it has an entry and the entry is for a different type**,
-   invalidate the cache. Repeat the same steps as in the empty case.
+   flush the cache. Repeat the same steps as in the empty case.
 
 This is a simple *monomorphic* (one element) implementation that should give us
 most of the performance. A good exercise would be to extend this cache system
@@ -317,6 +317,11 @@ Languages With Polymorphic Inline Caches][pic] by Hölzle, Chambers, and Ungar.
 For the purposes of this inline caching demo, we will focus on caching lookups
 in `ADD`. This is a fairly arbitrary choice in our simple runtime, since the
 caching implementation will not differ between opcodes.
+
+**Note:** The types in this demo code are *immutable*. Some programming
+languages (Python, Ruby, etc) allow for types to be changed after they are
+created. This requires careful cache invalidation. We will not address cache
+invalidation in this post.
 
 ### Inline caching implementation
 
