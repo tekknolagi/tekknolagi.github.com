@@ -518,8 +518,8 @@ I will list some of them below:
 * Rewrite generic opcodes like `ADD` to type-specialized opcodes like
   `ADD_INT`. These opcodes will still have to check the types passed in, but
   can make use of a direct call instruction or even inline the specialized
-  implementation. This technique is mentioned in [Efficient Interpretation
-  using Quickening [PDF]][quickening] and is used in by the JVM.
+  implementation. I wrote [a follow-up post](/blog/inline-caching-quickening/)
+  about it!
 * Not all opcodes require caches, yet we allocate for them anyway. How can we
   eliminate these wasted cache slots?
 * Actually store caches inline in the bytecode, instead of off in a side table.
@@ -530,7 +530,6 @@ I will list some of them below:
 * Figure out what happens if the runtime allows for mutable types. How will you
   invalidate all the relevant caches?
 
-[quickening]: https://publications.sba-research.org/publications/dls10.pdf
 [assembly]: https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache
 
 Maybe I will even write about them in the future.
