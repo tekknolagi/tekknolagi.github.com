@@ -9,7 +9,9 @@ breads. It's mostly a reference for myself because sometimes I forget the
 ratios, and many a website will list ingredients by volume (see below for why
 this matters). Maybe some day I will post pictures and more detail. Until then,
 you can enjoy my [bread
-journey](https://twitter.com/tekknolagi/status/1201209094259888128) on Twitter.
+journey](https://twitter.com/tekknolagi/status/1201209094259888128) on Twitter
+([thread reader](https://threadreaderapp.com/thread/1201209094259888128) if you
+would rather not open Twitter).
 
 This page does *not* aim to be a complete baking instruction manual. I
 recommend checking out a couple of other instructive recipe pages like [this
