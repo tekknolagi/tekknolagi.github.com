@@ -26,29 +26,29 @@ so we can talk about the problem more concretely. You can also get the sources
 in your preferred editor.
 
 ```c
-void add_update_cache(Frame *frame, Object left, Object right) {
-  Method method = lookup_method(left.type, kAdd);
-  cache_at_put(frame, left.type, method);
-  Object result = (*method)(left, right);
+void add_update_cache(Frame* frame, Object* left, Object* right) {
+  Method method = lookup_method(object_type(left), kAdd);
+  cache_at_put(frame, object_type(left), method);
+  Object* result = (*method)(left, right);
   push(frame, result);
 }
 
-void eval_code_cached(Code *code, Object *args, int nargs) {
+void eval_code_cached(Code* code, Object** args, int nargs) {
   // ...
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD: {
-        Object right = pop(&frame);
-        Object left = pop(&frame);
+        Object* right = pop(&frame);
+        Object* left = pop(&frame);
         CachedValue cached = cache_at(&frame);
         Method method = cached.value;
-        if (method == NULL || cached.key != left.type) {
+        if (method == NULL || cached.key != object_type(left)) {
           add_update_cache(&frame, left, right);
           break;
         }
-        Object result = (*method)(left, right);
+        Object* result = (*method)(left, right);
         push(&frame, result);
         break;
       }
@@ -128,36 +128,36 @@ This way, the next time around, we have satisfied the invariant.
 Let's see how that looks:
 
 ```c
-void add_update_cache(Frame *frame, Object left, Object right) {
-  Method method = lookup_method(left.type, kAdd);
-  cache_at_put(frame, left.type, method);
-  Object result = (*method)(left, right);
+void add_update_cache(Frame* frame, Object* left, Object* right) {
+  Method method = lookup_method(object_type(left), kAdd);
+  cache_at_put(frame, object_type(left), method);
+  Object* result = (*method)(left, right);
   push(frame, result);
 }
 
-void eval_code_quickening(Code *code, Object *args, int nargs) {
+void eval_code_quickening(Code* code, Object** args, int nargs) {
   // ...
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD: {
-        Object right = pop(&frame);
-        Object left = pop(&frame);
+        Object* right = pop(&frame);
+        Object* left = pop(&frame);
         add_update_cache(&frame, left, right);
         code->bytecode[frame.pc] = ADD_CACHED;
         break;
       }
       case ADD_CACHED: {
-        Object right = pop(&frame);
-        Object left = pop(&frame);
+        Object* right = pop(&frame);
+        Object* left = pop(&frame);
         CachedValue cached = cache_at(&frame);
-        if (cached.key != left.type) {
+        if (cached.key != object_type(left)) {
           add_update_cache(&frame, left, right);
           break;
         }
         Method method = cached.value;
-        Object result = (*method)(left, right);
+        Object* result = (*method)(left, right);
         push(&frame, result);
         break;
       }
@@ -200,21 +200,21 @@ And if we did actually get an int, great, we call this new function
 `do_add_int`.
 
 ```c
-void do_add_int(Frame *frame, Object left, Object right) {
-  Object result = int_add(left, right);
+void do_add_int(Frame* frame, Object* left, Object* right) {
+  Object* result = int_add(left, right);
   push(frame, result);
 }
 
-void eval_code_quickening(Code *code, Object *args, int nargs) {
+void eval_code_quickening(Code *code, Object** args, int nargs) {
   // ...
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD_INT: {
-        Object right = pop(&frame);
-        Object left = pop(&frame);
-        if (left.type != kInt) {
+        Object* right = pop(&frame);
+        Object* left = pop(&frame);
+        if (object_type(left) != kInt) {
           add_update_cache(&frame, left, right);
           code->bytecode[frame.pc] = ADD_CACHED;
           break;
@@ -299,16 +299,16 @@ integer, it'll call `do_add_int` and rewrite itself.
 Let's see how that looks in code.
 
 ```c
-void eval_code_quickening(Code *code, Object *args, int nargs) {
+void eval_code_quickening(Code* code, Object** args, int nargs) {
   // ...
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD: {
-        Object right = pop(&frame);
-        Object left = pop(&frame);
-        if (left.type == kInt) {
+        Object* right = pop(&frame);
+        Object* left = pop(&frame);
+        if (object_type(left) == kInt) {
           do_add_int(&frame, left, right);
           code->bytecode[frame.pc] = ADD_INT;
           break;

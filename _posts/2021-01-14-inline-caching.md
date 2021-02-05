@@ -243,13 +243,13 @@ typedef unsigned char byte;
 #define STACK_SIZE 100
 
 typedef struct {
-  Object stack_array[STACK_SIZE];
-  Object *stack;
-  Code *code;
+  Object* stack_array[STACK_SIZE];
+  Object** stack;
+  Code* code;
   int pc;
 } Frame;
 
-void eval_code_uncached(Code *code, Object *args, int nargs) {
+void eval_code_uncached(Code* code, Object** args, int nargs) {
   Frame frame;
   init_frame(&frame, code);
   while (true) {
@@ -261,16 +261,16 @@ void eval_code_uncached(Code *code, Object *args, int nargs) {
         push(&frame, args[arg]);
         break;
       case ADD: {
-        Object right = pop(&frame);
-        Object left = pop(&frame);
-        Method method = lookup_method(left.type, kAdd);
-        Object result = (*method)(left, right);
+        Object* right = pop(&frame);
+        Object* left = pop(&frame);
+        Method method = lookup_method(object_type(left), kAdd);
+        Object* result = (*method)(left, right);
         push(&frame, result);
         break;
       }
       case PRINT: {
-        Object obj = pop(&frame);
-        Method method = lookup_method(obj.type, kPrint);
+        Object* obj = pop(&frame);
+        Method method = lookup_method(object_type(obj), kPrint);
         (*method)(obj);
         break;
       }
@@ -340,11 +340,11 @@ Each `Code` object has an array of these, one per opcode.
 We have some helpers, `cache_at` and `cache_at_put`, to manipulate the caches.
 
 ```c
-CachedValue cache_at(Frame *frame) {
+CachedValue cache_at(Frame* frame) {
   return frame->code->caches[frame->pc / kBytecodeSize];
 }
 
-void cache_at_put(Frame *frame, ObjectType key, Method value) {
+void cache_at_put(Frame* frame, ObjectType key, Method value) {
   frame->code->caches[frame->pc / kBytecodeSize] =
       (CachedValue){.key = key, .value = value};
 }
@@ -356,29 +356,29 @@ present for every opcode.
 Let's see what changed in the `ADD` opcode.
 
 ```c
-void add_update_cache(Frame *frame, Object left, Object right) {
-  Method method = lookup_method(left.type, kAdd);
-  cache_at_put(frame, left.type, method);
-  Object result = (*method)(left, right);
+void add_update_cache(Frame* frame, Object* left, Object* right) {
+  Method method = lookup_method(object_type(left), kAdd);
+  cache_at_put(frame, object_type(left), method);
+  Object* result = (*method)(left, right);
   push(frame, result);
 }
 
-void eval_code_cached(Code *code, Object *args, int nargs) {
+void eval_code_cached(Code *code, Object** args, int nargs) {
   // ...
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD: {
-        Object right = pop(&frame);
-        Object left = pop(&frame);
+        Object* right = pop(&frame);
+        Object* left = pop(&frame);
         CachedValue cached = cache_at(&frame);
         Method method = cached.value;
-        if (method == NULL || cached.key != left.type) {
+        if (method == NULL || cached.key != object_type(left)) {
           add_update_cache(&frame, left, right);
           break;
         }
-        Object result = (*method)(left, right);
+        Object* result = (*method)(left, right);
         push(&frame, result);
         break;
       }
@@ -415,11 +415,11 @@ int main() {
                      /*4:*/ ADD,   0,
                      /*6:*/ PRINT, 0,
                      /*8:*/ HALT,  0};
-  Object int_args[] = {
+  Object* int_args[] = {
       new_int(5),
       new_int(10),
   };
-  Object str_args[] = {
+  Object* str_args[] = {
       new_str("hello "),
       new_str("world"),
   };
