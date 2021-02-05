@@ -405,7 +405,7 @@ If you're left wondering how we're supposed to have the `env` special form now
 that we've completely changed how our environments work, swell. All the more
 reason to download the code [here]({{ page.codelink }}) and mess with it.
 
-Next up, [primitives III]({% link _blog_lisp/11_prim3.md %}).
+Next up, [primitives III](/blog/lisp/11_prim3/).
 
 <br />
 <hr style="width: 100px;" />

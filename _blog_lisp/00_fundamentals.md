@@ -252,7 +252,7 @@ could handle if we wanted. But I think this is fine for now.
 Download the code <a href="{{ page.codelink }}">here</a> if you want to mess
 with it.
 
-Next up, [booleans]({% link _blog_lisp/01_booleans.md %}).
+Next up, [booleans](/blog/lisp/01_booleans/).
 
 <br />
 <hr style="width: 100px;" />

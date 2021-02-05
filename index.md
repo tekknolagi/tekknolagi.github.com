@@ -22,20 +22,20 @@ That's probably an understatement. Here are some of my favorite projects:
   I am writing in C and [writing about](/blog/lisp/) on my blog
 * [EXP 57](/excollege/), a course on professional and personal development that
   I taught at Tufts University with [Yuki](https://yzan424.github.io/)
-* The [term paper]({% link dat-paper.html %}) I wrote for COMP 117 IDS
+* The [term paper](/dat-paper/) I wrote for COMP 117 IDS
   analyzing Dat and the Beaker browser
 * [Reason](https://reasonml.github.io/), a compiler front-end and toolchain for
   OCaml
 * An [automatically distributed programming language](https://github.com/tekknolagi/distlisp)
   (2016) for my networks course, with the
-  [final writeup [PDF]]({% link resources/comp112-writeup.pdf %})
-* The [final project spec [PDF]]({% link resources/comp15-homework6.pdf %})
+  [final writeup [PDF]](/resources/comp112-writeup.pdf)
+* The [final project spec [PDF]](/resources/comp15-homework6.pdf)
   and reference implementation (2016) and
-  [independent project spec [PDF]]({% link resources/comp15-independent.pdf %})
+  [independent project spec [PDF]](/resources/comp15-independent.pdf)
   (2016) for the data structures course I TA'ed
 * A [distributed ray tracer](https://github.com/TheiaRT/tracer) (2015) that I
   made with friends for a concurrent programming course, with the
-  [final writeup [PDF]]({% link resources/comp50-writeup.pdf %})
+  [final writeup [PDF]](/resources/comp50-writeup.pdf)
 * An unexpectedly popular [virtual machine](https://github.com/tekknolagi/carp)
   (2014) that got some Hacker News attention, along with its newer
   and much better designed [cousin](https://github.com/RabbitVM/rabbit) (2016)

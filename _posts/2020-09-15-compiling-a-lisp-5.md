@@ -302,8 +302,8 @@ Subtraction, multiplication, and division are much the same as addition. We're
 also going to completely ignore overflow, underflow, etc.
 
 Equality is different in that it does some comparisons after the fact (see
-[Primitive unary functions]({% link _posts/2020-09-05-compiling-a-lisp-4.md
-%})). To check if two values are equal, we compare their pointers:
+[Primitive unary functions](/blog/compiling-a-lisp-4/)). To check if two values
+are equal, we compare their pointers:
 
 ```c
     if (AST_symbol_matches(callable, "=")) {
@@ -418,9 +418,9 @@ This has been a more complicated post than the previous ones, I think. The
 stack allocation may not make sense immediately. It might take some time to
 sink in. Try writing some of the code yourself and see if that helps.
 
-Next time we'll add ~~the ability to bind variables using `let`~~ [a parser]({%
-link _posts/2020-09-21-compiling-a-lisp-6.md %}) so we can input expressions
-more easily. See you then!
+Next time we'll add ~~the ability to bind variables using `let`~~ [a
+parser](/blog/compiling-a-lisp-6/) so we can input expressions more easily. See
+you then!
 
 <br />
 <hr style="width: 100px;" />

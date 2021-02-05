@@ -343,4 +343,4 @@ pairs for us. It shouldn't be a great need until then.
 Download the code <a href="{{ page.codelink }}">here</a> if you want to mess
 with it.
 
-Next up, [environments]({% link _blog_lisp/04_environments.md %}).
+Next up, [environments](/blog/lisp/04_environments/).

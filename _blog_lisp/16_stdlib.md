@@ -302,4 +302,4 @@ this one in the future.
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
 Next up, the post I have been waiting quite some time for:
-[modules]({% link _blog_lisp/17_modules.md %}).
+[modules](/blog/lisp/17_modules/).

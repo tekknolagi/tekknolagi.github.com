@@ -8,12 +8,12 @@ description: Overture to our small Lisp to x86-64 compiler
 <div style="width: 80%; margin: 0 auto;"><i>Many thanks to Kartik Agaram and
 Leonard Sch&uuml;tz for proofreading these posts.</i></div>
 
-In my [last series]({% link _blog_lisp/index.md %}), I wrote about building a
+In my [last series](/blog/lisp/), I wrote about building a
 Lisp interpreter. This time, we're going to write a Lisp compiler.
 
 This series is an adaptation of Abdulaziz Ghuloum's excellent paper [An
-Incremental Approach to Compiler Construction]({% link
-assets/img/11-ghuloum.pdf %}), with several key differences:
+Incremental Approach to Compiler Construction](/assets/img/11-ghuloum.pdf),
+with several key differences:
 
 * Our implementation is in C, instead of Scheme
 * Our implementation generates machine code directly, instead of generating
@@ -156,8 +156,7 @@ is good news: I've already written the compiler up to compiling heap allocation
 (still working on procedure calls), and even if I don't finish this series
 there is still Ghuloum's excellent paper to learn from.
 
-Next up, [the smallest program]({% link
-_posts/2020-08-29-compiling-a-lisp-1.md %}).
+Next up, [the smallest program](/blog/compiling-a-lisp-1/).
 
 {% include compiling_a_lisp_toc.md %}
 

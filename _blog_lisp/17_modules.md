@@ -95,7 +95,7 @@ modules so long as they conform to the right interfaces.
 
 Download the code [here]({{ page.codelink }}) if you want to mess with it.
 
-In the [next chapter]({% link _blog_lisp/18_nodefine.md %}), I ~~plan on
+In the [next chapter](/blog/lisp/18_nodefine/), I ~~plan on
 replacing the reader with a much better-designed lexer/parser. An
 auto-generated one, even.~~ do some
 syntax transforms to remove `define`.

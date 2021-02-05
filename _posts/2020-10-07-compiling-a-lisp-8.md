@@ -262,7 +262,7 @@ and binary analysis. I decided to use it on the compiled output of a function
 containing an `if` expression. It produced this pretty graph!
 
 <figure style="display: block; margin: 0 auto; max-width: 600px;">
-  <img style="max-width: 600px;" src="{% link assets/img/lisp/callgraph.svg %}" />
+  <img style="max-width: 600px;" src="/assets/img/lisp/callgraph.svg" />
   <figcaption>Fig. 1 - Call graph as produced by Cutter.</figcaption>
 </figure>
 

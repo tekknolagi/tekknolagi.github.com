@@ -29,10 +29,9 @@ big number support in Lisp after we build out some more features.
 Since the integers are always small (less than 64 bits), and we're targeting
 x86-64, we can represent the integers as tagged pointers. To read a little more
 about that, check out the "Pointer tagging" section of my [Programming
-languages resources page]({% link pl-resources.md %}). Since we'll also
-represent some other types of objects as tagged pointers, I'll sketch out a
-tagging scheme up front. That way it's easier to reason about than if I draw it
-out post-by-post.
+languages resources page](/pl-resources/). Since we'll also represent some
+other types of objects as tagged pointers, I'll sketch out a tagging scheme up
+front. That way it's easier to reason about than if I draw it out post-by-post.
 
 ```
 High                                                         Low

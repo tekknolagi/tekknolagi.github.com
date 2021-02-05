@@ -172,7 +172,7 @@ We can see that our code is getting kind of clunky to work with. Who the heck
 wants to manipulate what is just *screaming* at us to be a tree as a list?
 Certainly not me. It's messy and occasionally difficult to get right. So:
 
-Next up, [ASTs]({% link _blog_lisp/08_asts.md %}).
+Next up, [ASTs](/blog/lisp/08_asts/).
 
 <br />
 <hr style="width: 100px;" />
