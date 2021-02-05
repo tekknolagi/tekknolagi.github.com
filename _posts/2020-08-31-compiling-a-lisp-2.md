@@ -6,7 +6,7 @@ description: Compiling Lisp integers to x86-64
 ---
 
 <span data-nosnippet>
-*[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-08-29-compiling-a-lisp-1.md %})*
+*[first](/blog/compiling-a-lisp-0/)* -- *[previous](/blog/compiling-a-lisp-1/)*
 </span>
 
 Welcome back to the "Compiling a Lisp" series. Last time we made a small code

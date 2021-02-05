@@ -6,7 +6,7 @@ description: Compiling Lisp cons, car, and cdr to x86-64
 ---
 
 <span data-nosnippet>
-*[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-10-07-compiling-a-lisp-8.md %})*
+*[first](/blog/compiling-a-lisp-0/)* -- *[previous](/blog/compiling-a-lisp-8/)*
 </span>
 
 Welcome back to the "Compiling a Lisp" series. Last time we added support for

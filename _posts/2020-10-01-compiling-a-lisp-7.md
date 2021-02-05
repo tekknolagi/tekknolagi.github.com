@@ -6,7 +6,7 @@ description: Compiling Lisp let expressions to x86-64
 ---
 
 <span data-nosnippet>
-*[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-09-21-compiling-a-lisp-6.md %})*
+*[first](/blog/compiling-a-lisp-0/)* -- *[previous](/blog/compiling-a-lisp-6/)*
 </span>
 
 Welcome back to the "Compiling a Lisp" series. Last time we added a reader
@@ -448,7 +448,7 @@ TEST compile_let_is_not_let_star(Buffer *buf) {
 ### Next time
 
 That's a wrap, folks. Time to `let` go. Har har har. Next time we'll add
-[`if`-expressions]({% link _posts/2020-10-07-compiling-a-lisp-8.md %}), so our
+[`if`-expressions](/blog/compiling-a-lisp-8/), so our
 programs can make decisions! Have a great day. Don't forget to tell your
 friends you love them.
 

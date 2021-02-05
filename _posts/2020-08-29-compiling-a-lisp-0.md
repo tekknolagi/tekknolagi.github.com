@@ -92,22 +92,22 @@ that the features we have already build continue to work as expected.
 
 I plan on adhering to this rough plan:
 
-1. [Compile integers]({% link _posts/2020-08-31-compiling-a-lisp-2.md %})
-1. [Compile other immediate constants]({% link _posts/2020-09-02-compiling-a-lisp-3.md %})
+1. [Compile integers](/blog/compiling-a-lisp-2/)
+1. [Compile other immediate constants](/blog/compiling-a-lisp-3/)
    (booleans, ASCII characters, the empty list)
-1. [Compile unary primitives]({% link _posts/2020-09-05-compiling-a-lisp-4.md %})
+1. [Compile unary primitives](/blog/compiling-a-lisp-4/)
    (`add1`, `sub1`, `integer->char`, `char->integer`, `null?`, `zero?`, etc)
-1. [Compile binary primitives]({% link _posts/2020-09-15-compiling-a-lisp-5.md %})
+1. [Compile binary primitives](/blog/compiling-a-lisp-5/)
    (`+`, `-`, `*`, `/`, `=`, etc)
-1. [Read expressions from strings]({% link _posts/2020-09-21-compiling-a-lisp-6.md %})
-1. [Compile local variables]({% link _posts/2020-10-01-compiling-a-lisp-7.md %})
+1. [Read expressions from strings](/blog/compiling-a-lisp-6/)
+1. [Compile local variables](/blog/compiling-a-lisp-7/)
    (`let`-expressions)
-1. [Compile conditional expressions]({% link _posts/2020-10-07-compiling-a-lisp-8.md %})
+1. [Compile conditional expressions](/blog/compiling-a-lisp-8/)
    (`if`-expressions)
-1. [Compile heap allocation]({% link _posts/2020-10-11-compiling-a-lisp-9.md %})
+1. [Compile heap allocation](/blog/compiling-a-lisp-9/)
    (`cons`)
 1. Compile heap allocation (strings, symbols, etc)
-1. [Compile procedure calls]({% link _posts/2020-10-29-compiling-a-lisp-11.md %})
+1. [Compile procedure calls](/blog/compiling-a-lisp-11/)
    (`labels`, `code`, and `labelcall`)
 1. Compile closures
 1. Add tail-call optimization

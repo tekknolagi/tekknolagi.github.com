@@ -6,7 +6,7 @@ description: Compiling Lisp primitive unary functions to x86-64
 ---
 
 <span data-nosnippet>
-*[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-09-02-compiling-a-lisp-3.md %})*
+*[first](/blog/compiling-a-lisp-0/)* -- *[previous](/blog/compiling-a-lisp-3/)*
 </span>
 
 Welcome back to the "Compiling a Lisp" series. Last time, we finished adding
@@ -677,7 +677,7 @@ of sync because that can be *very* confusing...
 
 Anyway, that's a wrap for today. Send your comments [on the
 elist](https://lists.sr.ht/~max/compiling-lisp)! Next time,
-[binary primitives]({% link _posts/2020-09-15-compiling-a-lisp-5.md %}).
+[binary primitives](/blog/compiling-a-lisp-5/).
 
 {% include compiling_a_lisp_toc.md %}
 

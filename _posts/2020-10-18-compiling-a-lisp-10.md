@@ -6,7 +6,7 @@ description: In which we learn a little about x86-64 instruction encoding
 ---
 
 <span data-nosnippet>
-*[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-10-11-compiling-a-lisp-9.md %})*
+*[first](/blog/compiling-a-lisp-0/)* -- *[previous](/blog/compiling-a-lisp-9/)*
 </span>
 
 Welcome back to the Compiling a Lisp series. In this thrilling new update, we
@@ -782,7 +782,7 @@ about:
 
 Hopefully you enjoyed it. I'm going to go try and get a good night's sleep.
 Until next time, when we'll
-[implement procedure calls]({% link _posts/2020-10-29-compiling-a-lisp-11.md %})!
+[implement procedure calls](/blog/compiling-a-lisp-11/)!
 
 Here's a fun composite diagram for the road:
 

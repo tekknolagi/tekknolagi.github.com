@@ -6,7 +6,7 @@ description: Compiling Lisp if-expressions to x86-64
 ---
 
 <span data-nosnippet>
-*[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-10-01-compiling-a-lisp-7.md %})*
+*[first](/blog/compiling-a-lisp-0/)* -- *[previous](/blog/compiling-a-lisp-7/)*
 </span>
 
 Welcome back to the "Compiling a Lisp" series. Last time we added support for
@@ -339,7 +339,7 @@ initially.
 Anyway, that's all for today. This post was made possible by contributions[^2]
 to my blog from Viewers Like You. Thank you.
 
-Next time on PBS, [heap allocation]({% link _posts/2020-10-11-compiling-a-lisp-9.md %}).
+Next time on PBS, [heap allocation](/blog/compiling-a-lisp-9/).
 
 {% include compiling_a_lisp_toc.md %}
 

@@ -6,7 +6,7 @@ description: Adding a reader to our Lisp compiler
 ---
 
 <span data-nosnippet>
-*[first]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})* -- *[previous]({% link _posts/2020-09-15-compiling-a-lisp-5.md %})*
+*[first](/blog/compiling-a-lisp-0/)* -- *[previous](/blog/compiling-a-lisp-5/)*
 </span>
 
 Welcome back to the "Compiling a Lisp" series. This time I want to take a break
@@ -515,7 +515,7 @@ assembly to the screen, like a debugging trace. This should be straightforward
 enough since we already have very specific opcode implementations.
 
 Anyway, thanks for reading. Next time we'll get back to compiling and tackle
-[let-expressions]({% link _posts/2020-10-01-compiling-a-lisp-7.md %}).
+[let-expressions](/blog/compiling-a-lisp-7/).
 
 {% include compiling_a_lisp_toc.md %}
 

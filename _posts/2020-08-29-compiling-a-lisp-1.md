@@ -6,7 +6,7 @@ description: A small mmap demo
 ---
 
 <span data-nosnippet>
-*[previous]({% link _posts/2020-08-29-compiling-a-lisp-0.md %})*
+*[previous](/blog/compiling-a-lisp-0/)*
 </span>
 
 Welcome to the first post in the "Compiling a Lisp" series. We're going to
