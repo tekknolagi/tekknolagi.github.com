@@ -65,6 +65,8 @@ research around optimizing dynamic languages.
 * Urs Hölzle's thesis, [Adaptive Optimization for Self](http://i.stanford.edu/pub/cstr/reports/cs/tr/94/1520/CS-TR-94-1520.pdf)
 * My own [blog post](/blog/inline-caching/) about inline caching which is a
   small demo of the work from the Smalltalk-80 and Brunthaler papers
+* My own [blog post](/blog/inline-caching-quickening/) about bytecode rewriting
+  ("quickening") which is a small demo of the work from the Brunthaler paper
 * [An inline cache isn't just a cache](https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache)
 * [Baseline JIT and inline caches](https://blog.pyston.org/2016/06/30/baseline-jit-and-inline-caches/)
 * [Javascript hidden classes and inline caching in V8](https://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html)
@@ -136,7 +138,6 @@ write about:
   * [template interpreter](https://metebalci.com/blog/demystifying-the-jvm-jvm-variants-cppinterpreter-and-templateinterpreter/)
   * [source on github](https://github.com/openjdk/jdk/blob/master/src/hotspot/cpu/x86/templateTable_x86.cpp)
 * Inline caching for attribute lookup
-* Opcode rewriting and runtime opcode specialization ("quickening")
 * Attaching intrinsic functions or assembly stubs to well-known functions
 * Heap and GC characteristics from [Garbage collection in a large LISP system][large-lisp]
 * Fast paths for common cases ("do less")
