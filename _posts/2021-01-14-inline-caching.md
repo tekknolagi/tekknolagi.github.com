@@ -22,6 +22,10 @@ caches function pointers instead of making use of a JIT compiler.
 
 [ic-quickening]: http://www.complang.tuwien.ac.at/kps09/pdfs/brunthaler.pdf
 
+In order to make the most of this post, I recommend having some background on
+building bytecode virtual machines. It is by no means necessary, but will make
+some of the *new* stuff easier to absorb.
+
 ## Background
 
 In many compiled programming languages like C and C++, types and attribute
