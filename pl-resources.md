@@ -74,6 +74,10 @@ research around optimizing dynamic languages.
   * [Simple and Effective Type Check Removal through Lazy Basic Block Versioning](https://arxiv.org/pdf/1411.0352v2.pdf)
   * [Extending Basic Block Versioning with Typed Object Shapes](https://arxiv.org/pdf/1507.02437.pdf)
 * [Stack Caching for Interpreters](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.5.4929&rep=rep1&type=pdf)
+* [Hotspot performance techniques](https://wiki.openjdk.java.net/display/HotSpot/PerformanceTechniques)
+* [Assembly interpreters](http://nominolo.blogspot.com/2012/07/implementing-fast-interpreters.html)
+  and [follow-up](http://nominolo.blogspot.com/2012/07/implementing-fast-interpreters_31.html)
+    * Make sure to take a look at "Further Reading"
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
