@@ -50,7 +50,13 @@ Object* new_int(word value) {
 I don't know about you, but to me this seems a little wasteful. Allocating
 **every single** new integer object on the heap leaves a lot to be desired.
 `malloc` is slow and while memory is cheaper these days than it used to be, it
-still is not free.
+still is not free. We'll need to do something about this.
+
+This post will focus on a particular strategy for integer objects, but the
+ideas apply broadly to other small objects. See [Exploring
+further](#exploring-further) for more food for thought.
+
+## The solution space
 
 There are a number of strategies to mitigate this gratuitous allocation, most
 commonly:
@@ -59,10 +65,38 @@ commonly:
    the integers between -5 and 256.
 2. Interning all integers by looking them up in a specialized hash table before
    allocating. This is also called *hash consing*.
+3. Have a statically typed low-level language where the compiler can know ahead
+   of time what type every variable is and how much space it requires. C and
+   Rust compilers, for example, can do this.
 
-In this post we will focus instead on a third, different strategy: avoid heap
-allocating numbers that require fewer than 63 bits.
+Our runtime has no such type guarantees and no compiler to speak of, but I
+think we can do better than the first two strategies. We'll just need to get a
+little clever.
 
-Statically typed low-level languages like C or Rust do this by knowing ahead of
-time what type every variable is and how much space it requires. Our runtime
-has no such type guarantees, so we'll need to get a little clever.
+## What's in a pointer?
+
+Before we get clever, we should take a step back and think about the `Object`
+pointers we pass around.
+
+### Alignment
+
+* `char*` has 8 byte alignment on 64-bit systems [structure packing](http://www.catb.org/esr/structure-packing/#_padding)
+* Enum has [unspecified alignment](http://www.catb.org/esr/structure-packing/#_awkward_scalar_cases),
+  could be anywhere from 1 to 8 bytes
+* x86 vs ARM? any difference?
+* `_Alignas` [since C11](https://en.cppreference.com/w/c/language/_Alignas)
+* Just assert `sizeof (HeapObject) >= 8` if the padding rules are too confusing
+  and at worst add padding (struct layout vs manual layout, etc)
+* size at least 8 means that last 3 bits of pointer are 0. so much room for
+  activities
+
+## Tradeoffs and big integers
+
+We didn't have big integers before, but if we need the full 64 bits we can
+overflow to a heap-allocated object if need be. Or if you don't care, just make
+overflow undefined/wrap.
+
+## Exploring further
+
+* Small strings
+* True/false
