@@ -78,6 +78,8 @@ research around optimizing dynamic languages.
 * [Assembly interpreters](http://nominolo.blogspot.com/2012/07/implementing-fast-interpreters.html)
   and [follow-up](http://nominolo.blogspot.com/2012/07/implementing-fast-interpreters_31.html)
     * Make sure to take a look at "Further Reading"
+* Stefan Marr's [page](https://stefan-marr.de/2020/06/efficient-and-safe-implementations-of-dynamic-languages/)
+  about efficient and safe implementations of dynamic languages
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
