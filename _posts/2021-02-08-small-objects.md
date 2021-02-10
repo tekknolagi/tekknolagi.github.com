@@ -76,27 +76,133 @@ little clever.
 ## What's in a pointer?
 
 Before we get clever, we should take a step back and think about the `Object`
-pointers we pass around.
+pointers we pass around. C
+[guarantees](https://en.cppreference.com/w/c/memory/malloc) that `malloc` will
+return an aligned pointer. On 32-bit systems, this means that the result will
+be 4-byte aligned, and on 64-bit systems, it will be 8-byte aligned. This post
+will only focus on 64-bit systems, so for our purposes all `malloc`ed objects
+will be 8-byte aligned.
 
-### Alignment
+Being 8-byte aligned means that all pointers are **multiples of 8**. And if you
+look at the pointer representation in binary, they look like:
 
-* `char*` has 8 byte alignment on 64-bit systems [structure packing](http://www.catb.org/esr/structure-packing/#_padding)
-* Enum has [unspecified alignment](http://www.catb.org/esr/structure-packing/#_awkward_scalar_cases),
-  could be anywhere from 1 to 8 bytes
-* x86 vs ARM? any difference?
-* `_Alignas` [since C11](https://en.cppreference.com/w/c/language/_Alignas)
-* Just assert `sizeof (HeapObject) >= 8` if the padding rules are too confusing
-  and at worst add padding (struct layout vs manual layout, etc)
-* size at least 8 means that last 3 bits of pointer are 0. so much room for
-  activities
+```
+High                                                           Low
+0bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx000
+```
 
-## Tradeoffs and big integers
+See that? The three lowest bits are zero. Since we're guaranteed the poitners
+will always be given to us with the three zero bits, we can use those bits to
+store some extra information.
+
+On some hardware, there are also bits unused in the high part of the address.
+We will only use the lower part of the address, though, because the high bits
+are reserved for future use.
+
+## The scheme
+
+To start, we will tag all pointers to heap-allocated objects with a lower bit
+of 1[^1]. This means that now all pointers will end in `001` instead of `000`.
+We will then assume that any pointer with a lowest bit of 0 is actually an
+integer. This leaves us 63 bits of integer space. This is one less bit than we
+had before, which we will talk about more in [Tradeoffs](#tradeoffs).
+
+We are doing this because the assumption behind this pointer tagging is that
+integer objects are both small **and common**. Adding and subtracting them
+should be very cheap. And it's not so bad if all operations on pointers have to
+remove the low 1 bit, either. x86-64 addressing modes make it easy to fold that
+into normal struct member reads and writes.
+
+And guess what? The best part is, since we were smart and used helper functions
+to allocate, type check, read from, and write to the objects, we don't even
+need to touch the interpreter core or library functions. We only need to touch
+the functions that work directly on objects. Let's take a look.
+
+## New object representation
+
+```c
+struct Object;
+typedef struct Object Object;
+
+typedef struct {
+  ObjectType type;
+  union {
+    const char* str_value;
+  };
+} HeapObject;
+```
+
+
+
+```c
+bool object_is_int(Object* obj) {
+  return ((uword)obj & kIntegerTagMask) == kIntegerTag;
+}
+
+bool object_is_heap_object(Object* obj) {
+  return ((uword)obj & kHeapObjectTagMask) == kHeapObjectTag;
+}
+
+HeapObject* object_address(Object* obj) {
+  CHECK(object_is_heap_object(obj));
+  return (HeapObject*)((uword)obj & ~kHeapObjectTagMask);
+}
+
+Object* object_new_heap_object(HeapObject* obj) {
+  return (Object*)((uword)obj | kHeapObjectTagMask);
+}
+
+ObjectType object_type(Object* obj) {
+  if (object_is_int(obj)) {
+    return kInt;
+  }
+  return object_address(obj)->type;
+}
+
+bool object_is_str(Object* obj) { return object_type(obj) == kStr; }
+
+word object_as_int(Object* obj) {
+  CHECK(object_is_int(obj));
+  return (uword)obj >> kIntegerShift;
+}
+
+const char* object_as_str(Object* obj) {
+  CHECK(object_is_str(obj));
+  return object_address(obj)->str_value;
+}
+
+Object* new_int(word value) {
+  CHECK(value < INTEGER_MAX && "too big");
+  CHECK(value > INTEGER_MIN && "too small");
+  return (Object*)(value << kIntegerShift);
+}
+
+Object* new_str(const char* value) {
+  HeapObject* result = malloc(sizeof *result);
+  CHECK(result != NULL && "could not allocate object");
+  *result = (HeapObject){.type = kStr, .str_value = value};
+  return object_new_heap_object(result);
+}
+```
+
+## Tradeoffs
 
 We didn't have big integers before, but if we need the full 64 bits we can
 overflow to a heap-allocated object if need be. Or if you don't care, just make
 overflow undefined/wrap.
 
+
 ## Exploring further
 
 * Small strings
 * True/false
+* NaN tagging for runtimes where all numbers are doubles
+
+<hr style="width: 100px;" />
+<!-- Footnotes -->
+
+[^1]: In my [blog post](/blog/compiling-a-lisp-2/) about the [Ghuloum
+      compiler](/assets/img/11-ghuloum.pdf), I used the bit patterns from the
+      original Ghuloum paper to tag integers, characters, and different types
+      of heap-allocated objects. Feel free to skim that if you want a taste for
+      different pointer tagging schemes.
