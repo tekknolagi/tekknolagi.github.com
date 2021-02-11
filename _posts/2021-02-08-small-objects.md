@@ -317,7 +317,8 @@ int_add:                                # @int_add
 ```
 
 How about that, eh? What was previously a monster of a function is now **four
-whole instructions**. Put that in your pipeline and smoke it.
+whole instructions** and no memory operations. Put that in your pipeline and
+smoke it.
 
 This is the kind of benefit we can reap from having small objects inside
 pointers.
@@ -352,8 +353,8 @@ post](/blog/inline-caching-quickening/)? Well, that idea is even more
 attractive now. You, the runtime writer, get to write a lot less assembly. And
 your computer gets to run a lot less code.
 
-Make sure to check out [the repo](https://github.com/tekknolagi/icdemo) and
-poke at the code.
+Thanks for reading! Make sure to check out [the
+repo](https://github.com/tekknolagi/icdemo) and poke at the code.
 
 <hr style="width: 100px;" />
 <!-- Footnotes -->
