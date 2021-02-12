@@ -349,7 +349,7 @@ Pointer tagging is not the only way to compress values into pointer-sized
 objects. For runtimes whose primary numeric type is a double, it may make sense
 to implement [NaN
 boxing](https://bernsteinbear.com/pl-resources/#pointer-tagging-and-nan-boxing).
-This is what VMs like V8 and LuaJIT do.
+This is what VMs like SpiderMonkey[^2] and LuaJIT do.
 
 Remember my suggestion about the template interpreter from the [quickening
 post](/blog/inline-caching-quickening/)? Well, that idea is even more
@@ -372,3 +372,8 @@ independent and can be used separately.
       original Ghuloum paper to tag integers, characters, and different types
       of heap-allocated objects. Feel free to skim that if you want a taste for
       different pointer tagging schemes.
+
+[^2]: This is interesting because [V8](https://v8.dev/blog/pointer-compression)
+      and [Dart](https://dart.dev/articles/archive/numeric-computation), other
+      JS(-like) VMs use pointer tagging. Seach "Smi" (or perhaps "Smi integer")
+      if you want to learn more.
