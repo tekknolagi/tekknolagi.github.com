@@ -63,10 +63,6 @@ research around optimizing dynamic languages.
 * [Optimizing dynamically-typed object-oriented languages with polymorphic inline caches](https://bibliography.selflanguage.org/_static/pics.pdf)
 * [Garbage collection in a large LISP system][large-lisp]
 * Urs Hölzle's thesis, [Adaptive Optimization for Self](http://i.stanford.edu/pub/cstr/reports/cs/tr/94/1520/CS-TR-94-1520.pdf)
-* My own [blog post](/blog/inline-caching/) about inline caching which is a
-  small demo of the work from the Smalltalk-80 and Brunthaler papers
-* My own [blog post](/blog/inline-caching-quickening/) about bytecode rewriting
-  ("quickening") which is a small demo of the work from the Brunthaler paper
 * [An inline cache isn't just a cache](https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache)
 * [Baseline JIT and inline caches](https://blog.pyston.org/2016/06/30/baseline-jit-and-inline-caches/)
 * [Javascript hidden classes and inline caching in V8](https://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html)
@@ -82,6 +78,17 @@ research around optimizing dynamic languages.
   about efficient and safe implementations of dynamic languages
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
+
+And here are runtime optimization resources that I wrote!
+
+* [Inline caching](/blog/inline-caching/), a post containing a small demo of
+  how to speed up attribute lookups in an interpreter
+* [Inline caching: quickening](/blog/inline-caching-quickening/), a post about
+  speeding up interpreters using self-modifying bytecode ("bytecode rewriting"
+  or "quickening")
+* [Small objects and pointer tagging](/blog/small-objects/), a post about
+  speeding up interpreters using pointer tagging and encoding small objects
+  inside pointers
 
 ### Pointer tagging and NaN boxing
 
@@ -139,7 +146,6 @@ my [Compiling a Lisp](/blog/compiling-a-lisp-8/#assembler-libraries) post.
 I have not written much about runtime optimization yet, but I would like to
 write about:
 
-* Tagged pointers and small objects (strings, integers, sentinel objects, ...)
 * Assembly interpreters (known to the JDK folks as a "template interpreter")
   * [template interpreter](https://metebalci.com/blog/demystifying-the-jvm-jvm-variants-cppinterpreter-and-templateinterpreter/)
   * [source on github](https://github.com/openjdk/jdk/blob/master/src/hotspot/cpu/x86/templateTable_x86.cpp)
