@@ -323,6 +323,9 @@ smoke it.
 This is the kind of benefit we can reap from having small objects inside
 pointers.
 
+Thanks for reading! Make sure to check out [the
+repo](https://github.com/tekknolagi/icdemo) and poke at the code.
+
 ## Exploring further
 
 In this post, we made an executive decision to shrink the available integer
@@ -360,9 +363,6 @@ information could you store in there that is relevant to your workload? Perhaps
 you can tag pointers to all prime integers. Or maybe you want to tag different
 heap-allocated objects with their type tags. Either way, the two techniques are
 independent and can be used separately.
-
-Thanks for reading! Make sure to check out [the
-repo](https://github.com/tekknolagi/icdemo) and poke at the code.
 
 <hr style="width: 100px;" />
 <!-- Footnotes -->
