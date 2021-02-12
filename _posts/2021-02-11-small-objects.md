@@ -353,6 +353,14 @@ post](/blog/inline-caching-quickening/)? Well, that idea is even more
 attractive now. You, the runtime writer, get to write a lot less assembly. And
 your computer gets to run a lot less code.
 
+This post puts two distinct concepts together: small objects and pointer
+tagging. Maybe you don't really need small objects, though, and want to store
+other information in the tag bits of your pointer. What other kinds of
+information could you store in there that is relevant to your workload? Perhaps
+you can tag pointers to all prime integers. Or maybe you want to tag different
+heap-allocated objects with their type tags. Either way, the two techniques are
+independent and can be used separately.
+
 Thanks for reading! Make sure to check out [the
 repo](https://github.com/tekknolagi/icdemo) and poke at the code.
 
