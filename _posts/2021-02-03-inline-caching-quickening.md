@@ -72,7 +72,7 @@ in that case. And right now, we're doing too much work.
 
 Why should we have to check if the cache slot is empty if in the fast path it
 shouldn't be? And why should we then have to make an indirect call? On some
-CPUs, indirect calls are [much slower](calls) than direct calls. And this
+CPUs, indirect calls are [much slower][calls] than direct calls. And this
 assumes the compiler generates a call instruction --- it's very possible that a
 compiler would decide to inline the direct call.
 
