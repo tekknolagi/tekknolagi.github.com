@@ -349,7 +349,7 @@ Pointer tagging is not the only way to compress values into pointer-sized
 objects. For runtimes whose primary numeric type is a double, it may make sense
 to implement [NaN
 boxing](https://bernsteinbear.com/pl-resources/#pointer-tagging-and-nan-boxing).
-This is what VMs like V8 and Lua do.
+This is what VMs like V8 and LuaJIT do.
 
 Remember my suggestion about the template interpreter from the [quickening
 post](/blog/inline-caching-quickening/)? Well, that idea is even more
