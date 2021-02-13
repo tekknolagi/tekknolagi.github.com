@@ -76,7 +76,8 @@ commonly:
 The first two approaches don't reduce the memory traffic, but the third
 approach does. Our runtime has no such type guarantees and no compiler to speak
 of, so that's a no-go, and I think we can do better than the first two
-strategies. We'll just need to get a little clever.
+strategies. We'll just need to get a little clever and re-use some old
+knowledge from the 80s.
 
 ## What's in a pointer?
 
@@ -98,7 +99,8 @@ High                                                           Low
 
 See that? The three lowest bits are zero. Since we're guaranteed the pointers
 will always be given to us with the three zero bits, we can use those bits to
-store some extra information.
+store some extra information. Lisp and Smalltalk runtimes have been doing this
+for at least 30 years.
 
 On some hardware, there are also bits unused in the high part of the address.
 We will only use the lower part of the address, though, because the high bits
