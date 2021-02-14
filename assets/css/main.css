@@ -61,6 +61,7 @@ footer hr {
     margin-top: 40px;
 }
 /* Inline code */
+/* TODO(max): Figure out how to avoid turning footnotes green, too. */
 p code, li code {
     color: green;
 }

@@ -119,7 +119,7 @@ We are doing this because the assumption behind this pointer tagging is that
 integer objects are both small **and common**. Adding and subtracting them
 should be very cheap. And it's not so bad if all operations on pointers have to
 remove the low 1 bit, either. x86-64 addressing modes make it easy to fold that
-into normal struct member reads and writes.
+into normal struct member reads and writes[^2].
 
 And guess what? The best part is, since we were smart and used helper functions
 to allocate, type check, read from, and write to the objects, we don't even
@@ -351,7 +351,7 @@ Pointer tagging is not the only way to compress values into pointer-sized
 objects. For runtimes whose primary numeric type is a double, it may make sense
 to implement [NaN
 boxing](https://bernsteinbear.com/pl-resources/#pointer-tagging-and-nan-boxing).
-This is what VMs like SpiderMonkey[^2] and LuaJIT do.
+This is what VMs like SpiderMonkey[^3] and LuaJIT do.
 
 Remember my suggestion about the template interpreter from the [quickening
 post](/blog/inline-caching-quickening/)? Well, that idea is even more
@@ -375,7 +375,65 @@ independent and can be used separately.
       of heap-allocated objects. Feel free to skim that if you want a taste for
       different pointer tagging schemes.
 
-[^2]: This is interesting because [V8](https://v8.dev/blog/pointer-compression)
+[^2]: (Adapted from my [Reddit comment](https://www.reddit.com/r/ProgrammingLanguages/comments/liix7g/unboxed_values_on_the_stack_and_automated_garbage/gnb9qxo/))
+
+      Say you have a C struct:
+
+      ```c
+struct foo {
+  int bar;
+};
+      ```
+
+      and a heap-allocated instance of that struct:
+
+      ```c
+struct foo *instance = malloc(...);
+      ```
+
+      Reading an attribute of that struct in C looks like:
+
+      ```c
+instance->bar;
+      ```
+
+      and gets compiled down to something like the following pseudo-assembly
+      (which assumes the `instance` pointer is stored in a register):
+
+      ```
+mov rax, [instance+offsetof(foo, bar)]
+      ```
+
+      This is read as:
+
+      1. take pointer from whatever register `instance` is in
+      2. add the offset for the `bar` field to the pointer
+      3. dereference that resulting pointer
+      4. store that in `rax`
+
+      And if you tag your pointers with, say, `0x1`, you want to remove the
+      `0x1`. Your C code will look like:
+
+      ```c
+instance->bar & ~0x1;
+      ```
+
+      or maybe:
+
+      ```c
+instance->bar - 1;
+      ```
+
+      Which compiles down to:
+
+      ```
+mov rax, [instance+offsetof(foo, bar)-1]
+      ```
+
+      and since both `offsetof(foo, bar)` and `1` are compile-time constants,
+      that can get folded into the same `mov` instruction.
+
+[^3]: This is interesting because [V8](https://v8.dev/blog/pointer-compression)
       and [Dart](https://dart.dev/articles/archive/numeric-computation), other
       JS(-like) VMs use pointer tagging. Seach "Smi" (or perhaps "Smi integer")
       if you want to learn more.
