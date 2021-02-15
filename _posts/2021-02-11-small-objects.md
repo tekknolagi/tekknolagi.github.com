@@ -319,7 +319,7 @@ int_add:                                # @int_add
 ```
 
 How about that, eh? What was previously a monster of a function is now **four
-whole instructions** and no memory operations. Put that in your pipeline and
+whole instructions**[^3] and no memory operations. Put that in your pipeline and
 smoke it.
 
 This is the kind of benefit we can reap from having small objects inside
@@ -351,7 +351,7 @@ Pointer tagging is not the only way to compress values into pointer-sized
 objects. For runtimes whose primary numeric type is a double, it may make sense
 to implement [NaN
 boxing](https://bernsteinbear.com/pl-resources/#pointer-tagging-and-nan-boxing).
-This is what VMs like SpiderMonkey[^3] and LuaJIT do.
+This is what VMs like SpiderMonkey[^4] and LuaJIT do.
 
 Remember my suggestion about the template interpreter from the [quickening
 post](/blog/inline-caching-quickening/)? Well, that idea is even more
@@ -433,7 +433,23 @@ mov rax, [instance+offsetof(foo, bar)-1]
       and since both `offsetof(foo, bar)` and `1` are compile-time constants,
       that can get folded into the same `mov` instruction.
 
-[^3]: This is interesting because [V8](https://v8.dev/blog/pointer-compression)
+[^3]: And guess what? This is just what the C compiler can generate from a C
+      description of our object model. I have not figured out how to add the
+      right compiler hints, but another correct implementation of `int_add` is
+      **just two instructions**:
+
+      ```
+int_add:                                # @int_add
+        lea     rax, [rdi + rsi]
+        ret
+      ```
+
+      I'm not sure what's going on with the code generation that prevents this
+      optimization, but we really should be able to add two integers without
+      doing any fiddling with tags. In an assembly/template interpreter world,
+      this kind of fine-grained control becomes much easier.
+
+[^4]: This is interesting because [V8](https://v8.dev/blog/pointer-compression)
       and [Dart](https://dart.dev/articles/archive/numeric-computation), other
       JS(-like) VMs use pointer tagging. Seach "Smi" (or perhaps "Smi integer")
       if you want to learn more.
