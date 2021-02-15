@@ -36,9 +36,6 @@ aside {
     margin-left: 20px;
     font-style: italic;
 }
-code, pre {
-    max-width: 650px;
-}
 pre {
     overflow: auto;
     word-wrap: normal;
@@ -61,8 +58,7 @@ footer hr {
     margin-top: 40px;
 }
 /* Inline code */
-/* TODO(max): Figure out how to avoid turning footnotes green, too. */
-p code, li code {
+code.highlighter-rouge {
     color: green;
 }
 table {
