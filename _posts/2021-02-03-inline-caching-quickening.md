@@ -426,7 +426,7 @@ I will list some of them below:
 * Special case small integers in your object representation. Why allocate a
   whole object if you can fit a great deal of integers in a [tagged
   pointer][tagged-pointer]?  This will simplify some of your math and type
-  checking.
+  checking. I wrote a [follow-up post](/blog/small-objects/) about this!
 
 Maybe I will even write about them in the future.
 
