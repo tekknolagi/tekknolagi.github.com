@@ -233,13 +233,13 @@ evaluates its bytecode with the given arguments, and returns. Extending the
 interpreter to support function calls would be another good exercise.
 
 The interpreter implementation is a fairly straightforward `switch` statement.
-Notice that it takes a representation of a function-like thing (`Code`) and an
-array of arguments. `nargs` is only used for bounds checking.
+Notice that it takes a representation of `Frame`, which holds all the state,
+like the `pc` and the `stack`. It contains a function-like thing (`Code`) and
+an array of arguments. `nargs` is only used for bounds checking.
 
-There's also this `Frame` object that is used to keep state like the program
-counter (`pc`) and stack pointer (`stack`). I am omitting some of its helper
-functions (`init_frame`, `push`, `pop`, `peek`) for brevity's sake, but they do
-nothing tricky. Feel free to look in the [repo][repo] for their definitions.
+I am omitting some of its helper functions (`init_frame`, `push`, `pop`,
+`peek`) for brevity's sake, but they do nothing tricky. Feel free to look in
+the [repo][repo] for their definitions.
 
 ```c
 typedef unsigned char byte;
@@ -250,30 +250,31 @@ typedef struct {
   Object* stack_array[STACK_SIZE];
   Object** stack;
   Code* code;
-  int pc;
+  word pc;
+  Object** args;
+  word nargs;
 } Frame;
 
-void eval_code_uncached(Code* code, Object** args, int nargs) {
-  Frame frame;
-  init_frame(&frame, code);
+void eval_code_uncached(Frame* frame) {
+  Code* code = frame->code;
   while (true) {
-    Opcode op = code->bytecode[frame.pc];
-    byte arg = code->bytecode[frame.pc + 1];
+    Opcode op = code->bytecode[frame->pc];
+    byte arg = code->bytecode[frame->pc + 1];
     switch (op) {
       case ARG:
-        CHECK(arg < nargs && "out of bounds arg");
-        push(&frame, args[arg]);
+        CHECK(arg < frame->nargs && "out of bounds arg");
+        push(frame, frame->args[arg]);
         break;
       case ADD: {
-        Object* right = pop(&frame);
-        Object* left = pop(&frame);
+        Object* right = pop(frame);
+        Object* left = pop(frame);
         Method method = lookup_method(object_type(left), kAdd);
         Object* result = (*method)(left, right);
-        push(&frame, result);
+        push(frame, result);
         break;
       }
       case PRINT: {
-        Object* obj = pop(&frame);
+        Object* obj = pop(frame);
         Method method = lookup_method(object_type(obj), kPrint);
         (*method)(obj);
         break;
@@ -284,7 +285,7 @@ void eval_code_uncached(Code* code, Object** args, int nargs) {
         fprintf(stderr, "unknown opcode %d\n", op);
         abort();
     }
-    frame.pc += kBytecodeSize;
+    frame->pc += kBytecodeSize;
   }
 }
 ```
@@ -376,28 +377,28 @@ void add_update_cache(Frame* frame, Object* left, Object* right) {
   push(frame, result);
 }
 
-void eval_code_cached(Code *code, Object** args, int nargs) {
+void eval_code_cached(Frame* frame) {
   // ...
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD: {
-        Object* right = pop(&frame);
-        Object* left = pop(&frame);
-        CachedValue cached = cache_at(&frame);
+        Object* right = pop(frame);
+        Object* left = pop(frame);
+        CachedValue cached = cache_at(frame);
         Method method = cached.value;
         if (method == NULL || cached.key != object_type(left)) {
-          add_update_cache(&frame, left, right);
+          add_update_cache(frame, left, right);
           break;
         }
         Object* result = (*method)(left, right);
-        push(&frame, result);
+        push(frame, result);
         break;
       }
       // ...
     }
-    frame.pc += kBytecodeSize;
+    frame->pc += kBytecodeSize;
   }
 }
 ```
@@ -432,16 +433,21 @@ int main() {
       new_int(5),
       new_int(10),
   };
+  void (*eval)(Frame*) = eval_code_cached;
+  Frame frame;
+  Code code = new_code(bytecode, sizeof bytecode / kBytecodeSize);
+  init_frame(&frame, &code, int_args, ARRAYSIZE(int_args));
+  eval(&frame);
+  init_frame(&frame, &code, int_args, ARRAYSIZE(int_args));
+  eval(&frame);
   Object* str_args[] = {
       new_str("hello "),
       new_str("world"),
   };
-  Code code = new_code(bytecode, sizeof bytecode / kBytecodeSize);
-  void (*eval)() = eval_code_cached;
-  eval(&code, int_args, ARRAYSIZE(int_args));
-  eval(&code, int_args, ARRAYSIZE(int_args));
-  eval(&code, str_args, ARRAYSIZE(str_args));
-  eval(&code, str_args, ARRAYSIZE(str_args));
+  init_frame(&frame, &code, str_args, ARRAYSIZE(str_args));
+  eval(&frame);
+  init_frame(&frame, &code, str_args, ARRAYSIZE(str_args));
+  eval(&frame);
 }
 ```
 

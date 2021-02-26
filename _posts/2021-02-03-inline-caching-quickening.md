@@ -33,28 +33,28 @@ void add_update_cache(Frame* frame, Object* left, Object* right) {
   push(frame, result);
 }
 
-void eval_code_cached(Code* code, Object** args, int nargs) {
+void eval_code_cached(Frame* frame) {
   // ...
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD: {
-        Object* right = pop(&frame);
-        Object* left = pop(&frame);
-        CachedValue cached = cache_at(&frame);
+        Object* right = pop(frame);
+        Object* left = pop(frame);
+        CachedValue cached = cache_at(frame);
         Method method = cached.value;
         if (method == NULL || cached.key != object_type(left)) {
-          add_update_cache(&frame, left, right);
+          add_update_cache(frame, left, right);
           break;
         }
         Object* result = (*method)(left, right);
-        push(&frame, result);
+        push(frame, result);
         break;
       }
       // ...
     }
-    frame.pc += kBytecodeSize;
+    frame->pc += kBytecodeSize;
   }
 }
 ```
@@ -128,42 +128,35 @@ This way, the next time around, we have satisfied the invariant.
 Let's see how that looks:
 
 ```c
-void add_update_cache(Frame* frame, Object* left, Object* right) {
-  Method method = lookup_method(object_type(left), kAdd);
-  cache_at_put(frame, object_type(left), method);
-  Object* result = (*method)(left, right);
-  push(frame, result);
-}
-
-void eval_code_quickening(Code* code, Object** args, int nargs) {
+void eval_code_quickening(Frame* frame) {
   // ...
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD: {
-        Object* right = pop(&frame);
-        Object* left = pop(&frame);
-        add_update_cache(&frame, left, right);
-        code->bytecode[frame.pc] = ADD_CACHED;
+        Object* right = pop(frame);
+        Object* left = pop(frame);
+        add_update_cache(frame, left, right);
+        code->bytecode[frame->pc] = ADD_CACHED;
         break;
       }
       case ADD_CACHED: {
-        Object* right = pop(&frame);
-        Object* left = pop(&frame);
-        CachedValue cached = cache_at(&frame);
+        Object* right = pop(frame);
+        Object* left = pop(frame);
+        CachedValue cached = cache_at(frame);
         if (cached.key != object_type(left)) {
-          add_update_cache(&frame, left, right);
+          add_update_cache(frame, left, right);
           break;
         }
         Method method = cached.value;
         Object* result = (*method)(left, right);
-        push(&frame, result);
+        push(frame, result);
         break;
       }
     // ...
     }
-    frame.pc += kBytecodeSize;
+    frame->pc += kBytecodeSize;
   }
 }
 ```
@@ -205,26 +198,26 @@ void do_add_int(Frame* frame, Object* left, Object* right) {
   push(frame, result);
 }
 
-void eval_code_quickening(Code *code, Object** args, int nargs) {
+void eval_code_quickening(Frame* frame) {
   // ...
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD_INT: {
-        Object* right = pop(&frame);
-        Object* left = pop(&frame);
+        Object* right = pop(frame);
+        Object* left = pop(frame);
         if (object_type(left) != kInt) {
-          add_update_cache(&frame, left, right);
-          code->bytecode[frame.pc] = ADD_CACHED;
+          add_update_cache(frame, left, right);
+          code->bytecode[frame->pc] = ADD_CACHED;
           break;
         }
-        do_add_int(&frame, left, right);
+        do_add_int(frame, left, right);
         break;
       }
     // ...
     }
-    frame.pc += kBytecodeSize;
+    frame->pc += kBytecodeSize;
   }
 }
 ```
@@ -299,27 +292,27 @@ integer, it'll call `do_add_int` and rewrite itself.
 Let's see how that looks in code.
 
 ```c
-void eval_code_quickening(Code* code, Object** args, int nargs) {
+void eval_code_quickening(Frame* frame) {
   // ...
   while (true) {
     // ...
     switch (op) {
       // ...
       case ADD: {
-        Object* right = pop(&frame);
-        Object* left = pop(&frame);
+        Object* right = pop(frame);
+        Object* left = pop(frame);
         if (object_type(left) == kInt) {
-          do_add_int(&frame, left, right);
-          code->bytecode[frame.pc] = ADD_INT;
+          do_add_int(frame, left, right);
+          code->bytecode[frame->pc] = ADD_INT;
           break;
         }
-        add_update_cache(&frame, left, right);
-        code->bytecode[frame.pc] = ADD_CACHED;
+        add_update_cache(frame, left, right);
+        code->bytecode[frame->pc] = ADD_CACHED;
         break;
       }
     // ...
     }
-    frame.pc += kBytecodeSize;
+    frame->pc += kBytecodeSize;
   }
 }
 ```
