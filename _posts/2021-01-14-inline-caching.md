@@ -291,8 +291,7 @@ void eval_code_uncached(Code* code, Object** args, int nargs) {
 
 Both `ADD` and `PRINT` make use of `lookup_method` to find out what function
 pointer corresponds to the given `(type, symbol)` pair. Both opcodes throw away
-the result. How sad. Let's figure out how to save some of that data. Maybe we
-can use the `caches` slot in `Code`.
+the result. How sad. Let's figure out how to save some of that data.
 
 ### Inline caching strategy
 
@@ -329,7 +328,20 @@ invalidation in this post.
 
 ### Inline caching implementation
 
-Let's think back to this `CachedValue *caches` array.
+Let's store the caches on the `Code` struct. If we have one element per opcode,
+that looks like:
+
+```c
+typedef struct {
+  // Array of `num_opcodes' (op, arg) pairs (total size `num_opcodes' * 2).
+  byte* bytecode;
+  word num_opcodes;
+  // Array of `num_opcodes' elements.
+  CachedValue* caches;
+} Code;
+```
+
+where `CachedValue` is a key/value pair of object type and method address:
 
 ```c
 typedef struct {
@@ -337,9 +349,6 @@ typedef struct {
   Method value;
 } CachedValue;
 ```
-
-This looks like it'll suit us just fine. Each element has a key and a value.
-Each `Code` object has an array of these, one per opcode.
 
 We have some helpers, `cache_at` and `cache_at_put`, to manipulate the caches.
 
