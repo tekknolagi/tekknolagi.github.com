@@ -129,14 +129,16 @@ Sometimes you want to generate assembly from a host language. Common use cases
 include compilers, both ahead-of-time and just-in-time. Here are some libraries
 that can help with that.
 
-* [x86-64 assembler in C](https://gist.github.com/tekknolagi/201539673cfcc60df73ef75a8a9b5896),
-  which I forked from the pervognsen's [original](https://gist.github.com/pervognsen/9d815016d8ef39f1b2c8e509ee2cf052)
-* Dart's [multi-arch assembler in C++](https://github.com/dart-lang/sdk/tree/1e24fe7d699a1c36be142afa21859c6a9c82d035/runtime/vm/compiler/assembler)
-  and [relevant constants](https://github.com/dart-lang/sdk/blob/1e24fe7d699a1c36be142afa21859c6a9c82d035/runtime/vm/constants_x64.h),
+* yjit's [x86-64 assembler](https://github.com/Shopify/ruby/blob/56a1220128d18a7422f72e25d99b2bee9c7e5a86/yjit_asm.h)
+  (C) from Shopify's Ruby JIT
+* Dart's [multi-arch assembler](https://github.com/dart-lang/sdk/tree/1e24fe7d699a1c36be142afa21859c6a9c82d035/runtime/vm/compiler/assembler)
+  (C++) and [relevant constants](https://github.com/dart-lang/sdk/blob/1e24fe7d699a1c36be142afa21859c6a9c82d035/runtime/vm/constants_x64.h),
   both of which need some extracting from the main project
-* Strongtalk's [x86 assembler in C](https://github.com/talksmall/Strongtalk/tree/39b336f8399230502535e7ac12c9c1814552e6da/vm/asm)
-* AsmJit, a [multi-arch assembler in C++](https://github.com/asmjit/asmjit)
-* [PeachPy](https://github.com/Maratyszcza/PeachPy), an x86-64 assembler in Python
+* Strongtalk's [x86 assembler](https://github.com/talksmall/Strongtalk/tree/39b336f8399230502535e7ac12c9c1814552e6da/vm/asm) (C)
+* AsmJit's [multi-arch assembler](https://github.com/asmjit/asmjit) (C++)
+* PeachPy's [x86-64 assembler](https://github.com/Maratyszcza/PeachPy) (Python)
+* My [small x86-64 assembler](https://gist.github.com/tekknolagi/201539673cfcc60df73ef75a8a9b5896) (C),
+  which I forked from the pervognsen's [original](https://gist.github.com/pervognsen/9d815016d8ef39f1b2c8e509ee2cf052) (C)
 
 For more inspiration, check out some of the assemblers in runtimes I mention in
 my [Compiling a Lisp](/blog/compiling-a-lisp-8/#assembler-libraries) post.
