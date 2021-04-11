@@ -76,6 +76,7 @@ research around optimizing dynamic languages.
     * Make sure to take a look at "Further Reading"
 * Stefan Marr's [page](https://stefan-marr.de/2020/06/efficient-and-safe-implementations-of-dynamic-languages/)
   about efficient and safe implementations of dynamic languages
+* The Wikipedia page for [Cheney's algorithm](https://en.wikipedia.org/wiki/Cheney%27s_algorithm)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
@@ -164,6 +165,9 @@ write about:
 * Exception handling side-tables instead of block stacks
   * [jvm explanation](https://www.infoworld.com/article/2076868/how-the-java-virtual-machine-handles-exceptions.html)
   * [another jvm explanation](https://www.overops.com/blog/the-surprising-truth-of-java-exceptions-what-is-really-going-on-under-the-hood/)
+* Debugging mindsets
+  * Ways to think about debugging that make the process less stressful and
+    thrashy
 
 ## Interesting tools
 
