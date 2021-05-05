@@ -77,6 +77,8 @@ research around optimizing dynamic languages.
 * Stefan Marr's [page](https://stefan-marr.de/2020/06/efficient-and-safe-implementations-of-dynamic-languages/)
   about efficient and safe implementations of dynamic languages
 * The Wikipedia page for [Cheney's algorithm](https://en.wikipedia.org/wiki/Cheney%27s_algorithm)
+* This [web page](https://github.com/thlorenz/v8-perf/blob/master/compiler.md)
+  about V8 internals
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
