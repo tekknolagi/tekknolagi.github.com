@@ -79,6 +79,8 @@ research around optimizing dynamic languages.
 * The Wikipedia page for [Cheney's algorithm](https://en.wikipedia.org/wiki/Cheney%27s_algorithm)
 * This [web page](https://github.com/thlorenz/v8-perf/blob/master/compiler.md)
   about V8 internals
+* Vyacheslav Egorov's [inline cache](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html)
+  explanation for JavaScript
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
