@@ -81,6 +81,8 @@ research around optimizing dynamic languages.
   about V8 internals
 * Vyacheslav Egorov's [inline cache](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html)
   explanation for JavaScript
+* V8's [blog post](https://v8.dev/blog/sparkplug) about their baseline/template
+  JIT
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
