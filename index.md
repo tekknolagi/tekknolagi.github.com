@@ -18,6 +18,8 @@ happy to talk about education, programming languages, cycling, and more.
 
 That's probably an understatement. Here are some of my favorite projects:
 
+* [Cinder](https://github.com/facebookincubator/cinder), Instagram's
+  performance-oriented fork of CPython
 * An in-progress [Lisp to x86-64 compiler](https://github.com/tekknolagi/ghuloum)
   I am writing in C and [writing about](/blog/lisp/) on my blog
 * [EXP 57](/excollege/), a course on professional and personal development that
