@@ -47,6 +47,8 @@ That's probably an understatement. Here are some of my favorite projects:
 <del>It's not very interesting just yet.</del> [Things are happening.](/blog/)
 
 ## Sometimes I contribute to open source projects.
+
+* [Cinder](https://github.com/facebookincubator/cinder)
 * [Reason](https://github.com/facebook/reason)
 * [Clang](https://clang.llvm.org/)
   ([rC345558](https://reviews.llvm.org/rC345558))
