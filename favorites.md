@@ -36,6 +36,10 @@ Here is some of my favorite music:
   Giulini, with soloist Itzhak Perlman
 * *Symphonies 3, 9* by Ludwig van Beethoven, conducted by Josef Krips
 * *La Gazza Ladra* by Gioachino Rossini, conducted by Sir Thomas Beecham
+* *Il barbiere di Siviglia*, by Gioachino Rossini
+* *Tancredi*, by Gioachino Rossini
+* *Semiramide*, by Gioachino Rossini
+* *Guillaume Tell*, by Gioachino Rossini
 * *Háry János* by Zoltán Kodály
 * *Cello Sonata* by Zoltán Kodály
 * *Dances of Galánta* by Zoltán Kodály
@@ -47,12 +51,14 @@ Here is some of my favorite music:
 * *Ruslan and Lyudmila* by Mikhail Glinka, with director Valery Gergiev
 * *Scheherazade* by Nikolai Rimsky-Korsakov, with director Valery Gergiev
 * *Turandot* by Giacomo Puccini, conducted by Zubin Mehta
+* *Symphony No. 8* by Anton Bruckner
 
 I am currently listening to some newer music, too:
 
 * <i style="font-variant: small-caps;">Отава ё</i> *(Otava Yo)*
 * *Dire Straits*
 * *Gipsy Kings*
+* *Mark Knopfler*
 * *ZZ Top*
 * *Gorillaz*
 * *Kanye West*
@@ -73,6 +79,16 @@ I am currently listening to some newer music, too:
 * *Paul Simon*
 * *Ladysmith Black Mambazo*
 * *ⵜⵏⵔⵓⵏ (Tinariwen)*
+* *Sona Jobarteh*
+* *Ali Farka Touré*
+* *Pink Martini*
+* *Zimbaria*
+* *Alison Krauss*
+* *The Wailin' Jennys*
+* *Ruth Moody*
+* *Van Morrison*
+* *Yusuf Islam*
+* *Missy Elliott*
 
 Here's some awesome other music that I found:
 
