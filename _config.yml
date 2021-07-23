@@ -16,7 +16,7 @@ future: false
 twitter:
   username: tekknolagi
 
-github:
+repo:
   repository_url: https://github.com/tekknolagi/tekknolagi.github.com
   branch: master
 
