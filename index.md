@@ -6,7 +6,7 @@ layout: page
 <h1>I'm Max Bernstein.</h1>
 
 I am a human and [programmer](https://github.com/tekknolagi). I like to read
-books, take photos and ride bikes in the hills near my house. I [tweet
+books, take photos, and ride bikes in the hills near my house. I [tweet
 things](https://twitter.com/tekknolagi) about bread, legumes, and compilers.
 Though my official title is Chief Potato, I work at Instagram as a software
 engineer. I'm also teaching [CS 50](/isdt/) this fall at Tufts.
