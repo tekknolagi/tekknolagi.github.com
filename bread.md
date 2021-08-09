@@ -19,7 +19,13 @@ one][ka] first.
 
 [ka]: https://www.kingarthurbaking.com/recipes/no-knead-crusty-white-bread-recipe
 
+Here are some quick links to the individual recipes:
+
+* this list replaced by toc
+{:toc}
+
 ## Notes
+{:.no_toc}
 
 All the percentages on this page are in terms of mass, not volume. Mass and
 volume are interchangeable for things like water, which are not very
@@ -191,8 +197,10 @@ Sourced from
 [kingarthurbaking.com](https://www.kingarthurbaking.com/recipes/blueberry-scones-recipe).
 
 ## Miscellaneous
+{:.no_toc}
 
 ### Small tips
+{:.no_toc}
 
 It's easier to pour flour into water and mix it up than the other way around.
 This helps avoid flour getting stuck on the bottom of your bowl.
@@ -202,6 +210,7 @@ Learn to [bake bread on your schedule][hostage].
 [hostage]: https://www.kingarthurbaking.com/blog/2020/04/06/dont-be-a-bread-hostage
 
 ### Suggested baking tools
+{:.no_toc}
 
 Not all of these are required. Some people will tell you to buy a bunch of
 expensive equipment. Bake with what you have, and if you want to incrementally
@@ -225,6 +234,7 @@ improve your tools, go for it.
   sheet. Loaf pans are great for baking loaves.
 
 ### Philosophy
+{:.no_toc}
 
 A very smart person once asked me, *"Is bread defined by its ingredients?"* I
 would argue that the magic of bread is that it is more than the sum of its
