@@ -161,6 +161,35 @@ Fill. Celebrate.
 Sourced from
 [thetasteofkosher.com](https://www.thetasteofkosher.com/sufganiyot-recipe/).
 
+## Blueberry scones
+
+For eight (8) sizeable scones, use ~240g flour. This requires a little less
+than a small carton of blueberries.
+
+```
+Ingredient       Quantity
+----------       --------
+AP flour            100 %
+Salt              1/2 tsp
+Granulated sugar     21 %
+Baking powder         5 %
+Cold butter          35 %
+Eggs                 2 ct
+Yogurt               24 %
+Vanilla extract     1 tsp
+Fresh blueberries    59 %
+```
+
+Mix dry ingredients. Chop butter into chunks. Add butter to flour. Mix wet
+ingredients (including blueberries). Incorporate into dry ingredients. Scoop
+into appropriately-sized balls on a greased baking sheet. Bake 22 minutes at
+375F.
+
+Substitute fruit as appropriate.
+
+Sourced from
+[kingarthurbaking.com](https://www.kingarthurbaking.com/recipes/blueberry-scones-recipe).
+
 ## Miscellaneous
 
 ### Small tips
