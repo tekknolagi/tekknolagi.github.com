@@ -83,7 +83,7 @@ research around optimizing dynamic languages.
   explanation for JavaScript
 * V8's [blog post](https://v8.dev/blog/sparkplug) about their baseline/template
   JIT
-* Kate Temkin's [QEMU fork](https://twitter.com/ktemkin/status/1375835935061942274)
+* Kate Temkin's [QEMU fork](https://github.com/ktemkin/qemu/tree/with_tcti)
   with a gadget-based pseudo-JIT and associated
   [Twitter thread](https://twitter.com/ktemkin/status/1375835935061942274)
 
