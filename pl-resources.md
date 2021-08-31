@@ -90,6 +90,7 @@ research around optimizing dynamic languages.
   * [Cinder](https://github.com/facebookincubator/cinder)
   * [Skybison](https://github.com/facebookexperimental/skybison)
   * [Pyjion](https://github.com/tonybaloney/Pyjion)
+  * [Pyston](https://github.com/pyston/pyston)
   * [PyPy](https://foss.heptapod.net/pypy/pypy)
   * [Falcon](https://github.com/rjpower/falcon)
 
