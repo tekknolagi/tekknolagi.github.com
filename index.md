@@ -51,6 +51,7 @@ That's probably an understatement. Here are some of my favorite projects:
 ## Sometimes I contribute to open source projects.
 
 * [Cinder](https://github.com/facebookincubator/cinder)
+* [Skybison](https://github.com/facebookexperimental/skybison)
 * [Reason](https://github.com/facebook/reason)
 * [Clang](https://clang.llvm.org/)
   ([rC345558](https://reviews.llvm.org/rC345558))
