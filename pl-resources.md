@@ -86,6 +86,12 @@ research around optimizing dynamic languages.
 * Kate Temkin's [QEMU fork](https://github.com/ktemkin/qemu/tree/with_tcti)
   with a gadget-based pseudo-JIT and associated
   [Twitter thread](https://twitter.com/ktemkin/status/1375835935061942274)
+* Optimized Python runtimes
+  * [Cinder](https://github.com/facebookincubator/cinder)
+  * [Skybison](https://github.com/facebookexperimental/skybison)
+  * [Pyjion](https://github.com/tonybaloney/Pyjion)
+  * [PyPy](https://foss.heptapod.net/pypy/pypy)
+  * [Falcon](https://github.com/rjpower/falcon)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
