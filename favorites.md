@@ -184,3 +184,11 @@ Sister Sara* (Sherlock Holmes).
 
 [cimbalom0]: https://web.archive.org/web/20200615181712/https://manufacturing.dustystrings.com/blog/hammered-dulcimer-film-scores
 [cimbalom1]: http://web.archive.org/web/20191228224428/https://moviemusicuk.us/2015/08/17/the-man-from-u-n-c-l-e-daniel-pemberton/
+
+This [tweet](https://twitter.com/isosteph/status/1433579813738987535) by
+*@isosteph*:
+
+> when a thousand year old tree catches fire and its bark crackles and pops and
+> turns to powder and one day in a strong wind it topples over and its roots
+> wrench the ground up ten feet into the air is that more or less real than
+> when a guy flips a jpeg for 8 eth
