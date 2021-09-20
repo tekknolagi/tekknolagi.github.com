@@ -134,6 +134,7 @@ Here are some websites I like:
 * [tinyprojects.dev](http://tinyprojects.dev)
 * [www.distinctly.pink](http://www.distinctly.pink)
 * [cynthia.re](https://cynthia.re/)
+* [stewartgrant.ca](http://www.stewartgrant.ca/hummingbirds/)
 
 My favorite tea is currently Stash Tea's *Double Bergamot Earl Grey*.
 
