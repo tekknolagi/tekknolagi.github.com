@@ -250,6 +250,7 @@ playlist looks like it could be worth a watch, but it's a lot of hours.
 * [awesome compilers resources](https://github.com/aalhour/awesome-compilers)
 * [DIY emulator/VM resources](https://github.com/danistefanovic/build-your-own-x#build-your-own-emulator--virtual-machine)
 * [programming language resources](https://github.com/danistefanovic/build-your-own-x#build-your-own-programming-language)
+* Phil Eaton's [list of JS implementations](https://notes.eatonphil.com/javascript-implementations.html)
 
 ## Communities
 
