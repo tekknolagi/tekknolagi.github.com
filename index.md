@@ -52,16 +52,16 @@ That's probably an understatement. Here are some of my favorite projects:
 
 * [Cinder](https://github.com/facebookincubator/cinder)
 * [Skybison](https://github.com/facebookexperimental/skybison)
-* [Reason](https://github.com/facebook/reason)
-* [Clang](https://clang.llvm.org/)
-  ([rC345558](https://reviews.llvm.org/rC345558))
-* [Pyre](https://pyre-check.org/)
-  ([Refactor protocol inference](https://github.com/facebook/pyre-check/commit/f14577db5940c0b4087fffe209786cd4075f37df))
+* [Shopify's Ruby fork](https://github.com/Shopify/ruby)
+  ([#58](https://github.com/Shopify/ruby/pull/58),
+   [#59](https://github.com/Shopify/ruby/pull/59))
 * [CPython](https://www.python.org/)
   ([bpo-36929](https://github.com/python/cpython/pull/13392),
   [bpo-38648](https://github.com/python/cpython/pull/17002),
   [bpo-42065](https://github.com/python/cpython/pull/19940),
   [bpo-42199](https://github.com/python/cpython/pull/23031))
-* [Shopify's Ruby fork](https://github.com/Shopify/ruby)
-  ([#58](https://github.com/Shopify/ruby/pull/58),
-   [#59](https://github.com/Shopify/ruby/pull/59))
+* [Pyre](https://pyre-check.org/)
+  ([Refactor protocol inference](https://github.com/facebook/pyre-check/commit/f14577db5940c0b4087fffe209786cd4075f37df))
+* [Clang](https://clang.llvm.org/)
+  ([rC345558](https://reviews.llvm.org/rC345558))
+* [Reason](https://github.com/facebook/reason)
