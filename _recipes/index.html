@@ -8,8 +8,7 @@ layout: post
 <ul>
     {% for recipe in site.recipes %}
     {% if recipe.index != true %}
-    <li><a href="{{ recipe.url }}">{{ recipe.title }}</a><br />
-        by <i>{{ recipe.creator }}</i></li>
+    <li><a href="{{ recipe.url }}">{{ recipe.title }}</a></li>
     {% endif %}
     {% endfor %}
 </ul>

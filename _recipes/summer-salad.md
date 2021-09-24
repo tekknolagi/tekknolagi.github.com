@@ -1,6 +1,5 @@
 ---
 title: Summer Salad
-creator: Marcella Bernstein
 layout: recipe
 ---
 
@@ -17,3 +16,8 @@ layout: recipe
 9. Optional: Pecans
 10. Olive oil
 11. Reduced balsamic vinaigrette
+
+*Notes:*
+
+from my mother
+
