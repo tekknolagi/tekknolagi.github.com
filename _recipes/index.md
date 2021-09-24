@@ -2,7 +2,7 @@
 title: Recipes
 permalink: /recipes/
 index: true
-layout: post
+layout: page
 ---
 
 <ul>
