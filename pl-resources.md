@@ -58,8 +58,10 @@ Here are some resources I have found useful for understanding the ideas and
 research around optimizing dynamic languages.
 
 * [Efficient implementation of the Smalltalk-80 system](https://dl.acm.org/doi/10.1145/800017.800542)
-* [Efficient interpretation using quickening](https://dl.acm.org/doi/abs/10.1145/1869631.1869633)
-* [Inline caching meets quickening](https://dl.acm.org/doi/10.5555/1883978.1884008)
+* Stefan Brunthaler's work
+  * [Efficient interpretation using quickening](https://dl.acm.org/doi/abs/10.1145/1869631.1869633)
+  * [Inline caching meets quickening](https://dl.acm.org/doi/10.5555/1883978.1884008)
+  * [Multi-Level Quickening: Ten Years Later](https://arxiv.org/pdf/2109.02958.pdf)
 * [Optimizing dynamically-typed object-oriented languages with polymorphic inline caches](https://bibliography.selflanguage.org/_static/pics.pdf)
 * [Garbage collection in a large LISP system][large-lisp]
 * Urs Hölzle's thesis, [Adaptive Optimization for Self](http://i.stanford.edu/pub/cstr/reports/cs/tr/94/1520/CS-TR-94-1520.pdf)
