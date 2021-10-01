@@ -90,6 +90,8 @@ research around optimizing dynamic languages.
 * Kate Temkin's [QEMU fork](https://github.com/ktemkin/qemu/tree/with_tcti)
   with a gadget-based pseudo-JIT and associated
   [Twitter thread](https://twitter.com/ktemkin/status/1375835935061942274)
+* [When pigs fly: optimizing bytecode interpreters](https://medium.com/bumble-tech/when-pigs-fly-optimising-bytecode-interpreters-f64fb6bfa20f)
+  * I particularly like the snippet on bytecode VM traces
 * Optimized Python runtimes
   * [Cinder](https://github.com/facebookincubator/cinder)
   * [Skybison](https://github.com/facebookexperimental/skybison)
