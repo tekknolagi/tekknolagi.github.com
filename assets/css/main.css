@@ -110,10 +110,10 @@ sub {
     background-color: #212121;
   }
   a[href] {
-    color: #9E9EFF;
+    color: #9e9eff;
   }
   a[href]:visited {
-    color: #D0ADF0;
+    color: #bebedf;
   }
   svg, object.svg, img.svg {
     filter: invert(100%);
