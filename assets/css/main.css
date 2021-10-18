@@ -115,6 +115,9 @@ sub {
   a[href]:visited {
     color: #bebedf;
   }
+  code.highlighter-rouge {
+    color: #fe8019;
+  }
   svg, object.svg, img.svg {
     filter: invert(100%);
   }
