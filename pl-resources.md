@@ -51,6 +51,7 @@ to find great stuff.
   blog post
 * Justin Meiners and Ryan Pendelton's [Write your own virtual machine](https://justinmeiners.github.io/lc3-vm/)
 * Maxime Chevalier-Boisvert's [website](https://pointersgonewild.com/about/)
+* Serge's [toy JVM](https://zserge.com/posts/jvm/)
 
 ## Runtime optimization
 
