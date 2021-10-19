@@ -52,6 +52,7 @@ to find great stuff.
 * Justin Meiners and Ryan Pendelton's [Write your own virtual machine](https://justinmeiners.github.io/lc3-vm/)
 * Maxime Chevalier-Boisvert's [website](https://pointersgonewild.com/about/)
 * Serge's [toy JVM](https://zserge.com/posts/jvm/)
+* [Dragon taming with Tailbiter](https://codewords.recurse.com/issues/seven/dragon-taming-with-tailbiter-a-bytecode-compiler)
 
 ## Runtime optimization
 
