@@ -137,6 +137,7 @@ Here are some websites I like:
 * [stewartgrant.ca](http://www.stewartgrant.ca/hummingbirds/)
 * [bitfission.com](http://bitfission.com/)
 * [gossipsweb.net](https://gossipsweb.net/)
+* [mazzo.li](https://mazzo.li/archive.html)
 
 My favorite tea is currently Stash Tea's *Double Bergamot Earl Grey*.
 
