@@ -32,3 +32,7 @@ Tried, enjoyed, and repeated frequently by yours truly.
 * [Salad Shirazi](http://www.ahueats.com/2016/06/salad-shirazi.html) by Ahu
   Eats
 * [Fattoush](http://www.ahueats.com/2016/06/fattoush-salad.html) by Ahu Eats
+
+## Other text-based recipes
+
+See [based.cooking](https://based.cooking/).
