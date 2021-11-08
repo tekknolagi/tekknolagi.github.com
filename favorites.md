@@ -139,6 +139,10 @@ Here are some websites I like:
 * [gossipsweb.net](https://gossipsweb.net/)
 * [mazzo.li](https://mazzo.li/archive.html)
 
+Some federated networking software:
+
+* [lotide](https://hub.sr.ht/~vpzom/lotide/), an ActivityPub-based forum
+
 My favorite tea is currently Stash Tea's *Double Bergamot Earl Grey*.
 
 I took some wonderful classes while I was at Tufts. I wholeheartedly recommend
