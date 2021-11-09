@@ -366,6 +366,12 @@ you can tag pointers to all prime integers. Or maybe you want to tag different
 heap-allocated objects with their type tags. Either way, the two techniques are
 independent and can be used separately.
 
+## Notes
+
+James Y Knight [posted
+about](https://mail.python.org/pipermail/python-dev/2004-July/046139.html)
+adding pointer tagging to CPython in 2004.
+
 <hr style="width: 100px;" />
 <!-- Footnotes -->
 

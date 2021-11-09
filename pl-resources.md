@@ -78,6 +78,8 @@ research around optimizing dynamic languages.
 * [Assembly interpreters](http://nominolo.blogspot.com/2012/07/implementing-fast-interpreters.html)
   and [follow-up](http://nominolo.blogspot.com/2012/07/implementing-fast-interpreters_31.html)
     * Make sure to take a look at "Further Reading"
+    * A [post](http://web.archive.org/web/20151206043326/https://blog.mozilla.org/dmandelin/2008/06/03/squirrelfish/)
+      including a snippet on direct-threaded dispatch in an assembly interpreter
 * Stefan Marr's [page](https://stefan-marr.de/2020/06/efficient-and-safe-implementations-of-dynamic-languages/)
   about efficient and safe implementations of dynamic languages
 * The Wikipedia page for [Cheney's algorithm](https://en.wikipedia.org/wiki/Cheney%27s_algorithm)
