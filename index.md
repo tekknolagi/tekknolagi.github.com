@@ -20,7 +20,8 @@ That's probably an understatement. Here are some of my favorite projects:
 
 * [Cinder](https://github.com/facebookincubator/cinder), Instagram's
   performance-oriented fork of CPython
-* [Skybison](https://github.com/facebookexperimental/skybison), Instagram's
+* [Skybison](https://github.com/tekknolagi/skybison) (fork of
+  [original](https://github.com/facebookexperimental/skybison)), Instagram's
   performance-oriented greenfield implementation of Python
 * An [Lisp to x86-64 compiler](https://github.com/tekknolagi/ghuloum) I wrote
   in C and accompanying [blog posts](/blog/lisp/)
@@ -43,10 +44,12 @@ That's probably an understatement. Here are some of my favorite projects:
 ## Sometimes I contribute to open source projects.
 
 * [Cinder](https://github.com/facebookincubator/cinder)
-* [Skybison](https://github.com/facebookexperimental/skybison)
-* [Shopify's Ruby fork](https://github.com/Shopify/ruby)
+* [Skybison](https://github.com/tekknolagi/skybison)
+  (fork of [original](https://github.com/facebookexperimental/skybison))
+* [YJIT](https://github.com/Shopify/ruby)
   ([#58](https://github.com/Shopify/ruby/pull/58),
-   [#59](https://github.com/Shopify/ruby/pull/59))
+   [#59](https://github.com/Shopify/ruby/pull/59)),
+  which now lives in [upstream Ruby](https://github.com/ruby/ruby)
 * [CPython](https://www.python.org/)
   ([bpo-36929](https://github.com/python/cpython/pull/13392),
   [bpo-38648](https://github.com/python/cpython/pull/17002),
