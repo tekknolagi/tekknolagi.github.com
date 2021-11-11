@@ -24,8 +24,6 @@ to find great stuff.
   the Ghuloum style
 * [Destination-Passing Style](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/dps-fhpc17.pdf)
   * I would like to find a better intro resource for this
-* [The Ruby Compiler Survey](https://ruby-compilers.com/), a collection of Ruby
-  compilers and explanations
 
 ## Lisp specific
 
@@ -91,7 +89,7 @@ research around optimizing dynamic languages.
   explanation for JavaScript
 * V8's [blog post](https://v8.dev/blog/sparkplug) about their baseline/template
   JIT
-* Chris Seaton's [RubyKaigi talk](https://chrisseaton.com/truffleruby/rubykaigi21/)
+* [Chris Seaton][chrisgseaton]'s [RubyKaigi talk](https://chrisseaton.com/truffleruby/rubykaigi21/)
   about Ruby object shapes
 * Kate Temkin's [QEMU fork](https://github.com/ktemkin/qemu/tree/with_tcti)
   with a gadget-based pseudo-JIT and associated
@@ -260,7 +258,11 @@ playlist looks like it could be worth a watch, but it's a lot of hours.
 * [awesome compilers resources](https://github.com/aalhour/awesome-compilers)
 * [DIY emulator/VM resources](https://github.com/danistefanovic/build-your-own-x#build-your-own-emulator--virtual-machine)
 * [programming language resources](https://github.com/danistefanovic/build-your-own-x#build-your-own-programming-language)
-* Phil Eaton's [list of JS implementations](https://notes.eatonphil.com/javascript-implementations.html)
+* [Phil Eaton][eatonphil]'s [list of JS implementations](https://notes.eatonphil.com/javascript-implementations.html)
+* [Chris Seaton][chrisgseaton]'s [The Ruby Compiler Survey](https://ruby-compilers.com/)
+
+[eatonphil]: https://notes.eatonphil.com/
+[chrisgseaton]: https://chrisseaton.com/
 
 ## Communities
 
