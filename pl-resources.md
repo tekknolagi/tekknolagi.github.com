@@ -24,6 +24,8 @@ to find great stuff.
   the Ghuloum style
 * [Destination-Passing Style](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/dps-fhpc17.pdf)
   * I would like to find a better intro resource for this
+* [The Ruby Compiler Survey](https://ruby-compilers.com/), a collection of Ruby
+  compilers and explanations
 
 ## Lisp specific
 
