@@ -53,6 +53,8 @@ to find great stuff.
 * Maxime Chevalier-Boisvert's [website](https://pointersgonewild.com/about/)
 * Serge's [toy JVM](https://zserge.com/posts/jvm/)
 * [Dragon taming with Tailbiter](https://codewords.recurse.com/issues/seven/dragon-taming-with-tailbiter-a-bytecode-compiler)
+* [Phil Eaton][eatonphil]'s [list of JS implementations](https://notes.eatonphil.com/javascript-implementations.html)
+* [Chris Seaton][chrisgseaton]'s [The Ruby Compiler Survey](https://ruby-compilers.com/)
 
 ## Runtime optimization
 
@@ -243,6 +245,7 @@ language implementation.
 * This [summary blog post](http://web.archive.org/web/20200726064933/https://dandigit.com/posts/bigboy-writing-a-gameboy-emulator)
   explaining GPU modes
 * And of course [/r/emudev](https://old.reddit.com/r/EmuDev/)
+* [DIY emulator/VM resources](https://github.com/danistefanovic/build-your-own-x#build-your-own-emulator--virtual-machine)
 
 [This](https://nullprogram.com/blog/2017/11/03/) is a potentially fun way to
 render the screen without SDL, but only for non-interactive purposes.
@@ -256,10 +259,7 @@ playlist looks like it could be worth a watch, but it's a lot of hours.
 > onto this page.
 
 * [awesome compilers resources](https://github.com/aalhour/awesome-compilers)
-* [DIY emulator/VM resources](https://github.com/danistefanovic/build-your-own-x#build-your-own-emulator--virtual-machine)
 * [programming language resources](https://github.com/danistefanovic/build-your-own-x#build-your-own-programming-language)
-* [Phil Eaton][eatonphil]'s [list of JS implementations](https://notes.eatonphil.com/javascript-implementations.html)
-* [Chris Seaton][chrisgseaton]'s [The Ruby Compiler Survey](https://ruby-compilers.com/)
 
 [eatonphil]: https://notes.eatonphil.com/
 [chrisgseaton]: https://chrisseaton.com/
