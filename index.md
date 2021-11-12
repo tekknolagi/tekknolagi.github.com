@@ -3,6 +3,18 @@ title:
 layout: page
 ---
 
+<script>
+(function() {
+  function generateQR(link) {
+    const url = link.href;
+    console.log(link);
+  }
+  for(var i = 0, length = document.links.length; i < length; i++) {
+    generateQR(document.links[i]);
+  }
+})();
+</script>
+
 <h1>I'm Max Bernstein.</h1>
 
 I am a human and [programmer](https://github.com/tekknolagi). I like to read
