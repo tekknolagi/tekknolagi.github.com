@@ -142,6 +142,7 @@ Here are some websites I like:
 Some federated networking software:
 
 * [lotide](https://hub.sr.ht/~vpzom/lotide/), an ActivityPub-based forum
+* A bit about [finger](https://zserge.com/posts/small-web/) (see also [plan.cat](https://plan.cat/))
 
 My favorite tea is currently Stash Tea's *Double Bergamot Earl Grey*.
 
