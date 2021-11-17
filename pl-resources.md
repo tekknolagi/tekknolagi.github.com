@@ -11,7 +11,7 @@ to find great stuff.
 
 * Tufts [compilers course](http://www.cs.tufts.edu/~sguyer/classes/comp181-2006/)
   (2006, but it's been taught more recently. I should probably ping Sam.)
-* Abdulaziz Ghuloum's [minimal Scheme to x86 compiler](/assets/img/11-ghuloum.pdf)
+* Abdulaziz Ghuloum's [minimal Scheme to x86 compiler](/assets/img/11-ghuloum.pdf) (PDF)
 * Nora Sandler's [minimal C compiler](https://norasandler.com/2017/11/29/Write-a-Compiler.html)
 * Jack Crenshaw's [let's build a compiler](https://compilers.iecc.com/crenshaw/)
 * [Recursive descent parsing](http://web.archive.org/web/20170712044658/https://ryanflannery.net/teaching/common/recursive-descent-parsing/)
@@ -22,7 +22,7 @@ to find great stuff.
   Ghuloum's paper
 * Rui Ueyama's [chibicc](https://github.com/rui314/chibicc), a C compiler in
   the Ghuloum style
-* [Destination-Passing Style](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/dps-fhpc17.pdf)
+* [Destination-Passing Style](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/dps-fhpc17.pdf) (PDF)
   * I would like to find a better intro resource for this
 
 ## Lisp specific
@@ -65,17 +65,17 @@ research around optimizing dynamic languages.
 * Stefan Brunthaler's work
   * [Efficient interpretation using quickening](https://dl.acm.org/doi/abs/10.1145/1869631.1869633)
   * [Inline caching meets quickening](https://dl.acm.org/doi/10.5555/1883978.1884008)
-  * [Multi-Level Quickening: Ten Years Later](https://arxiv.org/pdf/2109.02958.pdf)
-* [Optimizing dynamically-typed object-oriented languages with polymorphic inline caches](https://bibliography.selflanguage.org/_static/pics.pdf)
+  * [Multi-Level Quickening: Ten Years Later](https://arxiv.org/pdf/2109.02958.pdf) (PDF)
+* [Optimizing dynamically-typed object-oriented languages with polymorphic inline caches](https://bibliography.selflanguage.org/_static/pics.pdf) (PDF)
 * [Garbage collection in a large LISP system][large-lisp]
-* Urs Hölzle's thesis, [Adaptive Optimization for Self](http://i.stanford.edu/pub/cstr/reports/cs/tr/94/1520/CS-TR-94-1520.pdf)
+* Urs Hölzle's thesis, [Adaptive Optimization for Self](http://i.stanford.edu/pub/cstr/reports/cs/tr/94/1520/CS-TR-94-1520.pdf) (PDF)
 * [An inline cache isn't just a cache](https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache)
 * [Baseline JIT and inline caches](https://blog.pyston.org/2016/06/30/baseline-jit-and-inline-caches/)
 * [Javascript hidden classes and inline caching in V8](https://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html)
 * Basic block versioning
-  * [Simple and Effective Type Check Removal through Lazy Basic Block Versioning](https://arxiv.org/pdf/1411.0352v2.pdf)
-  * [Extending Basic Block Versioning with Typed Object Shapes](https://arxiv.org/pdf/1507.02437.pdf)
-* [Stack Caching for Interpreters](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.5.4929&rep=rep1&type=pdf)
+  * [Simple and Effective Type Check Removal through Lazy Basic Block Versioning](https://arxiv.org/pdf/1411.0352v2.pdf) (PDF)
+  * [Extending Basic Block Versioning with Typed Object Shapes](https://arxiv.org/pdf/1507.02437.pdf) (PDF)
+* [Stack Caching for Interpreters](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.5.4929&rep=rep1&type=pdf) (PDF)
 * [Hotspot performance techniques](https://wiki.openjdk.java.net/display/HotSpot/PerformanceTechniques)
 * [Assembly interpreters](http://nominolo.blogspot.com/2012/07/implementing-fast-interpreters.html)
   and [follow-up](http://nominolo.blogspot.com/2012/07/implementing-fast-interpreters_31.html)
@@ -127,7 +127,7 @@ Resources on representing small values efficiently.
 * Sean's [NaN-Boxing](https://sean.cm/a/nan-boxing)
 * zuiderkwast's [nanbox](https://github.com/zuiderkwast/nanbox)
 * albertnetymk's [NaN Boxing](http://albertnetymk.github.io/2016/08/06/nan_boxing/)
-* Ghuloum's [Incremental approach](http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf)
+* Ghuloum's [Incremental approach](/assets/img/11-ghuloum.pdf)
   (PDF), which introduces this in a compiler setting
 * Chicken Scheme's [data representation](https://wiki.call-cc.org/man/4/Data%20representation)
 * Guile Scheme's [Faster Integers](https://www.gnu.org/software/guile/manual/html_node/Faster-Integers.html)
@@ -219,7 +219,7 @@ language implementation.
   that details the full instruction set, including CB opcodes
 * This [full opcode reference](https://rednex.github.io/rgbds/gbz80.7.html) for
   the GBZ80
-* The [Game Boy CPU manual](http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf)
+* The [Game Boy CPU manual](http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf) (PDF)
 * The [GameBoy memory map](http://gameboy.mongenel.com/dmg/asmmemmap.html)
 * This [blog post](https://mattbruv.github.io/gameboy-crust/) that gives a
   pretty simple state machine for the different rendering steps
@@ -230,7 +230,7 @@ language implementation.
 * This [awesome-gbdev](https://github.com/gbdev/awesome-gbdev) list
 * This [excellent emulator and debugger](https://github.com/drhelius/Gearboy)
 * Another [emulator and debugger](https://github.com/Jonazan2/PatBoy)
-* The [Game Boy complete technical reference](https://gekkio.fi/files/gb-docs/gbctr.pdf)
+* The [Game Boy complete technical reference](https://gekkio.fi/files/gb-docs/gbctr.pdf) (PDF)
 * This [Gameboy Overview](https://thomas.spurden.name/gameboy/)
 * blargg's [test ROMs](https://gbdev.gg8.se/files/roms/blargg-gb-tests/)
   which have instruction tests, sound tests, etc
