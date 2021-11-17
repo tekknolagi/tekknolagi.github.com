@@ -201,3 +201,17 @@ This [tweet](https://twitter.com/isosteph/status/1433579813738987535) by
 > turns to powder and one day in a strong wind it topples over and its roots
 > wrench the ground up ten feet into the air is that more or less real than
 > when a guy flips a jpeg for 8 eth
+
+Also, [this one](https://twitter.com/isosteph/status/1442679831213260803?s=20):
+
+> uniquely bad energy to be on a little computer all the time in a really
+> packed city there should only be like 10 giant computers in the world and
+> they should be in various deserts and you should have to journey for many
+> miles on foot to come and operate them
+
+with [response](https://twitter.com/sigfig/status/1442680957060870148?s=20) by
+*@sigfig*:
+
+> i am the keeper of this computer, for years my family has guarded its cores
+> and cables, tell me traveller, what is it you wish to calculate, please dont
+> say hashes
