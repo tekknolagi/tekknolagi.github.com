@@ -100,7 +100,7 @@ High                                                           Low
 See that? The three lowest bits are zero. Since we're guaranteed the pointers
 will always be given to us with the three zero bits, we can use those bits to
 store some extra information. Lisp and Smalltalk runtimes have been doing this
-for at least 30 years.
+for at least 30 years. OCaml does precisely this for its 63-bit integers, too.
 
 On some hardware, there are also bits unused in the high part of the address.
 We will only use the lower part of the address, though, because the high bits
