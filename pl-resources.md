@@ -197,6 +197,10 @@ write about:
   * Ways to think about debugging that make the process less stressful and
     thrashy
 
+### Papers I want to read
+
+* [Copy-and-Patch compilation](https://arxiv.org/pdf/2011.13127.pdf) (PDF)
+
 ## Interesting tools
 
 This is a sort of grab-bag for helpful or interesting tools for programming
