@@ -105,6 +105,7 @@ research around optimizing dynamic languages.
   * [Pyston](https://github.com/pyston/pyston)
   * [PyPy](https://foss.heptapod.net/pypy/pypy)
   * [Falcon](https://github.com/rjpower/falcon)
+* This SSA paper: [Simple and Efficient Construction of Static Single Assignment Form](https://pp.info.uni-karlsruhe.de/uploads/publikationen/braun13cc.pdf) (PDF)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
