@@ -209,6 +209,10 @@ registers. Sourced from the [AMD64 ABI Draft
 1.0](https://raw.githubusercontent.com/wiki/hjl-tools/x86-psABI/x86-64-psABI-1.0.pdf)
 (PDF).
 
+Caller-saved: `rax`, `rcx`, `rdx`, `rsi`, `rdi`, `r8`-`r11`, `xmm0`-`xmm15`.
+
+Callee-saved: `rbx`, `rsp`, `rbp`, `r12`-`r15`.
+
 #### For integers
 
 Return values in `rax` and `rdx`.
