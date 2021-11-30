@@ -202,6 +202,44 @@ write about:
 
 * [Copy-and-Patch compilation](https://arxiv.org/pdf/2011.13127.pdf) (PDF)
 
+### SystemV ABI
+
+This is mostly a reminder for myself because I can never remember the order of
+registers. Sourced from the [AMD64 ABI Draft
+1.0](https://raw.githubusercontent.com/wiki/hjl-tools/x86-psABI/x86-64-psABI-1.0.pdf)
+(PDF).
+
+#### For integers
+
+Return values in `rax` and `rdx`.
+
+|Parameter|Register|
+|---|---|
+|1|`rdi`|
+|2|`rsi`|
+|3|`rdx`|
+|4|`rcx`|
+|5|`r8`|
+|6|`r9`|
+
+Once registers are assigned, the arguments passed in memory are pushed on
+the stack in reversed (right-to-left) order
+
+#### For doubles
+
+Return values in `xmm0` and `xmm1`.
+
+|Parameter|Register|
+|---|---|
+|1|`xmm0`|
+|2|`xmm1`|
+|3|`xmm2`|
+|4|`xmm3`|
+|5|`xmm4`|
+|6|`xmm5`|
+|7|`xmm6`|
+|8|`xmm7`|
+
 ## Interesting tools
 
 This is a sort of grab-bag for helpful or interesting tools for programming
