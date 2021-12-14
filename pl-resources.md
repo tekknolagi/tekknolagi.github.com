@@ -106,6 +106,10 @@ research around optimizing dynamic languages.
   * [PyPy](https://foss.heptapod.net/pypy/pypy)
   * [Falcon](https://github.com/rjpower/falcon)
 * This SSA paper: [Simple and Efficient Construction of Static Single Assignment Form](https://pp.info.uni-karlsruhe.de/uploads/publikationen/braun13cc.pdf) (PDF)
+* Resources on mechanical sympathy and optimization coaching
+  * [Optimization Coaching](https://www.ccs.neu.edu/home/stamourv/papers/optimization-coaching.pdf)
+  * [Optimizing Coaching for JavaScript](https://rfrn.org/~shu/papers/ecoop15.pdf)
+  * [JITProf](https://github.com/Berkeley-Correctness-Group/JITProf)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
