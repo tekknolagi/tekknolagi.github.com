@@ -109,7 +109,8 @@ research around optimizing dynamic languages.
 * Resources on mechanical sympathy and optimization coaching
   * [Optimization Coaching](https://www.ccs.neu.edu/home/stamourv/papers/optimization-coaching.pdf) (PDF)
   * [Optimizing Coaching for JavaScript](https://rfrn.org/~shu/papers/ecoop15.pdf) (PDF)
-  * [JITProf](https://github.com/Berkeley-Correctness-Group/JITProf)
+  * [JITProf](https://github.com/Berkeley-Correctness-Group/JITProf) and
+    [JITProf-visualization](https://github.com/JacksonGL/jitprof-visualization)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
