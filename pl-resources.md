@@ -57,7 +57,7 @@ to find great stuff.
 * [Dragon taming with Tailbiter](https://codewords.recurse.com/issues/seven/dragon-taming-with-tailbiter-a-bytecode-compiler)
 * [Phil Eaton][eatonphil]'s [list of JS implementations](https://notes.eatonphil.com/javascript-implementations.html)
 * [Chris Seaton][chrisgseaton]'s [The Ruby Compiler Survey](https://ruby-compilers.com/)
-* Why aren't more users more happy with our VMs?
+* Laurence Tratt's "Why aren't more users more happy with our VMs?"
   [Part 1](https://tratt.net/laurie/blog/entries/why_arent_more_users_more_happy_with_our_vms_part_1.html)
   and [Part 2](https://tratt.net/laurie/blog/entries/why_arent_more_users_more_happy_with_our_vms_part_2.html)
 
