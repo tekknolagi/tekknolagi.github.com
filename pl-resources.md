@@ -9,8 +9,10 @@ to find great stuff.
 
 ## Compilers
 
-* Tufts [compilers course](http://www.cs.tufts.edu/~sguyer/classes/comp181-2006/)
+* Tufts compilers course [COMP/CS 181](http://www.cs.tufts.edu/~sguyer/classes/comp181-2006/)
   (2006, but it's been taught more recently. I should probably ping Sam.)
+* Cornell compilers course [CS 6120](https://www.cs.cornell.edu/courses/cs6120/2019fa/project/)
+  and interesting approach to project-based learning
 * Abdulaziz Ghuloum's [minimal Scheme to x86 compiler](/assets/img/11-ghuloum.pdf) (PDF)
 * Nora Sandler's [minimal C compiler](https://norasandler.com/2017/11/29/Write-a-Compiler.html)
 * Jack Crenshaw's [let's build a compiler](https://compilers.iecc.com/crenshaw/)
