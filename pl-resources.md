@@ -60,6 +60,9 @@ to find great stuff.
 * Laurence Tratt's "Why aren't more users more happy with our VMs?"
   [Part 1](https://tratt.net/laurie/blog/entries/why_arent_more_users_more_happy_with_our_vms_part_1.html)
   and [Part 2](https://tratt.net/laurie/blog/entries/why_arent_more_users_more_happy_with_our_vms_part_2.html)
+* Interesting runtimes
+  * [Toit](https://github.com/toitlang/toit)
+  * [Skybison](https://github.com/tekknolagi/skybison)
 
 ## Runtime optimization
 
