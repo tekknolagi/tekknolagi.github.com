@@ -24,8 +24,6 @@ to find great stuff.
   Ghuloum's paper
 * Rui Ueyama's [chibicc](https://github.com/rui314/chibicc), a C compiler in
   the Ghuloum style
-* [Destination-Passing Style](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/dps-fhpc17.pdf) (PDF)
-  * I would like to find a better intro resource for this
 
 ## Lisp specific
 
@@ -215,6 +213,8 @@ write about:
 ### Papers I want to read
 
 * [Copy-and-Patch compilation](https://arxiv.org/pdf/2011.13127.pdf) (PDF)
+* [Destination-Driven Code Generation](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.53.3605&rep=rep1&type=pdf) (PDF)
+* [Destination-Passing Style](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/dps-fhpc17.pdf) (PDF)
 
 ### SystemV ABI
 
