@@ -61,6 +61,7 @@ to find great stuff.
 * Interesting runtimes
   * [Toit](https://github.com/toitlang/toit)
   * [Skybison](https://github.com/tekknolagi/skybison)
+* Russ Cox's [Regular expression matching: the virtual machine approach](https://swtch.com/~rsc/regexp/regexp2.html)
 
 ## Runtime optimization
 
