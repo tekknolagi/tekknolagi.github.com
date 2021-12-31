@@ -13,15 +13,12 @@ to find great stuff.
   (2006, but it's been taught more recently. I should probably ping Sam.)
 * Cornell compilers course [CS 6120](https://www.cs.cornell.edu/courses/cs6120/2019fa/project/)
   and interesting approach to project-based learning
-* Abdulaziz Ghuloum's [minimal Scheme to x86 compiler](/assets/img/11-ghuloum.pdf) (PDF)
 * Nora Sandler's [minimal C compiler](https://norasandler.com/2017/11/29/Write-a-Compiler.html)
 * Jack Crenshaw's [let's build a compiler](https://compilers.iecc.com/crenshaw/)
 * [Recursive descent parsing](http://web.archive.org/web/20170712044658/https://ryanflannery.net/teaching/common/recursive-descent-parsing/)
   in C. Note that this just verifies the input string, and more has to be done
   to build a tree out of the input.
 * Vidar Hokstad's [Writing a compiler in Ruby, bottom up](http://hokstad.com/compiler)
-* My [adaptation](https://bernsteinbear.com/blog/compiling-a-lisp-0/) of
-  Ghuloum's paper
 * Rui Ueyama's [chibicc](https://github.com/rui314/chibicc), a C compiler in
   the Ghuloum style
 
@@ -41,6 +38,13 @@ to find great stuff.
   compiler
 * The [lecture notes](https://course.ccs.neu.edu/cs4410sp20/#%28part._lectures%29_)
   for a course developing a Ghuloum-style compiler
+* Ghuloum implementations
+  * Abdulaziz Ghuloum's [minimal Scheme to x86 compiler](/assets/img/11-ghuloum.pdf) (PDF)
+  * My [adaptation](https://bernsteinbear.com/blog/compiling-a-lisp-0/) in C
+    (with [implementation](https://github.com/tekknolagi/ghuloum))
+  * [Let's build a compiler](https://generalproblem.net/lets_build_a_compiler/01-starting-out/)
+  * Thorsten Ball's [adaptation](https://github.com/mrnugget/scheme_x86)
+  * Nada Amin's [adaptation](https://github.com/namin/inc)
 
 ## Runtimes
 
