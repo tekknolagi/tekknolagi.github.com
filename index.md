@@ -8,8 +8,8 @@ layout: page
 I am a human and [programmer](https://github.com/tekknolagi). I like to read
 books, take photos, and ride bikes in the hills near my house. I [tweet
 things](https://twitter.com/tekknolagi) about bread, legumes, and compilers.
-Though my official title is Chief Potato, I work at Instagram as a software
-engineer. I'm also teaching [CS 50ISDT](/isdt/) this fall at Tufts.
+Though my official title is Chief Potato, I work as a software engineer
+building faster language runtimes.
 
 You can [email me](mailto:contact@bernsteinbear.com) if you so desire. I'm
 happy to talk about education, programming languages, cycling, and more.
@@ -38,6 +38,13 @@ That's probably an understatement. Here are some of my favorite projects:
 * A [distributed ray tracer](https://github.com/TheiaRT/tracer) (2015) that I
   made with friends for a concurrent programming course, with the
   [final writeup [PDF]](/resources/comp50-writeup.pdf)
+
+## I like teaching.
+
+* [CS 50ISDT](/isdt/) (2021), a course [Tom](https://tchebb.me/) and I wrote
+  and taught at Tufts about software development tooling
+* [EXP 57](/excollege/) (2018), a course [Yuki](https://yzan424.github.io/) and
+  I wrote and taught at Tufts about personal and professional development
 
 ## I kind of maintain a blog.
 
