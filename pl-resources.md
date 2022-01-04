@@ -176,7 +176,9 @@ Sometimes you want to generate assembly from a host language. Common use cases
 include compilers, both ahead-of-time and just-in-time. Here are some libraries
 that can help with that.
 
-* Higgs' [x86-64 assembler](https://github.com/higgsjs/Higgs/blob/master/source/jit/x86.d) (D)
+* Tachyon's [x86-64 assembler](https://github.com/Tachyon-Team/Tachyon/tree/master/source/backend/x86) (JS)
+* Higgs' [x86-64 assembler](https://github.com/higgsjs/Higgs/blob/master/source/jit/x86.d) (D),
+  which is based on Tachyon's
 * yjit's [x86-64 assembler](https://github.com/Shopify/ruby/blob/56a1220128d18a7422f72e25d99b2bee9c7e5a86/yjit_asm.h)
   (C) from Shopify's Ruby JIT, which is based on Higgs'
 * Dart's [multi-arch assembler](https://github.com/dart-lang/sdk/tree/1e24fe7d699a1c36be142afa21859c6a9c82d035/runtime/vm/compiler/assembler)
