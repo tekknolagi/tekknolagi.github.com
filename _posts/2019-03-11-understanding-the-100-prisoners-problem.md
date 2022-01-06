@@ -3,6 +3,7 @@ title: "Understanding the 100 prisoners problem"
 layout: post
 date: 2019-03-11 09:04:38 PDT
 co_authors: Chris Gregory, Yuki Zaninovich
+og_image: /assets/img/prisoners.png
 ---
 
 I visited my friends [Chris](http://chrisgregory.me) and Yuki in Seattle. 

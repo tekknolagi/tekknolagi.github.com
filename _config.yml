@@ -43,3 +43,5 @@ collections:
     recipes:
         output: true
         permalink: /recipes/:path/
+
+default_og_image: "/favicon.ico"

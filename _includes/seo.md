@@ -3,7 +3,6 @@
     <meta name="contact" content="{{ site.email }}" />
     <meta name="language" content="English" />
     <meta property="og:type" content="website" />
-    <!-- TODO(max): Add a better og:image -->
-    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <meta property="og:image" content="{{ page.og_image | default: site.default_og_image }}" />
     {% seo %}
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
