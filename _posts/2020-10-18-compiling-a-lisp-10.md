@@ -3,6 +3,7 @@ title: "Compiling a Lisp: Instruction encoding interlude"
 layout: post
 date: 2020-10-18 17:00:00 PDT
 description: In which we learn a little about x86-64 instruction encoding
+og_image: /assets/img/compiling-a-lisp-og-image.png
 ---
 
 <span data-nosnippet>

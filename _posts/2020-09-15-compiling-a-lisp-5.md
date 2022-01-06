@@ -3,6 +3,7 @@ title: "Compiling a Lisp: Primitive binary functions"
 layout: post
 date: 2020-09-15 22:00:00 PDT
 description: Compiling Lisp primitive binary functions to x86-64
+og_image: /assets/img/compiling-a-lisp-og-image.png
 ---
 
 <span data-nosnippet>

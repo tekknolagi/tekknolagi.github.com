@@ -3,6 +3,7 @@ title: "Compiling a Lisp: If"
 layout: post
 date: 2020-10-07 11:00:00 PT
 description: Compiling Lisp if-expressions to x86-64
+og_image: /assets/img/compiling-a-lisp-og-image.png
 ---
 
 <span data-nosnippet>
