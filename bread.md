@@ -2,6 +2,7 @@
 layout: page
 title: Bread
 description: A collection of bread ingredient ratios
+og_image: /assets/img/bread.jpg
 ---
 
 I like making bread. This page has some simplified recipes for different tasty
