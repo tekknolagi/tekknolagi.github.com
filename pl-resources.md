@@ -125,6 +125,9 @@ research around optimizing dynamic languages.
   * [Optimizing Coaching for JavaScript](https://rfrn.org/~shu/papers/ecoop15.pdf) (PDF)
   * [JITProf](https://github.com/Berkeley-Correctness-Group/JITProf) and
     [JITProf-visualization](https://github.com/JacksonGL/jitprof-visualization)
+* This paper about encoding low-level semantics in a higher-level language for
+  optimizing code: [Demystifying Magic: High-level Low-level
+  Programming](http://users.cecs.anu.edu.au/~steveb/pubs/papers/vmmagic-vee-2009.pdf)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
