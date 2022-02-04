@@ -22,7 +22,8 @@ def hello_world():
 
 This function gets compiled---by the CPython compiler---into Python bytecode.
 Python provides facilities to inspect the bytecode, so let's take a look.
-```
+
+```console?lang=python&prompt=>>>,...
 >>> import dis
 >>> dis.dis(hello_world)
   2           0 LOAD_CONST               1 (5)
