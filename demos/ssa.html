@@ -844,19 +844,19 @@
 </td>
 <td id="Bytecode-exp">
   <h2>Bytecode</h2>
-  <code>
-
+<div class="lines" style="width: 8%"><div>&nbsp;</div><div class="l0 line-number">0</div><div class="l2 line-number">2</div><div class="l4 line-number">4</div><div class="l6 line-number">6</div><div class="l8 line-number">8</div><div class="l10 line-number">10</div><div class="l12 line-number">12</div><div class="l14 line-number">14</div><div class="l16 line-number">16</div><div class="l18 line-number">18</div><div class="l20 line-number">20</div><div class="l22 line-number">22</div><div class="l24 line-number">24</div><div class="l26 line-number">26</div><div class="l28 line-number">28</div><div class="l30 line-number">30</div></div>
+<code>
 <ul class="bb0 ssa-print-func">
   <li class="ssa-start-block">
     <span class="bb0 ssa-block">bb0</span>: <button onclick="hideBlock(this)">-</button>
   </li>
   <li class="ssa-value-list">
-    <ul><li><span class="ssa-long-value"><span class="l2 line-number">(2)</span>LOAD_CONST 1</span></li><li><span class="ssa-long-value"><span class="l2 line-number">(2)</span>STORE_FAST 0</span></li><li><span class="ssa-long-value"><span class="l2 line-number">(2)</span>LOAD_CONST 2</span></li><li><span class="ssa-long-value"><span class="l2 line-number">(2)</span>STORE_FAST 1</span></li><li><span class="ssa-long-value"><span class="l3 line-number">(3)</span>LOAD_FAST 0</span></li><li><span class="ssa-long-value"><span class="l3 line-number">(3)</span>LOAD_FAST 1</span></li><li><span class="ssa-long-value"><span class="l3 line-number">(3)</span>BINARY_ADD 0</span></li><li><span class="ssa-long-value"><span class="l3 line-number">(3)</span>STORE_FAST 2</span></li><li><span class="ssa-long-value"><span class="l4 line-number">(4)</span>LOAD_FAST 2</span></li><li><span class="ssa-long-value"><span class="l4 line-number">(4)</span>LOAD_CONST 3</span></li><li><span class="ssa-long-value"><span class="l4 line-number">(4)</span>COMPARE_OP 0</span></li><li><span class="ssa-long-value"><span class="l4 line-number">(4)</span>POP_JUMP_IF_FALSE 28</span></li><li><span class="ssa-long-value"><span class="l5 line-number">(5)</span>LOAD_CONST 4</span></li><li><span class="ssa-long-value"><span class="l5 line-number">(5)</span>RETURN_VALUE 0</span></li><li><span class="ssa-long-value"><span class="l6 line-number">(6)</span>LOAD_CONST 5</span></li><li><span class="ssa-long-value"><span class="l6 line-number">(6)</span>RETURN_VALUE 0</span></li></ul></li></ul></code></td>
+    <ul><li><span class="ssa-long-value"><span class="l2 line-number">(2)</span> LOAD_CONST 1</span></li><li><span class="ssa-long-value"><span class="l2 line-number">(2)</span> STORE_FAST 0</span></li><li><span class="ssa-long-value"><span class="l2 line-number">(2)</span> LOAD_CONST 2</span></li><li><span class="ssa-long-value"><span class="l2 line-number">(2)</span> STORE_FAST 1</span></li><li><span class="ssa-long-value"><span class="l3 line-number">(3)</span> LOAD_FAST 0</span></li><li><span class="ssa-long-value"><span class="l3 line-number">(3)</span> LOAD_FAST 1</span></li><li><span class="ssa-long-value"><span class="l3 line-number">(3)</span> BINARY_ADD 0</span></li><li><span class="ssa-long-value"><span class="l3 line-number">(3)</span> STORE_FAST 2</span></li><li><span class="ssa-long-value"><span class="l4 line-number">(4)</span> LOAD_FAST 2</span></li><li><span class="ssa-long-value"><span class="l4 line-number">(4)</span> LOAD_CONST 3</span></li><li><span class="ssa-long-value"><span class="l4 line-number">(4)</span> COMPARE_OP 0</span></li><li><span class="ssa-long-value"><span class="l4 line-number">(4)</span> POP_JUMP_IF_FALSE 28</span></li><li><span class="ssa-long-value"><span class="l5 line-number">(5)</span> LOAD_CONST 4</span></li><li><span class="ssa-long-value"><span class="l5 line-number">(5)</span> RETURN_VALUE 0</span></li><li><span class="ssa-long-value"><span class="l6 line-number">(6)</span> LOAD_CONST 5</span></li><li><span class="ssa-long-value"><span class="l6 line-number">(6)</span> RETURN_VALUE 0</span></li></ul></li></ul></code></td>
 <td id="SSAify-col" class="collapsed">
   <div>SSAify</div>
 </td>
 <td id="SSAify-exp">
-  <h2>SSAify <span class="stats">[88250 ns]</span></h2>
+  <h2>SSAify <span class="stats">[99149 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -983,7 +983,7 @@
   <div>Simplify</div>
 </td>
 <td id="Simplify-exp">
-  <h2>Simplify <span class="stats">[36430 ns]</span></h2>
+  <h2>Simplify <span class="stats">[47546 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1074,7 +1074,7 @@
   <div>DynamicComparisonElimination</div>
 </td>
 <td id="DynamicComparisonElimination-exp">
-  <h2>DynamicComparisonElimination <span class="stats">[104460 ns]</span></h2>
+  <h2>DynamicComparisonElimination <span class="stats">[123916 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1159,7 +1159,7 @@
   <div>GuardTypeRemoval</div>
 </td>
 <td id="GuardTypeRemoval-exp">
-  <h2>GuardTypeRemoval <span class="stats">[25264 ns]</span></h2>
+  <h2>GuardTypeRemoval <span class="stats">[27916 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1244,7 +1244,7 @@
   <div>CallOptimization</div>
 </td>
 <td id="CallOptimization-exp">
-  <h2>CallOptimization <span class="stats">[1139 ns]</span></h2>
+  <h2>CallOptimization <span class="stats">[1280 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1329,7 +1329,7 @@
   <div>PhiElimination</div>
 </td>
 <td id="PhiElimination-exp">
-  <h2>PhiElimination <span class="stats">[8325 ns]</span></h2>
+  <h2>PhiElimination <span class="stats">[9049 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1414,7 +1414,7 @@
   <div>DeadCodeElimination</div>
 </td>
 <td id="DeadCodeElimination-exp">
-  <h2>DeadCodeElimination <span class="stats">[33609 ns]</span></h2>
+  <h2>DeadCodeElimination <span class="stats">[36509 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1499,7 +1499,7 @@
   <div>RefcountInsertion</div>
 </td>
 <td id="RefcountInsertion-exp">
-  <h2>RefcountInsertion <span class="stats">[187594 ns]</span></h2>
+  <h2>RefcountInsertion <span class="stats">[233446 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
