@@ -4,14 +4,18 @@ layout: post
 date: 2022-02-04
 ---
 
+## Motivation
+
 Code comes in lots of different forms, such as text, bytecode, and control-flow
 graphs (CFGs). In this post, we will learn how to construct a CFG from
-bytecode. We will use Python bytecode and Python as a programming language,
-but the concepts should be applicable to other bytecode and using other
-programming languages.[^idiomatic]
+bytecode. We will use Python bytecode and Python (3.6+) as a programming
+language, but the concepts should be applicable to other bytecode and using
+other programming languages.[^idiomatic]
 
 [^idiomatic]: I have avoided idiomatic Python where it would be tricky to
-    emulate in other languages.
+    emulate in other languages. Some of these functions may be zingy one-liners
+    in your very idiomatic Python shop. That's fine, and feel free to use those
+    instead.
 
 Let's start by taking a look at a Python function:
 
@@ -52,7 +56,7 @@ def decisions(x):
     return -1
 ```
 
-which assembles to the following bytecode:
+which compiles to the following bytecode:
 
 ```console?lang=python&prompt=>>>,...
 >>> dis.dis(decisions)
@@ -73,8 +77,8 @@ There is a little more going on here than in the previous example. There is now
 control flow! The `if` statements gets compiled to a `POP_JUMP_IF_FALSE`. This
 pops from the stack and jumps to the specified target if it is falsey (`False`,
 `None`, etc). The jump target is specified as a bytecode offset in the opcode
-argument: `12`. The target is annotated lower down with a `>>`, but again, this
-information is derived, not present in the bytecode.
+argument: `12`. The target is annotated lower down with a `>>`, but these
+annotations are derived, not present in the bytecode.
 
 This representation makes it a little difficult to both read and analyze. In
 this small example it's not so hard to put your finger on the screen and see
@@ -82,7 +86,9 @@ that `POP_JUMP_IF_FALSE` either falls through to the next instruction or jumps
 to `12`. Fine. But for bigger programs, we'll have bigger problems. So we make
 a CFG.
 
-We'll do this in two passes:
+## How
+
+In short, we'll do this in two passes:
 
 **First**, walk the bytecode linearly and record all of the basic block
 entrypoints. These are indices corresponding to bytecode offsets that are the
@@ -103,6 +109,77 @@ bytecode slices from the code between adjacent indices.
 > does. Second, it's very possible this size might change. When it does, you
 > will be unhappy. Ask me about the bytecode expansion in Skybison.
 
+### In long
+
+Python bytecode is a compressed series of bytes that is a little frustrating to
+work with. Let's start by making some convenient data types that we can use for
+reasoning about the bytecode. As we said above, bytecode is represented as
+pairs of bytes, `(op, arg)`, called *code units*. We can represent each of
+those with a class.
+
+```python
+class BytecodeOp:
+    def __init__(self, op: int, arg: int, idx: int) -> None:
+        self.op = op
+        self.arg = arg
+        self.idx = idx
+```
+
+I made the class also hold an index into the code unit array---we'll use that
+later.
+
+Now we can read `BytecodeOp`s directly off of the bytecode array of a code
+object. To get a code object, read `__code__` off of any function.
+
+```python
+from typing import List
+from types import CodeType as Code
+CODEUNIT_SIZE = 2
+
+def code_to_ops(code: Code) -> List[BytecodeOp]:
+    bytecode = code.co_code
+    result: List[BytecodeOp] = [None] * (len(bytecode) // CODEUNIT_SIZE)
+    i = 0
+    idx = 0
+    while i < len(bytecode):
+        op = bytecode[i]
+        arg = bytecode[i + 1]
+        result[idx] = BytecodeOp(op, arg, idx)
+        i += CODEUNIT_SIZE
+        idx += 1
+    return result
+```
+
+We have two counters here: one for the index and one for the offset. We read
+the `BytecodeOp`s off the code object by offset `i` but address them in our
+result by index `idx`.
+
+To get a feel for what this all looks like so far, let's add a `__repr__`
+function to `BytecodeOp` and print out the bytecode representation of the
+function `decisions` from above.
+
+```python
+import opcode
+
+def opname(op: int) -> str:
+    return opcode.opname[op]
+
+class BytecodeOp:
+    # ...
+    def __repr__(self) -> str:
+        return f"{opname(self.op)} {self.arg}"
+```
+
+and try it out:
+
+```console?lang=python&prompt=>>>,...
+>>> code_to_ops(decisions.__code__)
+[LOAD_FAST 0, LOAD_CONST 1, COMPARE_OP 5, POP_JUMP_IF_FALSE 12, LOAD_CONST 2, RETURN_VALUE 0, LOAD_CONST 3, RETURN_VALUE 0]
+>>>
+```
+
+These opcode names and arguments are the same as the `dis` module's, so we're
+doing a pretty good job so far.
 
 <br />
 <hr style="width: 100px;" />
