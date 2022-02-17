@@ -839,12 +839,18 @@
     <table>
         <tr>
 
+<td id="Source-col" class="collapsed">
+  <div>Source</div>
+</td>
+<td id="Source-exp">
+  <h2>Source</h2>
+<div class="lines" style="width: 8%"><div>&nbsp;</div><div>&nbsp;</div><div class="l1 line-number">1</div><div class="l2 line-number">2</div><div class="l3 line-number">3</div><div class="l4 line-number">4</div><div class="l5 line-number">5</div><div class="l6 line-number">6</div></div><div><pre><div>&nbsp;</div><div><strong>longcompare.py</strong></div><div class="l1 line-number">def test():</div><div class="l2 line-number">    a = 1; b = 2</div><div class="l3 line-number">    c = a + b</div><div class="l4 line-number">    if c < 0:</div><div class="l5 line-number">        return 3</div><div class="l6 line-number">    return 4</div></pre></div></td>
 <td id="Bytecode-col" class="collapsed">
   <div>Bytecode</div>
 </td>
 <td id="Bytecode-exp">
   <h2>Bytecode</h2>
-<div class="lines" style="width: 8%"><div>&nbsp;</div><div class="l0 line-number">0</div><div class="l2 line-number">2</div><div class="l4 line-number">4</div><div class="l6 line-number">6</div><div class="l8 line-number">8</div><div class="l10 line-number">10</div><div class="l12 line-number">12</div><div class="l14 line-number">14</div><div class="l16 line-number">16</div><div class="l18 line-number">18</div><div class="l20 line-number">20</div><div class="l22 line-number">22</div><div class="l24 line-number">24</div><div class="l26 line-number">26</div><div class="l28 line-number">28</div><div class="l30 line-number">30</div></div>
+
 <code>
 <ul class="bb0 ssa-print-func">
   <li class="ssa-start-block">
@@ -856,7 +862,7 @@
   <div>SSAify</div>
 </td>
 <td id="SSAify-exp">
-  <h2>SSAify <span class="stats">[112940 ns]</span></h2>
+  <h2>SSAify <span class="stats">[125953 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -983,7 +989,7 @@
   <div>Simplify</div>
 </td>
 <td id="Simplify-exp">
-  <h2>Simplify <span class="stats">[47712 ns]</span></h2>
+  <h2>Simplify <span class="stats">[41130 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1074,7 +1080,7 @@
   <div>DynamicComparisonElimination</div>
 </td>
 <td id="DynamicComparisonElimination-exp">
-  <h2>DynamicComparisonElimination <span class="stats">[113353 ns]</span></h2>
+  <h2>DynamicComparisonElimination <span class="stats">[127492 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1159,7 +1165,7 @@
   <div>GuardTypeRemoval</div>
 </td>
 <td id="GuardTypeRemoval-exp">
-  <h2>GuardTypeRemoval <span class="stats">[28228 ns]</span></h2>
+  <h2>GuardTypeRemoval <span class="stats">[30859 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1244,7 +1250,7 @@
   <div>CallOptimization</div>
 </td>
 <td id="CallOptimization-exp">
-  <h2>CallOptimization <span class="stats">[1210 ns]</span></h2>
+  <h2>CallOptimization <span class="stats">[1107 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1329,7 +1335,7 @@
   <div>PhiElimination</div>
 </td>
 <td id="PhiElimination-exp">
-  <h2>PhiElimination <span class="stats">[12141 ns]</span></h2>
+  <h2>PhiElimination <span class="stats">[12501 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1414,7 +1420,7 @@
   <div>DeadCodeElimination</div>
 </td>
 <td id="DeadCodeElimination-exp">
-  <h2>DeadCodeElimination <span class="stats">[40027 ns]</span></h2>
+  <h2>DeadCodeElimination <span class="stats">[44568 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1499,7 +1505,7 @@
   <div>RefcountInsertion</div>
 </td>
 <td id="RefcountInsertion-exp">
-  <h2>RefcountInsertion <span class="stats">[250831 ns]</span></h2>
+  <h2>RefcountInsertion <span class="stats">[231288 ns]</span></h2>
   <code>
 
 <ul class="bb0 ssa-print-func">
@@ -1626,40 +1632,40 @@
   <span class="%4:Object ssa-value">       %4:Object</span> <span class="l1 line-number">(1)</span> = Move <span class="0(0x0):Object ssa-value">0(0x0):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%5:Object ssa-long-value">
-  <span class="%5:Object ssa-value">       %5:Object</span> <span class="l2 line-number">(2)</span> = Move <span class="28212000(0x1ae7b20):Object ssa-value">28212000(0x1ae7b20):Object</span></span></li>
+  <span class="%5:Object ssa-value">       %5:Object</span> <span class="l2 line-number">(2)</span> = Move <span class="28236576(0x1aedb20):Object ssa-value">28236576(0x1aedb20):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%6:Object ssa-long-value">
-  <span class="%6:Object ssa-value">       %6:Object</span> <span class="l2 line-number">(2)</span> = Move <span class="28212032(0x1ae7b40):Object ssa-value">28212032(0x1ae7b40):Object</span></span></li>
+  <span class="%6:Object ssa-value">       %6:Object</span> <span class="l2 line-number">(2)</span> = Move <span class="28236608(0x1aedb40):Object ssa-value">28236608(0x1aedb40):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%7:Object ssa-long-value">
-  <span class="%7:Object ssa-value">       %7:Object</span> <span class="l3 line-number">(3)</span> = Call <span class="17571888(0x10c2030):Object ssa-value">17571888(0x10c2030):Object</span>, <span class="%5:Object ssa-value">%5:Object</span>, <span class="%6:Object ssa-value">%6:Object</span></span></li>
+  <span class="%7:Object ssa-value">       %7:Object</span> <span class="l3 line-number">(3)</span> = Call <span class="17588272(0x10c6030):Object ssa-value">17588272(0x10c6030):Object</span>, <span class="%5:Object ssa-value">%5:Object</span>, <span class="%6:Object ssa-value">%6:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l3 line-number">(3)</span>Guard <span class="0(0x0):64bit ssa-value">0(0x0):64bit</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="%7:Object ssa-value">%7:Object</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="%6:Object ssa-value">%6:Object</span>, <span class="%4:Object ssa-value">%4:Object</span>, <span class="%5:Object ssa-value">%5:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l3 line-number">(3)</span> Guard <span class="0(0x0):64bit ssa-value">0(0x0):64bit</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="%7:Object ssa-value">%7:Object</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="%4:Object ssa-value">%4:Object</span>, <span class="%6:Object ssa-value">%6:Object</span>, <span class="%5:Object ssa-value">%5:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%9:Object ssa-long-value">
-  <span class="%9:Object ssa-value">       %9:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="28211968(0x1ae7b00):Object ssa-value">28211968(0x1ae7b00):Object</span></span></li>
+  <span class="%9:Object ssa-value">       %9:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="28236544(0x1aedb00):Object ssa-value">28236544(0x1aedb00):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%10:32bit ssa-long-value">
-  <span class="%10:32bit ssa-value">       %10:32bit</span> <span class="l4 line-number">(4)</span> = Call <span class="19865568(0x12f1fe0):Object ssa-value">19865568(0x12f1fe0):Object</span>, <span class="%7:Object ssa-value">%7:Object</span>, <span class="%9:Object ssa-value">%9:Object</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span></span></li>
+  <span class="%10:32bit ssa-value">       %10:32bit</span> <span class="l4 line-number">(4)</span> = Call <span class="19881952(0x12f5fe0):Object ssa-value">19881952(0x12f5fe0):Object</span>, <span class="%7:Object ssa-value">%7:Object</span>, <span class="%9:Object ssa-value">%9:Object</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span>Guard <span class="1(0x1):64bit ssa-value">1(0x1):64bit</span>, <span class="1(0x1):Object ssa-value">1(0x1):Object</span>, <span class="%10:32bit ssa-value">%10:32bit</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="%7:Object ssa-value">%7:Object</span>, <span class="%6:Object ssa-value">%6:Object</span>, <span class="%9:Object ssa-value">%9:Object</span>, <span class="%5:Object ssa-value">%5:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span> Guard <span class="1(0x1):64bit ssa-value">1(0x1):64bit</span>, <span class="1(0x1):Object ssa-value">1(0x1):Object</span>, <span class="%10:32bit ssa-value">%10:32bit</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="%9:Object ssa-value">%9:Object</span>, <span class="%7:Object ssa-value">%7:Object</span>, <span class="%6:Object ssa-value">%6:Object</span>, <span class="%5:Object ssa-value">%5:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%12:Object ssa-long-value">
   <span class="%12:Object ssa-value">      %12:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="[%7:Object]:Object ssa-value">[%7:Object]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%13:Object ssa-long-value">
-  <span class="%13:Object ssa-value">      %13:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span></span></li>
+  <span class="%13:Object ssa-value">      %13:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span>Dec <span class="%13:Object ssa-value">%13:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span> Dec <span class="%13:Object ssa-value">%13:Object</span></span></li>
 <li class="ssa-long-value">
-<span class="[0x1b0fa30]:Object ssa-long-value">
-  <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="%13:Object ssa-value">%13:Object</span></span></li>
+<span class="[0x1b15a30]:Object ssa-long-value">
+  <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="%13:Object ssa-value">%13:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span>BitTest <span class="%12:Object ssa-value">%12:Object</span>, <span class="60(0x3c):Object ssa-value">60(0x3c):Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span> BitTest <span class="%12:Object ssa-value">%12:Object</span>, <span class="60(0x3c):Object ssa-value">60(0x3c):Object</span></span></li>
 </ul></li>
 <li class="ssa-end-block">
   <span class="bb3 ssa-block">BranchB</span>
@@ -1689,7 +1695,7 @@
     <span class="bb23 ssa-block">bb23</span>: (preds <span class="bb19 ssa-block">bb19</span>)<button onclick="hideBlock(this)">-</button>
   </li><li class="ssa-value-list"><ul><li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span>Call <span class="19849088(0x12edf80):Object ssa-value">19849088(0x12edf80):Object</span>, <span class="%7:Object ssa-value">%7:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span> Call <span class="19865472(0x12f1f80):Object ssa-value">19865472(0x12f1f80):Object</span>, <span class="%7:Object ssa-value">%7:Object</span></span></li>
 </ul></li>
 <li class="ssa-end-block">
   <span class="bb23 ssa-block">Fallthrough</span>
@@ -1699,22 +1705,22 @@
     <span class="bb26 ssa-block">bb26</span>: (preds <span class="bb18 ssa-block">bb18</span>)<button onclick="hideBlock(this)">-</button>
   </li><li class="ssa-value-list"><ul><li class="ssa-long-value">
 <span class="%27:Object ssa-long-value">
-  <span class="%27:Object ssa-value">      %27:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="28212064(0x1ae7b60):Object ssa-value">28212064(0x1ae7b60):Object</span></span></li>
+  <span class="%27:Object ssa-value">      %27:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="28236640(0x1aedb60):Object ssa-value">28236640(0x1aedb60):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%28:Object ssa-long-value">
   <span class="%28:Object ssa-value">      %28:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="[%27:Object]:Object ssa-value">[%27:Object]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%29:Object ssa-long-value">
-  <span class="%29:Object ssa-value">      %29:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span></span></li>
+  <span class="%29:Object ssa-value">      %29:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l5 line-number">(5)</span>Inc <span class="%29:Object ssa-value">%29:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l5 line-number">(5)</span> Inc <span class="%29:Object ssa-value">%29:Object</span></span></li>
 <li class="ssa-long-value">
-<span class="[0x1b0fa30]:Object ssa-long-value">
-  <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="%29:Object ssa-value">%29:Object</span></span></li>
+<span class="[0x1b15a30]:Object ssa-long-value">
+  <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="%29:Object ssa-value">%29:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l5 line-number">(5)</span>Inc <span class="%28:Object ssa-value">%28:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l5 line-number">(5)</span> Inc <span class="%28:Object ssa-value">%28:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="[%27:Object]:Object ssa-long-value">
   <span class="[%27:Object]:Object ssa-value">[%27:Object]:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="%28:Object ssa-value">%28:Object</span></span></li>
@@ -1734,22 +1740,22 @@
     <span class="bb36 ssa-block">bb36</span>: (preds <span class="bb18 ssa-block">bb18</span>)<button onclick="hideBlock(this)">-</button>
   </li><li class="ssa-value-list"><ul><li class="ssa-long-value">
 <span class="%37:Object ssa-long-value">
-  <span class="%37:Object ssa-value">      %37:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="28212096(0x1ae7b80):Object ssa-value">28212096(0x1ae7b80):Object</span></span></li>
+  <span class="%37:Object ssa-value">      %37:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="28236672(0x1aedb80):Object ssa-value">28236672(0x1aedb80):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%38:Object ssa-long-value">
   <span class="%38:Object ssa-value">      %38:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="[%37:Object]:Object ssa-value">[%37:Object]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="%39:Object ssa-long-value">
-  <span class="%39:Object ssa-value">      %39:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span></span></li>
+  <span class="%39:Object ssa-value">      %39:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l6 line-number">(6)</span>Inc <span class="%39:Object ssa-value">%39:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l6 line-number">(6)</span> Inc <span class="%39:Object ssa-value">%39:Object</span></span></li>
 <li class="ssa-long-value">
-<span class="[0x1b0fa30]:Object ssa-long-value">
-  <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="%39:Object ssa-value">%39:Object</span></span></li>
+<span class="[0x1b15a30]:Object ssa-long-value">
+  <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="%39:Object ssa-value">%39:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l6 line-number">(6)</span>Inc <span class="%38:Object ssa-value">%38:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l6 line-number">(6)</span> Inc <span class="%38:Object ssa-value">%38:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="[%37:Object]:Object ssa-long-value">
   <span class="[%37:Object]:Object ssa-value">[%37:Object]:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="%38:Object ssa-value">%38:Object</span></span></li>
@@ -1802,43 +1808,43 @@
   <span class="RBX:Object ssa-value">      RBX:Object</span> <span class="l1 line-number">(1)</span> = Move <span class="0(0x0):Object ssa-value">0(0x0):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="R12:Object ssa-long-value">
-  <span class="R12:Object ssa-value">      R12:Object</span> <span class="l2 line-number">(2)</span> = Move <span class="28212000(0x1ae7b20):Object ssa-value">28212000(0x1ae7b20):Object</span></span></li>
+  <span class="R12:Object ssa-value">      R12:Object</span> <span class="l2 line-number">(2)</span> = Move <span class="28236576(0x1aedb20):Object ssa-value">28236576(0x1aedb20):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="R13:Object ssa-long-value">
-  <span class="R13:Object ssa-value">      R13:Object</span> <span class="l2 line-number">(2)</span> = Move <span class="28212032(0x1ae7b40):Object ssa-value">28212032(0x1ae7b40):Object</span></span></li>
+  <span class="R13:Object ssa-value">      R13:Object</span> <span class="l2 line-number">(2)</span> = Move <span class="28236608(0x1aedb40):Object ssa-value">28236608(0x1aedb40):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="R14:Object ssa-long-value">
   <span class="R14:Object ssa-value">      R14:Object</span> <span class="l3 line-number">(3)</span> = Move <span class="R11:Object ssa-value">R11:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="R15:Object ssa-long-value">
-  <span class="R15:Object ssa-value">      R15:Object</span> <span class="l3 line-number">(3)</span> = Call <span class="17571888(0x10c2030):Object ssa-value">17571888(0x10c2030):Object</span>, <span class="R12:Object ssa-value">R12:Object</span>, <span class="R13:Object ssa-value">R13:Object</span></span></li>
+  <span class="R15:Object ssa-value">      R15:Object</span> <span class="l3 line-number">(3)</span> = Call <span class="17588272(0x10c6030):Object ssa-value">17588272(0x10c6030):Object</span>, <span class="R12:Object ssa-value">R12:Object</span>, <span class="R13:Object ssa-value">R13:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l3 line-number">(3)</span>Guard <span class="0(0x0):64bit ssa-value">0(0x0):64bit</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="R15:Object ssa-value">R15:Object</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="R13:Object ssa-value">R13:Object</span>, <span class="RBX:Object ssa-value">RBX:Object</span>, <span class="R12:Object ssa-value">R12:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l3 line-number">(3)</span> Guard <span class="0(0x0):64bit ssa-value">0(0x0):64bit</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="R15:Object ssa-value">R15:Object</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="RBX:Object ssa-value">RBX:Object</span>, <span class="R13:Object ssa-value">R13:Object</span>, <span class="R12:Object ssa-value">R12:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="RBX:Object ssa-long-value">
-  <span class="RBX:Object ssa-value">      RBX:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="28211968(0x1ae7b00):Object ssa-value">28211968(0x1ae7b00):Object</span></span></li>
+  <span class="RBX:Object ssa-value">      RBX:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="28236544(0x1aedb00):Object ssa-value">28236544(0x1aedb00):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="RAX:32bit ssa-long-value">
-  <span class="RAX:32bit ssa-value">       RAX:32bit</span> <span class="l4 line-number">(4)</span> = Call <span class="19865568(0x12f1fe0):Object ssa-value">19865568(0x12f1fe0):Object</span>, <span class="R15:Object ssa-value">R15:Object</span>, <span class="RBX:Object ssa-value">RBX:Object</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span></span></li>
+  <span class="RAX:32bit ssa-value">       RAX:32bit</span> <span class="l4 line-number">(4)</span> = Call <span class="19881952(0x12f5fe0):Object ssa-value">19881952(0x12f5fe0):Object</span>, <span class="R15:Object ssa-value">R15:Object</span>, <span class="RBX:Object ssa-value">RBX:Object</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span>Guard <span class="1(0x1):64bit ssa-value">1(0x1):64bit</span>, <span class="1(0x1):Object ssa-value">1(0x1):Object</span>, <span class="RAX:32bit ssa-value">RAX:32bit</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="R15:Object ssa-value">R15:Object</span>, <span class="R13:Object ssa-value">R13:Object</span>, <span class="RBX:Object ssa-value">RBX:Object</span>, <span class="R12:Object ssa-value">R12:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span> Guard <span class="1(0x1):64bit ssa-value">1(0x1):64bit</span>, <span class="1(0x1):Object ssa-value">1(0x1):Object</span>, <span class="RAX:32bit ssa-value">RAX:32bit</span>, <span class="0(0x0):Object ssa-value">0(0x0):Object</span>, <span class="RBX:Object ssa-value">RBX:Object</span>, <span class="R15:Object ssa-value">R15:Object</span>, <span class="R13:Object ssa-value">R13:Object</span>, <span class="R12:Object ssa-value">R12:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="RCX:Object ssa-long-value">
   <span class="RCX:Object ssa-value">      RCX:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="[R15:Object]:Object ssa-value">[R15:Object]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="RDX:Object ssa-long-value">
-  <span class="RDX:Object ssa-value">      RDX:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span></span></li>
+  <span class="RDX:Object ssa-value">      RDX:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span>Dec <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span> Dec <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
 <li class="ssa-long-value">
-<span class="[0x1b0fa30]:Object ssa-long-value">
-  <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
+<span class="[0x1b15a30]:Object ssa-long-value">
+  <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span> <span class="l4 line-number">(4)</span> = Move <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span>BitTest <span class="RCX:Object ssa-value">RCX:Object</span>, <span class="60(0x3c):Object ssa-value">60(0x3c):Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span> BitTest <span class="RCX:Object ssa-value">RCX:Object</span>, <span class="60(0x3c):Object ssa-value">60(0x3c):Object</span></span></li>
 </ul></li>
 <li class="ssa-end-block">
   <span class="bb3 ssa-block">BranchB</span>
@@ -1884,7 +1890,7 @@
   <span class="RBX:32bit ssa-value">       RBX:32bit</span> <span class="l4 line-number">(4)</span> = Move <span class="RAX:32bit ssa-value">RAX:32bit</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span>Call <span class="19849088(0x12edf80):Object ssa-value">19849088(0x12edf80):Object</span>, <span class="R15:Object ssa-value">R15:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l4 line-number">(4)</span> Call <span class="19865472(0x12f1f80):Object ssa-value">19865472(0x12f1f80):Object</span>, <span class="R15:Object ssa-value">R15:Object</span></span></li>
 </ul></li>
 <li class="ssa-end-block">
   <span class="bb23 ssa-block">Fallthrough</span>
@@ -1901,22 +1907,22 @@
     <span class="bb36 ssa-block">bb36</span>: (preds <span class="bb18 ssa-block">bb18</span>)<button onclick="hideBlock(this)">-</button>
   </li><li class="ssa-value-list"><ul><li class="ssa-long-value">
 <span class="RAX:Object ssa-long-value">
-  <span class="RAX:Object ssa-value">      RAX:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="28212096(0x1ae7b80):Object ssa-value">28212096(0x1ae7b80):Object</span></span></li>
+  <span class="RAX:Object ssa-value">      RAX:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="28236672(0x1aedb80):Object ssa-value">28236672(0x1aedb80):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="RCX:Object ssa-long-value">
   <span class="RCX:Object ssa-value">      RCX:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="[RAX:Object]:Object ssa-value">[RAX:Object]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="RDX:Object ssa-long-value">
-  <span class="RDX:Object ssa-value">      RDX:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span></span></li>
+  <span class="RDX:Object ssa-value">      RDX:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l6 line-number">(6)</span>Inc <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l6 line-number">(6)</span> Inc <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
 <li class="ssa-long-value">
-<span class="[0x1b0fa30]:Object ssa-long-value">
-  <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
+<span class="[0x1b15a30]:Object ssa-long-value">
+  <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l6 line-number">(6)</span>Inc <span class="RCX:Object ssa-value">RCX:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l6 line-number">(6)</span> Inc <span class="RCX:Object ssa-value">RCX:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="[RAX:Object]:Object ssa-long-value">
   <span class="[RAX:Object]:Object ssa-value">[RAX:Object]:Object</span> <span class="l6 line-number">(6)</span> = Move <span class="RCX:Object ssa-value">RCX:Object</span></span></li>
@@ -1936,22 +1942,22 @@
     <span class="bb26 ssa-block">bb26</span>: (preds <span class="bb18 ssa-block">bb18</span>)<button onclick="hideBlock(this)">-</button>
   </li><li class="ssa-value-list"><ul><li class="ssa-long-value">
 <span class="RAX:Object ssa-long-value">
-  <span class="RAX:Object ssa-value">      RAX:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="28212064(0x1ae7b60):Object ssa-value">28212064(0x1ae7b60):Object</span></span></li>
+  <span class="RAX:Object ssa-value">      RAX:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="28236640(0x1aedb60):Object ssa-value">28236640(0x1aedb60):Object</span></span></li>
 <li class="ssa-long-value">
 <span class="RCX:Object ssa-long-value">
   <span class="RCX:Object ssa-value">      RCX:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="[RAX:Object]:Object ssa-value">[RAX:Object]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="RDX:Object ssa-long-value">
-  <span class="RDX:Object ssa-value">      RDX:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span></span></li>
+  <span class="RDX:Object ssa-value">      RDX:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l5 line-number">(5)</span>Inc <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l5 line-number">(5)</span> Inc <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
 <li class="ssa-long-value">
-<span class="[0x1b0fa30]:Object ssa-long-value">
-  <span class="[0x1b0fa30]:Object ssa-value">[0x1b0fa30]:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
+<span class="[0x1b15a30]:Object ssa-long-value">
+  <span class="[0x1b15a30]:Object ssa-value">[0x1b15a30]:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="RDX:Object ssa-value">RDX:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="_ ssa-long-value">
-  <span>          &nbsp;   </span> <span class="l5 line-number">(5)</span>Inc <span class="RCX:Object ssa-value">RCX:Object</span></span></li>
+  <span>          &nbsp;   </span> <span class="l5 line-number">(5)</span> Inc <span class="RCX:Object ssa-value">RCX:Object</span></span></li>
 <li class="ssa-long-value">
 <span class="[RAX:Object]:Object ssa-long-value">
   <span class="[RAX:Object]:Object ssa-value">[RAX:Object]:Object</span> <span class="l5 line-number">(5)</span> = Move <span class="RCX:Object ssa-value">RCX:Object</span></span></li>
