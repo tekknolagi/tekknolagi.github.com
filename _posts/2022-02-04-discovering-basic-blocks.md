@@ -74,7 +74,7 @@ which compiles to the following bytecode:
 ```
 
 There is a little more going on here than in the previous example. There is now
-control flow! The `if` statements gets compiled to a `POP_JUMP_IF_FALSE`. This
+control-flow! The `if` statements gets compiled to a `POP_JUMP_IF_FALSE`. This
 pops from the stack and jumps to the specified target if it is falsey (`False`,
 `None`, etc). The jump target is specified as a bytecode offset in the opcode
 argument: `12`. The target is annotated lower down with a `>>`, but these
@@ -85,6 +85,39 @@ this small example it's not so hard to put your finger on the screen and see
 that `POP_JUMP_IF_FALSE` either falls through to the next instruction or jumps
 to `12`. Fine. But for bigger programs, we'll have bigger problems. So we make
 a CFG.
+
+## What
+
+A CFG is composed of *basic blocks*---chunks of bytecode with no *control-flow
+instructions*[^sea-of-nodes]. A control-flow instruction is a branch (jump),
+return, or exception handling. Anything that transfers control somewhere else.
+
+[^sea-of-nodes]: Not all CFGs are constructed this way. Some, like Cliff
+    Click's Sea of Nodes representation, make every instruction its own node in
+    the graph.
+
+At the end of each basic block is a control-flow instruction. So a CFG for the
+above function `decisions` might look like:
+
+```
+bb0:
+  LOAD_FAST 0
+  LOAD_CONST 1
+  COMPARE_OP 5
+  POP_JUMP_IF_FALSE bb2
+bb1:
+  LOAD_CONST 2
+  RETURN_VALUE 0
+bb2:
+  LOAD_CONST 3
+  RETURN_VALUE 0
+```
+
+Here we have three basic blocks. The first one evaluates the condition `x >= 0`
+before the `if` statement. The second two are branches of the `if` statement.
+
+You might notice that `POP_JUMP_IF_FALSE` only names one block, `bb2` as its
+argument.
 
 ## How
 
@@ -180,6 +213,10 @@ and try it out:
 
 These opcode names and arguments are the same as the `dis` module's, so we're
 doing a pretty good job so far.
+
+### Finding block starts
+
+Now we want to go over all of the opcodes and find the locations where
 
 <br />
 <hr style="width: 100px;" />
