@@ -117,7 +117,7 @@ Here we have three basic blocks. The first one evaluates the condition `x >= 0`
 before the `if` statement. The second two are branches of the `if` statement.
 
 You might notice that `POP_JUMP_IF_FALSE` only names one block, `bb2` as its
-argument.
+argument. TODO: fallthrough
 
 ## How
 
@@ -216,7 +216,22 @@ doing a pretty good job so far.
 
 ### Finding block starts
 
-Now we want to go over all of the opcodes and find the locations where
+Now we want to go over all of the opcodes and find the locations where a block
+starts. A block starts when another block jumps to it, or it is the first bit
+of code in a function.
+
+For most instructions, there is no control flow---so we ignore
+them[^exceptions-abound]. We'll focus on three groups
+
+[^exceptions-abound]: You might be asking, "Max, but almost any opcode can
+    raise in Python.  `LOAD_ATTR`, `BINARY_OP`, etc. What do we do about that
+    control flow?"
+
+    You're right that
+
+
+```python
+```
 
 <br />
 <hr style="width: 100px;" />
