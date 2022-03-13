@@ -74,7 +74,7 @@ which compiles to the following bytecode:
 ```
 
 There is a little more going on here than in the previous example. There is now
-control-flow! The `if` statements gets compiled to a `POP_JUMP_IF_FALSE`. This
+control-flow! The `if` statement gets compiled to a `POP_JUMP_IF_FALSE`. This
 pops from the stack and jumps to the specified target if it is falsey (`False`,
 `None`, etc). The jump target is specified as a bytecode offset in the opcode
 argument: `12`. The target is annotated lower down with a `>>`, but these
