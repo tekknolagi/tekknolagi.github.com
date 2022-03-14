@@ -221,13 +221,22 @@ starts. A block starts when another block jumps to it, or it is the first bit
 of code in a function.
 
 For most instructions, there is no control flow---so we ignore
-them[^exceptions-abound]. We'll focus on three groups
+them[^exceptions-abound]. We'll focus on three groups:
+
+1. branching (conditional and unconditional)
+1. returning
+1. raising exceptions
+
+With branching, there
 
 [^exceptions-abound]: You might be asking, "Max, but almost any opcode can
     raise in Python.  `LOAD_ATTR`, `BINARY_OP`, etc. What do we do about that
     control flow?"
 
-    You're right that
+    You're right that these opcodes have implicit control flow. We're going to
+    kind of ignore that here because it's not explicitly present in the source
+    code. Any future analysis like dead code elimination *will* have to take it
+    into account, though.
 
 
 ```python
