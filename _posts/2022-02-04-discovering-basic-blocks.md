@@ -27,7 +27,7 @@ def hello_world():
 This function gets compiled---by the CPython compiler---into Python bytecode.
 Python provides facilities to inspect the bytecode, so let's take a look.
 
-```console?lang=python&prompt=>>>,...
+```
 >>> import dis
 >>> dis.dis(hello_world)
   2           0 LOAD_CONST               1 (5)
@@ -58,7 +58,7 @@ def decisions(x):
 
 which compiles to the following bytecode:
 
-```console?lang=python&prompt=>>>,...
+```
 >>> dis.dis(decisions)
   2           0 LOAD_FAST                0 (x)
               2 LOAD_CONST               1 (0)
@@ -205,7 +205,7 @@ class BytecodeOp:
 
 and try it out:
 
-```console?lang=python&prompt=>>>,...
+```
 >>> code_to_ops(decisions.__code__)
 [LOAD_FAST 0, LOAD_CONST 1, COMPARE_OP 5, POP_JUMP_IF_FALSE 12, LOAD_CONST 2, RETURN_VALUE 0, LOAD_CONST 3, RETURN_VALUE 0]
 >>>
@@ -213,6 +213,75 @@ and try it out:
 
 These opcode names and arguments are the same as the `dis` module's, so we're
 doing a pretty good job so far.
+
+### Slicing and dicing
+
+If we are going to be making blocks out of regions of bytecode, we should have
+a data structure for manipulating these regions. We could use regular Python
+slicing and make a bunch of `list`s. Or we could make our own little data
+structure that instead acts as a view over the original bytecode array:
+`BytecodeSlice`.
+
+```python
+class BytecodeSlice:
+    """A slice of bytecode from [start, end)."""
+
+    def __init__(
+        self,
+        bytecode: List[BytecodeOp],
+        start: Optional[int] = None,
+        end: Optional[int] = None,
+    ) -> None:
+        self.bytecode = bytecode
+        self.start: int = 0 if start is None else start
+        self.end: int = len(bytecode) if end is None else end
+
+    def __repr__(self) -> str:
+        return f"<BytecodeSlice start={self.start}, end={self.end}>"
+```
+
+So far, this is equivalent to a slice, complete with optional start and end
+indices. We also want to know the size, probably, so we add a `size` method:
+
+```python
+class BytecodeSlice:
+    # ...
+    def size(self) -> int:
+        return self.end - self.start
+```
+
+Now we add a little bit of Python-specific iterator stuff. If we add an
+`__iter__` method to the `BytecodeSlice` class, it becomes *iterable*. This
+means we can loop over it with statements like `for x in some_slice`. We can
+cheat a little bit and not invent our own iterator type[^diy-iterator] by
+re-using the list iterator and creating a slice:
+
+[^diy-iterator]: If you want to make your own iterator, go for it! You will
+    probably want to make a `BytecodeSliceIterator` class with its own index
+    and a `__next__` method. You can also instead use `yield` to make a
+    *generator*, which will work more or less the same way from the
+    programmer's perspective.
+
+```python
+class BytecodeSlice:
+    # ...
+    def __iter__(self) -> Iterator[BytecodeOp]:
+        return iter(self.bytecode[self.start : self.end])
+```
+
+Now that we have this machinery, we can go ahead and use it to make a slice of
+all the bytecode:
+
+```
+>>> bytecode = code_to_ops(decisions.__code__)
+>>> bytecode
+[LOAD_FAST 0, LOAD_CONST 1, COMPARE_OP 5, POP_JUMP_IF_FALSE 12
+, LOAD_CONST 2, RETURN_VALUE 0, LOAD_CONST 3, RETURN_VALUE 0]
+>>> bytecode_slice = BytecodeSlice(bytecode)
+>>> bytecode_slice
+<BytecodeSlice start=0, end=8>
+>>>
+```
 
 ### Finding block starts
 
@@ -238,9 +307,6 @@ With branching, there
     code. Any future analysis like dead code elimination *will* have to take it
     into account, though.
 
-
-```python
-```
 
 <br />
 <hr style="width: 100px;" />
