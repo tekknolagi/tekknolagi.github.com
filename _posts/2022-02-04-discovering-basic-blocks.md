@@ -8,9 +8,9 @@ date: 2022-02-04
 
 Code comes in lots of different forms, such as text, bytecode, and control-flow
 graphs (CFGs). In this post, we will learn how to construct a CFG from
-bytecode. We will use Python bytecode and Python (3.6+) as a programming
-language, but the concepts should be applicable to other bytecode and using
-other programming languages.[^idiomatic]
+bytecode. We will use a subset of CPython (3.6+) bytecode and Python (3.6+) as
+a programming language, but the concepts should be applicable to other bytecode
+and using other programming languages.[^idiomatic]
 
 [^idiomatic]: I have avoided idiomatic Python where it would be tricky to
     emulate in other languages. Some of these functions may be zingy one-liners
@@ -142,6 +142,8 @@ bytecode slices from the code between adjacent indices.
 > does. Second, it's very possible this size might change. When it does, you
 > will be unhappy. Ask me about the bytecode expansion in Skybison.
 
+TODO
+
 ### In long
 
 Python bytecode is a compressed series of bytes that is a little frustrating to
@@ -171,7 +173,8 @@ CODEUNIT_SIZE = 2
 
 def code_to_ops(code: Code) -> List[BytecodeOp]:
     bytecode = code.co_code
-    result: List[BytecodeOp] = [None] * (len(bytecode) // CODEUNIT_SIZE)
+    num_instrs = len(bytecode) // CODEUNIT_SIZE
+    result: List[BytecodeOp] = [None] * num_instrs
     i = 0
     idx = 0
     while i < len(bytecode):
@@ -263,6 +266,8 @@ re-using the list iterator and creating a slice:
     programmer's perspective.
 
 ```python
+from typing import Iterator
+
 class BytecodeSlice:
     # ...
     def __iter__(self) -> Iterator[BytecodeOp]:
@@ -283,31 +288,163 @@ all the bytecode:
 >>>
 ```
 
+Let's make some slices.
+
 ### Finding block starts
 
-Now we want to go over all of the opcodes and find the locations where a block
-starts. A block starts when another block jumps to it, or it is the first bit
-of code in a function.
+We want to go over all of the opcodes and find the locations where a block
+starts. A block starts when another block jumps to it and ends with a
+control-flow instruction. The first block is a special case, as it's possible
+that no other block jumps to it. <- TODO weird placement
 
-For most instructions, there is no control flow---so we ignore
-them[^exceptions-abound]. We'll focus on three groups:
+For most instructions, there is no control-flow---so we ignore
+them[^exceptions-abound]. Blocks will be composed of mostly "normal"
+instructions, but they are uninteresting right now. While creating our CFG,
+we'll instead focus on three groups of control-flow instructions:
+
+[^exceptions-abound]: You might be asking, "Max, but almost any opcode can
+    raise in Python. `LOAD_ATTR`, `BINARY_OP`, etc. What do we do about that
+    control-flow?"
+
+    You're right that these opcodes have implicit control-flow. We're going to
+    kind of ignore that here because it's not explicitly present in the source
+    code. Any future analysis like dead code elimination *will* have to take it
+    into account, though.
 
 1. branching (conditional and unconditional)
 1. returning
 1. raising exceptions
 
-With branching, there
+Each of these instructions terminates a block. Branches have two next blocks:
+the jump target and the implicit fall-through into the next block. Returns
+*sometimes* have an implicit fall-through block; if a return is the last
+instruction in a code object, there is no next block. Last, raises only ever
+have an implicit fall-through block.
 
-[^exceptions-abound]: You might be asking, "Max, but almost any opcode can
-    raise in Python.  `LOAD_ATTR`, `BINARY_OP`, etc. What do we do about that
-    control flow?"
+> The CPython compiler makes a nice guarantee that all Python code objects will
+> end with a `return None` even if it is not explicitly present in the source
+> code. This makes our lives a little easier.
 
-    You're right that these opcodes have implicit control flow. We're going to
-    kind of ignore that here because it's not explicitly present in the source
-    code. Any future analysis like dead code elimination *will* have to take it
-    into account, though.
+Let's iterate over our instruction slice and build up our basic blocks. We'll
+define a function `create_blocks` that takes in a slice and returns a map of
+bytecode indices to basic blocks.
 
+To make this code readable, we'll add some helper methods to `BytecodeOp`.
+
+First, we need to know if an instruction is a branch:
+
+```python
+class BytecodeOp:
+    # ...
+    def is_branch(self) -> bool:
+        return self.op in {
+            Op.FOR_ITER,
+            Op.JUMP_ABSOLUTE,
+            Op.JUMP_FORWARD,
+            Op.JUMP_IF_FALSE_OR_POP,
+            Op.JUMP_IF_TRUE_OR_POP,
+            Op.POP_JUMP_IF_FALSE,
+            Op.POP_JUMP_IF_TRUE,
+        }
+
+    def is_relative_branch(self) -> bool:
+        return self.op in {Op.FOR_ITER, Op.JUMP_FORWARD}
+```
+
+The opcode `FOR_ITER` is used at the beginning of a loop and is responsible for
+calling `__next__` on a Python iterator---and jumping to the end of the loop
+if that raises `StopIteration`. The others all have "JUMP" in the name.
+
+We also need to know if it's a *relative* branch. For capital-r Reasons, some
+opcodes refer to their jump targets absolutely---directly by the target's
+bytecode offset. Others refer to their jump targets relatively---as a delta
+from the branch instruction. So, to calculate the jump target, we need this
+information.
+
+Let's calculate some jump targets. For relative branches, we need the offset of
+the next instruction so that we can add the delta in the oparg.
+
+Since every `BytecodeOp` knows its own index, it also knows the next index (the
+fall-through): add `1`. Since all CPython opcodes are two bytes long, we can
+convert that into an offset: multiply by `CODEUNIT_SIZE`.
+
+```python
+class BytecodeOp:
+    # ...
+    def next_instr_idx(self) -> int:
+        return self.idx + 1
+
+    def next_instr_offset(self) -> int:
+        return self.next_instr_idx() * CODEUNIT_SIZE
+```
+
+Then, if the instruction is a relative branch, we add the delta. Otherwise, we
+return the absolute offset in the oparg.
+
+Since outside of `BytecodeOp`, we will refer to instructions exclusively by
+index, we also provide a function to get the jump target's index.
+```python
+class BytecodeOp:
+    # ...
+    def jump_target(self) -> int:
+        if self.is_relative_branch():
+            return self.next_instr_offset() + self.arg
+        return self.arg
+
+    def jump_target_idx(self) -> int:
+        return self.jump_target() // CODEUNIT_SIZE
+```
+
+If your implementation language supports it[^python-privates], feel free to
+make `jump_target` a private method.
+
+[^python-privates]: Python "supports" private identifiers. If in a class `C` you
+    start an idenfier with two underscores like `__foo` (but do not end it with
+    two underscores... and maybe some other rules... see uses of `_Py_Mangle`),
+    it will get silently rewritten `_C__foo`. This is about all Python provides
+    as far as private identifiers go.
+
+For return instructions and raise instructions, our predicates are fairly
+straightforward:
+
+```python
+class BytecodeOp:
+    # ...
+    def is_return(self) -> bool:
+        return self.op == Op.RETURN_VALUE
+
+    def is_raise(self) -> bool:
+        return self.op == Op.RAISE_VARARGS
+```
+
+TODO Block
+TODO BlockMap
+
+```python
+def create_blocks(instrs: BytecodeSlice) -> BlockMap:
+    block_starts = set([0])
+    num_instrs = instrs.size()
+    # Mark the beginning of each basic block in the bytecode
+    for instr in instrs:
+        if instr.is_branch():
+            block_starts.add(instr.next_instr_idx())
+            block_starts.add(instr.jump_target_idx())
+        elif instr.is_return():
+            # This extra logic is only for RETURN_VALUE. RETURN_VALUE is a
+            # terminator, but it can also be the last instruction in a code
+            # object, so the next instruction after it might not exist. I don't
+            # think any other opcode is allowed to be the last opcode --- even
+            # RAISE_VARARGS. This assumes well-formed bytecode.
+            next_instr_idx = instr.next_instr_idx()
+            if next_instr_idx < num_instrs:
+                block_starts.add(next_instr_idx)
+        elif instr.is_raise():
+            block_starts.add(instr.next_instr_idx())
+```
+
+TODO
 
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
+
