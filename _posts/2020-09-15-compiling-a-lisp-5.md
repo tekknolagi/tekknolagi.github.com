@@ -203,7 +203,7 @@ pass it around as a parameter. Whatever it's called, it points to the first
 writable (unused) index in the stack at any given point.
 
 In compiled functions, the first writable index is `-kWordSize` (`-8`), since
-the base pointers is already at `0`.
+the return address is already at `0`.
 
 ```c
 int Compile_function(Buffer *buf, ASTNode *node) {
