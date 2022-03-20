@@ -383,6 +383,7 @@ return the absolute offset in the oparg.
 
 Since outside of `BytecodeOp`, we will refer to instructions exclusively by
 index, we also provide a function to get the jump target's index.
+
 ```python
 class BytecodeOp:
     # ...
@@ -417,30 +418,78 @@ class BytecodeOp:
         return self.op == Op.RAISE_VARARGS
 ```
 
-TODO Block
-TODO BlockMap
+Now we can walk the instructions in our bytecode and find all of the places a
+basic block starts.
+
+We first mark the instruction at index 0 as starting a block, since it is the
+entrypoint to the function.
+
+Then we find all of the control instructions.
 
 ```python
 def create_blocks(instrs: BytecodeSlice) -> BlockMap:
     block_starts = set([0])
     num_instrs = instrs.size()
-    # Mark the beginning of each basic block in the bytecode
     for instr in instrs:
         if instr.is_branch():
             block_starts.add(instr.next_instr_idx())
             block_starts.add(instr.jump_target_idx())
         elif instr.is_return():
-            # This extra logic is only for RETURN_VALUE. RETURN_VALUE is a
-            # terminator, but it can also be the last instruction in a code
-            # object, so the next instruction after it might not exist. I don't
-            # think any other opcode is allowed to be the last opcode --- even
-            # RAISE_VARARGS. This assumes well-formed bytecode.
             next_instr_idx = instr.next_instr_idx()
             if next_instr_idx < num_instrs:
                 block_starts.add(next_instr_idx)
         elif instr.is_raise():
             block_starts.add(instr.next_instr_idx())
 ```
+
+Once we have the start indices, we also have the *end* indices! If we have, for
+example, starts at 0, 4, and 8, we know that the first block goes 0 through 3.
+The second block goes 4 through 7. And the last block goes from 8 through to
+the end of the bytecode. With this information, we can make bytecode slices and
+blocks.
+
+The `Block` class is not very interesting. Its job is to hold a unique
+identifier and a `BytecodeSlice`.
+
+```python
+class Block:
+    def __init__(self, id: int, bytecode: BytecodeSlice):
+        self.id: int = id
+        self.bytecode: BytecodeSlice = bytecode
+```
+
+The block map is not so interesting either. Its primary job is to wrap a dict
+of block indices to blocks and make a pretty string representation of the CFG.
+
+```python
+class BlockMap:
+    def __init__(self) -> None:
+        self.idx_to_block: Dict[int, Block] = {}
+
+    def add_block(self, idx, block):
+        self.idx_to_block[idx] = block
+
+    def __repr__(self) -> str:
+        result = []
+        for block in self.idx_to_block.values():
+            result.append(f"bb{block.id}:")
+            for instr in block.bytecode:
+                if instr.is_branch():
+                    target_idx = instr.jump_target_idx()
+                    target = self.idx_to_block[target_idx]
+                    result.append(f"  {opname(instr.op)} bb{target.id}")
+                else:
+                    result.append(f"  {instr}")
+        return "\n".join(result)
+```
+
+Though we could use the block indices as identifiers, since they are unique to
+each block, we will instead allocate new numbers counting up from zero. This
+makes the CFG a little easier to read when printed, if nothing else.
+
+Let's return to `create_blocks`.
+
+TODO BlockMap
 
 TODO
 
