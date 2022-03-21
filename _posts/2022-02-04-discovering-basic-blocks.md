@@ -487,11 +487,66 @@ Though we could use the block indices as identifiers, since they are unique to
 each block, we will instead allocate new numbers counting up from zero. This
 makes the CFG a little easier to read when printed, if nothing else.
 
-Let's return to `create_blocks`.
+Let's return to `create_blocks`. At this point we have a set of bytecode
+indices that correspond to places blocks should start: `block_starts`. We want
+to iterate through them in order, from 0 to N, build slices from the (start,
+end) pairs, and build blocks from the slices[^pithy].
 
-TODO BlockMap
+[^pithy]: If you are looking for a pithy one-liner, I think you can use slicing
+    and `itertools.zip_longest`.
 
-TODO
+If we're building a block and there is no end index, that means we're building
+the last block and should use the number of instructions as the end index.
+
+```python
+def create_blocks(instrs: BytecodeSlice) -> BlockMap:
+    # ...
+    num_blocks = len(block_starts)
+    block_starts_ordered = sorted(block_starts)
+    block_map = BlockMap()
+    for i, start_idx in enumerate(block_starts_ordered):
+        end_idx = block_starts_ordered[i + 1] if i + 1 < num_blocks else num_instrs
+        block_instrs = BytecodeSlice(instrs.bytecode, start_idx, end_idx)
+        block_map.add_block(start_idx, Block(i, block_instrs))
+    return block_map
+```
+
+Let's check our work:
+
+```
+>>> bytecode = code_to_ops(decisions.__code__)
+>>> bytecode
+[LOAD_FAST 0, LOAD_CONST 1, COMPARE_OP 5, POP_JUMP_IF_FALSE 12
+, LOAD_CONST 2, RETURN_VALUE 0, LOAD_CONST 3, RETURN_VALUE 0]
+>>> bytecode_slice = BytecodeSlice(bytecode)
+>>> bytecode_slice
+<BytecodeSlice start=0, end=8>
+>>> block_map = create_blocks(bytecode_slice)
+>>> block_map
+bb0:
+  LOAD_FAST 0
+  LOAD_CONST 1
+  COMPARE_OP 5
+  POP_JUMP_IF_FALSE bb2
+bb1:
+  LOAD_CONST 2
+  RETURN_VALUE 0
+bb2:
+  LOAD_CONST 3
+  RETURN_VALUE 0
+>>>
+```
+
+Which looks like what we expected. Awesome.
+
+## Conclusion
+
+Now that you have your CFG in hand, you may want to analyze it. You may want to
+do dead code elimination, or flow typing, or even compile it to a lower-level
+representation. You can do this straight off the bytecode blocks, but it will
+be easier to do so on an infinite register based IR. Perhaps in static single
+assignment (SSA) form. If I have time, I will write about those soon. If I
+don't, well, you have the rest of the internet to consult.
 
 <br />
 <hr style="width: 100px;" />
