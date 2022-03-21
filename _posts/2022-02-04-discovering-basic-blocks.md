@@ -117,18 +117,29 @@ Here we have three basic blocks. The first one evaluates the condition `x >= 0`
 before the `if` statement. The second two are branches of the `if` statement.
 
 You might notice that `POP_JUMP_IF_FALSE` only names one block, `bb2` as its
-argument. TODO: fallthrough
+argument. If the top of the stack is false, control will flow to `bb2`. If it
+is not, control will implicitly fall-through to the next block, `bb1`. You can
+choose to make this explicit in your printing so it says `POP_JUMP_IF_FALSE
+bb1, bb2` if you like[^new-ir].
 
-## How
+[^new-ir]: Alternatively, you can turn bytecode-based blocks into a different
+    IR that does not rely on blocks being in a particular order. This is best
+    saved for another post.
 
-In short, we'll do this in two passes:
+Let's build ourselves a CFG.
+
+## How to build a CFG
+
+### In short
+
+We'll do this in two passes:
 
 **First**, walk the bytecode linearly and record all of the basic block
 entrypoints. These are indices corresponding to bytecode offsets that are the
 targets of jumps both relative and absolute, forward and backward.
 
 **Second**, walk the a sorted list of basic block start indices. Create
-bytecode slices from the code between adjacent indices.
+bytecode slices and blocks from the code between adjacent indices.
 
 > You might notice that I am using two terms: *index* and *offset*. We will be
 > using both because CPython's instructions refer to offsets, but it is much
@@ -142,7 +153,7 @@ bytecode slices from the code between adjacent indices.
 > does. Second, it's very possible this size might change. When it does, you
 > will be unhappy. Ask me about the bytecode expansion in Skybison.
 
-TODO
+After that, you will have your CFG.
 
 ### In long
 
@@ -294,8 +305,7 @@ Let's make some slices.
 
 We want to go over all of the opcodes and find the locations where a block
 starts. A block starts when another block jumps to it and ends with a
-control-flow instruction. The first block is a special case, as it's possible
-that no other block jumps to it. <- TODO weird placement
+control-flow instruction.
 
 For most instructions, there is no control-flow---so we ignore
 them[^exceptions-abound]. Blocks will be composed of mostly "normal"
@@ -422,7 +432,8 @@ Now we can walk the instructions in our bytecode and find all of the places a
 basic block starts.
 
 We first mark the instruction at index 0 as starting a block, since it is the
-entrypoint to the function.
+entrypoint to the function---and, except for loops, no code would otherwise
+cause it to be marked as a block start.
 
 Then we find all of the control instructions.
 
