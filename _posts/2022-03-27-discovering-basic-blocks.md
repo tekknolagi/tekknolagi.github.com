@@ -337,8 +337,9 @@ instruction in a code object, there is no next block. Last, raises only ever
 have an implicit fall-through block.
 
 > The CPython compiler makes a nice guarantee that all Python code objects will
-> end with a `return None` even if it is not explicitly present in the source
-> code. This makes our lives a little easier.
+> end with a `return`. If there is no `return` in the source code, the compiler
+> will add an invisible `return None`. This means there is no way to "fall off
+> the edge" of the bytecode. This makes our lives a little easier.
 
 Let's iterate over our instruction slice and build up our basic blocks. We'll
 define a function `create_blocks` that takes in a slice and returns a map of
