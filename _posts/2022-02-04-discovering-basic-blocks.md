@@ -75,10 +75,10 @@ which compiles to the following bytecode:
 
 There is a little more going on here than in the previous example. There is now
 control-flow! The `if` statement gets compiled to a `POP_JUMP_IF_FALSE`. This
-pops from the stack and jumps to the specified target if it is falsey (`False`,
-`None`, etc). The jump target is specified as a bytecode offset in the opcode
-argument: `12`. The target is annotated lower down with a `>>`, but these
-annotations are derived, not present in the bytecode.
+pops from the stack and jumps to the specified target if it is falsy (`False`,
+`None`, empty list, etc). The jump target is specified as a bytecode offset in
+the opcode argument: `12`. The target is annotated lower down with a `>>`, but
+these annotations are derived, not present in the bytecode.
 
 This representation makes it a little difficult to both read and analyze. In
 this small example it's not so hard to put your finger on the screen and see
@@ -151,7 +151,8 @@ bytecode slices and blocks from the code between adjacent indices.
 > It's best to use a constant like `CODEUNIT_SIZE` instead of the literal 2.
 > First, it explains what you *mean* by the operation more than a magic number
 > does. Second, it's very possible this size might change. When it does, you
-> will be unhappy. Ask me about the bytecode expansion in Skybison.
+> will be unhappy. Ask me about the bytecode expansion in
+> [Skybison](https://github.com/facebookeperimental/skybison).
 
 After that, you will have your CFG.
 
@@ -323,7 +324,11 @@ we'll instead focus on three groups of control-flow instructions:
 
 1. branching (conditional and unconditional)
 1. returning
-1. raising exceptions
+1. raising exceptions[^catching-exceptions]
+
+[^catching-exceptions]: I haven't mentioned catching exceptions here because
+    it's a bit trickier to handle and I am not confident about the
+    implementation. Maybe I will add it later.
 
 Each of these instructions terminates a block. Branches have two next blocks:
 the jump target and the implicit fall-through into the next block. Returns
