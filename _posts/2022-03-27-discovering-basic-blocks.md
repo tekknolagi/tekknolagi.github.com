@@ -6,16 +6,21 @@ date: 2022-03-27
 
 ## Motivation
 
-Code comes in lots of different forms, such as text, bytecode, and control-flow
-graphs (CFGs). In this post, we will learn how to construct a CFG from
-bytecode. We will use a subset of CPython (3.6+) bytecode and Python (3.6+) as
-a programming language, but the concepts should be applicable to other bytecode
+Code comes in lots of different forms, such as text, bytecode, and other data
+structures common in compiler internals---like control-flow graphs (CFGs). CFGs
+are commonly used in compiler internals for analysis and optimization.
+
+In this post, we will learn how to construct a CFG from a subset of CPython
+(3.6+) bytecode. We will also coincidentally be using Python (3.6+) as a
+programming language, but the concepts should be applicable to other bytecode
 and using other programming languages.[^idiomatic]
 
 [^idiomatic]: I have avoided idiomatic Python where it would be tricky to
     emulate in other languages. Some of these functions may be zingy one-liners
     in your very idiomatic Python shop. That's fine, and feel free to use those
     instead.
+
+## Python internals
 
 Let's start by taking a look at a Python function:
 
@@ -86,15 +91,24 @@ that `POP_JUMP_IF_FALSE` either falls through to the next instruction or jumps
 to `12`. Fine. But for bigger programs, we'll have bigger problems. So we make
 a CFG.
 
-## What
+## What's in a CFG
 
 A CFG is composed of *basic blocks*---chunks of bytecode with no *control-flow
-instructions*[^sea-of-nodes]. A control-flow instruction is a branch (jump),
-return, or exception handling. Anything that transfers control somewhere else.
+instructions*[^sea-of-nodes] inside those chunks. A control-flow instruction is
+a branch (jump), return, or exception handling. Anything that transfers
+control[^control] somewhere else.
 
 [^sea-of-nodes]: Not all CFGs are constructed this way. Some, like Cliff
     Click's Sea of Nodes representation, make every instruction its own node in
     the graph.
+
+[^control]: Ever get an error when compiling your C or C++ program like
+    "control reaches end of non-void function"? That's the same kind of
+    "control"! Control refers to the notion path your program takes as it is
+    executing. That particular error or warning message refers to the program
+    analyzer noticing that there might be a path through your program that
+    falls off the end without returning a value---even though you promised the
+    function would return a value.
 
 At the end of each basic block is a control-flow instruction. So a CFG for the
 above function `decisions` might look like:
