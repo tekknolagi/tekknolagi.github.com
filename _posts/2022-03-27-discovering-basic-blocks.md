@@ -561,9 +561,11 @@ Which looks like what we expected. Awesome.
 Now that you have your CFG in hand, you may want to analyze it. You may want to
 do dead code elimination, or flow typing, or even compile it to a lower-level
 representation. You can do this straight off the bytecode blocks, but it will
-be easier to do so on an infinite register based IR. Perhaps in static single
-assignment (SSA) form. If I have time, I will write about those soon. If I
+be easier to do so on an infinite register based IR. Perhaps in [static single
+assignment (SSA)][ssa] form. If I have time, I will write about those soon. If I
 don't, well, you have the rest of the internet to consult.
+
+[ssa]: https://pp.info.uni-karlsruhe.de/uploads/publikationen/braun13cc.pdf
 
 <br />
 <hr style="width: 100px;" />
