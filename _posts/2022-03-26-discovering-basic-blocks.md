@@ -1,7 +1,7 @@
 ---
 title: "Discovering basic blocks"
 layout: post
-date: 2022-03-27
+date: 2022-03-26
 ---
 
 ## Motivation
