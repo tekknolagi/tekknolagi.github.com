@@ -570,4 +570,3 @@ don't, well, you have the rest of the internet to consult.
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
-
