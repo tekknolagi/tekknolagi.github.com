@@ -7,8 +7,9 @@ date: 2022-03-26
 ## Motivation
 
 Code comes in lots of different forms, such as text, bytecode, and other data
-structures common in compiler internals---like control-flow graphs (CFGs). CFGs
-are commonly used in compiler internals for analysis and optimization.
+structures common in compilers---like control-flow graphs (CFGs). CFGs are
+commonly used in compiler internals for analysis and optimization, and in
+reverse engineering for lifting structure out of linear assembly code.
 
 In this post, we will learn how to construct a CFG from a subset of CPython
 (3.6+) bytecode. We will also coincidentally be using Python (3.6+) as a
