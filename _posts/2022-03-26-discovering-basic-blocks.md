@@ -582,6 +582,10 @@ don't, well, you have the rest of the internet to consult.
 
 [ssa]: https://pp.info.uni-karlsruhe.de/uploads/publikationen/braun13cc.pdf
 
+### See also
+
+Building CFGs [inside PyPy](https://rpython.readthedocs.io/en/latest/translation.html#building-flow-graphs).
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
