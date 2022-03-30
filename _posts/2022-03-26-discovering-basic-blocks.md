@@ -596,6 +596,110 @@ don't, well, you have the rest of the internet to consult.
 
 [ssa]: https://pp.info.uni-karlsruhe.de/uploads/publikationen/braun13cc.pdf
 
+## Addendum
+
+Reddit user moon-chilled has pointed out that this graph does not convert
+fallthroughs into explicit jumps. For example, the following Python code:
+
+```python
+def f(x):
+    if x:
+        y = 1
+    else:
+        y = 2
+    return y
+```
+
+gets converted into the following CFG:
+
+```
+bb0:
+  LOAD_FAST 0
+  POP_JUMP_IF_FALSE bb2
+bb1:
+  LOAD_CONST 1
+  STORE_FAST 1
+  JUMP_FORWARD bb3
+bb2:
+  LOAD_CONST 2
+  STORE_FAST 1
+bb3:
+  LOAD_FAST 1
+  RETURN_VALUE 0
+```
+
+The block `bb2` "should" have a jump to `bb3`, but instead it ends abruptly
+with a non-control instruction. In this post, I focused on lifting structure
+out of the existing code and not modifying it (adjusting all the indices is
+annoying)---but it would be better to add that as an explicit jump.
+
+Consider, for example, a compiler pass that re-ordered blocks. The fallthrough
+would break if `bb3` did not always follow `bb2`. Better to have an explicit
+jump to it.
+
+It's not so hard to pull this implicit fallthrough into an explicit jump. We
+can gather all of the predecessors and successors for each block using our
+exisitng infrastructure. To start, we add a predicate on bytecode ops to check
+if they are unconditional jumps:
+
+```python
+class BytecodeOp:
+    # ...
+    def is_unconditional_branch(self) -> bool:
+        return self.op in {Op.FOR_ITER, Op.JUMP_ABSOLUTE, Op.JUMP_FORWARD}
+```
+
+This is useful in finding the successors of a given opcode. Conditional jumps
+will have two (one for the true case and one for the false case) whereas
+unconditional jumps will have only one. And the rest is as before:
+
+```python
+class BytecodeSlice:
+    # ...
+    def last(self) -> BytecodeOp:
+        return self.bytecode[self.end - 1]
+
+    def successor_indices(self) -> Tuple[int]:
+        last = self.last()
+        if last.is_branch():
+            if last.is_unconditional_branch():
+                return (last.jump_target_idx(),)
+            return (last.next_instr_idx(), last.jump_target_idx())
+        if last.is_return():
+            num_instrs = len(self.bytecode)
+            next_instr_idx = last.next_instr_idx()
+            # This extra logic is only for RETURN_VALUE. RETURN_VALUE is a
+            # terminator, but it can also be the last instruction in a code
+            # object, so the next instruction after it might not exist. I don't
+            # think any other opcode is allowed to be the last opcode --- even
+            # RAISE_VARARGS. This assumes well-formed bytecode.
+            return (next_instr_idx,) if next_instr_idx < num_instrs else ()
+            # Raise and other bytecode-block-ending instructions are alike in
+            # that the next opcode starts the next block
+        return (last.next_instr_idx(),)
+```
+
+Then, finally, we can iterate over all of the blocks and link up who jumps to
+what.
+
+```python
+class Block:
+    # ...
+    def __init__(self, id: int, bytecode: BytecodeSlice):
+        # ...
+        self.succs: Set[Block] = set()
+
+def compute_successors(block_map: BlockMap):
+    for block in block_map.idx_to_block.values():
+        block.succs = tuple(
+            block_map.idx_to_block[idx]
+            for idx in bytecode_slice.successor_indices()
+        )
+```
+
+A good next step would be to turn the bytecode instructions into your own
+internal representation and leave the `(op, arg)` pair limitation behind.
+
 ### See also
 
 Building CFGs [inside PyPy](https://rpython.readthedocs.io/en/latest/translation.html#building-flow-graphs).
