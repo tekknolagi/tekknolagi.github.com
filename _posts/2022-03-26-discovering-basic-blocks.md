@@ -704,6 +704,11 @@ internal representation and leave the `(op, arg)` pair limitation behind.
 
 Building CFGs [inside PyPy](https://rpython.readthedocs.io/en/latest/translation.html#building-flow-graphs).
 
+Tailbiter, a [Python bytecode compiler written in
+Python](https://codewords.recurse.com/issues/seven/dragon-taming-with-tailbiter-a-bytecode-compiler),
+and a [newer version](https://github.com/facebookarchive/python-compiler)
+I helped work on.
+
 A [Python interpreter written in Python](https://www.aosabook.org/en/500L/a-python-interpreter-written-in-python.html).
 
 <br />
