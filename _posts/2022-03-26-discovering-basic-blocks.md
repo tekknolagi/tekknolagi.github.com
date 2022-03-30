@@ -361,6 +361,20 @@ define a function `create_blocks` that takes in a slice and returns a map of
 bytecode indices to basic blocks.
 
 To make this code readable, we'll add some helper methods to `BytecodeOp`.
+We'll also use Python's `opcode` module to be able to work with opcodes
+symbolically.
+
+
+```python
+Op = type("Op", (object,), opcode.opmap)
+```
+
+The above is a bit of sneaky metaprogramming that uses the existing dictionary
+of opcode names to opcode numbers (`opcode.opmap`) as a template for building a
+new type, `Op`. Then we can use all the keys in the dictionary as if they were
+attributes on the type. I know I said I wouldn't do any zingy one-liners, but
+this saves us a lot of re-typing of information that is already inside CPython.
+Anyway, onto the helper methods on `BytecodeOp`.
 
 First, we need to know if an instruction is a branch:
 
