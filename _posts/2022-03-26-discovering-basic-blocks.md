@@ -704,6 +704,8 @@ internal representation and leave the `(op, arg)` pair limitation behind.
 
 Building CFGs [inside PyPy](https://rpython.readthedocs.io/en/latest/translation.html#building-flow-graphs).
 
+A [Python interpreter written in Python](https://www.aosabook.org/en/500L/a-python-interpreter-written-in-python.html).
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
