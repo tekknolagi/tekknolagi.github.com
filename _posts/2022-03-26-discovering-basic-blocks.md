@@ -2,6 +2,7 @@
 title: "Discovering basic blocks"
 layout: post
 date: 2022-03-26
+description: Lifting a graph structure out of Python bytecode
 ---
 
 ## Motivation
