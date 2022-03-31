@@ -665,17 +665,10 @@ class BytecodeSlice:
             if last.is_unconditional_branch():
                 return (last.jump_target_idx(),)
             return (last.next_instr_idx(), last.jump_target_idx())
-        if last.is_return():
-            num_instrs = len(self.bytecode)
-            next_instr_idx = last.next_instr_idx()
-            # This extra logic is only for RETURN_VALUE. RETURN_VALUE is a
-            # terminator, but it can also be the last instruction in a code
-            # object, so the next instruction after it might not exist. I don't
-            # think any other opcode is allowed to be the last opcode --- even
-            # RAISE_VARARGS. This assumes well-formed bytecode.
-            return (next_instr_idx,) if next_instr_idx < num_instrs else ()
-            # Raise and other bytecode-block-ending instructions are alike in
-            # that the next opcode starts the next block
+        if last.is_return() or last.is_raise():
+          # Raise and return do not have any successors
+          return ()
+        # Other instructions have implicit fallthrough to the next block
         return (last.next_instr_idx(),)
 ```
 
