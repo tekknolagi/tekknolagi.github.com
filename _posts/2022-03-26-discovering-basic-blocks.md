@@ -647,7 +647,7 @@ if they are unconditional jumps:
 class BytecodeOp:
     # ...
     def is_unconditional_branch(self) -> bool:
-        return self.op in {Op.FOR_ITER, Op.JUMP_ABSOLUTE, Op.JUMP_FORWARD}
+        return self.op in {Op.JUMP_ABSOLUTE, Op.JUMP_FORWARD}
 ```
 
 This is useful in finding the successors of a given opcode. Conditional jumps
