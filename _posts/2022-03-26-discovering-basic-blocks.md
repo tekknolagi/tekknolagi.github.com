@@ -640,7 +640,7 @@ jump to it.
 
 It's not so hard to pull this implicit fallthrough into an explicit jump. We
 can gather all of the predecessors and successors for each block using our
-exisitng infrastructure. To start, we add a predicate on bytecode ops to check
+existing infrastructure. To start, we add a predicate on bytecode ops to check
 if they are unconditional jumps:
 
 ```python
