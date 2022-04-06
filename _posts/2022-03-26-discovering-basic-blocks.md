@@ -168,7 +168,7 @@ bytecode slices and blocks from the code between adjacent indices.
 > First, it explains what you *mean* by the operation more than a magic number
 > does. Second, it's very possible this size might change. When it does, you
 > will be unhappy. Ask me about the bytecode expansion in
-> [Skybison](https://github.com/facebookexperimental/skybison).
+> [Skybison](https://github.com/tekknolagi/skybison).
 
 After that, you will have your CFG.
 
