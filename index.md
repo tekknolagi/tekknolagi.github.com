@@ -18,13 +18,14 @@ happy to talk about education, programming languages, cycling, and more.
 
 That's probably an understatement. Here are some of my favorite projects:
 
-* [shru.gg](https://shru.gg), a website built just so I would have to stop
-  finding, copying, and pasting that shrug emoji
 * [Cinder](https://github.com/facebookincubator/cinder), Instagram's
-  performance-oriented fork of CPython
+  performance-oriented fork of CPython---try it out on
+  [trycinder.com](https://trycinder.com)!
 * [Skybison](https://github.com/tekknolagi/skybison) (fork of
   [original](https://github.com/facebookexperimental/skybison)), Instagram's
   performance-oriented greenfield implementation of Python
+* [shru.gg](https://shru.gg), a website built just so I would have to stop
+  finding, copying, and pasting that shrug emoji
 * An [Lisp to x86-64 compiler](https://github.com/tekknolagi/ghuloum) I wrote
   in C and accompanying [blog posts](/blog/lisp/)
 * The [term paper](/dat-paper/) I wrote for COMP 117 IDS
