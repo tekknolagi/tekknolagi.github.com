@@ -136,3 +136,7 @@ We will build two more things into our existing structure:
 
 With both of these structures, we can traverse our control-flow graph (CFG) and
 replace many `LOAD_FAST` instructions with `LOAD_FAST_UNCHECKED`.
+
+<br />
+<hr style="width: 100px;" />
+<!-- Footnotes -->
