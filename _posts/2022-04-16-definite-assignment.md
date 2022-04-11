@@ -7,24 +7,20 @@ description: Did you assign a value to your variable? Are you sure?
 
 Python is a programming language with a primary implementation called
 [CPython](https://github.com/python/cpython/). CPython is implemented as a
-stack-based bytecode virtual machine[^gross]. Among these bytecode instructions
-are a set of bytecode operations for accessing the local variables in a
-function:
+stack-based bytecode virtual machine[^gross]. In this post, we'll talk about
+using a control-flow graph (CFG) to optimize a function's bytecode and speed up
+the CPython virtual machine.
 
-* `LOAD_FAST`, for fetching a local by index
-* `STORE_FAST`, for setting a local by index
-* `DELETE_FAST`, for deleting a local by index
-
-I talked at some length about it in my [post](/blog/discovering-basic-blocks)
-about lifting a graph structure out of the bytecode. For a refresher, let's
-take a look at a sample Python function.
+## A refresher
 
 <!-- TODO: link to patch series -->
 [^gross]: This might change soon with if Sam Gross's GIL-removal patch series
     lands. Part of the patch series includes a change from the decades-old
     stack machine to a register machine to "sweeten the deal" performance-wise.
 
-The following function:
+I talked at some length about Python bytecode in my
+[post](/blog/discovering-basic-blocks) about lifting a graph structure out of
+the bytecode. For a refresher, let's take a look at a sample Python function:
 
 ```python
 def foo():
@@ -32,7 +28,7 @@ def foo():
   return a
 ```
 
-might be compiled to the following bytecode:
+This function gets compiled to the following bytecode:
 
 ```
 0 LOAD_CONST               1 (123)
@@ -42,10 +38,20 @@ might be compiled to the following bytecode:
 6 RETURN_VALUE
 ```
 
-Which, if you read the Python code in a straight line and ignore any compiler
-optimizations you might be tempted to apply, makes sense! The first line,
-`a = 123`, compiles to a `LOAD_CONST`/`STORE_FAST` combo, and the second line,
-`return a`, compiles to a `LOAD_FAST`/`RETURN_VALUE` combo.
+If you don't want to go read [the
+docs](https://docs.python.org/3.8/library/dis.html), here is a very terse
+description of the opcodes that operate on local variables:
+
+* `LOAD_FAST`, for fetching a local by index and pushing it to the stack
+* `STORE_FAST`, for popping off the stack and setting a local by index
+* `DELETE_FAST`, for deleting a local by index
+
+So if you read the Python code in a straight line and ignore any compiler
+optimizations you might be tempted to apply, this example makes sense! The
+first line, `a = 123`, compiles to a `LOAD_CONST`/`STORE_FAST` combo, and the
+second line, `return a`, compiles to a `LOAD_FAST`/`RETURN_VALUE` combo.
+
+## Speed
 
 It's in the name: `LOAD_FAST` must be fast, right? Let's take a look at how
 `LOAD_FAST` [is implemented][loadfast] in the core interpreter loop of CPython:
@@ -68,13 +74,16 @@ TARGET(LOAD_FAST) {
 }
 ```
 
-Alright, pretty good. Array lookups are constant time and often one machine
-instruction. Remember when local variable lookups in Python used to be
-implemented using a hash table? This is a huge improvement.
+At first blush, this looks pretty good. Array lookups are constant time and
+often one machine instruction. It doesn't take too long to fetch some data from
+memory, either, especially when the memory is in a cache. Remember when local
+variable lookups in Python used to be implemented using a hash table? This is a
+huge improvement.
 
 Anyway, part of this opcode implementation includes a check to see if the local
-variable is bound. Why, though? Why can't the runtime just see that `a` is
-defined *right there*? Why must we do all of this extra work?[^drama]
+variable is bound---checking if `value == NULL`. Why, though? Why can't the
+runtime just see that `a` is defined *right there*? Why must we do all of this
+extra work?[^drama]
 
 [^drama]: I'm being a little bit dramatic. Null checks and conditional jumps
     are *extremely fast* in the grand scheme of things. When optimizing a
@@ -84,8 +93,8 @@ defined *right there*? Why must we do all of this extra work?[^drama]
     their own, speeding up a programming language generally requires many small
     improvements that can leverage one another.
 
-I can answer the *why*: unlike languages like C, the following is considered a
-valid Python program:
+I can answer the *why*: unlike in languages like C, the following is considered
+a valid Python program:
 
 ```python
 def foo():
