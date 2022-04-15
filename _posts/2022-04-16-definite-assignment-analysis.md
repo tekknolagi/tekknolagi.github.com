@@ -186,10 +186,13 @@ def ezpz():
 
 In this example, `x` is still bound; parameters should be considered assigned
 throughout the body of the function unless explicitly deleted. In fact, the
-Skybison Python runtime [uses this fact][skybison_params] to opportunistically
-rewrite `LOAD_FAST` without doing a full definite assignment analysis.
+Skybison Python runtime [uses this fact][skybison_params] to [opportunistically
+rewrite][skybison_rewrite] `LOAD_FAST` without doing a full definite assignment
+analysis.
 
-[skybison_params]: https://github.com/tekknolagi/skybison/blob/93e680f96fd7cc23a3daba22bd2ec3024552fc36/runtime/bytecode.cpp#L299)
+[skybison_params]: https://github.com/tekknolagi/skybison/blob/93e680f96fd7cc23a3daba22bd2ec3024552fc36/runtime/bytecode.cpp#L299
+
+[skybison_rewrite]: https://github.com/tekknolagi/skybison/blob/93e680f96fd7cc23a3daba22bd2ec3024552fc36/runtime/bytecode.cpp#L194
 
 ```python
 def param(x):
