@@ -5,6 +5,7 @@ date: 2022-04-16
 description: Did you assign a value to your variable? Are you sure?
 ---
 
+<!-- TODO: Remove -->
 <meta http-equiv="refresh" content="15" />
 
 Python is a programming language with a primary implementation called
