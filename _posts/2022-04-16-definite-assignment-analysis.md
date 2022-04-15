@@ -5,6 +5,8 @@ date: 2022-04-16
 description: Did you assign a value to your variable? Are you sure?
 ---
 
+<meta http-equiv="refresh" content="15" />
+
 Python is a programming language with a primary implementation called
 [CPython](https://github.com/python/cpython/). CPython is implemented as a
 stack-based bytecode virtual machine[^gross]. In this post, we'll talk about
@@ -132,6 +134,10 @@ their bytecode. We should be able to identify by hand which programs can be
 optimized and which cannot. If we can't identify them by hand, we probably
 don't have much hope identifying them programmatically.
 
+For each example, I will annotate the local variable read with `YES`, `NO`, or
+`MAYBE`---which also means `NO`, since we can only rewrite variables that are
+*definitely* assigned.
+
 We'll start with the smallest Python function, which does not deal with local
 variables at all. Because it does not deal with locals, there are no
 `LOAD_FAST` instructions to optimize.
@@ -153,11 +159,17 @@ dictionary. No `LOAD_FAST` to optimize.
 
 ```python
 def not_local():
-  return x
+  return x  # not a local
 # Disassembly of <code object not_local at 0x7fcf00f0bf50, file "<stdin>", line 1>:
 #   2           0 LOAD_GLOBAL              0 (x)
 #               2 RETURN_VALUE
 ```
+
+Now, finally, we have a `LOAD_FAST` to work with. In this example, there is
+only one path for control-flow: straight through the function. We assign the
+local `x`, then reference it when returning from the function. In this example,
+`x` is *definitely assigned*, so we could rewrite the `LOAD_FAST` at offset 4
+to `LOAD_FAST_UNCHECKED`.
 
 ```python
 def ezpz():
@@ -171,6 +183,13 @@ def ezpz():
 #               6 RETURN_VALUE
 ```
 
+In this example, `x` is still bound; parameters should be considered assigned
+throughout the body of the function unless explicitly deleted. In fact, the
+Skybison Python runtime [uses this fact][skybison_params] to opportunistically
+rewrite `LOAD_FAST` without doing a full definite assignment analysis.
+
+[skybison_params]: https://github.com/tekknolagi/skybison/blob/93e680f96fd7cc23a3daba22bd2ec3024552fc36/runtime/bytecode.cpp#L299)
+
 ```python
 def param(x):
   return x  # YES
@@ -179,27 +198,40 @@ def param(x):
 #               2 RETURN_VALUE
 ```
 
+Now we add some control flow to the picture. We have a branch on some
+condition that we cannot eliminate at compile time. However, we don't need to
+worry about the result of the condition; in both branches of the `if`, `x` is
+assigned. This means that in the last block of the function---which contains
+`return`---`x` is definitely assigned.
+
+And, incidentally, `some_condition` is definitely defined.
+
 ```python
-def diamond(x):
-  if x:
-    result = 1
+def diamond(some_condition):
+  if some_condition:  # YES
+    x = 1
   else:
-    result = 2
-  return result  # YES
+    x = 2
+  return x  # YES
 # Disassembly of <code object diamond at 0x7f042c63df50, file "<stdin>", line 1>:
-#   2           0 LOAD_FAST                0 (x)
+#   2           0 LOAD_FAST                0 (some_condition)
 #               2 POP_JUMP_IF_FALSE       10
 # 
 #   3           4 LOAD_CONST               1 (1)
-#               6 STORE_FAST               1 (result)
+#               6 STORE_FAST               1 (x)
 #               8 JUMP_FORWARD             4 (to 14)
 # 
 #   5     >>   10 LOAD_CONST               2 (2)
-#              12 STORE_FAST               1 (result)
+#              12 STORE_FAST               1 (x)
 # 
-#   6     >>   14 LOAD_FAST                1 (result)
+#   6     >>   14 LOAD_FAST                1 (x)
 #              16 RETURN_VALUE
 ```
+
+At last, we come to the first `LOAD_FAST` that is not definitely assigned. In
+fact, the read from `x` is definitely *not* assigned; the variable has been
+undefined by an intervening `del`. This would be the same situation if `x` were
+a parameter, too.
 
 ```python
 def unfortunate_del():
@@ -216,37 +248,48 @@ def unfortunate_del():
 #               8 RETURN_VALUE
 ```
 
+Now, we have a conditional that only defines `x` in one arm. Since we cannot
+know ahead of time what `some_condition` evaluates to, we cannot mark `x` as
+definitely defined. We can, however, know that `some_condition`, at least, is
+definitely defined.
+
 ```python
-def foo():
-  if some_condition:
-    a = 123
-  return a  # MAYBE (NO)
+def maybe_defined(some_condition):
+  if some_condition:  # YES
+    x = 123
+  return x  # MAYBE (NO)
 # Disassembly of <code object foo at 0x7f617e309030, file "<stdin>", line 1>:
-#   2           0 LOAD_GLOBAL              0 (some_condition)
+#   2           0 LOAD_FAST                0 (some_condition)
 #               2 POP_JUMP_IF_FALSE        8
 # 
 #   3           4 LOAD_CONST               1 (123)
-#               6 STORE_FAST               0 (a)
+#               6 STORE_FAST               1 (x)
 # 
-#   4     >>    8 LOAD_FAST                0 (a)
+#   4     >>    8 LOAD_FAST                1 (x)
 #              10 RETURN_VALUE
 ```
 
+I don't really know why you would write code that uses a local variable before
+its first assignment, but here is some sample code that does. Despite `x` being
+assigned below, it is not in scope for its first use -- in the `return`.
+
 ```python
-def too_late():
-  if cond:
+def too_late(some_condition):
+  if some_condition:  # YES
     return x  # NO
   x = 1
-# Disassembly of <code object too_late at 0x7f84b0ac0030, file "<stdin>", line 1>:
-#   2           0 LOAD_GLOBAL              0 (cond)
+  return x  # YES
+# Disassembly of <code object too_late at 0x7ff353d22f50, file "<stdin>", line 1>:
+#   2           0 LOAD_FAST                0 (some_condition)
 #               2 POP_JUMP_IF_FALSE        8
 # 
-#   3           4 LOAD_FAST                0 (x)
+#   3           4 LOAD_FAST                1 (x)
 #               6 RETURN_VALUE
 # 
 #   4     >>    8 LOAD_CONST               1 (1)
-#              10 STORE_FAST               0 (x)
-#              12 LOAD_CONST               0 (None)
+#              10 STORE_FAST               1 (x)
+# 
+#   5          12 LOAD_FAST                1 (x)
 #              14 RETURN_VALUE
 ```
 
