@@ -133,6 +133,7 @@ research around optimizing dynamic languages.
   * [holyjit](https://github.com/nbp/holyjit) (Rust)
   * [lineiform](https://github.com/chc4/lineiform) (Rust)
   * [redmagic](https://github.com/matthewfl/redmagic) (C)
+  * [BacCaml](https://github.com/prg-titech/baccaml) (OCaml)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
@@ -228,9 +229,12 @@ write about:
 * Debugging mindsets
   * Ways to think about debugging that make the process less stressful and
     thrashy
-* [Copy-and-Patch compilation](https://arxiv.org/pdf/2011.13127.pdf) (PDF)
-  * Simplifying this wuold probably make for a fun blog post and could be
-    combined with ICs and quickening from my runtime optimization series
+* Writing JITs without writing assembly
+  * [Tail-calls for efficient interpreters](https://blog.reverberate.org/2021/04/21/musttail-efficient-interpreters.html)
+    * Including [(top of) stack caching](https://dl.acm.org/doi/10.1145/223428.207165)
+  * [Copy-and-Patch compilation](https://arxiv.org/pdf/2011.13127.pdf) (PDF)
+    * Simplifying this would probably make for a fun blog post and could be
+      combined with ICs and quickening from my runtime optimization series
 
 ### Papers I want to read
 
