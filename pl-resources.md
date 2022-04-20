@@ -129,6 +129,10 @@ research around optimizing dynamic languages.
 * This paper about encoding low-level semantics in a higher-level language for
   optimizing code: [Demystifying Magic: High-level Low-level
   Programming](http://users.cecs.anu.edu.au/~steveb/pubs/papers/vmmagic-vee-2009.pdf)
+* Meta-tracing JITs in native code
+  * [holyjit](https://github.com/nbp/holyjit) (Rust)
+  * [lineiform](https://github.com/chc4/lineiform) (Rust)
+  * [redmagic](https://github.com/matthewfl/redmagic) (C)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
