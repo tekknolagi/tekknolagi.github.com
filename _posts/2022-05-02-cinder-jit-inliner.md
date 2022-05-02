@@ -32,7 +32,7 @@ compiler to remove a lot of this overhead.
 ## A bit about the JIT
 
 _Note: If you are already familiar with Python bytecode and JITs, you might
-want to skip down to [Inlining and its benefits](#inlining-and-its-benefits).
+want to skip down to [Inlining and its benefits](#inlining-and-its-benefits)._
 
 The JIT compiles functions one at a time, translating from bytecode to a
 control-flow graph (CFG), to high-level intermediate representation (HIR), to
