@@ -1,3 +1,8 @@
+<div style="padding: 10px; margin-bottom: 10px; background-color: #FFCAB7;">
+  FYI, this website is a stale mirror of
+  <a href="https://bernsteinbear.com">bernsteinbear.com</a> until I port my
+  site to Sourcehut Pages.
+</div>
 <div class="navbar">
   <a href="/">home</a>
   <a href="/blog/">blog</a>
