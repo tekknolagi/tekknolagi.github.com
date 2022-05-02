@@ -1,0 +1,29 @@
+image: ubuntu/lts
+oauth: pages.sr.ht/PAGES:RW
+environment:
+  site: max.srht.site
+  LC_ALL: en_US.UTF-8
+  LANG: en_US.UTF-8
+  LANGUAGE: en_US.UTF-8
+packages:
+  - locales-all
+  - ruby-full
+  - build-essential
+  - zlib1g-dev
+tasks:
+  - setup_gem: |
+      echo 'export PATH="$(ruby -r rubygems -e "puts Gem.user_dir")/bin:$PATH"' >> ~/.buildenv
+  - install_bundler: |
+      gem install --user-install bundler
+  - install_jekyll: |
+      cd bernsteinbear.com
+      bundle install
+  - build: |
+      cd bernsteinbear.com
+      bundle exec jekyll build
+  - package: |
+      cd bernsteinbear.com/_site
+      tar -czf ../site.tar.gz .
+  - upload: |
+      cd bernsteinbear.com
+      acurl -f https://pages.sr.ht/publish/$site -Fcontent=@site.tar.gz
