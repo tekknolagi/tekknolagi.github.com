@@ -220,7 +220,7 @@ has other benefits, as well, like removing inline cache pressure
 (monomorphizing caches in callees) and reducing register stack spills due to
 the native code calling conventions.
 
-If we hypothetically inline callee into caller manually, it might look
+If we hypothetically inline `callee` into `caller` manually, it might look
 something like the following:
 
 ```
