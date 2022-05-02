@@ -1,5 +1,5 @@
 ---
-title: "How the Cinder JIT's function inliner helps us optimize Instagram"
+title: "How the Cinder JIT's inliner works"
 layout: post
 date: 2022-05-02
 description: >
