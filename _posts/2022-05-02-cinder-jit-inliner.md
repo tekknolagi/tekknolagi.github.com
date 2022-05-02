@@ -601,3 +601,13 @@ Take a look at our [GitHub repo](https://github.com/facebookincubator/cinder),
 and play around with Cinder. We have included a Dockerfile and [prebuilt Docker
 image](https://github.com/facebookincubator/cinder/pkgs/container/cinder) to
 make this easier.
+
+## Updates
+
+We now [constant-fold
+`LongBinaryOp`](https://github.com/facebookincubator/cinder/commit/6ee3e6af7cacab4cece2b12e080e0a67d975b169)
+if it has constant operands.
+
+We have since [removed `BeginInlinedFunction` and
+`EndInlinedFunction`](https://github.com/facebookincubator/cinder/commit/c4a1f4197314d59afaba61205bedb2c0919efda3)
+for trivial functions that do not need shadow frames.
