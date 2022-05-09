@@ -290,6 +290,7 @@ language implementation.
 
 * [Blinkenlights](https://justine.lol/blinkenlights/index.html), a visual
   x86-64 emulator
+* [Cosmopolitan libc](https://justine.lol/cosmopolitan/index.html)
 
 ## Game Boy Emulators
 
