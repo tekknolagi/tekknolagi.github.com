@@ -72,6 +72,7 @@ to find great stuff.
   * [Toit](https://github.com/toitlang/toit)
   * [Skybison](https://github.com/tekknolagi/skybison)
 * Russ Cox's [Regular expression matching: the virtual machine approach](https://swtch.com/~rsc/regexp/regexp2.html)
+* Webkit's post about the [FTL JIT](https://webkit.org/blog/3362/introducing-the-webkit-ftl-jit/)
 
 ## Runtime optimization
 
