@@ -297,6 +297,11 @@ def too_late(some_condition):
 #              14 RETURN_VALUE
 ```
 
+Now we have our first backward branch in the CFG! What should happen in a loop?
+In this example loop, the first time we go around, `x` will be defined for its
+load and also its `del`. The next times around, it will be undefined. So we
+cannot optimize the code in the loop---just the code beforehand.
+
 ```python
 def loop():
   x = 1
@@ -389,6 +394,8 @@ We will build two more things into our existing structure:
 
 With both of these structures, we can traverse our control-flow graph (CFG) and
 replace many `LOAD_FAST` instructions with `LOAD_FAST_UNCHECKED`.
+
+## Extension: Adding it to CPython
 
 <br />
 <hr style="width: 100px;" />
