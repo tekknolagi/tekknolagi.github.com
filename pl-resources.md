@@ -204,6 +204,8 @@ that can help with that.
 * Strongtalk's [x86 assembler](https://github.com/talksmall/Strongtalk/tree/39b336f8399230502535e7ac12c9c1814552e6da/vm/asm) (C)
 * AsmJit's [multi-arch assembler](https://github.com/asmjit/asmjit) (C++)
 * PeachPy's [x86-64 assembler](https://github.com/Maratyszcza/PeachPy) (Python)
+* PPCI's [x86-64 assembler](https://github.com/windelbouwman/ppci/blob/915c069e0667042c085ec42c78e9e3c9a5295324/ppci/arch/x86_64/instructions.py) (Python)
+  and other great compiler infrastructure
 * My [small x86-64 assembler](https://gist.github.com/tekknolagi/201539673cfcc60df73ef75a8a9b5896) (C),
   which I forked from the pervognsen's [original](https://gist.github.com/pervognsen/9d815016d8ef39f1b2c8e509ee2cf052) (C)
 * A [guide to using GCC inline assembly](https://www.felixcloutier.com/documents/gcc-asm.html)
