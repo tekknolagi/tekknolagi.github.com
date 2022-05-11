@@ -110,8 +110,10 @@ research around optimizing dynamic languages.
   explanation for JavaScript
 * V8's [blog post](https://v8.dev/blog/sparkplug) about their baseline/template
   JIT
-* [Chris Seaton][chrisgseaton]'s [RubyKaigi talk](https://chrisseaton.com/truffleruby/rubykaigi21/)
-  about Ruby object shapes
+* Object shapes
+  * [Chris Seaton][chrisgseaton]'s [RubyKaigi talk](https://chrisseaton.com/truffleruby/rubykaigi21/)
+  * [Aaron Patterson][tenderlove] and [Jemma Issroff][jemma]'s
+    [livestream](https://www.youtube.com/watch?v=C9q4V_WJ6_k)
 * Kate Temkin's [QEMU fork](https://github.com/ktemkin/qemu/tree/with_tcti)
   with a gadget-based pseudo-JIT and associated
   [Twitter thread](https://twitter.com/ktemkin/status/1375835935061942274)
@@ -215,9 +217,12 @@ I have not written much about runtime optimization yet, but I would like to
 write about:
 
 * Assembly interpreters (known to the JDK folks as a "template interpreter")
+  * [asm interpreter for icdemo](https://github.com/tekknolagi/icdemo/tree/mb-asm-interpreter)
   * [template interpreter](https://metebalci.com/blog/demystifying-the-jvm-jvm-variants-cppinterpreter-and-templateinterpreter/)
   * [source on github](https://github.com/openjdk/jdk/blob/master/src/hotspot/cpu/x86/templateTable_x86.cpp)
 * Inline caching for attribute lookup
+  * Including actually-inline assembly caches with `cmp`/`jmp` and stub, and a
+    C++ wrapper
 * Attaching intrinsic functions or assembly stubs to well-known functions
 * Heap and GC characteristics from [Garbage collection in a large LISP system][large-lisp]
 * Fast paths for common cases ("do less")
@@ -233,6 +238,9 @@ write about:
 * Debugging mindsets
   * Ways to think about debugging that make the process less stressful and
     thrashy
+* Code transformations and analysis
+  * Definite assignment analysis
+  * Static Single Assignment (SSA)
 * Writing JITs without writing assembly
   * [Tail-calls for efficient interpreters](https://blog.reverberate.org/2021/04/21/musttail-efficient-interpreters.html)
     * Including [(top of) stack caching](https://dl.acm.org/doi/10.1145/223428.207165)
@@ -354,6 +362,8 @@ playlist looks like it could be worth a watch, but it's a lot of hours.
 
 [eatonphil]: https://notes.eatonphil.com/
 [chrisgseaton]: https://chrisseaton.com/
+[tenderlove]: http://tenderlovemaking.com/
+[jemma]: https://jemma.dev/
 
 ## Communities
 
