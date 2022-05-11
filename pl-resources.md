@@ -225,8 +225,13 @@ write about:
 * Inline caching for attribute lookup
   * Including actually-inline assembly caches with `cmp`/`jmp` and stub, and a
     C++ wrapper
+  * Object shapes / hidden classes / layouts
+  * Compact objects
 * Attaching intrinsic functions or assembly stubs to well-known functions
-* Heap and GC characteristics from [Garbage collection in a large LISP system][large-lisp]
+* Garbage collectors
+  * Heap and GC characteristics from [Garbage collection in a large LISP system][large-lisp]
+  * Object handles in a copying collector
+    (see [Andy Chu's comment](https://www.reddit.com/r/ProgrammingLanguages/comments/i8u96f/implementations_of_copying_garbage_collector/g1chjk2/))
 * Fast paths for common cases ("do less")
 * JIT intermediate representations and how they help solve problems around
   megamorphic call sites, inlining, etc
