@@ -229,7 +229,8 @@ write about:
     [Hotspot](https://github.com/openjdk-mirror/jdk7u-hotspot/blob/50bdefc3afe944ca74c3093e7448d6b889cd20d1/src/share/vm/code/compiledIC.hpp)?
     [Dart (maybe)](https://github.com/dart-lang/sdk/blob/4258a597893ec9e6434aa5d0557c24343a5e238d/runtime/vm/code_patcher_x64.cc)? JSC?)
     * Andy Wingo's [notes](https://wingolog.org/archives/2018/02/07/design-notes-on-inline-caches-in-guile)
-    * [Feedback vectors in V8](https://www.youtube.com/watch?v=u7zRSm8jzvA) (video)
+    * [Feedback vectors in V8](https://www.youtube.com/watch?v=u7zRSm8jzvA) (video) ([code](https://github.com/v8/v8/blob/924a299e1ab26fd785ecc264123a9219ff32537f/src/objects/feedback-vector.h))
+    * [Notes](https://wiki.openjdk.java.net/display/HotSpot/Overview+of+CompiledIC+and+CompiledStaticCall) on Hotspot CompiledIC
   * Object shapes / hidden classes / layouts
   * Compact objects
 * Attaching intrinsic functions or assembly stubs to well-known functions
