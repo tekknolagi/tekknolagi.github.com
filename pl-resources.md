@@ -63,7 +63,7 @@ to find great stuff.
 * [Dragon taming with Tailbiter](https://codewords.recurse.com/issues/seven/dragon-taming-with-tailbiter-a-bytecode-compiler)
 * [Phil Eaton][eatonphil]'s [list of JS implementations](https://notes.eatonphil.com/javascript-implementations.html)
 * [Chris Seaton][chrisgseaton]'s [The Ruby Compiler Survey](https://ruby-compilers.com/)
-  and [RubyConf 2021 talk](https://www.youtube.com/watch?v=Zg-1_7ed0hE) about
+  and [RubyConf 2021 talk](https://www.youtube.com/watch?v=Zg-1_7ed0hE) (video) about
   it
 * Laurence Tratt's "Why aren't more users more happy with our VMs?"
   [Part 1](https://tratt.net/laurie/blog/entries/why_arent_more_users_more_happy_with_our_vms_part_1.html)
@@ -113,7 +113,7 @@ research around optimizing dynamic languages.
 * Object shapes
   * [Chris Seaton][chrisgseaton]'s [RubyKaigi talk](https://chrisseaton.com/truffleruby/rubykaigi21/)
   * [Aaron Patterson][tenderlove] and [Jemma Issroff][jemma]'s
-    [livestream](https://www.youtube.com/watch?v=C9q4V_WJ6_k)
+    [livestream](https://www.youtube.com/watch?v=C9q4V_WJ6_k) (video)
 * Kate Temkin's [QEMU fork](https://github.com/ktemkin/qemu/tree/with_tcti)
   with a gadget-based pseudo-JIT and associated
   [Twitter thread](https://twitter.com/ktemkin/status/1375835935061942274)
@@ -227,7 +227,9 @@ write about:
     C++ wrapper
     (How does [V8](https://github.com/v8/v8/tree/main/src/ic) do it?
     [Hotspot](https://github.com/openjdk-mirror/jdk7u-hotspot/blob/50bdefc3afe944ca74c3093e7448d6b889cd20d1/src/share/vm/code/compiledIC.hpp)?
-    [Dart (maybe)](https://github.com/dart-lang/sdk/blob/4258a597893ec9e6434aa5d0557c24343a5e238d/runtime/vm/code_patcher_x64.cc)?)
+    [Dart (maybe)](https://github.com/dart-lang/sdk/blob/4258a597893ec9e6434aa5d0557c24343a5e238d/runtime/vm/code_patcher_x64.cc)? JSC?)
+    * Andy Wingo's [notes](https://wingolog.org/archives/2018/02/07/design-notes-on-inline-caches-in-guile)
+    * [Feedback vectors in V8](https://www.youtube.com/watch?v=u7zRSm8jzvA) (video)
   * Object shapes / hidden classes / layouts
   * Compact objects
 * Attaching intrinsic functions or assembly stubs to well-known functions
@@ -328,8 +330,8 @@ language implementation.
 * The [GameBoy memory map](http://gameboy.mongenel.com/dmg/asmmemmap.html)
 * This [blog post](https://mattbruv.github.io/gameboy-crust/) that gives a
   pretty simple state machine for the different rendering steps
-* The [Ultimate Game Boy Talk](https://www.youtube.com/watch?v=HyzD8pNlpwI) by
-  Michael Steil at CCC
+* The [Ultimate Game Boy Talk](https://www.youtube.com/watch?v=HyzD8pNlpwI)
+  (video) by Michael Steil at CCC
 * This [ROM generator](http://catskull.net/GB-Logo-Generator/) for custom logos
 * This [sample DAA implementation](https://www.reddit.com/r/EmuDev/comments/cdtuyw/gameboy_emulator_fails_blargg_daa_test/etwcyvy/)
 * This [awesome-gbdev](https://github.com/gbdev/awesome-gbdev) list
