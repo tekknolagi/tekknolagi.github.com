@@ -3,6 +3,7 @@ title: Small objects and pointer tagging
 layout: post
 date: 2021-02-11 00:00:00 PT
 description: Optimizing bytecode interpreters by avoiding heap allocation
+series: runtime-opt
 ---
 
 Welcome back to the third post in what is quickly turning into a series on

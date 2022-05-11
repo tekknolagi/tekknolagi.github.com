@@ -4,6 +4,7 @@ layout: post
 date: 2020-10-29 08:00:00 PT
 description: In which we compile procedures and procedure calls to x86-64
 og_image: /assets/img/compiling-a-lisp-og-image.png
+series: compiling-a-lisp
 ---
 
 <span data-nosnippet>

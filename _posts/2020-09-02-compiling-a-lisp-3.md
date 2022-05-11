@@ -4,6 +4,7 @@ layout: post
 date: 2020-09-02 00:45:00 PDT
 description: Compiling other Lisp immediates to x86-64
 og_image: /assets/img/compiling-a-lisp-og-image.png
+series: compiling-a-lisp
 ---
 
 <span data-nosnippet>

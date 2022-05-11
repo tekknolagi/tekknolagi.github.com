@@ -4,6 +4,7 @@ layout: post
 date: 2020-08-29 20:49:00 PDT
 description: A small mmap demo
 og_image: /assets/img/compiling-a-lisp-og-image.png
+series: compiling-a-lisp
 ---
 
 <span data-nosnippet>

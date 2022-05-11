@@ -4,6 +4,7 @@ layout: post
 date: 2020-10-01 09:00:00 PDT
 description: Compiling Lisp let expressions to x86-64
 og_image: /assets/img/compiling-a-lisp-og-image.png
+series: compiling-a-lisp
 ---
 
 <span data-nosnippet>

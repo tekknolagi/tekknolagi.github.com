@@ -4,6 +4,7 @@ layout: post
 date: 2020-08-31 09:46:00 PDT
 description: Compiling Lisp integers to x86-64
 og_image: /assets/img/compiling-a-lisp-og-image.png
+series: compiling-a-lisp
 ---
 
 <span data-nosnippet>

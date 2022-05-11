@@ -4,6 +4,7 @@ layout: post
 date: 2020-09-21 22:00:00 PDT
 description: Adding a reader to our Lisp compiler
 og_image: /assets/img/compiling-a-lisp-og-image.png
+series: compiling-a-lisp
 ---
 
 <span data-nosnippet>

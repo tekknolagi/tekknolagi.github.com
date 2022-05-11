@@ -4,6 +4,7 @@ layout: post
 date: 2020-08-29 13:16:00 PDT
 description: Overture to our small Lisp to x86-64 compiler
 og_image: /assets/img/compiling-a-lisp-og-image.png
+series: compiling-a-lisp
 ---
 
 <div style="width: 80%; margin: 0 auto;"><i>Many thanks to Kartik Agaram and
