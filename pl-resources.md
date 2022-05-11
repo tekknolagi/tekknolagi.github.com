@@ -225,6 +225,9 @@ write about:
 * Inline caching for attribute lookup
   * Including actually-inline assembly caches with `cmp`/`jmp` and stub, and a
     C++ wrapper
+    (How does [V8](https://github.com/v8/v8/tree/main/src/ic) do it?
+    [Hotspot](https://github.com/openjdk-mirror/jdk7u-hotspot/blob/50bdefc3afe944ca74c3093e7448d6b889cd20d1/src/share/vm/code/compiledIC.hpp)?
+    [Dart (maybe)](https://github.com/dart-lang/sdk/blob/4258a597893ec9e6434aa5d0557c24343a5e238d/runtime/vm/code_patcher_x64.cc)?)
   * Object shapes / hidden classes / layouts
   * Compact objects
 * Attaching intrinsic functions or assembly stubs to well-known functions
