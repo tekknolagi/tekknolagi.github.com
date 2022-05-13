@@ -22,6 +22,20 @@ Python runtime originally developed for use in Instagram. It nicely showcases
 all of the fun and sharp edges of the Python object model and how we solved
 hard problems.
 
+## Optimization decisions
+
+This post will talk about the inline caching system and in the process mention
+a host of performance features built in to Skybison. They work *really well
+together* but ultimately they are orthogonal features and should not be
+conflated. Some of these ideas are:
+
+* Immediate objects
+* Compact objects
+* Layouts
+* Inline caching and cache invalidation
+* Quickening
+* Assembly interpreter
+
 ## Loading attributes
 
 ### Monomorphic
@@ -35,3 +49,9 @@ hard problems.
 ### Polymorphic
 
 ## Modifying types
+
+## Thanks
+
+Thank you to all of the many people who wrote great language runtimes, people
+who preceded me on the team, and people who I worked with on the team. You came
+up with most of the ideas. I just chronicle them here.
