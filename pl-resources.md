@@ -108,6 +108,8 @@ research around optimizing dynamic languages.
   about V8 internals
 * Vyacheslav Egorov's [inline cache](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html)
   explanation for JavaScript
+* Caio Lima's [inline cache](https://caiolima.github.io/jsc/2020/03/12/jsc-inline-cache.html)
+  explanation for JSC (with assembly!)
 * V8's [blog post](https://v8.dev/blog/sparkplug) about their baseline/template
   JIT
 * Object shapes
