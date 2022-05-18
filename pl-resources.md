@@ -350,7 +350,7 @@ language implementation.
 * blargg's [test ROMs](https://gbdev.gg8.se/files/roms/blargg-gb-tests/)
   which have instruction tests, sound tests, etc
 * gekkio's [emulator](https://github.com/Gekkio/mooneye-gb)
-  and his [test ROMs](https://github.com/Gekkio/mooneye-gb/tree/master/tests)
+  and his [test ROMs](https://github.com/Gekkio/mooneye-test-suite)
 * This [fairly readable Go emulator](https://github.com/Humpheh/goboy),
   which has helped me make sense of some features
 * This [fairly readable C emulator](https://github.com/simias/gaembuoy)
