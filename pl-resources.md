@@ -23,9 +23,9 @@ to find great stuff.
   the Ghuloum style
 * The [Natalie](https://github.com/natalie-lang/natalie) compiler for Ruby
 * Compiler passes
-  * [Sparse conditional constant propagation](https://en.wikipedia.org/wiki/Sparse_conditional_constant_propagation) and
-    [Bril blog post](https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/sccp/) and
-    [Thorsten Ball tweet](https://twitter.com/thorstenball/status/1526788333761863680/photo/1)
+  * [Sparse conditional constant propagation](https://en.wikipedia.org/wiki/Sparse_conditional_constant_propagation)
+    ([Bril blog post](https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/sccp/) and
+    [Thorsten Ball tweet](https://twitter.com/thorstenball/status/1526788333761863680/photo/1))
 
 ## Lisp specific
 
