@@ -323,6 +323,9 @@ language implementation.
 * [Blinkenlights](https://justine.lol/blinkenlights/index.html), a visual
   x86-64 emulator
 * [Cosmopolitan libc](https://justine.lol/cosmopolitan/index.html)
+* [Cosmopolitan ftrace](https://justine.lol/ftrace/)
+
+(wow, this is turning into a Justine Section)
 
 ## Game Boy Emulators
 
