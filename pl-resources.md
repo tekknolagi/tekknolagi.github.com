@@ -147,6 +147,7 @@ research around optimizing dynamic languages.
   * [lineiform](https://github.com/chc4/lineiform) (Rust)
   * [redmagic](https://github.com/matthewfl/redmagic) (C)
   * [BacCaml](https://github.com/prg-titech/baccaml) (OCaml)
+* Bump allocators: [always bump downwards](https://fitzgeraldnick.com/2019/11/01/always-bump-downwards.html)!
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
