@@ -268,6 +268,9 @@ write about:
   * [Copy-and-Patch compilation](https://arxiv.org/pdf/2011.13127.pdf) (PDF)
     * Simplifying this would probably make for a fun blog post and could be
       combined with ICs and quickening from my runtime optimization series
+* Using LLVM's stack maps to do free precise runtime handles
+  * [LLVM doc](https://llvm.org/docs/GarbageCollection.html)
+  * [Using LLVM intrinsics from C/C++](https://stackoverflow.com/questions/15354488/how-to-embed-llvm-assembly-or-intrinsics-in-c-program-with-clang)
 
 ### Papers I want to read
 
