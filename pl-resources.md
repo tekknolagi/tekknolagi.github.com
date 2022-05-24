@@ -270,9 +270,14 @@ write about:
   * [Copy-and-Patch compilation](https://arxiv.org/pdf/2011.13127.pdf) (PDF)
     * Simplifying this would probably make for a fun blog post and could be
       combined with ICs and quickening from my runtime optimization series
-* Using LLVM's stack maps to do free precise runtime handles
-  * [LLVM doc](https://llvm.org/docs/GarbageCollection.html)
-  * [Using LLVM intrinsics from C/C++](https://stackoverflow.com/questions/15354488/how-to-embed-llvm-assembly-or-intrinsics-in-c-program-with-clang)
+* Precise native stack roots
+  * [Accurate Garbage Collection in an Uncooperative Environment](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.87.3769&rep=rep1&type=pdf) (2002, PDF)
+  * [Accurate Garbage Collection in Uncooperative Environments Revisited](http://www.filpizlo.com/papers/baker-ccpe09-accurate.pdf) (2006, PDF)
+  * [Accurate Garbage Collection in Uncooperative Environments with Lazy Pointer Stacks](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.88.9375&rep=rep1&type=pdf) (2007, PDF)
+  * Skybison/V8/... handles and handle scopes
+  * Using LLVM's stack maps to do free precise runtime handles
+    * [LLVM doc](https://llvm.org/docs/GarbageCollection.html)
+    * [Using LLVM intrinsics from C/C++](https://stackoverflow.com/questions/15354488/how-to-embed-llvm-assembly-or-intrinsics-in-c-program-with-clang)
 
 ### Papers I want to read
 
