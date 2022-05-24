@@ -26,6 +26,8 @@ to find great stuff.
   * [Sparse conditional constant propagation](https://en.wikipedia.org/wiki/Sparse_conditional_constant_propagation)
     ([Bril blog post](https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/sccp/) and
     [Thorsten Ball tweet](https://twitter.com/thorstenball/status/1526788333761863680/photo/1))
+* I've heard good things about [Engineering a Compiler](https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-088478-0)
+  ([3rd edition](https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-815412-0) coming soon!)
 
 ## Lisp specific
 
