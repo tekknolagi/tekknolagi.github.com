@@ -80,8 +80,10 @@ TARGET(LOAD_FAST) {
 At first blush, this looks pretty good. Array lookups are constant time and
 often one machine instruction. It doesn't take too long to fetch some data from
 memory, either, especially when the memory is in a cache. Remember when local
-variable lookups in Python used to be implemented using a hash table? This is a
-huge improvement.
+variable lookups in Python used to be implemented [using a hash
+table][slowlocals]? This is a huge improvement.
+
+[slowlocals]: https://github.com/smontanaro/python-0.9.1/blob/bceb1f141ad5227dd301e8ba10213ebbd75fa192/src/ceval.c#L1170
 
 Anyway, part of this opcode implementation includes a check to see if the local
 variable is bound---checking if `value == NULL`. Why, though? Why can't the
@@ -325,15 +327,54 @@ def loop():
 #              18 RETURN_VALUE
 ```
 
+Last, we have some exception handling. Exception handling is like other control
+flow, except that I can never remember in what order or circumstances `try`,
+`except`, `else`, and `finally` go. So let's look them up...
+
+From the [docs](https://docs.python.org/3.8/tutorial/errors.html):
+
+> The try statement works as follows.
+> * First, the `try` clause (the statement(s) between the `try` and `except`
+>   keywords) is executed.
+> * If no exception occurs, the `except` clause is skipped and execution of the
+>   `try` statement is finished.
+> * If an exception occurs during execution of the `try` clause, the rest of
+>   the clause is skipped. Then, if its type matches the exception named after
+>   the `except` keyword, the `except` clause is executed, and then execution
+>   continues after the `try`/`except` block.
+> * If an exception occurs which does not match the exception named in the
+>   `except` clause, it is passed on to outer `try` statements; if no handler
+>   is found, it is an unhandled exception and execution stops with a message
+>   as shown above.
+> ...
+> The `try ... except` statement has an optional `else` clause, which, when
+> present, must follow all `except` clauses. It is useful for code that must be
+> executed if the `try` clause does not raise an exception.
+> ...
+> If a `finally` clause is present, the `finally` clause will execute as the
+> last task before the `try` statement completes.
+
+...and then there are many more bullet points about how `finally` clauses work
+and in what order they execute and what happens with
+`return`/`break`/`continue` inside a `finally`, and so on and so forth. For
+this reason, I will not be covering exception handling with `finally` clauses
+in this article. It's extremely Python-specific, confusing, and detracts from
+the main purpose.
+
+In any case, here is a small `try`/`except`/`else` example:
+
 ```python
 def exc():
   try:
     {}['a']
     x = 1
+    print(x)  # YES
   except KeyError:
     print(x)  # MAYBE (NO)
-# Disassembly of <code object exc at 0x7f5e54823030, file "<stdin>", line 1>:
-#   2           0 SETUP_FINALLY           16 (to 18)
+  else:
+    print(x)  # MAYBE (NO)
+# Disassembly of <code object exc at 0x7f1ead15df50, file "<stdin>", line 1>:
+#   2           0 SETUP_EXCEPT            24 (to 26)
 # 
 #   3           2 BUILD_MAP                0
 #               4 LOAD_CONST               1 ('a')
@@ -342,39 +383,45 @@ def exc():
 # 
 #   4          10 LOAD_CONST               2 (1)
 #              12 STORE_FAST               0 (x)
-#              14 POP_BLOCK
-#              16 JUMP_FORWARD            28 (to 46)
 # 
-#   5     >>   18 DUP_TOP
-#              20 LOAD_GLOBAL              0 (KeyError)
-#              22 COMPARE_OP              10 (exception match)
-#              24 POP_JUMP_IF_FALSE       44
-#              26 POP_TOP
-#              28 POP_TOP
-#              30 POP_TOP
+#   5          14 LOAD_GLOBAL              0 (print)
+#              16 LOAD_FAST                0 (x)
+#              18 CALL_FUNCTION            1
+#              20 POP_TOP
+#              22 POP_BLOCK
+#              24 JUMP_FORWARD            28 (to 54)
 # 
-#   6          32 LOAD_GLOBAL              1 (print)
-#              34 LOAD_FAST                0 (x)
-#              36 CALL_FUNCTION            1
+#   6     >>   26 DUP_TOP
+#              28 LOAD_GLOBAL              1 (KeyError)
+#              30 COMPARE_OP              10 (exception match)
+#              32 POP_JUMP_IF_FALSE       52
+#              34 POP_TOP
+#              36 POP_TOP
 #              38 POP_TOP
-#              40 POP_EXCEPT
-#              42 JUMP_FORWARD             2 (to 46)
-#         >>   44 END_FINALLY
-#         >>   46 LOAD_CONST               0 (None)
-#              48 RETURN_VALUE
+# 
+#   7          40 LOAD_GLOBAL              0 (print)
+#              42 LOAD_FAST                0 (x)
+#              44 CALL_FUNCTION            1
+#              46 POP_TOP
+#              48 POP_EXCEPT
+#              50 JUMP_FORWARD            10 (to 62)
+#         >>   52 END_FINALLY
+# 
+#   9     >>   54 LOAD_GLOBAL              0 (print)
+#              56 LOAD_FAST                0 (x)
+#              58 CALL_FUNCTION            1
+#              60 POP_TOP
+#         >>   62 LOAD_CONST               0 (None)
+#              64 RETURN_VALUE
 ```
 
-```python
-```
+Even without `finally`, there's a *lot* of control flow. See all the `>>`
+arrows? So many jump targets. I am not sure why there is an `END_FINALLY`
+opcode in there, given that we did not have a `finally` clause. A quick look at
+our work team's [Python compiler in Python][pycompiler] shows that it's emitted
+in all `try`/`except` code generation. Weird.
 
-```python
-```
-
-```python
-```
-
-```python
-```
+[pycompiler]: https://github.com/facebookarchive/python-compiler/blob/5a9a30b3d5fae5337ff449030873a58b35e875a4/compiler/pycodegen.py#L997
 
 ## Cool Graphs and Compiler Fun
 
