@@ -347,6 +347,11 @@ does:
 * A memory load from the receiver to get the cached attribute
 * A memory store to the stack to push the result
 
+Now, you may say that that is a lot of loads---and it kind of is---but it is
+still fewer instruction and loads than the slot-based function call and
+multiple dictionary lookup dispatch that we would otherwise require for an
+uncached lookup.
+
 This could probably still be reduced further by hand, which we have done in our
 [assembly implementation][asm-load-attr-instance] of the Python interpreter. In
 a compiled representation of this cache, we could eliminate the loads required
