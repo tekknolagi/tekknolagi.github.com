@@ -19,7 +19,8 @@ the CPython virtual machine.
 <!-- TODO: link to patch series -->
 [^gross]: This might change soon with if Sam Gross's GIL-removal patch series
     lands. Part of the patch series includes a change from the decades-old
-    stack machine to a register machine to "sweeten the deal" performance-wise.
+    stack machine architecture to a register machine to "sweeten the deal"
+    performance-wise.
 
 I talked at some length about Python bytecode in my
 [post](/blog/discovering-basic-blocks) about lifting a graph structure out of
@@ -94,9 +95,11 @@ extra work?[^drama]
     are *extremely fast* in the grand scheme of things. When optimizing a
     virtual machine, though, it's important to remember that it's often death
     by a thousand tiny cuts---tiny slowdowns. While implementing enormous
-    features like just-in-time compilation can provide big speed boosts on
-    their own, speeding up a programming language generally requires many small
-    improvements that can leverage one another.
+    features like just-in-time compilation can provide speed boosts on
+    their own (removing interpreter overhead, etc), speeding up a programming
+    language generally requires many small improvements that can leverage one
+    another. The more performance optimization we can do before native code
+    generation, the better the hypothetical JIT becomes.
 
 I can answer the *why*: unlike in languages like C, the following is considered
 a valid Python program:
@@ -117,9 +120,9 @@ you how to get rid of this extra check.
 
 The broad plan is to determine, for every reference to a local variable, if it
 is definitely set to *something* at the time of reference. We don't care what
-it's set to --- nor can we generally know this --- we just want to know if we
-can safely fetch it without checking for `NULL`. To do this, we will build a
-Cool Graph and use some Compiler Fun on that graph.
+it's set to---nor can we generally know this---we just want to know if we can
+safely fetch it without checking for `NULL`. To do this, we will build a Cool
+Graph and use some Compiler Fun on that graph.
 
 We'll also need a new opcode, `LOAD_FAST_UNCHECKED`, that does not have the `if
 (value == NULL)` check. At the time of writing, this is purely a hypothetical
@@ -329,7 +332,7 @@ def loop():
 
 Last, we have some exception handling. Exception handling is like other control
 flow, except that I can never remember in what order or circumstances `try`,
-`except`, `else`, and `finally` go. So let's look them up...
+`except`, `else`, and `finally` blocks are executed. So let's look them up...
 
 From the [docs](https://docs.python.org/3.8/tutorial/errors.html):
 
@@ -425,9 +428,19 @@ in all `try`/`except` code generation. Weird.
 
 ## Cool Graphs and Compiler Fun
 
-Unfortunately, the three most common representations of CPython code (text,
-AST, and bytecode) are not particularly well-suited for learning cool facts
-about variable definitions and uses.
+You have now read a lot of Python code and bytecode and have an idea of what
+cases we can optimize. Unfortunately, the three most common representations of
+CPython code (text, abstract syntax tree (AST), and bytecode) are not
+particularly well-suited for learning cool facts about variable definitions and
+uses. The text would require parsing into an AST, the AST has a lot of node
+types and still not much helpful control-flow
+information[^tree-abstract-interpretation], and the linear nature of the
+bytecode obscures branches.
+
+[^tree-abstract-interpretation]: You can probably write a similar abstract
+    interpretation pass for the AST as we did for bytecode, but I have not seen
+    people do this often. I imagine the Graal/Truffle project does this,
+    though, as their whole thing is compiling straight off the AST.
 
 Fortunately, we built an awesome control-flow graph from Python bytecode in my
 last post, [Discovering basic blocks](/blog/discovering-basic-blocks/). If you
@@ -441,6 +454,52 @@ We will build two more things into our existing structure:
 
 With both of these structures, we can traverse our control-flow graph (CFG) and
 replace many `LOAD_FAST` instructions with `LOAD_FAST_UNCHECKED`.
+
+## Modifying our existing code
+
+The [Addendum](/blog/discovering-basic-blocks#addendum)from the previous post
+has some code that makes successor sets, and we're going to add on to it. I'll
+rehash all of it here for clarity.
+
+### Step 1: Add predecessor/successors to blocks
+
+We have a set of basic blocks, each of which has some bytecode (a
+`BytecodeSlice`) and an identifier. Unfortunately, not every block's bytecode
+ends with a *terminator* instruction---sometimes adjacent blocks end with any
+random instruction and "fall through" to the next one. For an example, see the
+bytecode for `diamond` above. We can make the control flow a little bit more
+explicit, even without modifying the bytecode, by adding two sets to each
+block: `preds` and `succs`.
+
+For each block, get the successors and link them up.
+
+```python
+def compute_preds_succs(block_map: BlockMap):
+    for block in block_map.idx_to_block.values():
+        for idx in block.bytecode.successor_indices():
+            succ = block_map.idx_to_block[idx]
+            block.succs.add(succ)
+            succ.preds.add(block)
+```
+
+This method `successor_indices` on `BytecodeSlice` looks at the terminator and
+returns either a zero-element, one-element, or two-element tuple of successors
+to the current block.
+
+```python
+class BytecodeSlice:
+    # ...
+    def successor_indices(self) -> Tuple[int]:
+        last = self.last()
+        if last.is_branch():
+            if last.is_unconditional_branch():
+                return (last.jump_target_idx(),)
+            return (last.next_instr_idx(), last.jump_target_idx())
+        if instr.is_return() or instr.is_raise():
+            # Raise and return do not have any successors
+            return ()
+        return (last.next_instr_idx(),)
+```
 
 ## Extension: Adding it to CPython
 
