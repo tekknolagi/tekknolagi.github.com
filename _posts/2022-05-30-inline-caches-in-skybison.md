@@ -235,6 +235,13 @@ Then we never see the opcode handler for `LOAD_ATTR_ANAMORPHIC` again! The
 opcode has monomorphic specialization: it has been specialized for the one type
 it has seen.
 
+We have also stored the receiver's layout ID and attribute offset in the cache
+with `icUpdateAttr`. `icUpdateAttr` handles writing to the cache, including
+both the write to the cache tuple and registering dependencies---which we'll
+talk about later.
+
+For now, we'll take a tour through the monomorphic attribute handler.
+
 ### Monomorphic
 
 There is a lot going on here but a very common case is a field on an object,
@@ -248,6 +255,9 @@ class C:
 def lookup_value(obj):
   return obj.value
 
+# First: anamorphic -> monomorphic
+lookup_value(C())
+# Second: monomorphic!
 lookup_value(C())
 ```
 
@@ -296,88 +306,89 @@ inline RawObject icLookupMonomorphic(RawMutableTuple caches, word cache,
 ```
 
 This looks like a lot of code still but it actually only takes a few machine
-instructions. The assembly version might help underscore that. I have inlined
-some of the function calls in the macro assemler to make this clearer:
+instructions in the fast path. When optimized by a C++ compiler, this function
+does:
+
+* A memory load from the frame to get the cache index
+* A memory load from the frame to get the caches tuple
+* A memory load from the stack to get the receiver
+* A memory load from the receiver (if it's a heap object) to get its layout ID
+* A memory load from the caches tuple to get the stored layout ID
+* A comparison with the receiver layout ID to see if they are the same
+* A memory load from the caches tuple to get the cached attribute offset
+* A memory load from the receiver to get the cached attribute
+* A memory store to the stack to push the result
+
+This could probably still be reduced further by hand, which we have done in our
+[assembly implementation][asm-load-attr-instance] of the Python interpreter.
+
+[asm-load-attr-instance]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/interpreter-gen-x64.cpp#L1130
+
+But what about the slow path? What if we are seeing a different type this time
+around? Well, it's morphin' time. Let's transition to the polymorphic cache in
+`loadAttrUpdateCache`:
 
 ```cpp
-template <>
-void emitHandler<LOAD_ATTR_INSTANCE>(EmitEnv* env) {
-  ScratchReg r_base(env);
-  ScratchReg r_layout_id(env);
-  ScratchReg r_scratch(env);
-  ScratchReg r_caches(env);
-  Label slow_path;
-  __ popq(r_base);
+Continue Interpreter::loadAttrUpdateCache(Thread* thread, word arg,
+                                          word cache) {
+  // ... full attribute lookup here ...
 
-  // Begin emitGetLayoutId
-  Label not_heap_object;
-  // Begin emitJumpIfImmediate
-  // Adding `(-kHeapObjectTag) & kPrimaryTagMask` will set the lowest
-  // `kPrimaryTagBits` bits to zero iff the object had a `kHeapObjectTag`.
-  __ leal(r_scratch,
-          Address(obj, (-Object::kHeapObjectTag) & Object::kPrimaryTagMask));
-  __ testl(r_scratch, Immediate(Object::kPrimaryTagMask));
-  __ jcc(NOT_ZERO, &not_heap_object, is_near_jump);
-  // End emitJumpIfImmediate
-  // It is a HeapObject.
-  static_assert(RawHeader::kLayoutIdOffset + Header::kLayoutIdBits <= 32,
-                "expected layout id in lower 32 bits");
-  __ movl(r_dst, Address(r_obj, heapObjectDisp(RawHeapObject::kHeaderOffset)));
-  __ shrl(r_dst,
-          Immediate(RawHeader::kLayoutIdOffset - Object::kSmallIntTagBits));
-  __ andl(r_dst, Immediate(Header::kLayoutIdMask << Object::kSmallIntTagBits));
-  Label done;
-  __ jmp(&done, Assembler::kNearJump);
-
-  __ bind(&not_heap_object);
-  static_assert(static_cast<int>(LayoutId::kSmallInt) == 0,
-                "Expected SmallInt LayoutId to be 0");
-  __ xorl(r_dst, r_dst);
-  static_assert(Object::kSmallIntTagBits == 1 && Object::kSmallIntTag == 0,
-                "unexpected SmallInt tag");
-  emitJumpIfSmallInt(env, r_obj, &done);
-
-  // Immediate.
-  __ movl(r_dst, r_obj);
-  __ andl(r_dst, Immediate(Object::kImmediateTagMask));
-  static_assert(Object::kSmallIntTag == 0, "Unexpected SmallInt tag");
-  __ shll(r_dst, Immediate(Object::kSmallIntTagBits));
-
-  __ bind(&done);
-  // End emitGetLayoutId
-
-  __ movq(r_caches, Address(env->frame, Frame::kCachesOffset));
-  // Begin emitIcLookupMonomorphic
-  // Begin emitCurrentCacheIndex
-  __ movzwq(r_scratch, Address(env->bytecode, env->pc, TIMES_1,
-                         heapObjectDisp(-kCodeUnitSize + 2)));
-  // End emitCurrentCacheIndex
-  __ leaq(r_scratch, Address(r_scratch, TIMES_2, 0));
-  __ leaq(r_caches, Address(r_caches, r_scratch, TIMES_8, heapObjectDisp(0)));
-  __ cmpl(Address(r_caches, kIcEntryKeyOffset * kPointerSize), r_layout_id);
-  __ jcc(NOT_EQUAL, not_found, Assembler::kNearJump);
-  __ movq(r_dst, Address(r_caches, kIcEntryValueOffset * kPointerSize));
-  // End emitIcLookupMonomorphic
-
-  Label next;
-  // This is implemented in a kind of hard-to-understand way so I will say that
-  // it is comprised of a 1) a load 2) a push to the stack and 3) a jump to the
-  // next opcode handler (kind of like `break` in a `switch`)
-  emitAttrWithOffset(env, &Assembler::pushq, &next, r_base, r_scratch,
-                     r_layout_id);
-
-  // ...
+  // Cache the attribute load
+  MutableTuple caches(&scope, frame->caches());
+  ICState ic_state = icCurrentState(*caches, cache);
+  Function dependent(&scope, frame->function());
+  LayoutId receiver_layout_id = receiver.layoutId();
+  if (ic_state == ICState::kAnamorphic) {
+    // ...
+  } else {
+    DCHECK(
+        currentBytecode(thread) == LOAD_ATTR_INSTANCE ||
+            currentBytecode(thread) == LOAD_ATTR_INSTANCE_TYPE_BOUND_METHOD ||
+            currentBytecode(thread) == LOAD_ATTR_POLYMORPHIC,
+        "unexpected opcode");
+    switch (kind) {
+      case LoadAttrKind::kInstanceOffset:
+      case LoadAttrKind::kInstanceFunction:
+        rewriteCurrentBytecode(frame, LOAD_ATTR_POLYMORPHIC);
+        icUpdateAttr(thread, caches, cache, receiver_layout_id, location, name,
+                     dependent);
+        break;
+      default:
+        break;
+    }
+  }
+  thread->stackSetTop(*result);
+  return Continue::NEXT;
 }
 ```
 
-Now, this implementation is *longer* in terms of number of line of C++ code,
-sure, but that's because we have a very verbose macro assembler. This
-implementation of attribute lookups takes vastly fewer machine instructions
-than a full attribute lookup: it does not do a dictionary lookup and it only
-does a couple of loads. I think with some tuning we could get it to at most two
-loads in the fast path.
+We transition from `LOAD_ATTR_INSTANCE` to `LOAD_ATTR_POLYMORPHIC` and also
+(with `icUpdateAttr`) transition the cache from a monomorphic cache (key+value)
+to a polymorphic cache (tuple of multiple key+value).
 
 ### Polymorphic
+
+The polymorphic attribute lookup is shared by
+
+```cpp
+HANDLER_INLINE Continue Interpreter::doLoadAttrPolymorphic(Thread* thread,
+                                                           word arg) {
+  Frame* frame = thread->currentFrame();
+  RawObject receiver = thread->stackTop();
+  LayoutId layout_id = receiver.layoutId();
+  word cache = currentCacheIndex(frame);
+  bool is_found;
+  RawObject cached = icLookupPolymorphic(MutableTuple::cast(frame->caches()),
+                                         cache, layout_id, &is_found);
+  if (!is_found) {
+    EVENT_CACHE(LOAD_ATTR_POLYMORPHIC);
+    return loadAttrUpdateCache(thread, arg, cache);
+  }
+  RawObject result = loadAttrWithLocation(thread, receiver, cached);
+  thread->stackSetTop(result);
+  return Continue::NEXT;
+}
+```
 
 ## Loading methods
 
