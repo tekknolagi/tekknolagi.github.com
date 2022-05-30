@@ -6,9 +6,9 @@ series: runtime-opt
 ---
 
 Inline caching is a popular technique for optimizing dynamic language runtimes.
-I have written about it before ([post 1](/blog/inline-caching/) and
-[post 2](/blog/inline-caching-quickening/)), using an artificial sample
-interpreter.
+I have written about it before ([Inline caching](/blog/inline-caching/) and
+[Inline caching: quickening](/blog/inline-caching-quickening/)), using a tiny
+sample interpreter.
 
 While this is good for illustrating the core technique, the simplified
 interpreter core does not have any real-world requirements or complexity: its
@@ -31,10 +31,10 @@ CPython use similar techniques to those shown here.
 
 ## Optimization decisions
 
-This post will talk about the inline caching system and in the process mention
-a host of performance features built in to Skybison. They work *really well
-together* but ultimately they are orthogonal features and should not be
-conflated. Some of these ideas are:
+This post will talk about the inline caching system and in the process
+potentially mention a host of performance features built in to Skybison. They
+work *really well together* but ultimately they are orthogonal features and
+should not be conflated. Some of these ideas are:
 
 * Immediate objects
 * Compact objects
@@ -49,6 +49,8 @@ efficient *because* we have compact objects and layouts. And quickening reduces
 the number of comparisons about what cache state we are in. And the assembly
 interpreter makes inline caching even faster. And the JIT makes it faster
 still.
+
+But we will focus on inline caching of attribute loads for now.
 
 ## Loading attributes
 
@@ -550,6 +552,28 @@ types in its inheritance hierarchy.
 We can do this extremely slow operation when types change because we expect
 attribute lookups to be frequent and changes to types *after they are used* to
 be very rare.
+
+TODO(max): show dependency code
+
+## Other things to go explore
+
+We have our layout system in [`runtime/layout.h`][layout_h] and
+[`runtime/layout.cpp`][layout_cpp]. This showcases the thin veneer on top of
+type objects that we use to track where attributes are on different types of
+objects. It also gives some insight into the compact object system.
+
+[layout_h]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/layout.h
+[layout_cpp]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/layout.cpp
+
+We have our assembly interpreter (interpreter written in assembly; called
+"template interpreter" by the JVM folks) and template JIT compiler in
+[`runtime/interpreter-gen-x64.cpp`][interpreter_gen].
+
+[interpreter_gen]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/interpreter-gen-x64.cpp
+
+The JIT compiler we are building *on top of CPython* called
+[Cinder](https://github.com/facebookincubator/cinder), which you can play with
+at [trycinder.com](https://trycinder.com/).
 
 ## Thanks
 
