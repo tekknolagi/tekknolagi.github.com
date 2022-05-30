@@ -461,6 +461,22 @@ The [Addendum](/blog/discovering-basic-blocks#addendum)from the previous post
 has some code that makes successor sets, and we're going to add on to it. I'll
 rehash all of it here for clarity.
 
+### The algorithm
+
+We are going two two nested passes: one that goes over the whole CFG, block by
+block, and another that goes over a block, instruction by instruction.
+
+Within a block, we will start with some set of currently defined local
+variables called `live_at_idx`. For each opcode, we will read from or modify
+that state. `STORE_FAST`, for example, defines a local, whereas `DELETE_FAST`
+undefines a local.
+
+Then we will use the end state of each block as the start state for its
+successors.
+
+At the end, we will know at any given point in the CFG if a local variable is
+definitely assigned at that point.
+
 ### Step 1: Add predecessor/successors to blocks
 
 We have a set of basic blocks, each of which has some bytecode (a
@@ -500,6 +516,10 @@ class BytecodeSlice:
             return ()
         return (last.next_instr_idx(),)
 ```
+
+Now that we have predecessors and successors, we can use that information to
+
+### Step 2: See what locals flow in and out of each block
 
 ## Extension: Adding it to CPython
 
