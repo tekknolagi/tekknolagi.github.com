@@ -52,7 +52,22 @@ still.
 
 ## Loading attributes
 
-The normal path for attributes in CPython involves some generic dictionary
+Python has a notion of object attributes and loading attributes looks like
+this:
+
+```python
+def fn(obj):
+  return obj.some_attribute
+```
+
+The object `obj` is on the left hand side and the attribute name
+`some_attribute` is on the right hand side. Because Python is a very dynamic
+language, over the lifetime of the function `fn`, `obj` can be any type. So the
+bytecode compiler for CPython emits a `LOAD_ATTR` opcode and calls it a day. No
+sense trying to wrangle the code into something more specific using static
+analysis.
+
+The path for attribute lookups in CPython involves some generic dictionary
 lookups and function calls. We can take a look at the opcode handler for
 `LOAD_ATTR` in CPython and some of the library functions it uses to see what I
 mean:
@@ -71,9 +86,9 @@ TARGET(LOAD_ATTR) {
 ```
 
 The opcode handler fetches the top of the stack (the "owner" in CPython and
-"receiver" in Skybison and a lot of Smalltalk-inspired languages, but the
-important thing is that it's the left hand side of the `.`), reads the
-string object name from a tuple on the code object, and passes them to
+"receiver" in Skybison and a lot of Smalltalk-inspired runtimes, but the
+important thing is that it's the left hand side of the `.`), reads the string
+object name from a tuple on the code object, and passes them to
 `PyObject_GetAttr`.
 
 `PyObject_GetAttr` does the required dispatch for an attribute lookup. It first
@@ -107,12 +122,16 @@ PyObject_GetAttr(PyObject *v, PyObject *name)
 }
 ```
 
-This is a *lot* of work. `PyObject_GetAttr` is meant to be the entrypoint for
-most (all?) attribute lookups in CPython, so it has to handle every case. In
-the common case---attribute lookups in the interpreter with `LOAD_ATTR`---it's
-doing too much. One small example of this is the `PyUnicode_Check`. We know in
-the interpreter that the attribute name will always be a string! Why check
-again?
+the normal `tp_getattr` slot is a generic function like
+`PyObject_GenericGetAttr` that reads from the dictionary on the type, figures
+out what offset the attribute is, checks if it is a descriptor, and so on and
+so forth. This is a *lot* of work.
+
+`PyObject_GetAttr` is meant to be the entrypoint for most (all?) attribute
+lookups in CPython, so it has to handle every case. In the common
+case---attribute lookups in the interpreter with `LOAD_ATTR`---it's doing too
+much. One small example of this is the `PyUnicode_Check`. We know in the
+interpreter that the attribute name will always be a string! Why check again?
 
 Skybison also has a very generic `LOAD_ATTR` handler but it is only used if
 a function's bytecode cannot be optimized. I have reproduced it here for
