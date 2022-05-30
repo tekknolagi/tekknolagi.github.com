@@ -521,6 +521,7 @@ class C:
     def __init__(self):
         self.value = 5
 
+
 obj = C()
 print(obj.value)  # 5
 C.value = property(lambda self: 100)
