@@ -518,8 +518,13 @@ class BytecodeSlice:
 ```
 
 Now that we have predecessors and successors, we can use that information to
+navigate the graph.
 
 ### Step 2: See what locals flow in and out of each block
+
+
+
+TODO(max): Does this need some kind of fixpoint?
 
 ## Extension: Adding it to CPython
 
