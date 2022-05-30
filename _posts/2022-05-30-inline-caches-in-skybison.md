@@ -472,17 +472,9 @@ def g(self):
     return 2
 
 
-def get_f(obj):
-    return obj.f
-
-
-def get_g(obj):
-    return obj.g
-
-
 obj = C(g)
-print(get_f(obj))  # <bound method C.f of <__main__.C object at 0x7f1bd6a093c8>>
-print(get_g(obj))  # <function g at 0x7f1bd80ebe18>
+print(obj.f)  # <bound method C.f of <__main__.C object at 0x7ff922f3fa90>>
+print(obj.g)  # <function g at 0x7ff923019e18>
 ```
 
 So `loadAttrWithLocation` is used only in the instance case and handles the
