@@ -38,10 +38,17 @@ conflated. Some of these ideas are:
 
 * Immediate objects
 * Compact objects
-* Layouts
+* Layouts (also called "hidden classes" or "object shapes" in other runtimes)
 * Inline caching and cache invalidation
 * Quickening
 * Assembly interpreter
+* A template just-in-time (JIT) compiler
+
+For example, a lot of the inline caching infrastructure is made much more
+efficient *because* we have compact objects and layouts. And quickening reduces
+the number of comparisons about what cache state we are in. And the assembly
+interpreter makes inline caching even faster. And the JIT makes it faster
+still.
 
 ## Loading attributes
 
@@ -484,14 +491,46 @@ HANDLER_INLINE USED RawObject Interpreter::loadAttrWithLocation(
 }
 ```
 
+This caching system that we've looked at so far is pretty straightforward when
+types are immutable. If the receiver is a different type than we expect, we
+update the cache. But what if types themselves could chnage?
+
 ## Modifying types
 
-I mentioned "dependencies" briefly earlier. This caching system that we've
-looked at so far is pretty straightforward when types are immutable, but what
-if types are *not* immutable?
-
 As it turns out, that is the world we live in: in Python, most types are like
-any other object and are mutable.
+any other object and are mutable. Any ordinary user code can change the
+attributes, methods, and other metadata about types.
+
+For example, here we add a property to a type after it is created:
+
+```python
+class C:
+    def __init__(self):
+        self.value = 5
+
+obj = C()
+print(obj.value)  # 5
+C.value = property(lambda self: 100)
+print(obj.value)  # 100
+```
+
+Just setting `C.value = 100` would not cause `obj.value` to change. It is the
+`__get__` method on `property` that takes precedence over "normal" attribute
+lookups. Nowhere in our code does this get handled. We don't check that the
+type is the same---and how would we even do that? Type versions? Because it is
+possible to have chains of inheritance, we would have to walk up the entire
+method resolution order (MRO) and check if *every single type* was the same as
+we expected. Slow.
+
+I mentioned "dependencies" briefly earlier. There is some code in
+`icUpdateAttr` that registers the function containing the cache as "dependent"
+on the type of the receiver. Then, when something makes a change to a given
+type, we go an invalidate all of its dependent caches *and* the dependents of
+types in its inheritance hierarchy.
+
+We can do this extremely slow operation when types change because we expect
+attribute lookups to be frequent and changes to types *after they are used* to
+be very rare.
 
 ## Thanks
 
