@@ -274,7 +274,108 @@ HANDLER_INLINE Continue Interpreter::doLoadAttrInstance(Thread* thread,
 }
 ```
 
-This opcode handler does much less than the generic
+This opcode handler does much less than the generic version. It does a
+monomorphic lookup (a load and compare) and then a load from the receiver. If
+the types don't match then we do another full lookup and transition to a
+polymorphic (multiple types) opcode, which we'll look at in the next section.
+
+```cpp
+inline RawObject icLookupMonomorphic(RawMutableTuple caches, word cache,
+                                     LayoutId layout_id, bool* is_found) {
+  word index = cache * kIcPointersPerEntry;
+  DCHECK(!caches.at(index + kIcEntryKeyOffset).isUnbound(),
+         "cache.at(index) is expected to be monomorphic");
+  RawSmallInt key = SmallInt::fromWord(static_cast<word>(layout_id));
+  if (caches.at(index + kIcEntryKeyOffset) == key) {
+    *is_found = true;
+    return caches.at(index + kIcEntryValueOffset);
+  }
+  *is_found = false;
+  return Error::notFound();
+}
+```
+
+This looks like a lot of code still but it actually only takes a few machine
+instructions. The assembly version might help underscore that. I have inlined
+some of the function calls in the macro assemler to make this clearer:
+
+```cpp
+template <>
+void emitHandler<LOAD_ATTR_INSTANCE>(EmitEnv* env) {
+  ScratchReg r_base(env);
+  ScratchReg r_layout_id(env);
+  ScratchReg r_scratch(env);
+  ScratchReg r_caches(env);
+  Label slow_path;
+  __ popq(r_base);
+
+  // Begin emitGetLayoutId
+  Label not_heap_object;
+  // Begin emitJumpIfImmediate
+  // Adding `(-kHeapObjectTag) & kPrimaryTagMask` will set the lowest
+  // `kPrimaryTagBits` bits to zero iff the object had a `kHeapObjectTag`.
+  __ leal(r_scratch,
+          Address(obj, (-Object::kHeapObjectTag) & Object::kPrimaryTagMask));
+  __ testl(r_scratch, Immediate(Object::kPrimaryTagMask));
+  __ jcc(NOT_ZERO, &not_heap_object, is_near_jump);
+  // End emitJumpIfImmediate
+  // It is a HeapObject.
+  static_assert(RawHeader::kLayoutIdOffset + Header::kLayoutIdBits <= 32,
+                "expected layout id in lower 32 bits");
+  __ movl(r_dst, Address(r_obj, heapObjectDisp(RawHeapObject::kHeaderOffset)));
+  __ shrl(r_dst,
+          Immediate(RawHeader::kLayoutIdOffset - Object::kSmallIntTagBits));
+  __ andl(r_dst, Immediate(Header::kLayoutIdMask << Object::kSmallIntTagBits));
+  Label done;
+  __ jmp(&done, Assembler::kNearJump);
+
+  __ bind(&not_heap_object);
+  static_assert(static_cast<int>(LayoutId::kSmallInt) == 0,
+                "Expected SmallInt LayoutId to be 0");
+  __ xorl(r_dst, r_dst);
+  static_assert(Object::kSmallIntTagBits == 1 && Object::kSmallIntTag == 0,
+                "unexpected SmallInt tag");
+  emitJumpIfSmallInt(env, r_obj, &done);
+
+  // Immediate.
+  __ movl(r_dst, r_obj);
+  __ andl(r_dst, Immediate(Object::kImmediateTagMask));
+  static_assert(Object::kSmallIntTag == 0, "Unexpected SmallInt tag");
+  __ shll(r_dst, Immediate(Object::kSmallIntTagBits));
+
+  __ bind(&done);
+  // End emitGetLayoutId
+
+  __ movq(r_caches, Address(env->frame, Frame::kCachesOffset));
+  // Begin emitIcLookupMonomorphic
+  // Begin emitCurrentCacheIndex
+  __ movzwq(r_scratch, Address(env->bytecode, env->pc, TIMES_1,
+                         heapObjectDisp(-kCodeUnitSize + 2)));
+  // End emitCurrentCacheIndex
+  __ leaq(r_scratch, Address(r_scratch, TIMES_2, 0));
+  __ leaq(r_caches, Address(r_caches, r_scratch, TIMES_8, heapObjectDisp(0)));
+  __ cmpl(Address(r_caches, kIcEntryKeyOffset * kPointerSize), r_layout_id);
+  __ jcc(NOT_EQUAL, not_found, Assembler::kNearJump);
+  __ movq(r_dst, Address(r_caches, kIcEntryValueOffset * kPointerSize));
+  // End emitIcLookupMonomorphic
+
+  Label next;
+  // This is implemented in a kind of hard-to-understand way so I will say that
+  // it is comprised of a 1) a load 2) a push to the stack and 3) a jump to the
+  // next opcode handler (kind of like `break` in a `switch`)
+  emitAttrWithOffset(env, &Assembler::pushq, &next, r_base, r_scratch,
+                     r_layout_id);
+
+  // ...
+}
+```
+
+Now, this implementation is *longer* in terms of number of line of C++ code,
+sure, but that's because we have a very verbose macro assembler. This
+implementation of attribute lookups takes vastly fewer machine instructions
+than a full attribute lookup: it does not do a dictionary lookup and it only
+does a couple of loads. I think with some tuning we could get it to at most two
+loads in the fast path.
 
 ### Polymorphic
 
