@@ -320,7 +320,10 @@ does:
 * A memory store to the stack to push the result
 
 This could probably still be reduced further by hand, which we have done in our
-[assembly implementation][asm-load-attr-instance] of the Python interpreter.
+[assembly implementation][asm-load-attr-instance] of the Python interpreter. In
+a compiled representation of this cache, we could eliminate the loads required
+for cache index, cache tuple, receiver, stored layout ID, and cached attribute
+offset---they would all be encoded directly into the machine code.
 
 [asm-load-attr-instance]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/interpreter-gen-x64.cpp#L1130
 
@@ -368,7 +371,11 @@ to a polymorphic cache (tuple of multiple key+value).
 
 ### Polymorphic
 
-The polymorphic attribute lookup is shared by
+The polymorphic attribute lookup is the common transition target of several
+different monomorphic *instance* lookups---the ones that only store field
+offsets. It is different from the monomorphic lookups in that it has to check
+against multiple stored layout IDs, so we do not further specialize the
+polymorphic case into instance vs type bound method cases.
 
 ```cpp
 HANDLER_INLINE Continue Interpreter::doLoadAttrPolymorphic(Thread* thread,
@@ -390,13 +397,101 @@ HANDLER_INLINE Continue Interpreter::doLoadAttrPolymorphic(Thread* thread,
 }
 ```
 
-## Loading methods
+The function `icLookupPolymorphic` is similar in structure to its monomorphic
+sibling except that it loops over all of the stored layout IDs to check.
 
-### Monomorphic
+```cpp
+inline RawObject icLookupPolymorphic(RawMutableTuple caches, word cache,
+                                     LayoutId layout_id, bool* is_found) {
+  word index = cache * kIcPointersPerEntry;
+  DCHECK(caches.at(index + kIcEntryKeyOffset).isUnbound(),
+         "cache.at(index) is expected to be polymorphic");
+  RawSmallInt key = SmallInt::fromWord(static_cast<word>(layout_id));
+  caches = MutableTuple::cast(caches.at(index + kIcEntryValueOffset));
+  for (word j = 0; j < kIcPointersPerPolyCache; j += kIcPointersPerEntry) {
+    if (caches.at(j + kIcEntryKeyOffset) == key) {
+      *is_found = true;
+      return caches.at(j + kIcEntryValueOffset);
+    }
+  }
+  *is_found = false;
+  return Error::notFound();
+}
+```
 
-### Polymorphic
+The fast path is similar: find the cached offset, load from the receiver, and
+get out. The slow path requires a full lookup and updating the cache.
+
+There is one detail that is important here that I glossed over in the
+`LOAD_ATTR_INSTANCE` handler. `loadAttrWithLocation` is not *just* a wrapper
+for a simple field load. It also handles the Python object model logic for
+binding methods.
+
+When an object has a function as an attribute on *the object's type*, the
+function must be wrapped together with the object as a "bound method." when it
+is just an attribute on the instance, it must not be wrapped. See, for example:
+
+```python
+class C:
+    def __init__(self, g):
+        self.g = g
+
+    def f(self):
+        return 1
+
+
+def g(self):
+    return 2
+
+
+def get_f(obj):
+    return obj.f
+
+
+def get_g(obj):
+    return obj.g
+
+
+obj = C(g)
+print(get_f(obj))  # <bound method C.f of <__main__.C object at 0x7f1bd6a093c8>>
+print(get_g(obj))  # <function g at 0x7f1bd80ebe18>
+```
+
+So `loadAttrWithLocation` is used only in the instance case and handles the
+bound method allocation if need be. It also deals with the split between
+in-object attributes and overflow attributes---which are an implementation
+detail of our object layout system.
+
+```cpp
+HANDLER_INLINE USED RawObject Interpreter::loadAttrWithLocation(
+    Thread* thread, RawObject receiver, RawObject location) {
+  if (location.isFunction()) {
+    HandleScope scope(thread);
+    Object self(&scope, receiver);
+    Object function(&scope, location);
+    return thread->runtime()->newBoundMethod(function, self);
+  }
+
+  word offset = SmallInt::cast(location).value();
+
+  DCHECK(receiver.isHeapObject(), "expected heap object");
+  RawInstance instance = Instance::cast(receiver);
+  if (offset >= 0) {
+    return instance.instanceVariableAt(offset);
+  }
+
+  // ... handle overflow attributes ...
+}
+```
 
 ## Modifying types
+
+I mentioned "dependencies" briefly earlier. This caching system that we've
+looked at so far is pretty straightforward when types are immutable, but what
+if types are *not* immutable?
+
+As it turns out, that is the world we live in: in Python, most types are like
+any other object and are mutable.
 
 ## Thanks
 
