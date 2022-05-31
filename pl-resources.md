@@ -52,7 +52,7 @@ to find great stuff.
   * [Let's build a compiler](https://generalproblem.net/lets_build_a_compiler/01-starting-out/)
   * Thorsten Ball's [adaptation](https://github.com/mrnugget/scheme_x86)
   * Nada Amin's [adaptation](https://github.com/namin/inc)
-* Tao of Mac's [List implementation list](https://taoofmac.com/space/dev/lisp)
+* Tao of Mac's [Lisp implementation list](https://taoofmac.com/space/dev/lisp)
 * [sectorlisp](https://github.com/jart/sectorlisp) and
   [sectorlisp2](https://justine.lol/sectorlisp2/) and
   [lambda calculus in 383 bytes](https://justine.lol/lambda/)
