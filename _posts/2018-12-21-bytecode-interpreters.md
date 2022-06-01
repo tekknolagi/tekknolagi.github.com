@@ -34,9 +34,10 @@ should help differentiate types of interpreters:
    Lit 2)`, it might see the add rule, recursively evaluate the arguments, add
    them together, and then package that result in the appropriate value type.
 * *Bytecode* interpreters don't work on the AST directly. They work on
-  preprocessed ASTs. This simplifies the execution model and can produce
-  impressive speed wins. A program like `Add(Lit 1, Lit 2)` might be bytecode
-  compiled into the following bytecode:
+  bytecode, which is a transformation of the AST into a more linear form. This
+  simplifies the execution model and can produce impressive speed wins. A
+  program like `Add(Lit 1, Lit 2)` might be bytecode compiled into the
+  following bytecode:
 
   ```
   PUSH 1
@@ -45,7 +46,7 @@ should help differentiate types of interpreters:
   ```
 
   And then the interpreter would go instruction by instruction, sort of like a
-  hardware CPU.
+  hardware CPU (it's interpreters all the way down!).
 * *JIT* interpreters are like bytecode interpreters except instead of compiling
   to language implementation-specific bytecode, they try to compile to native
   machine instructions. Most production-level JIT interpreters "warm up" by
