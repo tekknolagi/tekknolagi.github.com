@@ -56,6 +56,7 @@ to find great stuff.
 * [sectorlisp](https://github.com/jart/sectorlisp) and
   [sectorlisp2](https://justine.lol/sectorlisp2/) and
   [lambda calculus in 383 bytes](https://justine.lol/lambda/)
+* [Termite: a Lisp for Distributed Computing](http://www.iro.umontreal.ca/~feeley/papers/GermainFeeleyMonnierELSW05.pdf)
 
 ## Runtimes
 
