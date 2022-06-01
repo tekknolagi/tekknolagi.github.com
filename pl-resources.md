@@ -150,6 +150,7 @@ research around optimizing dynamic languages.
   * [redmagic](https://github.com/matthewfl/redmagic) (C)
   * [BacCaml](https://github.com/prg-titech/baccaml) (OCaml)
 * Bump allocators: [always bump downwards](https://fitzgeraldnick.com/2019/11/01/always-bump-downwards.html)!
+* [Call-site optimization for Common Lisp](http://metamodular.com/SICL/call-site-optimization.pdf)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
