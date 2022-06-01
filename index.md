@@ -20,7 +20,7 @@ That's probably an understatement. Here are some of my favorite projects:
 
 * [Cinder](https://github.com/facebookincubator/cinder), Instagram's
   performance-oriented fork of CPython---try it out on
-  [trycinder.com](https://trycinder.com)!
+  [trycinder.com](https://trycinder.com) (which I built!)!
 * [Skybison](https://github.com/tekknolagi/skybison) (fork of
   [original](https://github.com/facebookexperimental/skybison)), Instagram's
   performance-oriented greenfield implementation of Python
