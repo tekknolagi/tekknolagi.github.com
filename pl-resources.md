@@ -198,6 +198,7 @@ a whole lot.
   compiler
 * Matt Page's [template\_jit](https://github.com/mpage/template_jit) for
   CPython, which also contains a readable CFG implementation
+* Vladimir Makarov's [MIR JIT](https://developers.redhat.com/blog/2020/01/20/mir-a-lightweight-jit-compiler-project) which started as a JIT for CRuby, but later also got a C interpreter and JIT compiler
 
 ### Assembler libraries
 
