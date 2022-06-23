@@ -120,6 +120,8 @@ research around optimizing dynamic languages.
   explanation for JSC (with assembly!)
 * V8's [blog post](https://v8.dev/blog/sparkplug) about their baseline/template
   JIT
+* V8's [blog post](https://v8.dev/blog/csa) about optimizing builtins with
+  `CodeStubAssembler`
 * Object shapes
   * [Chris Seaton][chrisgseaton]'s [RubyKaigi talk](https://chrisseaton.com/truffleruby/rubykaigi21/)
   * [Aaron Patterson][tenderlove] and [Jemma Issroff][jemma]'s
