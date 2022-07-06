@@ -516,9 +516,18 @@ No matter how you measure impact, it is *not enough* to run the `ADD` handler
 in a tight loop and call it a benchmark. The real-life workload for your
 runtime will undoubtedly look very different. What percent of opcodes executed
 is `ADD`? Ten percent? Five percent? You will be limited by [Amdahl's
-Law][amdahl]. That will be your upper bound on performance improvements.
+Law][amdahl]. That will be your upper bound on performance
+improvements.[^amdahl-kind-of]
 
 [amdahl]: https://en.wikipedia.org/wiki/Amdahl%27s_law
+
+[^amdahl-kind-of]: Kind of. Sometimes there are hardware effects that make your
+    change that would otherwise be at most 5% faster actually significantly
+    faster. For example, if you are thrashing your data cache by doing these
+    method lookups and your inline cache implementation dramatically improves
+    that, the neighboring code might also get faster because its data could be
+    in cache, too. But you *really* need to measure these things before you
+    make grand claims.
 
 **What other performance considerations might you have?**
 Consider your memory constraints. Perhaps you are on a system where memory is a
