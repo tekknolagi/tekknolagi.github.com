@@ -527,7 +527,8 @@ improvements.[^amdahl-kind-of]
     method lookups and your inline cache implementation dramatically improves
     that, the neighboring code might also get faster because its data could be
     in cache, too. But you *really* need to measure these things before you
-    make grand claims.
+    make grand claims. See also the note in the next section of the post about
+    things like memory pressure and swapping.
 
 **What other performance considerations might you have?**
 Consider your memory constraints. Perhaps you are on a system where memory is a
