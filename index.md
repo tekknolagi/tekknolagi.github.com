@@ -75,3 +75,8 @@ That's probably an understatement. Here are some of my favorite projects:
 
 * [*Cinder: We didn't start the fire*](https://2022.ecoop.org/details/ICOOOLPS-2022-papers/5/Cinder-We-didn-t-start-the-fire) at ECOOP 2022 (invited talk)
 * *How Git works* at Tufts PolyHack 2019
+
+## Fun facts
+
+* I [adopted the Person Biking emoji 🚴](https://twitter.com/unicode/status/1341803011501223936).
+* I once biked across a Germany (Tübingen to Puttgarden).
