@@ -25,7 +25,8 @@ That's probably an understatement. Here are some of my favorite projects:
   [original](https://github.com/facebookexperimental/skybison)), Instagram's
   performance-oriented greenfield implementation of Python
 * [shru.gg](https://shru.gg), a website built just so I would have to stop
-  finding, copying, and pasting that shrug emoji
+  finding, copying, and pasting that shrug emoji. If you like it, you are
+  welcome [to help keep it running](https://github.com/sponsors/tekknolagi)
 * An [Lisp to x86-64 compiler](https://github.com/tekknolagi/ghuloum) I wrote
   in C and accompanying [blog posts](/blog/lisp/)
 * The [term paper](/dat-paper/) I wrote for COMP 117 IDS
