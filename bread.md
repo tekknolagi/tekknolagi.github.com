@@ -87,6 +87,19 @@ Salt                  2 %
 Yeast                 1 %
 ```
 
+Mix dough until minimal flour is visible and there are no major clumps. Place
+your dough, covered, in a warm environment, like an oven with the light on or
+an Instant Pot set to 80F on sous vide mode. Set a two hour timer.
+
+Let sit for 15 minutes. Stretch and fold with wet hands. Let sit for 15
+minutes. Stretch and fold with wet hands. Let sit for the duration of the time.
+The dough should have gotten pretty big and puffy.
+
+Rub olive oil on internal surfaces of pan. Olive oil your hands. Delicately
+transfer dough from tub to pan. Rub olive oil into the top of the dough blob.
+Let relax for 15 minutes. Preheat oven. Gently stretch and poke dough to fit
+dimensions of pan.
+
 Additional water, olive oil, salt, and herbs required for topping. Bake 35
 minutes at 425F.
 
