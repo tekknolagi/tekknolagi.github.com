@@ -97,11 +97,11 @@ The dough should have gotten pretty big and puffy.
 
 Rub olive oil on internal surfaces of pan. Olive oil your hands. Delicately
 transfer dough from tub to pan. Rub olive oil into the top of the dough blob.
-Let relax for 15 minutes. Preheat oven. Gently stretch and poke dough to fit
-dimensions of pan.
+Let relax for 15 minutes. Preheat oven to 425F. Gently stretch and poke dough
+to fit dimensions of pan.
 
-Additional water, olive oil, salt, and herbs required for topping. Bake 35
-minutes at 425F.
+Additional water, olive oil, salt, and herbs required for topping. Let it relax
+further while the oven preheats. Bake 35 minutes.
 
 I like how [this man from Genoa](https://www.youtube.com/watch?v=uEKzIshoYiM)
 makes his focaccia. I learned a lot from his shaping and poking and dressing.
