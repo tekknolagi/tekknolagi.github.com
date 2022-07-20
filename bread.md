@@ -88,8 +88,8 @@ Yeast                 1 %
 ```
 
 Mix dough until minimal flour is visible and there are no major clumps. Place
-your dough, covered, in a warm environment, like an oven with the light on or
-an Instant Pot set to 80F on sous vide mode. Set a two hour timer.
+your dough tub, covered, in a warm environment, like an oven with the light on
+or an Instant Pot set to 80F on sous vide mode. Set a two hour timer.
 
 Let sit for 15 minutes. Stretch and fold with wet hands. Let sit for 15
 minutes. Stretch and fold with wet hands. Let sit for the duration of the time.
