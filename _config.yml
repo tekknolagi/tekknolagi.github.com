@@ -9,6 +9,8 @@ description: ""
 baseurl: ""
 url: "https://bernsteinbear.com"
 exclude: [vendor]
+# TODO(max): Use pagefind (pagefind --source . --root-selector .container) but
+# avoid scanning _site somehow.
 include: [.well-known]
 
 future: false
