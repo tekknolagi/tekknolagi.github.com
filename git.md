@@ -75,11 +75,23 @@ in fact support branches. I use it primarily for `git next` and `git prev`. I
 have occasionally also used `git restack`, though these days I tend to use
 `rebase -i`, edit the commit (`edit`), and continue the rebase.
 
+In the past I used [gitolite](https://github.com/sitaramc/gitolite) extensively
+to host my own Git server with multiple users and whatnot.
+
 ## Vim plugins
 
 I have [`vim-fugitive`](https://github.com/tpope/vim-fugitive) installed and
 use it regularly.
 
+## In-repo issue trackers
+
+* [git-bug](https://github.com/MichaelMure/git-bug)
+* [git-appraise](https://github.com/google/git-appraise)
+* [git-issue](https://github.com/dspinellis/git-issue)
+
 ## Other
 
-I think [Jujutsu/`jj`](https://github.com/martinvonz/jj) is very neat.
+I think [Jujutsu/`jj`](https://github.com/martinvonz/jj) is very neat. Also
+[Game of Trees](https://gameoftrees.org/). Also
+[dura](https://github.com/tkellogg/dura). Also
+[gitless](https://github.com/gitless-vcs/gitless).
