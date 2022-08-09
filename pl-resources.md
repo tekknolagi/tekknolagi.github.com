@@ -98,6 +98,9 @@ research around optimizing dynamic languages.
 * [An inline cache isn't just a cache](https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache)
 * [Baseline JIT and inline caches](https://blog.pyston.org/2016/06/30/baseline-jit-and-inline-caches/)
 * [Javascript hidden classes and inline caching in V8](https://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html)
+* [CacheIR: A new approach to Inline Caching in Firefox](https://jandemooij.nl/blog/cacheir/)
+  * [Note on trial inlining](https://searchfox.org/mozilla-central/rev/c0bed29d643393af6ebe77aa31455f283f169202/js/src/jit/TrialInlining.h#29-48)
+    using CacheIR
 * Basic block versioning
   * [Simple and Effective Type Check Removal through Lazy Basic Block Versioning](https://arxiv.org/pdf/1411.0352v2.pdf) (PDF)
   * [Extending Basic Block Versioning with Typed Object Shapes](https://arxiv.org/pdf/1507.02437.pdf) (PDF)
