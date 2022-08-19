@@ -81,6 +81,7 @@ to find great stuff.
   * [Skybison](https://github.com/tekknolagi/skybison)
 * Russ Cox's [Regular expression matching: the virtual machine approach](https://swtch.com/~rsc/regexp/regexp2.html)
 * Webkit's post about the [FTL JIT](https://webkit.org/blog/3362/introducing-the-webkit-ftl-jit/)
+* Bun tweet about [DOMJIT](https://mobile.twitter.com/jarredsumner/status/1557791189490737155)
 
 ## Runtime optimization
 
