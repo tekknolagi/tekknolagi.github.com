@@ -41,6 +41,8 @@ That's probably an understatement. Here are some of my favorite projects:
   made with friends for a concurrent programming course, with the
   [final writeup [PDF]](/resources/comp50-writeup.pdf)
 
+I like making things [just for fun](https://justforfunnoreally.dev/).
+
 ## I like teaching.
 
 * [CS 50ISDT](/isdt/) (2021), a course [Tom](https://tchebb.me/) and I wrote
