@@ -1,0 +1,54 @@
+---
+title: "Interpreter techniques"
+layout: post
+date: 2022-08-31
+---
+
+A bit ago, Andy Wingo put out a [very interesting blog post][blog post] about
+WASM code generation *from within WASM*---a just-in-time compiler. He explained
+how it worked, the challenges, and even had a browser-based demo. Very cool.
+
+[blog post]: https://wingolog.org/archives/2022/08/18/just-in-time-code-generation-within-webassembly
+
+As a bonus, if you dive into his compact code, there's a lot more interesting
+stuff that he did not touch on in the blog post. The first 727 lines of
+[interp.cc][interp.cc] contain an AST interpreter that showcases small and
+subtle interpreter techniques:
+
+[interp.cc]: https://github.com/wingo/wasm-jit/blob/2477dfcbde9ec6e09f62f0fd42a4f73ac11bad41/interp.cc
+
+* name to index conversion
+* semispace (Cheney) garbage collection
+* precise rooting in native (C++) code using handles
+* pointer tagging
+* small objects in tagged pointers
+* tail calls
+
+TODO: transition
+
+## Name conversion
+
+Many hobby interpreters implement variables by keeping names in the AST or in
+the bytecode and then looking up the names in hash tables. Even early versions
+of CPython, the dominant Python implementation, did this. It works, but it
+means that every variable name use at runtime incurs some costs: hashing and
+pointer chasing.
+
+notes:
+
+* lambdas and function calls take precisely one argument
+* primitives get precisely two arguments and are evaluated differently
+* `Env::lookup` is linear in the number of variables live because each `Env`
+  only has one captured value
+* the function argument is passed in an `Env`
+
+## Cheney GC
+
+
+## Handles
+
+## Pointer tagging
+
+## Small objects
+
+## Tail calls
