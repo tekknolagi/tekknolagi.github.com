@@ -86,4 +86,4 @@ Fun fact: this means I have now contributed to four different Python runtimes.
 ## Fun facts
 
 * I [adopted the Person Biking emoji 🚴](https://twitter.com/unicode/status/1341803011501223936).
-* I once biked across a Germany (Tübingen to Puttgarden).
+* I once biked across Germany (Tübingen to Puttgarden).
