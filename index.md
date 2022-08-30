@@ -56,6 +56,8 @@ I like making things [just for fun](https://justforfunnoreally.dev/).
 
 ## Sometimes I contribute to open source projects.
 
+* [PyPy](https://www.pypy.org/)
+  ([!818](https://foss.heptapod.net/pypy/pypy/-/merge_requests/848))
 * [Cinder](https://github.com/facebookincubator/cinder)
 * [Skybison](https://github.com/tekknolagi/skybison)
   (fork of [original](https://github.com/facebookexperimental/skybison))
@@ -73,6 +75,8 @@ I like making things [just for fun](https://justforfunnoreally.dev/).
 * [Clang](https://clang.llvm.org/)
   ([rC345558](https://reviews.llvm.org/rC345558))
 * [Reason](https://github.com/facebook/reason)
+
+Fun fact: this means I have now contributed to four different Python runtimes.
 
 ## Talks
 
