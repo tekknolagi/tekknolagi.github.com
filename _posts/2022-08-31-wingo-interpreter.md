@@ -44,6 +44,29 @@ notes:
 
 ## Cheney GC
 
+see `Heap::collect`
+
+notes:
+
+* `Heap` manages rootset and traverses these roots (`Heap::visitRoots`) on
+  `Heap::collect`
+  * TODO: explain the loop after `visitRoots`
+* every object has a `visitFields` method that allows the heap to move an
+  object
+  * `Heap::copy`
+    * copies the entire object into newspace
+    * "forwards" the object by writing over it in oldspace
+    * adjusts the heap pointer by the number of ... TODO
+  * `Heap::visit` replaces the oldspace pointer with a newspace pointer
+  * why does `Heap::visit` need to check for null?
+* in the fast case, `Heap::allocate` bumps a pointer. in the slow case, full
+  collection
+* `Heap::copy` and `Heap::scan` have a special case for each type of
+  heap-allocated object
+  * it's also possible to do this with a header that encodes how many fields
+    are in an object
+  * it's easiest to do this if every field in a heap-allocated object is also
+    an object pointer (`Value`)
 
 ## Handles
 
