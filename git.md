@@ -45,6 +45,10 @@ I like to write descriptive commit summaries, especially explaining motivation
 or interesting debugging stories. They are helpful to come back to later when I
 inevitably `git blame` myself.
 
+I almost always stage changes with `add -p`. This way I can split out
+changes more finely than per-file. This helps me structure commits into neat
+little series instead of one giant blob.
+
 I almost always commit with `commit --verbose`. This way I can page through my
 changes when describing them.
 
