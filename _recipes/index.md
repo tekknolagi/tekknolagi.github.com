@@ -32,6 +32,10 @@ Tried, enjoyed, and repeated frequently by yours truly.
 * [Salad Shirazi](http://www.ahueats.com/2016/06/salad-shirazi.html) by Ahu
   Eats
 * [Fattoush](http://www.ahueats.com/2016/06/fattoush-salad.html) by Ahu Eats
+* [Jollof rice](https://cooking.nytimes.com/recipes/1018069-jollof-rice) by
+  Tunde Wey with [tofu and
+  plantains](https://www.vegannigerian.com/2015/02/sauced-tofu-and-plantainguest-post.html)
+  by 9jafoodie
 
 ## Other text-based recipes
 
