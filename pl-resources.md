@@ -145,6 +145,7 @@ research around optimizing dynamic languages.
   * [PyPy](https://foss.heptapod.net/pypy/pypy)
   * [Falcon](https://github.com/rjpower/falcon)
   * [S6](https://github.com/deepmind/s6)
+  * [GraalPy](https://github.com/oracle/graalpython)
 * Starlark is a non-total language similar to Python. It is used in build
   systems. I wonder if it could be used to generate Ninja files as a sort of
   "mini Bazel/Buck".
