@@ -66,8 +66,7 @@ repros, this rarely takes significant time. At worst, I go make tea.
 
 ## Requirements
 
-While it's super helpful in many cases, bisecting has some prerequisites before
-it can work well:
+While it's excellent in many cases, bisecting has some prerequisites:
 
 * A consistent reproducer. If your program non-deterministically fails, the
   bisect results won't make any sense.
@@ -96,7 +95,7 @@ The script is less than 200 lines of Python and can be found
 
 [jitlist_bisect.py]: https://github.com/facebookincubator/cinder/blob/b1c65a7c3cd557854299d5c66bbfe6de1f4ed49d/Tools/scripts/jitlist_bisect.py
 
-## Other helpful thoughts
+## Other thoughts
 
 Manually or automatically slimming down your reproducing source code also helps
 with this approach. It makes the repro runtime shorter and sometimes removes
