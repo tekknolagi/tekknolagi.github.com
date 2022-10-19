@@ -102,9 +102,20 @@ probably use some form of tracing and bisect to automatically slim the repro.
 
 ## Similar work
 
-Speaking of automatically slimming the repro, Creduce is a tool by John Regehr
-and his collaborators. It takes a C source file and runner script and
-automatically bisects it to some failing case.
+Speaking of automatically slimming the repro, [C-Reduce][creduce] is a tool by
+John Regehr and his collaborators. It takes a C source file and runner script
+and automatically bisects it to some failing case. From their homepage:
+
+[creduce]: https://embed.cs.utah.edu/creduce/
+
+> C-Reduce is a tool that takes a large C, C++, or OpenCL file that has a
+> property of interest (such as triggering a compiler bug) and automatically
+> produces a much smaller C/C++ file that has the same property. It is intended
+> for use by people who discover and report bugs in compilers and other tools
+> that process source code.
+
+Incidentally, at the time of writing, their website looks pretty similar to
+this one.
 
 
 <hr style="width: 100px;" />
