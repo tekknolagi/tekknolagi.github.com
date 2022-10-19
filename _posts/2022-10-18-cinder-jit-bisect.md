@@ -70,6 +70,8 @@ While it's excellent in many cases, bisecting has some prerequisites:
 
 * A consistent reproducer. If your program non-deterministically fails, the
   bisect results won't make any sense.
+* Stable enough identifiers for functions. In this case we use the module name
+  and fully qualified function name.
 * The ability to set the list of functions to compile. This requires some
   cooperation from the runtime.
 * The ability to figure out which functions have been compiled. This also
