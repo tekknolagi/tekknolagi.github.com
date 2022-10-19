@@ -54,6 +54,8 @@ aborts. We can't know which function is miscompiled, so we will try and bisect:
 * Try `C`. Success.
 * Try `D`. Crash.
 
+Looks like `D` is the troublemaker.
+
 Since we can discard half of this set each time, we can find our miscompiled
 functions in logarithmic time[^algo]. That's awesome. Even on slow-running
 repros, this rarely takes significant time. At worst, I go make tea.
