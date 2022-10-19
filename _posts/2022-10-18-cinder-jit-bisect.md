@@ -36,7 +36,7 @@ bisect`][git-bisect][^git-bisect]. Those are the two places I heard about it.
 It means *to cut in half*. In our case and the Git case, not just once---many
 times!
 
-[git-bisect]: [https://git-scm.com/docs/git-bisect
+[git-bisect]: https://git-scm.com/docs/git-bisect
 
 [^git-bisect]: It's a super helpful tool and I highly recommend getting
     familiar with it. It has saved me hours in figuring out what commit caused
