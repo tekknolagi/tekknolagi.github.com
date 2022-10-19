@@ -119,6 +119,12 @@ and automatically bisects it to some failing case. From their homepage:
 Incidentally, at the time of writing, their website looks pretty similar to
 this one.
 
+Hacker News user *eimrine* also notes that this is similar to
+[fuzzing][fuzzing], a technique to find bugs by changing input data or input
+programs.
+
+[fuzzing]: https://en.wikipedia.org/wiki/Fuzzing
+
 
 <hr style="width: 100px;" />
 <!-- Footnotes -->
