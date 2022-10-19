@@ -88,7 +88,8 @@ and passes in the JIT list.
 
 Sometimes a JIT list will cause the crash but each split half won't. In that
 case we hold each half fixed and try bisecting the other half to figure out
-what candidates we need.
+what candidates we need. *Update:* I have been told that this is called delta
+debugging.
 
 The script is less than 200 lines of Python and can be found
 [here][jitlist_bisect.py].
