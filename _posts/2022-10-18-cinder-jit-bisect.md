@@ -10,8 +10,8 @@ I work on [Cinder](https://github.com/facebookincubator/cinder), a just-in-time
 (JIT) compiler built on top of CPython. If you aren't familiar with Cinder and
 want to learn more, [a previous post about the
 inliner](/blog/cinder-jit-inliner/) gives a decent overview of the JIT. This
-post will talk about how we use binary search to track down compiler bugs, a
-technique that is applicable to any compiler if you have the right
+post will talk about how we use binary search to isolate miscompiled functions,
+a technique that is applicable to any compiler if you have the right
 infrastructure.
 
 ## Motivation
