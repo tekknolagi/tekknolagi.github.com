@@ -46,8 +46,9 @@ We want to take our list of compiled functions and continuously cut it in half
 until we reach a very small group of functions that cause us trouble.
 
 Say we run `./python -X jit some_program.py` and it crashes. In the course of
-this run it compiles functions `A`, `B`, `C`, and `D`, runs some code, and
-aborts. We can't know which function is miscompiled, so we will try and bisect:
+this run, the JIT compiles functions `A`, `B`, `C`, and `D`, runs some code,
+and aborts. We can't know which function is miscompiled, so we will try and
+bisect:
 
 * Try `A` and `B` together. Success.
 * Try `C` and `D` together. Crash.
