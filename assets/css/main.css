@@ -143,3 +143,5 @@ img.post-inline-image {
 div.post-co-authors {
     padding-top: 10px;
 }
+/* TODO(max): See https://alexwlchan.net/2021/10/console-copying/ to disable
+ * prompt selection in console blocks */
