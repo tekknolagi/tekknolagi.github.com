@@ -18,7 +18,7 @@ infrastructure.
 
 Sometimes---frequently---I change an optimization pass or a code generation
 step and I break something. In the best case scenario, I end up with a failing
-test and the test name or body give me enough clues to fix my silly little
+test and the test name or body gives me enough clues to fix my silly little
 mistake.  But in the worst case I can't even boot to the Python prompt because
 I messed something up so badly. This can manifest as an exception, a failing
 `assert`, or even a segmentation fault.
