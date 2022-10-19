@@ -92,7 +92,29 @@ what candidates we need. *Update:* I have been told that this is called delta
 debugging.
 
 The script is less than 200 lines of Python and can be found
-[here][jitlist_bisect.py].
+[here][jitlist_bisect.py]. A typical run looks like this:
+
+```
+$ ./Tools/scripts/jitlist_bisect.py ./build/python -X jit -m unittest test.test_import
+INFO:root:Generating initial jit-list
+INFO:root:Verifying jit-list
+INFO:root:step fixed[0] and jitlist[504]
+INFO:root:504 candidates
+INFO:root:252 candidates
+INFO:root:126 candidates
+INFO:root:63 candidates
+INFO:root:32 candidates
+INFO:root:16 candidates
+INFO:root:8 candidates
+INFO:root:4 candidates
+INFO:root:2 candidates
+Bisect finished with 1 functions in jitlist.txt
+$ cat jitlist.txt
+warnings:_add_filter
+$
+```
+
+Time to go look at the `warnings` module.
 
 [jitlist_bisect.py]: https://github.com/facebookincubator/cinder/blob/b1c65a7c3cd557854299d5c66bbfe6de1f4ed49d/Tools/scripts/jitlist_bisect.py
 
