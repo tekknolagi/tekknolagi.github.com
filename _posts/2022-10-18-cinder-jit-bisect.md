@@ -103,6 +103,10 @@ with this approach. It makes the repro runtime shorter and sometimes removes
 other moving parts like needing to send network traffic or something. We can
 probably use some form of tracing and bisect to automatically slim the repro.
 
+Compiler and interpreter unit tests can be a pain to write but they have saved
+me countless times over the past couple of years. Being able to isolate each
+and every small optimizer change is so, so helpful.
+
 ## Similar work
 
 Speaking of automatically slimming the repro, [C-Reduce][creduce] is a tool by
