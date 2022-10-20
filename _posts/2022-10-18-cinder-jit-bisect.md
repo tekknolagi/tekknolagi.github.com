@@ -154,6 +154,11 @@ programs.
 
 [fuzzing]: https://en.wikipedia.org/wiki/Fuzzing
 
+Victor Stinner wrote [`test.bisect`][test.bisect] to debug failing tests in
+CPython. This is useful when they only fail in certain arrangements!
+
+[test.bisect]: https://vstinner.github.io/python-test-bisect.html
+
 
 <hr style="width: 100px;" />
 <!-- Footnotes -->
