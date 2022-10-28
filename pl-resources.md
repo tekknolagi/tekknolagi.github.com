@@ -168,6 +168,9 @@ research around optimizing dynamic languages.
   * [BacCaml](https://github.com/prg-titech/baccaml) (OCaml)
 * Bump allocators: [always bump downwards](https://fitzgeraldnick.com/2019/11/01/always-bump-downwards.html)!
 * [Call-site optimization for Common Lisp](http://metamodular.com/SICL/call-site-optimization.pdf) (PDF)
+* Posts about trace optimization:
+  * [Implementing a Toy Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html)
+  * [Allocation Removal in the Toy Optimizer](https://www.pypy.org/posts/2022/10/toy-optimizer-allocation-removal.html)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
