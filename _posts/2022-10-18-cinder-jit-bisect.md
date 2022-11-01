@@ -154,10 +154,15 @@ programs.
 
 [fuzzing]: https://en.wikipedia.org/wiki/Fuzzing
 
-Victor Stinner wrote [`test.bisect`][test.bisect] to debug failing tests in
-CPython. This is useful when they only fail in certain arrangements!
+Victor Stinner wrote [`test.bisect_cmd`][test.bisect_cmd][^rename] to debug failing
+tests in CPython. This is useful when they only fail in certain arrangements!
+This tool takes a slightly different approach from *delta debugging* and
+instead uses random sampling.
 
-[test.bisect]: https://vstinner.github.io/python-test-bisect.html
+[test.bisect_cmd]: https://vstinner.github.io/python-test-bisect.html
+
+[^rename]: Note that this has since been renamed from `test.bisect` to
+    `test.bisect_cmd` to avoid conflicting with the built-in `bisect` module.
 
 
 <hr style="width: 100px;" />
