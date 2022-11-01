@@ -40,11 +40,21 @@ works.
 
 ### Abseil symbolizer
 
+* https://github.com/abseil/abseil-cpp/blob/d819278ab70ee5e59fa91d76a66abeaa106b95c9/absl/debugging/symbolize_elf.inc
+
 ### Folly symbolizer
+
+* https://github.com/facebook/folly/blob/74d381aacc02cfd892d394205f1e066c76e18e60/folly/experimental/symbolizer/Symbolizer.cpp
+* https://github.com/facebook/folly/blob/74d381aacc02cfd892d394205f1e066c76e18e60/folly/experimental/symbolizer/Elf.cpp
 
 ### ClickHouse symbolizer
 
+* https://github.com/ClickHouse/ClickHouse/blob/c8068bdfa260ccf486c2d0417b1eea9cbfb0ad59/src/Common/SymbolIndex.cpp
+
 ### HHVM symbolizer
+
+* https://github.com/facebook/hhvm/blob/a2e15b83bd3ff360068dcf584264a42d85fe0c90/hphp/util/stack-trace.cpp
+  * folly or libbfd
 
 
 <hr style="width: 100px;" />
