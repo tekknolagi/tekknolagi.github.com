@@ -133,6 +133,8 @@ and every small optimizer change is so, so helpful.
 
 ## Similar work
 
+### C-Reduce
+
 Speaking of automatically slimming the repro, [C-Reduce][creduce] is a tool by
 John Regehr and his collaborators. It takes a C source file and runner script
 and automatically bisects it to some failing case. From their homepage:
@@ -148,11 +150,7 @@ and automatically bisects it to some failing case. From their homepage:
 Incidentally, at the time of writing, their website looks pretty similar to
 this one.
 
-Hacker News user *eimrine* also notes that this is similar to
-[fuzzing][fuzzing], a technique to find bugs by changing input data or input
-programs.
-
-[fuzzing]: https://en.wikipedia.org/wiki/Fuzzing
+### Python's test case bisect module
 
 Victor Stinner wrote [`test.bisect_cmd`][test.bisect_cmd][^rename] to debug failing
 tests in CPython. This is useful when they only fail in certain arrangements!
@@ -163,6 +161,14 @@ instead uses random sampling.
 
 [^rename]: Note that this has since been renamed from `test.bisect` to
     `test.bisect_cmd` to avoid conflicting with the built-in `bisect` module.
+
+### Fuzzing
+
+Hacker News user *eimrine* also notes that this is similar to
+[fuzzing][fuzzing], a technique to find bugs by changing input data or input
+programs.
+
+[fuzzing]: https://en.wikipedia.org/wiki/Fuzzing
 
 
 <hr style="width: 100px;" />
