@@ -190,7 +190,8 @@ Problem solved, right? Nope:
 I borrowed some of our tech lead Matt Page's code for reading `.so`s and that
 solved those problems. I'm not super sure why this code is different from the
 code for reading the executable ELF header. It *looks* very similar. Maybe they
-can be combined.
+can be combined. If you're going to borrow some of our code, his looks more
+correct. It handles more edge cases.
 
 Then, finally, since we're using C++, we get fun mangled names. I used
 `abi::__cxa_demangle` to get a nice readable name.
