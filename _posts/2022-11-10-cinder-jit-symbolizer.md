@@ -81,10 +81,10 @@ that instead.
 
 I had some crashes, so I went to see if Valgrind could track down anything
 weird for me. It turns out, though, that Valgrind [had a bug][valgrind-bug]
-where it wouldn't intercept that `open` for the `mmap`, so actually I was
-reading *Valgrind's* executable instead of my own when trying to track down my
-memory error. At the time of symbolizer writing, the bug had been fixed, but I
-did not have the latest version on hand.
+where it wouldn't intercept the `open` of `/proc/self/exe` for the `mmap`, so
+actually I was reading *Valgrind's* executable instead of my own when trying to
+track down my memory error. At the time of symbolizer writing, the bug had been
+fixed, but I did not have the latest version on hand.
 
 [valgrind-bug]: https://bugzilla.redhat.com/show_bug.cgi?id=1925786
 
