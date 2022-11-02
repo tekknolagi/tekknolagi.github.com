@@ -13,11 +13,54 @@ inliner](/blog/cinder-jit-inliner/) gives a decent overview of the JIT. This
 post will talk about our function symbolizer, why we added it, and how it
 works.
 
+If you notice something amiss, please let me know! Either send me an email,
+post on [~max/blog-comments](https://lists.sr.ht/~max/blog-comments), or
+comment on one of the various angry internet sites this will eventually get
+posted to.
+
 ## Motivation
 
-* Want names in debug output
-* Can pipe names all the way through but that's not always easy
-* `dladdr` works for limited cases
+The JIT transforms Python bytecode to machine code. Along the way, we support
+printing the intermediate representations (IRs) for debugging. We also support
+disassembling the resulting machine code for the same reason.
+
+The various IRs and machine code contain references to C and C++ functions by
+address. While a running process only needs the address to go about its job,
+software engineers like me need a little more than `0x3A28213A` to debug
+things. This leaves us wanting a function that can go from address to function
+name: a *symbolizer*.
+
+You might wonder why we don't instead keep all of the names inside the
+instructions. After all, we probably add the function pointers by name (like
+`env.emit<CallCFunction>(PyNumber_Add, ...)`. Why not also add `"PyNumber_Add"`
+alongside it?
+
+I quite honestly do not have a good answer. I think it would take work to
+thread all of that additional information through the system so that we can
+guarantee it, but:
+
+1. I already did this for the instructions that read from and write to fields.
+   It's great.
+2. Writing this symbolizer also took a lot of work.
+
+In the end I decided to do what other projects like HHVM seem to do and wrote
+the darn symbolizer.
+
+## The journey
+
+I wanted names in our debug output. Seeing stuff like
+`CallCFunction<0x6339392C> v1 v7` was driving me batty.[^addresses] How am I
+supposed to know what that represents? Sure, I can kind of make an inference
+from the context, but it's not pleasant.
+
+[^addresses]: Actually, it's worse than that. We didn't even print the
+    addresses originally.
+
+For some cases in the project we already used `dladdr` as a limited symbolizer.
+Unfortunately, `dladdr` only works if the function is in some `.so` that your
+application loaded. If you are trying to symbolize a function from your own
+executable, you're out of luck.
+
 * There are tables in ELF header
   * Can't read them because they are not loaded into memory
 * Read own ELF header from disk
