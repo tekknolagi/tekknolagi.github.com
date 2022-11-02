@@ -88,10 +88,96 @@ did not have the latest version on hand.
 
 [valgrind-bug]: https://bugzilla.redhat.com/show_bug.cgi?id=1925786
 
+I finally got the initializer working:
+
+```c++
+Symbolizer::Symbolizer(const char* exe_path) {
+  int exe_fd = ::open(exe_path, O_RDONLY);
+  if (exe_fd == -1) {
+    JIT_LOG("Could not open %s: %s", exe_path, ::strerror(errno));
+    return;
+  }
+  // Close the file descriptor. We don't need to keep it around for the mapping
+  // to be valid and if we leave it lying around then some CPython tests fail
+  // because they rely on specific file descriptor numbers.
+  SCOPE_EXIT(::close(exe_fd));
+  struct stat statbuf;
+  int stat_result = ::fstat(exe_fd, &statbuf);
+  if (stat_result == -1) {
+    JIT_LOG("Could not stat %s: %s", exe_path, ::strerror(errno));
+    return;
+  }
+  off_t exe_size_signed = statbuf.st_size;
+  JIT_CHECK(exe_size_signed >= 0, "exe size should not be negative");
+  exe_size_ = static_cast<size_t>(exe_size_signed);
+  exe_ = reinterpret_cast<char*>(
+      ::mmap(nullptr, exe_size_, PROT_READ, MAP_PRIVATE, exe_fd, 0));
+  if (exe_ == reinterpret_cast<char*>(MAP_FAILED)) {
+    JIT_LOG("could not mmap");
+    exe_ = nullptr;
+    return;
+  }
+  auto elf = reinterpret_cast<ElfW(Ehdr)*>(exe_);
+  auto shdr = reinterpret_cast<ElfW(Shdr)*>(exe_ + elf->e_shoff);
+  const char* str = exe_ + shdr[elf->e_shstrndx].sh_offset;
+  for (int i = 0; i < elf->e_shnum; i++) {
+    if (shdr[i].sh_size) {
+      if (std::strcmp(&str[shdr[i].sh_name], ".symtab") == 0) {
+        symtab_ = reinterpret_cast<ElfW(Shdr)*>(&shdr[i]);
+      } else if (std::strcmp(&str[shdr[i].sh_name], ".strtab") == 0) {
+        strtab_ = reinterpret_cast<ElfW(Shdr)*>(&shdr[i]);
+      }
+    }
+  }
+  // ...
+}
+```
+
+In this blob of initializer code, we:
+
+1. `open` the file to get a file descriptor
+2. `fstat` the file to get its size
+3. `mmap` the file so we can read from its contents
+4. Read the section headers one by one until we find `.symtab` and `.strtab`
+
 Through a bunch of trial and error and reading too much half-working code on
 the internet and too many manual pages, I got the symbolizer working! I managed
 to make it symbolize function names from our executable and fall back to
 `dladdr` for symbols shared objects.
+
+```c++
+std::optional<std::string_view> Symbolizer::symbolize(const void* func) {
+  // Try the cache first. We might have looked it up before.
+  auto cached = cache_.find(func);
+  if (cached != cache_.end()) {
+    return cached->second;
+  }
+  // Then try dladdr. It might be able to find the symbol.
+  Dl_info info;
+  if (::dladdr(func, &info) != 0 && info.dli_sname != nullptr) {
+    return cache(func, info.dli_sname);
+  }
+  if (!isInitialized()) {
+    return std::nullopt;
+  }
+  // Fall back to reading our own ELF header.
+  auto sym = reinterpret_cast<ElfW(Sym)*>(exe_ + symtab_->sh_offset);
+  const char* str = exe_ + strtab_->sh_offset;
+  for (size_t i = 0; i < symtab_->sh_size / sizeof(ElfW(Sym)); i++) {
+    if (reinterpret_cast<void*>(sym[i].st_value) == func) {
+      return cache(func, str + sym[i].st_name);
+    }
+  }
+  // ...
+}
+```
+
+In this snippet, we:
+
+1. Try reading from our cache. Nothing fancy, just an `unordered_map`
+2. Try calling `dladdr`
+3. Loop over the symbol table until we find a symbol whose address corresponds
+   to the address passed in
 
 Problem solved, right? Nope:
 
@@ -103,7 +189,8 @@ Problem solved, right? Nope:
 
 I borrowed some of our tech lead Matt Page's code for reading `.so`s and that
 solved those problems. I'm not super sure why this code is different from the
-code for reading the executable ELF header. Maybe they can be combined.
+code for reading the executable ELF header. It *looks* very similar. Maybe they
+can be combined.
 
 Then, finally, since we're using C++, we get fun mangled names. I used
 `abi::__cxa_demangle` to get a nice readable name.
