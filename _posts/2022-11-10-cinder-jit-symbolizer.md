@@ -88,7 +88,7 @@ did not have the latest version on hand.
 
 [valgrind-bug]: https://bugzilla.redhat.com/show_bug.cgi?id=1925786
 
-I finally got the initializer working:
+I finally got the constructor working:
 
 ```c++
 Symbolizer::Symbolizer(const char* exe_path) {
@@ -133,7 +133,7 @@ Symbolizer::Symbolizer(const char* exe_path) {
 }
 ```
 
-In this blob of initializer code, we:
+In this blob of constructor code, we:
 
 1. `open` the file to get a file descriptor
 2. `fstat` the file to get its size
