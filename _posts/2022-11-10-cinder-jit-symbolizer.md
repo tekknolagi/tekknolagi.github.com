@@ -13,10 +13,12 @@ inliner](/blog/cinder-jit-inliner/) gives a decent overview of the JIT. This
 post will talk about our function symbolizer, why we added it, and how it
 works.
 
-If you notice something amiss, please let me know! Either send me an email,
-post on [~max/blog-comments](https://lists.sr.ht/~max/blog-comments), or
-comment on one of the various angry internet sites this will eventually get
-posted to.
+To follow along, check out [symbolizer.cpp][symbolizer.cpp]. If you notice
+something amiss, please let me know! Either send me an email, post on
+[~max/blog-comments](https://lists.sr.ht/~max/blog-comments), or comment on one
+of the various angry internet sites this will eventually get posted to.
+
+[symbolizer.cpp]: https://github.com/facebookincubator/cinder/blob/ab2f6b5ca5274bbdd632b658cdce7de2274bfc56/Jit/symbolizer.cpp
 
 ## Motivation
 
@@ -61,15 +63,50 @@ Unfortunately, `dladdr` only works if the function is in some `.so` that your
 application loaded. If you are trying to symbolize a function from your own
 executable, you're out of luck.
 
-* There are tables in ELF header
-  * Can't read them because they are not loaded into memory
-* Read own ELF header from disk
-  * Note: Valgrind bug
-* Symbols from shared objects are not there
-  * This is a problem when Cinder is embedded as a .so in another application
-  * Also a problem for naming symbols from .so that Cinder loads
-* Read ELF header of each .so loaded
-* Symbols are mangled, so demangle
+I learned somewhere that at least for ELF binaries (and probably other
+executable formats), there are names stored in the header. I had no idea how to
+read my own ELF header. I tried to read from the start of the executable and
+found an ELF header! It was great! And then I tried to read a section header
+and got a segfault.
+
+I learned (from [Employed Russian][employed-russian], as apparently
+everybody who works on low-level things does) that section headers are not
+loaded into memory at process start. Bummer. So how do we read the header?
+
+[employed-russian]: https://stackoverflow.com/users/50617/employed-russian
+
+Well, we loaded the executable from the disk on process boot. Why not read it
+again? I went off to `mmap` the file `/proc/self/exe` so that I could read from
+that instead.
+
+I had some crashes, so I went to see if Valgrind could track down anything
+weird for me. It turns out, though, that Valgrind [had a bug][valgrind-bug]
+where it wouldn't intercept that `open` for the `mmap`, so actually I was
+reading *Valgrind's* executable instead of my own when trying to track down the
+bug. At the time of symbolizer and blog post writing, the bug had been fixed,
+but I did not have the latest version on hand.
+
+[valgrind-bug]: https://bugzilla.redhat.com/show_bug.cgi?id=1925786
+
+Through a bunch of trial and error and reading too much half-working code on
+the internet and too many manual pages, I got the symbolizer working! I managed
+to make it symbolize function names from our executable and fall back to
+`dladdr` for symbols shared objects.
+
+Problem solved, right? Nope:
+
+* We also ship the JIT as a `.so`. If we reference a private symbol from the
+  Cinder `.so`, our fancy symbol table walker won't be able to find it because
+  it only reads from the executable. `dladdr` won't be able to resolve it
+  either.
+* Some other reason that I can't remember right now but it was irritating.
+
+I borrowed some of our tech lead Matt Page's code for reading `.so`s and that
+solved those problems. I'm not super sure why this code is different from the
+code for reading the executable ELF header. Maybe they can be combined.
+
+Then, finally, since we're using C++, we get fun mangled names. I used
+`abi::__cxa_demangle` to get a nice readable name.
 
 ## Requirements
 
