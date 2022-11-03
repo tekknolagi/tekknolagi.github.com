@@ -1,7 +1,7 @@
 ---
 title: "Adding a symbolizer to the Cinder JIT"
 layout: post
-date: 2022-11-04
+date: 2022-11-03
 description: >
   Adding more names to debug information is always helpful.
 ---
