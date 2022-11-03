@@ -273,6 +273,13 @@ support using LibBFD.
 Last, I heard that you can use `libbacktrace` as a sort of symbolizer, but you
 need to link with `-rdynamic` and it won't find static/private symbols.
 
+## Resources
+
+[ELF from scratch][efs] by Conrad Kleinespel helped me understand how the
+headers are laid out. Diagrams are nice and all but it's super helpful to see
+sample code iterating over section headers and stuff.
+
+[efs]: https://www.conradk.com/2017/05/28/elf-from-scratch
 
 <hr style="width: 100px;" />
 <!-- Footnotes -->
