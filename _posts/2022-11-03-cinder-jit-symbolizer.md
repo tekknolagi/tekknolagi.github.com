@@ -1,5 +1,5 @@
 ---
-title: "Adding a symbolizer to the Cinder JIT"
+title: "Writing a symbolizer for the Cinder JIT"
 layout: post
 date: 2022-11-03
 description: >
