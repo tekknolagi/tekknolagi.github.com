@@ -1,7 +1,7 @@
 ---
 title: "Adding a symbolizer to the Cinder JIT"
 layout: post
-date: 2022-11-10
+date: 2022-11-04
 description: >
   Adding more names to debug information is always helpful.
 ---
@@ -57,6 +57,38 @@ from the context, but it's not pleasant.
 
 [^addresses]: Actually, it's worse than that. We didn't even print the
     addresses originally.
+
+Take a look at an example dump of assembly code from the JIT:
+
+```
+Epilogue
+  0x7f19fdf1d2c8:        mov    0x118(%rdi),%rsi
+  0x7f19fdf1d2cf:        btq    $0x0,0x8(%rsi)
+  0x7f19fdf1d2d5:        mov    (%rsi),%rsi
+  0x7f19fdf1d2d8:        mov    %rsi,0x118(%rdi)
+  0x7f19fdf1d2df:        jae    0x7f19fdf1d2f3
+  0x7f19fdf1d2e5:        mov    %rax,-0x8(%rbp)
+  0x7f19fdf1d2e9:        callq  *0x69(%rip)        # 0x7f19fdf1d358
+  0x7f19fdf1d2ef:        mov    -0x8(%rbp),%rax
+```
+
+We can see that the disassembler has helpfully annotated the RIP-relative call
+with the address it found later in the instruction stream. But that number is
+still meaningless to me. I would much rather have the following:
+
+```
+Epilogue
+  0x7f19fdf1d2c8:        mov    0x118(%rdi),%rsi
+  0x7f19fdf1d2cf:        btq    $0x0,0x8(%rsi)
+  0x7f19fdf1d2d5:        mov    (%rsi),%rsi
+  0x7f19fdf1d2d8:        mov    %rsi,0x118(%rdi)
+  0x7f19fdf1d2df:        jae    0x7f19fdf1d2f3
+  0x7f19fdf1d2e5:        mov    %rax,-0x8(%rbp)
+  0x7f19fdf1d2e9:        callq  *0x69(%rip)        # 0x7f19fdf1d358 (JITRT_UnlinkFrame(_ts*))
+  0x7f19fdf1d2ef:        mov    -0x8(%rbp),%rax
+```
+
+Beautiful. A crisp, clear function name.
 
 For some cases in the project we already used `dladdr` as a limited symbolizer.
 Unfortunately, `dladdr` only works if the function is in some `.so` that your
@@ -198,31 +230,37 @@ Then, finally, since we're using C++, we get fun mangled names. I used
 
 ## Requirements
 
-* Linux and ELF
-
-## Implementation details
+This symbolizer only supports Linux/ELF. It won't work on macOS, which uses
+Mach-O. I have no idea about BSDs and friends. It *should* be 32-bit compatible
+out of the box, though, due to use of `ELfW` instead of its explicitly-sized
+variants.
 
 ## Other thoughts
 
+It's going to be a minute before I go spelunking through ELF again.
+
 ## Similar work
 
-### Abseil symbolizer
+Google's Abseil library includes [a symbolizer][abseil-sym]. Same with the
+folly library: [symbolizer][folly-sym] and [elf utils][folly-elf].
 
-* https://github.com/abseil/abseil-cpp/blob/d819278ab70ee5e59fa91d76a66abeaa106b95c9/absl/debugging/symbolize_elf.inc
+[abseil-sym]: https://github.com/abseil/abseil-cpp/blob/d819278ab70ee5e59fa91d76a66abeaa106b95c9/absl/debugging/symbolize_elf.inc
+[folly-sym]: https://github.com/facebook/folly/blob/74d381aacc02cfd892d394205f1e066c76e18e60/folly/experimental/symbolizer/Symbolizer.cpp
+[folly-elf]: https://github.com/facebook/folly/blob/74d381aacc02cfd892d394205f1e066c76e18e60/folly/experimental/symbolizer/Elf.cpp
 
-### Folly symbolizer
+Also, I did a lot of reading through ClickHouse's [symbol
+indexer][clickhouse-sym] and it helped clear up some misconceptions and
+outright errors from various StackOverflow answers.
 
-* https://github.com/facebook/folly/blob/74d381aacc02cfd892d394205f1e066c76e18e60/folly/experimental/symbolizer/Symbolizer.cpp
-* https://github.com/facebook/folly/blob/74d381aacc02cfd892d394205f1e066c76e18e60/folly/experimental/symbolizer/Elf.cpp
+[clickhouse-sym]: https://github.com/ClickHouse/ClickHouse/blob/c8068bdfa260ccf486c2d0417b1eea9cbfb0ad59/src/Common/SymbolIndex.cpp
 
-### ClickHouse symbolizer
+HHVM has [a symbolizer][hhvm-sym] that relies on Folly but apparently they also
+support using LibBFD.
 
-* https://github.com/ClickHouse/ClickHouse/blob/c8068bdfa260ccf486c2d0417b1eea9cbfb0ad59/src/Common/SymbolIndex.cpp
+[hhvm-sym]: https://github.com/facebook/hhvm/blob/a2e15b83bd3ff360068dcf584264a42d85fe0c90/hphp/util/stack-trace.cpp
 
-### HHVM symbolizer
-
-* https://github.com/facebook/hhvm/blob/a2e15b83bd3ff360068dcf584264a42d85fe0c90/hphp/util/stack-trace.cpp
-  * folly or libbfd
+Last, I heard that you can use `libbacktrace` as a sort of symbolizer, but you
+need to link with `-rdynamic` and it won't find static/private symbols.
 
 
 <hr style="width: 100px;" />
