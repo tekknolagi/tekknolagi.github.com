@@ -34,8 +34,8 @@ name: a *symbolizer*.
 
 You might wonder why we don't instead keep all of the names inside the
 instructions. After all, we probably add the function pointers by name (like
-`env.emit<CallCFunction>(PyNumber_Add, ...)`. Why not also add `"PyNumber_Add"`
-alongside it?
+`env.emit<CallCFunction>(PyNumber_Add, ...)`. Why not also add the string
+`"PyNumber_Add"` alongside it?
 
 I quite honestly do not have a good answer. I think it would take work to
 thread all of that additional information through the system so that we can
@@ -58,37 +58,38 @@ from the context, but it's not pleasant.
 [^addresses]: Actually, it's worse than that. We didn't even print the
     addresses originally.
 
-Take a look at an example dump of assembly code from the JIT:
+And it's even worse in the machine code, where there are no names. Take a look
+at an example dump of assembly code from the JIT:
 
-```
+```nasm
 Epilogue
-  0x7f19fdf1d2c8:        mov    0x118(%rdi),%rsi
-  0x7f19fdf1d2cf:        btq    $0x0,0x8(%rsi)
-  0x7f19fdf1d2d5:        mov    (%rsi),%rsi
-  0x7f19fdf1d2d8:        mov    %rsi,0x118(%rdi)
-  0x7f19fdf1d2df:        jae    0x7f19fdf1d2f3
-  0x7f19fdf1d2e5:        mov    %rax,-0x8(%rbp)
-  0x7f19fdf1d2e9:        callq  *0x69(%rip)        # 0x7f19fdf1d358
-  0x7f19fdf1d2ef:        mov    -0x8(%rbp),%rax
+  mov    0x118(%rdi),%rsi
+  btq    $0x0,0x8(%rsi)
+  mov    (%rsi),%rsi
+  mov    %rsi,0x118(%rdi)
+  jae    0x7f19fdf1d2f3
+  mov    %rax,-0x8(%rbp)
+  callq  *0x69(%rip)        # 0x7f19fdf1d358
+  mov    -0x8(%rbp),%rax
 ```
 
 We can see that the disassembler has helpfully annotated the RIP-relative call
 with the address it found later in the instruction stream. But that number is
 still meaningless to me. I would much rather have the following:
 
-```
+```nasm
 Epilogue
-  0x7f19fdf1d2c8:        mov    0x118(%rdi),%rsi
-  0x7f19fdf1d2cf:        btq    $0x0,0x8(%rsi)
-  0x7f19fdf1d2d5:        mov    (%rsi),%rsi
-  0x7f19fdf1d2d8:        mov    %rsi,0x118(%rdi)
-  0x7f19fdf1d2df:        jae    0x7f19fdf1d2f3
-  0x7f19fdf1d2e5:        mov    %rax,-0x8(%rbp)
-  0x7f19fdf1d2e9:        callq  *0x69(%rip)        # 0x7f19fdf1d358 (JITRT_UnlinkFrame(_ts*))
-  0x7f19fdf1d2ef:        mov    -0x8(%rbp),%rax
+  mov    0x118(%rdi),%rsi
+  btq    $0x0,0x8(%rsi)
+  mov    (%rsi),%rsi
+  mov    %rsi,0x118(%rdi)
+  jae    0x7f19fdf1d2f3
+  mov    %rax,-0x8(%rbp)
+  callq  *0x69(%rip)        # 0x7f19fdf1d358 (JITRT_UnlinkFrame(_ts*))
+  mov    -0x8(%rbp),%rax
 ```
 
-Beautiful. A crisp, clear function name.
+Beautiful. A crisp, clear function name. So how do we get there?
 
 For some cases in the project we already used `dladdr` as a limited symbolizer.
 Unfortunately, `dladdr` only works if the function is in some `.so` that your
@@ -115,8 +116,9 @@ I had some crashes, so I went to see if Valgrind could track down anything
 weird for me. It turns out, though, that Valgrind [had a bug][valgrind-bug]
 where it wouldn't intercept the `open` of `/proc/self/exe` for the `mmap`, so
 actually I was reading *Valgrind's* executable instead of my own when trying to
-track down my memory error. At the time of symbolizer writing, the bug had been
-fixed, but I did not have the latest version on hand.
+track down my memory error. Talk about multiple levels of confusion. At the
+time of symbolizer writing, the bug had been fixed, but I did not have the
+latest version on hand.
 
 [valgrind-bug]: https://bugzilla.redhat.com/show_bug.cgi?id=1925786
 
@@ -235,7 +237,11 @@ Mach-O. I have no idea about BSDs and friends. It *should* be 32-bit compatible
 out of the box, though, due to use of `ELfW` instead of its explicitly-sized
 variants.
 
-## Other thoughts
+## Conclusion
+
+A symbolizer that has to support very few platforms can be written in a couple
+hundred lines and understood. Hopefully it's reusable. Let me know what weird
+bugs you run into if you use it.
 
 It's going to be a minute before I go spelunking through ELF again.
 
