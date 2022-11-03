@@ -243,6 +243,11 @@ A symbolizer that has to support very few platforms can be written in a couple
 hundred lines and understood. Hopefully it's reusable. Let me know what weird
 bugs you run into if you use it.
 
+This isn't meant to be fast. I have no idea how very slow it is. Please don't
+tell me. I added a cache so I wouldn't have to think about it too hard. The
+thought is that once a symbol is looked up, it will likely be looked up again
+in dumps of a future compiler pass.
+
 It's going to be a minute before I go spelunking through ELF again.
 
 ## Similar work
