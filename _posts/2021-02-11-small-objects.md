@@ -332,11 +332,16 @@ repo](https://github.com/tekknolagi/icdemo) and poke at the code.
 ## Exploring further
 
 In this post, we made an executive decision to shrink the available integer
-range by one bit. We didn't add a fallback to heap-allocated 64-bit numbers.
-This is an interesting extension to consider if you occasionally need some big
-numbers. Or maybe, if you need really big numbers, you could also add a
-fallback to heap allocated bignums! If you don't care at all, it's not
-unreasonable to decide to make your integer operations cut off at 63 bits.
+range by one bit. We didn't add a fallback to heap-allocated 64-bit
+numbers[^smi-double]. This is an interesting extension to consider if you
+occasionally need some big numbers. Or maybe, if you need really big numbers,
+you could also add a fallback to heap allocated bignums! If you don't care at
+all, it's not unreasonable to decide to make your integer operations cut off at
+63 bits.
+
+[^smi-double]: Fedor Indutny has a [great post](https://darksi.de/6.smis-and-doubles/)
+    about an optimization for JS where math has fast inline code paths for
+    small integers but falls back to heap-allocated numbers instead. 
 
 This post spent a decent chunk of time fitting integers into pointers. I chose
 to write about integers because it was probably the simplest way to demonstrate
