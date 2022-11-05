@@ -583,6 +583,13 @@ The JIT compiler we are building *on top of CPython* called
 [Cinder](https://github.com/facebookincubator/cinder), which you can play with
 at [trycinder.com](https://trycinder.com/).
 
+The rest of the [excellent resources](/pl-resources/#runtime-optimization)
+(written mostly by other people) on runtime optimization. There are a bunch
+that touch on inline caching and hidden classes. I think the one that made it
+click for me was [An Inline Cache Isn't Just A
+Cache](https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache)
+by Matthew Gaudet.
+
 ## Thanks
 
 Thank you to all of the many people who wrote great language runtimes, people
