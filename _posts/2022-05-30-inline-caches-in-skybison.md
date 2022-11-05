@@ -50,7 +50,7 @@ the number of comparisons about what cache state we are in. And the assembly
 interpreter makes inline caching even faster. And the JIT makes it faster
 still.
 
-But we will focus on inline caching of attribute loads for now.
+We will focus on inline caching of attribute loads for now.
 
 ## Loading attributes
 
@@ -124,7 +124,7 @@ PyObject_GetAttr(PyObject *v, PyObject *name)
 }
 ```
 
-the normal `tp_getattr` slot is a generic function like
+The normal `tp_getattr` slot is a generic function like
 `PyObject_GenericGetAttr` that reads from the dictionary on the type, figures
 out what offset the attribute is, checks if it is a descriptor, and so on and
 so forth. This is a *lot* of work.
