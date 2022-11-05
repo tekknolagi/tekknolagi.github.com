@@ -6,9 +6,11 @@ series: runtime-opt
 ---
 
 Inline caching is a popular technique for optimizing dynamic language runtimes.
-I have written about it before ([Inline caching](/blog/inline-caching/) and
-[Inline caching: quickening](/blog/inline-caching-quickening/)), using a tiny
-sample interpreter.
+The idea comes from the 1984 paper by L. Peter Deutsch and Allan M. Schiffman,
+*Efficient implementation of the Smalltalk-80 system*. I have written about it
+before ([Inline caching](/blog/inline-caching/) and [Inline caching:
+quickening](/blog/inline-caching-quickening/)), using a tiny sample
+interpreter.
 
 While this is good for illustrating the core technique, the simplified
 interpreter core does not have any real-world requirements or complexity: its
