@@ -1,5 +1,5 @@
 ---
-title: "Inline caches in the Skybison runtime"
+title: "Inline caches in the Skybison Python runtime"
 layout: post
 date: 2022-05-30
 series: runtime-opt
@@ -18,16 +18,16 @@ result is somewhat unsatisfying.
 
 In this post, I will write about the inline caching implementation in
 [Skybison](https://github.com/tekknolagi/skybison), a relatively complete
-Python runtime originally developed for use in Instagram. It nicely showcases
-all of the fun and sharp edges of the Python object model and how we solved
-hard problems.
+Python 3.8 runtime originally developed for use in Instagram. It nicely
+showcases all of the fun and sharp edges of the Python object model and how we
+solved hard problems.
 
 In order to better illustrate the design choices we made when building
 Skybison, I will often side-by-side it with CPython, the most popular
-implementation of Python. This is not meant to degrade CPython; it is the
+implementation of Python. This is not meant to degrade CPython; CPython is the
 reference implementation, it is extremely widely used, and it is still being
-actively developed. In fact, later (currently to-be-released) versions of
-CPython use similar techniques to those shown here.
+actively developed. In fact, later (3.11+) versions of CPython use similar
+techniques to those shown here.
 
 ## Optimization decisions
 
@@ -360,6 +360,10 @@ offset---they would all be encoded directly into the machine code.
 
 [asm-load-attr-instance]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/interpreter-gen-x64.cpp#L1130
 
+Additionally, the assembly interpreter uses the system stack (`rsp`) so pushes
+and pops are much cheaper and have their own instructions: the familiar x86
+`push` and `pop`.
+
 But what about the slow path? What if we are seeing a different type this time
 around? Well, it's morphin' time. Let's transition to the polymorphic cache in
 `loadAttrUpdateCache`:
@@ -551,14 +555,20 @@ We can do this extremely slow operation when types change because we expect
 attribute lookups to be frequent and changes to types *after they are used* to
 be very rare.
 
-TODO(max): show dependency code
+Looking at the dependency invalidation code is really neat because it is the
+"Maxwell's Equations" (not me---the physics guy) of the Python type system.
+Take a look at [runtime/ic.h][ic.h] and [runtime/ic.cpp][ic.cpp] for a deep dive.
+
+[ic.h]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/ic.h
+[ic.cpp]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/ic.cpp
 
 ## Other things to go explore
 
 We have our layout system in [`runtime/layout.h`][layout_h] and
 [`runtime/layout.cpp`][layout_cpp]. This showcases the thin veneer on top of
 type objects that we use to track where attributes are on different types of
-objects. It also gives some insight into the compact object system.
+objects. In Skybison this is called "layouts" but in other systems it is called
+"hidden classes", "object shapes", and probably some other names.
 
 [layout_h]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/layout.h
 [layout_cpp]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/layout.cpp
