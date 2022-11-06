@@ -541,11 +541,11 @@ print(obj.value)  # 100
 
 Just setting `C.value = 100` would not cause `obj.value` to change. It is the
 `__get__` method on `property` that takes precedence over "normal" attribute
-lookups. Nowhere in our code does this get handled. We don't check that the
-type is the same---and how would we even do that? Type versions? Because it is
-possible to have chains of inheritance, we would have to walk up the entire
-method resolution order (MRO) and check if *every single type* was the same as
-we expected. Slow.
+lookups. Nowhere in our fast-path attribute read code does this get handled. We
+don't check that the type is the same. Because it is possible to have chains of
+inheritance, we would have to walk up the entire method resolution order (MRO)
+and check if *every single type* was the same as we expected. Slow. Instead, we
+invalidate our assumptions on *writes*.
 
 I mentioned "dependencies" briefly earlier. There is some code in
 `icUpdateAttr` that registers the function containing the cache as "dependent"
