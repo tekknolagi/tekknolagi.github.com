@@ -542,9 +542,9 @@ print(obj.value)  # 100
 Just setting `C.value = 100` would not cause `obj.value` to change. It is the
 `__get__` method on `property` that takes precedence over "normal" attribute
 lookups. Nowhere in our fast-path attribute read code does this get handled. We
-don't check that the type is the same. Because it is possible to have chains of
-inheritance, we would have to walk up the entire method resolution order (MRO)
-and check if *every single type* was the same as we expected. Slow. Instead, we
+don't check that the type is the same. Checking that the type is the same the
+naive way would involve walking up the entire method resolution order (MRO) and
+checking if *every single type* was the same as we expected. Slow. Instead, we
 invalidate our assumptions on *writes*.[^pypy-versions]
 
 [^pypy-versions]: We do this by eagerly invalidating the fast-path code when
