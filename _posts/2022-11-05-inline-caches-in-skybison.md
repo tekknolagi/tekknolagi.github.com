@@ -545,7 +545,12 @@ lookups. Nowhere in our fast-path attribute read code does this get handled. We
 don't check that the type is the same. Because it is possible to have chains of
 inheritance, we would have to walk up the entire method resolution order (MRO)
 and check if *every single type* was the same as we expected. Slow. Instead, we
-invalidate our assumptions on *writes*.
+invalidate our assumptions on *writes*.[^pypy-versions]
+
+[^pypy-versions]: We do this by eagerly invalidating the fast-path code when
+    the type changes but some runtimes, like PyPy, have a version check in the
+    fast path. Then on the slow path, they just bump the versions of all the
+    relevant types in the hierarchy.
 
 I mentioned "dependencies" briefly earlier. There is some code in
 `icUpdateAttr` that registers the function containing the cache as "dependent"
