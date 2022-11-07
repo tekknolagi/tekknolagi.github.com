@@ -6,17 +6,20 @@ series: runtime-opt
 ---
 
 Inline caching is a popular technique for optimizing dynamic language runtimes.
-The idea comes from the 1984 paper by L. Peter Deutsch and Allan M. Schiffman,
-*Efficient implementation of the Smalltalk-80 system*. I have written about it
-before ([Inline caching](/blog/inline-caching/) and [Inline caching:
+The idea comes from the 1984 paper [*Efficient implementation of the
+Smalltalk-80 system*][smalltalk] (PDF) by L. Peter Deutsch and Allan M.
+Schiffman. I have written about it before ([Inline
+caching](/blog/inline-caching/) and [Inline caching:
 quickening](/blog/inline-caching-quickening/)), using a tiny sample
 interpreter.
 
-While this is good for illustrating the core technique, the simplified
-interpreter core does not have any real-world requirements or complexity: its
-object model models nothing of interest; the types are immutable; and there is
-no way to program for this interpreter using a text programming language. The
-result is somewhat unsatisfying.
+[smalltalk]: https://dl.acm.org/doi/pdf/10.1145/800017.800542
+
+While this tiny interpreter is good for illustrating the core technique, it
+does not have any real-world requirements or complexity: its object model
+models nothing of interest; the types are immutable; and there is no way to
+program for this interpreter using a text programming language. The result is
+somewhat unsatisfying.
 
 In this post, I will write about the inline caching implementation in
 [Skybison](https://github.com/tekknolagi/skybison), a relatively complete
@@ -25,11 +28,11 @@ showcases all of the fun and sharp edges of the Python object model and how we
 solved hard problems.
 
 In order to better illustrate the design choices we made when building
-Skybison, I will often side-by-side it with CPython, the most popular
-implementation of Python. This is not meant to degrade CPython; CPython is the
-reference implementation, it is extremely widely used, and it is still being
-actively developed. In fact, later (3.11+) versions of CPython use similar
-techniques to those shown here.
+Skybison, I will often side-by-side it with a version of CPython, the most
+popular implementation of Python. This is not meant to degrade CPython; CPython
+is the reference implementation, it is extremely widely used, and it is still
+being actively developed. In fact, later (3.11+) versions of CPython use
+similar techniques to those shown here.
 
 ## Optimization decisions
 
@@ -602,3 +605,7 @@ by Matthew Gaudet.
 Thank you to all of the many people who wrote great language runtimes, people
 who preceded me on the team, and people who I worked with on the team. You came
 up with most of the ideas. I just chronicle them here.
+
+<br />
+<hr style="width: 100px;" />
+<!-- Footnotes -->
