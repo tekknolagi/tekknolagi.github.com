@@ -171,6 +171,8 @@ research around optimizing dynamic languages.
 * Posts about trace optimization:
   * [Implementing a Toy Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html)
   * [Allocation Removal in the Toy Optimizer](https://www.pypy.org/posts/2022/10/toy-optimizer-allocation-removal.html)
+* WebKit/JavaScriptCore stuff:
+  * [B3](https://webkit.org/docs/b3/), the Bare Bones Backend
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
