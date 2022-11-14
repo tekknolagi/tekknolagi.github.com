@@ -178,6 +178,10 @@ Notes to come back to later on shadow stacks:
 * The [LLVM docs](https://releases.llvm.org/3.5.2/docs/GarbageCollection.html)
   about this that assume you are generating LLVM from your compiler, not
   writing a runtime in C++
+* Maybe the new [Statepoint API](https://llvm.org/docs/Statepoints.html) is
+  worth looking into
+  * [llvm-statepoint-utils](https://github.com/kavon/llvm-statepoint-utils)
+    repo
 
 ## Pointer tagging
 
