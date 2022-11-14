@@ -70,6 +70,100 @@ notes:
 
 ## Handles
 
+Many small interpreters implement their own garbage collection mechanism. I
+link to a couple on my [PL resources page](/pl-resources/). A lot of the C and
+C++ interpreters use this simple but difficult to get right dance: pushing and
+popping roots.
+
+```c
+object* do_another_thing(object* a, object* b, object* c, object* d);
+
+object* do_something(object* a, object* b) {
+  object* c = gc_alloc();
+  GC_PROTECT(c);
+  object* d = gc_alloc();
+  GC_PROTECT(d);
+  object* e = do_another_thing(a, b, c, d);
+  GC_UNPROTECT(c);
+  GC_UNPROTECT(d);
+  return e;
+}
+```
+
+This is hard to get right because:
+
+1. You have to remember to protect all the roots you need so they don't get
+   freed out from under you
+2. You have to remember to *unprotect* all the roots or your GC might try to
+   poke at invalid stack memory
+3. The protect/unprotect does not align with variable scope, which leaves you
+   at risk of accidentally writing a use-after-unprotect, especially during
+   refactoring
+4. You have to remember to protect/unprotect in the same order, since the
+   common way to do this is to push to/pop from a stack
+
+Fortunately, there is a better solution: handles. Handles lean on C++ RAII to
+match GC protection with variable scope. If you ensure that GC-allocated
+pointers *only* live in handles within a function, you're golden. Consider a
+handle version of the above code:
+
+```c++
+object* do_another_thing(const Rooted<object>& a, const Rooted<object>& b,
+                         const Rooted<object>& c, const Rooted<object>& d);
+
+object* do_something(const Rooted<object>& a, const Rooted<object>& b) {
+  Rooted<object> c(gc_alloc());
+  Rooted<object> d(gc_alloc());
+  Rooted<object> e(do_another_thing(a, b, c, d));
+  return e.get();
+}
+```
+
+Notice that functions take const references to handles as parameters. They take
+handles so that the underlying pointers are safe during GC. They take const
+references to handles because of the aforementioned RAII rules:
+
+1. On construction, they register the underlying pointer with the GC
+2. On destruction, they deregister the pointer
+
+Which means that passing around handles by copying them is probably correct but
+slow.
+
+Also notice that despite taking handles as parameters, functions return raw
+`object` pointers. Since nothing can happen after return (and the new owner of
+the value should be putting this value in a handle anyway), the function
+returns a raw pointer. Now you "only" have to deal with normal C/C++
+use-after-free.
+
+Last, notice that there is no explicit ordering of unprotect; C++ guarantees
+destructor order for us.
+
+This handle technique works for both moving and non-moving GCs.
+
+Handles aren't all rainbows and sunshine: they do come with a performance
+penalty. To keep you safe, the `Rooted` class holds an `object` pointer as a
+member and (for moving GCs) updates its value when a GC runs. This helps keep
+the raw pointer off of the native stack. This also means that there is some
+indirection for all handle operations, which is not ideal.
+
+Handles are not my invention; they are used [in
+Spidermonkey][spidermonkey-handles], [in V8][v8-handles] (see also [this
+one][v8-handles-2]), in the [Hotspot JVM][hotspot-handles], in
+[Dart][dart-handles], in the [Skybison][skybison-handles] Python runtime, and
+probably many more.
+
+[spidermonkey-handles]: https://github.com/mozilla-spidermonkey/spidermonkey-embedding-examples/blob/esr78/docs/GC%20Rooting%20Guide.md
+[v8-handles]: https://v8.dev/docs/embed
+[v8-handles-2]: https://blog.reverberate.org/2016/10/17/native-extensions-memory-management-part2-javascript-v8.html
+[hotspot-handles]: https://github.com/openjdk/jdk/blob/master/src/hotspot/share/runtime/handles.hpp
+[dart-handles]: https://github.com/dart-lang/sdk/blob/main/runtime/vm/handles.h
+[skybison-handles]: https://github.com/tekknolagi/skybison
+
+It's probably possible to optimize handles a bit if you can give your compiler
+knowledge of your native function's stack layout. Being able to integrate with
+`llvm.gcroot` would be very neat. I have not yet found a project that does
+this. Perhaps the APIs are not stable enough.
+
 ## Pointer tagging
 
 ## Small objects
