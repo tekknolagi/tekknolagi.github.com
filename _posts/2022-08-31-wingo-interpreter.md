@@ -161,8 +161,9 @@ probably many more.
 
 It's probably possible to optimize handles a bit if you can give your compiler
 knowledge of your native function's stack layout. Being able to integrate with
-`llvm.gcroot` would be very neat. I have not yet found a project that does
-this. Perhaps the APIs are not stable enough.
+`llvm.gcroot` would be very neat. Kind of a fusion of the usual shadow stack
+approach for generated code and manual handles for runtime code. I have not yet
+found a project that does this. Perhaps the APIs are not stable enough.
 
 ## Pointer tagging
 
