@@ -136,7 +136,8 @@ returns a raw pointer. Now you "only" have to deal with normal C/C++
 use-after-free.
 
 Last, notice that there is no explicit ordering of unprotect; C++ guarantees
-destructor order for us.
+destructor order is the reverse of constructor order. Last allocated is first
+destroyed.
 
 This handle technique works for both moving and non-moving GCs.
 
@@ -161,9 +162,22 @@ probably many more.
 
 It's probably possible to optimize handles a bit if you can give your compiler
 knowledge of your native function's stack layout. Being able to integrate with
-`llvm.gcroot` would be very neat. Kind of a fusion of the usual shadow stack
-approach for generated code and manual handles for runtime code. I have not yet
-found a project that does this. Perhaps the APIs are not stable enough.
+`llvm.gcroot` would be very neat. Kind of a fusion of the usual [shadow
+stack][shadow-stack] approach for generated code and manual handles for runtime
+code. I have not yet found a project that does this. Perhaps the APIs are not
+stable enough.
+
+[shadow-stack]: https://dl.acm.org/doi/10.1145/512429.512449
+
+Notes to come back to later on shadow stacks:
+
+* Terence Parr's [comments in llvm-dev](https://groups.google.com/g/llvm-dev/c/M4HOyteR4J4)
+  about this problem, which is fun to see because he gave [the
+  talk](https://www.youtube.com/watch?v=OjaAToVkoTw) that helped me understand
+  bytecode interpreters for the very first time
+* The [LLVM docs](https://releases.llvm.org/3.5.2/docs/GarbageCollection.html)
+  about this that assume you are generating LLVM from your compiler, not
+  writing a runtime in C++
 
 ## Pointer tagging
 
