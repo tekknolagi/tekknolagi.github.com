@@ -16,3 +16,9 @@ layout: recipe
 1. Dill
 1. Mint
 1. [Roasted chickpeas](/recipes/roasted-chickpeas/)
+
+*Directions:*
+
+1. Chop everything into roughly even pieces.
+1. Mix the chopped pieces together.
+1. Dress with olive oil, balsamic, lemon juice, feta, and herbs to taste.
