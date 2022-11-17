@@ -9,6 +9,9 @@ layout: recipe
 1. Tomatoes
 1. Bell pepper
 1. Kalamata olives
+
+*Toppings:*
+
 1. Olive oil
 1. Balsamic vinegar
 1. Lemon juice
