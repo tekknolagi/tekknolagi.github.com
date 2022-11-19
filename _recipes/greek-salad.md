@@ -17,12 +17,13 @@ layout: recipe
 1. Balsamic vinegar
 1. Lemon juice
 1. Feta cheese
-1. Dill
-1. Mint
-1. [Roasted chickpeas](/recipes/roasted-chickpeas/)
+1. Dill (optional)
+1. Mint (optional)
+1. [Roasted chickpeas](/recipes/roasted-chickpeas/) (suggested)
+1. Pearl couscous (optional)
 
 *Directions:*
 
-1. Chop everything into roughly even pieces.
+1. Chop ingredients into roughly even pieces.
 1. Mix the chopped pieces together.
 1. Dress with olive oil, balsamic, lemon juice, feta, and herbs to taste.
