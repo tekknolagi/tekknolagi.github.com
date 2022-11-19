@@ -19,8 +19,16 @@ layout: recipe
 1. Feta cheese
 1. Dill (optional)
 1. Mint (optional)
-1. [Roasted chickpeas](/recipes/roasted-chickpeas/) (suggested)
-1. Pearl couscous (optional)
+
+*Extensions:*
+
+To make the salad a bit more filling---a whole meal---add chickpeas, couscous,
+or both.
+
+1. [Roasted chickpeas](/recipes/roasted-chickpeas/)
+1. Pearl couscous
+
+I like to cook the couscous in a vegetable broth.
 
 *Directions:*
 
