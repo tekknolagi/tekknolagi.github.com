@@ -1,0 +1,12 @@
+{
+  "subject": "max@bernsteinbear.com",
+  "properties": {
+    "http://schema.org/name": "Max Bernstein"
+  },
+  "links": [
+    {
+      "rel": "http://webfinger.net/rel/profile-page",
+      "href": "https://bernsteinbear.com.com"
+    }
+  ]
+}
