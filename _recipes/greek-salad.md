@@ -9,6 +9,7 @@ layout: recipe
 1. Tomatoes
 1. Bell pepper
 1. Kalamata olives
+1. Red onion
 
 *Toppings:*
 
