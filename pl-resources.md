@@ -82,7 +82,6 @@ to find great stuff.
   * [Toit](https://github.com/toitlang/toit)
   * [Skybison](https://github.com/tekknolagi/skybison)
 * Russ Cox's [Regular expression matching: the virtual machine approach](https://swtch.com/~rsc/regexp/regexp2.html)
-* Webkit's post about the [FTL JIT](https://webkit.org/blog/3362/introducing-the-webkit-ftl-jit/)
 * Bun tweet about [DOMJIT](https://mobile.twitter.com/jarredsumner/status/1557791189490737155)
 
 ## Runtime optimization
@@ -172,7 +171,9 @@ research around optimizing dynamic languages.
   * [Implementing a Toy Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html)
   * [Allocation Removal in the Toy Optimizer](https://www.pypy.org/posts/2022/10/toy-optimizer-allocation-removal.html)
 * WebKit/JavaScriptCore stuff:
+  * [FTL JIT](https://webkit.org/blog/3362/introducing-the-webkit-ftl-jit/)
   * [B3](https://webkit.org/docs/b3/), the Bare Bones Backend
+  * [Speculation in JavaScriptCore](https://webkit.org/blog/10308/speculation-in-javascriptcore/)
 * [Building the fastest Lua interpreter.. automatically!](https://sillycross.github.io/2022/11/22/2022-11-22/)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
