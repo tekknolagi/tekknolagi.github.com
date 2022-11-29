@@ -40,5 +40,4 @@ Tried, enjoyed, and repeated frequently by yours truly.
 ## Other text-based recipes
 
 See [based.cooking](https://based.cooking/) and
-[grimgrains.com](https://grimgrains.com/site/home.html) and
-[stovetop.app](https://stovetop.app/).
+[grimgrains.com](https://grimgrains.com/site/home.html).
