@@ -475,9 +475,6 @@ is just an attribute on the instance, it must not be wrapped. See, for example:
 
 ```python
 class C:
-    def __init__(self, g):
-        self.g = g
-
     def f(self):
         return 1
 
@@ -488,6 +485,7 @@ def g(self):
 
 obj = C(g)
 print(obj.f)  # <bound method C.f of <__main__.C object at 0x7ff922f3fa90>>
+obj.g = g
 print(obj.g)  # <function g at 0x7ff923019e18>
 ```
 
