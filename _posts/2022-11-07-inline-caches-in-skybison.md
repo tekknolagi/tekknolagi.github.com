@@ -470,7 +470,7 @@ for a simple field load. It also handles the Python object model logic for
 binding methods.
 
 When an object has a function as an attribute on *the object's type*, the
-function must be wrapped together with the object as a "bound method." when it
+function must be wrapped together with the object as a "bound method." When it
 is just an attribute on the instance, it must not be wrapped. See, for example:
 
 ```python
