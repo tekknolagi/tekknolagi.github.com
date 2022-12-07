@@ -20,7 +20,7 @@ twitter:
 
 repo:
   repository_url: https://github.com/tekknolagi/tekknolagi.github.com
-  branch: master
+  branch: main
 
 permalink: '/blog/:title/'
 post_dirs: false
