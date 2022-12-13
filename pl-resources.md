@@ -279,6 +279,7 @@ write about:
   * Heap and GC characteristics from [Garbage collection in a large LISP system][large-lisp]
   * Object handles in a copying collector
     (see [Andy Chu's comment](https://www.reddit.com/r/ProgrammingLanguages/comments/i8u96f/implementations_of_copying_garbage_collector/g1chjk2/))
+    * [GC Information Encoding](https://www.cs.tufts.edu/comp/150FP/archive/jim-miller/JIT-GC-Info.htm)
 * Fast paths for common cases ("do less")
 * JIT intermediate representations and how they help solve problems around
   megamorphic call sites, inlining, etc
@@ -305,6 +306,8 @@ write about:
   * [Accurate Garbage Collection in an Uncooperative Environment](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.87.3769&rep=rep1&type=pdf) (2002, PDF)
   * [Accurate Garbage Collection in Uncooperative Environments Revisited](http://www.filpizlo.com/papers/baker-ccpe09-accurate.pdf) (2006, PDF)
   * [Accurate Garbage Collection in Uncooperative Environments with Lazy Pointer Stacks](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.88.9375&rep=rep1&type=pdf) (2007, PDF)
+    * poster: [Accurate Garbage Collection in Uncooperative Environments with Lazy Pointer Stacks](http://filpizlo.com/lazy-ptr-stacks-poster.pdf) (PDF)
+  * [Precise Garbage Collection for C](https://www.cs.utah.edu/plt/publications/ismm09-rwrf.pdf) (PDF)
   * Skybison/V8/... handles and handle scopes
   * Using LLVM's stack maps to do free precise runtime handles
     * [LLVM doc](https://llvm.org/docs/GarbageCollection.html)
