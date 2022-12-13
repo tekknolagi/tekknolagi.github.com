@@ -83,6 +83,7 @@ to find great stuff.
   * [Skybison](https://github.com/tekknolagi/skybison)
 * Russ Cox's [Regular expression matching: the virtual machine approach](https://swtch.com/~rsc/regexp/regexp2.html)
 * Bun tweet about [DOMJIT](https://mobile.twitter.com/jarredsumner/status/1557791189490737155)
+* Andy Wingo's [a simple semi-space collector](https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector)
 
 ## Runtime optimization
 
