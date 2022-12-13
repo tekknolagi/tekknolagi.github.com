@@ -29,6 +29,7 @@ to find great stuff.
 * I've heard good things about [Engineering a Compiler](https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-088478-0)
   ([3rd edition](https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-815412-0) coming soon!)
 * [Destination-driven code generation](https://legacy.cs.indiana.edu/~dyb/pubs/ddcg.pdf) (PDF)
+  * [My implementation](https://github.com/tekknolagi/ddcg)
   * And [One-pass Code Generation in V8](/assets/img/46b-codegeneration-in-V8.pdf) (PDF)
 
 ## Lisp specific
