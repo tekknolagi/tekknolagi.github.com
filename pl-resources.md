@@ -181,6 +181,7 @@ research around optimizing dynamic languages.
   * [B3](https://webkit.org/docs/b3/), the Bare Bones Backend
   * [Speculation in JavaScriptCore](https://webkit.org/blog/10308/speculation-in-javascriptcore/)
 * [Building the fastest Lua interpreter.. automatically!](https://sillycross.github.io/2022/11/22/2022-11-22/)
+* [Threaded code](http://www.complang.tuwien.ac.at/forth/threaded-code.html) by Anton Ertl
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
