@@ -36,6 +36,9 @@ Tried, enjoyed, and repeated frequently by yours truly.
   Tunde Wey with [tofu and
   plantains](https://www.vegannigerian.com/2015/02/sauced-tofu-and-plantainguest-post.html)
   by 9jafoodie
+* [Rice cooker congee](https://www.freshnessgf.com/rice-cooker-congee/) by Ness
+  * To simplify, use 1:7 for rice:water. Add ginger, stock, tamari. Cook and
+    stir 45 mins. Enjoy.
 
 ## Other text-based recipes
 
