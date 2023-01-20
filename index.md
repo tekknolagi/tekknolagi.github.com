@@ -82,7 +82,7 @@ Fun fact: this means I have now contributed to four different Python runtimes.
 
 ## Talks
 
-* [*Cinder: We didn't start the fire*](https://2022.ecoop.org/details/ICOOOLPS-2022-papers/5/Cinder-We-didn-t-start-the-fire) at ECOOP 2022 (invited talk)
+* [*Cinder: We didn't start the fire*](/assets/img/ecoop2022.pdf) (PDF) at [ECOOP 2022](https://2022.ecoop.org/details/ICOOOLPS-2022-papers/5/Cinder-We-didn-t-start-the-fire) (invited talk)
 * *How Git works* at Tufts PolyHack 2019
 
 ## Fun facts
