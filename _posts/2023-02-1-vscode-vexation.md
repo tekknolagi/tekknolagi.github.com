@@ -2,6 +2,7 @@
 title: VSCode vexation
 layout: post
 date: 2023-02-01
+co_authors: Tom Hebb
 ---
 
 ## Prologue
