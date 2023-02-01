@@ -14,7 +14,7 @@ Tom, of the Tom Chronicles, came to me in the night.
 
 "So I have this VSCode question..."
 
-## So I have this bug, but that's not important right now
+## I have this bug, but that's not important right now
 
 "I'm down a rabbit hole as usual"
 
