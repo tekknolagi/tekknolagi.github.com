@@ -68,6 +68,10 @@ Tom, of the Tom Chronicles, came to me in the night.
 
 [insiders]: https://code.visualstudio.com/insiders/
 
+## Surely this is a mistake
+
+Is it? And don't call me Shirley.
+
 First of all, we acknowledge that VSCode does not claim to be built off of the
 OSS codebase. However, we find it surprising that the official builds:
 
