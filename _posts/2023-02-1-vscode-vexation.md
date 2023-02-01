@@ -84,13 +84,11 @@ September 29, 2022.
 
 Is it? And don't call me Shirley.
 
-First of all, we acknowledge that VSCode does not claim to be built off of the
-OSS codebase. However, we find it surprising that the official builds:
-
-* Don't use the same dependencies that the OSS build does
-* We see only half of the picture! This is inconsistent. Microsoft has
-  committed client code that uses the `UtilityProcess` API without declaring
-  any dependencies (vendored or not) that actually implement that API!
+We acknowledge that VSCode does not claim to be built off of the OSS codebase.
+However, we find it surprising that we see only half of the picture! This is
+inconsistent. Microsoft has committed client code that uses the
+`UtilityProcess` API without declaring any dependencies (vendored or not) that
+actually implement that API!
 
 So we have VSCode using an API that does not exist in the library it claims to
 be using. This leads us to believe that the Insiders build of VSCode uses a
