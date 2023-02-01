@@ -22,12 +22,13 @@ Tom is often three levels deep in some investigation to scratch an itch. In the
 past, this has manifested itself in fixes to audio drivers, the Linux kernel,
 and more.
 
-He only wanted to figure out why loading a Python file in VSCode was crashing.
-Through some debugging and internet searching, he found a [GitHub
-issue][sudoissue] from September 8, 2022. It turns out that there was a bug in
-VSCode related to setuid binaries: it wasn't possible to `exec` a setuid binary
-from an extension, because the extension host process was launched with a Linux
-flag that prevented it from gaining any privileges.
+He only wanted to figure out why VSCode would not format a Python file. Turns
+out, the VSCode Python extension was crashing. Through some debugging and
+internet searching, he found a [GitHub issue][sudoissue] from September 8,
+2022. It turns out that there was a bug in VSCode related to setuid binaries:
+it wasn't possible to `exec` a setuid binary from an extension, because the
+extension host process was launched with a Linux flag that prevented it from
+gaining any privileges.
 
 The issue was closed out on September 16, 2022 but the fix was released
 September 29, 2022.
