@@ -16,11 +16,22 @@ Tom, of the Tom Chronicles, came to me in the night.
 
 ## I have this bug, but that's not important right now
 
-"I'm down a rabbit hole as usual"
+"I'm down a rabbit hole as usual."
 
-* Went to figure out why it was crashing
-* Saw a [GitHub issue][sudoissue] from September 8, 2022
-* Issue closed out September 16, 2022 but released September 29, 2022
+Tom is often three levels deep in some investigation to scratch an itch. In the
+past, this has manifested itself in fixes to headphone Bluetooth drivers, the
+Linux kernel, and more.
+
+He only wanted to figure out why loading a Python file in VScode was crashing.
+Through some debugging and internet searching, he found a [GitHub
+issue][sudoissue] from September 8, 2022. It turns out that there was a bug in
+VSCode related to setuid binaries: it wasn't possible to `exec` a setuid binary
+from an extension, because the extension host process was launched with a Linux
+flag that prevented it from gaining any privileges.
+
+The issue was closed out on September 16, 2022 but the fix was released
+September 29, 2022.
+
 * Looked at the [PR that closed the issue][allegedsudofix] and there is no
   evidence that it fixes the issue
   * If you look at the files changed, the changes in the PR do not obviously
