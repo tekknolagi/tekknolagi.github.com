@@ -44,9 +44,20 @@ Tom, of the Tom Chronicles, came to me in the night.
       it is not in the Electron 19 branch (it is in later versions)
       * To be clear, as of time of post writing, VSCode is
         [using version 19][electrondep]
+    * If you open up the tag that VSCode claims to use today, v19.1.9, you can
+      see the fix is [not included][fixnotincluded]
+      * If it *had been* included, the green/additions would be after the
+        trailing brace and dedented, as in the [actual fix][actualfix]
+    * Furthermore, the entire `UtilityProcess` API, which VSCode
+      Insiders[^insiders] uses
 
 [sudoissue]: https://github.com/microsoft/vscode/issues/160380
 [allegedsudofix]: https://github.com/microsoft/vscode/pull/161027
 [versioncompare]: https://github.com/electron/electron/compare/v19.0.12...v19.0.17
 [actualfix]: https://github.com/electron/electron/pull/34980/commits/c3dff10a48f5edb23b2b0340c1849dc04db180bc
 [electrondep]: https://github.com/microsoft/vscode/blob/e3da120e0808f36e45e6783b611cc943d7fdd61c/package.json#L146
+[fixnotincluded]: https://github.com/electron/electron/blob/v19.1.9/patches/chromium/allow_new_privileges_in_unsandboxed_child_processes.patch
+
+[^insiders]: [VSCode Insiders][insiders] is like a beta build of VSCode.
+
+[insiders]: https://code.visualstudio.com/insiders/
