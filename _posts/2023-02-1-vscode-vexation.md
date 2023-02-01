@@ -49,7 +49,11 @@ Tom, of the Tom Chronicles, came to me in the night.
       * If it *had been* included, the green/additions would be after the
         trailing brace and dedented, as in the [actual fix][actualfix]
     * Furthermore, the entire `UtilityProcess` API, which VSCode
-      Insiders[^insiders] uses
+      Insiders[^insiders] has used [since at least June 2022][onbydefault], is
+      not present in the Electron 19 branch. The whole API is not there, and
+      was not committed to any upstream Electron branch until October 2022.
+      Even then, it was [only added to Electron 22][featUtilityProcess] (as
+      noted by the `trop` porting bot).
 
 [sudoissue]: https://github.com/microsoft/vscode/issues/160380
 [allegedsudofix]: https://github.com/microsoft/vscode/pull/161027
@@ -57,7 +61,23 @@ Tom, of the Tom Chronicles, came to me in the night.
 [actualfix]: https://github.com/electron/electron/pull/34980/commits/c3dff10a48f5edb23b2b0340c1849dc04db180bc
 [electrondep]: https://github.com/microsoft/vscode/blob/e3da120e0808f36e45e6783b611cc943d7fdd61c/package.json#L146
 [fixnotincluded]: https://github.com/electron/electron/blob/v19.1.9/patches/chromium/allow_new_privileges_in_unsandboxed_child_processes.patch
+[onbydefault]: https://github.com/microsoft/vscode/pull/152470
+[featUtilityProcess]: https://github.com/electron/electron/pull/34980
 
 [^insiders]: [VSCode Insiders][insiders] is like a beta build of VSCode.
 
 [insiders]: https://code.visualstudio.com/insiders/
+
+First of all, we acknowledge that VSCode does not claim to be built off of the
+OSS codebase. However, we find it surprising that the official builds:
+
+* Don't use the same dependencies that the OSS build does
+* We see only half of the picture! This is inconsistent. Microsoft has
+  committed client code that uses the `UtilityProcess` API without declaring
+  any dependencies (vendored or not) that actually implement that API!
+
+So we have VSCode using an API that does not exist in the library it claims to
+be using. This leads us to believe that the Insiders build of VSCode uses a
+patched version of Electron, the source to which we cannot find anywhere.
+
+What else is in that fork?
