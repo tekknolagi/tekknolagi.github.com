@@ -84,4 +84,15 @@ So we have VSCode using an API that does not exist in the library it claims to
 be using. This leads us to believe that the Insiders build of VSCode uses a
 patched version of Electron, the source to which we cannot find anywhere.
 
+This [wiki page][nativecrash] further corroborates the hypothesis:
+
+[nativecrash]: https://github.com/microsoft/vscode/wiki/Native-Crash-Issues/749bcb12d315f430e86170f1bc8d5cafc5c67dbc
+
+> Most likely, the crash comes from an Insiders or Stable version of Code.
+> Those versions use an internal Electron, and symbol files for the internal
+> Electron along with Insiders and Stable are available at
+> microsoft/vscode-electron-prebuilt.
+
+(Where `vscode-electron-prebuilt` is a private repository.)
+
 What else is in that fork? Why?
