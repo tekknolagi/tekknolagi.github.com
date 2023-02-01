@@ -84,4 +84,4 @@ So we have VSCode using an API that does not exist in the library it claims to
 be using. This leads us to believe that the Insiders build of VSCode uses a
 patched version of Electron, the source to which we cannot find anywhere.
 
-What else is in that fork?
+What else is in that fork? Why?
