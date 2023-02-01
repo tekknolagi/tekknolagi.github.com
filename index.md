@@ -71,7 +71,8 @@ I like making things [just for fun](https://justforfunnoreally.dev/).
   ([bpo-36929](https://github.com/python/cpython/pull/13392),
   [bpo-38648](https://github.com/python/cpython/pull/17002),
   [bpo-42065](https://github.com/python/cpython/pull/19940),
-  [bpo-42199](https://github.com/python/cpython/pull/23031))
+  [bpo-42199](https://github.com/python/cpython/pull/23031),
+  [faster-cpython #546](https://github.com/faster-cpython/ideas/issues/546))
 * [Pyre](https://pyre-check.org/)
   ([Refactor protocol inference](https://github.com/facebook/pyre-check/commit/f14577db5940c0b4087fffe209786cd4075f37df))
 * [Clang](https://clang.llvm.org/)
