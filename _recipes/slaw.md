@@ -14,7 +14,7 @@ This goes really well in tacos.
 1. 1/2 cup mayonnaise
 1. 1/2 cup Greek yogurt
 1. 1 tbsp cider vinegar or red wine vinegar
-1. 1/2 to 1 small head cabbage
+1. 1/2 to 1 small head red cabbage
 1. several carrots
 1. 1/2 to 1 red onion
 1. 1 squeeze lime juice
