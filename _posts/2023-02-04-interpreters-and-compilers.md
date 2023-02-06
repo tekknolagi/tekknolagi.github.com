@@ -4,6 +4,10 @@ layout: post
 date: 2023-02-04
 ---
 
+<!-- Should I call this post "potato potato" as a terrible joke reference to
+Laurie's post? Or maybe I should call the interpreter potato and the compiler
+potato, pronounced differently. -->
+
 ## Intro
 
 Compilers and interpreters are not as different as people often make them out
