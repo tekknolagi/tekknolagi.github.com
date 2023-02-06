@@ -147,9 +147,9 @@ We will instead do the following:
 * Write the machine code to disk
 
 [^graal]: Some interpreters don't make it past the AST interpreter stage
-    because they don't need to! Compilers like Graal have put in the work to
-    make AST interpreters very very fast. This is an unusually impressive feat
-    and we don't want to do that much work here.
+    because they don't need to! The authors of Graal, for example, have put in
+    the work to make AST interpreters very very fast. This is an unusually
+    impressive feat and we don't want to do that much work here.
 
 At each stage, we will do a little more work up-front (before starting user
 program execution) than before. This means that interpreter start-up will be
