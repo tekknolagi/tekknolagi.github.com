@@ -36,7 +36,15 @@ the transformation from a pointer-heavy tree data structure to a compact linear
 structure gives significant wins on modern hardware. It's kind of like going
 from iterating over a linked list to iterating over an array; machine caches
 were built for arrays and as long as you iterate somewhat predictably, reading
-in the next byte of data is very fast.
+in the next byte of data is very fast[^interpretive-overhead].
+
+[^interpretive-overhead]: Interpreter overhead and program optimization are
+    similar but also different. Going from an AST to bytecode may not
+    fundamentally alter the user program's meaning but the bytecode
+    representation is more convenient to interpret. It's optimizing your
+    program---the compiler author's program---as opposed to the user program.
+    It's possible to do traditional compiler optimizations (strength reduction,
+    etc) on either representation of the user program.
 
 For whatever reason, people feel compelled to make a big hullabaloo about the
 distinction between compilers and interpreters[^languages-implementations]. My
