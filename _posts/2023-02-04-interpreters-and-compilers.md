@@ -79,12 +79,19 @@ of months.
 * GoLite
 * Xi
 * Wabbit
+* Lisp
 
 After surveying the list, I landed on Wabbit. It's small, useful enough, and
 does not include any features that might require significant unexpected design
 work, like classes or concurrency. A close second was Tiger, since I am already
 familiar with it, but I think it is needlessly big for this exercise. Extending
 Wabbit into Tiger is left as an exercise for the reader.
+
+I also avoided Lisp because I want the broadest appeal possible. It's too easy
+to write off a post using Lisp as its target language because it's "only
+possible with Lisp" or "only possible for functional languages" or something
+else. Also, I have too much Lisp content on this blog for someone who never
+really writes Lisp.
 
 <br />
 <hr style="width: 100px;" />
