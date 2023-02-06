@@ -129,6 +129,39 @@ func main() int {
 }
 ```
 
+Unlike many other tomes about compilers, we will not talk about lexing and
+parsing here. We will instead start at the AST, assuming it has been neatly
+generated for us by some parser. We skip this step because parsing is a
+requirement for both interpreters and compilers, it distracts from the main
+points of the post, is well-covered by other resources, and can be provided as
+a little library for your perusal, if you are interested later on.
+
+We will instead do the following:
+
+* Write an AST interpreter
+* Optimize the AST interpreter[^graal]
+* Compile the AST to bytecode
+* Write a bytecode interpreter
+* Optimize the bytecode interpreter
+* Compile the bytecode to machine code in memory
+* Write the machine code to disk
+
+[^graal]: Some interpreters don't make it past the AST interpreter stage
+    because they don't need to! Compilers like Graal have put in the work to
+    make AST interpreters very very fast. This is an unusually impressive feat
+    and we don't want to do that much work here.
+
+At each stage, we will do a little more work up-front (before starting user
+program execution) than before. This means that interpreter start-up will be
+slower and user program execution will be faster[^user-needs].
+
+[^user-needs]: Depending on the user program, this might be an acceptable
+    trade-off. It might also not be, and you should stop earlier in the
+    process. For example, programs like servers tend to be long-lived, so they
+    want to optimize the user code as much as possible. Programs for scripting
+    at the command line might value low start-up latency because they are
+    interactive.
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
