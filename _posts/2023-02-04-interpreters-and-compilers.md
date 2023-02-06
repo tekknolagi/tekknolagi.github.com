@@ -97,6 +97,38 @@ possible with Lisp" or "only possible for functional languages" or something
 else. Also, I have too much Lisp content on this blog for someone who never
 really writes Lisp.
 
+[Wabbit][wabbit] is a small programming language created by [David
+Beazley][dabeaz] to teach compilers. The following example snippet by David
+gives a taste for the features we will need to implement. It looks a little bit
+like Go:
+
+[wabbit]: https://www.dabeaz.com/wabbit.html
+[dabeaz]: https://www.dabeaz.com/index.html
+
+```go
+/* fib.wb -  Compute fibonacci numbers */
+
+const LAST = 30;            // A constant declaration
+
+// A function declaration
+func fibonacci(n int) int {
+   if n > 1 {              // Conditionals
+       return fibonacci(n-1) + fibonacci(n-2);
+   } else {
+       return 1;
+   }
+}
+
+func main() int {
+   var n int = 0;            // Variable declaration
+   while n < LAST {          // Looping (while)
+       print fibonacci(n);   // Printing
+       n = n + 1;            // Assignment
+   }
+   return 0;
+}
+```
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
