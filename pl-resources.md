@@ -375,6 +375,17 @@ language implementation.
 
 (wow, this is turning into a Justine Section)
 
+## Build tools
+
+Right now this is probably going to just be a section on Ninja clones.
+
+* [Ninja](https://github.com/ninja-build/ninja), the original version
+* [n2](https://github.com/evmar/n2), another implementation by the original
+  author (Rust)
+* [samurai](https://github.com/michaelforney/samurai) (C99)
+* [Turtle](https://github.com/raviqqe/turtle-build), a version focused on
+  high-level languages (Rust)
+
 ## Game Boy Emulators
 
 * The [Pan Docs](https://gbdev.io/pandocs/), which give technical data about
