@@ -33,8 +33,10 @@ date: 2023-04-01
   * Io:
     * https://bitbucket-archive.softwareheritage.org/projects/py/pypy/lang-io.html
     * https://github.com/edcrypt/lang-rio
+
 (below bullet might be removed because it's not necessarily relevant to the
 research problem)
+
 * this is hard, for a couple reasons
   * rpython is python2 and the world has moved on
   * the tooling is slow, which leads to long write-test cycles
@@ -42,7 +44,9 @@ research problem)
     cycles
   * rpython type annotations do not use standard PEP 484 type hints, but
     instead assertions
+
 (end "irrelevant" bullet)
+
 * why not upgrade to python 3? that is a lot of work for pypy authors and does
   not solve all the other gripes
 * other motivation:
