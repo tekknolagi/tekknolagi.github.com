@@ -58,6 +58,8 @@ research problem)
   * wrappers for the rpython jit bindings to expose them to the slf language
   * an interpreter for slf written in slf that uses the exposed jit bindings
   * (implicitly,) a jit for slf
+* clarification: the fact that this is possible has nothing to do with the
+  surface-level syntactic similarity between the two languages
 * questions:
   * what is the performance of the rpython-slf implementation?
   * what is the performance of the slf-slf implementation?
