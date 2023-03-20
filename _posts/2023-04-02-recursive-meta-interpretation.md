@@ -52,9 +52,6 @@ research problem)
 * other motivation:
   * write jits in other languages
   * avoid the slow development cycle because rpython has been cut out
-  * can we go "deeper" in the implementation hierarchy without losing
-    performance?
-    * how much warmup do we need?
 * cfbolz has written an interpreter metaslf https://hg.sr.ht/~cfbolz/metaslf
 * it is several things:
   * an interpreter for a language called slf written in rpython
@@ -76,3 +73,6 @@ research problem)
     transforming interpreters automatically?
     * to find loops, cfbolz proposes value profiling to watch for
       slow/never-changing values
+  * can we go "deeper" in the implementation hierarchy without losing
+    performance?
+    * how much warmup do we need?
