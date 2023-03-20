@@ -31,9 +31,12 @@ research problem)
     cycles
   * rpython type annotations do not use standard PEP 484 type hints, but
     instead assertions
+(end "irrelevant" bullet)
 * why not upgrade to python 3? that is a lot of work for pypy authors and does
   not solve all the other gripes
 * other motivation:
   * write jits in other languages
+  * avoid the slow development cycle because rpython has been cut out
   * can we go "deeper" in the implementation hierarchy without losing
     performance?
+    * how much warmup do we need?
