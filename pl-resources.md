@@ -375,6 +375,16 @@ language implementation.
 
 (wow, this is turning into a Justine Section)
 
+### Egg and e-graph-related things
+
+* [egg](https://egraphs-good.github.io/)
+* [Representing loops within egg](https://github.com/egraphs-good/egg/discussions/106)
+* [optir](https://github.com/jameysharp/optir/), which uses egg
+* [Search-based compiler code generation](https://jamey.thesharps.us/2017/06/19/search-based-compiler-code-generation/)
+* [Compiler optimizations are hard because they forget](https://faultlore.com/blah/oops-that-was-important/)
+* [Cranelift: Using E-Graphs for Verified, Cooperating Middle-End Optimizations](https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md)
+* [Optimizing compilation with the Value State Dependence Graph](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-705.pdf) (PDF)
+
 ## Build tools
 
 Right now this is probably going to just be a section on Ninja clones.
