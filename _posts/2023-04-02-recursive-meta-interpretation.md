@@ -22,6 +22,8 @@ date: 2023-04-01
     * https://github.com/pycket/pycket
   * php:
     * https://github.com/hippyvm/hippyvm
+  * ocaml:
+    * https://github.com/zielmicha/ocamlpypy
 (below bullet might be removed because it's not necessarily relevant to the
 research problem)
 * this is hard, for a couple reasons
