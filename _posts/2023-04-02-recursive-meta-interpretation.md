@@ -40,3 +40,14 @@ research problem)
   * can we go "deeper" in the implementation hierarchy without losing
     performance?
     * how much warmup do we need?
+* cfbolz has written an interpreter metaslf https://hg.sr.ht/~cfbolz/metaslf
+* it is several things:
+  * an interpreter for a language called slf written in rpython
+  * wrappers for the rpython jit bindings to expose them to the slf language
+  * an interpreter for slf written in slf that uses the exposed jit bindings
+  * (implicitly,) a jit for slf
+* questions:
+  * what is the performance of the rpython-slf implementation?
+  * what is the performance of the slf-slf implementation?
+  * if there is a difference, can it be removed by improving rpython or the
+    client use of the jit bindings?
