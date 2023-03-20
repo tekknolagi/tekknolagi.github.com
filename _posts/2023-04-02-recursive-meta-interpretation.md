@@ -51,3 +51,10 @@ research problem)
   * what is the performance of the slf-slf implementation?
   * if there is a difference, can it be removed by improving rpython or the
     client use of the jit bindings?
+  * what are the most useful bindings to surface?
+* further questions
+  * can we make a fast jit with only a couple of bindings?
+  * can we make a fast jit without any bindings---by discovering and
+    transforming interpreters automatically?
+    * to find loops, cfbolz proposes value profiling to watch for
+      slow/never-changing values
