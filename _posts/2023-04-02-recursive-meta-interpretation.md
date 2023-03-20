@@ -24,6 +24,15 @@ date: 2023-04-01
     * https://github.com/hippyvm/hippyvm
   * ocaml:
     * https://github.com/zielmicha/ocamlpypy
+  * RISC-V:
+    * https://github.com/pydrofoil/pydrofoil
+  * Ruby:
+    * https://github.com/topazproject/topaz
+  * SQLite bytecode vm:
+    * https://github.com/hpi-swa-lab/SQPyte
+  * Io:
+    * https://bitbucket-archive.softwareheritage.org/projects/py/pypy/lang-io.html
+    * https://github.com/edcrypt/lang-rio
 (below bullet might be removed because it's not necessarily relevant to the
 research problem)
 * this is hard, for a couple reasons
