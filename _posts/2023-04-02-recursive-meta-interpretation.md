@@ -69,6 +69,9 @@ research problem)
   * what are the most useful bindings to surface?
 * further questions
   * can we make a fast jit with only a couple of bindings?
+  * interpreters don't always look like interpreters. a webserver could be an
+    interpreter of web requests. what annotations need we add, if any, to get
+    pypy to "understand" the webserver loop?
   * can we make a fast jit without any bindings---by discovering and
     transforming interpreters automatically?
     * to find loops, cfbolz proposes value profiling to watch for
