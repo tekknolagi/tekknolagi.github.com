@@ -78,3 +78,5 @@ research problem)
   * can we go "deeper" in the implementation hierarchy without losing
     performance?
     * how much warmup do we need?
+* related work
+  * graal is the other big meta-jit, but they use partial evaluation
