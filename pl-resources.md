@@ -252,6 +252,8 @@ that can help with that.
 * My [small x86-64 assembler](https://gist.github.com/tekknolagi/201539673cfcc60df73ef75a8a9b5896) (C),
   which I forked from the pervognsen's [original](https://gist.github.com/pervognsen/9d815016d8ef39f1b2c8e509ee2cf052) (C)
 * A [guide to using GCC inline assembly](https://www.felixcloutier.com/documents/gcc-asm.html)
+* Whatever [this is](https://github.com/bytecodealliance/wasm-micro-runtime/blob/main/core/iwasm/fast-jit/cg/x86-64/jit_codegen_x86_64.cpp)
+  from the wasm micro runtime
 
 For more inspiration, check out some of the assemblers in runtimes I mention in
 my [Compiling a Lisp](/blog/compiling-a-lisp-8/#assembler-libraries) post.
