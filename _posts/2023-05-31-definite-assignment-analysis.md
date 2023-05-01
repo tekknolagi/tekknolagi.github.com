@@ -143,4 +143,7 @@ something very similar.
 
 ## Definite assignment analysis
 
-<!-- TODO compare against CPython implementation in upstream -->
+## Comparison with CPython 3.12
+
+<hr style="width: 100px;" />
+<!-- Footnotes -->
