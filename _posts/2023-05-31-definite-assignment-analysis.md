@@ -2,6 +2,7 @@
 layout: post
 title: Definite assignment analysis for Python
 series: runtime-opt
+enable_mermaid: true
 ---
 
 Python is kind of a funky language. It's very flexible about its variable
@@ -313,6 +314,39 @@ because there was only ever one predecessor... kind of like a linked list of
 operations. Let's complicate that a bit with control-flow.
 
 ### Adding in `if`
+
+Most programs have conditional statements in them. A small example of a
+one-armed `if` statment in Python is the following:
+
+```python
+def conditional(cond):
+    if cond:
+        x = 3
+    return x
+#   2           0 LOAD_FAST                0 (cond)
+#               2 POP_JUMP_IF_FALSE        8
+# 
+#   3           4 LOAD_CONST               1 (3)
+#               6 STORE_FAST               1 (x)
+# 
+#   4     >>    8 LOAD_FAST                1 (x)
+#              10 RETURN_VALUE
+```
+
+Despite the `dis` module adding the helpful `>>` to indicate a jump target, it
+can be tricky to construct the flow diagram in your head. So I've generated a
+little visual:
+
+```mermaid
+graph TD;
+    entry[LOAD_FAST cond<br />POP_JUMP_IF_FALSE]--if true-->iftrue[LOAD_CONST 3<br />STORE_FAST x];
+    iftrue-->iffalse[LOAD_FAST x<br />RETURN_VALUE];
+    entry--if false-->iffalse;
+```
+
+We can see that depending on the value of `cond`, the flow of control either
+goes to the block that stores `3` into `x` or it jumps straight to the `return
+x`.
 
 ### Parameters
 

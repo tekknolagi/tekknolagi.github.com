@@ -9,3 +9,18 @@
     <!-- Workaround for FB MITM -->
     <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
     {% include analytics.md %}
+{% if page.enable_mermaid %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.min.js"></script>
+<script>
+var config = {
+    startOnLoad:true,
+    theme: 'forest',
+    flowchart:{
+            useMaxWidth:false,
+            htmlLabels:true
+        }
+};
+mermaid.initialize(config);
+window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));
+</script>
+{% endif %}
