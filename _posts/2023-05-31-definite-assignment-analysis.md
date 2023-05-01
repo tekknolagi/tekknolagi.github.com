@@ -120,7 +120,7 @@ The variables `a` and `b` are initialized at the top and never deleted. They
 are reassigned, sure, but they always are bound to some value. But it's not
 always so obvious when a variable is defined. Sometimes the initialization
 depends on some invariant in your code that you know about but have a hard time
-demonstrating to the compiler. Something like this, perhaps:
+demonstrating to the compiler. Something like `x` in this example, perhaps:
 
 ```python
 def foo(cond):
@@ -280,6 +280,29 @@ variables. Let's walk through the example.
 The `DELETE_FAST` opcode removes `a` from the set. This means that at offset
 `10` we *must* check when we read from the locals table so that we can raise an
 `UnboundLocalError` exception.
+
+Now that we have covered the two fundamental operations that change or use our
+state (`STORE_FAST` and `DELETE_FAST`), we can revisit the `Out` dataflow
+equation again.
+
+```
+Out(s) = union(Gen(s), In(s)-Kill(s))
+```
+
+We'll split it by operation to make it clearer:
+
+```
+  opcode          Gen      Kill     Out
+STORE_FAST  x     {x}      {}       union(State, {x})
+DELETE_FAST x     {}       {x}      subtract(State, {x})
+```
+
+Until now, `In(s)` was whatever state the previous bytecode operation produced.
+Let's complicate that a bit with control-flow.
+
+### Adding in `if`
+
+### Parameters
 
 ## Comparison with CPython 3.12
 
