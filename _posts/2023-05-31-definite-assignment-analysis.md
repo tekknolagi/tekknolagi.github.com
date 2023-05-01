@@ -7,7 +7,7 @@ series: runtime-opt
 Python is kind of a funky language. It's very flexible about its variable
 bindings, which is unusual. I think most of the difference comes from local
 variables being function-scoped, where statements like `if` and `while` don't
-introduce new scopes. Also that you can arbitrary un-bind locals with the `del`
+introduce new scopes. Also that you can manually un-bind locals with the `del`
 statement.
 
 <!-- TODO -->
@@ -148,7 +148,10 @@ will be using something very similar.
 ## Definite assignment analysis
 
 If you do an internet search for "Definite assignment analysis" or "Data flow
-analysis", you will get a bunch of confusing-looking equations. Stuff like:
+analysis", you will get a bunch of confusing-looking equations (see page three
+of [this CMU lecture][cmu-df] (PDF). Stuff like:
+
+[cmu-df]: https://www.cs.cmu.edu/afs/cs/academic/class/15411-f21/www/lec/16-df-theory.pdf
 
 ```
 In(s) = intersect(Out(s') for s' in pred(s))
