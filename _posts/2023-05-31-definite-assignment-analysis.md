@@ -304,8 +304,8 @@ We'll split it by operation to make it clearer:
 
 ```
   opcode          Gen      Kill     Out
-STORE_FAST  x     {x}      {}       union(State, {x})
-DELETE_FAST x     {}       {x}      subtract(State, {x})
+STORE_FAST  x     {x}      {}       union(In(s), {x})
+DELETE_FAST x     {}       {x}      In(s)-{x}
 ```
 
 Until now, `In(s)` was whatever state the previous bytecode operation produced.
