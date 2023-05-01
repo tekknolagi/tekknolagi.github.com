@@ -61,10 +61,10 @@ inside the interpreter loop. I'm looking at [the code from Python
 (foreshadowing!)[^later-versions].
 
 [py38loop]: https://github.com/python/cpython/blob/3.8/Python/ceval.c#L1333-L1344
-[^later-versions]: It turns out that in mid-2022, Dennis Sweeney [added this
-    feature to CPython][cpython-analysis]. This is funny timing, since I
-    originally started drafting this code and blog post in March 2022, then
-    dropped it until April 2023.
+[^later-versions]: It turns out that while I wasn't looking, in mid-2022,
+    Dennis Sweeney [added this feature to CPython][cpython-analysis]. This is
+    funny timing, since I originally started drafting this code and blog post
+    in March 2022, then dropped it until April 2023.
 
 [cpython-analysis]: https://github.com/python/cpython/issues/93143
 
