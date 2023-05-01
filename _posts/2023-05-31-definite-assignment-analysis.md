@@ -154,8 +154,18 @@ of [this CMU lecture][cmu-df] (PDF). Stuff like:
 [cmu-df]: https://www.cs.cmu.edu/afs/cs/academic/class/15411-f21/www/lec/16-df-theory.pdf
 
 ```
+pred(s) = {immediate predecessors of s}
 In(s) = intersect(Out(s') for s' in pred(s))
 Out(s) = union(Gen(s), In(s)-Kill(s))
+```
+
+where
+
+```
+In(s) = program point just before executing s
+Out(s) program point just after executing s
+Gen(s) = set of facts made true by s
+Kill(s) = set of facts invalidated by s
 ```
 
 It's a little scary looking but it's very approachable *if you tackle it piece
