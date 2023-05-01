@@ -169,8 +169,9 @@ Kill(s) = set of facts invalidated by s
 ```
 
 It's a little scary looking but it's very approachable *if you tackle it piece
-by piece*. It's especially approachable if your `s` values are not entire
-statements but instead much smaller chunks like Python bytecodes.
+by piece*. I was put off by the formal-looking equations until writing this
+post. It's more approachable if your `s` values are not entire statements but
+instead much smaller chunks like Python bytecodes.
 
 We'll come back to the exact equations but for now we will just try to build an
 intuition with a bunch of code snippets.
