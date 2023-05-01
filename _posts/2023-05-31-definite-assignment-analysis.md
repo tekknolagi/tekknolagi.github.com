@@ -308,8 +308,9 @@ STORE_FAST  x     {x}      {}       union(In(s), {x})
 DELETE_FAST x     {}       {x}      In(s)-{x}
 ```
 
-Until now, `In(s)` was whatever state the previous bytecode operation produced.
-Let's complicate that a bit with control-flow.
+Until now, `In(s)` was whatever state the previous bytecode operation produced
+because there was only ever one predecessor... kind of like a linked list of
+operations. Let's complicate that a bit with control-flow.
 
 ### Adding in `if`
 
