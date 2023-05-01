@@ -7,7 +7,8 @@ series: runtime-opt
 Python is kind of a funky language. It's very flexible about its variable
 bindings, which is unusual. I think most of the difference comes from local
 variables being function-scoped, where statements like `if` and `while` don't
-introduce new scopes.
+introduce new scopes. Also that you can arbitrary un-bind locals with the `del`
+statement.
 
 <!-- TODO -->
 
@@ -223,10 +224,9 @@ information to---if the variable is definitely defined---rewrite it to
 `LOAD_FAST_UNCHECKED`. In this case, that's opcodes with offset (number on the
 left) `8`, `10`, and `16`.
 
-Things get a little bit more complicated when we add in `del`/`DELETE_FAST`. Ah
-yes, I forgot to mention: in Python, you can arbitrarily un-bind your local
-variables. Let's take a look at another code snippet to see how that would
-affect our state.
+Things get a little bit more complicated when we add in `del`/`DELETE_FAST`.
+Let's take a look at another code snippet to see how that would affect our
+state.
 
 ```python
 def a_del():
