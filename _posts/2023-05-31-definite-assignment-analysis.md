@@ -346,7 +346,42 @@ graph TD;
 
 We can see that depending on the value of `cond`, the flow of control either
 goes to the block that stores `3` into `x` or it jumps straight to the `return
-x`.
+x`. This means that we now have to account for two possible paths coming into
+the final block.
+
+If we look backwards from the block, we see two predecessors. In the true
+branch, we define `x`. In the false branch, we don't. Because this is a
+*definite* assignment analysis, we need to be sure about if something is
+defined. So we have to go with the least amount of information we know. We have
+to take the *intersection* of the two states. In this case, that's
+`intersection({x}, {})`, which is the empty set.
+
+### Adding in `while`
+
+To make matters worse, programs can have basic blocks that directly or
+indirectly loop back to themselves. We call this a "loop" and you have probably
+written one before.
+
+```python
+def loop(cond):
+    while True:
+        print(cond)
+import dis
+dis.dis(loop)
+#   3     >>    0 LOAD_GLOBAL              0 (print)
+#               2 LOAD_FAST                0 (cond)
+#               4 CALL_FUNCTION            1
+#               6 POP_TOP
+#               8 JUMP_ABSOLUTE            0
+#              10 LOAD_CONST               0 (None)
+#              12 RETURN_VALUE
+```
+
+```mermaid
+graph BT;
+    entry[LOAD_GLOBAL print<br />LOAD_FAST cond<br />CALL_FUNCTION 1<br />POP_TOP<br />JUMP_ABSOLUTE]-->entry;
+    dangling[LOAD_CONST None<br />RETURN_VALUE];
+```
 
 ### Parameters
 
