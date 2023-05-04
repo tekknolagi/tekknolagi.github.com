@@ -233,6 +233,9 @@ about the variables.
 18 RETURN_VALUE                {a, b, c}
 ```
 
+We start off with no knowledge. There are no variables defined at the very top
+and we know nothing about the variables that are yet to be defined.
+
 You can see that at every `STORE_FAST` we learn that the variable it's storing
 is now defined. This means that at every `LOAD_FAST`, we could use that
 information to---if the variable is definitely defined---rewrite it to
