@@ -242,6 +242,7 @@ is now defined. This means that at every `LOAD_FAST`, we could use that
 information to---if the variable is definitely defined---rewrite it to
 `LOAD_FAST_UNCHECKED`. In this case, that's opcodes with offset (number on the
 left) `8`, `10`, and `16`.
+<!-- TODO ^^ this might be jumping the gun -->
 
 Things get a little bit more complicated when we add in `del`/`DELETE_FAST`.
 Let's take a look at another code snippet to see how that would affect our
@@ -315,7 +316,13 @@ DELETE_FAST x     {}       {x}      In(s)-{x}
 
 Until now, `In(s)` was whatever state the previous bytecode operation produced
 because there was only ever one predecessor... kind of like a linked list of
-operations. Let's complicate that a bit with control-flow.
+operations. Let's complicate that a bit with control-flow. This is where the
+control-flow graph of basic blocks comes in.
+
+You will notice that within a basic block, each instruction after the first one
+only has one predecessor. This is because there is no control flow within a
+basic block. This lets us only think about predecessors at the start of each
+basic block.
 
 ### Adding in `if`
 
