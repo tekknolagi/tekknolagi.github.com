@@ -234,7 +234,8 @@ about the variables.
 ```
 
 We start off with no knowledge. There are no variables defined at the very top
-and we know nothing about the variables that are yet to be defined.
+and we know nothing about the variables that are yet to be defined. This is
+represented by the empty set, `{}`.
 
 You can see that at every `STORE_FAST` we learn that the variable it's storing
 is now defined. This means that at every `LOAD_FAST`, we could use that
