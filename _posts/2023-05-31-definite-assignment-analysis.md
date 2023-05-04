@@ -424,8 +424,8 @@ normally on the rest of the block.
 ### Adding in `while`
 
 To make matters worse, programs can have basic blocks that directly or
-indirectly loop back to themselves. We call this a "loop" and you have probably
-written one before[^params].
+indirectly are predecessors of themselves. We call this a "loop" and you have
+probably written one before[^params].
 
 [^params]: I did not use a parameter in this function because there's a little
     thorny bit: parameters get defined as part of the entrypoint of the
