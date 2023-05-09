@@ -317,6 +317,10 @@ write about:
   * Using LLVM's stack maps to do free precise runtime handles
     * [LLVM doc](https://llvm.org/docs/GarbageCollection.html)
     * [Using LLVM intrinsics from C/C++](https://stackoverflow.com/questions/15354488/how-to-embed-llvm-assembly-or-intrinsics-in-c-program-with-clang)
+* Type lattices
+  * [In V8](https://github.com/v8/v8/blob/ad655dc0435b02f40b19dd9b091c2dcbc3aed5f2/src/compiler/types.h)
+  * [In Cinder](https://github.com/facebookincubator/cinder/blob/e54717062f1a0ab5698bd1abc484fb449b759499/Jit/hir/type.h)
+  * [In iv](https://github.com/Constellation/iv/blob/64c3a9c7c517063f29d90d449180ea8f6f4d946f/iv/lv5/breaker/type.h#L4)
 
 ### Papers I want to read
 
