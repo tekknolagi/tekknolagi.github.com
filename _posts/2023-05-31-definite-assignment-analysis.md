@@ -444,22 +444,21 @@ def loop():
     x = 3
     while True:
         print(x)
-#   2           0 LOAD_CONST               1 (3)
-#               2 STORE_FAST               0 (x)
-# 
-#   4     >>    4 LOAD_GLOBAL              0 (print)
-#               6 LOAD_FAST                0 (x)
-#               8 CALL_FUNCTION            1
-#              10 POP_TOP
-#              12 JUMP_ABSOLUTE            4
-#              14 LOAD_CONST               0 (None)
-#              16 RETURN_VALUE
+#   3     >>    0 LOAD_GLOBAL              0 (print)
+#               2 LOAD_FAST                0 (x)
+#               4 CALL_FUNCTION            1
+#               6 POP_TOP
+#               8 JUMP_ABSOLUTE            0
+#              10 LOAD_CONST               0 (None)
+#              12 RETURN_VALUE
 ```
 
-You might notice the dangling implicit `return None` at the end of the
-bytecode. The CPython bytecode compiler guarantees that all functions will end
-with a `RETURN_VALUE`, even if the source code does not contain a statement.
-This leads to some apparently dead (unreachable) code, if you visualize it:
+See how the `JUMP_ABSOLUTE` goes back to offset `0` and that instruction is a
+jump target? The first five instructions constitute a loop.
+
+The next two instructions are dead code, since this loop never terminates, but
+it's hard for the Python compiler to know that. Together, these two blocks form
+the CFG: one loop and one disconnected component.
 
 ```mermaid
 graph TB;
@@ -498,8 +497,7 @@ empty set. This leads, unfortunately, to not being able to optimize the
 Starting off with "every variable is not defined" is not a very good default
 value. It seems like a safe bet since we are trying to express that we don't
 know any information yet, but it's not quite right. We instead need to have a
-neutral default that 
-
+neutral default that  <!-- TODO -->
 
 ### Parameters
 
