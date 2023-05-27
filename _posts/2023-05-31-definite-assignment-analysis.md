@@ -240,7 +240,7 @@ represented by the empty set, `{}`.
 You can see that at every `STORE_FAST` we learn that the variable it's storing
 is now defined. This means that at every `LOAD_FAST`, we could use that
 information to---if the variable is definitely defined---rewrite it to
-`LOAD_FAST_UNCHECKED`. In this case, that's opcodes with offset (number on the
+`LOAD_FAST_UNCHECKED`. In this case, that's opcodes with offsets (number on the
 left) `8`, `10`, and `16`.
 <!-- TODO ^^ this might be jumping the gun -->
 
