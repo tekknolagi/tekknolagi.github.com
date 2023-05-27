@@ -314,10 +314,11 @@ STORE_FAST  x     {x}      {}       union(In(s), {x})
 DELETE_FAST x     {}       {x}      In(s)-{x}
 ```
 
-Until now, `In(s)` was whatever state the previous bytecode operation produced
-because there was only ever one predecessor... kind of like a linked list of
-operations. Let's complicate that a bit with control-flow. This is where the
-control-flow graph of basic blocks comes in.
+In straight-line bytecode, each instruction only ever has one predecessor, so
+`In(s)` is whatever state the previous bytecode operation produced. If you add
+control-flow to the mix, things get a bit hairier---but only at basic block
+boundaries! The first instruction in each block now may have multiple
+predecessors.
 
 You will notice that within a basic block, each instruction after the first one
 only has one predecessor. This is because there is no control flow within a
