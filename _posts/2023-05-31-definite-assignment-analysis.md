@@ -417,23 +417,33 @@ to take the *intersection* of the two states. In this case, that's
 `intersection({cond, x}, {cond})`, which is `{cond}`---and that does not
 contain `x`.
 
+**So the main takeaway is:** if at the beginning of a block, intersect the sets
+of defined variables from all the predecessor blocks. Then do your analysis
+normally on the rest of the block.
+
 ### Adding in `while`
 
 To make matters worse, programs can have basic blocks that directly or
 indirectly loop back to themselves. We call this a "loop" and you have probably
-written one before.
+written one before[^params].
+
+[^params]: I did not use a parameter in this function because there's a little
+    thorny bit: parameters get defined as part of the entrypoint of the
+    function, code that gets executed before anything else does. This means
+    that even though there is only one block and it loops back to itself, there
+    is a little implicit block that happens before any other blocks and that
+    block defines all the parameters. To see how a real production compiler
+    handles this, the Cinder JIT [explicitly adds a
+    block](https://github.com/facebookincubator/cinder/blob/11a85b37bcfc82ae8f2e3f766cac2086d76c0e4b/Jit/hir/builder.cpp#L583-L590)
+    to the IR if the first block is the start of a loop. It then goes through
+    and explicitly [defines all the
+    parameters](https://github.com/facebookincubator/cinder/blob/11a85b37bcfc82ae8f2e3f766cac2086d76c0e4b/Jit/hir/builder.cpp#L609).
 
 ```python
-def loop(cond):
+def loop():
+    x = 3
     while True:
-        print(cond)
-#   3     >>    0 LOAD_GLOBAL              0 (print)
-#               2 LOAD_FAST                0 (cond)
-#               4 CALL_FUNCTION            1
-#               6 POP_TOP
-#               8 JUMP_ABSOLUTE            0
-#              10 LOAD_CONST               0 (None)
-#              12 RETURN_VALUE
+        print()
 ```
 
 You might notice the dangling implicit `return None` at the end of the
@@ -446,6 +456,26 @@ graph BT;
     entry[LOAD_GLOBAL print<br />LOAD_FAST cond<br />CALL_FUNCTION 1<br />POP_TOP<br />JUMP_ABSOLUTE]-->entry;
     dangling[LOAD_CONST None<br />RETURN_VALUE];
 ```
+
+But that's not the interesting part. The interesting part is what happens when
+you try to do definite assignment on this code. Let's try to do this the way we
+have been doing:
+
+1. Start at the top of the block. Merge defined variable sets from
+   predecessors.
+2. Analyze block.
+3. Repeat.
+
+Except, hm, the block has itself as a predecessor. How are we supposed to know
+the output of the analysis on the block if we have not yet run the analysis?
+
+It seems like we might want to give every block a default value for its output
+and then refine it from there. And a safe default value is the empty set,
+because we haven't run the analysis, so we can't guarantee anything. Let's try
+that out.
+
+The output
+
 
 ### Parameters
 
