@@ -327,8 +327,58 @@ basic block.
 
 ### Adding in `if`
 
-Most programs have conditional statements in them. A small example of a
-one-armed `if` statment in Python is the following:
+Most programs have conditional statements in them. Sometimes people even
+conditionally assign variables. Take this fairly contrived example into
+consideration:
+
+```python
+def conditional(cond):
+    if cond:
+        x = 3
+    else:
+        x = 4
+    return x
+#   2           0 LOAD_FAST                0 (cond)
+#               2 POP_JUMP_IF_FALSE       10
+# 
+#   3           4 LOAD_CONST               1 (3)
+#               6 STORE_FAST               1 (x)
+#               8 JUMP_FORWARD             4 (to 14)
+# 
+#   5     >>   10 LOAD_CONST               2 (4)
+#              12 STORE_FAST               1 (x)
+# 
+#   6     >>   14 LOAD_FAST                1 (x)
+#              16 RETURN_VALUE
+```
+
+In both paths, `x` is defined. All paths to its only use, `return x`, define
+`x`. Despite the `dis` module adding the helpful `>>` to indicate jump targets,
+it can be tricky to construct the flow diagram in your head. So I've generated
+a little visual:
+
+```mermaid
+graph TD;
+    entry[LOAD_FAST cond<br />POP_JUMP_IF_FALSE]--if true-->iftrue[LOAD_CONST 3<br />STORE_FAST x];
+    entry--if false-->iffalse[LOAD_CONST 4<br />STORE_FAST x];
+    iftrue-->join;
+    iffalse-->join;
+    join[LOAD_FAST x<br />RETURN_VALUE];
+```
+
+The code is getting a little more complicated than before. We can no longer go
+top to bottom in one pass. Our analysis needs to trace all reachable paths
+through the control-flow graph and then merge abstract states at the join
+points. But what does it mean to merge? Let's go back to the formal definition:
+
+```
+In(s) = intersect(Out(s') for s' in pred(s))
+```
+
+It means we have to take the intersection of the defined variables. In this
+case, the intersection of `{cond, x}` and `{cond, x}` is the same set. But that
+is not always the case. A one-armed `if` statment, for example, might only
+define `x` sometimes:
 
 ```python
 def conditional(cond):
@@ -345,9 +395,7 @@ def conditional(cond):
 #              10 RETURN_VALUE
 ```
 
-Despite the `dis` module adding the helpful `>>` to indicate a jump target, it
-can be tricky to construct the flow diagram in your head. So I've generated a
-little visual:
+I've generated a handy visual again:
 
 ```mermaid
 graph TD;
@@ -366,7 +414,8 @@ branch, we define `x`. In the false branch, we don't. Because this is a
 *definite* assignment analysis, we need to be sure about if something is
 defined. So we have to go with the least amount of information we know. We have
 to take the *intersection* of the two states. In this case, that's
-`intersection({x}, {})`, which is the empty set.
+`intersection({cond, x}, {cond})`, which is `{cond}`---and that does not
+contain `x`.
 
 ### Adding in `while`
 
@@ -378,8 +427,6 @@ written one before.
 def loop(cond):
     while True:
         print(cond)
-import dis
-dis.dis(loop)
 #   3     >>    0 LOAD_GLOBAL              0 (print)
 #               2 LOAD_FAST                0 (cond)
 #               4 CALL_FUNCTION            1
