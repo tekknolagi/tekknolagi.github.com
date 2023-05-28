@@ -443,7 +443,17 @@ written one before[^params].
 def loop():
     x = 3
     while True:
-        print()
+        print(x)
+#   2           0 LOAD_CONST               1 (3)
+#               2 STORE_FAST               0 (x)
+# 
+#   4     >>    4 LOAD_GLOBAL              0 (print)
+#               6 LOAD_FAST                0 (x)
+#               8 CALL_FUNCTION            1
+#              10 POP_TOP
+#              12 JUMP_ABSOLUTE            4
+#              14 LOAD_CONST               0 (None)
+#              16 RETURN_VALUE
 ```
 
 You might notice the dangling implicit `return None` at the end of the
@@ -452,10 +462,14 @@ with a `RETURN_VALUE`, even if the source code does not contain a statement.
 This leads to some apparently dead (unreachable) code, if you visualize it:
 
 ```mermaid
-graph BT;
-    entry[LOAD_GLOBAL print<br />LOAD_FAST cond<br />CALL_FUNCTION 1<br />POP_TOP<br />JUMP_ABSOLUTE]-->entry;
+graph TB;
+    entry[LOAD_CONST 3<br />STORE_FAST x]-->loop;
+    loop[LOAD_GLOBAL print<br />LOAD_FAST cond<br />CALL_FUNCTION 1<br />POP_TOP<br />JUMP_ABSOLUTE]-->loop;
     dangling[LOAD_CONST None<br />RETURN_VALUE];
 ```
+
+(Please ignore that the arrow from the loop to itself is the wrong direction. I
+don't know how to reverse it.)
 
 But that's not the interesting part. The interesting part is what happens when
 you try to do definite assignment on this code. Let's try to do this the way we
