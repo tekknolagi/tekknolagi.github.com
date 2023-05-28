@@ -436,6 +436,11 @@ def loop(cond):
 #              12 RETURN_VALUE
 ```
 
+You might notice the dangling implicit `return None` at the end of the
+bytecode. The CPython bytecode compiler guarantees that all functions will end
+with a `RETURN_VALUE`, even if the source code does not contain a statement.
+This leads to some apparently dead (unreachable) code, if you visualize it:
+
 ```mermaid
 graph BT;
     entry[LOAD_GLOBAL print<br />LOAD_FAST cond<br />CALL_FUNCTION 1<br />POP_TOP<br />JUMP_ABSOLUTE]-->entry;
