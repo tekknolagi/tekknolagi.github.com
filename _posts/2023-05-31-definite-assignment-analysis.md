@@ -150,7 +150,7 @@ will be using something very similar.
 
 If you do an internet search for "Definite assignment analysis" or "Data flow
 analysis", you will get a bunch of confusing-looking equations (see page three
-of [this CMU lecture][cmu-df] (PDF). Stuff like:
+of [this CMU lecture][cmu-df] (PDF)). Stuff like:
 
 [cmu-df]: https://www.cs.cmu.edu/afs/cs/academic/class/15411-f21/www/lec/16-df-theory.pdf
 
