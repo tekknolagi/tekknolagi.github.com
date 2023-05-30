@@ -480,15 +480,25 @@ have been doing:
 2. Analyze block.
 3. Repeat.
 
-Except, hm, the block has itself as a predecessor. How are we supposed to know
-the output of the analysis on the block if we have not yet run the analysis?
+We make it out of the entry block with `{x}` and then we hit the loop body
+which has two predecessors: the entry block and ... hm, itself. How are we
+supposed to know the output of the analysis on the block if we have not yet run
+the analysis?
 
 It seems like we might want to give every block a default value for its output
 and then refine it from there. And a safe default value is the empty set,
 because we haven't run the analysis, so we can't guarantee anything. Let's try
 that out.
 
-The output
+If we intersect `{x}` and the empty set we get the empty set. Since the block
+doesn't define any variables---there is no `STORE_FAST`---we also end with the
+empty set. This leads, unfortunately, to not being able to optimize the
+`LOAD_FAST` of `x`. So maybe we did something wrong here. Let's back up.
+
+Starting off with "every variable is not defined" is not a very good default
+value. It seems like a safe bet since we are trying to express that we don't
+know any information yet, but it's not quite right. We instead need to have a
+neutral default that 
 
 
 ### Parameters
