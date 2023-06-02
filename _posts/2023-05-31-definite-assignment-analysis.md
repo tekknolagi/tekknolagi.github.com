@@ -499,6 +499,303 @@ value. It seems like a safe bet since we are trying to express that we don't
 know any information yet, but it's not quite right. We instead need to have a
 neutral default that  <!-- TODO -->
 
+### Exceptions
+
+I'm going to do a bit of language exposition here because it's helpful for
+writing tests and it's good to build a mental model. Ultimately we will not
+have to care too much, though, since we are just analyzing the bytecode. All of
+this control-flow is (fairly) explicit in the bytecode.
+
+#### An overture
+
+Exception handling is another fun challenge here. In my [previous blog
+post](/blog/discovering-basic-blocks/) I decided not to try and handle
+exceptions because the control flow is tricky but in this post, I finally
+figured it out... for Python 3.8, anyway. I'm not sure if it gets easier or
+harder in a post-3.11 world[^exception-tables].
+
+[^exception-tables]: CPython 3.11 removed the block stack and introduced
+    "zero-cost exceptions". This instead keeps exception handling metadata in a
+    little side table instead of strewn throughout the bytecode.
+
+There are two main modes for exceptions:
+
+1. A function has no `try`/`except`. When an exception is raised, it
+   immediately stops execution of the function and begins to unwind the stack.
+```python
+def no_try():
+    return 1 / 0
+```
+2. A function has `try`/`except`. When an exception is raised it needs to be
+   matched against the `except` handler before either being handled or bubbled
+   up. We also need to handle `else` and `finally` clauses.
+```python
+def try_hard():
+    try:
+        return 1 / 0
+    except ZeroDivisionError:
+        return 4
+    finally:
+        return 5
+```
+   What do you think happens when the function `try_hard` is executed? What
+   does it return? This is left as an exercise for the reader. Or keep
+   scrolling for spoilers.
+
+The first case is easy: since an exception will cause the function to stop
+executing, we can ignore exceptions in our analysis. Pretend the code will
+execute top-to-bottom, because it will in the happy path.
+
+The second case is a little harder. We have to go read the [Python
+reference](https://docs.python.org/3.8/reference/compound_stmts.html) to learn
+the exact semantics:
+
+> The optional `else` clause is executed if the control flow leaves the `try`
+> suite, no exception was raised, and no `return`, `continue`, or `break`
+> statement was executed.
+
+Alright, not so bad.
+
+> If `finally` is present, it specifies a 'cleanup' handler. The `try` clause
+> is executed, including any `except` and `else` clauses. If an exception
+> occurs in any of the clauses and is not handled, the exception is temporarily
+> saved. The `finally` clause is executed. If there is a saved exception it is
+> re-raised at the end of the `finally` clause. If the `finally` clause raises
+> another exception, the saved exception is set as the context of the new
+> exception. If the `finally` clause executes a `return`, `break` or `continue`
+> statement, the saved exception is discarded.
+
+Okay, the bit about `break` and `continue` is news to me as I write this.
+
+```python
+def a_good_day_to_try_hard():
+    while True:
+        try:
+            return 1 / 0
+        except ZeroDivisionError:
+            return 4
+        finally:
+            break
+    return "wtf"
+
+
+print(a_good_day_to_try_hard())  # "wtf"
+```
+
+Looks like `finally` clauses can decide to completely cancel `return`s. Wild.
+Please don't do this in your code.
+
+The documentation continues:
+
+> When a `return`, `break` or `continue` statement is executed in the `try`
+> suite of a `try`...`finally` statement, the `finally` clause is also executed
+> 'on the way out.'
+
+Right. So both `try` and `except` defer to `finally` if it is present. I think
+that's the last of the tricky bits. Let's see what the bytecode looks like.
+
+#### The bytecode
+
+You already know what `try`-less bytecode looks like. If you forgot, scroll to
+the top of the post and read the `if` or `while` sections or something. But
+what does `try` look like?
+
+```python
+def try_except():
+    try:
+        return 1 / 0
+    except ZeroDivisionError:
+        pass
+    return 123
+#   2           0 SETUP_FINALLY           10 (to 12)
+# 
+#   3           2 LOAD_CONST               1 (1)
+#               4 LOAD_CONST               2 (0)
+#               6 BINARY_TRUE_DIVIDE
+#               8 POP_BLOCK
+#              10 RETURN_VALUE
+# 
+#   4     >>   12 DUP_TOP
+#              14 LOAD_GLOBAL              0 (ZeroDivisionError)
+#              16 COMPARE_OP              10 (exception match)
+#              18 POP_JUMP_IF_FALSE       30
+#              20 POP_TOP
+#              22 POP_TOP
+#              24 POP_TOP
+# 
+#   5          26 POP_EXCEPT
+#              28 JUMP_FORWARD             2 (to 32)
+#         >>   30 END_FINALLY
+# 
+#   6     >>   32 LOAD_CONST               3 (123)
+#              34 RETURN_VALUE
+```
+
+Again, huge pain to read so I added a little snippet to a Python port of the
+CPython bytecode compiler that prints a prettier CFG:
+
+```
+bb 0 (entry) {
+  Instruction('SETUP_FINALLY', 0, 0, <block try_handlers id=2, next=3>)
+}
+bb 1 (try_body) {
+  Instruction('LOAD_CONST', 1, 1)
+  Instruction('LOAD_CONST', 0, 2)
+  Instruction('BINARY_TRUE_DIVIDE', 0, 0)
+  Instruction('POP_BLOCK', 0, 0)
+  Instruction('RETURN_VALUE', 0, 0)
+  Instruction('POP_BLOCK', 0, 0)
+  Instruction('JUMP_FORWARD', 0, 0, <block try_else id=5, next=6>)
+}
+bb 2 (try_handlers) {
+  Instruction('DUP_TOP', 0, 0)
+  Instruction('LOAD_GLOBAL', 'ZeroDivisionError', 0)
+  Instruction('COMPARE_OP', 'exception match', 10)
+  Instruction('POP_JUMP_IF_FALSE', 0, 0, <block try_except_0 id=4, next=5>)
+  Instruction('POP_TOP', 0, 0)
+  Instruction('POP_TOP', 0, 0)
+  Instruction('POP_TOP', 0, 0)
+}
+bb 3 (try_cleanup_body0) {
+  Instruction('POP_EXCEPT', 0, 0)
+  Instruction('JUMP_FORWARD', 0, 0, <block try_end id=6>)
+}
+bb 4 (try_except_0) {
+  Instruction('END_FINALLY', 0, 0)
+}
+bb 5 (try_else) {
+}
+bb 6 (try_end) {
+  Instruction('LOAD_CONST', 123, 3)
+  Instruction('RETURN_VALUE', 0, 0)
+}
+```
+
+Ahh, much better. There are a couple things to note:
+
+* As always, blocks do not necessarily end in terminator instructions. In the
+  absence of one, they fall through to the next block.
+* `SETUP_FINALLY`, though it references a block, is not a control instruction.
+  Instead, it stores the target block bytecode index on the block stack so that
+  `END_FINALLY` can jump to it.
+* `POP_BLOCK` is popping from the exception handling block stack.
+* There may be any number of exception match handlers in the bytecode doing
+  explicit `COMPARE_OP`.
+* `END_FINALLY` is a conditional jump. If the top of the stack is `NULL`, it's
+  a `NOP`. If the top of the value stack is an int, it's the target pushed by
+  `SETUP_FINALLY`. Otherwise, it pops exception information from the stack and
+  does a `raise`.
+* `ZeroDivisionError` is not special. It's an arbitrary exception type I chose
+  for this example.
+
+Let's also look at another example with both `else` and `finally`:
+
+```python
+def try_everything():
+    try:
+        a()
+    except ZeroDivisionError:
+        b()
+    else:
+        c()
+    finally:
+        d()
+    return 456
+#   2           0 SETUP_FINALLY           48 (to 50)
+#               2 SETUP_FINALLY           10 (to 14)
+# 
+#   3           4 LOAD_GLOBAL              1 (a)
+#               6 CALL_FUNCTION            0
+#               8 POP_TOP
+#              10 POP_BLOCK
+#              12 JUMP_FORWARD            26 (to 40)
+# 
+#   4     >>   14 DUP_TOP
+#              16 LOAD_GLOBAL              2 (ZeroDivisionError)
+#              18 COMPARE_OP              10 (exception match)
+#              20 POP_JUMP_IF_FALSE       38
+#              22 POP_TOP
+#              24 POP_TOP
+#              26 POP_TOP
+# 
+#   5          28 LOAD_GLOBAL              3 (b)
+#              30 CALL_FUNCTION            0
+#              32 POP_TOP
+#              34 POP_EXCEPT
+#              36 JUMP_FORWARD             8 (to 46)
+#         >>   38 END_FINALLY
+# 
+#   7     >>   40 LOAD_GLOBAL              4 (c)
+#              42 CALL_FUNCTION            0
+#              44 POP_TOP
+#         >>   46 POP_BLOCK
+#              48 BEGIN_FINALLY
+# 
+#   9     >>   50 LOAD_GLOBAL              0 (d)
+#              52 CALL_FUNCTION            0
+#              54 POP_TOP
+#              56 END_FINALLY
+# 
+#  10          58 LOAD_CONST               1 (456)
+#              60 RETURN_VALUE
+```
+
+And here is the prettier CFG:
+
+```
+bb 0 (entry) {
+  Instruction('SETUP_FINALLY', 0, 0, <block try_finally_end id=1>)
+}
+bb 2 (try_finally_body) {
+  Instruction('SETUP_FINALLY', 0, 0, <block try_handlers id=4, next=5>)
+}
+bb 3 (try_body) {
+  Instruction('LOAD_GLOBAL', 'a', 1)
+  Instruction('CALL_FUNCTION', 0, 0)
+  Instruction('POP_TOP', 0, 0)
+  Instruction('POP_BLOCK', 0, 0)
+  Instruction('JUMP_FORWARD', 0, 0, <block try_else id=7, next=8>)
+}
+bb 4 (try_handlers) {
+  Instruction('DUP_TOP', 0, 0)
+  Instruction('LOAD_GLOBAL', 'ZeroDivisionError', 2)
+  Instruction('COMPARE_OP', 'exception match', 10)
+  Instruction('POP_JUMP_IF_FALSE', 0, 0, <block try_except_0 id=6, next=7>)
+  Instruction('POP_TOP', 0, 0)
+  Instruction('POP_TOP', 0, 0)
+  Instruction('POP_TOP', 0, 0)
+}
+bb 5 (try_cleanup_body0) {
+  Instruction('LOAD_GLOBAL', 'b', 3)
+  Instruction('CALL_FUNCTION', 0, 0)
+  Instruction('POP_TOP', 0, 0)
+  Instruction('POP_EXCEPT', 0, 0)
+  Instruction('JUMP_FORWARD', 0, 0, <block try_end id=8, next=1>)
+}
+bb 6 (try_except_0) {
+  Instruction('END_FINALLY', 0, 0)
+}
+bb 7 (try_else) {
+  Instruction('LOAD_GLOBAL', 'c', 4)
+  Instruction('CALL_FUNCTION', 0, 0)
+  Instruction('POP_TOP', 0, 0)
+}
+bb 8 (try_end) {
+  Instruction('POP_BLOCK', 0, 0)
+  Instruction('BEGIN_FINALLY', 0, 0)
+}
+bb 1 (try_finally_end) {
+  Instruction('LOAD_GLOBAL', 'd', 0)
+  Instruction('CALL_FUNCTION', 0, 0)
+  Instruction('POP_TOP', 0, 0)
+  Instruction('END_FINALLY', 0, 0)
+  Instruction('LOAD_CONST', 456, 1)
+  Instruction('RETURN_VALUE', 0, 0)
+}
+```
+
+### Context managers
+
 ### Parameters
 
 ## Comparison with CPython 3.12
