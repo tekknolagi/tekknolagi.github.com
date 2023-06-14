@@ -32,9 +32,9 @@ slightly differently, what if you could attach names to every expression?
 Science fiction authors and computer scientists agree: names have
 power[^names-power].
 
-[^names-power]: See Douglas Engelbart's 1990 paper *Knowledge-Domain
-    Interoperability and an Open Hyperdocument System* and Ursula K Le Guin's
-    1968 novel *A Wizard of Earthsea*.
+[^names-power]: See Douglas Engelbart's 1990 paper
+    *Knowledge-Domain Interoperability and an Open Hyperdocument System* and
+    Ursula K Le Guin's 1968 novel *A Wizard of Earthsea*.
 
 While we won't be reading any hardcore optimization papers today, we will take
 one medium-sized step in that direction by converting stack-based bytecode to
