@@ -463,6 +463,10 @@ Hopefully they high five you. If not, high five yourself.
 
 ## Loops
 
+## Extensions
+
+1. The block stack
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
