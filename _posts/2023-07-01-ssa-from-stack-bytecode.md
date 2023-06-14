@@ -255,6 +255,17 @@ def eval(code: CodeType, block: Block) -> List[Instruction]:
   return result
 ```
 
+You can kind of see where this is going, if you squint. Like the last post, we
+are taking the linear nature of bytecode and extracting structure from it.
+Where before we had to imagine a stack for our code, now we have a tree
+structure with pointers:
+
+```
+            add
+          /     \
+       left     right
+```
+
 ## Local value numbering
 
 ## Global value numbering
