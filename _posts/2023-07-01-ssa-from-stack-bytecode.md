@@ -23,9 +23,9 @@ static analysis.
 [^spectrum]: I have Thoughts and Feelings about this and will probably write a
     whole other post someday.
 
-Doing static analysis on stack-based bytecode is hard. Most static analysis
-papers assume you already have your intermediate representation (IR) in SSA
-form because SSA is super helpful.
+Most static analysis papers assume you already have your intermediate
+representation (IR) in SSA form because doing static analysis on stack-based
+bytecode is hard and SSA is super helpful.
 
 Consider: what if every variable was only ever defined exactly once? Or, said
 slightly differently, what if you could attach names to every expression?
