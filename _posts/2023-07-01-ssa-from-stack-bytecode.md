@@ -266,6 +266,21 @@ structure with pointers:
        left     right
 ```
 
+Kind of looks like an abstract syntax tree in this shape, but people tend to
+instead think about it still in its linear form[^sea-of-nodes]... but with
+names. Something like:
+
+[^sea-of-nodes]: Except for the Sea of Nodes people, for whom everything is a
+    big instruction soup/graph. There does not appear to be an industry or
+    academic consensus for which approach is better, but people often have very
+    strong feelings one way or another.
+
+```
+v3 = LOAD_CONST 0
+v4 = LOAD_CONST 1
+v5 = BINARY_ADD v3, v4
+```
+
 ## Local value numbering
 
 ## Global value numbering
