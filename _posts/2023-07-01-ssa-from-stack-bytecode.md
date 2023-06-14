@@ -187,9 +187,23 @@ class Instruction:
     self.operands: List[Instruction] = operands
 ```
 
-We'll start off by implenenting a simple opcode: `LOAD_CONST`. In the real
-interpreter, this opcode takes a constant `PyObject*` from the constant pool
-and pushes it on the stack. We'll do something similar.
+We'll start off by implenenting a simple opcode: `LOAD_CONST`. `LOAD_CONST`
+gets emitted when the bytecode compiler sees numbers, strings, and other
+literals:
+
+```python
+def boring():
+  return 123
+#  0 LOAD_CONST               1 (123)
+#  2 RETURN_VALUE
+```
+
+Each unique constant value gets put into this array called `co_consts` in the
+code object, and `LOAD_CONST` is given an oparg that indexes into the array.
+
+Then, at run-time in the real interpreter, the opcode handler takes the
+`PyObject*` from the constant pool that corresponds to the oparg and pushes it
+on the stack. We'll do something similar.
 
 We need a place to store the actual constant object, so we'll make a subclass
 of `Instruction` and store it there.
@@ -281,7 +295,134 @@ v4 = LOAD_CONST 1
 v5 = BINARY_ADD v3, v4
 ```
 
+That's it. You've removed the stack from stack-based bytecode by interpreting
+just the stack (*not* the values) at compile-time. Please pat yourself on the
+back.
+
 ## Local value numbering
+
+SSA isn't just about virtual registers, though. As I mentioned offhandedly
+before, it's also about giving each operation a unique name. Most people use
+variables in their code, not just trees of values, so we have to figure out how
+to model `LOAD_FAST` and `STORE_FAST` in our abstract interpretation.
+
+Since all the names of local variables are known at bytecode compilation time,
+the bytecode compiler assigns an index for each name and puts the names at
+those indices in this field called `co_varnames`. Then, at run-time, CPython
+models these local variables with an array, where instead each index
+corresponds to a value. Sound familiar? It's kind of like constants.
+
+Since we don't have any values handy, we will model each local with an
+`Instruction`.
+
+```python
+def eval(code: CodeType, block: Block) -> List[Instruction]:
+  # ...
+  locals: List[Instruction] = [None] * code.co_nlocals
+  for instr in block.bytecode:
+    # ...
+  return result
+```
+
+Let's take a look at some Python code:
+
+```python
+def wow_locals():
+  x = 1
+  return x
+# 0 LOAD_CONST               1 (1)
+# 2 STORE_FAST               0 (x)
+# 4 LOAD_FAST                0 (x)
+# 6 RETURN_VALUE
+```
+
+We can see our friend `LOAD_CONST` and now both `LOAD_FAST` and `STORE_FAST`
+that read from and write to the locals array, respectively. `LOAD_FAST` reads
+from the locals and pushes to the stack, whereas `STORE_FAST` reads (pops) from
+the stack and writes to the locals.
+
+```python
+def eval(code: CodeType, block: Block) -> List[Instruction]:
+  # ...
+  locals: List[Instruction] = [None] * code.co_nlocals
+  for instr in block.bytecode:
+    # ...
+    elif instr.op == Op.LOAD_FAST:
+      stack.append(locals[instr.arg])
+    elif instr.op == Op.STORE_FAST:
+      locals[instr.arg] = stack.pop()
+    # ...
+  return result
+```
+
+You may notice that neither of these instructions need corresponding
+`Instruction` objects. That's because they don't actually *do* anything: they
+just name expressions like we are already doing.
+
+### Redefining locals
+
+You might be wondering about this whole "unique name" thing I keep pushing. We
+haven't done any uniqueness checking at all, and most programming languages,
+Python included, allow the programmer to redefine variables. What gives?
+
+Well, let's see what happens if we redefine a local:
+
+```python
+def redefine():
+  x = 123
+  x = 456
+  return x
+#  0 LOAD_CONST               1 (123)
+#  2 STORE_FAST               0 (x)
+#  4 LOAD_CONST               2 (456)
+#  6 STORE_FAST               0 (x)
+#  8 LOAD_FAST                0 (x)
+# 10 RETURN_VALUE
+```
+
+The bytecode writes to the locals array each time. Our abstract interpreter
+does the same. This means that we will only ever store a reference to the most
+recently written `Instruction`. Then, when we read the locals, we find that
+reference:
+
+```
+v0 = LOAD_CONST 1
+v1 = LOAD_CONST 2
+RETURN_VALUE v1
+```
+
+We have the right constant---the second one---the number `456`. This technique
+is called "local value numbering". The implementation is so subtle that it took
+me some time to understand.
+
+### Putting it together
+
+```python
+def adding_with_names():
+  x = 1
+  y = 2
+  return x + y
+#  0 LOAD_CONST               1 (1)
+#  2 STORE_FAST               0 (x)
+#  4 LOAD_CONST               2 (2)
+#  6 STORE_FAST               1 (y)
+#  8 LOAD_FAST                0 (x)
+# 10 LOAD_FAST                1 (y)
+# 12 BINARY_ADD
+# 14 RETURN_VALUE
+```
+
+Running this code through our abstract interpreter gives:
+
+```
+v0 = LOAD_CONST 1
+v1 = LOAD_CONST 2
+v3 = BINARY_ADD v0, v1
+RETURN_VALUE v3
+```
+
+Which means that we have successfully folded away both the stack and local
+variables.
 
 ## Global value numbering
 
