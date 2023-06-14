@@ -139,3 +139,7 @@ have made constructed SSA by doing abstract interpretation.
 
 If you are still not sure what abstract interpretation is, I encourage you to
 read on anyway. This post might help.
+
+<br />
+<hr style="width: 100px;" />
+<!-- Footnotes -->
