@@ -146,10 +146,11 @@ Let's write a simple interpreter. We're going to use placeholder values (we'll
 call them `Instruction`s) instead of numbers and stuff. We'll give the eval
 function both the original Python code object as well as the new block
 structure from the last post. We'll want access to the constant pool, local
-variable names, and so on.
+variable names, and so on. It'll return us a list of these placeholder values
+(`Instruction`s), one for each operation.
 
 ```python
-def eval(code: CodeType, block: Block) -> Instruction:
+def eval(code: CodeType, block: Block) -> List[Instruction]:
   # TODO: Implement
   pass
 ```
@@ -157,19 +158,101 @@ def eval(code: CodeType, block: Block) -> Instruction:
 Since we're dealing with stack-based bytecode, we'll need a stack.
 
 ```python
-def eval(code: CodeType, block: Block) -> Instruction:
-  stack = []
+def eval(code: CodeType, block: Block) -> List[Instruction]:
+  stack: List[Instruction] = []
 ```
 
 We'll also need the usual loop over instructions. Since we're only looking at
 a basic block right now (no control flow), we don't even need an instruction
-pointer or anythinng fancy like that. Just a for-each:
+pointer or anything fancy like that. Just a for-each:
 
 ```python
-def eval(code: CodeType, block: Block) -> Instruction:
-  stack = []
+def eval(code: CodeType, block: Block) -> List[Instruction]:
+  stack: List[Instruction] = []
   for instr in block.bytecode:
     # TODO: implement
+```
+
+I haven't actually told you what we're computing yet, so let's pause and invent
+this new placeholder value. The placeholder value is similar to the
+`BytecodeOp` from the last post: it describes one operation. Unlike the last
+post, each instruction keeps track of its own operands instead of being
+"point-free": if we're going to remove the stack, the operands have to live
+somewhere.
+
+```python
+class Instruction:
+  def __init__(self, opcode: str, operands: List["Instruction"]):
+    self.opcode: str = opcode
+    self.operands: List[Instruction] = operands
+```
+
+We'll start off by implenenting a simple opcode: `LOAD_CONST`. In the real
+interpreter, this opcode takes a constant `PyObject*` from the constant pool
+and pushes it on the stack. We'll do something similar.
+
+We need a place to store the actual constant object, so we'll make a subclass
+of `Instruction` and store it there.
+
+```python
+class LoadConst(Instruction):
+  def __init__(self, obj):
+    super().__init__("LOAD_CONST", [])
+    self.obj = obj
+```
+
+This is because `LOAD_CONST` doesn't actually have any operands that it takes
+from the stack. It instead takes an index from its oparg and indexes into the
+constant pool.
+
+```python
+def eval(code: CodeType, block: Block) -> List[Instruction]:
+  stack: List[Instruction] = []
+  for instr in block.bytecode:
+    if instr.op == Op.LOAD_CONST:
+      obj = code.co_consts[instr.arg]
+      stack.append(LoadConst(obj))
+    else:
+      raise NotImplementedError("unknown opcode")
+```
+
+Just modeling the stack is fine but we do want to keep track of all of these
+intermediate results, so let's make a list of all the values we create.
+
+```python
+def eval(code: CodeType, block: Block) -> List[Instruction]:
+  stack: List[Instruction] = []
+  result: List[Instruction] = []
+  for instr in block.bytecode:
+    if instr.op == Op.LOAD_CONST:
+      obj = code.co_consts[instr.arg]
+      instr = LoadConst(obj)
+      stack.append(instr)
+      result.append(instr)
+    else:
+      raise NotImplementedError("unknown opcode")
+  return result
+```
+
+Let's try with another opcode: `BINARY_ADD`. People add numbers, right? Sounds
+useful. To refresh, `BINARY_ADD` takes two operands from the stack, adds them
+together, and then pushes the result back onto the stack.
+
+```python
+def eval(code: CodeType, block: Block) -> List[Instruction]:
+  stack: List[Instruction] = []
+  result: List[Instruction] = []
+  for instr in block.bytecode:
+    # ...
+    elif instr.op == Op.BINARY_ADD:
+      right = stack.pop()
+      left = stack.pop()
+      instr = Instruction("BINARY_ADD", [left, right])
+      stack.append(instr)
+      result.append(instr)
+    else:
+      raise NotImplementedError("unknown opcode")
+  return result
 ```
 
 ## Local value numbering
