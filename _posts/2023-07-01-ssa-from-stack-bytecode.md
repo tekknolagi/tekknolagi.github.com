@@ -140,6 +140,44 @@ have made constructed SSA by doing abstract interpretation.
 If you are still not sure what abstract interpretation is, I encourage you to
 read on anyway. This post might help.
 
+## Removing the stack
+
+Let's write a simple interpreter. We're going to use placeholder values (we'll
+call them `Instruction`s) instead of numbers and stuff. We'll give the eval
+function both the original Python code object as well as the new block
+structure from the last post. We'll want access to the constant pool, local
+variable names, and so on.
+
+```python
+def eval(code: CodeType, block: Block) -> Instruction:
+  # TODO: Implement
+  pass
+```
+
+Since we're dealing with stack-based bytecode, we'll need a stack.
+
+```python
+def eval(code: CodeType, block: Block) -> Instruction:
+  stack = []
+```
+
+We'll also need the usual loop over instructions. Since we're only looking at
+a basic block right now (no control flow), we don't even need an instruction
+pointer or anythinng fancy like that. Just a for-each:
+
+```python
+def eval(code: CodeType, block: Block) -> Instruction:
+  stack = []
+  for instr in block.bytecode:
+    # TODO: implement
+```
+
+## Local value numbering
+
+## Global value numbering
+
+## Loops
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
