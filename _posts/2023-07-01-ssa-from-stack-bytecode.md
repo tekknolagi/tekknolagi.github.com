@@ -428,7 +428,36 @@ RETURN_VALUE v2
 ```
 
 Which means that we have successfully folded away both the stack and local
-variables. Find a friend and get them to applaud you.
+variables. Find a friend and show them this wonderfully terse (23 lines!)
+implementation of SSA:
+
+```python
+def eval(code: CodeType, block: Block) -> List[Instruction]:
+  stack: List[Instruction] = []
+  result: List[Instruction] = []
+  locals: List[Instruction] = [None] * code.co_nlocals
+  for instr in block.bytecode:
+    if instr.op == Op.LOAD_CONST:
+      obj = code.co_consts[instr.arg]
+      instr = LoadConst(obj)
+      stack.append(instr)
+      result.append(instr)
+    elif instr.op == Op.BINARY_ADD:
+      right = stack.pop()
+      left = stack.pop()
+      instr = Instruction("BINARY_ADD", [left, right])
+      stack.append(instr)
+      result.append(instr)
+    elif instr.op == Op.LOAD_FAST:
+      stack.append(locals[instr.arg])
+    elif instr.op == Op.STORE_FAST:
+      locals[instr.arg] = stack.pop()
+    else:
+      raise NotImplementedError("unknown opcode")
+  return result
+```
+
+Hopefully they high five you. If not, high five yourself.
 
 ## Global value numbering
 
