@@ -397,6 +397,10 @@ me some time to understand.
 
 ### Putting it together
 
+Let's look at a very slightly bigger example code snippet to see what our
+abstract interpreter gives us. Nothing scary---no control flow---just
+constants, local variables, adding numbers, and vibes.
+
 ```python
 def adding_with_names():
   x = 1
@@ -412,17 +416,19 @@ def adding_with_names():
 # 14 RETURN_VALUE
 ```
 
-Running this code through our abstract interpreter gives:
+At this point we should have "evaluated away" the both the stack and local
+variable names, which means we should get something pretty compact. Running
+this code through our abstract interpreter gives:
 
 ```
 v0 = LOAD_CONST 1
 v1 = LOAD_CONST 2
-v3 = BINARY_ADD v0, v1
-RETURN_VALUE v3
+v2 = BINARY_ADD v0, v1
+RETURN_VALUE v2
 ```
 
 Which means that we have successfully folded away both the stack and local
-variables.
+variables. Find a friend and get them to applaud you.
 
 ## Global value numbering
 
