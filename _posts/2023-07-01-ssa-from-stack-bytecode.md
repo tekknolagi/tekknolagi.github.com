@@ -395,6 +395,10 @@ We have the right constant---the second one---the number `456`. This technique
 is called "local value numbering". The implementation is so subtle that it took
 me some time to understand.
 
+### Parameters
+
+<!-- TODO -->
+
 ### Putting it together
 
 Let's look at a very slightly bigger example code snippet to see what our
