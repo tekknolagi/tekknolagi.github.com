@@ -485,9 +485,9 @@ def eval(code: CodeType, block: Block) -> List[Instruction]:
     elif instr.op == Op.STORE_FAST:
       locals[instr.arg] = stack.pop()
     elif instr.op == Op.RETURN_VALUE:
-        obj = stack.pop()
-        instr = Instruction("RETURN_VALUE", [obj])
-        result.append(instr)
+      obj = stack.pop()
+      instr = Instruction("RETURN_VALUE", [obj])
+      result.append(instr)
     else:
       raise NotImplementedError("unknown opcode")
   return result
