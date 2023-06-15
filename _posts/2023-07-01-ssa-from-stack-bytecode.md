@@ -495,6 +495,8 @@ Hopefully they high five you. If not, high five yourself.
 
 ## Global value numbering
 
+### Undefined locals
+
 ## Loops
 
 ## Extensions
