@@ -110,7 +110,7 @@ case, the int `13`). It should behave identically to the tree-walking
 interpreter, except faster.
 
 
-### The ISA
+### The [ISA][ISA] (Instruction Set Architecture)
 
 For our interpreter we'll need a surprisingly small set of instructions, mostly
 lifted from the CPython runtime's own instruction set architecture. CPython is
@@ -136,6 +136,7 @@ With these instructions we can define an entire language. Most people choose to
 define math operations in their instruction sets for speed, but we'll define
 them as built-in functions because it's quick and easy.
 
+[ISA]: https://en.wikipedia.org/wiki/Instruction_set_architecture
 
 ### The `Opcode` and `Instruction` classes
 
