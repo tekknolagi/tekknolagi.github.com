@@ -514,6 +514,7 @@ functions with no control flow, or maybe a tracing just-in-time compiler
 
 ## Extensions
 
+1. Write a test suite
 1. The block stack
 1. Types
 1. (Sparse conditional) constant propagation
