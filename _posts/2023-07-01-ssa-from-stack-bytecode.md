@@ -432,7 +432,7 @@ v3 = RETURN_VALUE v2
 ```
 
 Which means that we have successfully folded away both the stack and local
-variables. Find a friend and show them this wonderfully terse (52 lines!
+variables. Find a friend and show them this wonderfully terse (53 lines!
 Including helpful stringification function!) implementation of SSA:
 
 ```python
