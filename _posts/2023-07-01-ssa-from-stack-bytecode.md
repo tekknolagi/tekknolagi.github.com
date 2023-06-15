@@ -105,7 +105,7 @@ bb2:
   v2 = LOAD_CONST 2
 bb3:
   v3 = PHI v1 v2
-  RETURN_VALUE v3
+  v4 = RETURN_VALUE v3
 ```
 
 The important change here is the disappearance of the stack and the appearance
@@ -388,7 +388,7 @@ reference:
 ```
 v0 = LOAD_CONST 1
 v1 = LOAD_CONST 2
-RETURN_VALUE v1
+v2 = RETURN_VALUE v1
 ```
 
 We have the right constant---the second one---the number `456`. This technique
@@ -428,14 +428,39 @@ this code through our abstract interpreter gives:
 v0 = LOAD_CONST 1
 v1 = LOAD_CONST 2
 v2 = BINARY_ADD v0, v1
-RETURN_VALUE v2
+v3 = RETURN_VALUE v2
 ```
 
 Which means that we have successfully folded away both the stack and local
-variables. Find a friend and show them this wonderfully terse (23 lines!)
-implementation of SSA:
+variables. Find a friend and show them this wonderfully terse (52 lines!
+Including helpful stringification function!) implementation of SSA:
 
 ```python
+class Instruction:
+    counter = 0
+
+    def __init__(self, opcode, operands):
+        self.id = Instruction.counter
+        Instruction.counter += 1
+        self.opcode = opcode
+        self.operands = operands
+
+    def name(self):
+        return f"v{self.id}"
+
+    def __repr__(self):
+        if not self.operands:
+            return f"{self.name()} = {self.opcode}"
+        operands = ", ".join(op.name() for op in self.operands)
+        return f"{self.name()} = {self.opcode} {operands}"
+
+
+class LoadConst(Instruction):
+  def __init__(self, obj):
+    super().__init__("LOAD_CONST", [])
+    self.obj = obj
+
+
 def eval(code: CodeType, block: Block) -> List[Instruction]:
   stack: List[Instruction] = []
   result: List[Instruction] = []
@@ -456,6 +481,10 @@ def eval(code: CodeType, block: Block) -> List[Instruction]:
       stack.append(locals[instr.arg])
     elif instr.op == Op.STORE_FAST:
       locals[instr.arg] = stack.pop()
+    elif instr.op == Op.RETURN_VALUE:
+        obj = stack.pop()
+        instr = Instruction("RETURN_VALUE", [obj])
+        result.append(instr)
     else:
       raise NotImplementedError("unknown opcode")
   return result
