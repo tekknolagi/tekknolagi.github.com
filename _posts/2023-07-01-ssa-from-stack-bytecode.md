@@ -497,6 +497,17 @@ Hopefully they high five you. If not, high five yourself.
 
 ## Global value numbering
 
+Yeah, alright, call me out on my little lie. We have not talked one bit about
+control-flow. We have a minimal implementation of SSA that would work for
+functions with no control flow, or maybe a tracing just-in-time compiler
+(JIT)[^tracing-jit-opt].
+
+[^tracing-jit-opt]: You can do some really cool optimizations with a tracing
+    JIT! Check out Carl-Friedrich Bolz-Tereick's [toy
+    optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html) and
+    [follow-up
+    post](https://www.pypy.org/posts/2022/10/toy-optimizer-allocation-removal.html).
+
 ### Undefined locals
 
 ### Loops
