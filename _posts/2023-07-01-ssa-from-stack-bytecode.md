@@ -433,8 +433,8 @@ v3 = RETURN_VALUE v2
 
 Which means that we have successfully folded away both the stack and local
 variables. Find a friend and show them this wonderfully terse (53 lines!
-Including helpful stringification function!) implementation of SSA (listing
-also
+Including helpful stringification function!) implementation of SSA (full
+listing
 [here](https://gist.github.com/tekknolagi/62278489d84f9acd8ad2cf3677a71605):
 
 ```python
