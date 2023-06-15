@@ -500,13 +500,74 @@ Hopefully they high five you. If not, high five yourself.
 Yeah, alright, call me out on my little lie. We have not talked one bit about
 control-flow. We have a minimal implementation of SSA that would work for
 functions with no control flow, or maybe a tracing just-in-time compiler
-(JIT)[^tracing-jit-opt].
+(JIT)[^tracing-jit-opt]. But we should probably extend it to work on entire
+CFGs.
 
 [^tracing-jit-opt]: You can do some really cool optimizations with a tracing
     JIT! Check out Carl-Friedrich Bolz-Tereick's [toy
     optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html) and
     [follow-up
     post](https://www.pypy.org/posts/2022/10/toy-optimizer-allocation-removal.html).
+
+There are a couple of main cases we need to consider:
+
+1. The block is an entry block; it has no predecessors
+1. The block has predecessors
+1. The block is part of a loop; it has itself as a predecessor
+
+Predecessors are where phi nodes come into play. Phi nodes are fancy-sounding
+pseudo-instructions that don't actually generate any code[^phi-codegen]. They
+are only there to merge multiple definitions of the same variable in different
+blocks.
+
+[^phi-codegen]: Kinda. There will be some sequence of moves to get values in
+    the right registers when converting out of SSA.
+
+Consider the snippet from the top of the post:
+
+```python
+def decisions(x):
+    if x:
+      y = 1
+    else:
+      y = 2
+    return y
+# bb0:
+#   v0 = LOAD_FAST 0
+#   POP_JUMP_IF_FALSE v0, bb2
+# bb1:
+#   v1 = LOAD_CONST 1
+#   JUMP_FORWARD bb3
+# bb2:
+#   v2 = LOAD_CONST 2
+# bb3:
+#   v3 = PHI v1 v2
+#   v4 = RETURN_VALUE v3
+```
+
+At the beginning of `bb3` we have two definitions of `y`: `v1` and `v2` and no
+apparent way to reconcile them. We could enter `bb3` from either of `bb1` or
+`bb2` but at compile-time we have no idea which path will be taken.
+
+We can't just say "well, `bb1` and `bb2` should just both define `v1` and be
+done with it" because then it wouldn't be SSA; the register would have two
+separate definitions.
+
+There are two ways to solve this (or maybe more, I don't know):
+
+1. Duplicate the code into its predecessor
+1. Er, phi instructions, I guess
+
+The first solution works for very simple snippets of code but does not
+generalize well[^method-jits]. In fact, CPython sometimes does this in their
+bytecode compiler. The second one is the current industrial and academic
+solution, and has been for some time[^block-arguments].
+
+[^method-jits]: For method-at-a-time compilers. For tracing JITs, or basic
+    block versioning, this is their bread and butter. This is because they only
+    compile along one code path at a time.
+
+[^block-arguments]: Phi instructions are equivalent to block arguments.
 
 ### Undefined locals
 
