@@ -576,9 +576,11 @@ solution, and has been for some time[^block-arguments].
 ## Extensions
 
 1. Write a test suite
+1. Stack depth ("easy")
 1. The block stack
 1. Types
 1. (Sparse conditional) constant propagation
+1. Memory effects
 
 <br />
 <hr style="width: 100px;" />
