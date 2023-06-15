@@ -466,6 +466,7 @@ Hopefully they high five you. If not, high five yourself.
 ## Extensions
 
 1. The block stack
+1. Types
 
 <br />
 <hr style="width: 100px;" />
