@@ -515,10 +515,10 @@ There are a couple of main cases we need to consider:
 1. The block has predecessors
 1. The block is part of a loop; it has itself as a predecessor
 
-Predecessors are where phi nodes come into play. Phi nodes are fancy-sounding
-pseudo-instructions that don't actually generate any code[^phi-codegen]. They
-are only there to merge multiple definitions of the same variable in different
-blocks.
+Predecessors are where phi instructions come into play. Phi instructions (ϕ
+instructions) are fancy-sounding pseudo-instructions that don't actually
+generate any code[^phi-codegen]. They are only there to merge multiple
+definitions of the same variable in different blocks.
 
 [^phi-codegen]: Kinda. There will be some sequence of moves to get values in
     the right registers when converting out of SSA.
