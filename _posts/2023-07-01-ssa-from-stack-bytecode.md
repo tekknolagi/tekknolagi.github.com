@@ -497,7 +497,7 @@ Hopefully they high five you. If not, high five yourself.
 
 ### Undefined locals
 
-## Loops
+### Loops
 
 ## Extensions
 
