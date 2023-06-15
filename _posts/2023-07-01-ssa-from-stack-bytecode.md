@@ -465,6 +465,7 @@ def eval(code: CodeType, block: Block) -> List[Instruction]:
   stack: List[Instruction] = []
   result: List[Instruction] = []
   locals: List[Instruction] = [None] * code.co_nlocals
+  # TODO(max): Parameters
   for instr in block.bytecode:
     if instr.op == Op.LOAD_CONST:
       obj = code.co_consts[instr.arg]
