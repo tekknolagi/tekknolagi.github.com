@@ -467,6 +467,7 @@ Hopefully they high five you. If not, high five yourself.
 
 1. The block stack
 1. Types
+1. (Sparse conditional) constant propagation
 
 <br />
 <hr style="width: 100px;" />
