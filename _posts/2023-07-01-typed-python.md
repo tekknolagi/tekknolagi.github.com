@@ -88,7 +88,6 @@ doesn't exactly compile Python. It compiles a superficially similar language
 <!-- Just use numba/torchjit for numerics. But what about random other Python
 applications? -->
 
-<!-- Mojo -->
-
-
 ## Stronger guarantees
+
+<!-- ok, change the language. cinder? mojo? -->
