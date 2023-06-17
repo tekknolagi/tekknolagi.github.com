@@ -569,6 +569,29 @@ solution, and has been for some time[^block-arguments].
 
 [^block-arguments]: Phi instructions are equivalent to block arguments.
 
+Assuming we agree that phi instructions are necessary, we have to figure out
+where to put them. The simplest thing to do, which is alternately scoffed at
+and lauded, is (according to Andrew Appel):
+
+> A really crude approach is to split every variable at every basic block
+> boundary, and put φ-functions for every variable in every block.
+
+This would result in a lot of phi functions---which isn't horrible, and is
+correct, but it's cluttered. Meh, let's try it anyway.
+
+```python
+def compute_ssa(code: CodeType, block_map: BlockMap):
+  for bc_block in block_map.rpo():
+    ir = eval(code, block)
+    place_phis(code, block, ir)
+```
+
+Aycock and Horspool
+
+<!-- TODO: TranslationContext? -->
+<!-- TODO: queue of TC vs just RPO? -->
+<!-- TODO: block canonicalizer? -->
+
 ### Undefined locals
 
 ### Loops
