@@ -93,3 +93,7 @@ applications? -->
 <!-- ok, change the language. cinder? mojo? -->
 
 <!-- typed_python -->
+
+<br />
+<hr style="width: 100px;" />
+<!-- Footnotes -->
