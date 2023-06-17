@@ -62,11 +62,11 @@ solved? Hopefully?
 Unfortunately, no. Most math kernels are not just using built-in functions and
 operators. They call out to external C libraries like NumPy or SciPy, and those
 functions expect heap-allocated `PyLongObject`s. The C-API is simply **not
-ready** to either expose the underlying functions that operate on machine
-integers, and it is also **not ready** for tagged pointers. This would be a
-huge breaking change in the API and ABI. But okay, let's assume for the sake of
-blog post that the compiler team has a magic wand and can do all of this. Then
-we're set, right?
+ready** to expose the underlying functions that operate on machine integers,
+and it is also **not ready** for tagged pointers. This would be a huge breaking
+change in the API and ABI. But okay, let's assume for the sake of blog post
+that the compiler team has a magic wand and can do all of this. Then we're set,
+right?
 
 Unfortunately, there are still some other loose ends to tie up. While you may
 have a nice and neatly typed numeric kernel of Python code, it has to interact
