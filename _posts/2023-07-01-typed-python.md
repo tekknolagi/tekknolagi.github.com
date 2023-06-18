@@ -32,7 +32,7 @@ that[^simple-annotations]. I'll show a couple examples that demonstrate why.
     `x: SomeTypeName` annotations.
 
 For example, look at this lovely little Python function. It's short, typed, and
-obviously just adds integers. Easy: just compiles right down to two machine
+obviously just adds integers. Easy: compiles right down to two machine
 instructions. Right?
 
 ```python
