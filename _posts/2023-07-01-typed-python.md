@@ -110,11 +110,48 @@ It turns out, yes. Absolutely yes.
 
 ## Stronger guarantees
 
+As people have continually rediscovered over the years, Python is hard to
+optimize statically. Functions like the following, which only do an attribute
+load, have no hope whatsoever of being optimized:
+
+```python
+def get_an_attr(o):
+    return o.value
+```
+
+This is because `o` could be any object, types can define custom attribute
+resolution by defining a `__getattr__` function, and therefore attribute loads
+are equivalent to running opaque blobs of user code.
+
+Even if the function is typed, you still run into the subclass problem
+described earlier. You also have issues like instance attributes, deleting
+attrbutes, descriptor shadowing, and so on.
+
+```python
+class C:
+    def __init__(self):
+        self.value = 5
+
+
+def get_an_attr(o: C):
+    return o.value
+```
+
+*However*, if you intentionally opt out of a lot of that dynamism, things start
+getting interesting. The [Static
+Python](https://github.com/facebookincubator/cinder/#static-python) compiler,
+for example, is part of the Cinder project. If a module is marked static, the
+compiler will automatically slotify all of the classes in the module.
+
+This means that
+
 <!-- ok, change the language. cinder? mojo? -->
 
 <!-- typed_python -->
 
 <!-- graal and substratevm -->
+
+<!-- further reading: brown paper -->
 
 <br />
 <hr style="width: 100px;" />
