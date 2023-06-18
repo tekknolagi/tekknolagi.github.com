@@ -84,12 +84,18 @@ maybe even one for unboxed calls---but this hypothetical system's complexity is
 growing, and fast.
 
 "But Max," you say, "Python compiler libraries like Numba clearly work just
-fine. Are you lying? What's the deal?"
+fine. Just-in-time compilers have been doing this for years. What's the deal?"
 
-Numba is great. The team put in a lot of hard work and solid engineering and
-built a compiler that produces very fast numerical code. But it doesn't exactly
-compile *Python*. It compiles a superficially similar language that is much
-less dynamic and is focused on numerics. For people who work with data
+Just-in-time compilers can be so effective because can speculate on things that
+are not compile-time constants. Then, if the assumption is no longer true, they
+can fall back on a (slower) interpreter. This interpreter deoptimization is
+part of what makes JITs hard to understand and does not much help with
+compiling code ahead-of-time.
+
+And Numba is great! The team put in a lot of hard work and solid engineering
+and built a compiler that produces very fast numerical code. But it doesn't
+exactly compile *Python*. It compiles a superficially similar language that is
+much less dynamic and is focused on numerics. For people who work with data
 analytics and machine learning, this is incredible! Unfortunately, it doesn't
 generalize to arbitrary Python code.
 
@@ -102,6 +108,8 @@ It turns out, yes. Absolutely yes.
 <!-- ok, change the language. cinder? mojo? -->
 
 <!-- typed_python -->
+
+<!-- graal and substratevm -->
 
 <br />
 <hr style="width: 100px;" />
