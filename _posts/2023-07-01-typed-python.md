@@ -82,11 +82,13 @@ fine. Are you lying? What's the deal?"
 As it turns out, Numba is great. The team put in a lot of hard work and solid
 engineering and built a compiler that produces very fast numerical code. But it
 doesn't exactly compile Python. It compiles a superficially similar language
+that is much less dynamic and is focused on numerics. For people who work with
+data analytics and machine learning, this is incredible! Unfortunately, it
+doesn't generalize to arbitrary Python code.
 
-<!-- Speculation? -->
-
-<!-- Just use numba/torchjit for numerics. But what about random other Python
-applications? -->
+It does raises an interesting question: what if you intentionally and
+explicitly eschew the more dynamic features? Can you get performance in return?
+It turns out, yes. Absolutely yes.
 
 ## Stronger guarantees
 
