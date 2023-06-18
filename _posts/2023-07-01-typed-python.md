@@ -140,18 +140,68 @@ def get_an_attr(o: C):
 *However*, if you intentionally opt out of a lot of that dynamism, things start
 getting interesting. The [Static
 Python](https://github.com/facebookincubator/cinder/#static-python) compiler,
-for example, is part of the Cinder project. If a module is marked static, the
-compiler will automatically slotify all of the classes in the module.
+for example, is part of the Cinder project, and lets you trade dynamism for
+speed. If a module is marked static with `import __static__`, Cinder will swap
+out the standard bytecode compiler for the Static Python bytecode compiler,
+which *compiles a different language*!
 
-This means that
+By way of example, the SP compiler will automatically slotify all of the
+classes in a SP module. This means that features that used to
+work---dynamically creating and deleting attributes, etc---no longer do. But it
+also means that attribute loads from static classes are actually only three
+machine instructions now. Most people like this tradeoff.
 
-<!-- ok, change the language. cinder? mojo? -->
+```python
+import __static__
+
+class C:
+    def __init__(self):
+        self.value: int = 5
+
+def test(x: C):
+    return x.value
+# ...
+# mov rax,QWORD PTR [rsi+0x10]
+# test rax,rax
+# je 0x7f823ba17283  # Raise an exception
+# ...
+```
+
+Static Python does this just with existing Python annotations. It has some more
+constraints than MyPy does (you can't `noqa` your type errors away, for
+example), but it does not change the syntax of Python. But it's important to
+know that this does not just immediately follow from a type-directed
+translation. It requires opting into stricter checking and different behavior
+for an entire typed core of a codebase. It requires changing the runtime
+representation of objects from header+dictionary to header+array of slots. To
+learn more, check out the Static Python team's [paper collaboration with
+Brown](https://cs.brown.edu/~sk/Publications/Papers/Published/lgmvpk-static-python/),
+which explains a bit more about the gradual typing bits.
 
 <!-- typed_python -->
 
-<!-- graal and substratevm for whole-program analysis -->
+Other projects take this further. The [Mojo](https://www.modular.com/mojo)
+project, for example, aims to create a new language that is a proper superset
+of Python. The Python code it runs should continue to work as advertised, but
+modules can opt into less dynamism by iteratively converting their Python code
+to something that looks a little different. They also do a bunch of other neat
+stuff, but that's outside the scope of this blog post.
 
-<!-- further reading: brown paper -->
+## Other approaches
+
+If you don't like this whole "typed kernel" idea, other compilers like Graal's
+SubstrateVM do some advanced wizardry to analyze your whole program.
+
+SubtrateVM is an ahead-of-time compiler for Java that looks at your entire
+codebase as a unit. It does some intense inter-procedural static analysis to
+prove things about your code that can help with performance. It also subtly
+changes the language, though. In order to do this analysis, it prohibits
+arbitrary loading of classes at runtime. It also limits the amount of
+reflection to some known feature subset.
+
+## What this means for the average Python programmer
+
+<!-- TODO -->
 
 <br />
 <hr style="width: 100px;" />
