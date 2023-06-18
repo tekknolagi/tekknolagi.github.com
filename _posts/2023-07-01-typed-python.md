@@ -49,6 +49,8 @@ because of subclasses. This means that there is a lot of code to be executed if
 pretend that it's not possible to subclass `int`. Problem solved, right? High
 performance math?
 
+<!-- TODO add binary op example -->
+
 Unfortunately, no. While we would have fast dispatch on binary operators and
 other methods, integers in Python are heap-allocated big integer objects. This
 means that every operation on them is a function call to `PyLong_Add` or
@@ -59,6 +61,8 @@ into machine words at the beginning of a function. We can do fast math with
 those. If we really want, we can even do fast floating point math, too. Problem
 solved? Hopefully?
 
+<!-- TODO add unboxing example -->
+
 Unfortunately, no. Most math kernels are not just using built-in functions and
 operators. They call out to external C libraries like NumPy or SciPy, and those
 functions expect heap-allocated `PyLongObject`s. The C-API is simply **not
@@ -68,23 +72,26 @@ change in the API and ABI. But okay, let's assume for the sake of blog post
 that the compiler team has a magic wand and can do all of this. Then we're set,
 right?
 
+<!-- TODO add tagged pointer example -->
+
 Unfortunately, there are still some other loose ends to tie up. While you may
 have a nice and neatly typed numeric kernel of Python code, it has to interact
 with the outside world. And the outside world is often not so well typed. This
 means that at the entry to your typed functions, you have to check the types of
 the input objects. Maybe you can engineer a system such that a function can
 have multiple entry points---one for untyped calls, one for typed calls, and
-maybe even one for unboxed calls---but the system's complexity is growing.
+maybe even one for unboxed calls---but this hypothetical system's complexity is
+growing, and fast.
 
 "But Max," you say, "Python compiler libraries like Numba clearly work just
 fine. Are you lying? What's the deal?"
 
-As it turns out, Numba is great. The team put in a lot of hard work and solid
-engineering and built a compiler that produces very fast numerical code. But it
-doesn't exactly compile Python. It compiles a superficially similar language
-that is much less dynamic and is focused on numerics. For people who work with
-data analytics and machine learning, this is incredible! Unfortunately, it
-doesn't generalize to arbitrary Python code.
+Numba is great. The team put in a lot of hard work and solid engineering and
+built a compiler that produces very fast numerical code. But it doesn't exactly
+compile *Python*. It compiles a superficially similar language that is much
+less dynamic and is focused on numerics. For people who work with data
+analytics and machine learning, this is incredible! Unfortunately, it doesn't
+generalize to arbitrary Python code.
 
 It does raises an interesting question: what if you intentionally and
 explicitly eschew the more dynamic features? Can you get performance in return?
