@@ -149,7 +149,7 @@ This means that
 
 <!-- typed_python -->
 
-<!-- graal and substratevm -->
+<!-- graal and substratevm for whole-program analysis -->
 
 <!-- further reading: brown paper -->
 
