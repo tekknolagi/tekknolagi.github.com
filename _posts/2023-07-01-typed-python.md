@@ -158,7 +158,33 @@ much less dynamic and is focused on numerics. For people who work with data
 analytics and machine learning, this is incredible! Unfortunately, it doesn't
 generalize to arbitrary Python code.
 
-It does raises an interesting question: what if you intentionally and
+Thi sis also true of many other projects to optimize Python code, mostly in the
+context of CPython:
+
+* [Cython](https://github.com/cython/cython)/[Pyrex](https://www.csse.canterbury.ac.nz/greg.ewing/python/Pyrex/)
+* [MicroPython Viper](https://docs.micropython.org/en/v1.9.3/pyboard/reference/speed_python.html#the-viper-code-emitter)
+* [Mojo](https://www.modular.com/mojo)
+* [mypyc](https://github.com/mypyc/mypyc)
+* [Nuitka](https://github.com/Nuitka/Nuitka)
+* [Shed Skin](https://github.com/shedskin/shedskin)
+* [Starkiller](http://michael.salib.com/writings/thesis/thesis.pdf) (PDF)
+* [Static Python](https://github.com/facebookincubator/cinder/#static-python)
+* [Typed Python](https://github.com/APrioriInvestments/typed_python/blob/dev/docs/introduction.md)
+
+and in particular to optimize numerics:
+
+* [Codon](https://github.com/exaloop/codon)
+* [Numba](https://github.com/numba/numba)
+* [lpython](https://github.com/lcompilers/lpython)
+* [Pyccel](https://github.com/pyccel/pyccel/blob/devel/tutorial/quickstart.md)
+* [Pythran](https://pythran.readthedocs.io/en/latest/)
+* [Taichi](https://github.com/taichi-dev/taichi)
+* [TorchScript](https://pytorch.org/docs/stable/jit_language_reference.html)
+
+and probably more that I forgot about or could not find (please feel free to
+submit a PR).
+
+It does raises an interesting question, though: what if you intentionally and
 explicitly eschew the more dynamic features? Can you get performance in return?
 It turns out, yes. Absolutely yes.
 
