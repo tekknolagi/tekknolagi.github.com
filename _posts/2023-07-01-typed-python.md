@@ -215,9 +215,9 @@ class C:
 def test(x: C):
     return x.value
 # ...
-# mov rax,QWORD PTR [rsi+0x10]
-# test rax,rax
-# je 0x7f823ba17283  # Raise an exception
+# mov rax,QWORD PTR [rsi+0x10]  # Load the field
+# test rax,rax                  # Check if null
+# je 0x7f823ba17283             # Maybe raise an exception
 # ...
 ```
 
