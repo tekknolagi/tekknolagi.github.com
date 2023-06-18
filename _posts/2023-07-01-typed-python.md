@@ -24,11 +24,16 @@ A lot of people enjoy walking into discussions and saying things like "We have
 a 100% mypy typed codebase. I would simply use the types in compilation to
 generate better code." That was the original title of this article, even. "*I
 would simply use the types in the compiler.*" But it doesn't really work like
-that. I'll show a couple examples that demonstrate why.
+that[^simple-annotations]. I'll show a couple examples that demonstrate why.
 
-Look at this lovely little Python function. It's short, typed, and obviously
-just adds integers. Easy: just compiles right down to two machine instructions.
-Right?
+[^simple-annotations]: I'm not even going to address fancy type-level
+    metaprogramming stuff, because I don't think people ever intended to use
+    that for performance anyway. We'll just look at very simple bog-standard
+    `x: SomeTypeName` annotations.
+
+For example, look at this lovely little Python function. It's short, typed, and
+obviously just adds integers. Easy: just compiles right down to two machine
+instructions. Right?
 
 ```python
 def add(x: int, y: int) -> int:
