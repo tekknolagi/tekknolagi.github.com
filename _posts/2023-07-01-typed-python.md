@@ -50,11 +50,65 @@ semantic sense most of the time. But it doesn't help performance here. The
 dispatch for binary operators in Python is famously [not
 simple](https://snarky.ca/unravelling-binary-arithmetic-operations-in-python/)
 because of subclasses. This means that there is a lot of code to be executed if
-`x` and `y` could be any subclasses of `int`. But let's ignore this problem and
-pretend that it's not possible to subclass `int`. Problem solved, right? High
-performance math?
+`x` and `y` could be any subclasses of `int`.
 
-<!-- TODO add binary op example -->
+```python
+_MISSING = object()
+
+def sub(lhs: Any, rhs: Any, /) -> Any:
+        # lhs.__sub__
+        lhs_type = type(lhs)
+        try:
+            lhs_method = debuiltins._mro_getattr(lhs_type, "__sub__")
+        except AttributeError:
+            lhs_method = _MISSING
+
+        # lhs.__rsub__ (for knowing if rhs.__rsub__ should be called first)
+        try:
+            lhs_rmethod = debuiltins._mro_getattr(lhs_type, "__rsub__")
+        except AttributeError:
+            lhs_rmethod = _MISSING
+
+        # rhs.__rsub__
+        rhs_type = type(rhs)
+        try:
+            rhs_method = debuiltins._mro_getattr(rhs_type, "__rsub__")
+        except AttributeError:
+            rhs_method = _MISSING
+
+        call_lhs = lhs, lhs_method, rhs
+        call_rhs = rhs, rhs_method, lhs
+
+        if (
+            rhs_type is not _MISSING  # Do we care?
+            and rhs_type is not lhs_type  # Could RHS be a subclass?
+            and issubclass(rhs_type, lhs_type)  # RHS is a subclass!
+            and lhs_rmethod is not rhs_method  # Is __r*__ actually different?
+        ):
+            calls = call_rhs, call_lhs
+        elif lhs_type is not rhs_type:
+            calls = call_lhs, call_rhs
+        else:
+            calls = (call_lhs,)
+
+        for first_obj, meth, second_obj in calls:
+            if meth is _MISSING:
+                continue
+            value = meth(first_obj, second_obj)
+            if value is not NotImplemented:
+                return value
+        else:
+            raise TypeError(
+                f"unsupported operand type(s) for -: {lhs_type!r} and {rhs_type!r}"
+            )
+```
+
+This enormous code snippet is from Brett Cannon's linked post above. It
+demonstrates in Python "pseudocode" what happens in C under the hood when doing
+`lhs - rhs` in Python.
+
+But let's ignore this problem and pretend that it's not possible to subclass
+`int`. Problem solved, right? High performance math?
 
 Unfortunately, no. While we would have fast dispatch on binary operators and
 other methods, integers in Python are heap-allocated big integer objects. This
