@@ -267,8 +267,10 @@ example), but it does not change the syntax of Python. But it's important to
 know that this does not just immediately follow from a type-directed
 translation. It requires opting into stricter checking and different behavior
 for an entire typed core of a codebase. It requires changing the runtime
-representation of objects from header+dictionary to header+array of slots. To
-learn more, check out the Static Python team's [paper collaboration with
+representation of objects from header+dictionary to header+array of slots. For
+this reason it is (currently) implemented as a custom compiler, custom bytecode
+interpreter, and with support in the Cinder JIT. To learn more, check out the
+Static Python team's [paper collaboration with
 Brown](https://cs.brown.edu/~sk/Publications/Papers/Published/lgmvpk-static-python/),
 which explains a bit more about the gradual typing bits.
 
@@ -280,6 +282,12 @@ def foo(x: int) -> int:
 
 foo("hello")  # type: ignore
 ```
+
+I would be remiss if I did not also mention
+[mypyc](https://github.com/mypyc/mypyc). Mypyc is very similar to Static Python
+in that it takes something that looks like Python with types and generates
+type-optimized code. It is different in that it generates C extensions.
+Depending on your use case, it may be the compiler that you want to use!
 
 <!-- typed_python -->
 
