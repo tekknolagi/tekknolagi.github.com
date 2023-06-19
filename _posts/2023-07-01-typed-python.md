@@ -444,10 +444,8 @@ boundary](https://github.com/faster-cpython/ideas/issues/546).
 These questions about and issues with straightforward type-driven compilation
 are not unique to Python. People ask the same thing about typed JavaScript
 (like TypeScript) and probably other languages, too. People will have to work
-out similar solutions, like DeviceScript and another project that I have been
-asked not to publicize yet.
-
-<!-- TODO link devicescript -->
+out similar solutions. People are working on this; there is at least one neat
+extant project that I have been asked not to publicize yet.
 
 ## Wrapping up
 
