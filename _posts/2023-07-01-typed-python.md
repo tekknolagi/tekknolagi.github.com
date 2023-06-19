@@ -148,7 +148,7 @@ this.
 // Store 63-bit integers inside the pointer itself.
 static const long kSmallIntTagBits = 1;
 static const long kBits = 64 - kSmallIntTagBits;
-static const long kMaxValue = (long{1} << 62) - 1;
+static const long kMaxValue = (long{1} << (kBits - 1)) - 1;
 
 PyObject* PyLong_FromLong(long x) {
     if (x < kMaxValue) {
