@@ -397,7 +397,7 @@ If you don't like this whole "typed kernel" idea, other compilers like Graal's
 [SubstrateVM](https://docs.oracle.com/en/graalvm/enterprise/20/docs/reference-manual/native-image/#native-image)
 do some advanced wizardry to analyze your whole program.
 
-SubtrateVM is an ahead-of-time compiler for Java that looks at your entire
+SubstrateVM is an ahead-of-time compiler for Java that looks at your entire
 codebase as a unit. It does some intense inter-procedural static analysis to
 prove things about your code that can help with performance. It also subtly
 changes the language, though. In order to do this analysis, it prohibits
