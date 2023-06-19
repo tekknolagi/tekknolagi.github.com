@@ -54,7 +54,9 @@ because of subclasses. This means that there is a lot of code to be executed if
 
 [^exact]: The Static Python project sort of has an internal `Exact` type that
     can be used like `x: Exact[int]` to disallow subclasses, but it's not
-    exposed.
+    exposed. This is, as Carl Meyer explained to me, because MyPy, Pyre, and
+    other type checkers don't have a good way to check this type; the Python
+    type system does not support this.
 
 You don't need to understand or really even read the big blob below. You just
 need to say "ooh" and "aah" and "wow, so many if-statements."
