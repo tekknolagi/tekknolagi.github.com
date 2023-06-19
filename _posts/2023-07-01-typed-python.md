@@ -140,7 +140,8 @@ means that at the entry to your typed functions, you have to check the types of
 the input objects. Maybe you can engineer a system such that a function can
 have multiple entry points---one for untyped calls, one for typed calls, and
 maybe even one for unboxed calls---but this hypothetical system's complexity is
-growing, and fast.
+growing, and fast. And there are a whole host of other complications and bits
+of dynamic behavior that I haven't even mentioned.
 
 "But Max," you say, "Python compiler libraries like Numba clearly work just
 fine. Just-in-time compilers have been doing this for years. What's the deal?"
