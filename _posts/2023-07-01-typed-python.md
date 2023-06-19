@@ -223,12 +223,14 @@ And the other thing is, Numba doesn't exactly compile *Python*...
 
 ## Dialects
 
-Numba is great! The team put in a lot of hard work and solid engineering and
-built a compiler that produces very fast numerical code. It's possible to do
-this because Numba compiles a superficially similar language that is much less
-dynamic and is focused on numerics. For people who work with data analytics and
-machine learning, this is incredible! Unfortunately, it doesn't generalize to
-arbitrary Python code.
+Numba is great! I cannot emphasize enough how much I am **not** trying to pick
+on Numba here. The team put in a lot of hard work and solid engineering and
+built a compiler that produces very fast numerical code.
+
+It's possible to do this because Numba compiles a superficially similar
+language that is much less dynamic and is focused on numerics. For people who
+work with data analytics and machine learning, this is incredible!
+Unfortunately, it doesn't generalize to arbitrary Python code.
 
 This is also true of many other type-driven compiler projects that optimize
 "Python" code:
