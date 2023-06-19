@@ -207,9 +207,10 @@ fine. Just-in-time compilers have been doing this for years. What's the deal?"
 
 Just-in-time compilers can be so effective because can speculate on things that
 are not compile-time constants. Then, if the assumption is no longer true, they
-can fall back on a (slower) interpreter. This interpreter deoptimization is
-part of what makes JITs hard to understand and does not much help with
-compiling code ahead-of-time.
+can fall back on a (slower) interpreter. This is how PyPy does its amazing work
+specializing data structures; the JIT does not have to handle every case. This
+interpreter deoptimization is part of what makes JITs hard to understand and
+does not much help with compiling code ahead-of-time.
 
 And Numba is great! The team put in a lot of hard work and solid engineering
 and built a compiler that produces very fast numerical code. But it doesn't
@@ -218,8 +219,8 @@ much less dynamic and is focused on numerics. For people who work with data
 analytics and machine learning, this is incredible! Unfortunately, it doesn't
 generalize to arbitrary Python code.
 
-Thi sis also true of many other projects to optimize Python code, mostly in the
-context of CPython:
+This is also true of many other projects to optimize "Python" code, mostly in
+the context of CPython:
 
 * [Cython](https://github.com/cython/cython)/[Pyrex](https://www.csse.canterbury.ac.nz/greg.ewing/python/Pyrex/)
 * [MicroPython Viper](https://docs.micropython.org/en/v1.9.3/pyboard/reference/speed_python.html#the-viper-code-emitter)
