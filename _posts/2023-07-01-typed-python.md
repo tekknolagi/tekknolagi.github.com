@@ -350,7 +350,7 @@ performance benefits.
 
 <!-- javascript -->
 
-## Just-in-time compilers
+## A note on just-in-time compilers
 
 <!-- cinder -->
 <!-- pypy -->
