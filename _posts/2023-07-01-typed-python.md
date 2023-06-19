@@ -52,6 +52,9 @@ simple](https://snarky.ca/unravelling-binary-arithmetic-operations-in-python/)
 because of subclasses. This means that there is a lot of code to be executed if
 `x` and `y` could be any subclasses of `int`.
 
+You don't need to understand or really even read the big blob below. You just
+need to say "ooh" and "aah" and "wow, so many if-statements."
+
 ```python
 _MISSING = object()
 
