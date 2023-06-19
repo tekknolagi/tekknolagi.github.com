@@ -122,10 +122,17 @@ other methods, integers in Python are heap-allocated big integer objects. This
 means that every operation on them is a function call to `PyLong_Add` or
 similar. While these functions have been optimized for speed over the years,
 they are still slower than machine integers. But let's assume that a
-sufficiently smart compiler can auto-unbox appropriately-sized big integers
-into machine words at the beginning of a function. We can do fast math with
-those. If we really want, we can even do fast floating point math, too. Problem
+sufficiently smart compiler can auto-unbox small-enough big integers into
+machine words at the beginning of a function. We can do fast math with those.
+If we really want, we can even do fast floating point math, too. Problem
 solved? Hopefully?
+
+```python
+# You can have fun making enormous numbers! This is part of the Python
+# language.
+def big_pow(x: int) -> int:
+    return 2**x
+```
 
 <!-- TODO add unboxing example -->
 
