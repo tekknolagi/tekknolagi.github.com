@@ -366,6 +366,8 @@ struct MyPair:
                self.second < rhs.second)
 ```
 
+It even looks like the `@value` decorator gives you value semantics.
+
 Per the Mojo [docs](https://docs.modular.com/mojo/programming-manual.html#struct-types),
 
 > Mojo structs are static: they are bound at compile-time (you cannot add
