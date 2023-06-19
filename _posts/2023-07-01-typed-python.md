@@ -305,6 +305,36 @@ the scope of this blog post.
 [^chris]: Thank you to [Chris Gregory](https://www.chrisgregory.me/) for
     pushing me to look more at it!
 
+See for example this snippet defining a struct (a new feature) that reads like
+Python but has some stronger mutability and binding guarantees:
+
+```python
+@value
+struct MyPair:
+    var first: Int
+    var second: Int
+    def __lt__(self, rhs: MyPair) -> Bool:
+        return self.first < rhs.first or
+              (self.first == rhs.first and
+               self.second < rhs.second)
+```
+
+Per the [docs](https://docs.modular.com/mojo/programming-manual.html#struct-types),
+
+> Mojo structs are static: they are bound at compile-time (you cannot add
+> methods at runtime). Structs allow you to trade flexibility for performance
+> while being safe and easy to use.
+>
+> [...]
+>
+> In Mojo, the structure and contents of a "struct" are set in advance and
+> can't be changed while the program is running. Unlike in Python, where you
+> can add, remove, or change attributes of an object on the fly, Mojo doesn't
+> allow that for structs. This means you can't use `del` to remove a method or
+> change its value in the middle of running the program.
+
+Seems neat. We'll see what it looks like more when it's open sourced.
+
 ## Other approaches
 
 Nuitka is a whole-program compiler from Python to C. As far as I can tell, it
