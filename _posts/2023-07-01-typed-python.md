@@ -252,6 +252,7 @@ and in particular to optimize numerics:
 * [Pyccel](https://github.com/pyccel/pyccel/blob/devel/tutorial/quickstart.md)
 * [Pythran](https://pythran.readthedocs.io/en/latest/)
 * [Taichi](https://github.com/taichi-dev/taichi)
+* [TensorFlow JIT/XLA](https://www.tensorflow.org/xla)
 * [TorchScript](https://pytorch.org/docs/stable/jit_language_reference.html)
 
 and probably more that I forgot about or could not find (please feel free to
