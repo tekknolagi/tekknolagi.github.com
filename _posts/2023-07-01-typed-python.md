@@ -353,7 +353,7 @@ the scope of this blog post.
     pushing me to look more at it!
 
 See for example this snippet defining a struct (a new feature) that reads like
-Python but has some stronger mutability and binding guarantees:
+a Python class but has some stronger mutability and binding guarantees:
 
 ```python
 @value
