@@ -452,6 +452,10 @@ I also hope you don't come away from this post feeling sad. I actually hope you
 feel hopeful! Tons of brilliant engineers are working tirelessly to make your
 code run faster.
 
+<!-- serrano aot js https://dl.acm.org/doi/10.1145/3276945.3276950 -->
+<!-- jscomp? https://github.com/tmikov/jscomp -->
+<!-- smalls https://github.com/tmikov/smalls -->
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
