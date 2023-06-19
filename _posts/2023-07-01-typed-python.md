@@ -366,7 +366,7 @@ struct MyPair:
                self.second < rhs.second)
 ```
 
-Per the [docs](https://docs.modular.com/mojo/programming-manual.html#struct-types),
+Per the Mojo [docs](https://docs.modular.com/mojo/programming-manual.html#struct-types),
 
 > Mojo structs are static: they are bound at compile-time (you cannot add
 > methods at runtime). Structs allow you to trade flexibility for performance
