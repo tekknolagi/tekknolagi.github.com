@@ -225,7 +225,7 @@ the context of CPython:
 * [Cython](https://github.com/cython/cython)/[Pyrex](https://www.csse.canterbury.ac.nz/greg.ewing/python/Pyrex/)
 * [MicroPython Viper](https://docs.micropython.org/en/v1.9.3/pyboard/reference/speed_python.html#the-viper-code-emitter)
 * [Mojo](https://www.modular.com/mojo)
-* [mypyc](https://github.com/mypyc/mypyc)
+* [Mypyc](https://github.com/mypyc/mypyc)
 * [Nuitka](https://github.com/Nuitka/Nuitka)
 * [Shed Skin](https://github.com/shedskin/shedskin)
 * [Starkiller](http://michael.salib.com/writings/thesis/thesis.pdf) (PDF)
@@ -331,7 +331,7 @@ foo("hello")  # type: ignore
 ```
 
 I would be remiss if I did not also mention
-[mypyc](https://github.com/mypyc/mypyc). Mypyc is very similar to Static Python
+[Mypyc](https://github.com/mypyc/mypyc). Mypyc is very similar to Static Python
 in that it takes something that looks like Python with types and generates
 type-optimized code. It is different in that it generates C extensions.
 Depending on your use case---in particular, your deployment story---it may be
