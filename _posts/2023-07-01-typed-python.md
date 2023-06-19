@@ -386,10 +386,10 @@ Seems neat. We'll see what it looks like more when it's open sourced.
 
 ## Other approaches
 
-Nuitka is a whole-program compiler from Python to C. As far as I can tell, it
-does not use your type annotations in the compilation process. Instead it uses
-its own optimization pipeline, including function inlining, etc, to discover
-types. Please correct me if I am wrong!
+[Nuitka](https://github.com/Nuitka/Nuitka) is a whole-program compiler from
+Python to C. As far as I can tell, it does not use your type annotations in the
+compilation process. Instead it uses its own optimization pipeline, including
+function inlining, etc, to discover types. Please correct me if I am wrong!
 
 ### In other languages
 
