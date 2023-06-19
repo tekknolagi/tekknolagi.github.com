@@ -195,8 +195,8 @@ It turns out, yes. Absolutely yes.
 ## Stronger guarantees
 
 As people have continually rediscovered over the years, Python is hard to
-optimize statically. Functions like the following, which only do an attribute
-load, have no hope whatsoever of being optimized:
+optimize statically. Functions like the following, which "only" do an attribute
+load, have no hope whatsoever of being optimized out of context:
 
 ```python
 def get_an_attr(o):
