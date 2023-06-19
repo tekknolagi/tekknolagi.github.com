@@ -317,6 +317,12 @@ performance benefits.
 
 <!-- javascript -->
 
+## Just-in-time compilers
+
+<!-- cinder -->
+<!-- pypy -->
+<!-- graalpython -->
+
 ## Wrapping up
 
 If nothing else, I hope have more of an understanding of what types mean from a
