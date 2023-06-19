@@ -43,7 +43,7 @@ add(3, 4)  # => 7
 ```
 
 Unfortunately, no. Type annotations of the type `x: T` mean "`x` is an instance
-of `T` or an instance of a subclass of `T`." This is pretty common in
+of `T` or an instance of a subclass of `T`."[^exact] This is pretty common in
 programming languages, and, thanks to [Barbara
 Liskov](https://en.wikipedia.org/wiki/Liskov_substitution_principle), makes
 semantic sense most of the time. But it doesn't help performance here. The
@@ -51,6 +51,10 @@ dispatch for binary operators in Python is famously [not
 simple](https://snarky.ca/unravelling-binary-arithmetic-operations-in-python/)
 because of subclasses. This means that there is a lot of code to be executed if
 `x` and `y` could be any subclasses of `int`.
+
+[^exact]: The Static Python project sort of has an internal `Exact` type that
+    can be used like `x: Exact[int]` to disallow subclasses, but it's not
+    exposed.
 
 You don't need to understand or really even read the big blob below. You just
 need to say "ooh" and "aah" and "wow, so many if-statements."
