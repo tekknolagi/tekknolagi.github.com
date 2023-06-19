@@ -15,7 +15,9 @@ speed](https://discuss.python.org/t/cpython-optimizations-leveraging-type-hints-
 [^adams]: According to Douglas Adams, anyway.
 
 No. But also, kind of, yes. I'll explain. I'll explain in the context of
-CPython, the predominant implementation of the Python language.
+"ahead-of-time" compiling within or adjacent to CPython, the predominant
+implementation of the Python language. Just-in-time (JIT) compilers are a
+different beast, and are described more below.
 
 ## It's not what you think
 
