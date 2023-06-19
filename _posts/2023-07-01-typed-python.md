@@ -184,6 +184,18 @@ calls, and maybe even one for unboxed calls---but this hypothetical system's
 complexity is growing, and fast. And there are a whole host of other
 complications and bits of dynamic behavior that I haven't even mentioned.
 
+```python
+def typed_function(x: int, y: int) -> int:
+    return x + y
+
+def typed_function_shell(x, y):
+    if not isinstance(x, int):
+        raise TypeError("...")
+    if not isinstance(y, int):
+        raise TypeError("...")
+    return typed_function(cast(x, int), cast(y, int))
+```
+
 "But Max," you say, "Python compiler libraries like Numba clearly work just
 fine. Just-in-time compilers have been doing this for years. What's the deal?"
 
