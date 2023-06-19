@@ -202,6 +202,10 @@ f = make_typed_function(typed_function_shell, typed_function, typed_function_unb
 f(3, 4)  # The dispatch gets hairy
 ```
 
+And it's not just about types, either! For example, variable binding,
+especially global variable binding, is a performance impediment. Globals, even
+builtins, are almost always overwritable by any random Python code.
+
 "But Max," you say, "Python compiler libraries like Numba clearly work just
 fine. Just-in-time compilers have been doing this for years. What's the deal?"
 
