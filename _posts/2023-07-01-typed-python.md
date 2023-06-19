@@ -142,13 +142,17 @@ right?
 
 Unfortunately, there are still some other loose ends to tie up. While you may
 have a nice and neatly typed numeric kernel of Python code, it has to interact
-with the outside world. And the outside world is often not so well typed. This
-means that at the entry to your typed functions, you have to check the types of
-the input objects. Maybe you can engineer a system such that a function can
-have multiple entry points---one for untyped calls, one for typed calls, and
-maybe even one for unboxed calls---but this hypothetical system's complexity is
-growing, and fast. And there are a whole host of other complications and bits
-of dynamic behavior that I haven't even mentioned.
+with the outside world. And the outside world is often not so well typed. Thank
+you to Jeremy Siek and Walid Taha for giving us gradual typing---this is the
+reason anything gets typed at all in Python---but you can't do type-driven
+compilation of untyped code.
+
+This means that at the entry to your typed functions, you have to check the
+types of the input objects. Maybe you can engineer a system such that a
+function can have multiple entry points---one for untyped calls, one for typed
+calls, and maybe even one for unboxed calls---but this hypothetical system's
+complexity is growing, and fast. And there are a whole host of other
+complications and bits of dynamic behavior that I haven't even mentioned.
 
 "But Max," you say, "Python compiler libraries like Numba clearly work just
 fine. Just-in-time compilers have been doing this for years. What's the deal?"
