@@ -265,11 +265,12 @@ which explains a bit more about the gradual typing bits.
 <!-- typed_python -->
 
 Other projects take this further. The [Mojo](https://www.modular.com/mojo)
-project, for example, aims to create a new language that is a proper superset
-of Python. The Python code it runs should continue to work as advertised, but
-modules can opt into less dynamism by iteratively converting their Python code
-to something that looks a little different. They also do a bunch of other neat
-stuff, but that's outside the scope of this blog post.
+project, for example, aims to create a much bigger and more visibly different
+new language that is a proper superset of Python. The Python code it runs
+should continue to work as advertised, but modules can opt into less dynamism
+by iteratively converting their Python code to something that looks a little
+different. They also do a bunch of other neat stuff, but that's outside the
+scope of this blog post.
 
 ## Other approaches
 
