@@ -209,7 +209,7 @@ are equivalent to running opaque blobs of user code.
 
 Even if the function is typed, you still run into the subclass problem
 described earlier. You also have issues like instance attributes, deleting
-attrbutes, descriptor shadowing, and so on.
+attributes, descriptor shadowing, and so on.
 
 ```python
 class C:
