@@ -13,15 +13,13 @@ speed](https://discuss.python.org/t/cpython-optimizations-leveraging-type-hints-
 
 [^adams]: According to Douglas Adams, anyway.
 
-No. But also, kind of, yes. I'll explain. I'll explain using CPython, the
-predominant implementation of the Python language. Other runtimes exist, but
-they are less common and often have trouble interfacing with C extensions,
-which are very prevalent.
+No. But also, kind of, yes. I'll explain. I'll explain in the context of
+CPython, the predominant implementation of the Python language.
 
 ## It's not what you think
 
 A lot of people enjoy walking into discussions and saying things like "We have
-a 100% mypy typed codebase. I would simply use the types in compilation to
+a 100% MyPy typed codebase. I would simply use the types in compilation to
 generate better code." That was the original title of this article, even. "*I
 would simply use the types in the compiler.*" But it doesn't really work like
 that[^simple-annotations]. I'll show a couple examples that demonstrate why.
