@@ -266,6 +266,15 @@ learn more, check out the Static Python team's [paper collaboration with
 Brown](https://cs.brown.edu/~sk/Publications/Papers/Published/lgmvpk-static-python/),
 which explains a bit more about the gradual typing bits.
 
+```python
+# An example snippet that is allowed by MyPy but not by Static Python because
+# it would be dangerous.
+def foo(x: int) -> int:
+    return x
+
+foo("hello")  # type: ignore
+```
+
 <!-- typed_python -->
 
 Other projects take this further. The [Mojo](https://www.modular.com/mojo)
