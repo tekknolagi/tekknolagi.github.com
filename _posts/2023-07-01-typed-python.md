@@ -185,8 +185,11 @@ complexity is growing, and fast. And there are a whole host of other
 complications and bits of dynamic behavior that I haven't even mentioned.
 
 ```python
+def typed_function_unboxed(x: int64, y: int64) -> int64:
+    return int64_add(x, y)
+
 def typed_function(x: int, y: int) -> int:
-    return x + y
+    return typed_function_unboxed(unbox(x), unbox(y))
 
 def typed_function_shell(x, y):
     if not isinstance(x, int):
@@ -194,6 +197,9 @@ def typed_function_shell(x, y):
     if not isinstance(y, int):
         raise TypeError("...")
     return typed_function(cast(x, int), cast(y, int))
+
+f = make_typed_function(typed_function_shell, typed_function, typed_function_unboxed)
+f(3, 4)  # The dispatch gets hairy
 ```
 
 "But Max," you say, "Python compiler libraries like Numba clearly work just
