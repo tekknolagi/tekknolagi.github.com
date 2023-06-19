@@ -394,7 +394,8 @@ function inlining, etc, to discover types. Please correct me if I am wrong!
 ### In other languages
 
 If you don't like this whole "typed kernel" idea, other compilers like Graal's
-SubstrateVM do some advanced wizardry to analyze your whole program.
+[SubstrateVM](https://docs.oracle.com/en/graalvm/enterprise/20/docs/reference-manual/native-image/#native-image)
+do some advanced wizardry to analyze your whole program.
 
 SubtrateVM is an ahead-of-time compiler for Java that looks at your entire
 codebase as a unit. It does some intense inter-procedural static analysis to
