@@ -277,6 +277,10 @@ the scope of this blog post.
 
 ## Other approaches
 
+<!-- Nuitka -->
+
+### In other languages
+
 If you don't like this whole "typed kernel" idea, other compilers like Graal's
 SubstrateVM do some advanced wizardry to analyze your whole program.
 
