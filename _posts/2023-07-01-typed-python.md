@@ -230,14 +230,13 @@ dynamic and is focused on numerics. For people who work with data analytics and
 machine learning, this is incredible! Unfortunately, it doesn't generalize to
 arbitrary Python code.
 
-This is also true of many other projects to optimize "Python" code, mostly in
-the context of CPython:
+This is also true of many other type-driven compiler projects that optimize
+"Python" code:
 
 * [Cython](https://github.com/cython/cython)/[Pyrex](https://www.csse.canterbury.ac.nz/greg.ewing/python/Pyrex/)
 * [MicroPython Viper](https://docs.micropython.org/en/v1.9.3/pyboard/reference/speed_python.html#the-viper-code-emitter)
 * [Mojo](https://www.modular.com/mojo)
 * [Mypyc](https://github.com/mypyc/mypyc)
-* [Nuitka](https://github.com/Nuitka/Nuitka)
 * [Shed Skin](https://github.com/shedskin/shedskin)
 * [Starkiller](http://michael.salib.com/writings/thesis/thesis.pdf) (PDF)
 * [Static Python](https://github.com/facebookincubator/cinder/#static-python)
@@ -350,8 +349,6 @@ the compiler that you want to use! The Black formatter, for example, has had
 [great success](https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/)
 using Mypyc.
 
-<!-- typed_python -->
-
 Other projects take this further. The [Mojo](https://www.modular.com/mojo)
 project, for example, aims to create a much bigger and more visibly different
 new language that is a proper superset of Python[^chris]. The Python code it
@@ -397,10 +394,11 @@ Seems neat. We'll see what it looks like more when it's open sourced.
 
 ## Other approaches
 
-[Nuitka](https://github.com/Nuitka/Nuitka) is a whole-program compiler from
-Python to C. As far as I can tell, it does not use your type annotations in the
-compilation process. Instead it uses its own optimization pipeline, including
-function inlining, etc, to discover types. Please correct me if I am wrong!
+[Nuitka](https://github.com/Nuitka/Nuitka) (not mentioned above) is a
+whole-program compiler from Python to C. As far as I can tell, it does not use
+your type annotations in the compilation process. Instead it uses its own
+optimization pipeline, including function inlining, etc, to discover types.
+Please correct me if I am wrong!
 
 ### In other languages
 
@@ -425,9 +423,10 @@ get some performance benefits.
 If you are working on some other project, though, you may not have such a clear
 performance hotspot. Furthermore, you may not be working with objects that have
 fast primitive representations, like `int`. You probably have a bunch of data
-structures, etc. In that case, some of the projects above like Nuitka and
-Static Python can probably help you. But you will need to add types, probably
-fix some type errors, and then change how you build and run your application.
+structures, etc. In that case, some of the projects above like Mypyc and
+Static Python and Nuitka can probably help you. But you will need to add types,
+probably fix some type errors, and then change how you build and run your
+application.
 
 Unfortunately for everybody who writes Python, a huge portion of code that
 needs to be fast is written as C extensions because of historical reasons. This
