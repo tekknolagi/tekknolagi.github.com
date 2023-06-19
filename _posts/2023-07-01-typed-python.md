@@ -411,7 +411,7 @@ likely have a bunch of glue around some fast core of hardcore math. If you add
 types and use one of the excellent compilers listed above, you will probably
 get some performance benefits.
 
-If you are working on some other project, though, you may not have a
+If you are working on some other project, though, you may not have such a clear
 performance hotspot. Furthermore, you may not be working with objects that have
 fast primitive representations, like `int`. You probably have a bunch of data
 structures, etc. In that case, some of the projects above like Nuitka and
