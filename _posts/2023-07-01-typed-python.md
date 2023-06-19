@@ -424,7 +424,8 @@ means that you can optimize the Python portion of your application all you
 like, but the C extension will remain an opaque blob (unless your compiler
 understands it like Numba understands NumPy, that is). This means that you may
 need to eventually re-write your C code as Python to fully reap all the
-performance benefits.
+performance benefits. Or at least [type the
+boundary](https://github.com/faster-cpython/ideas/issues/546).
 
 ## What this means for other dynamic languages
 
