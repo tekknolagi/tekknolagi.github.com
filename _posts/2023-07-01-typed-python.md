@@ -281,7 +281,39 @@ reflection to some known feature subset.
 
 ## What this means for the average Python programmer
 
-<!-- TODO -->
+If you are working on a science thing or machine learning project, you most
+likely have a bunch of glue around some fast core of hardcore math. If you add
+types and use one of the excellent compilers listed above, you will probably
+get some performance benefits.
+
+If you are working on some other project, though, you may not have a
+performance hotspot. Furthermore, you may not be working with objects that have
+fast primitive representations, like `int`. You probably have a bunch of data
+structures, etc. In that case, some of the projects above like Nuitka and
+Static Python can probably help you. But you will need to add types, probably
+fix some type errors, and then change how you build and run your application.
+
+Unfortunately for everybody who writes Python, a huge portion of code that
+needs to be fast is written as C extensions because of historical reasons. This
+means that you can optimize the Python portion of your application all you
+like, but the C extension will remain an opaque blob (unless your compiler
+understands it like Numba understands NumPy, that is). This means that you may
+need to eventually re-write your C code as Python to fully reap all the
+performance benefits.
+
+## What this means for other dynamic languages
+
+<!-- javascript -->
+
+## Wrapping up
+
+If nothing else, I hope have more of an understanding of what types mean from a
+correctness perspective, from a performance perspective, and how they do not
+always overlap.
+
+I also hope you don't come away from this post feeling sad. I actually hope you
+feel hopeful! Tons of brilliant engineers are working tirelessly to make your
+code run faster.
 
 <br />
 <hr style="width: 100px;" />
