@@ -2,7 +2,7 @@
 title: "Compiling typed Python"
 layout: post
 description: With a little effort, you can make your mypy-typed Python go zoom.
-date: 2023-07-01
+date: 2023-06-19
 ---
 
 It's been nine whole years since [PEP 484](https://peps.python.org/pep-0484/)
