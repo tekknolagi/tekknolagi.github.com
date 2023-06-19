@@ -268,6 +268,8 @@ learn more, check out the Static Python team's [paper collaboration with
 Brown](https://cs.brown.edu/~sk/Publications/Papers/Published/lgmvpk-static-python/),
 which explains a bit more about the gradual typing bits.
 
+<!-- cite jeremy siek https://wphomes.soic.indiana.edu/jsiek/what-is-gradual-typing/ -->
+
 ```python
 # An example snippet that is allowed by MyPy but not by Static Python because
 # it would be dangerous.
