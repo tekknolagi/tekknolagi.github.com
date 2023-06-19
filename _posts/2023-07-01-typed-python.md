@@ -131,21 +131,42 @@ solved? Hopefully?
 # You can have fun making enormous numbers! This is part of the Python
 # language.
 def big_pow(x: int) -> int:
+    # Even if you unbox `x` here, the result might still be enormous.
     return 2**x
 ```
-
-<!-- TODO add unboxing example -->
 
 Unfortunately, no. Most math kernels are not just using built-in functions and
 operators. They call out to external C libraries like NumPy or SciPy, and those
 functions expect heap-allocated `PyLongObject`s. The C-API is simply **not
 ready** to expose the underlying functions that operate on machine integers,
-and it is also **not ready** for tagged pointers. This would be a huge breaking
-change in the API and ABI. But okay, let's assume for the sake of blog post
-that the compiler team has a magic wand and can do all of this. Then we're set,
-right?
+and it is also **not ready** for [tagged pointers](/blog/small-objects/). This
+would be a huge breaking change in the API and ABI. But okay, let's assume for
+the sake of blog post that the compiler team has a magic wand and can do all of
+this.
 
-<!-- TODO add tagged pointer example -->
+```c
+// Store 63-bit integers inside the pointer itself.
+static const long kSmallIntTagBits = 1;
+static const long kBits = 64 - kSmallIntTagBits;
+static const long kMaxValue = (long{1} << 62) - 1;
+
+PyObject* PyLong_FromLong(long x) {
+    if (x < kMaxValue) {
+        return (PyObject*)((unsigned long)value << kSmallIntTagBits);
+    }
+    return MakeABigInt(x);
+}
+
+PyObject* PyLong_Add(PyObject* left, PyObject* right) {
+    if (IsSmallInt(left) && IsSmallInt(right)) {
+        long result = Unbox(left) + Unbox(right);
+        return PyLong_FromLong(result);
+    }
+    return BigIntAdd(left, right);
+}
+```
+
+Then we're set, right?
 
 Unfortunately, there are still some other loose ends to tie up. While you may
 have a nice and neatly typed numeric kernel of Python code, it has to interact
