@@ -287,7 +287,10 @@ I would be remiss if I did not also mention
 [mypyc](https://github.com/mypyc/mypyc). Mypyc is very similar to Static Python
 in that it takes something that looks like Python with types and generates
 type-optimized code. It is different in that it generates C extensions.
-Depending on your use case, it may be the compiler that you want to use!
+Depending on your use case, it may be the compiler that you want to use! The
+Black formatter, for example, has had [great
+success](https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/)
+using Mypyc.
 
 <!-- typed_python -->
 
