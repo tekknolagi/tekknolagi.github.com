@@ -381,6 +381,8 @@ In this example,
 
 * CPython ignores the annotations completely
 * Mypy lets the type mismatch slide due to `type: ignore`
+  * Whch, interestingly enough, means Mypyc defers the problem to run-time by
+    injecting an `unbox` that might cleanly raise a `TypeError`
 * Static Python does not allow this code to compile
 
 All of these are reasonable behaviors because each project has different goals.
