@@ -491,7 +491,25 @@ work](https://sorbet.org/blog/2021/07/30/open-sourcing-sorbet-compiler) to make
 this possible for Ruby. People ask the same thing about typed JavaScript (like
 TypeScript) and probably other languages, too. People will have to work out
 similar solutions. People are working on this; there is at least one neat
-extant project that I have been asked not to publicize yet.
+extant typed JS project that I have been asked not to publicize yet.
+
+There is also Manuel Serrano's whole-program [AOT
+compiler](https://www-sop.inria.fr/members/Manuel.Serrano/publi/serrano-dls18.pdf)
+(PDF) for JS, called Hopc. It will ignore your type annotations and do its own
+analysis, though. Serrano notes:
+
+> Hint types are unsound as they do not denote super sets of all the possible
+> values variables can hold at runtime, neither they abstract all possible
+> correct program executions.
+>
+> [...]
+>
+> Type information alone is not enough to generate fast code. For that, the
+> compilation chain has to include all sorts of optimizations such as inline
+> property caches, closure allocation, function inlining, data-flow analysis,
+> register allocation, etc.
+
+Seems about right.
 
 ## Wrapping up
 
@@ -515,7 +533,6 @@ CPython and erases redundant ones, and then realized that this was also cited
 in the Brown paper. The whole series of papers is really interesting. And
 apparently I was coworkers with Michael Vitousek for over four years. Neat!
 
-<!-- serrano aot js https://dl.acm.org/doi/10.1145/3276945.3276950 -->
 <!-- jscomp? https://github.com/tmikov/jscomp -->
 <!-- smalls https://github.com/tmikov/smalls -->
 <!-- mycpp -->
