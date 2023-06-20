@@ -26,6 +26,8 @@ a 100% MyPy typed codebase. I would simply use the types in compilation to
 generate better code." That was the original title of this article, even. "*I
 would simply use the types in the compiler.*" But it doesn't really work like
 that[^simple-annotations]. I'll show a couple examples that demonstrate why.
+The point is not to browbeat you with example after example; the point is to
+get people to stop saying "just" and "simply".
 
 [^simple-annotations]: I'm not even going to address fancy type-level
     metaprogramming stuff, because I don't think people ever intended to use
