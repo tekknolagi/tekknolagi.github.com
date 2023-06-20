@@ -383,12 +383,13 @@ In this example,
 All of these are reasonable behaviors because each project has different goals.
 
 I would be remiss if I did not also mention
-[Mypyc](https://github.com/mypyc/mypyc). Mypyc is very similar to Static Python
-in that it takes something that looks like Python with types and generates
-type-optimized code. It is different in that it generates C extensions.
-Depending on your use case---in particular, your deployment story---it may be
-the compiler that you want to use! The Black formatter, for example, has had
-[great success](https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/)
+[Mypyc](https://github.com/mypyc/mypyc) (the optimizer and code generator for
+MyPy). Mypyc is very similar to Static Python in that it takes something that
+looks like Python with types and generates type-optimized code. It is different
+in that it generates C extensions. Depending on your use case---in particular,
+your deployment story---it may be the compiler that you want to use! The Black
+formatter, for example, has had [great
+success](https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/)
 using Mypyc.
 
 Other projects take this further. The [Mojo](https://www.modular.com/mojo)
