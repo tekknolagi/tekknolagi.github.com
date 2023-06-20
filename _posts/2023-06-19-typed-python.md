@@ -451,8 +451,10 @@ you get some big wins in time and code locality. *ngoldbaum* on lobste.rs
 [PyOxidizer](https://github.com/indygreg/PyOxidizer) can bundle your code into
 the data segment of an executable.
 
-This already happens with the frozen `importlib` and has been tried before with
-entire applications
+This already happens with the [frozen built-in
+modules](https://docs.python.org/3.11/whatsnew/3.11.html#faster-startup) (was
+just `importlib` before 3.11) and has been tried before with entire
+applications
 ([one](https://mail.python.org/pipermail/python-dev/2018-May/153367.html),
 [two](https://bugs.python.org/issue36839), and maybe others) with varying
 upstreaming success.
