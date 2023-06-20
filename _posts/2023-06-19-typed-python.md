@@ -517,6 +517,7 @@ apparently I was coworkers with Michael Vitousek for over four years. Neat!
 <!-- jscomp? https://github.com/tmikov/jscomp -->
 <!-- smalls https://github.com/tmikov/smalls -->
 <!-- mycpp -->
+<!-- mention Julia and how it handles dispatch -->
 
 <br />
 <hr style="width: 100px;" />
