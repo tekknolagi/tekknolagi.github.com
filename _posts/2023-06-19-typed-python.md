@@ -373,9 +373,11 @@ I would be remiss if I did not also mention
 [Mypyc](https://github.com/mypyc/mypyc) (the optimizer and code generator for
 Mypy). Mypyc is very similar to Static Python in that it takes something that
 looks like Python with types and generates type-optimized code. It is different
-in that it generates C extensions. Depending on your use case---in particular,
-your deployment story---it may be the compiler that you want to use! The Black
-formatter, for example, has had [great
+in that it generates C extensions and does [tagged pointers for
+integers](https://mypyc.readthedocs.io/en/latest/int_operations.html) by
+default. Depending on your use case---in particular, your deployment story---it
+may be the compiler that you want to use! The Black formatter, for example, has
+had [great
 success](https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/)
 using Mypyc.
 
