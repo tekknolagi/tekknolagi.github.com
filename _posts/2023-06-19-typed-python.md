@@ -539,6 +539,7 @@ apparently I was coworkers with Michael Vitousek for over four years. Neat!
 <!-- smalls https://github.com/tmikov/smalls -->
 <!-- mycpp -->
 <!-- mention Julia and how it handles dispatch -->
+<!-- mention the other 15 dialects of type checkers like pyre, pyright, etc -->
 
 <br />
 <hr style="width: 100px;" />
