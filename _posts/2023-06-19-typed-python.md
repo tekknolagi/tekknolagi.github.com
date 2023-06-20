@@ -381,6 +381,11 @@ had [great
 success](https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/)
 using Mypyc.
 
+In addition to the normal types available, both Static Python and Mypyc allow
+typing parameters and other variables as primitive ints like `int8` so you can
+get the unbox arithmetic that people tend to expect on first reading of the
+first code snippet in this post.
+
 ```python
 # An example snippet that is allowed by Mypy but not by Static Python because
 # it would be dangerous.
