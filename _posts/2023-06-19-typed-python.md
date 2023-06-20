@@ -472,6 +472,13 @@ I also hope you don't come away from this post feeling sad. I actually hope you
 feel hopeful! Tons of brilliant engineers are working tirelessly to make your
 code run faster.
 
+## Further reading
+
+After publishing this post I came across [Optimizing and Evaluating Transient
+Gradual Typing](https://arxiv.org/abs/1902.07808) which adds type checks to
+CPython and erases redundant ones, and then realized that this was also cited
+in the Brown paper. Neat!
+
 <!-- serrano aot js https://dl.acm.org/doi/10.1145/3276945.3276950 -->
 <!-- jscomp? https://github.com/tmikov/jscomp -->
 <!-- smalls https://github.com/tmikov/smalls -->
