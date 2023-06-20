@@ -368,6 +368,16 @@ Static Python team's [paper collaboration with
 Brown](https://cs.brown.edu/~sk/Publications/Papers/Published/lgmvpk-static-python/),
 which explains a bit more about the gradual typing bits and soundness.
 
+I would be remiss if I did not also mention
+[Mypyc](https://github.com/mypyc/mypyc) (the optimizer and code generator for
+Mypy). Mypyc is very similar to Static Python in that it takes something that
+looks like Python with types and generates type-optimized code. It is different
+in that it generates C extensions. Depending on your use case---in particular,
+your deployment story---it may be the compiler that you want to use! The Black
+formatter, for example, has had [great
+success](https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/)
+using Mypyc.
+
 ```python
 # An example snippet that is allowed by Mypy but not by Static Python because
 # it would be dangerous.
@@ -386,16 +396,6 @@ In this example,
 * Static Python does not allow this code to compile
 
 All of these are reasonable behaviors because each project has different goals.
-
-I would be remiss if I did not also mention
-[Mypyc](https://github.com/mypyc/mypyc) (the optimizer and code generator for
-Mypy). Mypyc is very similar to Static Python in that it takes something that
-looks like Python with types and generates type-optimized code. It is different
-in that it generates C extensions. Depending on your use case---in particular,
-your deployment story---it may be the compiler that you want to use! The Black
-formatter, for example, has had [great
-success](https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/)
-using Mypyc.
 
 Other projects take this further. The [Mojo](https://www.modular.com/mojo)
 project, for example, aims to create a much bigger and more visibly different
