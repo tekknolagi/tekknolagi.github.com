@@ -334,11 +334,11 @@ out the standard bytecode compiler for the Static Python bytecode compiler,
 which *compiles a different language*!
 
 By way of example, the SP compiler will automatically slotify all of the
-classes in a SP module. This means that features that used to
-work---dynamically creating and deleting attributes, etc---no longer do. But it
-also means that attribute loads from static classes are actually only three
-machine instructions now. This tradeoff makes the compiler transform *sound*.
-Most people like this tradeoff.
+classes in a SP module and prohibit a `__dict__` slot. This means that features
+that used to work---dynamically creating and deleting attributes, etc---no
+longer do. But it also means that attribute loads from static classes are
+actually only three machine instructions now. This tradeoff makes the compiler
+transform *sound*. Most people like this tradeoff.
 
 ```python
 import __static__
@@ -361,12 +361,12 @@ constraints than Mypy does (you can't `ignore` your type errors away, for
 example), but it does not change the syntax of Python. But it's important to
 know that this does not just immediately follow from a type-directed
 translation. It requires opting into stricter checking and different behavior
-for an entire typed core of a codebase. It requires changing the runtime
-representation of objects from header+dictionary to header+array of slots. For
-this reason it is (currently) implemented as a custom compiler, custom bytecode
-interpreter, and with support in the Cinder JIT. To learn more, check out the
-Static Python team's [paper collaboration with
-Brown](https://cs.brown.edu/~sk/Publications/Papers/Published/lgmvpk-static-python/),
+for an entire typed core of a codebase---potentially gradually (SP can call
+untyped Python and vice versa). It requires changing the runtime representation
+of objects from header+dictionary to header+array of slots. For this reason it
+is (currently) implemented as a custom compiler, custom bytecode interpreter,
+and with support in the Cinder JIT. To learn more, check out the Static Python
+team's [paper collaboration with Brown](https://cs.brown.edu/~sk/Publications/Papers/Published/lgmvpk-static-python/),
 which explains a bit more about the gradual typing bits and soundness.
 
 I would be remiss if I did not also mention
@@ -397,6 +397,9 @@ In this example,
   * Which, interestingly enough, means Mypyc defers the problem to run-time by
     injecting an `unbox` that might cleanly raise a `TypeError`
 * Static Python does not allow this code to compile
+  * Note that non-Static Python code in the same project would not be
+    compile-time checked and therefore would only get a run-time `TypeError` at
+    the boundary if they called `foo` with a non-`int`
 
 All of these are reasonable behaviors because each project has different goals.
 
