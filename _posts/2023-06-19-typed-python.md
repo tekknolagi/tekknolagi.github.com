@@ -69,8 +69,8 @@ class C(int):
 ```
 
 It's not obvious how the appropriate `__add__` function is selected in operator
-dispatch. You don't need to understand or really even read the big blob that
-explains it below. You just need to say "ooh" and "aah" and "wow, so many
+dispatch. **You don't need to understand or really even read the big blob**
+that explains it below. You just need to say "ooh" and "aah" and "wow, so many
 if-statements."
 
 ```python
