@@ -61,8 +61,16 @@ because of subclasses. This means that there is a lot of code to be executed if
     other type checkers don't have a good way to check this type; the Python
     type system does not support this.
 
-You don't need to understand or really even read the big blob below. You just
-need to say "ooh" and "aah" and "wow, so many if-statements."
+```python
+class C(int):
+    def __add__(self, other):
+        return "no"  # sigh
+```
+
+It's not obvious how the appropriate `__add__` function is selected in operator
+dispatch. You don't need to understand or really even read the big blob that
+explains it below. You just need to say "ooh" and "aah" and "wow, so many
+if-statements."
 
 ```python
 _MISSING = object()
