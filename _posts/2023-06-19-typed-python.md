@@ -20,6 +20,8 @@ No. But also, kind of, yes. I'll explain. I'll explain in the context of
 implementation of the Python language. Just-in-time (JIT) compilers are a
 different beast, and are described more below.
 
+The core thesis is: *types are very broad hints and they are sometimes lies*.
+
 ## It's not what you think
 
 A lot of people enjoy walking into discussions and saying things like "We have
