@@ -374,6 +374,14 @@ def foo(x: int) -> int:
 foo("hello")  # type: ignore
 ```
 
+In this example,
+
+* CPython ignores the annotations completely
+* Mypy lets the type mismatch slide due to `type: ignore`
+* Static Python does not allow this code to compile
+
+All of these are reasonable behaviors because each project has different goals.
+
 I would be remiss if I did not also mention
 [Mypyc](https://github.com/mypyc/mypyc). Mypyc is very similar to Static Python
 in that it takes something that looks like Python with types and generates
