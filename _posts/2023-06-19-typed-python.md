@@ -313,7 +313,8 @@ By way of example, the SP compiler will automatically slotify all of the
 classes in a SP module. This means that features that used to
 work---dynamically creating and deleting attributes, etc---no longer do. But it
 also means that attribute loads from static classes are actually only three
-machine instructions now. Most people like this tradeoff.
+machine instructions now. This tradeoff makes the compiler transform *sound*.
+Most people like this tradeoff.
 
 ```python
 import __static__
@@ -342,7 +343,7 @@ this reason it is (currently) implemented as a custom compiler, custom bytecode
 interpreter, and with support in the Cinder JIT. To learn more, check out the
 Static Python team's [paper collaboration with
 Brown](https://cs.brown.edu/~sk/Publications/Papers/Published/lgmvpk-static-python/),
-which explains a bit more about the gradual typing bits.
+which explains a bit more about the gradual typing bits and soundness.
 
 ```python
 # An example snippet that is allowed by MyPy but not by Static Python because
