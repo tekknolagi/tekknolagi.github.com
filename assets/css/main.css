@@ -43,10 +43,6 @@ pre {
     display: block;
     padding: 15px;
 }
-div.footnotes > ol {
-    /* Don't indent top-level list of footnotes. Sublists can indent. */
-    padding-left: 0;
-}
 a.newlink:after {
     content: "(new!)";
     padding-left: 5px;
