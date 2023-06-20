@@ -231,12 +231,12 @@ builtins, are almost always overwritable by any random Python code.
 "But Max," you say, "Python compiler libraries like Numba clearly work just
 fine. Just-in-time compilers have been doing this for years. What's the deal?"
 
-Just-in-time compilers can be so effective because can speculate on things that
-are not compile-time constants. Then, if the assumption is no longer true, they
-can fall back on a (slower) interpreter. This is how PyPy does its amazing work
-specializing data structures; the JIT does not have to handle every case. This
-interpreter deoptimization is part of what makes JITs hard to understand and
-does not much help with compiling code ahead-of-time.
+Just-in-time compilers can be so effective because they can speculate on things
+that are not compile-time constants. Then, if the assumption is no longer true,
+they can fall back on a (slower) interpreter. This is how PyPy does its amazing
+work specializing data structures; the JIT does not have to handle every case.
+This interpreter deoptimization is part of what makes JITs hard to understand
+and does not much help with compiling code ahead-of-time.
 
 This is what a PyPy trace might look like, taken from the 2011 paper [Runtime
 Feedback in a Meta-Tracing JIT for Efficient Dynamic
@@ -292,7 +292,7 @@ and in particular to optimize numerics:
 and probably more that I forgot about or could not find (please feel free to
 submit a PR).
 
-It does raises an interesting question, though: what if you intentionally and
+It does raise an interesting question, though: what if you intentionally and
 explicitly eschew the more dynamic features? Can you get performance in return?
 It turns out, yes. Absolutely yes.
 
