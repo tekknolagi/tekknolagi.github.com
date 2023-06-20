@@ -9,8 +9,9 @@ It's been nine whole years since [PEP 484](https://peps.python.org/pep-0484/)
 landed and brought us types from on high. This has made a lot of people very
 angry and been widely regarded as a bad move[^adams]. Since then, people on the
 internet have been clamoring to find out: [does this mean we can now compile
-Python to native code for more
-speed](https://discuss.python.org/t/cpython-optimizations-leveraging-type-hints-bachelor-thesis-topic/27264)?
+Python](https://discuss.python.org/t/cpython-optimizations-leveraging-type-hints-bachelor-thesis-topic/27264)
+[to native code for more speed](https://stackoverflow.com/questions/40204951/python-3-type-hints-for-performance-optimizations)
+?
 
 [^adams]: According to Douglas Adams, anyway.
 
