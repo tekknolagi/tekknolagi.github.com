@@ -234,8 +234,9 @@ fine. Just-in-time compilers have been doing this for years. What's the deal?"
 Just-in-time compilers can be so effective because they can speculate on things
 that are not compile-time constants. Then, if the assumption is no longer true,
 they can fall back on a (slower) interpreter. This is how
-[PyPy](https://www.pypy.org/) does its amazing work specializing data
-structures; the JIT does not have to handle every case. This interpreter
+[PyPy](https://www.pypy.org/), the successor of
+[Psyco](https://psyco.sourceforge.net/), does its amazing work specializing
+data structures; the JIT does not have to handle every case. This interpreter
 deoptimization is part of what makes JITs hard to understand and does not much
 help with compiling code ahead-of-time.
 
