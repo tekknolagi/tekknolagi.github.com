@@ -232,6 +232,19 @@ specializing data structures; the JIT does not have to handle every case. This
 interpreter deoptimization is part of what makes JITs hard to understand and
 does not much help with compiling code ahead-of-time.
 
+This is what a PyPy trace might look like. Every `guard` is a potential exit
+from JITed code to the interpreter:
+
+```python
+# inst1.getattr("a")
+map1 = inst1.map
+guard(map1 == 0xb74af4a8)
+index1 = Map.getindex(map1, "a")
+guard(index1 != -1)
+storage1 = inst1.storage
+result1 = storage1[index1]
+```
+
 And the other thing is, Numba doesn't exactly compile *Python*...
 
 ## Dialects
