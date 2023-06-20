@@ -232,8 +232,10 @@ specializing data structures; the JIT does not have to handle every case. This
 interpreter deoptimization is part of what makes JITs hard to understand and
 does not much help with compiling code ahead-of-time.
 
-This is what a PyPy trace might look like. Every `guard` is a potential exit
-from JITed code to the interpreter:
+This is what a PyPy trace might look like, taken from the 2011 paper [Runtime
+Feedback in a Meta-Tracing JIT for Efficient Dynamic
+Languages](https://dl.acm.org/doi/10.1145/2069172.2069181). Every `guard` is a
+potential exit from JITed code to the interpreter:
 
 ```python
 # inst1.getattr("a")
