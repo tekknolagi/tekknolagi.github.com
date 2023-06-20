@@ -457,8 +457,9 @@ just `importlib` before 3.11) and has been tried before with entire
 applications
 ([one](https://mail.python.org/pipermail/python-dev/2018-May/153367.html),
 [two](https://bugs.python.org/issue36839),
-[three](https://github.com/faster-cpython/ideas/discussions/150), and maybe
-others) with varying upstreaming success.
+[three](https://github.com/faster-cpython/ideas/discussions/150)
+(productionized [here](https://github.com/alibaba/code-data-share-for-python)),
+and maybe others) with varying upstreaming success.
 
 ## Other approaches
 
