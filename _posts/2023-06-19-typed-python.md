@@ -483,6 +483,10 @@ extant project that I have been asked not to publicize yet.
 
 ## Wrapping up
 
+Types are not ironclad guarantees of data layout. Changing the language you are
+compiling to prohibit certain kinds of dynamism can help you with performance.
+Several projects already do this and it seems to be growing in popularity.
+
 If nothing else, I hope have more of an understanding of what types mean from a
 correctness perspective, from a performance perspective, and how they do not
 always overlap.
