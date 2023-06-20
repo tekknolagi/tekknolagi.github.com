@@ -455,9 +455,11 @@ boundary](https://github.com/faster-cpython/ideas/issues/546).
 ## What this means for other dynamic languages
 
 These questions about and issues with straightforward type-driven compilation
-are not unique to Python. People ask the same thing about typed JavaScript
-(like TypeScript) and probably other languages, too. People will have to work
-out similar solutions. People are working on this; there is at least one neat
+are not unique to Python. The Sorbet team had to do [a lot of
+work](https://sorbet.org/blog/2021/07/30/open-sourcing-sorbet-compiler) to make
+this possible for Ruby. People ask the same thing about typed JavaScript (like
+TypeScript) and probably other languages, too. People will have to work out
+similar solutions. People are working on this; there is at least one neat
 extant project that I have been asked not to publicize yet.
 
 ## Wrapping up
