@@ -346,7 +346,7 @@ class C:
     def __init__(self):
         self.value: int = 5
 
-def test(o: C):
+def get_an_attr(o: C):
     return o.value
 # ...
 # mov rax,QWORD PTR [rsi+0x10]  # Load the field
