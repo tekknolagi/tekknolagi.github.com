@@ -443,6 +443,20 @@ Per the Mojo [docs](https://docs.modular.com/mojo/programming-manual.html#struct
 
 Seems neat. We'll see what it looks like more when it's open sourced.
 
+And finally, even if you are not trying to do optimized code generation,
+packaging up all the code at app bundle time can help save big on runtime
+startup. If you don't need to hit the disk at least once per imported module,
+you get some big wins in time and code locality. *ngoldbaum* on lobste.rs
+[notes](https://lobste.rs/s/lnyfm6/compiling_typed_python#c_kifkr4) that
+[PyOxidizer](https://github.com/indygreg/PyOxidizer) can bundle your code into
+the data segment of an executable.
+
+This already happens with the frozen `importlib` and has been tried before with
+entire applications
+([one](https://mail.python.org/pipermail/python-dev/2018-May/153367.html),
+[two](https://bugs.python.org/issue36839), and maybe others) with varying
+upstreaming success.
+
 ## Other approaches
 
 [Nuitka](https://github.com/Nuitka/Nuitka) (not mentioned above) is a
