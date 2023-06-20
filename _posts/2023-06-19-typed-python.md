@@ -343,8 +343,8 @@ class C:
     def __init__(self):
         self.value: int = 5
 
-def test(x: C):
-    return x.value
+def test(o: C):
+    return o.value
 # ...
 # mov rax,QWORD PTR [rsi+0x10]  # Load the field
 # test rax,rax                  # Check if null
