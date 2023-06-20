@@ -233,10 +233,11 @@ fine. Just-in-time compilers have been doing this for years. What's the deal?"
 
 Just-in-time compilers can be so effective because they can speculate on things
 that are not compile-time constants. Then, if the assumption is no longer true,
-they can fall back on a (slower) interpreter. This is how PyPy does its amazing
-work specializing data structures; the JIT does not have to handle every case.
-This interpreter deoptimization is part of what makes JITs hard to understand
-and does not much help with compiling code ahead-of-time.
+they can fall back on a (slower) interpreter. This is how
+[PyPy](https://www.pypy.org/) does its amazing work specializing data
+structures; the JIT does not have to handle every case. This interpreter
+deoptimization is part of what makes JITs hard to understand and does not much
+help with compiling code ahead-of-time.
 
 This is what a PyPy trace might look like, taken from the 2011 paper [Runtime
 Feedback in a Meta-Tracing JIT for Efficient Dynamic
