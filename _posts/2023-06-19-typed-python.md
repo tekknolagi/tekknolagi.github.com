@@ -194,7 +194,8 @@ have a nice and neatly typed numeric kernel of Python code, it has to interact
 with the outside world. And the outside world is often not so well typed. Thank
 you to Jeremy Siek and Walid Taha for giving us [gradual
 typing][gradual]---this is the reason anything gets typed at all in
-Python---but you can't do type-driven compilation of untyped code.
+Python---but you can't do type-driven compilation of untyped code and expect it
+to be fast.
 
 [gradual]: https://wphomes.soic.indiana.edu/jsiek/what-is-gradual-typing/
 
@@ -540,6 +541,8 @@ apparently I was coworkers with Michael Vitousek for over four years. Neat!
 <!-- mycpp -->
 <!-- mention Julia and how it handles dispatch -->
 <!-- mention the other 15 dialects of type checkers like pyre, pyright, etc -->
+<!-- mention pyoxidizer, icepack, carl's post on python-dev, ... for putting
+code in data segment for faster startup -->
 
 <br />
 <hr style="width: 100px;" />
