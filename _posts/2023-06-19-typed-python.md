@@ -477,7 +477,8 @@ code run faster.
 After publishing this post I came across [Optimizing and Evaluating Transient
 Gradual Typing](https://arxiv.org/abs/1902.07808) which adds type checks to
 CPython and erases redundant ones, and then realized that this was also cited
-in the Brown paper. Neat!
+in the Brown paper. And apparently I was coworkers with Michael Vitousek for
+over four years. Neat!
 
 <!-- serrano aot js https://dl.acm.org/doi/10.1145/3276945.3276950 -->
 <!-- jscomp? https://github.com/tmikov/jscomp -->
