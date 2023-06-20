@@ -11,7 +11,7 @@ angry and been widely regarded as a bad move[^adams]. Since then, people on the
 internet have been clamoring to find out: [does this mean we can now compile
 Python](https://discuss.python.org/t/cpython-optimizations-leveraging-type-hints-bachelor-thesis-topic/27264)
 [to native code for more speed](https://stackoverflow.com/questions/40204951/python-3-type-hints-for-performance-optimizations)
-?
+? It's a totally reasonable question. So can we?
 
 [^adams]: According to Douglas Adams, anyway.
 
