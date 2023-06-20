@@ -19,7 +19,9 @@ first started working on Python compilers. So can we do it?
 No. But also, kind of, yes. I'll explain. I'll explain in the context of
 "ahead-of-time" compiling within or adjacent to CPython, the predominant
 implementation of the Python language. Just-in-time (JIT) compilers are a
-different beast, and are described more below.
+different beast, and are described more below. None of the information in this
+post is novel; I hope only to clarify a bunch of existing academic and industry
+knowledge.
 
 The core thesis is: *types are very broad hints and they are sometimes lies*.
 
