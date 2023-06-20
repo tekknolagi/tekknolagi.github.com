@@ -180,7 +180,7 @@ PyObject* PyLong_FromLong(long x) {
 
 PyObject* PyLong_Add(PyObject* left, PyObject* right) {
     if (IsSmallInt(left) && IsSmallInt(right)) {
-        long result = Unbox(left) + Unbox(right);
+        long result = Untag(left) + Untag(right);
         return PyLong_FromLong(result);
     }
     return BigIntAdd(left, right);
