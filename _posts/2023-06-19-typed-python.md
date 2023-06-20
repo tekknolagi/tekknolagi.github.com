@@ -32,7 +32,9 @@ get people to stop saying "just" and "simply".
 
 [^simple-annotations]: I'm not even going to address fancy type-level
     metaprogramming stuff, because I don't think people ever intended to use
-    that for performance anyway. We'll just look at very simple bog-standard
+    that for performance anyway. There are [lots of
+    uses](https://lukeplant.me.uk/blog/posts/the-different-uses-of-python-type-hints/)
+    for Python type annotations. We'll just look at very simple bog-standard
     `x: SomeTypeName` annotations.
 
 For example, look at this lovely little Python function. It's short, typed, and
