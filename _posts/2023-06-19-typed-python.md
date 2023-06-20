@@ -334,7 +334,7 @@ def test(x: C):
 ```
 
 Static Python does this just with existing Python annotations. It has some more
-constraints than MyPy does (you can't `noqa` your type errors away, for
+constraints than MyPy does (you can't `ignore` your type errors away, for
 example), but it does not change the syntax of Python. But it's important to
 know that this does not just immediately follow from a type-directed
 translation. It requires opting into stricter checking and different behavior
