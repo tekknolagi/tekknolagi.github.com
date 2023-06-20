@@ -25,7 +25,7 @@ The core thesis is: *types are very broad hints and they are sometimes lies*.
 ## It's not what you think
 
 A lot of people enjoy walking into discussions and saying things like "We have
-a 100% MyPy typed codebase. I would simply use the types in compilation to
+a 100% Mypy typed codebase. I would simply use the types in compilation to
 generate better code." That was the original title of this article, even. "*I
 would simply use the types in the compiler.*" But it doesn't really work like
 that[^simple-annotations]. I'll show a couple examples that demonstrate why.
@@ -62,7 +62,7 @@ because of subclasses. This means that there is a lot of code to be executed if
 
 [^exact]: The Static Python project sort of has an internal `Exact` type that
     can be used like `x: Exact[int]` to disallow subclasses, but it's not
-    exposed. This is, as Carl Meyer explained to me, because MyPy, Pyre, and
+    exposed. This is, as Carl Meyer explained to me, because Mypy, Pyre, and
     other type checkers don't have a good way to check this type; the Python
     type system does not support this.
 
@@ -353,7 +353,7 @@ def test(o: C):
 ```
 
 Static Python does this just with existing Python annotations. It has some more
-constraints than MyPy does (you can't `ignore` your type errors away, for
+constraints than Mypy does (you can't `ignore` your type errors away, for
 example), but it does not change the syntax of Python. But it's important to
 know that this does not just immediately follow from a type-directed
 translation. It requires opting into stricter checking and different behavior
@@ -366,7 +366,7 @@ Brown](https://cs.brown.edu/~sk/Publications/Papers/Published/lgmvpk-static-pyth
 which explains a bit more about the gradual typing bits and soundness.
 
 ```python
-# An example snippet that is allowed by MyPy but not by Static Python because
+# An example snippet that is allowed by Mypy but not by Static Python because
 # it would be dangerous.
 def foo(x: int) -> int:
     return x
@@ -384,7 +384,7 @@ All of these are reasonable behaviors because each project has different goals.
 
 I would be remiss if I did not also mention
 [Mypyc](https://github.com/mypyc/mypyc) (the optimizer and code generator for
-MyPy). Mypyc is very similar to Static Python in that it takes something that
+Mypy). Mypyc is very similar to Static Python in that it takes something that
 looks like Python with types and generates type-optimized code. It is different
 in that it generates C extensions. Depending on your use case---in particular,
 your deployment story---it may be the compiler that you want to use! The Black
