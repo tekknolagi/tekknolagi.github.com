@@ -488,6 +488,14 @@ your type annotations in the compilation process. Instead it uses its own
 optimization pipeline, including function inlining, etc, to discover types.
 Please correct me if I am wrong!
 
+The [Oils project](http://www.oilshell.org/) includes a shell written in Python
+that is accelerated by a Python-to-C++ compiler called
+[mycpp](https://www.oilshell.org/blog/2022/05/mycpp.html). This is not a
+general-purpose compiler; Andy's perspective on this is that they only ever
+intend to be able to compile and run *one codebase*. This lets them completely
+break Python semantics as long as the singular end-user program has the same
+visible behavior.
+
 ### In other languages
 
 If you don't like this whole "typed kernel" idea, other compilers like Graal's
@@ -577,7 +585,6 @@ apparently I was coworkers with Michael Vitousek for over four years. Neat!
 
 <!-- jscomp? https://github.com/tmikov/jscomp -->
 <!-- smalls https://github.com/tmikov/smalls -->
-<!-- mycpp -->
 <!-- mention Julia and how it handles dispatch -->
 
 <br />
