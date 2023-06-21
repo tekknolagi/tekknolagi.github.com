@@ -72,7 +72,8 @@ because of subclasses. This means that there is a lot of code to be executed if
 ```python
 class C(int):
     def __add__(self, other):
-        return "no"  # sigh
+        make_a_network_call()  # sigh
+        return 42
 ```
 
 It's not obvious how the appropriate `__add__` function is selected in operator
