@@ -493,8 +493,8 @@ that is accelerated by a Python-to-C++ compiler called
 [mycpp](https://www.oilshell.org/blog/2022/05/mycpp.html). This is not a
 general-purpose compiler; Andy's perspective on this is that they only ever
 intend to be able to compile and run *one codebase*. This lets them completely
-break Python semantics as long as the singular end-user program has the same
-visible behavior.
+ignore very dynamic Python semantics as long as the singular end-user program
+has the same visible behavior.
 
 ### In other languages
 
