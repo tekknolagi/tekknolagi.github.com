@@ -76,10 +76,18 @@ class C(int):
         return 42
 ```
 
-It's not obvious how the appropriate `__add__` function is selected in operator
-dispatch. **You don't need to understand or really even read the big blob**
-that explains it below. You just need to say "ooh" and "aah" and "wow, so many
-if-statements."
+If this sounds familiar, you might have read the [Ben-Asher and Rotem
+paper](https://dl.acm.org/doi/10.1145/1534530.1534550), [Falcon
+paper](https://arxiv.org/abs/1306.6047), or [Barany
+paper](https://dl.acm.org/doi/10.1145/2617548.2617552), all of which discuss
+how everything in Python basically boils down to a function call and that makes
+it hard to statically analyze. This post is subtly different because we now
+have types, and people assume those make the analysis easier.
+
+Arbitrary code execution aside, it's also not obvious how the appropriate
+`__add__` function is selected in operator dispatch. **You don't need to
+understand or really even read the big blob** that explains it below. You just
+need to say "ooh" and "aah" and "wow, so many if-statements."
 
 ```python
 _MISSING = object()
@@ -574,9 +582,6 @@ apparently I was coworkers with Michael Vitousek for over four years. Neat!
 <!-- mention the other 15 dialects of type checkers like pyre, pyright, etc -->
 <!-- mention pyoxidizer, icepack, carl's post on python-dev, ... for putting
 code in data segment for faster startup -->
-<!-- note that it's subtly different from falcon paper observation ("everything
-is a function call") in that there is a misleading notion that type information
-is available and useful when it's really not -->
 
 <br />
 <hr style="width: 100px;" />
