@@ -28,12 +28,12 @@ The core thesis is: *types are very broad hints and they are sometimes lies*.
 ## It's not what you think
 
 A lot of people enjoy walking into discussions and saying things like "We have
-a 100% Mypy typed codebase. I would simply use the types in compilation to
-generate better code." That was the original title of this article, even. "*I
-would simply use the types in the compiler.*" But it doesn't really work like
-that[^simple-annotations]. I'll show a couple examples that demonstrate why.
-The point is not to browbeat you with example after example; the point is to
-get people to stop saying "just" and "simply".
+a 100% Mypy/Pyright/Pytype/Pyre typed codebase. I would simply use the types in
+compilation to generate better code." That was the original title of this
+article, even. "*I would simply use the types in the compiler.*" But it doesn't
+really work like that[^simple-annotations]. I'll show a couple examples that
+demonstrate why. The point is not to browbeat you with example after example;
+the point is to get people to stop saying "just" and "simply".
 
 [^simple-annotations]: I'm not even going to address fancy type-level
     metaprogramming stuff, because I don't think people ever intended to use
@@ -579,7 +579,6 @@ apparently I was coworkers with Michael Vitousek for over four years. Neat!
 <!-- smalls https://github.com/tmikov/smalls -->
 <!-- mycpp -->
 <!-- mention Julia and how it handles dispatch -->
-<!-- mention the other 15 dialects of type checkers like pyre, pyright, etc -->
 
 <br />
 <hr style="width: 100px;" />
