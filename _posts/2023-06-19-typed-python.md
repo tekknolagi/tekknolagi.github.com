@@ -72,7 +72,7 @@ because of subclasses. This means that there is a lot of code to be executed if
 ```python
 class C(int):
     def __add__(self, other):
-        make_a_network_call()  # sigh
+        send_a_nasty_email()  # sigh
         return 42
 ```
 
