@@ -574,6 +574,9 @@ apparently I was coworkers with Michael Vitousek for over four years. Neat!
 <!-- mention the other 15 dialects of type checkers like pyre, pyright, etc -->
 <!-- mention pyoxidizer, icepack, carl's post on python-dev, ... for putting
 code in data segment for faster startup -->
+<!-- note that it's subtly different from falcon paper observation ("everything
+is a function call") in that there is a misleading notion that type information
+is available and useful when it's really not -->
 
 <br />
 <hr style="width: 100px;" />
