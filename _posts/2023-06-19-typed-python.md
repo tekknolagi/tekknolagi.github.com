@@ -580,8 +580,6 @@ apparently I was coworkers with Michael Vitousek for over four years. Neat!
 <!-- mycpp -->
 <!-- mention Julia and how it handles dispatch -->
 <!-- mention the other 15 dialects of type checkers like pyre, pyright, etc -->
-<!-- mention pyoxidizer, icepack, carl's post on python-dev, ... for putting
-code in data segment for faster startup -->
 
 <br />
 <hr style="width: 100px;" />
