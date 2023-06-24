@@ -587,6 +587,27 @@ apparently I was coworkers with Michael Vitousek for over four years. Neat!
 <!-- smalls https://github.com/tmikov/smalls -->
 <!-- mention Julia and how it handles dispatch -->
 
+<!-- Carl Meyer feedback:
+
+I think it is technically true to say that SP compiler compiles a different
+language, but relative to some of the other projects on your list, I think you
+undersell how compatible that language is, and how smooth the fallback to
+dynamic behavior is in almost all cases
+
+ironically the one thing you call out (no __dict__) is really pretty minor: all
+you have to do is explicitly request a __dict__ slot and you get one, and it
+doesn't impact any other optimizations, it just costs you 64 bits per object
+
+if we wanted to trade off the extra memory for more compatibility (and if
+typechecked python didn't already discourage random extra attributes), we could
+make the __dict__ slot always there by default, with zero consequence to how SP
+works or its performance (other than the memory cost)
+
+the changes in behavior that are more relevant to achieving performance
+benefits are checked annotations and stuff related to inheritance (no multiple
+data inheritance, can't override a simple attribute with a dynamic property)
+-->
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
