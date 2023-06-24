@@ -249,6 +249,13 @@ data structures; the JIT does not have to handle every case. This interpreter
 deoptimization is part of what makes JITs hard to understand and does not much
 help with compiling code ahead-of-time.
 
+<!-- TODO: Address Brett's comments:
+
+I'm not sure how actionable this is, but there's nothing stopping an AOT
+compiler from having speculative fast paths. And when you collect and save
+profile data, you can blue the line between AOT and JIT compilation even more.
+-->
+
 This is what a PyPy trace might look like, taken from the 2011 paper [Runtime
 Feedback in a Meta-Tracing JIT for Efficient Dynamic
 Languages](https://dl.acm.org/doi/10.1145/2069172.2069181). Every `guard` is a
