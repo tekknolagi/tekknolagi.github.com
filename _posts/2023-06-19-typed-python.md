@@ -594,6 +594,8 @@ apparently I was coworkers with Michael Vitousek for over four years. Neat!
 <!-- smalls https://github.com/tmikov/smalls -->
 <!-- mention Julia and how it handles dispatch -->
 
+<!-- TODO: Address William comments about nominal vs structural typing -->
+
 <!-- Carl Meyer feedback:
 
 I think it is technically true to say that SP compiler compiles a different
