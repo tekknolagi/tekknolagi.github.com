@@ -402,7 +402,7 @@ using Mypyc.
 I mentioned earlier that Static Python has some additional rules for typing
 that Mypy does not, and that Mypyc is based on Mypy. They both try to be
 correct compilers and optimizers, so how do they work around users lying to the
-type system with `type: ignore`?
+type checker with `type: ignore`?
 
 ```python
 def foo(x: int) -> int:
