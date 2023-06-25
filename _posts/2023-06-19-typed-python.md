@@ -549,10 +549,9 @@ are not unique to Python. The Sorbet team had to do [a lot of
 work](https://sorbet.org/blog/2021/07/30/open-sourcing-sorbet-compiler) to make
 this possible for Ruby. People ask the same thing about typed JavaScript (like
 TypeScript) and probably other languages, too. People will have to work out
-similar solutions. People are working on this; there is at least one neat
-extant typed JS project that I have been asked not to publicize yet.
-
-<!-- TODO: mention Static Hermes -->
+similar solutions. I am looking forward to Tzvetan Mikov's talk on
+[Static Hermes](https://twitter.com/react_native_eu/status/1672143102662918144) at
+React Native EU 2023.
 
 There is also Manuel Serrano's whole-program [AOT
 compiler](https://www-sop.inria.fr/members/Manuel.Serrano/publi/serrano-dls18.pdf)
