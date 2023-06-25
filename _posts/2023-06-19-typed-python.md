@@ -572,6 +572,9 @@ analysis, though. Serrano notes:
 
 Seems about right.
 
+<!-- TODO: mention https://github.com/natalie-lang/natalie and how it handles
+types (if it does?) -->
+
 ## Wrapping up
 
 Types are not ironclad guarantees of data layout. Changing the language you are
