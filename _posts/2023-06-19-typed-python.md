@@ -399,16 +399,12 @@ had [great
 success](https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/)
 using Mypyc.
 
-In addition to the normal types available, both Static Python and Mypyc allow
-typing parameters and other variables as primitive ints like `int8` so you can
-get the unboxed arithmetic that people tend to expect on first reading of the
-first code snippet in this post.
-
-<!-- TODO: add transition here -->
+I mentioned earlier that Static Python has some additional rules for typing
+that Mypy does not, and that Mypyc is based on Mypy. They both try to be
+correct compilers and optimizers, so how do they work around users lying to the
+type system with `type: ignore`?
 
 ```python
-# An example snippet that is allowed by Mypy but not by Static Python because
-# it would be dangerous.
 def foo(x: int) -> int:
     return x
 
@@ -417,7 +413,7 @@ foo("hello")  # type: ignore
 
 In this example,
 
-* CPython ignores the annotations completely
+* CPython ignores the annotations completely in compilation and execution
 * Mypy lets the type mismatch slide due to `type: ignore`
   * Which, interestingly enough, means Mypyc defers the problem to run-time by
     injecting an `unbox` that might cleanly raise a `TypeError`
@@ -427,6 +423,11 @@ In this example,
     the boundary if they called `foo` with a non-`int`
 
 All of these are reasonable behaviors because each project has different goals.
+
+In addition to the normal types available, both Static Python and Mypyc allow
+typing parameters and other variables as primitive ints like `int8` so you can
+get the unboxed arithmetic that people tend to expect on first reading of the
+first code snippet in this post.
 
 Other projects take this further. The [Mojo](https://www.modular.com/mojo)
 project, for example, aims to create a much bigger and more visibly different
