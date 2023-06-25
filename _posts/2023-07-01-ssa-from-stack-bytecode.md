@@ -605,6 +605,8 @@ Aycock and Horspool
 1. (Sparse conditional) constant propagation
 1. Memory effects
 
+<!-- TODO: mention https://www.dcs.gla.ac.uk/~jsinger/ssa.html -->
+
 <br />
 <hr style="width: 100px;" />
 <!-- Footnotes -->
