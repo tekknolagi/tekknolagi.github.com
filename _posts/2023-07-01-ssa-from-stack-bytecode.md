@@ -606,6 +606,8 @@ Aycock and Horspool
 1. Memory effects
 
 <!-- TODO: mention https://www.dcs.gla.ac.uk/~jsinger/ssa.html -->
+<!-- TODO: mention chordal graphs & coloring register allocation is in P
+(quadratic?) -->
 
 <br />
 <hr style="width: 100px;" />
