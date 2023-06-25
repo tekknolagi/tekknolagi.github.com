@@ -401,7 +401,7 @@ using Mypyc.
 
 In addition to the normal types available, both Static Python and Mypyc allow
 typing parameters and other variables as primitive ints like `int8` so you can
-get the unbox arithmetic that people tend to expect on first reading of the
+get the unboxed arithmetic that people tend to expect on first reading of the
 first code snippet in this post.
 
 ```python
