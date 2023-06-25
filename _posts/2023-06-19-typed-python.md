@@ -552,6 +552,8 @@ TypeScript) and probably other languages, too. People will have to work out
 similar solutions. People are working on this; there is at least one neat
 extant typed JS project that I have been asked not to publicize yet.
 
+<!-- TODO: mention Static Hermes -->
+
 There is also Manuel Serrano's whole-program [AOT
 compiler](https://www-sop.inria.fr/members/Manuel.Serrano/publi/serrano-dls18.pdf)
 (PDF) for JS, called Hopc. It will ignore your type annotations and do its own
