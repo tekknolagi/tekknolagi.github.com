@@ -404,6 +404,8 @@ typing parameters and other variables as primitive ints like `int8` so you can
 get the unboxed arithmetic that people tend to expect on first reading of the
 first code snippet in this post.
 
+<!-- TODO: add transition here -->
+
 ```python
 # An example snippet that is allowed by Mypy but not by Static Python because
 # it would be dangerous.
