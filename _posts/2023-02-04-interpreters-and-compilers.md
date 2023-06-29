@@ -32,9 +32,11 @@ compiler.
 
 ## Bigger languages
 
-There are some projects like [Elk](https://github.com/cesanta/elk) that
-run JavaScript right off the source text. I think most people would call this
-an interpreter.
+There are some projects like [Elk](https://github.com/cesanta/elk) that run
+JavaScript right off the source text. This avoids allocation as much as
+possible because it's designed for microcontrollers, but is slower than your
+average JS runtime as a result. I think most people would call this an
+interpreter.
 
 There are some languages like [Forth](https://en.wikipedia.org/wiki/Forth_(programming_language))
 whose implementations generally read one word of input at a time and act on
