@@ -10,7 +10,8 @@ For whatever reason, people feel compelled to make a big hullabaloo about the
 distinction between compilers and interpreters[^languages-implementations]. My
 friend [Kartik](http://akkartik.name/) and I had a conversation about this
 tendency after reading Laurence Tratt's Brainfuck interpreter post, [*Compiled
-and Interpreted Languages: Two Ways of Saying Tomato*][ltbf].
+and Interpreted Languages: Two Ways of Saying Tomato*][ltbf] and I decided to
+write a post of my own.
 
 [^languages-implementations]: Not to mention conflating languages and
     implementations. But that's both an inference you can make from this post
