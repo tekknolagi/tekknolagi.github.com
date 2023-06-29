@@ -22,7 +22,7 @@ write a post of my own.
 Laurence's post does a great job of iteratively adding more ahead-of-time
 preprocessing (compilation!) stages to a simple Brainfuck interpreter. If that
 already makes you think enough about this, great. Feel free to close this tab.
-If you want more, read on.
+If you want more "real world" examples, read on.
 
 ## Bigger languages
 
