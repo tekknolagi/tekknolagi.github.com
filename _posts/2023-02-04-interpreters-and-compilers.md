@@ -8,6 +8,67 @@ date: 2023-02-04
 Laurie's post? Or maybe I should call the interpreter potato and the compiler
 potato, pronounced differently. -->
 
+<!--
+There's been a lot of back-and-forth about what it means to be an interpreter
+and what it means to be a compiler. This post will show you a bunch of examples
+and ask you "interpreter or compiler?" and hopefully you will realize the line
+is fuzzier than you previously thought and maybe not always a useful
+distinction.
+
+There are some projects like [Elk](https://github.com/cesanta/elk) that
+run JavaScript right off the source code. I think most people would call this
+an interpreter.
+
+There are some languages like [Forth](https://en.wikipedia.org/wiki/Forth_(programming_language))
+whose implementations generally read one word of input at a time and act on
+that. Kind of like just running off of the output of a tokenizer. Interpreter?
+Probably, yes.
+
+Some projects like old versions of the main
+[Ruby](https://github.com/ruby/ruby/) implementation (MRI) build an abstract
+syntax tree (AST) and run code from the AST. Interpreter? Compiler? I think
+most people would still say interpreter, despite having a transformation pass
+from text to tree. If I recall correctly, people on the internet circa 2012
+really loved to define "interpreter" as only the tree-walking kind.
+
+Nowadays MRI turns the AST into bytecode before running it. This all happens
+transparently to you, the programmer, and the bytecode never leaves the VM.
+Hmmm, things are getting a little fuzzier. There's another code transformation,
+this time from tree to linearized bytecode...
+
+CPython takes this a step further with `.pyc` files and Java with `.class`
+files (it's in the spec!). Does having an artifact on disk skew your perception
+of what's going on?
+
+Further, some Java runtimes like the [OpenJDK](https://github.com/openjdk/jdk)
+even turn the bytecode into machine code before running it, though the machine
+code tends not to hit the disk. At this point we're several transformation
+layers deep. Is the OpenJDK an interpreter? A compiler?
+
+And what about [Clang](https://github.com/llvm/llvm-project), which takes in
+C++ code and emits machine code to disk? Would you call that a compiler? What
+if I told you that they have not one, but two different interpreters inside the
+compiler itself? That the constexpr tree-walking interpreter needed to be
+turned into a bytecode interpreter to improve compile times?
+
+I think the main takeaway I am trying to push is that internet discourse about
+this has gotten a little silly and doesn't help people learn things.
+Interpreters tend to contain compilers and compilers tend to contain
+interpreters. It's a nice symbiotic coexistence. And if you really need to draw
+a line somewhere, then I guess compilers turn programs into other programs and
+interpreters turn programs into values. Or something like that. It gets a
+little fuzzy when you treat the code as data.
+
+## Epilogue
+
+What this doesn't address is that some *languages* require more run-time glue
+code, called "a runtime", to happen around the edges of your application code.
+Features like reflection, dynamic dispatch, garbage collection, etc all add a
+bit of runtime code into the mix. People who see implementations that include a
+runtime tend to point their fingers and yell "interpreter!" but I think it's a
+red herring.
+-->
+
 ## Intro
 
 Compilers and interpreters are not as different as people often make them out
