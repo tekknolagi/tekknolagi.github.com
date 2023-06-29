@@ -61,12 +61,17 @@ little fuzzy when you treat the code as data.
 
 ## Epilogue
 
-What this doesn't address is that some *languages* require more run-time glue
-code, called "a runtime", to happen around the edges of your application code.
-Features like reflection, dynamic dispatch, garbage collection, etc all add a
-bit of runtime code into the mix. People who see implementations that include a
-runtime tend to point their fingers and yell "interpreter!" but I think it's a
-red herring.
+The post I was originally going to write on this topic involved actually
+writing an interpreter and iteratively transforming it into more of a compiler,
+doing all of the steps that the projects mentioned above do. But there are only
+so many hours in the day.
+
+Also, what this doesn't address is that some *languages* require more run-time
+glue code, called "a runtime", to happen around the edges of your application
+code. Features like reflection, dynamic dispatch, garbage collection, etc all
+add a bit of runtime code into the mix. People who see implementations that
+include a runtime tend to point their fingers and yell "interpreter!" but I
+think it's a red herring.
 -->
 
 ## Intro
