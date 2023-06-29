@@ -27,7 +27,9 @@ If you want more, read on.
 
 This post will show you a bunch of examples and ask you "interpreter or
 compiler?" and hopefully you will realize the line is fuzzier than you
-previously thought and maybe not always a useful distinction.
+previously thought and maybe not always a useful distinction. Or at least that
+if you're confused, it's a system that includes both an interpreter and a
+compiler.
 
 There are some projects like [Elk](https://github.com/cesanta/elk) that
 run JavaScript right off the source text. I think most people would call this
@@ -65,6 +67,9 @@ C++ code and emits machine code to disk? Would you call that a compiler? What
 if I told you that they have not one, but two different interpreters inside the
 compiler itself? That the constexpr tree-walking interpreter needed to be
 turned into a bytecode interpreter to improve compile times?
+
+...and the interpreter that runs your x86? Is it not an interpreter if it's
+written in digital circuits?
 
 I think the main takeaway I am trying to push is that internet discourse about
 this has gotten a little silly and doesn't help people learn things.
