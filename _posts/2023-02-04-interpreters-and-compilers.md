@@ -84,10 +84,10 @@ little fuzzy when you treat the code as data.
 The post I was originally going to write on this topic involved actually
 writing an interpreter and iteratively transforming it into more of a compiler,
 doing all of the steps that the projects mentioned above do. But there are only
-so many hours in the day. This is left as an extended exercise for the reader.
-Take a look at David Beazley's [Wabbit](https://www.dabeaz.com/wabbit.html) as
-a good language target. Please let me know if you do this and I will happily
-link it here.
+so many hours in the day, so this is left as an extended exercise for the
+reader. Take a look at David Beazley's
+[Wabbit](https://www.dabeaz.com/wabbit.html) as a good language target. Please
+let me know if you do this and I will happily link it here.
 
 Also, what this doesn't address is that some *languages* require more run-time
 glue code, called "a runtime", to happen around the edges of your application
