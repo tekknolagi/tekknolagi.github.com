@@ -24,13 +24,13 @@ preprocessing (compilation!) stages to a simple Brainfuck interpreter. If that
 already makes you think enough about this, great. Feel free to close this tab.
 If you want more "real world" examples, read on.
 
-## Bigger languages
-
 This post will show you a bunch of examples and ask you "interpreter or
 compiler?" and hopefully you will realize the line is fuzzier than you
 previously thought and maybe not always a useful distinction. Or at least that
 if you're confused, it's a system that includes both an interpreter and a
 compiler.
+
+## Bigger languages
 
 There are some projects like [Elk](https://github.com/cesanta/elk) that
 run JavaScript right off the source text. I think most people would call this
