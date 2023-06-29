@@ -9,7 +9,7 @@ date: 2023-06-30
 For whatever reason, people feel compelled to make a big hullabaloo about the
 distinction between compilers and interpreters[^languages-implementations]. My
 friend [Kartik](http://akkartik.name/) and I had a conversation about this
-tendency after reading Laurie Tratt's Brainfuck interpreter post, [*Compiled
+tendency after reading Laurence Tratt's Brainfuck interpreter post, [*Compiled
 and Interpreted Languages: Two Ways of Saying Tomato*][ltbf].
 
 [^languages-implementations]: Not to mention conflating languages and
@@ -18,7 +18,7 @@ and Interpreted Languages: Two Ways of Saying Tomato*][ltbf].
 
 [ltbf]: https://tratt.net/laurie/blog/2023/compiled_and_interpreted_languages_two_ways_of_saying_tomato.html
 
-Laurie's post does a great job of iteratively adding more ahead-of-time
+Laurence's post does a great job of iteratively adding more ahead-of-time
 preprocessing (compilation!) stages to a simple Brainfuck interpreter. If that
 already makes you think enough about this, great. Feel free to close this tab.
 If you want more, read on.
