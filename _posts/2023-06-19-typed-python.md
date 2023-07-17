@@ -637,13 +637,13 @@ CPython and erases redundant ones, and then realized that this was also cited
 in the Brown paper. The whole series of papers is really interesting. And
 apparently I was coworkers with Michael Vitousek for over four years. Neat!
 
-<!-- jscomp? https://github.com/tmikov/jscomp -->
-<!-- smalls https://github.com/tmikov/smalls -->
-<!-- mention Julia and how it handles dispatch -->
+<!-- TODO jscomp? https://github.com/tmikov/jscomp -->
+<!-- TODO smalls https://github.com/tmikov/smalls -->
+<!-- TODO mention Julia and how it handles dispatch -->
 
 <!-- TODO: Address William comments about nominal vs structural typing -->
 
-<!-- Carl Meyer feedback:
+<!-- TODO Carl Meyer feedback:
 
 I think it is technically true to say that SP compiler compiles a different
 language, but relative to some of the other projects on your list, I think you
