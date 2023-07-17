@@ -433,9 +433,9 @@ using Mypyc[^subtle-differences].
     again.
 
     In normal Python semantics, the result printed is 456. However, with Mypyc,
-    the result is 123. Something about global variable binding for Mypyc-Mypyc
-    imports is different; with just two files (one Mypyc compiled, the other a
-    main), the behavior is as expected.
+    the result is 123. Something about global variable binding for functions in
+    Mypyc-Mypyc imports is different; with just two files (one Mypyc compiled,
+    the other a main), the behavior is as expected.
 
     Maybe this is intended or at least documented behavior on the part of the
     Mypyc authors, and maybe it is not. Faithfully reproducing the full Python
