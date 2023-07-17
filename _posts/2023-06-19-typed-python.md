@@ -254,6 +254,8 @@ help with compiling code ahead-of-time.
 I'm not sure how actionable this is, but there's nothing stopping an AOT
 compiler from having speculative fast paths. And when you collect and save
 profile data, you can blue the line between AOT and JIT compilation even more.
+
+TODO: apparently SubstrateVM supports this to some extent, too
 -->
 
 This is what a PyPy trace might look like, taken from the 2011 paper [Runtime
