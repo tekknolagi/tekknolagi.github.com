@@ -438,8 +438,8 @@ using Mypyc[^subtle-differences].
     the other a main), the behavior is as expected.
 
     Maybe this is intended or at least documented behavior on the part of the
-    Mypyc authors, and maybe it is not. Faithfully reproducing the full Python
-    semantics is very difficult.
+    Mypyc authors, and maybe it is not. Either way, faithfully reproducing the
+    full Python semantics is very difficult.
 
 I mentioned earlier that Static Python has some additional rules for typing
 that Mypy does not, and that Mypyc is based on Mypy. They both try to be
