@@ -397,7 +397,47 @@ default. Depending on your use case---in particular, your deployment story---it
 may be the compiler that you want to use! The Black formatter, for example, has
 had [great
 success](https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/)
-using Mypyc.
+using Mypyc[^subtle-differences].
+
+[^subtle-differences]: Dialects often have subtle and unexpected differences.
+    The differences are not always necessarily related to type checks;
+    sometimes they change how variables are bound. For example, Mypyc changes
+    the behavior of imports and global variables. Consider these three files:
+    ```python
+    # a.py
+    def foo():
+      return 123
+
+    def override():
+      return 456
+
+    foo = override
+    ```
+    ```python
+    # b.py
+    from a import foo
+
+    def bar():
+      return foo()
+    ```
+    ```python
+    # main.py
+    from b import bar
+
+    print(bar())
+    ```
+    First run with `python3 main.py`. Then try running `python3 -m mypyc a.py
+    b.py` (I have `mypy 1.4.0 (compiled: yes)`) and then `python3 main.py`
+    again.
+
+    In normal Python semantics, the result printed is 456. However, with Mypyc,
+    the result is 123. Something about global variable binding for Mypyc-Mypyc
+    imports is different; with just two files (one Mypyc compiled, the other a
+    main), the behavior is as expected.
+
+    Maybe this is intended or at least documented behavior on the part of the
+    Mypyc authors, and maybe it is not. Faithfully reproducing the full Python
+    semantics is very difficult.
 
 I mentioned earlier that Static Python has some additional rules for typing
 that Mypy does not, and that Mypyc is based on Mypy. They both try to be
