@@ -639,7 +639,8 @@ CPython and erases redundant ones, and then realized that this was also cited
 in the Brown paper. The whole series of papers is really interesting. And
 apparently I was coworkers with Michael Vitousek for over four years. Neat!
 
-<!-- TODO: mention argument clinic typing for FFI boundary? -->
+<!-- TODO: mention argument clinic typing for FFI boundary?
+https://github.com/faster-cpython/ideas/issues/546 -->
 <!-- TODO jscomp? https://github.com/tmikov/jscomp -->
 <!-- TODO smalls https://github.com/tmikov/smalls -->
 <!-- TODO mention Julia and how it handles dispatch -->
