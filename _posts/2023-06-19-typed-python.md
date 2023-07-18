@@ -273,7 +273,7 @@ storage1 = inst1.storage
 result1 = storage1[index1]
 ```
 
-And the other thing is, Numba doesn't exactly compile *Python*...
+And the other thing is, unlike PyPy, Numba doesn't exactly compile *Python*...
 
 ## Dialects
 
