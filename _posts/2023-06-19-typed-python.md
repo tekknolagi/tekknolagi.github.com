@@ -303,6 +303,7 @@ and in particular to optimize numerics:
 * [Codon](https://github.com/exaloop/codon)
 * [Numba](https://github.com/numba/numba)
 * [lpython](https://github.com/lcompilers/lpython)
+  (more info in [blog post](https://lpython.org/blog/2023/07/lpython-novel-fast-retargetable-python-compiler/))
 * [Pyccel](https://github.com/pyccel/pyccel/blob/devel/tutorial/quickstart.md)
 * [Pythran](https://pythran.readthedocs.io/en/latest/)
 * [Taichi](https://github.com/taichi-dev/taichi)
