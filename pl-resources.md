@@ -150,7 +150,7 @@ research around optimizing dynamic languages.
   * Slightly less mature JITs
     * [coconut](https://github.com/davidmalcolm/coconut)
     * [twopy](https://github.com/jpages/twopy)
-    * [diojit](https://github.com/thautwarm/diojit.git)
+    * [diojit](https://github.com/thautwarm/diojit)
 * Starlark is a total language similar to Python. It is used in build systems.
   I wonder if it could be used to generate Ninja files as a sort of "mini
   Bazel/Buck".
