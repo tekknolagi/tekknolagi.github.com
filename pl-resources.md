@@ -151,6 +151,8 @@ research around optimizing dynamic languages.
     * [coconut](https://github.com/davidmalcolm/coconut)
     * [twopy](https://github.com/jpages/twopy)
     * [diojit](https://github.com/thautwarm/diojit)
+    * [pyLBBVAndPatch](https://github.com/pylbbv/pylbbv), which uses lazy basic
+      block versioning and copy-and-patch code generation
 * Starlark is a total language similar to Python. It is used in build systems.
   I wonder if it could be used to generate Ninja files as a sort of "mini
   Bazel/Buck".
