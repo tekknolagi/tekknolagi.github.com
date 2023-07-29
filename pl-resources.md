@@ -263,6 +263,12 @@ that can help with that.
 For more inspiration, check out some of the assemblers in runtimes I mention in
 my [Compiling a Lisp](/blog/compiling-a-lisp-8/#assembler-libraries) post.
 
+### Little low-level JIT IR libraries
+
+* [Bunny](https://github.com/signaldust/bunny-jit) (C++)
+* [dstogov's IR](https://github.com/dstogov/ir) (C)
+* [PeachPy](https://github.com/Maratyszcza/PeachPy) (Python)
+
 ### Things I want to write about
 
 I have not written much about runtime optimization yet, but I would like to
