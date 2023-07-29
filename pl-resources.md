@@ -156,9 +156,9 @@ research around optimizing dynamic languages.
 * Starlark is a total language similar to Python. It is used in build systems.
   I wonder if it could be used to generate Ninja files as a sort of "mini
   Bazel/Buck".
-  * [Go](https://github.com/google/starlark-go/)
-  * [Java](https://github.com/bazelbuild/bazel/tree/master/src/main/java/net/starlark/java)
-  * [Rust](https://github.com/facebookexperimental/starlark-rust)
+  * in [Go](https://github.com/google/starlark-go/)
+  * in [Java](https://github.com/bazelbuild/bazel/tree/master/src/main/java/net/starlark/java)
+  * in [Rust](https://github.com/facebookexperimental/starlark-rust)
 * This SSA paper: [Simple and Efficient Construction of Static Single Assignment Form](https://pp.info.uni-karlsruhe.de/uploads/publikationen/braun13cc.pdf) (PDF)
 * Resources on mechanical sympathy and optimization coaching
   * [Optimization Coaching](https://www.ccs.neu.edu/home/stamourv/papers/optimization-coaching.pdf) (PDF)
