@@ -317,6 +317,9 @@ write about:
   * [Copy-and-Patch compilation](https://arxiv.org/pdf/2011.13127.pdf) (PDF)
     * Simplifying this would probably make for a fun blog post and could be
       combined with ICs and quickening from my runtime optimization series
+    * [Lua interpreter post](https://sillycross.github.io/2022/11/22/2022-11-22/)
+    * [Lua JIT post](https://sillycross.github.io/2023/05/12/2023-05-12/)
+    * [Deegen talk](https://aha.stanford.edu/sites/g/files/sbiybj20066/files/media/file/aha_071923_xu_deegen_0.pdf) (PDF)
 * Precise native stack roots
   * [Accurate Garbage Collection in an Uncooperative Environment](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.87.3769&rep=rep1&type=pdf) (2002, PDF)
   * [Accurate Garbage Collection in Uncooperative Environments Revisited](http://www.filpizlo.com/papers/baker-ccpe09-accurate.pdf) (2006, PDF)
