@@ -57,10 +57,6 @@ I like making things [just for fun](https://justforfunnoreally.dev/).
 * I TAed CS 11 (intro), 15 (data structures), 40 (machine structure), and
   Concurrent Programming at Tufts and was the head TA for 11 and 15
 
-## I kind of maintain a blog.
-
-<del>It's not very interesting just yet.</del> [Things are happening.](/blog/)
-
 ## Sometimes I contribute to open source projects.
 
 * [PyPy](https://www.pypy.org/)
