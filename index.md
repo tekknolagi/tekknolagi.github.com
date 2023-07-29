@@ -83,12 +83,12 @@ I like making things [just for fun](https://justforfunnoreally.dev/).
 Fun fact: this means I have now contributed to five different Python runtimes
 (Skybison, Cinder, CPython, PyPy, and Pyjion).
 
-## Talks
+## I will happily talk in front of people.
 
 * [*Cinder: We didn't start the fire*](/assets/img/ecoop2022.pdf) (PDF) at [ECOOP 2022](https://2022.ecoop.org/details/ICOOOLPS-2022-papers/5/Cinder-We-didn-t-start-the-fire) (invited talk)
 * *How Git works* at Tufts PolyHack 2019
 
-## Fun facts
+## I have some fun facts.
 
 * I [adopted the Person Biking emoji 🚴](https://twitter.com/unicode/status/1341803011501223936).
 * I once biked across Germany (Tübingen to Puttgarden).
