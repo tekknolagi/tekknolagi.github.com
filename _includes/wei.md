@@ -1,3 +1,4 @@
+<!-- Thanks to colbyalbo for the HTML/CSS/JS: https://codepen.io/colbyalbo/pen/gRogbE -->
 <style>
 /* The Modal (background) */
 .wei_modal {
