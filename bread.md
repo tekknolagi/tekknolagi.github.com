@@ -56,6 +56,10 @@ Sourdough levain     20 %
 
 Bake 1 hour at 450F. After 45 minutes, remove lid[^old-instructions].
 
+Optionally, soak some oats (or other seeds and grains) in water for an hour and
+spread them on the top of the bread right before baking. The water soak keeps
+them from burning.
+
 [^old-instructions]: This used to say "after 20 minutes, remove lid" because
     that's how I did it. But apparently I have been doing this wrong for years
     because I misread the King Arthur website *one time*. Keeping the lid on
