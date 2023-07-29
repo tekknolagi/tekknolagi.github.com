@@ -1,6 +1,6 @@
 <style>
 /* The Modal (background) */
-.ebcf_modal {
+.wei_modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -15,7 +15,7 @@
 }
 
 /* Modal Content */
-.ebcf_modal-content {
+.wei_modal-content {
     background-color: #fefefe;
     margin: auto;
     padding: 20px;
@@ -24,24 +24,24 @@
 }
 
 /* The Close Button */
-.ebcf_close {
+.wei_close {
     color: #aaaaaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.ebcf_close:hover,
-.ebcf_close:focus {
+.wei_close:hover,
+.wei_close:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
 }
 </style>
 
-<div id="mySizeChartModal" class="ebcf_modal">
-  <div class="ebcf_modal-content">
-    <span class="ebcf_close">&times;</span>
+<div id="weiModal" class="wei_modal">
+  <div class="wei_modal-content">
+    <span class="wei_close">&times;</span>
     <h1>Your browser contains Google DRM</h1><q>Web Environment Integrity</q>
     is a Google euphemism for a DRM that is designed to prevent ad-blocking. In
     support of an open web, this website <s>does not function with this DRM</s>
@@ -53,26 +53,26 @@
 
 <script>
 // Get the modal
-var ebModal = document.getElementById('mySizeChartModal');
+var weiModal = document.getElementById('weiModal');
 
 // Get the <span> element that closes the modal
-var ebSpan = document.getElementsByClassName("ebcf_close")[0];
+var weiSpan = document.getElementsByClassName("wei_close")[0];
 
 // When the user clicks on <span> (x), close the modal
-ebSpan.onclick = function() {
-    ebModal.style.display = "none";
+weiSpan.onclick = function() {
+    weiModal.style.display = "none";
 }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-    if (event.target == ebModal) {
-        ebModal.style.display = "none";
+    if (event.target == weiModal) {
+        weiModal.style.display = "none";
     }
 }
 
 /*TODO(max): Flip conditional*/
 if(!(navigator.getEnvironmentIntegrity!==undefined)) {
     // Display the modal
-    ebModal.style.display = "block";
+    weiModal.style.display = "block";
 }
 </script>
