@@ -42,12 +42,17 @@
 <div id="weiModal" class="wei_modal">
   <div class="wei_modal-content">
     <span class="wei_close">&times;</span>
-    <h1>Your browser contains Google DRM</h1><q>Web Environment Integrity</q>
-    is a Google euphemism for a DRM that is designed to prevent ad-blocking. In
-    support of an open web, this website <s>does not function with this DRM</s>
-    is a little bit irritating. Please install a browser such as <a
+    <h1>Your browser contains Google DRM</h1>
+
+    <p>This is a bad thing and is yet another attempt by Google to unilaterally
+    change web standards.</p>
+
+    <p><q>Web Environment Integrity</q> is a Google euphemism for a DRM that is
+    designed to prevent ad-blocking. In support of an open web, this website
+    <s>does not function with this DRM</s> is a little bit irritating. Please
+    install a browser such as <a
     href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> that respects
-    your freedom and supports ad blockers.
+    your freedom and supports ad blockers.</p>
   </div>
 </div>
 
