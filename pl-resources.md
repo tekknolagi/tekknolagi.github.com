@@ -179,6 +179,7 @@ research around optimizing dynamic languages.
 * Posts about trace optimization:
   * [Implementing a Toy Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html)
   * [Allocation Removal in the Toy Optimizer](https://www.pypy.org/posts/2022/10/toy-optimizer-allocation-removal.html)
+* A nice [PyPy trace viewer](https://github.com/smvv/pypy-traceview)
 * WebKit/JavaScriptCore stuff:
   * [FTL JIT](https://webkit.org/blog/3362/introducing-the-webkit-ftl-jit/)
   * [B3](https://webkit.org/docs/b3/), the Bare Bones Backend
