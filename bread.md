@@ -54,7 +54,13 @@ Yeast                 1 %
 Sourdough levain     20 %
 ```
 
-Bake 1 hour at 450F. After 20 minutes, remove lid.
+Bake 1 hour at 450F. After 45 minutes, remove lid[^old-instructions].
+
+[^old-instructions]: This used to say "after 20 minutes, remove lid" because
+    that's how I did it. But apparently I have been doing this wrong for years
+    because I misread the King Arthur website *one time*. Keeping the lid on
+    longer produces more steam and may give your bread more lift/fluff. We'll
+    see how my new breads develop.
 
 I like [King Arthur's](https://www.youtube.com/watch?v=PmxDKuGLWuE) videos on
 shaping and pretty much everything else.
@@ -73,7 +79,7 @@ Yeast                 1 %
 Sourdough levain     20 %
 ```
 
-Bake 1 hour at 450F. After 20 minutes, remove lid.
+Bake 1 hour at 450F. After 45 minutes, remove lid.
 
 ## Focaccia
 
@@ -255,3 +261,7 @@ would argue that the magic of bread is that it is more than the sum of its
 component parts, and therefore is not entirely defined by its ingredients.
 Timing, folding, shaping, and scoring have huge impact on the final product.
 Put some love into your loaves.
+
+<br />
+<hr style="width: 100px;" />
+<!-- Footnotes -->
