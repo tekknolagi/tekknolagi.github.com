@@ -159,7 +159,7 @@ research around optimizing dynamic languages.
   * in [Go](https://github.com/google/starlark-go/)
   * in [Java](https://github.com/bazelbuild/bazel/tree/master/src/main/java/net/starlark/java)
   * in [Rust](https://github.com/facebookexperimental/starlark-rust)
-* This SSA paper: [Simple and Efficient Construction of Static Single Assignment Form](https://pp.info.uni-karlsruhe.de/uploads/publikationen/braun13cc.pdf) (PDF)
+* This SSA paper: [Simple and Efficient Construction of Static Single Assignment Form](/assets/img/braun13cc.pdf) (PDF)
 * Resources on mechanical sympathy and optimization coaching
   * [Optimization Coaching](https://www.ccs.neu.edu/home/stamourv/papers/optimization-coaching.pdf) (PDF)
   * [Optimization Coaching for JavaScript](https://rfrn.org/~shu/papers/ecoop15.pdf) (PDF)
