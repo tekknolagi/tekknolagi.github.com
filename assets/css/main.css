@@ -141,3 +141,23 @@ div.post-co-authors {
 }
 /* TODO(max): See https://alexwlchan.net/2021/10/console-copying/ to disable
  * prompt selection in console blocks */
+
+/* Begin: display a small horizontal bar before footnote elements if they
+ * exist. */
+div.footnotes {
+  position: relative;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+div.footnotes:before {
+  /* Element only present when there are footnotes. */
+  content: '';
+  width: 50%;
+  left: 25%;
+  height: 2px;
+  background: #b0b0b0;
+  position: absolute;
+  top: -1px;
+}
+/* End horizontal bar. */

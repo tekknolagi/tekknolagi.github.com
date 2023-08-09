@@ -456,10 +456,6 @@ friends you love them.
 
 {% include compiling_a_lisp_toc.md %}
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^1]: While I am very pleased with the `bind`/`find` symmetry, I am less
       pleased with the `Env`/`bool` asymmetry. Maybe I should have gone for
       `Node`.

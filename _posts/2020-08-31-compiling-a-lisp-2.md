@@ -572,10 +572,6 @@ link _posts/2020-09-02-compiling-a-lisp-3.md %}).
 
 {% include compiling_a_lisp_toc.md %}
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^1]: Actually, you can get away with a scheme that only plays games with
       pointer tagging for immediate objects, and uses a header as part of the
       heap-allocated object to encode additional information about the type,

@@ -597,7 +597,3 @@ cares if someone has duplicate pictures in their profile only sometimes because
 some kind of obscure network race condition? Not us. It was senior week, and,
 being seniors, we deserved to enjoy it at least a little. So we sat back, had a
 beer or three, and enjoyed one another's company.
-
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->

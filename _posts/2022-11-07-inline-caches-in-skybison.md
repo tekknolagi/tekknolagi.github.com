@@ -603,7 +603,3 @@ by Matthew Gaudet.
 Thank you to all of the many people who wrote great language runtimes, people
 who preceded me on the team, and people who I worked with on the team. You came
 up with most of the ideas. I just chronicle them here.
-
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->

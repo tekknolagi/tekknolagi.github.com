@@ -668,7 +668,3 @@ the changes in behavior that are more relevant to achieving performance
 benefits are checked annotations and stuff related to inheritance (no multiple
 data inheritance, can't override a simple attribute with a dynamic property)
 -->
-
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->

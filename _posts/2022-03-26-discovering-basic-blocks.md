@@ -705,7 +705,3 @@ and a [newer version](https://github.com/facebookarchive/python-compiler)
 I helped work on.
 
 A [Python interpreter written in Python](https://www.aosabook.org/en/500L/a-python-interpreter-written-in-python.html).
-
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->

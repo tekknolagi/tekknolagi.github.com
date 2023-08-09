@@ -378,9 +378,6 @@ James Y Knight [posted
 about](https://mail.python.org/pipermail/python-dev/2004-July/046139.html)
 adding pointer tagging to CPython in 2004.
 
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^1]: In my [blog post](/blog/compiling-a-lisp-2/) about the [Ghuloum
       compiler](/assets/img/11-ghuloum.pdf), I used the bit patterns from the
       original Ghuloum paper to tag integers, characters, and different types

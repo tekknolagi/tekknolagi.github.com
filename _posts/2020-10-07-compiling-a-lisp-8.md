@@ -345,10 +345,6 @@ Next time on PBS, [heap allocation](/blog/compiling-a-lisp-9/).
 
 {% include compiling_a_lisp_toc.md %}
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^1]: Maybe it would be less finicky with `__attribute__((cleanup))`, but that
       is non-standard. This [StackOverflow][cleanup] question and associated
       answers have some good information.

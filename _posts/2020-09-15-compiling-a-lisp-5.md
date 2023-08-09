@@ -424,10 +424,6 @@ Next time we'll add ~~the ability to bind variables using `let`~~ [a
 parser](/blog/compiling-a-lisp-6/) so we can input expressions more easily. See
 you then!
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^1]: You may also see an `enter` instruction paired with a `leave`
       instruction. These are equivalent. Read more
       [here](https://en.wikipedia.org/wiki/Function_prologue).

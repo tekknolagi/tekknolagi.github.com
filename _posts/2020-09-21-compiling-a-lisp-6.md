@@ -521,10 +521,6 @@ Anyway, thanks for reading. Next time we'll get back to compiling and tackle
 
 {% include compiling_a_lisp_toc.md %}
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^1]: See [this series of
       Tweets](https://twitter.com/thingskatedid/status/1293476425454895105) by
       Kate about changing the value of `NULL` in the TenDRA compiler.

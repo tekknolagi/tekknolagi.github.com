@@ -280,6 +280,3 @@ headers are laid out. Diagrams are nice and all but it's super helpful to see
 sample code iterating over section headers and stuff.
 
 [efs]: https://www.conradk.com/2017/05/28/elf-from-scratch
-
-<hr style="width: 100px;" />
-<!-- Footnotes -->

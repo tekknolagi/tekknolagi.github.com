@@ -163,7 +163,6 @@ Next up, [the smallest program](/blog/compiling-a-lisp-1/).
 {% include compiling_a_lisp_toc.md %}
 
 <hr style="width: 100px;" />
-<!-- Footnotes -->
 
 Here are some other links you might find useful or interesting while following
 along with this series:

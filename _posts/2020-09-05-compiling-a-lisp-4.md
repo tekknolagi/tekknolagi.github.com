@@ -683,10 +683,6 @@ elist](https://lists.sr.ht/~max/compiling-lisp)! Next time,
 
 {% include compiling_a_lisp_toc.md %}
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^1]: There's a long-running dispute about what to call these two objects. The
       original Lisp machine (the IBM 704) had a particular hardware layout that
       led to the creation of the names `car` and `cdr`. Nobody uses this

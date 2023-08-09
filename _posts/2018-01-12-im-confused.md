@@ -200,10 +200,6 @@ Thank you so much!
 [SICP]: https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html
 [StackOverflow]: https://stackoverflow.com/q/6887471/569183
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^bitcoin]:
     As it turns out, this is how I discovered Bitcoin. The year was 2011 and
     Bitcoin was worth next to nothing. This is a sad story of its own about

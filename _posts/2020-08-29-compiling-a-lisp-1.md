@@ -275,10 +275,6 @@ Next up, [compiling integers](/blog/compiling-a-lisp-2/).
 
 {% include compiling_a_lisp_toc.md %}
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^1]: Unlike other JITs, though, we won't be doing any of the fancy inline
       caching, deoptimization, or other tricks. We're just going to compile the
       code, compile it once, and move on with our lives.

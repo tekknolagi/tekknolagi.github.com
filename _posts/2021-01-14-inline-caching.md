@@ -568,7 +568,3 @@ I will list some of them below:
 [assembly]: https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache
 
 Maybe I will even write about them in the future.
-
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->

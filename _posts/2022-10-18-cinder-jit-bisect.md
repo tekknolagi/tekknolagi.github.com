@@ -169,7 +169,3 @@ Hacker News user *eimrine* also notes that this is similar to
 programs.
 
 [fuzzing]: https://en.wikipedia.org/wiki/Fuzzing
-
-
-<hr style="width: 100px;" />
-<!-- Footnotes -->

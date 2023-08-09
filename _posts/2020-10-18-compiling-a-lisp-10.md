@@ -795,10 +795,6 @@ Here's a fun composite diagram for the road:
 
 {% include compiling_a_lisp_toc.md %}
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^1]: If you are an avid reader of this blog (Do those people exist? Please
       reach out to me. I would love to chat.), you may notice that Tom gets
       pulled into shenanigans a lot. This is because Tom is the best debugger I
