@@ -174,10 +174,6 @@ Certainly not me. It's messy and occasionally difficult to get right. So:
 
 Next up, [ASTs](/blog/lisp/08_asts/).
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^opsem]:
     There is a formal and programming-language independent way to specify the
     expected behavior of a programming language called [Big-Step Operational

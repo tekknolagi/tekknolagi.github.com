@@ -469,10 +469,6 @@ Download the code [here (ml)]({{ page.codelink }}) and
 
 Next up, [comments](/blog/lisp/14_comments/).
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^improve]:
     They use a lot of stack space *for now*. Later on we'll optimize
     lambda-expressions. I can hardly wait! (Seriously, it's awesome.)

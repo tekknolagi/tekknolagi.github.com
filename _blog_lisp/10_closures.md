@@ -407,10 +407,6 @@ reason to download the code [here]({{ page.codelink }}) and mess with it.
 
 Next up, [primitives III](/blog/lisp/11_prim3/).
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^refs]:
     `ref`s are probably not implemented as you'd expect. Since fields of OCaml
     records are the only things in the language that can be declared mutable with

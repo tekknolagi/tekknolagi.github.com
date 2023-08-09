@@ -254,10 +254,6 @@ with it.
 
 Next up, [booleans](/blog/lisp/01_booleans/).
 
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
-
 [^other-resources]:
     Here are some other resources or series you may find helpful in writing a
     Lisp interpreter.
