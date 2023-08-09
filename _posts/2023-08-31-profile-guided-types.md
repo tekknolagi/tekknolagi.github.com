@@ -11,8 +11,8 @@ to write an impassioned response but realize that you're probably also
 dehydrated, and drinking water might make you feel better. You drink. It does.
 
 The commenter asserted that your project is a little bit slow to execute, and
-he's right. But they didn't stop there; the commenter continued and critiqued
-your choice in programming language.
+they're right. But they didn't stop there; the commenter continued and
+critiqued your choice in programming language.
 
 They might have been superficially right in that rewriting your side project in
 the hot new quasi-functional statically-typed language would make it faster,
@@ -79,6 +79,10 @@ not--but they are not a perfect fit for every situation.
 
 Assuming you're either on board or otherwise curious, I'll paint you a little
 picture.
+
+## A little picture
+
+## Questions to answer
 
 ## Prior art
 
