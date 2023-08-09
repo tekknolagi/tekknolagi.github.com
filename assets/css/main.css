@@ -161,3 +161,11 @@ div.footnotes:before {
   top: -1px;
 }
 /* End horizontal bar. */
+
+a.footnote:before {
+ content: "[";
+}
+
+a.footnote:after {
+    content: "]";
+}
