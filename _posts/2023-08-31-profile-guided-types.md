@@ -35,7 +35,12 @@ such as, "Max, that was super vague. What on Earth are you talking about?"
 ## Taking a step back
 
 Yeah, alright, I was talking about writing code in Python and other dynamic
-languages. A common project lifecycle I see in the Python ecosystem is:
+languages. A common project lifecycle I see in the Python[^other-langs]
+ecosystem is:
+
+[^other-langs]: It's not specific to Python. It happens with Ruby and
+    JavaScript too. Heck, people are even writing new Python and JS tooling in
+    Rust.
 
 * Write a version of the code in Python
 * Grow it
