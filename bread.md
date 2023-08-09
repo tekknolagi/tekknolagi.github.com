@@ -265,7 +265,3 @@ would argue that the magic of bread is that it is more than the sum of its
 component parts, and therefore is not entirely defined by its ingredients.
 Timing, folding, shaping, and scoring have huge impact on the final product.
 Put some love into your loaves.
-
-<br />
-<hr style="width: 100px;" />
-<!-- Footnotes -->
