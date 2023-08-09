@@ -55,8 +55,8 @@ ecosystem is:
 I think the last step shouldn't need to exist. I think instead you and the
 language runtime have an ongoing dialogue:
 
-* The runtime tells you what parts of your code are hot, and maybe how to
-  optimize them
+* The runtime tells you what parts of your code are hot, what parts are mucking
+  up performance, and maybe how to optimize them
 * You modify the code
 * Repeat
 
