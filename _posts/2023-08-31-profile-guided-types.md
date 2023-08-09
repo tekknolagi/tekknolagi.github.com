@@ -95,3 +95,7 @@ Typed Racket
 Static Python (IG)
 mypyc (black)
 Julia
+
+<br />
+<hr style="width: 100px;" />
+<!-- Footnotes -->
