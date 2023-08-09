@@ -74,8 +74,8 @@ just-in-time compiler?"---great question.
 * It is hard to build a mental performance model even if you are an engineer
   working on the JIT
 
-That's not to say that JITs are bad---they are not, and I have worked on
-several--but they are not a perfect fit for every situation.
+That's not to say that JITs are bad---I have worked on several; they are
+not--but they are not a perfect fit for every situation.
 
 Assuming you're either on board or otherwise curious, I'll paint you a little
 picture.
