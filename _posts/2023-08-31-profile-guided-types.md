@@ -75,7 +75,7 @@ just-in-time compiler?"---great question.
   working on the JIT
 
 That's not to say that JITs are bad---I have worked on several; they are
-not--but they are not a perfect fit for every situation.
+not---but they are not a perfect fit for every situation.
 
 Assuming you're either on board or otherwise curious, I'll paint you a little
 picture.
