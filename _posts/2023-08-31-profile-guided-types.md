@@ -87,6 +87,24 @@ picture.
 
 ## A little picture
 
+It's not so long from now in the future. You're in charge of maintaining a
+codebase that is a couple of millions of lines of code. At that size,
+it becomes intractable to understand how all of the different component parts
+interact---especially when people are relentlessly committing to it day after
+day. The code shifts under you like sand.
+
+Part of your job involves keeping performance reasonable, even as the features
+pile up. It's time to figure out what's slow and why, and you have long since
+lost an intuition for what might be the problem. But you have a friend, and
+your friend might know the answer. Your friend is the language runtime. The
+runtime is in charge of executing the code, after all. Why shouldn't it know
+which parts are unnecessarily slow?
+
+You pull up the diagnostics tab for your fleet of servers and sure enough,
+there are some metaphorical angry blinking red lights.
+
+
+
 ## Questions to answer
 
 ## Prior art
