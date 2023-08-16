@@ -169,7 +169,3 @@ a.footnote:before {
 a.footnote:after {
     content: "]";
 }
-/* Light mode by default */
-@import "/assets/css/gruvbox-light.css" screen;
-@import "/assets/css/gruvbox-light.css" print;
-@import "/assets/css/gruvbox-dark.css" screen and (prefers-color-scheme: dark);
