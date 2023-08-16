@@ -35,6 +35,7 @@ to find great stuff.
   by Manuel Serrano
   * [Of JavaScript AOT Compilation Performance](https://dl.acm.org/doi/pdf/10.1145/3473575) (PDF)
     by Manuel Serrano
+  * [GitHub repo](https://github.com/manuel-serrano/hop)
 
 ## Lisp specific
 
