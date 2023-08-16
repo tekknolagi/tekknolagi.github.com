@@ -193,6 +193,7 @@ research around optimizing dynamic languages.
     * docs: [Kotlin coroutine implementation](https://kotlinlang.org/spec/asynchronous-programming-with-coroutines.html#coroutine-state-machine)
     * [more writing](https://github.com/JetBrains/kotlin/blob/894ba9ab809c400de048d43fa98f89087100fcbc/compiler/backend/src/org/jetbrains/kotlin/codegen/coroutines/coroutines-codegen.md)
   * [Regenerator for JS coroutines](http://facebook.github.io/regenerator/)
+  * [Coroutines in Java](https://ssw.jku.at/General/Staff/LS/coro/CoroIntroduction.pdf) (PDF)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
 
