@@ -80,8 +80,8 @@ I like making things [just for fun](https://justforfunnoreally.dev/).
   ([rC345558](https://reviews.llvm.org/rC345558))
 * [Reason](https://github.com/facebook/reason)
 
-Fun fact: this means I have now contributed to five different Python runtimes
-(Skybison, Cinder, CPython, PyPy, and Pyjion).
+Fun fact: I have now contributed to five different Python runtimes (Skybison,
+Cinder, CPython, PyPy, and Pyjion).
 
 ## I will happily talk in front of people.
 
