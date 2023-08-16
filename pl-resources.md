@@ -188,8 +188,10 @@ research around optimizing dynamic languages.
 * [Threaded code](http://www.complang.tuwien.ac.at/forth/threaded-code.html) by Anton Ertl
 * Compiling coroutines/generators to state machines
   * [Rust proc macro](https://github.com/darsvador/generator)
-  * [Kotlin coroutine implementation](https://kotlinlang.org/spec/asynchronous-programming-with-coroutines.html#coroutine-state-machine)
-    (and [more writing](https://github.com/JetBrains/kotlin/blob/894ba9ab809c400de048d43fa98f89087100fcbc/compiler/backend/src/org/jetbrains/kotlin/codegen/coroutines/coroutines-codegen.md))
+  * [Kotlin coroutine
+  paper](https://dl.acm.org/doi/pdf/10.1145/3486607.3486751?casa_token=HhJYg3t8opMAAAAA:mLO0yLTbR6TRIlffJAPCuRzuAUEFGvNJGRfJj7lUgnsCbUGvS7ISh2bkqD9581h8Mn6kjCQiDFxAXA) (PDF)
+    * docs: [Kotlin coroutine implementation](https://kotlinlang.org/spec/asynchronous-programming-with-coroutines.html#coroutine-state-machine)
+    * [more writing](https://github.com/JetBrains/kotlin/blob/894ba9ab809c400de048d43fa98f89087100fcbc/compiler/backend/src/org/jetbrains/kotlin/codegen/coroutines/coroutines-codegen.md)
   * [Regenerator for JS coroutines](http://facebook.github.io/regenerator/)
 
 [large-lisp]: https://dl.acm.org/doi/10.1145/800055.802040
