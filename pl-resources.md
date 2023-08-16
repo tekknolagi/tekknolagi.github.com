@@ -31,6 +31,10 @@ to find great stuff.
 * [Destination-driven code generation](https://legacy.cs.indiana.edu/~dyb/pubs/ddcg.pdf) (PDF)
   * [My implementation](https://github.com/tekknolagi/ddcg)
   * And [One-pass Code Generation in V8](/assets/img/46b-codegeneration-in-V8.pdf) (PDF)
+* [JavaScript AOT compilation](https://dl.acm.org/doi/10.1145/3276945.3276950)
+  by Manuel Serrano
+  * [Of JavaScript AOT Compilation Performance](https://dl.acm.org/doi/pdf/10.1145/3473575) (PDF)
+    by Manuel Serrano
 
 ## Lisp specific
 
