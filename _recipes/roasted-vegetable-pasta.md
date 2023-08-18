@@ -9,6 +9,7 @@ layout: recipe
 Pick and choose which vegetables you like, in quantities you like. I like to go
 heavy on the vegetables.
 
+1. olive oil
 1. bell pepper
 1. zucchini
 1. broccoli
