@@ -10,6 +10,7 @@ Pick and choose which vegetables you like, in quantities you like. I like to go
 heavy on the vegetables.
 
 1. olive oil
+1. salt
 1. bell pepper
 1. zucchini
 1. broccoli
@@ -19,11 +20,13 @@ heavy on the vegetables.
 1. pasta (rigatoni preferred, as usual)
 1. (optional) vegetarian "meat" crumbles
 1. (optional) basil leaves, for garnish
+1. (optional) your favorite cheese, for garnish
 
 *Steps:*
 
 1. Put water in a pot turn the stove on.
-1. Dice vegetables.
+1. Dice zucchini. Lightly salt and leave to drain in a colander.
+1. Dice other vegetables.
 1. Vegetable by vegetable, saute/sear each alone until you have some color. I
    put onions and peppers together, though.
 1. In an empty pan, saute the garlic briefly (~30 seconds), before adding all
