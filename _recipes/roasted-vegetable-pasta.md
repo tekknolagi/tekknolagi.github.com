@@ -28,7 +28,7 @@ heavy on the vegetables.
 1. Dice zucchini. Lightly salt and leave to drain in a colander.
 1. Dice other vegetables.
 1. Vegetable by vegetable, saute/sear each alone until you have some color. I
-   put onions and peppers together, though.
+   put onions and peppers together, though. Add salt as they are sauteing.
 1. In an empty pan, saute the garlic briefly (~30 seconds), before adding all
    the pre-sauteed vegetables.
 1. Dump the pasta in the boiling water. Cook al dente (1-2 minutes less than
