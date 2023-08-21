@@ -358,6 +358,9 @@ write about:
 * [Destination-Driven Code Generation](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.53.3605&rep=rep1&type=pdf) (PDF)
 * [Destination-Passing Style](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/dps-fhpc17.pdf) (PDF)
 * [Yesterday, my program worked. Today, it does not. Why?](http://www.cs.columbia.edu/~junfeng/17sp-e6121/papers/delta-debug.pdf) (PDF)
+* [Interaction nets](https://dl.acm.org/doi/pdf/10.1145/96709.96718) (PDF)
+  * And Interaction combinators
+  * See [HVM](https://github.com/HigherOrderCO/HVM)
 
 ### SystemV ABI
 
