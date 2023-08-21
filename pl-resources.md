@@ -360,7 +360,7 @@ write about:
 * [Yesterday, my program worked. Today, it does not. Why?](http://www.cs.columbia.edu/~junfeng/17sp-e6121/papers/delta-debug.pdf) (PDF)
 * [Interaction nets](https://dl.acm.org/doi/pdf/10.1145/96709.96718) (PDF)
   * And Interaction combinators
-  * See [HVM](https://github.com/HigherOrderCO/HVM)
+  * See [HVM](https://github.com/HigherOrderCO/HVM) and [Inpla](https://github.com/inpla/inpla)
 
 ### SystemV ABI
 
