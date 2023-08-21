@@ -172,6 +172,7 @@ research around optimizing dynamic languages.
   * [JITProf](https://github.com/Berkeley-Correctness-Group/JITProf) and
     [JITProf-visualization](https://github.com/JacksonGL/jitprof-visualization)
   * [MonkeyType](https://github.com/Instagram/MonkeyType) for Python
+  * [specialist](https://github.com/brandtbucher/specialist) for Python
   * [Inspecting rustc LLVM optimization remarks using cargo-remark](https://kobzol.github.io/rust/cargo/2023/08/12/rust-llvm-optimization-remarks.html)
 * This paper about encoding low-level semantics in a higher-level language for
   optimizing code: [Demystifying Magic: High-level Low-level
