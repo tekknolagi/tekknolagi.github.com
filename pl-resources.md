@@ -347,6 +347,11 @@ write about:
   * [In V8](https://github.com/v8/v8/blob/ad655dc0435b02f40b19dd9b091c2dcbc3aed5f2/src/compiler/types.h)
   * [In Cinder](https://github.com/facebookincubator/cinder/blob/e54717062f1a0ab5698bd1abc484fb449b759499/Jit/hir/type.h)
   * [In iv](https://github.com/Constellation/iv/blob/64c3a9c7c517063f29d90d449180ea8f6f4d946f/iv/lv5/breaker/type.h#L4)
+* [Destination-driven code generation](https://legacy.cs.indiana.edu/~dyb/pubs/ddcg.pdf) (PDF)
+  * [My implementation](https://github.com/tekknolagi/ddcg)
+* Runtime feedback
+  * [MonkeyType](https://github.com/Instagram/MonkeyType) for Python
+  * [Inspecting rustc LLVM optimization remarks using cargo-remark](https://kobzol.github.io/rust/cargo/2023/08/12/rust-llvm-optimization-remarks.html)
 
 ### Papers I want to read
 
