@@ -225,7 +225,7 @@ Resources on representing small values efficiently.
 * zuiderkwast's [nanbox](https://github.com/zuiderkwast/nanbox)
 * albertnetymk's [NaN Boxing](http://albertnetymk.github.io/2016/08/06/nan_boxing/)
 * Ghuloum's [Incremental approach](/assets/img/11-ghuloum.pdf)
-  (PDF), which introduces this in a compiler setting
+  (PDF), which introduces pointer tagging in a compiler setting
 * Chicken Scheme's [data representation](https://wiki.call-cc.org/man/4/Data%20representation)
 * Guile Scheme's [Faster Integers](https://www.gnu.org/software/guile/manual/html_node/Faster-Integers.html)
 * Femtolisp [object implementation](https://github.com/JeffBezanson/femtolisp/blob/master/flisp.h)
