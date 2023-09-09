@@ -39,6 +39,8 @@ this post is going to be a compiler post, not a machine learning tutorial, so
 please treat it as such. maybe it will still help you understand through a
 compilers lens.
 
+we're going to compile micrograd neural nets into C++
+
 ## intro to the expression builder
 
 the way the expression builder works right now looks like a slightly more
@@ -84,10 +86,12 @@ it's not quite an AST because it's not a perfect tree; it's expected and normal
 to have more of a DAG-like structure
 
 ```console?lang=python
->>> w = Value(1)
+>>> w = Value(2)
 >>> x = 1 + w
 >>> y = 3 * w
 >>> z = x + y
+>>> z
+Value(data=9, grad=0)
 >>>
 ```
 
@@ -96,9 +100,50 @@ pattern.
 
 it is assumed that the graph won't have cycles in it
 
+right. but why do we have these expression graphs? why not just use math? who
+cares about all the back pointers?
+
+well, let's talk about grad.
+
+## let's talk about grad
+
+training a neural network is a process of shaping your function (a neural
+network) over time to output the results you want. inside your function are a
+bunch of coefficients ("weights") which get iteratively adjusted during
+training
+
+the standard process involves building your neural network structure and also
+a function that tells you how far off your output is from some expected value
+(a "loss function").
+
+if you are trying to get some expected output, you want to minimize the value
+of your loss function as much as possible. in order to minimze your loss, you
+have to update the weights.
+
+to figure out which weights to update and by how much, you need to know how
+much each weight contributes to the final loss. not every weight is equal; some
+have significantly more impact than others.
+
+the question "how much did this weight contribute to the loss this round" is
+answered by the value of the grad of that weight.
+
 ```console?lang=python&prompt=>>>,...
 ```
+
+
+## graph transformations
+
+wengert list is kind of like TAC or bytecode or IR
 
 ## conclusion
 
 ethics note: i don't endorse ml. please don't
+
+
+
+
+
+i initially compiled neurons/layers/mlp to c++, but it bothered me that adding
+new neural network components would require modifying the compiler. so instead
+we are compiling the expression graph, which means that all you need to do when
+you add a new component is write an interpreter for it
