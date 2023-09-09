@@ -127,13 +127,46 @@ have significantly more impact than others.
 the question "how much did this weight contribute to the loss this round" is
 answered by the value of the grad of that weight.
 
+and to compute the grad, you need to traverse backwards from the loss[^forward]
+to do something called reverse mode automatic differentiation
+
+[^forward]: there is also forward mode automatic differentiation but i don't
+    know much about it and haven't seen it used in my limited search
+
+this sounds complicated but, like evaluating an AST top to bottom, is a tree
+traversal with some local state. if you can write a tree-walking interpreter,
+you can do reverse mode AD
+
+## the chain rule
+
+(i am not going to pretend i am a math person. i vaguely remember the chain rule
+from 10 years ago. that's about it. so please look elsewhere for details.)
+
+the chain rule tells you how to compute derivatives of function composition.
+using the example from wikipedia, if you have `h(x) = f(g(x))`, then
+`h'(x) = f'(g(x)) * g'(x)`. which is nice, because you don't need to do
+anything tricky when you start composing functions, as long as you understand
+how to take the derivative of each of the component parts.
+
+for example, if you have `sin(x**2)`, you only need to know the derivative of
+`x**2` and `sin(x)` to find out the answer: `cos(x**2) * 2x`
+
+it turns out this comes in handy for taking derivatives of potentially enormous
+expression graphs. nobody needs to sit down and work out how to take the
+derivative of your huge and no doubt overly complex function... you just have
+your building blocks that you already understand, and they are composed.
+
 ```console?lang=python&prompt=>>>,...
 ```
 
 
-## graph transformations
+## topological sort and graph transformations
 
 wengert list is kind of like TAC or bytecode or IR
+
+## compiling for training vs inference
+
+if you freeze the weights, things get a lot more efficient
 
 ## conclusion
 
