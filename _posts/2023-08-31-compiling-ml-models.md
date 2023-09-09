@@ -88,6 +88,7 @@ to have more of a DAG-like structure
 >>> x = 1 + w
 >>> y = 3 * w
 >>> z = x + y
+>>>
 ```
 
 `x` and `y` both use `w` and then are both used by `z`, forming a diamond
