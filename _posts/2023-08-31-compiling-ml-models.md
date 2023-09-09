@@ -38,3 +38,66 @@ which means... it sounds like a great opportunity for a compiler!
 this post is going to be a compiler post, not a machine learning tutorial, so
 please treat it as such. maybe it will still help you understand through a
 compilers lens.
+
+## intro to the expression builder
+
+the way the expression builder works right now looks like a slightly more
+complicated way of doing math in python
+
+```console?lang=python&prompt=>>>,...
+>>> from micrograd.engine import Value
+>>> a = Value(2)
+>>> b = Value(3)
+>>> c = Value(4)
+>>> d = (a + b) * c
+>>> d
+Value(data=20, grad=0)
+>>>
+```
+
+`Value` implements all the operator methods like `__add__ ` to make the process
+painless and look as much like math as possible
+
+it's different first because it has this `grad` field---which we'll talk more
+about later---but also because as it does the math it also builds up an AST
+
+`Value` instances have a hidden field called `_prev` that stores the
+constituent parts that make up an expression
+
+```console?lang=python&prompt=>>>,...
+>>> d._prev
+{Value(data=5, grad=0), Value(data=4, grad=0)}
+>>>
+```
+
+they also have an operator
+
+```console?lang=python&prompt=>>>,...
+>>> d._op
+'*'
+>>>
+```
+
+we have two operands to the `*`: `c` (4) and `a + b` (5)
+
+it's not quite an AST because it's not a perfect tree; it's expected and normal
+to have more of a DAG-like structure
+
+```console?lang=python
+>>> w = Value(1)
+>>> x = 1 + w
+>>> y = 3 * w
+>>> z = x + y
+```
+
+`x` and `y` both use `w` and then are both used by `z`, forming a diamond
+pattern.
+
+it is assumed that the graph won't have cycles in it
+
+```console?lang=python&prompt=>>>,...
+```
+
+## conclusion
+
+ethics note: i don't endorse ml. please don't
