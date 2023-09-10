@@ -275,6 +275,7 @@ that can help with that.
 * Whatever [this is](https://github.com/bytecodealliance/wasm-micro-runtime/blob/main/core/iwasm/fast-jit/cg/x86-64/jit_codegen_x86_64.cpp)
   from the wasm micro runtime (C++)
 * [zasm](https://github.com/zyantific/zasm) (C++)
+* [monoasm](https://github.com/sisshiki1969/monoasm) (Rust)
 
 For more inspiration, check out some of the assemblers in runtimes I mention in
 my [Compiling a Lisp](/blog/compiling-a-lisp-8/#assembler-libraries) post.
