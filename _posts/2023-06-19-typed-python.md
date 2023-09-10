@@ -595,7 +595,8 @@ this possible for Ruby. People ask the same thing about typed JavaScript (like
 TypeScript) and probably other languages, too. People will have to work out
 similar solutions. I am looking forward to Tzvetan Mikov's talk on
 [Static Hermes](https://twitter.com/react_native_eu/status/1672143102662918144) at
-React Native EU 2023.
+React Native EU 2023 (slides are [here](https://speakerdeck.com/tmikov2023/static-hermes-react-native-eu-2023-announcement)
+and blog post is [here](https://tmikov.blogspot.com/2023/09/how-to-speed-up-micro-benchmark-300x.html)).
 
 There is also Manuel Serrano's whole-program [AOT
 compiler](https://www-sop.inria.fr/members/Manuel.Serrano/publi/serrano-dls18.pdf)
