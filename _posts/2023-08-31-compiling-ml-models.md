@@ -33,18 +33,23 @@ realized
 * the graph structure does not change over time
 * performance is important
 
-which means... it sounds like a great opportunity for a compiler!
+which means... it sounds like a great opportunity for a compiler! this is why
+projects like pytorch and tensorflow have compilers. it speeds up both training
+and inference. so this post will not contain anything novel. it will contain a
+small compiler addition for a small ML engine.
 
 this post is going to be a compiler post, not a machine learning tutorial, so
-please treat it as such. maybe it will still help you understand through a
+please treat it as such. maybe it will still help you understand ML through a
 compilers lens.
 
 we're going to compile micrograd neural nets into C++
 
 ## intro to the expression builder
 
-the way the expression builder works right now looks like a slightly more
-complicated way of doing math in python
+i said that one of micrograd's three components is an expression builder.
+
+the way the expression builder works looks like a slightly more complicated way
+of doing math in python
 
 ```console?lang=python&prompt=>>>,...
 >>> from micrograd.engine import Value
@@ -58,7 +63,7 @@ Value(data=20, grad=0)
 ```
 
 `Value` implements all the operator methods like `__add__ ` to make the process
-painless and look as much like math as possible
+painless and look as much like normal Python math as possible
 
 it's different first because it has this `grad` field---which we'll talk more
 about later---but also because as it does the math it also builds up an AST
@@ -82,8 +87,8 @@ they also have an operator
 
 we have two operands to the `*`: `c` (4) and `a + b` (5)
 
-it's not quite an AST because it's not a perfect tree; it's expected and normal
-to have more of a DAG-like structure
+it's not quite an AST because it's not a tree; it's expected and normal to have
+more of a DAG-like structure
 
 ```console?lang=python
 >>> w = Value(2)
@@ -207,11 +212,20 @@ for that reason, we have topological sort.
 
 ## topological sort and graph transformations
 
+linearize the operations both for forward and backward passes
+
 wengert list is kind of like TAC or bytecode or IR
 
 ## compiling for training vs inference
 
 if you freeze the weights, things get a lot more efficient
+
+## scalar-valued is less efficient than tensor-valued
+
+it's kind of like programming in assembly vs a higher level language. it's much
+harder to make optimizations directly on the assembly. whereas if you have
+three bigger and more descriptive operations in your ast (`matmul`, etc), the
+compiler can better understand what you mean and optimize that.
 
 ## conclusion
 
