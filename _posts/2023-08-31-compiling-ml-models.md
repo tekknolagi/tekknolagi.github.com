@@ -165,6 +165,9 @@ how to take the derivative of each of the component parts.
 for example, if you have `sin(x**2)`, you only need to know the derivative of
 `x**2` and `sin(x)` to find out the answer: `cos(x**2) * 2x`
 
+https://web.auburn.edu/holmerr/1617/Textbook/constmultsum-screen.pdf
+https://en.wikipedia.org/wiki/Differentiation_rules
+
 it turns out this comes in handy for taking derivatives of potentially enormous
 expression graphs. nobody needs to sit down and work out how to take the
 derivative of your huge and no doubt overly complex function... you just have
