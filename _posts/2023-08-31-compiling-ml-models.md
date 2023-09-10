@@ -125,7 +125,8 @@ much each weight contributes to the final loss. not every weight is equal; some
 have significantly more impact than others.
 
 the question "how much did this weight contribute to the loss this round" is
-answered by the value of the grad of that weight.
+answered by the value of the grad of that weight --- the first derivative. the
+slope at a point.
 
 and to compute the grad, you need to traverse backwards from the loss[^forward]
 to do something called reverse mode automatic differentiation
@@ -137,10 +138,23 @@ this sounds complicated but, like evaluating an AST top to bottom, is a tree
 traversal with some local state. if you can write a tree-walking interpreter,
 you can do reverse mode AD
 
+### reverse mode AD
+
+go from having an expression graph to understanding how each of the component
+parts affect the final value (say, loss)
+
+in order to do that you need to take the derivative of each operation and
+propagate the grad backwards through the graph toward the weights
+("backpropagation")
+
+we do this using the chain rule.
+
 ## the chain rule
 
 (i am not going to pretend i am a math person. i vaguely remember the chain rule
 from 10 years ago. that's about it. so please look elsewhere for details.)
+
+### a quick overview
 
 the chain rule tells you how to compute derivatives of function composition.
 using the example from wikipedia, if you have `h(x) = f(g(x))`, then
@@ -155,6 +169,34 @@ it turns out this comes in handy for taking derivatives of potentially enormous
 expression graphs. nobody needs to sit down and work out how to take the
 derivative of your huge and no doubt overly complex function... you just have
 your building blocks that you already understand, and they are composed.
+
+### applying this to the graph
+
+for a given node, do one step of the chain rule (in pseudocode):
+
+```python
+# pseudocode
+def backward(node):
+    for child in node._prev:
+        child.grad += derivative(child) * node.grad
+```
+
+instead of just setting `child.grad`, we are increasing it for two reasons:
+
+* one child may be shared with other parents, in which case it affects both
+* batching, but that's not important right now
+
+an example of a derivative of a function is (addition? pow? TODO)
+
+we have a function to do one step for one operation node, but we need to do the
+whole graph.
+
+but traversing a graph is not as simple as traversing a tree. you need to avoid
+visiting a node more than once and also guarantee that you visit child nodes
+before parent nodes (in forward mode) or parent nodes before children nodes (in
+reverse mode).
+
+for that reason, we have topological sort.
 
 ```console?lang=python&prompt=>>>,...
 ```
