@@ -216,11 +216,39 @@ linearize the operations both for forward and backward passes
 
 wengert list is kind of like TAC or bytecode or IR
 
+## performance problems
+
+uh oh, running this with cpython is slow. it looks like computing a forward
+pass for one image takes about a second. and then we have to do a backward
+pass, too. that is way too long!
+
+obvious solution: try with pypy. oh neat, a couple per second. not enough.
+
+(btw, skybison is way faster! fun fact)
+
+hypothesis for pain points:
+
+* recreating the graph with every forward pass (allocation)
+* doing a topological sort with every backward pass (pointer chasing, function
+  calls, allocation)
+* python interpreter stuff
+
+solutions (respectively):
+
+* re-use the old graph. just copy in new inputs
+* since you aren't changing the graph, no need to re-topo-sort. keep the
+  ordering around, too. this helps for both forward and backward passes.
+* compile the topo sort with its operations to C++ or something
+
 ## compiling for training vs inference
 
 if you freeze the weights, things get a lot more efficient
 
 ## scalar-valued is less efficient than tensor-valued
+
+we managed to remove a lot of the overhead *for the program we had*, but the
+overall architecture did not improve. to do that, we need to move from
+scalar-valued to tensor-valued.
 
 it's kind of like programming in assembly vs a higher level language. it's much
 harder to make optimizations directly on the assembly. whereas if you have
