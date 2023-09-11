@@ -233,6 +233,12 @@ hypothesis for pain points:
   calls, allocation)
 * python interpreter stuff
 
+### checking with a profiler
+
+use scalene. see massive memory allocations on `sum(...)` and `set(_children)`
+
+### solutions
+
 solutions (respectively):
 
 * re-use the old graph. just copy in new inputs
