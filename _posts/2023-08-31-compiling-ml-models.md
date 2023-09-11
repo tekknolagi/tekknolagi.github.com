@@ -242,7 +242,10 @@ solutions (respectively):
 
 ## compiling for training vs inference
 
-if you freeze the weights, things get a lot more efficient
+if you freeze the weights, things get a lot more efficient. right now we have
+so many memory loads and stores and it's hard for the C++ compiler to prove
+anything about the properties of the numbers when it is trying to optimize. it
+probably also prevents vectorization. does the lack of locality hurt too?
 
 ## scalar-valued is less efficient than tensor-valued
 
@@ -254,6 +257,9 @@ it's kind of like programming in assembly vs a higher level language. it's much
 harder to make optimizations directly on the assembly. whereas if you have
 three bigger and more descriptive operations in your ast (`matmul`, etc), the
 compiler can better understand what you mean and optimize that.
+
+it also brings better data locality (matrix is stored densely) and we can get
+some vectorized math instead of millions of `mulsd`.
 
 ## conclusion
 
