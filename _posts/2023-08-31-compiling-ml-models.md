@@ -256,6 +256,16 @@ solutions (respectively):
 TODO: parallelization of work in the graph? is that possible? it looks like in
 MNIST you can't do anything for tensor version, but maybe for scalar.
 
+## let's write a compiler
+
+### forward
+
+### backward
+
+### update
+
+### a python c extension
+
 ## compiling for training vs inference
 
 if you freeze the weights, things get a lot more efficient. right now we have
