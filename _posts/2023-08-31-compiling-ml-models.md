@@ -224,7 +224,11 @@ pass, too. that is way too long!
 
 obvious solution: try with pypy. oh neat, a couple per second. not enough.
 
-(btw, skybison is way faster! fun fact)
+(btw, skybison is way faster! fun fact. its major perf pain point was function
+creation (that is a bit slow in skybison right now), but if you lift the
+lambdas to the top level that goes away. then it's very clear that set lookup
+from topo sort is the slowest bit in the profile. then it's garbage collection
+from all the transient objects.)
 
 hypothesis for pain points:
 
