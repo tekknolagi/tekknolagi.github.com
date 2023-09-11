@@ -228,7 +228,10 @@ obvious solution: try with pypy. oh neat, a couple per second. not enough.
 creation (that is a bit slow in skybison right now), but if you lift the
 lambdas to the top level that goes away. then it's very clear that set lookup
 from topo sort is the slowest bit in the profile. then it's garbage collection
-from all the transient objects.)
+from all the transient objects.
+
+incidentally, hoisting the lambdas to be normal functions also massively speeds
+up pypy and it becomes faster than skybison.)
 
 hypothesis for pain points:
 
