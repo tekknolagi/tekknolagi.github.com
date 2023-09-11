@@ -44,6 +44,91 @@ compilers lens.
 
 we're going to compile micrograd neural nets into C++
 
+## how micrograd does neural networks
+
+this is the entire neural network code for a multi-layer perceptron.
+
+![](https://upload.wikimedia.org/wikipedia/commons/b/b8/MultiLayerPerceptron.svg)
+*Image courtesy Wikimedia*
+
+in this image, circles represent data (neurons) and arrows are operations on
+the data. in this case, the red (leftmost) dots are input data. the arrows
+going right are multiplications with weights. the meeting of the arrows
+represents an addition (forming a dot product).
+
+karpathy implements this pretty directly, with each neuron being an instance of
+the `Neuron` class and having a `__call__` method do the dot product. after
+each dot product is an activation, in this case `ReLU`, which is equivalent to
+`max(x, 0)`.
+
+below is the entire blueprint code for a multilayer perceptron in micrograd:
+
+```python
+import random
+from micrograd.engine import Value
+
+class Module:
+
+    def zero_grad(self):
+        for p in self.parameters():
+            p.grad = 0
+
+    def parameters(self):
+        return []
+
+class Neuron(Module):
+
+    def __init__(self, nin, nonlin=True):
+        self.w = [Value(random.uniform(-1,1)) for _ in range(nin)]
+        self.b = Value(0)
+        self.nonlin = nonlin
+
+    def __call__(self, x):
+        act = sum((wi*xi for wi,xi in zip(self.w, x)), self.b)
+        return act.relu() if self.nonlin else act
+
+    def parameters(self):
+        return self.w + [self.b]
+
+    def __repr__(self):
+        return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
+
+class Layer(Module):
+
+    def __init__(self, nin, nout, **kwargs):
+        self.neurons = [Neuron(nin, **kwargs) for _ in range(nout)]
+
+    def __call__(self, x):
+        out = [n(x) for n in self.neurons]
+        return out[0] if len(out) == 1 else out
+
+    def parameters(self):
+        return [p for n in self.neurons for p in n.parameters()]
+
+    def __repr__(self):
+        return f"Layer of [{', '.join(str(n) for n in self.neurons)}]"
+
+class MLP(Module):
+
+    def __init__(self, nin, nouts):
+        sz = [nin] + nouts
+        self.layers = [Layer(sz[i], sz[i+1], nonlin=i!=len(nouts)-1) for i in range(len(nouts))]
+
+    def __call__(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
+
+    def parameters(self):
+        return [p for layer in self.layers for p in layer.parameters()]
+
+    def __repr__(self):
+        return f"MLP of [{', '.join(str(layer) for layer in self.layers)}]"
+```
+
+but this is not done just with floating point numbers. instead he uses this
+`Value` thing. what's that about?
+
 ## intro to the expression builder
 
 i said that one of micrograd's three components is an expression builder.
