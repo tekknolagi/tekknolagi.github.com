@@ -254,7 +254,7 @@ solutions (respectively):
 * compile the topo sort with its operations to C++ or something
 
 TODO: parallelization of work in the graph? is that possible? it looks like in
-MNIST you can't do anything.
+MNIST you can't do anything for tensor version, but maybe for scalar.
 
 ## compiling for training vs inference
 
@@ -284,6 +284,8 @@ some vectorized math instead of millions of `mulsd`.
   * https://github.com/pytorch/pytorch/issues/77171
 * matmul associativity (and commutativity with einstein notation??) to reduce
   size of intermediate values
+
+TODO: parallelization of matmul? GEMM?
 
 ## conclusion
 
