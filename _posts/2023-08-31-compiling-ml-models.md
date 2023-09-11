@@ -46,7 +46,7 @@ we're going to compile micrograd neural nets into C++
 
 ## how micrograd does neural networks
 
-this is the entire neural network code for a multi-layer perceptron.
+first, a bit about multi-layer perceptrons.
 
 <figure style="display: block; margin: 0 auto; max-width: 600px;">
   <img style="max-width: 600px;" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/MultiLayerPerceptron.svg" />
