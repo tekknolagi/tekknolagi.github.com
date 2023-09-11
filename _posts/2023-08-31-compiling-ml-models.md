@@ -253,6 +253,9 @@ solutions (respectively):
   ordering around, too. this helps for both forward and backward passes.
 * compile the topo sort with its operations to C++ or something
 
+TODO: parallelization of work in the graph? is that possible? it looks like in
+MNIST you can't do anything.
+
 ## compiling for training vs inference
 
 if you freeze the weights, things get a lot more efficient. right now we have
@@ -273,6 +276,14 @@ compiler can better understand what you mean and optimize that.
 
 it also brings better data locality (matrix is stored densely) and we can get
 some vectorized math instead of millions of `mulsd`.
+
+* fuse matmul with addition of bias (`W @ x + b`)
+  * https://discuss.tvm.apache.org/t/operator-fusion-for-rnn/11966
+  * https://github.com/pytorch/pytorch/issues/39661
+* fuse matmul/add with activation function (`relu(W @ x + b)`)
+  * https://github.com/pytorch/pytorch/issues/77171
+* matmul associativity (and commutativity with einstein notation??) to reduce
+  size of intermediate values
 
 ## conclusion
 
