@@ -683,7 +683,13 @@ so many memory loads and stores and it's hard for the C compiler to prove
 anything about the properties of the numbers when it is trying to optimize. it
 probably also prevents SIMD. does the lack of locality hurt too?
 
-## scalar-valued is less efficient than tensor-valued
+## conclusion
+
+ethics note: i don't endorse ml. please don't
+
+## more thonks
+
+### scalar-valued is less efficient than tensor-valued
 
 we managed to remove a lot of the overhead *for the program we had*, but the
 overall architecture did not improve. to do that, we need to move from
@@ -709,6 +715,6 @@ some vectorized math instead of millions of `mulsd`.
 TODO: parallelization of matmul? GEMM?
 -->
 
-## conclusion
+### what if you wrote micrograd in rpython?
 
-ethics note: i don't endorse ml. please don't
+could PyPy jit it effectively?
