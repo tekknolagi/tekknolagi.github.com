@@ -681,7 +681,7 @@ move to C!
 if you freeze the weights, things get a lot more efficient. right now we have
 so many memory loads and stores and it's hard for the C compiler to prove
 anything about the properties of the numbers when it is trying to optimize. it
-probably also prevents vectorization. does the lack of locality hurt too?
+probably also prevents SIMD. does the lack of locality hurt too?
 
 ## scalar-valued is less efficient than tensor-valued
 
