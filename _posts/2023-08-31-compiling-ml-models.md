@@ -557,6 +557,9 @@ data[2] = data[1]+data[0];
 >>>
 ```
 
+where it is assumed that `data` is some properly-sized array of `double`s that
+we will create later.
+
 look, there it is! a neat little linearization of the graph. this strategy
 works because we don't have loops and we don't have re-definitions of values.
 each value is set once[^ssa]. and this code, even with all its memory loads
@@ -642,7 +645,21 @@ than the forward pass, even.
 
 ### update
 
+<!-- TODO -->
+
+```python
+def gen_update(f, model):
+    print("double learning_rate = 0.1;", file=f)
+    for o in model.parameters():
+        assert o._op in ('weight', 'bias'), repr(o._op)
+        print(f"data[{o._id}] -= learning_rate * {o.getgrad()};", file=f)
+```
+
+<!-- TODO -->
+
 ### a python c extension
+
+now you can drive your model like this from C++:
 
 ## compiling for training vs inference
 
