@@ -640,6 +640,9 @@ class Value:
         raise RuntimeError(f"op {self._op} left as an exercise for the reader")
 ```
 
+where it is assumed that `grad` is some properly-sized array of `double`s that
+we will create later.
+
 my complete backward pass compiler implementation is about 30 lines! shorter
 than the forward pass, even.
 
@@ -657,9 +660,19 @@ def gen_update(f, model):
 
 <!-- TODO -->
 
+### setting the input
+
+<!-- TODO -->
+
 ### a python c extension
 
-now you can drive your model like this from C++:
+having a bunch of free-floating code to update `data` and `grad` arrays is fun,
+but it's not a complete compiler. we need to wrap that code in functions (i
+called them `forward`, `backward`, `update`, and `set_input`) and make them
+accessible to our Python driver program. we don't want to have to completely
+move to C++!
+
+<!-- TODO -->
 
 ## compiling for training vs inference
 
