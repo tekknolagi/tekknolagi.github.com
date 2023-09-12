@@ -42,7 +42,15 @@ this post is going to be a compiler post, not a machine learning tutorial, so
 please treat it as such. maybe it will still help you understand ML through a
 compilers lens.
 
-we're going to compile micrograd neural nets into C++
+we're going to compile micrograd neural nets into C++. in order, we will
+
+* do a brief overview of neural networks
+* look at how micrograd does forward and backward passes
+* review the chain rule
+* learn why micrograd is slow
+* write a small compiler
+
+let's go!
 
 ## how micrograd does neural networks
 
