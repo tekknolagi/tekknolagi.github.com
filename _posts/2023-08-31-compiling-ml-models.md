@@ -518,7 +518,7 @@ data[2] = data[1]+data[0];
 look, there it is! a neat little linearization of the graph. this strategy
 works because we don't have loops and we don't have re-definitions of values.
 each value is set once[^ssa]. and this code, even with all its memory loads
-and stores, should definitely be faster than pointer chasing and function calls
+and stores, should be much faster than pointer chasing and function calls
 in Python-land.
 
 [^ssa]: This makes it SSA form by definition!
