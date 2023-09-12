@@ -56,8 +56,8 @@ let's go!
 
 first, a bit about multi-layer perceptrons.
 
-<figure style="display: block; margin: 0 auto; max-width: 600px;">
-  <img style="max-width: 600px;" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/MultiLayerPerceptron.svg" />
+<figure style="display: block; margin: 0 auto; max-width: 400px;">
+  <img style="max-width: 400px;" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/MultiLayerPerceptron.svg" />
   <figcaption>Fig. 1 - Multi-layer Perceptron diagram. Image courtesy Wikimedia.</figcaption>
 </figure>
 
