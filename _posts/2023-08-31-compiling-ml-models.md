@@ -234,9 +234,9 @@ to do something called reverse mode automatic differentiation
 [^forward]: there is also forward mode automatic differentiation but i don't
     know much about it and haven't seen it used in my limited search
 
-this sounds complicated but, like evaluating an AST top to bottom, is a tree
-traversal with some local state. if you can write a tree-walking interpreter,
-you can do reverse mode AD
+this sounds complicated but, like evaluating an AST top to bottom, reverse mode
+AD is a graph traversal with some local state. if you can write a tree-walking
+interpreter, you can do reverse mode AD
 
 ### reverse mode AD
 
