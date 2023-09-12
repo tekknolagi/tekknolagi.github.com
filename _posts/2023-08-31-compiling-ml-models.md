@@ -651,14 +651,16 @@ than the forward pass, even.
 <!-- TODO -->
 
 ```python
-def gen_update(f, model):
-    print("double learning_rate = 0.1;", file=f)
+def gen_update(f, model, learning_rate):
     for o in model.parameters():
         assert o._op in ('weight', 'bias'), repr(o._op)
-        print(f"data[{o._id}] -= learning_rate * {o.getgrad()};", file=f)
+        print(f"data[{o._id}] -= {learning_rate} * {o.getgrad()};", file=f)
 ```
 
 <!-- TODO -->
+
+it's even the same length as the Python equivalent, if you exclude the
+`assert`.
 
 ### setting the input
 
