@@ -289,7 +289,9 @@ instead of just setting `child.grad`, we are increasing it for two reasons:
 * one child may be shared with other parents, in which case it affects both
 * batching, but that's not important right now
 
+<!--
 an example of a derivative of a function is (addition? pow? TODO)
+-->
 
 we have a function to do one step for one operation node, but we need to do the
 whole graph.
@@ -467,8 +469,10 @@ solutions (respectively):
   ordering around, too. this helps for both forward and backward passes.
 * compile the topo sort with its operations to C++ or something
 
+<!--
 TODO: parallelization of work in the graph? is that possible? it looks like in
 MNIST you can't do anything for tensor version, but maybe for scalar.
+-->
 
 ## let's write a compiler
 
@@ -509,7 +513,9 @@ some vectorized math instead of millions of `mulsd`.
 * matmul associativity (and commutativity with einstein notation??) to reduce
   size of intermediate values
 
+<!--
 TODO: parallelization of matmul? GEMM?
+-->
 
 ## conclusion
 
