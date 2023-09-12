@@ -637,8 +637,8 @@ class Value:
         raise RuntimeError(f"op {self._op} left as an exercise for the reader")
 ```
 
-my complete compiler implementation is about 30 lines! shorter than the forward
-pass, even.
+my complete backward pass compiler implementation is about 30 lines! shorter
+than the forward pass, even.
 
 ### update
 
