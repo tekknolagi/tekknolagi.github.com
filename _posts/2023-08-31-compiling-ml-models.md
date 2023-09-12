@@ -392,6 +392,10 @@ i am not going to get into the specifics, but here is what a rough sketch of
 very simplified training loop might look like for MLP-based classifier for the
 MNIST digit recognition problem:
 
+(to be clear, this code is not runnable as-is. it needs the image loading
+support code and a loss function. the full code is available in the GitHub
+repo.)
+
 ```python
 import random
 from micrograd.nn import MLP
@@ -411,11 +415,7 @@ for epoch in range(num_epochs):
             p.grad = 0.0
         # forward
         output = model(image.pixels)
-        # compute cross-entropy loss
-        softmax_output = stable_softmax(output)
-        expected_onehot = [0] * NUM_DIGITS
-        expression[image.label] = 1
-        loss = -sum(exp*(act+0.0001).log() for exp, act in zip(expected_onehot, softmax_output))
+        loss = compute_loss(output)
         # backward
         loss.backward()
         # update
@@ -455,6 +455,8 @@ hypothesis for pain points:
 * doing a topological sort with every backward pass (pointer chasing, function
   calls, allocation)
 * python interpreter stuff
+
+but instead of optimizing blindly in the dark, we should measure.
 
 ### checking with a profiler
 
