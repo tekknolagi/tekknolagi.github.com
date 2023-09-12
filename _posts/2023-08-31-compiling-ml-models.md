@@ -676,6 +676,12 @@ move to C!
 
 <!-- TODO -->
 
+## did it work? is it faster?
+
+<!-- TODO -->
+
+holy cow, 2000x
+
 ## compiling for training vs inference
 
 if you freeze the weights, things get a lot more efficient. right now we have
