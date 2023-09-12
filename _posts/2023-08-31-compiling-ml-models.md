@@ -534,7 +534,7 @@ model would then require writing new compilers.
 
 for this reason, we are writing compilers of `Value` graphs. this means anybody
 get a compiler for free as long as their machine learning architecture uses
-`Value`s.
+`Value`s. you need only write an interpreter for it!
 
 ### forward
 
@@ -712,12 +712,3 @@ TODO: parallelization of matmul? GEMM?
 ## conclusion
 
 ethics note: i don't endorse ml. please don't
-
-
-
-
-
-i initially compiled neurons/layers/mlp to C, but it bothered me that adding
-new neural network components would require modifying the compiler. so instead
-we are compiling the expression graph, which means that all you need to do when
-you add a new component is write an interpreter for it
