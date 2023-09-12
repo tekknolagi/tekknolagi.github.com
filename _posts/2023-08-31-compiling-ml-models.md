@@ -307,6 +307,68 @@ for that reason, we have topological sort.
 
 ## topological sort and graph transformations
 
+a topological sort on a graph builds an order where children are always visited
+before their parents. (in general this only works if the graph does not have
+cycles, but---thankfully---we already assume above that the graph does not have
+cycles.)
+
+```python
+class Value:
+    # ...
+    def topo(self):
+        # modified from Value.backward, which builds a topological sort
+        # internally
+        topo = []
+        visited = set()
+        def build_topo(v):
+            if v not in visited:
+                visited.add(v)
+                for child in v._prev:
+                    build_topo(child)
+                topo.append(v)
+        build_topo(self)
+        return topo
+```
+
+for example, we can do a topological sort of a very simple expression graph,
+`1+2`.
+
+```console?lang=python&prompt=>>>,...
+>>> from micrograd.engine import Value
+>>> x = Value(1)
+>>> y = Value(2)
+>>> z = x + y
+>>> z.topo()
+[Value(data=1, grad=0), Value(data=2, grad=0), Value(data=3, grad=0)]
+>>>
+```
+
+the topological sort says that in order to calculate the value `3`, we must
+first calculate the values `1` and `2`. it doesn't matter in what order we do
+`1` and `2`, but they both have to come before `3`.
+
+```python
+class Value:
+    # ...
+    def backward(self):
+
+        # topological order all of the children in the graph
+        topo = []
+        visited = set()
+        def build_topo(v):
+            if v not in visited:
+                visited.add(v)
+                for child in v._prev:
+                    build_topo(child)
+                topo.append(v)
+        build_topo(self)
+
+        # go one variable at a time and apply the chain rule to get its gradient
+        self.grad = 1
+        for v in reversed(topo):
+            v._backward()
+```
+
 linearize the operations both for forward and backward passes
 
 wengert list is kind of like TAC or bytecode or IR
