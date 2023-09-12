@@ -42,7 +42,7 @@ this post is going to be a compiler post, not a machine learning tutorial, so
 please treat it as such. maybe it will still help you understand ML through a
 compilers lens.
 
-we're going to compile micrograd neural nets into C++. in order, we will
+we're going to compile micrograd neural nets into C. in order, we will
 
 * do a brief overview of neural networks
 * look at how micrograd does forward and backward passes
@@ -511,7 +511,7 @@ solutions (respectively):
 * re-use the old graph. just copy in new inputs
 * since you aren't changing the graph, no need to re-topo-sort. keep the
   ordering around, too. this helps for both forward and backward passes.
-* compile the topo sort with its operations to C++ or something
+* compile the topo sort with its operations to C or something
 
 as usual with compilers, if you can freeze some of the dynamism in the
 allowable semantics of a program you get a performance benefit. since the graph
@@ -528,7 +528,7 @@ the goal with this compiler is to write something very small that fits
 reasonably cleanly into micograd as it already is---not to re-architect
 anything.
 
-the original version of this project compiled the `MLP` directly into C++, but
+the original version of this project compiled the `MLP` directly into C, but
 that unfortunately is not very extensible: making architectural changes to your
 model would then require writing new compilers.
 
@@ -672,14 +672,14 @@ having a bunch of free-floating code to update `data` and `grad` arrays is fun,
 but it's not a complete compiler. we need to wrap that code in functions (i
 called them `forward`, `backward`, `update`, and `set_input`) and make them
 accessible to our Python driver program. we don't want to have to completely
-move to C++!
+move to C!
 
 <!-- TODO -->
 
 ## compiling for training vs inference
 
 if you freeze the weights, things get a lot more efficient. right now we have
-so many memory loads and stores and it's hard for the C++ compiler to prove
+so many memory loads and stores and it's hard for the C compiler to prove
 anything about the properties of the numbers when it is trying to optimize. it
 probably also prevents vectorization. does the lack of locality hurt too?
 
@@ -717,7 +717,7 @@ ethics note: i don't endorse ml. please don't
 
 
 
-i initially compiled neurons/layers/mlp to c++, but it bothered me that adding
+i initially compiled neurons/layers/mlp to C, but it bothered me that adding
 new neural network components would require modifying the compiler. so instead
 we are compiling the expression graph, which means that all you need to do when
 you add a new component is write an interpreter for it
