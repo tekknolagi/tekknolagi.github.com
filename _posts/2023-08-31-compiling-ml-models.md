@@ -737,3 +737,12 @@ could PyPy jit it effectively?
 ### what if you generated python code or bytecode?
 
 could PyPy jit it effectively?
+
+<!-- TODO from Yee Sian
+for compiler people
+* call Value graph the "IR"
+* call MLP the "front-end"
+for ML people
+* identify which bits in this post correspond to existing infra in PyTorch or
+  TF
+-->
