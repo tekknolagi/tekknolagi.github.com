@@ -332,6 +332,9 @@ class Value:
         return out
 ```
 
+see what a nice translation of the math that is? get the derivative, apply the
+chain rule, add to the grad.
+
 now we have a function to do one step for one operation node, but we need to do
 the whole graph.
 
