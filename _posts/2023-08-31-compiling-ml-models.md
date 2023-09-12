@@ -718,3 +718,7 @@ TODO: parallelization of matmul? GEMM?
 ### what if you wrote micrograd in rpython?
 
 could PyPy jit it effectively?
+
+### what if you generated python code or bytecode?
+
+could PyPy jit it effectively?
