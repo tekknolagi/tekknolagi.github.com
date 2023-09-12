@@ -347,6 +347,13 @@ the topological sort says that in order to calculate the value `3`, we must
 first calculate the values `1` and `2`. it doesn't matter in what order we do
 `1` and `2`, but they both have to come before `3`.
 
+### applying this to backpropagation
+
+if we take what we know now about the chain rule and topological sort, we can
+do backpropagation on the graph. this is the code straight from micrograd,
+1) builds a topological sort, and 2) operates on it in reverse, applying the
+chain rule to each `Value` one at a time.
+
 ```python
 class Value:
     # ...
@@ -369,9 +376,59 @@ class Value:
             v._backward()
 ```
 
+this is normally called on the result `Value` of the loss function.
+
+<!--
 linearize the operations both for forward and backward passes
 
 wengert list is kind of like TAC or bytecode or IR
+-->
+
+## putting it all together
+
+i am not going to get into the specifics, but here is what a rough sketch of
+very simplified training loop might look like for MLP-based classifier for the
+MNIST digit recognition problem:
+
+```python
+import random
+from micrograd.nn import MLP
+# ...
+NUM_DIGITS = 10
+LEARNING_RATE = 0.1
+# each image is 28x28. hidden layer of width 50. 10 digits output.
+model = MLP(28*28, [50, NUM_DIGITS])
+# pretend there is some kind of function that loads the labeled training images
+# into memory
+db = list(images("train-images-idx3-ubyte", "train-labels-idx1-ubyte"))
+num_epochs = 100
+for epoch in range(num_epochs):
+    for image in db:
+        # zero grad
+        for p in model.parameters():
+            p.grad = 0.0
+        # forward
+        output = model(image.pixels)
+        # compute cross-entropy loss
+        softmax_output = stable_softmax(output)
+        expected_onehot = [0] * NUM_DIGITS
+        expression[image.label] = 1
+        loss = -sum(exp*(act+0.0001).log() for exp, act in zip(expected_onehot, softmax_output))
+        # backward
+        loss.backward()
+        # update
+        for p in model.parameters():
+            p.data -= LEARNING_RATE * p.grad
+```
+
+the `MLP` builds a bunch of `Neuron`s in `Layer`s and initializes some weights
+as `Value`s, but it does not construct the graph yet. only when it is called
+(as in `model(image.pixels)`) does it construct the graph and do all of the dot
+products. then we construct more of the graph on top of that when calculating
+the loss.
+
+this is nice and simple---thank you, Andrej---but is it fast enough to be
+usable? let's find out.
 
 ## performance problems
 
