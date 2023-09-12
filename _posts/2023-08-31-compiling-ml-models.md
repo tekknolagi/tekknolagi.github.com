@@ -281,7 +281,7 @@ for a given node, do one step of the chain rule (in pseudocode):
 # pseudocode
 def backward(node):
     for child in node._prev:
-        child.grad += derivative(child) * node.grad
+        child.grad += derivative_wrt_child(child) * node.grad
 ```
 
 instead of just setting `child.grad`, we are increasing it for two reasons:
