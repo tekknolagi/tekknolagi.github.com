@@ -469,12 +469,28 @@ solutions (respectively):
   ordering around, too. this helps for both forward and backward passes.
 * compile the topo sort with its operations to C++ or something
 
+as usual with compilers, if you can freeze some of the dynamism in the
+allowable semantics of a program you get a performance benefit. since the graph
+shape is static, this sounds like a fine idea.
+
 <!--
 TODO: parallelization of work in the graph? is that possible? it looks like in
 MNIST you can't do anything for tensor version, but maybe for scalar.
 -->
 
 ## let's write a compiler
+
+the goal with this compiler is to write something very small that fits
+reasonably cleanly into micograd as it already is---not to re-architect
+anything.
+
+the original version of this project compiled the `MLP` directly into C++, but
+that unfortunately is not very extensible: making architectural changes to your
+model would then require writing new compilers.
+
+for this reason, we are writing compilers of `Value` graphs. this means anybody
+get a compiler for free as long as their machine learning architecture uses
+`Value`s.
 
 ### forward
 
