@@ -200,6 +200,26 @@ pattern.
 
 it is assumed that the graph won't have cycles in it
 
+so what does that look like in code? well, the `Value.__mul__` function, called
+on the left hand side of an `x*y` operation[^binop], looks like this:
+
+[^binop]: Kind of. This is an oversimplification of Python semantics. If you
+    want to learn more, check out Brett Cannon's excellent [blog
+    post](https://snarky.ca/unravelling-binary-arithmetic-operations-in-python/).
+
+```python
+class Value:
+    # ...
+    def __mul__(self, other):
+        # create a transient value if the right hand side is an int or float,
+        # like v * 3
+        other = other if isinstance(other, Value) else Value(other)
+        # pass in data, children, and operation
+        out = Value(self.data * other.data, (self, other), '*')
+        # ... we'll come back to this part later ...
+        return out
+```
+
 right. but why do we have these expression graphs? why not just use math? who
 cares about all the back pointers?
 
