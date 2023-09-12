@@ -313,8 +313,27 @@ instead of just setting `child.grad`, we are increasing it for two reasons:
 an example of a derivative of a function is (addition? pow? TODO)
 -->
 
-we have a function to do one step for one operation node, but we need to do the
-whole graph.
+let's take a look at karpathy's implementation of the derivative of `*`, for
+example. in math first: if you have `f(x,y) = x*y`, then `df/dx = 1*y`. now
+in code:
+
+```python
+class Value:
+    # ...
+    def __mul__(self, other):
+        other = other if isinstance(other, Value) else Value(other)
+        out = Value(self.data * other.data, (self, other), '*')
+
+        def _backward():
+            self.grad += other.data * out.grad
+            other.grad += self.data * out.grad
+        out._backward = _backward
+
+        return out
+```
+
+now we have a function to do one step for one operation node, but we need to do
+the whole graph.
 
 but traversing a graph is not as simple as traversing a tree. you need to avoid
 visiting a node more than once and also guarantee that you visit child nodes
@@ -561,18 +580,59 @@ class Value:
         if self._op == '+':
             c0, c1 = self._prev
             return self.set(f"{c0.var()}+{c1.var()}")
-        raise RuntimeError("no")
-        # ...
+        raise RuntimeError(f"op {self._op} left as an exercise for the reader")
 ```
+
+the other operators are not so different. see if you can figure out how to
+implement `**` or `exp`, for example. note that `**` requires either storing
+additional data or a kind of gross hack.
 
 you may notice that this requires assigning names to `Value`s. for this, we
 have added an `_id` field that is an auto-incrementing counter in the
 `__init__` function. the implementation does not matter so much.
 
-you may also notice that this requi
+my complete compiler implementation is about 40 lines and it even includes some
+small on-the-fly optimizations.
 
+this compiler does forward passes. what about backward passes? that has to be
+much more complicated, right?
 
 ### backward
+
+actually, it's about the same complexity. we need only do a line-by-line
+translation of the backpropagation functions (all the `_backward`
+implementations).
+
+```python
+class Value:
+    # ...
+    def getgrad(self):
+        if self._op in ('', 'input'):
+            raise RuntimeError("Grad for constants and input data not stored")
+        if self._op in ('weight', 'bias'):
+            return f"grad[{self._id}]"
+        return f"grad{self._id}"
+
+    def setgrad(self, val):
+        if self._op in ('', 'input'):
+            return []
+        return [f"{self.getgrad()} += clip({val});"]
+
+    def backward_compile(self):
+        if not self._prev:
+            assert self._op in ('', 'weight', 'bias', 'input')
+            # Nothing to propagate to children.
+            assert not self._prev
+            return []
+        if self._op == '*':
+            left, right = self._prev
+            return left.setgrad(f"{right.var()}*{self.getgrad()}") +\
+                    right.setgrad(f"{left.var()}*{self.getgrad()}")
+        if self._op == 'log':
+            prev, = self._prev
+            return prev.setgrad(f"1.0L/{prev.var()}*{self.getgrad()}")
+        raise RuntimeError(f"op {self._op} left as an exercise for the reader")
+```
 
 ### update
 
