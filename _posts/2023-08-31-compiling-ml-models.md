@@ -496,6 +496,59 @@ get a compiler for free as long as their machine learning architecture uses
 
 ### forward
 
+since we have a topological sort, we might as well use it. then we only need to
+write a compiler that works one `Value` at a time. in pseudocode, we can do:
+
+```console?lang=python&prompt=>>>,...
+>>> from micrograd.engine import Value
+>>> x = Value(1)
+>>> y = Value(2)
+>>> z = x + y
+>>> order = z.topo()
+>>> for v in order:
+...     print(v.compile())
+...
+data[1] = 2;
+data[0] = 1;
+data[2] = data[1]+data[0];
+>>>
+```
+
+look, there it is! a neat little linearization of the graph. this strategy
+works because we don't have loops and we don't have re-definitions of values.
+each value is set once[^ssa].
+
+[^ssa]: This makes it SSA form by definition!
+
+```python
+class Value:
+    # ...
+    def var(self):
+        return f"data[{self._id}]"
+
+    def set(self, val):
+        return f"{self.var()} = {val};"
+
+    def compile(self):
+        if self._op in ('weight', 'bias', 'input'):
+            # Not calculated; set elsewhere
+            return ""
+        if self._op == '':
+            return self.set(f"{self.data}")
+        if self._op == '+':
+            c0, c1 = self._prev
+            return self.set(f"{c0.var()}+{c1.var()}")
+        raise RuntimeError("no")
+        # ...
+```
+
+you may notice that this requires assigning names to `Value`s. for this, we
+have added an `_id` field that is an auto-incrementing counter in the
+`__init__` function. the implementation does not matter so much.
+
+you may also notice that this requi
+
+
 ### backward
 
 ### update
