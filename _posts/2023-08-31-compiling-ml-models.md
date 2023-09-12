@@ -606,6 +606,9 @@ actually, it's about the same complexity. we need only do a line-by-line
 translation of the backpropagation functions (all the `_backward`
 implementations).
 
+for example, we can revisit the backpropagation for `*`. i added some helper
+functions to make the code shorter and look more like the interpreted version.
+
 ```python
 class Value:
     # ...
@@ -619,7 +622,7 @@ class Value:
     def setgrad(self, val):
         if self._op in ('', 'input'):
             return []
-        return [f"{self.getgrad()} += clip({val});"]
+        return [f"{self.getgrad()} += {val};"]
 
     def backward_compile(self):
         if not self._prev:
@@ -631,11 +634,11 @@ class Value:
             left, right = self._prev
             return left.setgrad(f"{right.var()}*{self.getgrad()}") +\
                     right.setgrad(f"{left.var()}*{self.getgrad()}")
-        if self._op == 'log':
-            prev, = self._prev
-            return prev.setgrad(f"1.0L/{prev.var()}*{self.getgrad()}")
         raise RuntimeError(f"op {self._op} left as an exercise for the reader")
 ```
+
+my complete compiler implementation is about 30 lines! shorter than the forward
+pass, even.
 
 ### update
 
