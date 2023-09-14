@@ -635,18 +635,21 @@ Unfortunately, that is still not fast enough.
 > `_backward` lambdas to the top level, the problem goes away. Then it's very
 > clear that set lookup from topo sort is the slowest bit in the profile. After
 > that it's garbage collection from all the transient `Value` objects.
+>
+> Incidentally, hoisting the lambdas to be normal functions *also* massively
+> speeds up PyPy and it becomes faster than Skybison.
 
-incidentally, hoisting the lambdas to be normal functions also massively speeds
-up pypy and it becomes faster than skybison.)
+If I had to guess, my hypothesis for the pain points for all of the runtimes
+is:
 
-hypothesis for pain points:
+* recreating the graph with every forward pass, because of excessive allocation
+  of `Value`s and all of their `_backward` functions
+* doing a topological sort with every backward pass, because of the pointer
+  chasing, function calls, and `set`/`list` allocation and operations
+* normal Python interpreter overhead
 
-* recreating the graph with every forward pass (allocation)
-* doing a topological sort with every backward pass (pointer chasing, function
-  calls, allocation)
-* python interpreter stuff
-
-but instead of optimizing blindly in the dark, we should measure.
+But if I have learned anything at all over the years, instead of optimizing
+blindly in the dark, we should first measure.
 
 ### checking with a profiler
 
