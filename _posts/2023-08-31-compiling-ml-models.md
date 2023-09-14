@@ -287,8 +287,9 @@ It is assumed that the graph won't have cycles in it[^rnn-unrolling].
     unrolled" meaning they copy and paste the structure in the IR instead of
     having an actual looping structure.
 
-so what does that look like in code? well, the `Value.__mul__` function, called
-on the left hand side of an `x*y` operation[^binop], looks like this:
+So what does creating the graph look like in code? well, the `Value.__mul__`
+function, called on the left hand side of an `x*y` operation[^binop], looks
+like this:
 
 [^binop]: Kind of. This is an oversimplification of Python semantics. If you
     want to learn more, check out Brett Cannon's excellent [blog
@@ -298,54 +299,64 @@ on the left hand side of an `x*y` operation[^binop], looks like this:
 class Value:
     # ...
     def __mul__(self, other):
-        # create a transient value if the right hand side is an int or float,
-        # like v * 3
+        # create a transient value if the right hand side is a constant int or
+        # float, like v * 3
         other = other if isinstance(other, Value) else Value(other)
-        # pass in data, children, and operation
+        # pass in new data, children, and operation
         out = Value(self.data * other.data, (self, other), '*')
-        # ... we'll come back to this part later ...
+        # ... we'll come back to this hidden part later ...
         return out
 ```
 
-right. but why do we have these expression graphs? why not just use math? who
+The `children` tuple `(self, other)` are the pointers to the other nodes in the
+graph.
+
+But why do we have these expression graphs? Why not just use math? Who
 cares about all the back pointers?
 
-well, let's talk about grad.
+## Let's talk about grad
 
-## let's talk about grad
-
-training a neural network is a process of shaping your function (a neural
-network) over time to output the results you want. inside your function are a
+Training a neural network is a process of shaping your function (the neural
+network) over time to output the results you want. Inside your function are a
 bunch of coefficients ("weights") which get iteratively adjusted during
-training
+training.
 
-the standard process involves building your neural network structure and also
-a function that tells you how far off your output is from some expected value
-(a "loss function").
+The standard training process involves your neural network structure and also
+another function that tells you how far off your output is from some expected
+value (a "loss function"). An simple example of a loss function is
+`loss(actual, expected) = (expected - actual)**2`. If you use this particular
+function across multiple inputs at a time, it's called Mean Squared Error
+(MSE).
 
-if you are trying to get some expected output, you want to minimize the value
-of your loss function as much as possible. in order to minimze your loss, you
+If you are trying to get some expected output, you want to minimize the value
+of your loss function as much as possible. In order to minimze your loss, you
 have to update the weights.
 
-to figure out which weights to update and by how much, you need to know how
-much each weight contributes to the final loss. not every weight is equal; some
+To figure out which weights to update and by how much, you need to know how
+much each weight contributes to the final loss. Not every weight is equal; some
 have significantly more impact than others.
 
-the question "how much did this weight contribute to the loss this round" is
-answered by the value of the grad of that weight --- the first derivative. the
-slope at a point.
+The question "how much did this weight contribute to the loss this round" is
+answered by the value of the grad of that weight---the first derivative. The
+slope at a point. For example, in `y = mx + b`, the equation that describes a
+line, the derivative with respect to `x` is `m`, because the value of `x` is
+scaled by `m`.
 
-and to compute the grad, you need to traverse backwards from the loss[^forward]
-to do something called reverse mode automatic differentiation
+To compute the grad, you need to traverse backwards from the loss[^forward] to
+do something called reverse mode automatic differentiation (reverse mode AD).
+This sounds scary. Every article online about it has scary notation and
+squiggly lines. But it's pretty okay, actually, so keep on reading.
 
-[^forward]: there is also forward mode automatic differentiation but i don't
-    know much about it and haven't seen it used in my limited search
+[^forward]: There is also forward mode automatic differentiation but I don't
+    know much about it and haven't seen it used in my limited search.
 
-this sounds complicated but, like evaluating an AST top to bottom, reverse mode
-AD is a graph traversal with some local state. if you can write a tree-walking
-interpreter, you can do reverse mode AD
+Fortunately for us, reverse mode AD, like evaluating an AST top to bottom, it
+is a graph traversal with some local state. If you can write a tree-walking
+interpreter, you can do reverse mode AD.
 
-### reverse mode AD
+### Reverse mode AD
+
+<!-- TODO -->
 
 go from having an expression graph to understanding how each of the component
 parts affect the final value (say, loss)
@@ -356,31 +367,51 @@ propagate the grad backwards through the graph toward the weights
 
 we do this using the chain rule.
 
-## the chain rule
+## The chain rule
 
-(i am not going to pretend i am a math person. i vaguely remember the chain rule
-from 10 years ago. that's about it. so please look elsewhere for details.)
+I am not going to pretend that I am a math person. Aside from what I re-learned
+in the last couple of weeks, I only vaguely remember the chain rule from 10
+years ago. Most of what I remember is my friend Julia figuring it out
+instantaneously and wondering why I didn't get it yet. That's about it. So
+please look elsewhere for details if this section doesn't do it for you. I
+won't be offended.
 
-### a quick overview
+### A quick overview
 
-the chain rule tells you how to compute derivatives of function composition.
-using the example from wikipedia, if you have `h(x) = f(g(x))`, then
-`h'(x) = f'(g(x)) * g'(x)`. which is nice, because you don't need to do
-anything tricky when you start composing functions, as long as you understand
-how to take the derivative of each of the component parts.
+The chain rule tells you how to compute derivatives of function composition.
+Using the example from Wikipedia, if you have some function `h(x) = f(g(x))`,
+then `h'(x) = f'(g(x)) * g'(x)` (where `f'` and `h'` and `g'` are the
+derivatives of `f` and `h`' and `g`, respectively). This rule is nice, because
+you don't need to do anything tricky when you start composing functions, as
+long as you understand how to take the derivative of each of the component
+parts.
 
-for example, if you have `sin(x**2)`, you only need to know the derivative of
-`x**2` and `sin(x)` to find out the answer: `cos(x**2) * 2x`
+For example, if you have `sin(x**2)`, you only need to know the derivative of
+the component functions `x**2` (it's `2*x`) and `sin(x)` (it's `cos(x)`) to
+find out the answer: `cos(x**2) * 2x`.
 
-https://web.auburn.edu/holmerr/1617/Textbook/constmultsum-screen.pdf
-https://en.wikipedia.org/wiki/Differentiation_rules
+To take a look at the proof of this and also practice a bit, take a look at
+[this short slide
+deck](https://web.auburn.edu/holmerr/1617/Textbook/chainrule-screen.pdf) (PDF)
+from Auburn University. Their course page [table of
+contents](https://web.auburn.edu/holmerr/1617/Textbook/contents.aspx) has more
+slide decks[^pdf-nav].
 
-it turns out this comes in handy for taking derivatives of potentially enormous
-expression graphs. nobody needs to sit down and work out how to take the
-derivative of your huge and no doubt overly complex function... you just have
-your building blocks that you already understand, and they are composed.
+[^pdf-nav]: Side note, I have never seen navigation in a PDF like that. It's so
+    neat.
 
-### applying this to the graph
+Also make sure to check out the [list of differentiation
+rules](https://en.wikipedia.org/wiki/Differentiation_rules) on Wikipedia.
+
+It turns out that the chain rule comes in handy for taking derivatives of
+potentially enormous expression graphs. Nobody needs to sit down and work out
+how to take the derivative of your huge and no doubt overly complex function...
+you just have your building blocks that you already understand, and they are
+composed.
+
+So let's apply the chain rule to expression graphs.
+
+### Applying this to the graph
 
 for a given node, do one step of the chain rule (in pseudocode):
 
