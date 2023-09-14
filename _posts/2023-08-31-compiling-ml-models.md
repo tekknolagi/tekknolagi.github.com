@@ -1,56 +1,62 @@
 ---
 ---
 
-and now for something completely different
+I had a nice chat with my friend [Chris](https://www.chrisgregory.me/)
+recently.
 
-i had a nice chat with my friend chris
+He walked me through the basics of machine learning while I was looking at
+[Andrej Karpathy](https://karpathy.ai/)'s
+[micrograd](https://github.com/karpathy/micrograd/).
 
-he walked me through the basics of machine learning while i was looking at
-karpathy's micrograd
-
-if you are unfamiliar, micrograd is a very small implementation of a
+If you are unfamiliar, micrograd is a very small implementation of a
 scalar-valued neural network (as opposed to vectors or matrices as the
-computational unit) in pure python (no libraries)
+computational unit) in pure Python, which uses no libraries.
 
-micrograd is a combination of a couple of different and complementary parts:
+Micrograd is a combination of a couple of different and complementary parts:
 
 * a little graph-based expression builder and evaluator
 * reverse-mode automatic differentiation on that same computation graph
-* neural net building blocks for a multi-layer perceptron
+* neural net building blocks for a multi-layer perceptron (MLP)
 
-(the thing that got me the first time i read it was that i thought the building
-blocks were the network. in this library, no. using a building analogy, they
-are more like blueprints. with each evaluation of the network, it is
-constructed anew.)
+> The thing that got me the first time I read it was that I thought the
+> building blocks were the network. In this library, no. Using a building
+> analogy, they are more like blueprints. With each evaluation of the network,
+> the network and intermediate computation graph is constructed anew.
+>
+> In compiler terms, the building blocks are kind of like the front-end and the
+> expression graph is a sort of intermediate representation (IR).
 
-you may be sitting there wondering why i am telling you this
+You may be sitting there wondering why I am telling you this. I normally blog
+about compilers. What's this?
 
-it's because once i untangled and understood the three pieces in micrograd, i
-realized
+It's because once I untangled and understood the three pieces in micrograd, I
+realized:
 
-* ml models are graphs
+* ML models are graphs
 * forward and backward passes are graph traversals
 * the graph structure does not change over time
 * performance is important
 
-which means... it sounds like a great opportunity for a compiler! this is why
-projects like pytorch and tensorflow have compilers. it speeds up both training
-and inference. so this post will not contain anything novel. it will contain a
-small compiler addition for a small ML engine.
+Which means... it sounds like a great opportunity for a compiler! This is why
+projects like PyTorch and TensorFlow have compilers (torchdynamo, XLA, etc).
+Compiling your model speeds up both training and inference. So this post will
+not contain anything novel---it's hopefully a quick sketch of a small example
+of what the Big Projects do.
 
-this post is going to be a compiler post, not a machine learning tutorial, so
-please treat it as such. maybe it will still help you understand ML through a
-compilers lens.
+> This post is going to be a compiler post, not a machine learning tutorial, so
+> please treat it as such. Maybe it will still help you understand ML through a
+> compilers lens.
 
-we're going to compile micrograd neural nets into C. in order, we will
+We're going to compile micrograd neural nets into C. In order, we will
 
 * do a brief overview of neural networks
 * look at how micrograd does forward and backward passes
 * review the chain rule
 * learn why micrograd is slow
 * write a small compiler
+* see micrograd go zoom
 
-let's go!
+Let's go!
 
 ## how micrograd does neural networks
 
@@ -743,12 +749,3 @@ could PyPy jit it effectively?
 ### what if you generated python code or bytecode?
 
 could PyPy jit it effectively?
-
-<!-- TODO from Yee Sian
-for compiler people
-* call Value graph the "IR"
-* call MLP the "front-end"
-for ML people
-* identify which bits in this post correspond to existing infra in PyTorch or
-  TF
--->
