@@ -18,13 +18,21 @@ Micrograd is a combination of a couple of different and complementary parts:
 * reverse-mode automatic differentiation on that same computation graph
 * neural net building blocks for a multi-layer perceptron (MLP)
 
-> The thing that got me the first time I read it was that I thought the
-> building blocks were the network. In this library, no. Using a building
-> analogy, they are more like blueprints. With each evaluation of the network,
-> the network and intermediate computation graph is constructed anew.
->
-> In compiler terms, the building blocks are kind of like the front-end and the
-> expression graph is a sort of intermediate representation (IR).
+Together, this lets you write code that looks like this:
+
+```python
+from micrograd.nn import MLP
+model = MLP(2, [4, 1])
+```
+
+And summon a neural network from thin air.
+
+The thing that got me the first time I read it was that I thought the building
+blocks *were* the network. In this library, no. Using a building analogy, they
+are more like blueprints or scaffolding. With each evaluation of the network,
+the network and intermediate computation graph is constructed anew. In compiler
+terms, the building blocks are kind of like the front-end and the expression
+graph is a sort of intermediate representation (IR).
 
 You may be sitting there wondering why I am telling you this. I normally blog
 about compilers. What's this?
@@ -60,24 +68,29 @@ Let's go!
 
 ## how micrograd does neural networks
 
-first, a bit about multi-layer perceptrons.
+First, a bit about multi-layer perceptrons. MLPs are densely connected neural
+networks where input flows in one direction through the network. As it exists
+in the upstream repository, micrograd only supports MLPs.
+
+In case visual learning is your thing, here is a small diagram:
 
 <figure style="display: block; margin: 0 auto; max-width: 400px;">
   <img style="max-width: 400px;" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/MultiLayerPerceptron.svg" />
   <figcaption>Fig. 1 - Multi-layer Perceptron diagram. Image courtesy Wikimedia.</figcaption>
 </figure>
 
-in this image, circles represent data (neurons) and arrows are operations on
-the data. in this case, the red (leftmost) dots are input data. the arrows
-going right are multiplications with weights. the meeting of the arrows
-represents an addition (forming a dot product).
+In this image, circles represent data (input or intermediate computation
+results) and arrows are weights and operations on the data. In this case, the
+red (leftmost) dots are input data. The arrows going right are multiplications
+with weights. The meeting of the arrows represents an addition (forming a dot
+product).
 
-karpathy implements this pretty directly, with each neuron being an instance of
-the `Neuron` class and having a `__call__` method do the dot product. after
+Karpathy implements this pretty directly, with each neuron being an instance of
+the `Neuron` class and having a `__call__` method do the dot product. After
 each dot product is an activation, in this case `ReLU`, which is equivalent to
 `max(x, 0)`.
 
-below is the entire blueprint code for a multilayer perceptron in micrograd:
+Below is the entire blueprint code for a multilayer perceptron in micrograd:
 
 ```python
 import random
@@ -142,15 +155,18 @@ class MLP(Module):
         return f"MLP of [{', '.join(str(layer) for layer in self.layers)}]"
 ```
 
-but this is not done just with floating point numbers. instead he uses this
-`Value` thing. what's that about?
+You can ignore some of the clever coding in `MLP.__init__`. This ensures that
+all of the layers match up end-to-end dimension-wise.
+
+But this neural network is not build just with floating point numbers. Instead
+he uses this `Value` thing. What's that about?
 
 ## intro to the expression builder
 
-i said that one of micrograd's three components is an expression builder.
+I said that one of micrograd's three components is an expression graph builder.
 
-the way the expression builder works looks like a slightly more complicated way
-of doing math in python
+Using the expression builder looks like a slightly more complicated way of
+doing math in Python:
 
 ```console?lang=python&prompt=>>>,...
 >>> from micrograd.engine import Value
@@ -163,14 +179,17 @@ Value(data=20, grad=0)
 >>>
 ```
 
-`Value` implements all the operator methods like `__add__ ` to make the process
-painless and look as much like normal Python math as possible
+The `Value` class even implements all the operator methods like `__add__ ` to
+make the process painless and look as much like normal Python math as possible.
 
-it's different first because it has this `grad` field---which we'll talk more
-about later---but also because as it does the math it also builds up an AST
+But it's a little different than normal math. It's different first because it
+has this `grad` field---which we'll talk more about later---but also because as
+it does the math it also builds up an graph (you can kind of think of it as an
+abstract syntax tree, or AST).
 
-`Value` instances have a hidden field called `_prev` that stores the
-constituent parts that make up an expression
+It's not visible in the normal string representation, though. `Value` instances
+have a hidden field called `_prev` that stores the constituent parts that make
+up an expression:
 
 ```console?lang=python&prompt=>>>,...
 >>> d._prev
@@ -178,7 +197,7 @@ constituent parts that make up an expression
 >>>
 ```
 
-they also have an operator
+They also have a hidden operator field:
 
 ```console?lang=python&prompt=>>>,...
 >>> d._op
@@ -186,10 +205,12 @@ they also have an operator
 >>>
 ```
 
-we have two operands to the `*`: `c` (4) and `a + b` (5)
+This means that we have two operands to the `*` node `d`: `c` (4) and `a + b`
+(5).
 
-it's not quite an AST because it's not a tree; it's expected and normal to have
-more of a DAG-like structure
+I said you could think about it like an AST but it's not quite an AST because
+it's not a tree. It's expected and normal to have more of a directed acyclic
+graph (DAG)-like structure.
 
 ```console?lang=python
 >>> w = Value(2)
@@ -201,10 +222,70 @@ Value(data=9, grad=0)
 >>>
 ```
 
-`x` and `y` both use `w` and then are both used by `z`, forming a diamond
+Here `x` and `y` both use `w` and then are both used by `z`, forming a diamond
 pattern.
 
-it is assumed that the graph won't have cycles in it
+<svg width="204pt" height="188pt"
+ viewBox="0.00 0.00 203.57 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<title>G</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-184 199.5659,-184 199.5659,4 -4,4"/>
+<!-- z -->
+<g id="node1" class="node">
+<title>z</title>
+<ellipse fill="none" stroke="#000000" cx="98.7986" cy="-162" rx="40.9005" ry="18"/>
+<text text-anchor="middle" x="98.7986" y="-157.8" font-family="Times,serif" font-size="14.00" fill="#000000">z = x+y</text>
+</g>
+<!-- x -->
+<g id="node2" class="node">
+<title>x</title>
+<ellipse fill="none" stroke="#000000" cx="45.7986" cy="-90" rx="45.5981" ry="18"/>
+<text text-anchor="middle" x="45.7986" y="-85.8" font-family="Times,serif" font-size="14.00" fill="#000000">x = 1+w </text>
+</g>
+<!-- z&#45;&gt;x -->
+<g id="edge1" class="edge">
+<title>z&#45;&gt;x</title>
+<path fill="none" stroke="#000000" d="M85.9688,-144.5708C79.5712,-135.8797 71.7098,-125.2001 64.6429,-115.5998"/>
+<polygon fill="#000000" stroke="#000000" points="67.4409,-113.4968 58.694,-107.5182 61.8035,-117.6465 67.4409,-113.4968"/>
+</g>
+<!-- y -->
+<g id="node3" class="node">
+<title>y</title>
+<ellipse fill="none" stroke="#000000" cx="152.7986" cy="-90" rx="42.5359" ry="18"/>
+<text text-anchor="middle" x="152.7986" y="-85.8" font-family="Times,serif" font-size="14.00" fill="#000000">y = 3*w</text>
+</g>
+<!-- z&#45;&gt;y -->
+<g id="edge2" class="edge">
+<title>z&#45;&gt;y</title>
+<path fill="none" stroke="#000000" d="M111.8705,-144.5708C118.4371,-135.8153 126.5173,-125.0418 133.7586,-115.3867"/>
+<polygon fill="#000000" stroke="#000000" points="136.6471,-117.3687 139.8471,-107.2687 131.0471,-113.1687 136.6471,-117.3687"/>
+</g>
+<!-- w -->
+<g id="node4" class="node">
+<title>w</title>
+<ellipse fill="none" stroke="#000000" cx="98.7986" cy="-18" rx="33.2211" ry="18"/>
+<text text-anchor="middle" x="98.7986" y="-13.8" font-family="Times,serif" font-size="14.00" fill="#000000">w = 2</text>
+</g>
+<!-- x&#45;&gt;w -->
+<g id="edge4" class="edge">
+<title>x&#45;&gt;w</title>
+<path fill="none" stroke="#000000" d="M58.6284,-72.5708C65.1682,-63.6866 73.2376,-52.7245 80.4242,-42.9615"/>
+<polygon fill="#000000" stroke="#000000" points="83.3424,-44.9012 86.4519,-34.7729 77.705,-40.7514 83.3424,-44.9012"/>
+</g>
+<!-- y&#45;&gt;w -->
+<g id="edge3" class="edge">
+<title>y&#45;&gt;w</title>
+<path fill="none" stroke="#000000" d="M139.7267,-72.5708C133.0636,-63.6866 124.842,-52.7245 117.5197,-42.9615"/>
+<polygon fill="#000000" stroke="#000000" points="120.1783,-40.6729 111.3783,-34.7729 114.5783,-44.8729 120.1783,-40.6729"/>
+</g>
+</g>
+</svg>
+
+It is assumed that the graph won't have cycles in it[^rnn-unrolling].
+
+[^rnn-unrolling]: Apparently even recurrent neural networks (RNNs) are "loop
+    unrolled" meaning they copy and paste the structure in the IR instead of
+    having an actual looping structure.
 
 so what does that look like in code? well, the `Value.__mul__` function, called
 on the left hand side of an `x*y` operation[^binop], looks like this:
