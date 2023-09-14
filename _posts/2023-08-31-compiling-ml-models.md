@@ -475,23 +475,22 @@ chain rule, add to the child's grad.
 Now we have a function to do one derivative step for one operation node, but we
 need to do the whole graph.
 
-but traversing a graph is not as simple as traversing a tree. you need to avoid
+But traversing a graph is not as simple as traversing a tree. You need to avoid
 visiting a node more than once and also guarantee that you visit child nodes
 before parent nodes (in forward mode) or parent nodes before children nodes (in
 reverse mode).
 
-for that reason, we have topological sort.
+For that reason, we have topological sort.
 
-```console?lang=python&prompt=>>>,...
-```
+## Topological sort and graph transformations
 
-
-## topological sort and graph transformations
-
-a topological sort on a graph builds an order where children are always visited
-before their parents. (in general this only works if the graph does not have
+A topological sort on a graph is an order where children are always visited
+before their parents. In general this only works if the graph does not have
 cycles, but---thankfully---we already assume above that the graph does not have
-cycles.)
+cycles.
+
+Here is a sample topological sort on the `Value` graph. It uses the nested
+function `build_topo` for terseness, but that is not strictly necessary.
 
 ```python
 class Value:
@@ -511,8 +510,8 @@ class Value:
         return topo
 ```
 
-for example, we can do a topological sort of a very simple expression graph,
-`1+2`.
+To get a feel for how this works, we can do a topological sort of a very simple
+expression graph, `1+2`.
 
 ```console?lang=python&prompt=>>>,...
 >>> from micrograd.engine import Value
@@ -524,16 +523,19 @@ for example, we can do a topological sort of a very simple expression graph,
 >>>
 ```
 
-the topological sort says that in order to calculate the value `3`, we must
-first calculate the values `1` and `2`. it doesn't matter in what order we do
+The topological sort says that in order to calculate the value `3`, we must
+first calculate the values `1` and `2`. It doesn't matter in what order we do
 `1` and `2`, but they both have to come before `3`.
 
-### applying this to backpropagation
+Now that we have a way to get a graph traversal order, we can start doing some
+backpropagation.
 
-if we take what we know now about the chain rule and topological sort, we can
-do backpropagation on the graph. this is the code straight from micrograd,
-1) builds a topological sort, and 2) operates on it in reverse, applying the
-chain rule to each `Value` one at a time.
+### Applying this to backpropagation
+
+If we take what we know now about the chain rule and topological sort, we can
+do backpropagation on the graph. Below is the code straight from micrograd. It
+first builds a topological sort and then operates on it in reverse, applying
+the chain rule to each `Value` one at a time.
 
 ```python
 class Value:
@@ -551,13 +553,19 @@ class Value:
                 topo.append(v)
         build_topo(self)
 
+        # --- the new bit ---
         # go one variable at a time and apply the chain rule to get its gradient
         self.grad = 1
         for v in reversed(topo):
             v._backward()
 ```
 
-this is normally called on the result `Value` of the loss function.
+The `.backward()` function is normally called on the result `Value` of the loss
+function.
+
+If you are wondering why we set `self.grad` to `1` here before doing
+backpropagation, take a moment and wonder to yourself. Maybe it's worth drawing
+a picture!
 
 <!--
 linearize the operations both for forward and backward passes
@@ -565,15 +573,13 @@ linearize the operations both for forward and backward passes
 wengert list is kind of like TAC or bytecode or IR
 -->
 
-## putting it all together
+## Putting it all together
 
-i am not going to get into the specifics, but here is what a rough sketch of
+I am not going to get into the specifics, but here is what a rough sketch of
 very simplified training loop might look like for MLP-based classifier for the
-MNIST digit recognition problem:
-
-(to be clear, this code is not runnable as-is. it needs the image loading
-support code and a loss function. the full code is available in the GitHub
-repo.)
+MNIST digit recognition problem. **This code is not runnable as-is.** It needs
+the image loading support code and a loss function. The full code is available
+in the GitHub repo.
 
 ```python
 import random
@@ -581,10 +587,10 @@ from micrograd.nn import MLP
 # ...
 NUM_DIGITS = 10
 LEARNING_RATE = 0.1
-# each image is 28x28. hidden layer of width 50. 10 digits output.
+# Each image is 28x28. Hidden layer of width 50. Output 10 digits.
 model = MLP(28*28, [50, NUM_DIGITS])
-# pretend there is some kind of function that loads the labeled training images
-# into memory
+# Pretend there is some kind of function that loads the labeled training images
+# into memory.
 db = list(images("train-images-idx3-ubyte", "train-labels-idx1-ubyte"))
 num_epochs = 100
 for epoch in range(num_epochs):
@@ -602,28 +608,33 @@ for epoch in range(num_epochs):
             p.data -= LEARNING_RATE * p.grad
 ```
 
-the `MLP` builds a bunch of `Neuron`s in `Layer`s and initializes some weights
-as `Value`s, but it does not construct the graph yet. only when it is called
-(as in `model(image.pixels)`) does it construct the graph and do all of the dot
-products. then we construct more of the graph on top of that when calculating
-the loss.
+In this snippet, the `MLP` builds a bunch of `Neuron`s in `Layer`s and
+initializes some weights as `Value`s, but it does not construct the graph yet.
+Only when it is called (as in `model(image.pixels)`) does it construct the
+graph and do all of the dot products. Then we construct more of the graph on
+top of that when calculating the loss. This is the forward pass!
 
-this is nice and simple---thank you, Andrej---but is it fast enough to be
-usable? let's find out.
+This is nice and simple---thank you, Andrej---but is it fast enough to be
+usable? Let's find out.
 
-## performance problems
+## Performance problems
 
-uh oh, running this with cpython is slow. it looks like computing a forward
-pass for one image takes about a second. and then we have to do a backward
-pass, too. that is way too long!
+Uh oh, running this with CPython is slow. It looks like computing a forward
+pass for one image takes about a second. And then we have to do a backward
+pass, too. And we have to do several epochs of all 60,000 images. That is going
+to take way too long!
 
-obvious solution: try with pypy. oh neat, a couple per second. not enough.
+Well, let's do what everyone always suggests: try with
+[PyPy](https://www.pypy.org/). Oh neat, a couple images per second.
+Unfortunately, that is still not fast enough.
 
-(btw, skybison is way faster! fun fact. its major perf pain point was function
-creation (that is a bit slow in skybison right now), but if you lift the
-lambdas to the top level that goes away. then it's very clear that set lookup
-from topo sort is the slowest bit in the profile. then it's garbage collection
-from all the transient objects.
+> By the way, our old project
+> [Skybison](https://github.com/tekknolagi/skybison) is way faster! What a fun
+> fact. After some profiling, its major performance pain point was function
+> creation (that is a bit slow in Skybison right now), but if you lift the
+> `_backward` lambdas to the top level, the problem goes away. Then it's very
+> clear that set lookup from topo sort is the slowest bit in the profile. After
+> that it's garbage collection from all the transient `Value` objects.
 
 incidentally, hoisting the lambdas to be normal functions also massively speeds
 up pypy and it becomes faster than skybison.)
