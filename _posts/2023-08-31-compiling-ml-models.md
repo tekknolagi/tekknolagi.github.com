@@ -682,7 +682,11 @@ move to C!
 
 holy cow, 2000x (~2000 images/s)
 
+<!--
+
 ### more optimizations
+
+TODO: is this true? does it work?
 
 i added `-O1` but Clang took forever so I eventually killed the process. so i
 tried to figure out what was taking so long using gdb and repeatedly attaching
@@ -690,6 +694,8 @@ and it looked like SROA (scalar replacement of aggregates). so i took
 everything out of arrays and put them in individual global variables. then
 regalloc took a long time (but not forever!) and eventually, in 373s instead of
 30s, i got a binary. that binary runs 2x as fast (~4000 images/s).
+
+-->
 
 ## conclusion
 
