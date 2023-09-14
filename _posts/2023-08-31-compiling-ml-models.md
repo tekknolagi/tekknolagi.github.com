@@ -629,12 +629,13 @@ Well, let's do what everyone always suggests: try with
 Unfortunately, that is still not fast enough.
 
 > By the way, our old project
-> [Skybison](https://github.com/tekknolagi/skybison) is way faster! What a fun
-> fact. After some profiling, its major performance pain point was function
-> creation (that is a bit slow in Skybison right now), but if you lift the
-> `_backward` lambdas to the top level, the problem goes away. Then it's very
-> clear that set lookup from topo sort is the slowest bit in the profile. After
-> that it's garbage collection from all the transient `Value` objects.
+> [Skybison](https://github.com/tekknolagi/skybison) is way faster than both
+> CPython and PyPy here! What a fun fact. After some profiling, its major
+> performance pain point was function creation (that is a bit slow in Skybison
+> right now), but if you lift the `_backward` lambdas to the top level, the
+> problem goes away. Then it's very clear that set lookup from topo sort is the
+> slowest bit in the profile. After that it's garbage collection from all the
+> transient `Value` objects.
 >
 > Incidentally, hoisting the lambdas to be normal functions *also* massively
 > speeds up PyPy and it becomes faster than Skybison.
