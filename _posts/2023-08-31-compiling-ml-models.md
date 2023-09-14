@@ -645,6 +645,8 @@ is:
 
 * recreating the graph with every forward pass, because of excessive allocation
   of `Value`s and all of their `_backward` functions
+  * there's also a ton of allocation and iteration overhead with the `zip` in
+    `Neuron.__call__`
 * doing a topological sort with every backward pass, because of the pointer
   chasing, function calls, and `set`/`list` allocation and operations
 * normal Python interpreter overhead
