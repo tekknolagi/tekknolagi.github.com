@@ -691,18 +691,18 @@ everything out of arrays and put them in individual global variables. then
 regalloc took a long time (but not forever!) and eventually, in 373s instead of
 30s, i got a binary. that binary runs 2x as fast (~4000 images/s).
 
-## compiling for training vs inference
-
-if you freeze the weights, things get a lot more efficient. right now we have
-so many memory loads and stores and it's hard for the C compiler to prove
-anything about the properties of the numbers when it is trying to optimize. it
-probably also prevents SIMD. does the lack of locality hurt too?
-
 ## conclusion
 
 ethics note: i don't endorse ml. please don't
 
 ## more thonks
+
+### compiling for training vs inference
+
+if you freeze the weights, things get a lot more efficient. right now we have
+so many memory loads and stores and it's hard for the C compiler to prove
+anything about the properties of the numbers when it is trying to optimize. it
+probably also prevents SIMD. does the lack of locality hurt too?
 
 ### scalar-valued is less efficient than tensor-valued
 
