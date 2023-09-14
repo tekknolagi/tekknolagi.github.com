@@ -173,7 +173,7 @@ all of the layers match up end-to-end dimension-wise.
 But this neural network is not build just with floating point numbers. Instead
 he uses this `Value` thing. What's that about?
 
-## intro to the expression builder
+## Intro to the expression builder
 
 I said that one of micrograd's three components is an expression graph builder.
 
