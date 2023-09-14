@@ -79,6 +79,18 @@ In case visual learning is your thing, here is a small diagram:
   <figcaption>Fig. 1 - Multi-layer Perceptron diagram. Image courtesy Wikimedia.</figcaption>
 </figure>
 
+<!-- TODO maybe use mine instead -->
+
+<figure style="display: block; margin: 0 auto; max-width: 400px;">
+  <object class="svg" type="image/svg+xml" data="/assets/img/nn.svg">
+  If you're seeing this text, it means your browser cannot render SVG.
+  </object>
+  <figcaption>Fig. 1 - Multi-layer Perceptron diagram. I made this in
+  Excalidraw. I love Excalidraw.</figcaption>
+</figure>
+
+<!-- or maybe just as a closer look -->
+
 In this image, circles represent data (input or intermediate computation
 results) and arrows are weights and operations on the data. In this case, the
 red (leftmost) dots are input data. The arrows going right are multiplications
