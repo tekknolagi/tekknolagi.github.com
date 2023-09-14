@@ -66,7 +66,7 @@ We're going to compile micrograd neural nets into C. In order, we will
 
 Let's go!
 
-## how micrograd does neural networks
+## How micrograd does neural networks
 
 First, a bit about multi-layer perceptrons. MLPs are densely connected neural
 networks where input flows in one direction through the network. As it exists
