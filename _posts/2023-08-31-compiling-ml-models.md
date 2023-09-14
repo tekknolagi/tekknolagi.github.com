@@ -425,7 +425,8 @@ So let's apply the chain rule to expression graphs.
 
 ### Applying this to the graph
 
-for a given node, do one step of the chain rule (in pseudocode):
+We'll start with one `Value` node at a time. For a given node, we can do one
+step of the chain rule (in pseudocode):
 
 ```python
 # pseudocode
@@ -434,7 +435,10 @@ def backward(node):
         child.grad += derivative_wrt_child(child) * node.grad
 ```
 
-instead of just setting `child.grad`, we are increasing it for two reasons:
+Where `wrt` means "with respect to". It's important that we take the derivative
+of each child *with respect to the child*.
+
+Instead of just setting `child.grad`, we are increasing it for two reasons:
 
 * one child may be shared with other parents, in which case it affects both
 * batching, but that's not important right now
@@ -443,9 +447,9 @@ instead of just setting `child.grad`, we are increasing it for two reasons:
 an example of a derivative of a function is (addition? pow? TODO)
 -->
 
-let's take a look at karpathy's implementation of the derivative of `*`, for
-example. in math first: if you have `f(x,y) = x*y`, then `df/dx = 1*y`. now
-in code:
+To make this more concrete, let's take a look at Karpathy's implementation of
+the derivative of `*`, for example. In math, if you have `f(x,y) = x*y`, then
+`f'(x, y) = 1*y`. In code, that looks like:
 
 ```python
 class Value:
@@ -454,6 +458,7 @@ class Value:
         other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data * other.data, (self, other), '*')
 
+        # The missing snippet from earlier!
         def _backward():
             self.grad += other.data * out.grad
             other.grad += self.data * out.grad
@@ -462,11 +467,13 @@ class Value:
         return out
 ```
 
-see what a nice translation of the math that is? get the derivative, apply the
-chain rule, add to the grad.
+This means that for each of the children, we will use the *other child*'s data
+and (because of the chain rule) multiply it by the parent expression's `grad`.
+See what a nice translation of the math that is? Get the derivative, apply the
+chain rule, add to the child's grad.
 
-now we have a function to do one step for one operation node, but we need to do
-the whole graph.
+Now we have a function to do one derivative step for one operation node, but we
+need to do the whole graph.
 
 but traversing a graph is not as simple as traversing a tree. you need to avoid
 visiting a node more than once and also guarantee that you visit child nodes
