@@ -75,13 +75,6 @@ in the upstream repository, micrograd only supports MLPs.
 In case visual learning is your thing, here is a small diagram:
 
 <figure style="display: block; margin: 0 auto; max-width: 400px;">
-  <img style="max-width: 400px;" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/MultiLayerPerceptron.svg" />
-  <figcaption>Fig. 1 - Multi-layer Perceptron diagram. Image courtesy Wikimedia.</figcaption>
-</figure>
-
-<!-- TODO maybe use mine instead -->
-
-<figure style="display: block; margin: 0 auto; max-width: 400px;">
   <object class="svg" type="image/svg+xml" data="/assets/img/nn.svg">
   If you're seeing this text, it means your browser cannot render SVG.
   </object>
@@ -89,13 +82,12 @@ In case visual learning is your thing, here is a small diagram:
   Excalidraw. I love Excalidraw.</figcaption>
 </figure>
 
-<!-- or maybe just as a closer look -->
-
 In this image, circles represent data (input or intermediate computation
 results) and arrows are weights and operations on the data. In this case, the
-red (leftmost) dots are input data. The arrows going right are multiplications
+`x`, `y`, and `z` dots are input data. The arrows going right are multiplications
 with weights. The meeting of the arrows represents an addition (forming a dot
-product).
+product), addition of the bias (kind of like another weight), and activation
+function (`ReLU`).
 
 Karpathy implements this pretty directly, with each neuron being an instance of
 the `Neuron` class and having a `__call__` method do the dot product. After
