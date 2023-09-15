@@ -731,6 +731,8 @@ So what's to be done?
 
 ### Solutions
 
+As I like to say, the best way to make a program faster is to *do less*.
+
 solutions (respectively):
 
 * re-use the old graph. just copy in new inputs
