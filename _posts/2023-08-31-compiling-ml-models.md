@@ -826,21 +826,21 @@ class Value:
         raise RuntimeError(f"op {self._op} left as an exercise for the reader")
 ```
 
-the other operators are not so different. see if you can figure out how to
-implement `**` or `exp`, for example. note that `**` requires either storing
+The other operators are not so different. See if you can figure out how to
+implement `**` or `exp`, for example. Note that `**` requires either storing
 additional data or a kind of gross hack.
 
-you may notice that this requires assigning names to `Value`s. for this, we
-have added an `_id` field that is an auto-incrementing counter in the
-`__init__` function. the implementation does not matter so much.
+You may notice that this compilation strategy requires assigning identifiers to
+`Value`s. To do that, I have added an `_id` field that is an auto-incrementing
+counter in the `__init__` function. The implementation does not matter so much;
+just know that every `Value` object has a unique `_id`.
 
-my complete compiler implementation is about 40 lines and it even includes some
-small on-the-fly optimizations.
+My complete compiler implementation for all of the operations is about 40 lines
+and it even includes some small on-the-fly optimizations. But this compiler
+does forward passes. What about backward passes? We need to train faster, too.
+Backward has to be much more complicated, right?
 
-this compiler does forward passes. what about backward passes? that has to be
-much more complicated, right?
-
-### backward
+### Backward
 
 actually, it's about the same complexity. we need only do a line-by-line
 translation of the backpropagation functions (all the `_backward`
