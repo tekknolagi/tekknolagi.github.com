@@ -707,8 +707,25 @@ also look GC-related... that means the program is just drowning in allocations.
 So Scalene and `perf` seem to agree.
 
 If you remove the `set(_children)` and just leave it as a tuple (this seems to
-not affect correctness), the profile is a little more spread out... but it's
-still not looking great.
+not affect correctness), the profile is a little more spread out.
+
+Another easy enough fix is to add `__slots__` to the `Value` class. Attribute
+dicts are the only place I can think of where we are allocating dicts, so maybe
+we can take care of that. After adding `__slots__`, sure enough,
+`dict_traverse` goes away.
+
+Last, we could also try to remove the nested function allocation (as we tried
+above for Skybison/PyPy). This will remove `func_traverse`, too. That's a
+little more work than the previous two micro-optimizations, though.
+
+And none of these little fixes changes the overall architecture of the program,
+which involves doing *so much work* to do a little math and a little graph
+walking[^hotspot-fails].
+
+[^hotspot-fails]: Daniel Lemire has a [great blog
+    post](https://lemire.me/blog/2023/04/27/hotspot-performance-engineering-fails/)
+    about the myth that performance problems are largely in a few concentrated
+    hotspots.
 
 So what's to be done?
 
