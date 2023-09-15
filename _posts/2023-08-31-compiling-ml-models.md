@@ -724,17 +724,27 @@ So what's to be done?
 ### Solutions
 
 As I like to say, the best way to make a program faster is to *do less*.
+Too much GC? Allocate less. Too much recursion? Topo sort less. Too much
+overhead? Interpret less. In more detail, my proposed solutions are:
 
-solutions (respectively):
+* Re-use the graph structure between inputs. Instead of building a `Value`
+  graph anew every time, copy in new inputs and propagate them forward and
+  backward.
+* Since you aren't changing the graph anymore, no need to re-topo-sort. Keep
+  the ordering around. This helps for both forward and backward passes.
+* At the end of the day, the `Value` abstraction does not matter too much. If
+  we know what order to traverse in and are using IEEE-754 doubles, we should
+  compile the topo sort with its operations to C or something more
+  bare-bones[^asm].
 
-* re-use the old graph. just copy in new inputs
-* since you aren't changing the graph, no need to re-topo-sort. keep the
-  ordering around, too. this helps for both forward and backward passes.
-* compile the topo sort with its operations to C or something
+[^asm]: I initially wanted to write the whole pipeline down to machine code by
+    hand. It would still be pretty small, all things considered, but then I
+    would have to do register allocation. Decided to avoid that for now.
 
-as usual with compilers, if you can freeze some of the dynamism in the
-allowable semantics of a program you get a performance benefit. since the graph
-shape is static, this sounds like a fine idea.
+This checks out with what we already know about compilers: if you can freeze
+some of the dynamism in the allowable semantics of a program, you get a
+performance benefit. Since the graph shape is static, this sounds like a fine
+idea.
 
 <!--
 TODO: parallelization of work in the graph? is that possible? it looks like in
