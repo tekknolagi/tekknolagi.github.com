@@ -842,12 +842,14 @@ Backward has to be much more complicated, right?
 
 ### Backward
 
-actually, it's about the same complexity. we need only do a line-by-line
+Actually, it's about the same complexity. We need only do a line-by-line
 translation of the backpropagation functions (all the `_backward`
 implementations).
 
-for example, we can revisit the backpropagation for `*`. i added some helper
+For example, we can revisit the backpropagation for `*`. I added some helper
 functions to make the code shorter and look more like the interpreted version.
+Like the forward version, all the operators are in one method:
+`backward_compile`.
 
 ```python
 class Value:
@@ -877,11 +879,34 @@ class Value:
         raise RuntimeError(f"op {self._op} left as an exercise for the reader")
 ```
 
-where it is assumed that `grad` is some properly-sized array of `double`s that
-we will create later.
+(Like the forward version, assume for now that `grad` is some properly-sized
+array of `double`s that we will create later.)
 
-my complete backward pass compiler implementation is about 30 lines! shorter
-than the forward pass, even.
+Let's see how it works in practice.
+
+```console?lang=python&prompt=>>>,...
+>>> x = Value(1, _op='weight')
+>>> y = Value(2, _op='weight')
+>>> z = x + y
+>>> order = z.topo()
+>>> for v in order:
+...     print(v.backward_compile())
+...
+[]
+[]
+['grad6 += grad8;', 'grad7 += grad8;']
+>>>
+```
+
+Huh, that's weird. Why is there no backpropagation code for `x` (`grad6`) and
+`y` (`grad7`)? That's because they don't have any children of their own;
+instead, they are adjusted by their parent node, `z` (`grad8`).
+
+My complete backward pass compiler implementation is about 30 lines! Shorter
+than the forward pass, even. That's pretty neat.
+
+Now all we're missing is `update` and setting the input, which are not as
+interesting.
 
 ### update
 
