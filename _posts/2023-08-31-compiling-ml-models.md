@@ -654,11 +654,65 @@ is:
 But if I have learned anything at all over the years, instead of optimizing
 blindly in the dark, we should first measure.
 
-### checking with a profiler
+### Checking with a profiler
 
-use scalene. see massive memory allocations on `sum(...)` and `set(_children)`
+Emery Berger and his team have released an excellent Python profiling tool
+called [Scalene](https://github.com/plasma-umass/scalene). To use it, you can
+run `scalene yourprogram.py` instead of `python3 progam.py` and when it is
+finished (or you hit Control-C), a little locally-hosted website will pop up
+with profiling information.
 
-### solutions
+I ran Scalene on our little micrograd MNIST and this is what it looks like.
+
+<figure style="display: block; margin: 0 auto; max-width: 600px;">
+  <img style="max-width: 600px;" src="/assets/img/scalene-nn.png" />
+  <figcaption markdown="1">
+  Fig. 2 - A screenshot of the Scalene profiler's view of micrograd. It looks
+  like there is a lot of `Value` allocation and `self._prev` being a set could
+  even be a leak somehow! You can especially see there are a lot of `+` and `*`
+  operations because `__add__` and `__mul__` allocate a lot.
+  </figcaption>
+</figure>
+
+It looks like in the memory column, the line is going up and to the right,
+which is not what we want. It also looks like a huge amount of time is being
+spent in creating the `set` of `_prev` elements for each `Value`
+
+If you are old school and don't trust new profiling tools, you can even confirm
+these observations using `perf`. You'll need to install the debug symbols for
+your Python distribution, probably (in my case it was `python3.10-dbg` for
+Ubuntu) and then you can run `perf record python3 yourprogram.py`. Here's what
+that view looks like for me (cut off below `0.5%`):
+
+```
+Samples: 138K of event 'cpu_core/cycles/', Event count (approx.): 64926188565
+Overhead  Command  Shared Object     Symbol
+  37.41%  python3  python3.10        [.] gc_collect_main.lto_priv.0                                                  ◆
+  27.85%  python3  python3.10        [.] deduce_unreachable                                                          ▒
+   9.91%  python3  python3.10        [.] visit_reachable.lto_priv.0                                                  ▒
+   3.58%  python3  python3.10        [.] set_traverse.lto_priv.0                                                     ▒
+   3.29%  python3  python3.10        [.] dict_traverse.lto_priv.0                                                    ▒
+   2.65%  python3  python3.10        [.] _PyEval_EvalFrameDefault                                                    ▒
+   2.04%  python3  python3.10        [.] func_traverse.lto_priv.0                                                    ▒
+   1.67%  python3  python3.10        [.] subtype_traverse.lto_priv.0                                                 ▒
+   1.16%  python3  python3.10        [.] tupletraverse.lto_priv.0                                                    ▒
+   0.73%  python3  python3.10        [.] _PyObject_GenericSetAttrWithDict                                            ▒
+   0.54%  python3  python3.10        [.] cell_traverse.lto_priv.0                                                    ▒
+   0.52%  python3  python3.10        [.] insertdict.lto_priv.0                                                       ▒
+```
+
+`gc_collect_main` being 37% of the profile is a massive red flag. Then the
+other functions below (`deduce_unreachable` and all the `_traverse` functions)
+also look GC-related... that means the program is just drowning in allocations.
+So Scalene and `perf` seem to agree.
+
+If you remove the `set(_children)` and just leave it as a tuple (this seems to
+not affect correctness), the profile is a little more spread out... but it's
+still not looking great.
+
+So what's to be done?
+
+### Solutions
 
 solutions (respectively):
 
