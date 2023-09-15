@@ -687,18 +687,18 @@ that view looks like for me (cut off below `0.5%`):
 ```
 Samples: 138K of event 'cpu_core/cycles/', Event count (approx.): 64926188565
 Overhead  Command  Shared Object     Symbol
-  37.41%  python3  python3.10        [.] gc_collect_main.lto_priv.0                                                  ◆
-  27.85%  python3  python3.10        [.] deduce_unreachable                                                          ▒
-   9.91%  python3  python3.10        [.] visit_reachable.lto_priv.0                                                  ▒
-   3.58%  python3  python3.10        [.] set_traverse.lto_priv.0                                                     ▒
-   3.29%  python3  python3.10        [.] dict_traverse.lto_priv.0                                                    ▒
-   2.65%  python3  python3.10        [.] _PyEval_EvalFrameDefault                                                    ▒
-   2.04%  python3  python3.10        [.] func_traverse.lto_priv.0                                                    ▒
-   1.67%  python3  python3.10        [.] subtype_traverse.lto_priv.0                                                 ▒
-   1.16%  python3  python3.10        [.] tupletraverse.lto_priv.0                                                    ▒
-   0.73%  python3  python3.10        [.] _PyObject_GenericSetAttrWithDict                                            ▒
-   0.54%  python3  python3.10        [.] cell_traverse.lto_priv.0                                                    ▒
-   0.52%  python3  python3.10        [.] insertdict.lto_priv.0                                                       ▒
+  37.41%  python3  python3.10        [.] gc_collect_main.lto_priv.0
+  27.85%  python3  python3.10        [.] deduce_unreachable
+   9.91%  python3  python3.10        [.] visit_reachable.lto_priv.0
+   3.58%  python3  python3.10        [.] set_traverse.lto_priv.0
+   3.29%  python3  python3.10        [.] dict_traverse.lto_priv.0
+   2.65%  python3  python3.10        [.] _PyEval_EvalFrameDefault
+   2.04%  python3  python3.10        [.] func_traverse.lto_priv.0
+   1.67%  python3  python3.10        [.] subtype_traverse.lto_priv.0
+   1.16%  python3  python3.10        [.] tupletraverse.lto_priv.0
+   0.73%  python3  python3.10        [.] _PyObject_GenericSetAttrWithDict
+   0.54%  python3  python3.10        [.] cell_traverse.lto_priv.0
+   0.52%  python3  python3.10        [.] insertdict.lto_priv.0
 ```
 
 `gc_collect_main` being 37% of the profile is a massive red flag. Then the
