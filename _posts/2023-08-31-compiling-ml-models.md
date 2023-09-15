@@ -767,11 +767,11 @@ For this reason, we are writing compilers for `Value` graphs. This means
 anybody can get a compiler for free as long as their machine learning
 architecture uses `Value`s. You need only write an interpreter for it!
 
-### forward
+### Forward
 
-since we have a topological sort, we might as well use it. then we only need to
-write a compiler that works one `Value` at a time. then we can drive it like
-this:
+Since we have a topological sort, we might as well use it both forward and
+backward. Then we only need to write a compiler that works one `Value` at a
+time. We can drive it like this:
 
 ```console?lang=python&prompt=>>>,...
 >>> from micrograd.engine import Value
@@ -788,16 +788,22 @@ data[2] = data[1]+data[0];
 >>>
 ```
 
-where it is assumed that `data` is some properly-sized array of `double`s that
-we will create later.
+(Where it is assumed that `data` is some properly-sized array of `double`s that
+we will create later.)
 
-look, there it is! a neat little linearization of the graph. this strategy
-works because we don't have loops and we don't have re-definitions of values.
-each value is set once[^ssa]. and this code, even with all its memory loads
-and stores, should be much faster than pointer chasing and function calls
-in Python-land.
+Look, there it is! A neat little linearization of the graph. It's kind of like
+the topo sort we saw earlier, but in C code. This strategy works because we
+don't have loops and we don't have re-definitions of `Value`s. Each value is
+set once[^ssa]. and this code, even with all its memory loads and stores,
+should be much faster than pointer chasing and function calls in Python-land.
 
 [^ssa]: This makes it SSA form by definition!
+
+We could have done this similarly to the interpreted version, where each kind
+of operation has its own method (`__add__`, etc), but it's easier to present
+the compiler all in one method. For that reason I am adding a `compile`
+function. See for example the implementation of constant values (`op==''`) and
+addition (`op=='+'`):
 
 ```python
 class Value:
