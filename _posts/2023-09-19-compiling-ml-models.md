@@ -932,14 +932,14 @@ Let's see how it works in practice.
 ```console?lang=python&prompt=>>>,...
 >>> x = Value(1, _op='weight')
 >>> y = Value(2, _op='weight')
->>> z = x + y
+>>> z = x * y
 >>> order = z.topo()
 >>> for v in order:
 ...     print(v.backward_compile())
 ...
 []
 []
-['grad[6] += grad[8];', 'grad[7] += grad[8];']
+['grad[6] += data[7]*grad[8];', 'grad[7] += data[6]*grad[8];']
 >>>
 ```
 
