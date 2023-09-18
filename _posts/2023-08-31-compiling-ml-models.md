@@ -1119,14 +1119,39 @@ PyObject* PyInit_nn() {
 That's mostly it! Now we can use all of our hard work in model training and
 inference.
 
-## did it work? is it faster?
+## Did it work? Is it faster?
 
-evaluating correctness when MNIST in interpreted version is too slow (small
-unit tests, side-by-side training and inference on XOR)
+These are two separate questions and performance doesn't mean anything if your
+code produces wrong output.
 
-<!-- TODO -->
+### Correctness
 
-holy cow, 2000x (~2000 images/s)
+Testing compilers can be tricky. There are a lot of parts and they all have to
+work on their own and also together. Thankfully in this case, we have a very
+small compiler with very few basic operations. This makes it not too difficult
+to write unit tests about the generated C code.
+
+It's also probably worth having some side-by-side tests on the output *numbers*
+of the interpreted and compiled versions of the same code. If they are with
+some error margin, we can consider the compiler correct. I don't recommend
+doing MNIST, though; the interpreted version is too slow and unit tests should
+be fast. Maybe try XOR.
+
+### Performance
+
+On my machine, training goes from 1 image per second (interpreted) to 2000
+images per second (compiled). This is a TWO THOUSAND TIMES speed increase! It
+comes with an up-front cost, though; you have to compile the C code. If you use
+TCC, a very fast C compiler, you get pretty reasonable performance. I saw about
+half second compile times and 46 seconds per epoch. If you use Clang, a much
+slower C compiler, you get even better performance. I saw about 30s compile
+times (for `O0`) and 400s compile times (for `O1`) and ~30s per epoch.
+
+| | Compile time (s) | Time per epoch (s) |
+| TCC | 0.5 | 45 |
+| Clang | 30 | 30 |
+
+Either way, this is a pretty big win. I think we did it!
 
 <!--
 
