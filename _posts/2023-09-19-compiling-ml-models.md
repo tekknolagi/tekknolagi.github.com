@@ -113,7 +113,7 @@ of the first layer.
 Karpathy implements this pretty directly, with each neuron being an instance of
 the `Neuron` class and having a `__call__` method do the dot product. After
 each dot product is an activation, in this case `ReLU`, which is equivalent to
-`max(x, 0)`. I think the `0` is arbitrary here but I am not certain.
+`max(x, 0)`. I think the `0` is an arbitrary threshold but I am not certain.
 
 Below is the entire blueprint code for a multilayer perceptron in micrograd
 (we'll come back to the `Value` class later):
