@@ -585,8 +585,8 @@ class Value:
             v._backward()
 ```
 
-The `.backward()` function is normally called on the result `Value` of the loss
-function.
+The `Value.backward` function is normally called on the result `Value` of the
+loss function.
 
 If you are wondering why we set `self.grad` to `1` here before doing
 backpropagation, take a moment and wonder to yourself. Maybe it's worth drawing
