@@ -993,9 +993,9 @@ ML because it is oft-used to either harm people (surveillance, recommender
 systems siloing people, etc) or make software worse (several large companies
 recently mucked up their chronological feeds, etc).
 
-I learned about machine learning and wrote this post to understand the ML
-theory my friends geek out about regularly. I implore you, potential ML
-practitioner, to use your skills for Good.
+I learned about machine learning and wrote this post to understand the theory
+my friends geek out about regularly. I implore you, potential ML practitioner,
+to use your skills for Good.
 
 ## more thonks
 
