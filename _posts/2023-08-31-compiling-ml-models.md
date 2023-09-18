@@ -978,7 +978,19 @@ def gen_update(f, model, learning_rate):
 It's even the same length as the Python equivalent, if you exclude the
 `assert`.
 
-### setting the input
+### Setting the input
+
+Getting input from Python code into C++ is a little tricky when it's not simple
+data types like integers and floats. Ideally our generated ML code would be
+able to share memory with Python to avoid copying data back and forth, but that
+wouldn't be as simple an implementation[^zero-copy], so we're doing something
+slightly sillier.
+
+[^zero-copy]: I think it would be longer, anyway. With our current `data` and
+    `grad` array design, we might have to special-case storage for the input
+    data in the compiler---read from a different global variable or something
+    like that. If you use the Python buffer C-API it might not be so bad,
+    actually. Maybe I'll leave it as an exercise for the reader.
 
 <!-- TODO -->
 
