@@ -93,7 +93,13 @@ results) and arrows are weights and operations on the data. In this case, the
 `x`, `y`, and `z` dots are input data. The arrows going right are multiplications
 with weights. The meeting of the arrows represents an addition (forming a dot
 product), addition of the bias (kind of like another weight), and activation
-function (`ReLU`).
+function (`ReLU`, "rectified linear unit")[^activation].
+
+[^activation]: An activation function is supposed to mimic the behavior of
+    biological neurons when receiving an impulse or something like that. There
+    are other kinds of activation functions, like sigmoid and tanh, but for
+    Math Reasons I Am Too Computer To Understand Right Now, people tend to use
+    ReLU.
 
 Karpathy implements this pretty directly, with each neuron being an instance of
 the `Neuron` class and having a `__call__` method do the dot product. After
