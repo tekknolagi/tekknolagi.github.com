@@ -675,7 +675,7 @@ with profiling information.
 I ran Scalene on our little micrograd MNIST and this is what it looks like.
 
 <figure style="display: block; margin: 0 auto; max-width: 600px;">
-  <img style="max-width: 600px;" src="/assets/img/scalene-nn.png" />
+  <a href="/assets/img/scalene-nn.png"><img style="max-width: 600px;" src="/assets/img/scalene-nn.png" /></a>
   <figcaption markdown="1">
   Fig. 2 - A screenshot of the Scalene profiler's view of micrograd. It looks
   like there is a lot of `Value` allocation and `self._prev` being a set could
