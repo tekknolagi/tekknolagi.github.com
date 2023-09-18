@@ -988,10 +988,14 @@ in both forward and backward directions. This means they are kind of like
 tree-walking interpreters. It also means that compiling the tree to a
 lower-level representation makes the program faster.
 
-I normally write compilers and interpreters. This is my first post involving
-machine learning. I have traditionally been very uninterested in ML because it
-is oft-used to either harm people or make software worse. I implore you,
-potential ML practitioner, to use your skills for Good.
+On a more serious note: I have traditionally been very uninterested in applying
+ML because it is oft-used to either harm people (surveillance, recommender
+systems siloing people, etc) or make software worse (several large companies
+recently mucked up their chronological feeds, etc).
+
+I learned about machine learning and wrote this post to understand the ML
+theory my friends geek out about regularly. I implore you, potential ML
+practitioner, to use your skills for Good.
 
 ## more thonks
 
