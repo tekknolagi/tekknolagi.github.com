@@ -922,7 +922,8 @@ Let's see how it works in practice.
 
 Huh, that's weird. Why is there no backpropagation code for `x` (`grad6`) and
 `y` (`grad7`)? That's because they don't have any children of their own;
-instead, they are adjusted by their parent node, `z` (`grad8`).
+instead, they are adjusted by their parent node, `z` (`grad8`). This is what I
+meant earlier when I said that visiting a node adjusts the node's children.
 
 My complete backward pass compiler implementation is about 30 lines! Shorter
 than the forward pass, even. That's pretty neat.
