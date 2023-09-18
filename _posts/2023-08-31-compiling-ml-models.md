@@ -1105,6 +1105,7 @@ importer finds a module in a `.so` and it has a `PyInit_XYZ` function, it will
 call it to create the module object.
 
 ```c
+// Some good keywords are "PEP 384" and "PEP 489".
 PyObject* PyInit_nn() {
     PyObject* m = PyState_FindModule(&nnmodule);
     if (m != NULL) {
