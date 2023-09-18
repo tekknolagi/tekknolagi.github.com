@@ -988,6 +988,8 @@ everything out of arrays and put them in individual global variables. then
 regalloc took a long time (but not forever!) and eventually, in 373s instead of
 30s, i got a binary. that binary runs 2x as fast (~4000 images/s).
 
+TODO: make the arrays static?
+
 -->
 
 ## conclusion
