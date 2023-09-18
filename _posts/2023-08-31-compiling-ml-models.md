@@ -5,6 +5,10 @@ description: We make micrograd fly with a little compiler magic.
 date: 2023-08-31
 ---
 
+> *NOTE: This post is going to be a compiler post, not a machine learning
+> tutorial, so please treat it as such. Maybe it will still help you understand
+> ML through a compilers lens.*
+
 I had a nice chat with my friend [Chris](https://www.chrisgregory.me/)
 recently.
 
@@ -61,10 +65,6 @@ projects like PyTorch and TensorFlow have compilers
 Compiling your model speeds up both training and inference. So this post will
 not contain anything novel---it's hopefully a quick sketch of a small example
 of what the Big Projects do.
-
-> This post is going to be a compiler post, not a machine learning tutorial, so
-> please treat it as such. Maybe it will still help you understand ML through a
-> compilers lens.
 
 We're going to compile micrograd neural nets into C. In order, we will
 
