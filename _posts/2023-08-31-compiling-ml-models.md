@@ -382,20 +382,21 @@ squiggly lines. But it's pretty okay, actually, so keep on reading.
 
 Fortunately for us, reverse mode AD, like evaluating an AST top to bottom, it
 is a graph traversal with some local state. If you can write a tree-walking
-interpreter, you can do reverse mode AD.
+interpreter, you can do reverse mode automatic differentiation.
 
-### Reverse mode AD
+### Reverse mode AD and backpropagation
 
-<!-- TODO -->
+Instead of building up a parallel graph of derivatives (a sort of "dual" to the
+normal expression graph), reverse mode AD computes local derivatives at each
+node in the `grad` (gradient) field. Then you can propagate these gradients
+backward through the graph from the loss all the way to the
+weights---backpropagation.
 
-go from having an expression graph to understanding how each of the component
-parts affect the final value (say, loss)
+But how do you compose all those local derivatives? There's no way it's simple,
+right? Taking derivatives of big math expressions is scary...
 
-in order to do that you need to take the derivative of each operation and
-propagate the grad backwards through the graph toward the weights
-("backpropagation")
-
-we do this using the chain rule.
+It turns out, calculus already has the answer in something called *the chain
+rule*.
 
 ## The chain rule
 
