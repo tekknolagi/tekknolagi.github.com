@@ -356,7 +356,12 @@ another function that tells you how far off your output is from some expected
 value (a "loss function"). An simple example of a loss function is
 `loss(actual, expected) = (expected - actual)**2` (where `**` is exponentiation
 in Python). If you use this particular function across multiple inputs at a
-time, it's called Mean Squared Error (MSE).
+time, it's called Mean Squared Error (MSE)[^other-loss].
+
+[^other-loss]: Another kind of loss function is Cross-Entropy Loss. I don't
+    know enough about the math to understand what loss function is best for
+    what problem. All I know is adding Cross-Entropy Loss required supporting
+    more fundamental operations on `Value` and in the compiler.
 
 If you are trying to get some expected output, you want to minimize the value
 of your loss function as much as possible. In order to minimze your loss, you
