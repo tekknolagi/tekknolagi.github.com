@@ -25,8 +25,8 @@ Micrograd is a combination of a couple of different and complementary parts:
 (If you don't know what a MLP is, don't worry too much. This post should give
 you a bit of background, especially if you are already comfortable with Python.
 You may want to go through and read and think about the micrograd source code
-before coming back. Chris suggested trying to make a network learn XOR. Or not!
-Your call. Playing with it helped me a lot.)
+before coming back. Or not! Your call. Playing with it helped me a lot. Chris
+suggested trying to make a network learn XOR.)
 
 Together, these three major components let you write code that looks like this:
 
