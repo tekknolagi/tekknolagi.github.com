@@ -475,8 +475,9 @@ class Value:
 
 This means that for each of the children, we will use the *other child*'s data
 and (because of the chain rule) multiply it by the parent expression's `grad`.
-See what a nice translation of the math that is? Get the derivative, apply the
-chain rule, add to the child's grad.
+That is, `self`'s grad (the left hand side) is adjusted using `other`'s data
+(the right hand side) and vice versa. See what a nice translation of the math
+that is? Get the derivative, apply the chain rule, add to the child's grad.
 
 Now we have a function to do one derivative step for one operation node, but we
 need to do the whole graph.
