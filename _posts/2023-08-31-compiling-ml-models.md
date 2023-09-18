@@ -1021,7 +1021,7 @@ NUM_DIGITS = 10
 inp = [Value(0, (), "input") for _ in range(NUM_PIXELS)]
 exp = [Value(0, (), "input") for _ in range(NUM_DIGITS)]
 out = model(inp)  # produces some garbage data in the compile-time Value graph
-loss = cross_entropy(out, exp)
+loss = compute_loss(out, exp)
 
 gen_set_input(inp)
 ```
