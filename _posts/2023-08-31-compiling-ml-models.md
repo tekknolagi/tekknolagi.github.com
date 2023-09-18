@@ -462,13 +462,10 @@ Instead of just setting `child.grad`, we are increasing it for two reasons:
 * one child may be shared with other parents, in which case it affects both
 * batching, but that's not important right now
 
-<!--
-an example of a derivative of a function is (addition? pow? TODO)
--->
-
 To make this more concrete, let's take a look at Karpathy's implementation of
 the derivative of `*`, for example. In math, if you have `f(x,y) = x*y`, then
-`f'(x, y) = 1*y`. In code, that looks like:
+`f'(x, y) = 1*y` (with respect to `x`) and `f'(x, y) = x*1` (with respect to
+`y`). In code, that looks like:
 
 ```python
 class Value:
