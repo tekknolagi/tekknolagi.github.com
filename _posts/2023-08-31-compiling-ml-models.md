@@ -248,6 +248,7 @@ Value(data=9, grad=0)
 Here `x` and `y` both use `w` and then are both used by `z`, forming a diamond
 pattern.
 
+<figure style="display: block; margin: 0 auto; max-width: 400px;">
 <svg width="204pt" height="188pt"
  viewBox="0.00 0.00 203.57 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
@@ -303,6 +304,10 @@ pattern.
 </g>
 </g>
 </svg>
+  <figcaption>Fig. 2 - A dependency graph that has diamond-shaped dependencies
+  in it, making it a directed graph instead of a tree.</figcaption>
+</figure>
+
 
 It is assumed that the graph won't have cycles in it[^rnn-unrolling].
 
@@ -683,7 +688,7 @@ I ran Scalene on our little micrograd MNIST and this is what it looks like.
 <figure style="display: block; margin: 0 auto; max-width: 600px;">
   <a href="/assets/img/scalene-nn.png"><img style="max-width: 600px;" src="/assets/img/scalene-nn.png" /></a>
   <figcaption markdown="1">
-  Fig. 2 - A screenshot of the Scalene profiler's view of micrograd. It looks
+  Fig. 3 - A screenshot of the Scalene profiler's view of micrograd. It looks
   like there is a lot of `Value` allocation and `self._prev` being a set could
   even be a leak somehow! You can especially see there are a lot of `+` and `*`
   operations because `__add__` and `__mul__` allocate a lot.
