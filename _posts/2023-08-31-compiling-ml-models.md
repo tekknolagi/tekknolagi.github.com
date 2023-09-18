@@ -985,8 +985,8 @@ regalloc took a long time (but not forever!) and eventually, in 373s instead of
 
 Neural networks are represented by static data-flow graphs which are executed
 in both forward and backward directions. This means they are kind of like
-tree-walking interpreters in that compiling the tree a lower-level
-representation makes the program faster.
+tree-walking interpreters. It also means that compiling the tree to a
+lower-level representation makes the program faster.
 
 I normally write compilers and interpreters. This is my first post involving
 machine learning. I have traditionally been very uninterested in ML because it
