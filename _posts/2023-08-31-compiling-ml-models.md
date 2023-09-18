@@ -779,7 +779,8 @@ MNIST you can't do anything for tensor version, but maybe for scalar.
 
 The goal with this compiler is to write something very small that fits
 reasonably cleanly into micrograd as it already is---not to re-architect
-anything.
+anything. The end goal is to make a Python C extension that we can `import` and
+use in place of the interpreted version of micrograd.
 
 The original version of this project compiled the `MLP` and `Layer` and
 `Neuron` classes directly into C, but that unfortunately is not very
