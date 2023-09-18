@@ -1196,6 +1196,9 @@ this post.*
 
 ## More thoughts and further reading
 
+There's a lot more work to do if you are interested and have the time. I might
+follow-up on these later. I might not.
+
 ### Compiling for training vs inference
 
 Right now our compilation strategy works for both training and inference. This
