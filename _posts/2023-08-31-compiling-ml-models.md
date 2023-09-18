@@ -1150,9 +1150,10 @@ half second compile times and 46 seconds per epoch. If you use Clang, a much
 slower C compiler, you get even better performance. I saw about 30s compile
 times (for `O0`) and 400s compile times (for `O1`) and ~30s per epoch.
 
-| | Compile time (s) | Time per epoch (s) |
-| TCC | 0.5 | 45 |
-| Clang | 30 | 30 |
+| | Compile time (s) | Time per epoch (s) | Speedup |
+| Interpreted | 0 | 60,000 | 1x |
+| TCC | 0.5 | 45 | 1333x |
+| Clang | 30 | 30 | 2000x |
 
 Either way, this is a pretty big win. I think we did it!
 
