@@ -1165,29 +1165,44 @@ to use your skills for Good.
 [Bianca](http://www.biancacapretta.com/) for providing sigificant feedback on
 this post.*
 
-## more thonks
+## More thoughts and further reading
 
-### compiling for training vs inference
+### Compiling for training vs inference
 
-if you freeze the weights, things get a lot more efficient. right now we have
-so many memory loads and stores and it's hard for the C compiler to prove
-anything about the properties of the numbers when it is trying to optimize. it
-probably also prevents SIMD. does the lack of locality hurt too?
+Right now our compilation strategy works for both training and inference. This
+is great, because it *does* make both of them faster than before, but it comes
+with a tradeoff: inference is slightly slower.
 
-### scalar-valued is less efficient than tensor-valued
+If, post training, you freeze the weights and make their immutability known,
+things get a lot more efficient. Right now we have so many memory loads and
+stores and it's hard for the C compiler to prove anything about the properties
+of the numbers when it is trying to optimize. It probably also prevents use of
+SIMD instructions. If we can inline the weights as double constants in the
+generated C code, we can probably get much better machine code.
 
-we managed to remove a lot of the overhead *for the program we had*, but the
-overall architecture did not improve. to do that, we need to move from
-scalar-valued to tensor-valued.
+<!-- does the lack of locality hurt too? -->
 
-it's kind of like programming in assembly vs a higher level language. it's much
-harder to make optimizations directly on the assembly. whereas if you have
-three bigger and more descriptive operations in your ast (`matmul`, etc), the
-compiler can better understand what you mean and optimize that.
+### Scalar-valued is less efficient than tensor-valued
 
-it also brings better data locality (matrix is stored densely) and we can get
-some vectorized math instead of millions of `mulsd`.
+We managed to remove a lot of the overhead *for the program we had*, but the
+overall architecture did not improve much. To do that, we need to move from
+scalar-valued to tensor-valued `Value`s.
 
+It's kind of like programming in assembly (scalar) vs a higher level (tensor)
+language. It's much harder to make optimizations directly on the assembly. If
+you have semantically bigger and more descriptive operations in your AST
+(`matmul`, etc), the compiler can better understand what you mean and optimize
+that.
+
+It also brings better data locality (matrix is stored densely and in either
+row-major or column-major order) and we can get some vectorized math instead of
+millions of `mulsd`.
+
+From what I can tell, optimizing linear algebra IRs is an ongoing area of
+research.
+
+<!--
+TODO:
 * fuse matmul with addition of bias (`W @ x + b`)
   * https://discuss.tvm.apache.org/t/operator-fusion-for-rnn/11966
   * https://github.com/pytorch/pytorch/issues/39661
@@ -1196,14 +1211,20 @@ some vectorized math instead of millions of `mulsd`.
 * matmul associativity (and commutativity with einstein notation??) to reduce
   size of intermediate values
 
-<!--
 TODO: parallelization of matmul? GEMM?
 -->
 
-### what if you wrote micrograd in rpython?
+### Using PyPy
 
-could PyPy jit it effectively?
+PyPy is a JIT compiler for Python, but it also includes a general-purpose
+programming language called RPython. The neat thing is, if you write an
+interpreter in RPython, PyPy will turn your interpreter into a tracing JIT
+compiler. So this brings up some questions:
 
-### what if you generated python code or bytecode?
+**What if you wrote micrograd in RPython?** Would PyPy make an effective JIT
+out of the tree-walking interpreter... even if it allocated all the AST nodes
+on the fly? Would it blow the trace length limit?
 
-could PyPy jit it effectively?
+**What if you generated Python code or bytecode?** This doesn't even require
+writing the interpreter in RPython, but it does require writing a compiler from
+`Value` graphs to Python (bytecode). Could PyPy compile *this* effectively?
