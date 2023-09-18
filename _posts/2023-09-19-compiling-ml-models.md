@@ -89,8 +89,8 @@ In case visual learning is your thing, here is a small diagram:
   <object class="svg" type="image/svg+xml" data="/assets/img/nn.svg">
   If you're seeing this text, it means your browser cannot render SVG.
   </object>
-  <figcaption>Fig. 1 - Multi-layer Perceptron diagram. I made this in
-  Excalidraw. I love Excalidraw.</figcaption>
+  <figcaption>Fig. 1 - Multi-layer Perceptron diagram. Well, a layer of one,
+  anyway. I made this in Excalidraw. I love Excalidraw.</figcaption>
 </figure>
 
 In this image, circles represent data (input or intermediate computation
