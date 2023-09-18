@@ -374,7 +374,7 @@ have significantly more impact than others.
 
 The question "how much did this weight contribute to the loss this round" is
 answered by the value of the grad (gradient) of that weight---the first
-derivative. The slope at a point. For example, in `y = mx + b`, the equation
+derivative---the slope at a point. For example, in `y = mx + b`, the equation
 that describes a line, the derivative with respect to `x` is `m`, because the
 value of `x` is scaled by `m`.
 
