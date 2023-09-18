@@ -1121,7 +1121,8 @@ inference.
 
 ## did it work? is it faster?
 
-evaluating correctness
+evaluating correctness when MNIST in interpreted version is too slow (small
+unit tests, side-by-side training and inference on XOR)
 
 <!-- TODO -->
 
