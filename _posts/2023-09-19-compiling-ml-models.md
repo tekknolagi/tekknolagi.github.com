@@ -543,7 +543,7 @@ expression graph, `1+2`.
 >>> from micrograd.engine import Value
 >>> x = Value(1)
 >>> y = Value(2)
->>> z = x + y
+>>> z = x * y
 >>> z.topo()
 [Value(data=1, grad=0), Value(data=2, grad=0), Value(data=3, grad=0)]
 >>>
@@ -822,14 +822,14 @@ time. We can drive it like this:
 >>> from micrograd.engine import Value
 >>> x = Value(1)
 >>> y = Value(2)
->>> z = x + y
+>>> z = x * y
 >>> order = z.topo()
 >>> for v in order:
 ...     print(v.compile())
 ...
 data[1] = 2;
 data[0] = 1;
-data[2] = data[1]+data[0];
+data[2] = data[1]*data[0];
 >>>
 ```
 
@@ -845,8 +845,8 @@ should be much faster than pointer chasing and function calls in Python-land.
 [^ssa]: This makes it SSA form by definition!
 
 We could have done this similarly to the interpreted version, where each kind
-of operation has its own method (`__add__`, etc), but it's easier to present
-the compiler all in one method. For that reason I am adding a `compile`
+of operation has its own method (`__add__`, `__mul__`, etc), but it's easier to
+present the compiler all in one method. For that reason I am adding a `compile`
 function. See for example the implementation of constant values (`op==''`) and
 addition (`op=='+'`):
 
@@ -865,9 +865,9 @@ class Value:
             return ""
         if self._op == '':
             return self.set(f"{self.data}")
-        if self._op == '+':
+        if self._op == '*':
             c0, c1 = self._prev
-            return self.set(f"{c0.var()}+{c1.var()}")
+            return self.set(f"{c0.var()}*{c1.var()}")
         raise RuntimeError(f"op {self._op} left as an exercise for the reader")
 ```
 
