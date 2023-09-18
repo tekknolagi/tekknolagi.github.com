@@ -342,9 +342,9 @@ training.
 The standard training process involves your neural network structure and also
 another function that tells you how far off your output is from some expected
 value (a "loss function"). An simple example of a loss function is
-`loss(actual, expected) = (expected - actual)**2`. If you use this particular
-function across multiple inputs at a time, it's called Mean Squared Error
-(MSE).
+`loss(actual, expected) = (expected - actual)**2` (where `**` is exponentiation
+in Python). If you use this particular function across multiple inputs at a
+time, it's called Mean Squared Error (MSE).
 
 If you are trying to get some expected output, you want to minimize the value
 of your loss function as much as possible. In order to minimze your loss, you
@@ -485,7 +485,10 @@ need to do the whole graph.
 But traversing a graph is not as simple as traversing a tree. You need to avoid
 visiting a node more than once and also guarantee that you visit child nodes
 before parent nodes (in forward mode) or parent nodes before children nodes (in
-reverse mode).
+reverse mode). The tricky thing is that while we don't *visit* a node more than
+once, visiting updates the node's children (not the node itself), and nodes may
+share children, so children's `grad`s may be updated multiple times. This is
+expected and normal!
 
 For that reason, we have topological sort.
 
