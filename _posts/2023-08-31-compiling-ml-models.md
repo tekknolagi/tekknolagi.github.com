@@ -40,9 +40,9 @@ And summon a neural network from thin air.
 The thing that got me the first time I read it was that I thought the building
 blocks *were* the network. In this library, no. Using a building analogy, they
 are more like blueprints or scaffolding. With each evaluation of the network,
-the network and intermediate computation graph is constructed anew. In compiler
-terms, the building blocks are kind of like the front-end and the expression
-graph is a sort of intermediate representation (IR).
+the connective tissue (intermediate computation graph) is constructed anew. In
+compiler terms, the building blocks are kind of like the front-end and the
+expression graph is a sort of intermediate representation (IR).
 
 You may be sitting there wondering why I am telling you this. I normally blog
 about compilers. What's this?
