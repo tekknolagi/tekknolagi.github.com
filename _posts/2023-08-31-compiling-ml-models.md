@@ -1145,7 +1145,7 @@ TODO: make the arrays static?
 
 -->
 
-## conclusion
+## Conclusion
 
 Neural networks are represented by static data-flow graphs which are executed
 in both forward and backward directions. This means they are kind of like
