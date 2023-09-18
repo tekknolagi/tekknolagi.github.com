@@ -1159,6 +1159,8 @@ times (for `O0`) and 400s compile times (for `O1`) and ~30s per epoch.
 
 Either way, this is a pretty big win. I think we did it!
 
+<!-- TODO note the perf of real world ML software for comparison? -->
+
 <!--
 
 ### more optimizations
