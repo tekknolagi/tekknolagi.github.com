@@ -1032,15 +1032,91 @@ Note that we are not actually using the `data` or `grad` fields in any of the
 input, output, or loss `Value`s that get created at compile-time. We just use
 them for their graph structure.
 
-### a python c extension
+In order to use this C code from Python, we'll have to make a Python C
+extension using the C-API.
 
-having a bunch of free-floating code to update `data` and `grad` arrays is fun,
-but it's not a complete compiler. we need to wrap that code in functions (i
-called them `forward`, `backward`, `update`, and `set_input`) and make them
-accessible to our Python driver program. we don't want to have to completely
-move to C!
+### A Python C extension
 
-<!-- TODO -->
+Having a bunch of free-floating code to update `data` and `grad` arrays is fun,
+and it's a complete compiler, but it's not useful yet. We need to wrap that
+code in functions (I called them `forward`, `backward`, `update`, and
+`set_input`) and make them accessible to our Python driver program. We don't
+want to have to completely move to C!
+
+Most of this is straightforward (literally `print("void forward() {")` and so
+on), but some of this requires knowledge of Python internals.
+
+For example, here is a snippet of the wrapper code around the `forward`
+function.
+
+```c
+PyObject* forward_wrapper(PyObject *module, PyObject *const *args, Py_ssize_t nargs) {
+    if (nargs != 2) {
+        PyErr_Format(PyExc_TypeError, "expected 2 args: label, pixels");
+        return NULL;
+    }
+    PyObject* label_obj = args[0];
+    PyObject* pixels_obj = args[1];
+    if (!PyLong_CheckExact(label_obj)) {
+        PyErr_Format(PyExc_TypeError, "expected int");
+        return NULL;
+    }
+    if (!PyBytes_CheckExact(pixels_obj)) {
+        PyErr_Format(PyExc_TypeError, "expected bytes");
+        return NULL;
+    }
+    if (PyBytes_Size(pixels_obj) != 28*28) {
+        PyErr_Format(PyExc_TypeError, "expected bytes of size 28*28");
+        return NULL;
+    }
+    // ...
+}
+```
+
+It is an example of a *fastcall* C-API function, meaning it takes its arguments
+in an array. We have to register it as such:
+
+```c
+static PyMethodDef nn_methods[] = {
+    { "forward", (PyCFunction)forward_wrapper, METH_FASTCALL, "doc goes here" },
+    // ...
+};
+```
+
+And then make a Python-importable module description so that we can create a
+`module` object at import-time:
+
+```c
+static struct PyModuleDef nnmodule = {
+    PyModuleDef_HEAD_INIT,
+    "nn",
+    "doc goes here",
+    -1,
+    nn_methods,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+```
+
+And then we can create this magic `PyInit_nn` function. If the Python native
+importer finds a module in a `.so` and it has a `PyInit_XYZ` function, it will
+call it to create the module object.
+
+```c
+PyObject* PyInit_nn() {
+    PyObject* m = PyState_FindModule(&nnmodule);
+    if (m != NULL) {
+        return m;
+    }
+    // ...
+    return PyModule_Create(&nnmodule);
+}
+```
+
+That's mostly it! Now we can use all of our hard work in model training and
+inference.
 
 ## did it work? is it faster?
 
