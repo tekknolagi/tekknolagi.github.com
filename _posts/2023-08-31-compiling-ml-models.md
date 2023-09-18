@@ -1137,6 +1137,9 @@ some error margin, we can consider the compiler correct. I don't recommend
 doing MNIST, though; the interpreted version is too slow and unit tests should
 be fast. Maybe try XOR.
 
+Thankfully, CPython uses the host system floating point implementation for its
+`float`s, so we get the same numeric behavior as C for no additional effort.
+
 ### Performance
 
 On my machine, training goes from 1 image per second (interpreted) to 2000
