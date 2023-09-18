@@ -1044,6 +1044,8 @@ move to C!
 
 ## did it work? is it faster?
 
+evaluating correctness
+
 <!-- TODO -->
 
 holy cow, 2000x (~2000 images/s)
