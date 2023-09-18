@@ -997,6 +997,9 @@ I learned about machine learning and wrote this post to understand the theory
 my friends geek out about regularly. I implore you, potential ML practitioner,
 to use your skills for Good.
 
+*Massive thanks to [Chris](https://www.chrisgregory.me/) and
+[Bianca](http://www.biancacapretta.com/) for editing this post.*
+
 ## more thonks
 
 ### compiling for training vs inference
