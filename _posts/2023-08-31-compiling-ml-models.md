@@ -992,7 +992,38 @@ slightly sillier.
     like that. If you use the Python buffer C-API it might not be so bad,
     actually. Maybe I'll leave it as an exercise for the reader.
 
-<!-- TODO -->
+We're going to have a function `set_input` that takes its black and white pixel
+data in an array of bytes and copies each pixel to its respective slot in the
+`data` array. While this is pretty slow compared to, say, *not* copying, it is
+certainly not the bottleneck in the pipeline.
+
+```python
+def gen_set_input(inp):
+    result = []
+    for idx, o in enumerate(inp):
+        result.append(f"data[{o._id}] = buf[{idx}];\n")
+    return "".join(result)
+```
+
+In this case, `inp` is the array of inputs. Unlike with the interpreted version
+of micrograd, we are not creating new input `Value`s with every iteration. This
+means we have to pre-allocate the range of IDs used for input to and output
+from the ML model:
+
+```python
+NUM_PIXELS = 28*28
+NUM_DIGITS = 10
+inp = [Value(0, (), "input") for _ in range(NUM_PIXELS)]
+exp = [Value(0, (), "input") for _ in range(NUM_DIGITS)]
+out = model(inp)  # produces some garbage data in the compile-time Value graph
+loss = cross_entropy(out, exp)
+
+gen_set_input(inp)
+```
+
+Note that we are not actually using the `data` or `grad` fields in any of the
+input, output, or loss `Value`s that get created at compile-time. We just use
+them for their graph structure.
 
 ### a python c extension
 
