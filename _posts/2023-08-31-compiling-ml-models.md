@@ -947,9 +947,22 @@ than the forward pass, even. That's pretty neat.
 Now all we're missing is `update` and setting the input, which are not as
 interesting.
 
-### update
+### Update
 
-<!-- TODO -->
+Once we have done the backward pass (potentially multiple in a row), we need to
+adjust the weights by their gradients. Code generation for this is a fairly
+mechanical translation of the Python code into C++. For comparison, here is the
+interpreted version:
+
+```python
+def update(model)
+    for p in model.parameters():
+        p.data -= LEARNING_RATE * p.grad
+```
+
+It loops over the model parameters at run-time and adjusts them. By contrast,
+the compiled version does the iteration at compile-time and has straight-line
+subtractions at run-time:
 
 ```python
 def gen_update(f, model, learning_rate):
@@ -958,9 +971,7 @@ def gen_update(f, model, learning_rate):
         print(f"data[{o._id}] -= {learning_rate} * {o.getgrad()};", file=f)
 ```
 
-<!-- TODO -->
-
-it's even the same length as the Python equivalent, if you exclude the
+It's even the same length as the Python equivalent, if you exclude the
 `assert`.
 
 ### setting the input
