@@ -2,7 +2,7 @@
 title: Compiling ML models to C for fun
 layout: post
 description: We make micrograd fly with a little compiler magic.
-date: 2023-08-31
+date: 2023-09-19
 ---
 
 > *NOTE: This post is going to be a compiler post, not a machine learning
