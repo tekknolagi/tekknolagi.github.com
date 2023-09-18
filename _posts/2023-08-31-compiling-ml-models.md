@@ -56,7 +56,7 @@ realized:
 * performance is important
 
 Which means... it sounds like a great opportunity for a compiler! This is why
-projects like PyTorch and TensorFlow have compilers (torchdynamo, XLA, etc).
+projects like PyTorch and TensorFlow have compilers (TorchDynamo, XLA, etc).
 Compiling your model speeds up both training and inference. So this post will
 not contain anything novel---it's hopefully a quick sketch of a small example
 of what the Big Projects do.
