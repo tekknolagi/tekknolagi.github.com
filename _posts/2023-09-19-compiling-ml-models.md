@@ -185,7 +185,7 @@ You can ignore some of the clever coding in `MLP.__init__`. This ensures that
 all of the layers match up end-to-end dimension-wise.
 
 But this neural network is not built just with floating point numbers. Instead
-he uses this `Value` thing. What's that about?
+Karpathy uses this `Value` thing. What's that about?
 
 ## Intro to the expression builder
 
