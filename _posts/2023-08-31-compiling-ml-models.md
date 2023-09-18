@@ -1,4 +1,8 @@
 ---
+title: Compiling ML models to C for fun
+layout: post
+description: We make micrograd fly with a little compiler magic.
+date: 2023-08-31
 ---
 
 I had a nice chat with my friend [Chris](https://www.chrisgregory.me/)
