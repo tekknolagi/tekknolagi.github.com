@@ -95,11 +95,12 @@ In case visual learning is your thing, here is a small diagram:
 
 In this image, circles represent data (input or intermediate computation
 results) and arrows are weights and operations on the data. In this case, the
-`x`, `y`, and `z` dots are input data. The arrows going right are
+`x`, `y`, and `z` circles are input data. The arrows going right are
 multiplications with weights. The meeting of the arrows represents an addition
 (forming a dot product) followed by addition of the bias (kind of like another
 weight), all fed into an activation function (in this case `ReLU`, for
-"rectified linear unit")[^activation].
+"rectified linear unit")[^activation]. The circles on the right are the results
+of the first layer.
 
 [^activation]: An activation function is supposed to mimic the behavior of
     biological neurons when receiving an impulse or something like that. See
