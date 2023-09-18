@@ -969,6 +969,10 @@ def gen_update(f, model, learning_rate):
     for o in model.parameters():
         assert o._op in ('weight', 'bias'), repr(o._op)
         print(f"data[{o._id}] -= {learning_rate} * {o.getgrad()};", file=f)
+# data[0] -= 0.01 * grad[0];
+# data[1] -= 0.01 * grad[1];
+# data[2] -= 0.01 * grad[2];
+# ...
 ```
 
 It's even the same length as the Python equivalent, if you exclude the
