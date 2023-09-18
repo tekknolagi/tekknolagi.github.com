@@ -592,9 +592,10 @@ wengert list is kind of like TAC or bytecode or IR
 
 I am not going to get into the specifics, but here is what a rough sketch of
 very simplified training loop might look like for MLP-based classifier for the
-MNIST digit recognition problem. **This code is not runnable as-is.** It needs
-the image loading support code and a loss function. The full code is available
-in the GitHub repo.
+[MNIST digit recognition
+problem](https://en.wikipedia.org/wiki/MNIST_database). **This code is not
+runnable as-is.** It needs the image loading support code and a loss function.
+The full code is available in the GitHub repo.
 
 ```python
 import random
