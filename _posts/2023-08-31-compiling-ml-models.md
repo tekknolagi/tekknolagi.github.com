@@ -332,7 +332,7 @@ graph.
 But why do we have these expression graphs? Why not just use math? Who
 cares about all the back pointers?
 
-## Let's talk about grad
+## Let's talk about grad(ient)
 
 Training a neural network is a process of shaping your function (the neural
 network) over time to output the results you want. Inside your function are a
@@ -355,10 +355,10 @@ much each weight contributes to the final loss. Not every weight is equal; some
 have significantly more impact than others.
 
 The question "how much did this weight contribute to the loss this round" is
-answered by the value of the grad of that weight---the first derivative. The
-slope at a point. For example, in `y = mx + b`, the equation that describes a
-line, the derivative with respect to `x` is `m`, because the value of `x` is
-scaled by `m`.
+answered by the value of the grad (gradient) of that weight---the first
+derivative. The slope at a point. For example, in `y = mx + b`, the equation
+that describes a line, the derivative with respect to `x` is `m`, because the
+value of `x` is scaled by `m`.
 
 To compute the grad, you need to traverse backwards from the loss[^forward] to
 do something called reverse mode automatic differentiation (reverse mode AD).
