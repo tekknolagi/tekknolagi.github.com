@@ -949,8 +949,10 @@ I meant earlier when I said that visiting a node adjusts the node's children.
 My complete backward pass compiler implementation is about 30 lines! Shorter
 than the forward pass, even. That's pretty neat.
 
-Now all we're missing is `update` and setting the input, which are not as
-interesting.
+**You have just finished writing a compiler.** Seriously, the most involved and
+complicated bit is over. The rest is small details and Python C-API specifics
+that you can skip if you like. All we're missing is `update` and `set_input`
+and some wrapper code, which are not nearly as interesting.
 
 ### Update
 
