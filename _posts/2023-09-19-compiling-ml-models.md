@@ -1228,7 +1228,7 @@ There are a lot of instances of `x * y + z` in the `Value` graph.
 Unfortunately, due to the way the graph is laid out and traversed, forward and
 backward code for these nodes does not often get colocated. This means that it
 is difficult or unlikely for the C compiler to generate a fused multiply add
-(FMA) instruction, which may be faster and shorter than separate mul/add. It
+(FMA) instruction, which may be faster and shorter than separate mul/add. FMA
 also might require storing less intermediate data. But I could be wrong here!
 It's worth experimenting.
 
