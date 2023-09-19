@@ -1173,9 +1173,9 @@ times (for `O0`) and 400s compile times (for `O1`) and ~30s per epoch.
 
 Either way, this is a pretty big win. I think we did it! Check out the full
 [compiler
-code](https://github.com/tekknolagi/micrograd/blob/c0bcec0de357d38775cd706d6b9804d9db6c8e83/micrograd/engine.py)
+code](https://github.com/tekknolagi/micrograd/blob/702b01ea4f5ecad02b52a782099346b7f153b3b1/micrograd/engine.py)
 and [compiler wrapper and training
-code](https://github.com/tekknolagi/micrograd/blob/c0bcec0de357d38775cd706d6b9804d9db6c8e83/test.py)
+code](https://github.com/tekknolagi/micrograd/blob/702b01ea4f5ecad02b52a782099346b7f153b3b1/test.py)
 on GitHub.
 
 <!-- TODO note the perf of real world ML software for comparison? -->
