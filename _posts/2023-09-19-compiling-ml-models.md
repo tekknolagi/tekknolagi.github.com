@@ -679,13 +679,13 @@ Unfortunately, that is still not fast enough.
 > [Skybison](https://github.com/tekknolagi/skybison) is way faster than both
 > CPython and PyPy here! What a fun fact. After some profiling, its major
 > performance pain point was function creation (that is a bit slow in Skybison
-> right now), but if you lift the `_backward` lambdas to the top level, the
-> problem goes away. Then it's very clear that set lookup from topo sort is the
-> slowest bit in the profile. After that it's garbage collection from all the
-> transient `Value` objects.
+> right now), but if you lift the `_backward` inner functions to the top level,
+> the problem goes away. Then it's very clear that set lookup from topo sort is
+> the slowest bit in the profile. After that it's garbage collection from all
+> the transient `Value` objects.
 >
-> Incidentally, hoisting the lambdas to be normal functions *also* massively
-> speeds up PyPy and it becomes faster than Skybison.
+> Incidentally, hoisting the inner functions to be top-level functions *also*
+> massively speeds up PyPy and it becomes faster than Skybison.
 
 If I had to guess, my hypothesis for the pain points for all of the runtimes
 is:
