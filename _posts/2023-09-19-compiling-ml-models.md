@@ -606,8 +606,9 @@ very simplified training loop might look like for MLP-based classifier for the
 [MNIST digit recognition
 problem](https://en.wikipedia.org/wiki/MNIST_database). **This code is not
 runnable as-is.** It needs the image loading support code and a loss function.
-<!-- TODO: make the full code available -->
-<!-- The full code is available in the GitHub repo. -->
+[The full
+code](https://github.com/tekknolagi/micrograd/blob/407c90a107b7a8b440e86f6a039d9725f672031b/test.py)
+is available in the GitHub repo.
 
 ```python
 import random
