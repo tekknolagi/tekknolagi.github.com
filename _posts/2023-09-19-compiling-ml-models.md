@@ -970,7 +970,7 @@ and `set_input` and some wrapper code, which are not nearly as interesting.
 
 Once we have done the backward pass (potentially multiple in a row), we need to
 adjust the weights by their gradients. Code generation for this is a fairly
-mechanical translation of the Python code into C++. For comparison, here is the
+mechanical translation of the Python code into C. For comparison, here is the
 interpreted version:
 
 ```python
