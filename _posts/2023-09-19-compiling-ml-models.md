@@ -1214,7 +1214,7 @@ my friends geek out about regularly. I implore you, potential ML practitioner,
 to use your skills for Good.
 
 *Massive thanks to [Chris](https://www.chrisgregory.me/) and
-[Bianca](http://www.biancacapretta.com/) for providing sigificant feedback on
+[Bianca](http://www.biancacapretta.com/) for providing significant feedback on
 this post.*
 
 ## More thoughts and further reading
