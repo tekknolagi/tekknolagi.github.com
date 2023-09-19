@@ -182,7 +182,9 @@ class MLP(Module):
 ```
 
 You can ignore some of the clever coding in `MLP.__init__`. This ensures that
-all of the layers match up end-to-end dimension-wise.
+all of the layers match up end-to-end dimension-wise. It also ensures the last
+layer is linear, meaning the neurons do not have an activation function
+attached.
 
 But this neural network is not built just with floating point numbers. Instead
 Karpathy uses this `Value` thing. What's that about?
