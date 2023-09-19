@@ -1222,6 +1222,16 @@ this post.*
 There's a lot more work to do if you are interested and have the time. I might
 follow-up on these later. I might not.
 
+### Fused multiply add
+
+There are a lot of instances of `x * y + z` in the `Value` graph.
+Unfortunately, due to the way the graph is laid out and traversed, forward and
+backward code for these nodes does not often get colocated. This means that it
+is difficult or unlikely for the C compiler to generate a fused multiply add
+(FMA) instruction, which may be faster and shorter than separate mul/add. It
+also might require storing less intermediate data. But I could be wrong here!
+It's worth experimenting.
+
 ### Compiling for training vs inference
 
 Right now our compilation strategy works for both training and inference. This
