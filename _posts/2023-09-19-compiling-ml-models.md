@@ -606,6 +606,7 @@ very simplified training loop might look like for MLP-based classifier for the
 [MNIST digit recognition
 problem](https://en.wikipedia.org/wiki/MNIST_database). **This code is not
 runnable as-is.** It needs the image loading support code and a loss function.
+The hyperparameters (batch size, etc) are completely arbitrary and untuned.
 [The full training
 code](https://github.com/tekknolagi/micrograd/blob/534ab3c884e66c8a325e0a8f3ed278656a616002/mnist.py)
 and [corresponding engine
