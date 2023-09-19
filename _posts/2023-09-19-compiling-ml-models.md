@@ -607,9 +607,9 @@ very simplified training loop might look like for MLP-based classifier for the
 problem](https://en.wikipedia.org/wiki/MNIST_database). **This code is not
 runnable as-is.** It needs the image loading support code and a loss function.
 [The full training
-code](https://github.com/tekknolagi/micrograd/blob/951908d61609e0fe38c07b6a03220ba39c545d45/mnist.py)
+code](https://github.com/tekknolagi/micrograd/blob/534ab3c884e66c8a325e0a8f3ed278656a616002/mnist.py)
 and [corresponding engine
-modifications](https://github.com/tekknolagi/micrograd/blob/951908d61609e0fe38c07b6a03220ba39c545d45/micrograd/engine.py)
+modifications](https://github.com/tekknolagi/micrograd/blob/534ab3c884e66c8a325e0a8f3ed278656a616002/micrograd/engine.py)
 to add `exp`/`log`/`Max` are available in the GitHub repo.
 
 ```python
