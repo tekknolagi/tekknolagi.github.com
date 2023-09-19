@@ -606,9 +606,11 @@ very simplified training loop might look like for MLP-based classifier for the
 [MNIST digit recognition
 problem](https://en.wikipedia.org/wiki/MNIST_database). **This code is not
 runnable as-is.** It needs the image loading support code and a loss function.
-[The full
-code](https://github.com/tekknolagi/micrograd/blob/407c90a107b7a8b440e86f6a039d9725f672031b/test.py)
-is available in the GitHub repo.
+[The full training
+code](https://github.com/tekknolagi/micrograd/blob/951908d61609e0fe38c07b6a03220ba39c545d45/mnist.py)
+and [corresponding engine
+modifications](https://github.com/tekknolagi/micrograd/blob/951908d61609e0fe38c07b6a03220ba39c545d45/micrograd/engine.py)
+to add `exp`/`log`/`Max` are available in the GitHub repo.
 
 ```python
 import random
