@@ -354,7 +354,7 @@ training.
 
 The standard training process involves your neural network structure and also
 another function that tells you how far off your output is from some expected
-value (a "loss function"). An simple example of a loss function is
+value (a "loss function"). A simple example of a loss function is
 `loss(actual, expected) = (expected - actual)**2` (where `**` is exponentiation
 in Python). If you use this particular function across multiple inputs at a
 time, it's called Mean Squared Error (MSE)[^other-loss].
@@ -636,11 +636,21 @@ for epoch in range(num_epochs):
             p.data -= LEARNING_RATE * p.grad
 ```
 
-In this snippet, the `MLP` builds a bunch of `Neuron`s in `Layer`s and
-initializes some weights as `Value`s, but it does not construct the graph yet.
-Only when it is called (as in `model(image.pixels)`) does it construct the
-graph and do all of the dot products. Then we construct more of the graph on
-top of that when calculating the loss. This is the forward pass!
+In this snippet, constructing the `MLP` (`model = MLP(...)`) builds a bunch of
+`Neuron`s in `Layer`s and initializes some weights as `Value`s, but it does not
+construct the graph yet. Only when it is called (as in `model(image.pixels)`)
+does it construct the graph and do all of the dot products. Then we construct
+more of the graph on top of that when calculating the loss. This is the forward
+pass!
+
+Then we have the backward pass, where we call `backward()` on the loss, as I
+explained above.
+
+Then we adjust all of the weights by their gradients.
+
+And remember to zero your gradients, folks!
+
+<a href="https://twitter.com/karpathy/status/1013244313327681536"><img style="max-width: 600px;" src="/assets/img/nn-mistakes.png" alt="Tweet from Andrej Karpathy: most common neural net mistakes: 1) you didn't try to overfit a single batch first. 2) you forgot to toggle train/eval mode for the net. 3) you forgot to .zero_grad() (in pytorch) before .backward(). 4) you passed softmaxed outputs to a loss that expects raw logits. ; others? :)"/></a>
 
 This is nice and simple---thank you, Andrej---but is it fast enough to be
 usable? Let's find out.
