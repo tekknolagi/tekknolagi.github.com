@@ -361,10 +361,10 @@ value (a "loss function"). A simple example of a loss function is
 in Python). If you use this particular function across multiple inputs at a
 time, it's called Mean Squared Error (MSE)[^other-loss].
 
-[^other-loss]: Another kind of loss function is Cross-Entropy Loss. I don't
-    know enough about the math to understand what loss function is best for
-    what problem. All I know is adding Cross-Entropy Loss required supporting
-    more fundamental operations on `Value` and in the compiler.
+[^other-loss]: Another kind of loss function is Cross-Entropy Loss, which is
+    best for (multi-class) classification problems. Adding Cross-Entropy Loss
+    required supporting other fundamental operations on `Value` and in the
+    compiler.
 
 If you are trying to get some expected output, you want to minimize the value
 of your loss function as much as possible. In order to minimze your loss, you
@@ -420,7 +420,7 @@ won't be offended.
 The chain rule tells you how to compute derivatives of function composition.
 Using the example from Wikipedia, if you have some function `h(x) = f(g(x))`,
 then `h'(x) = f'(g(x)) * g'(x)` (where `f'` and `h'` and `g'` are the
-derivatives of `f` and `h`' and `g`, respectively). This rule is nice, because
+derivatives of `f` and `h` and `g`, respectively). This rule is nice, because
 you don't need to do anything tricky when you start composing functions, as
 long as you understand how to take the derivative of each of the component
 parts.
@@ -1043,15 +1043,16 @@ NUM_PIXELS = 28*28
 NUM_DIGITS = 10
 inp = [Value(0, (), "input") for _ in range(NUM_PIXELS)]
 exp = [Value(0, (), "input") for _ in range(NUM_DIGITS)]
-out = model(inp)  # produces some garbage data in the compile-time Value graph
+out = model(inp)  # create the compile-time Value graph
 loss = compute_loss(out, exp)
 
 gen_set_input(inp)
 ```
 
-Note that we are not actually using the `data` or `grad` fields in any of the
-input, output, or loss `Value`s that get created at compile-time. We just use
-them for their graph structure.
+Note that the `data` or `grad` fields of each `Value` node contain garbage data
+since `inp` and `exp` are arbitrarily chosen. However, the generated C code does
+not actually use these Python values. All we care about is the graph structure
+represented by the `_op` and `_prev` fields.
 
 In order to use this C code from Python, we'll have to make a Python C
 extension using the C-API.
