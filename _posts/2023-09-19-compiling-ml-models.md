@@ -1043,15 +1043,16 @@ NUM_PIXELS = 28*28
 NUM_DIGITS = 10
 inp = [Value(0, (), "input") for _ in range(NUM_PIXELS)]
 exp = [Value(0, (), "input") for _ in range(NUM_DIGITS)]
-out = model(inp)  # create the compile-time Value graph (with contains garbage data since inp is garbage input)
+out = model(inp)  # create the compile-time Value graph
 loss = compute_loss(out, exp)
 
 gen_set_input(inp)
 ```
 
-Note that we are not actually using the `data` or `grad` fields in any of the
-input, output, or loss `Value`s that get created at compile-time. We just use
-them for their graph structure.
+Note that the `data` or `grad` fields of each `Value` node contain garbage data
+since `inp` and `exp` are arbitrarily chosen. However, the generated C code does
+not actually use these Python values. All we care about is the graph structure
+represented by the `_op` and `_prev` fields.
 
 In order to use this C code from Python, we'll have to make a Python C
 extension using the C-API.
