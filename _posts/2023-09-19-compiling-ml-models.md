@@ -1164,18 +1164,19 @@ Thankfully, CPython uses the host system floating point implementation for its
 
 ### Performance
 
-On my machine, training goes from 1 image per second (interpreted) to 2000
-images per second (compiled). This is a TWO THOUSAND TIMES speed increase! It
-comes with an up-front cost, though; you have to compile the C code. If you use
-TCC, a very fast C compiler, you get pretty reasonable performance. I saw about
-half second compile times and 46 seconds per epoch. If you use Clang, a much
-slower C compiler, you get even better performance. I saw about 30s compile
-times (for `O0`) and 400s compile times (for `O1`) and ~30s per epoch.
+On my machine, training goes from 1 image per second (interpreted) to >1000
+images per second (compiled). This is at least a THOUSAND TIMES speed increase!
+It comes with an up-front cost, though; you have to compile the C code. If you
+use TCC, a very fast C compiler, you get pretty reasonable performance. I saw
+about half second compile times and 45 seconds per epoch. If you use Clang, a
+much slower C compiler, you get even better performance. Take a look at this
+handy dandy tradeoff table:
 
 | | Compile time (s) | Time per epoch (s) | Speedup |
 | Interpreted | 0 | 60,000 | 1x |
 | TCC | 0.5 | 45 | 1333x |
-| Clang | 30 | 30 | 2000x |
+| Clang `-O0` | ~30 | 30 | 2000x |
+| Clang `-O1` | ~350 | 8 | 7500x |
 
 Either way, this is a pretty big win. I think we did it! Check out the full
 [compiler
