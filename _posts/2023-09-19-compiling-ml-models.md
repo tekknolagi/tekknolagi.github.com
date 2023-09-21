@@ -1221,7 +1221,8 @@ to use your skills for Good.
 
 *Massive thanks to [Chris](https://www.chrisgregory.me/) and
 [Bianca](http://www.biancacapretta.com/) for providing significant feedback on
-this post.*
+this post and to [Tom](https://tchebb.me/) for (naturally) finding and fixing a
+bug.*
 
 ## More thoughts and further reading
 
