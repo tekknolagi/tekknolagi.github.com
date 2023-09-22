@@ -539,7 +539,7 @@ class Value:
 ```
 
 To get a feel for how this works, we can do a topological sort of a very simple
-expression graph, `1+2`.
+expression graph, `1*2`.
 
 ```console?lang=python&prompt=>>>,...
 >>> from micrograd.engine import Value
