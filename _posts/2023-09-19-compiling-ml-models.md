@@ -649,6 +649,20 @@ does it construct the graph and do all of the dot products. Then we construct
 more of the graph on top of that when calculating the loss. This is the forward
 pass!
 
+Here is a diagram I made to explain "adding loss on top" to someone:
+
+<figure style="display: block; margin: 0 auto; max-width: 600px;">
+  <object class="svg" style="max-width: 600px;" type="image/svg+xml" data="/assets/img/nn-loss.svg">
+  If you're seeing this text, it means your browser cannot render SVG.
+  </object>
+  <figcaption markdown="1">
+  Fig. 3 - A sketch-like illustration of a model's computation graph and loss.
+  The model outputs one value, but how do we know how good it is? Well, we feed
+  it into another subgraph---the loss function---which takes in a second input
+  (the expected value) and itself outputs one value. I made this in Excalidraw.
+  </figcaption>
+</figure>
+
 Then we have the backward pass, where we call `backward()` on the loss, as I
 explained above.
 
@@ -714,7 +728,7 @@ I ran Scalene on our little micrograd MNIST and this is what it looks like.
 <figure style="display: block; margin: 0 auto; max-width: 600px;">
   <a href="/assets/img/scalene-nn.png"><img style="max-width: 600px;" src="/assets/img/scalene-nn.png" /></a>
   <figcaption markdown="1">
-  Fig. 3 - A screenshot of the Scalene profiler's view of micrograd. It looks
+  Fig. 4 - A screenshot of the Scalene profiler's view of micrograd. It looks
   like there is a lot of `Value` allocation and `self._prev` being a set could
   even be a leak somehow! You can especially see there are a lot of `+` and `*`
   operations because `__add__` and `__mul__` allocate a lot.
