@@ -1,7 +1,7 @@
 ---
 title: Compiling ML models to C for fun
 layout: post
-description: We make micrograd fly with a little compiler magic. In this post, we'll write a ML model compiler from scratch.
+description: We make micrograd fly with a little compiler magic. In this post, we'll write a ML compiler from scratch.
 date: 2023-09-19
 ---
 
