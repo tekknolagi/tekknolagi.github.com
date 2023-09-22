@@ -169,3 +169,6 @@ a.footnote:before {
 a.footnote:after {
     content: "]";
 }
+figure object.svg {
+  max-width: 100%;
+}

@@ -652,7 +652,7 @@ pass!
 Here is a diagram I made to explain "adding loss on top" to someone:
 
 <figure style="display: block; margin: 0 auto; max-width: 600px;">
-  <object class="svg" style="max-width: 600px;" type="image/svg+xml" data="/assets/img/nn-loss.svg">
+  <object class="svg" type="image/svg+xml" data="/assets/img/nn-loss.svg">
   If you're seeing this text, it means your browser cannot render SVG.
   </object>
   <figcaption markdown="1">
