@@ -1244,6 +1244,13 @@ bug.*
 There's a lot more work to do if you are interested and have the time. I might
 follow-up on these later. I might not.
 
+### Linearizing but still using Python
+
+How much faster can we make the Python version? If we only build the graph once
+and only topo sort once and just re-set the input every time, do we get faster?
+I think probably yes. My preliminary numbers show ~100-200x speedup on CPython
+and ~800x speedup on PyPy. And we didn't even have to write a compiler!
+
 ### Fused multiply add
 
 There are a lot of instances of `x * y + z` in the `Value` graph.
