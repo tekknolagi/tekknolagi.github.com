@@ -1267,7 +1267,7 @@ If we know we're doing a dot product in the `Neuron` class and we know that
 operation is going to be fairly common, we might as well have one big `Dot`
 operation instead of a bunch of smaller `+` and `*` operations. This lets us
 forget about a bunch of the interstitial nodes for both forward and backward
-passes and generate code like:
+passes (~120k nodes to ~40k nodes) and generate code like:
 
 ```c
 data[100] = data[0]*data[700]+data[1]*data[701]+data[2]*data[702] // ...
@@ -1279,6 +1279,30 @@ This makes our generated code a little easier to reason about. There might be a
 way to indicate to the compiler, for example, that the dot products for a layer
 can be vectorized. Or that they can all be done in parallel. This might be a
 nice speedup.
+
+Unfortunately it does require a change to the neural network code:
+
+```diff
+diff --git a/micrograd/nn.py b/micrograd/nn.py
+--- a/micrograd/nn.py
++++ b/micrograd/nn.py
+@@ -1,5 +1,5 @@
+ import random
+-from micrograd.engine import Value
++from micrograd.engine import Value, Dot
+
+ class Module:
+
+@@ -19,7 +19,7 @@ class Neuron(Module):
+
+     def __call__(self, x):
+         assert len(self.w) == len(x), f"input of size {len(x)} with {len(self.w)} weights"
+-        act = sum((wi*xi for wi,xi in zip(self.w, x)), self.b)
++        act = Dot(self.w, x)+self.b
+         return act.relu() if self.nonlin else act
+
+     def parameters(self):
+```
 
 The code for compiling a `Dot` node is not that tricky:
 
@@ -1307,7 +1331,18 @@ class Dot(Value):
 ```
 
 It's left as an exercise for the reader to think about how backpropagation
-works.
+works. But the results look good:
+
+| | Compile time (s) | Time per epoch (s) | Speedup |
+| Interpreted | 0 | 60,000 | 1x |
+| TCC | 0.5 | 45 | 1333x |
+| TCC with `Dot` | 0.2 | 14 | 4300x |
+| Clang `-O1` | ~379 | 8 | 7500x |
+| Clang `-O1` with `Dot` | ~330 | 3.5 | 17,000x |
+| Clang `-O2 -march=native` with `Dot` | ~730 | 3 | 20,000x |
+
+Note that we even get better compile times for TCC and Clang `-O1` than without
+`Dot`. Wow, very nice. Great success.
 
 ### Compiling for training vs inference
 
