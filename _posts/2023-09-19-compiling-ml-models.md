@@ -1276,6 +1276,9 @@ nice speedup.
 The code for compiling a `Dot` node is not that tricky:
 
 ```python
+def dot(l, r):
+    return sum(li.data*ri.data for li,ri in zip(l,r))
+
 class Dot(Value):
     def __init__(self, left_arr, right_arr):
         assert len(left_arr) == len(right_arr)
