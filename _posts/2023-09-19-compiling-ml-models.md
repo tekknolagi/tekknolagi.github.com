@@ -1249,18 +1249,7 @@ follow-up on these later. I might not.
 How much faster can we make the Python version? If we only build the graph once
 and only topo sort once and just re-set the input every time, do we get faster?
 I think probably yes. My preliminary numbers show ~100-200x speedup on CPython
-and ~800x speedup on PyPy (and ~3300x speedup with a `Dot` operator; see
-below). And we didn't even have to write a compiler!
-
-### Fused multiply add
-
-There are a lot of instances of `x * y + z` in the `Value` graph.
-Unfortunately, due to the way the graph is laid out and traversed, forward and
-backward code for these nodes does not often colocate `x * y` and `xy + z`.
-This means that it is difficult or unlikely for the C compiler to generate a
-fused multiply add (FMA) instruction, which may be faster and shorter than
-separate mul/add. FMA also might require storing less intermediate data. But I
-could be wrong here! It's worth experimenting.
+and ~800x speedup on PyPy. And we didn't even have to write a compiler!
 
 ### A `Dot` operator
 
@@ -1343,7 +1332,8 @@ works. But the results look good:
 | Clang `-O2 -march=native` with `Dot` | ~730 | 3 | 20,000x |
 
 Note that we even get better compile times for TCC and Clang `-O1` than without
-`Dot`. Wow, very nice. Great success.
+`Dot`. And it really helps with the preliminary PyPy numbers, bringing those up
+to ~3300x. Wow, very nice. Great success.
 
 ### Compiling for training vs inference
 
