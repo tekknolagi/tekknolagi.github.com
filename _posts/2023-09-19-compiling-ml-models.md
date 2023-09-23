@@ -1254,6 +1254,25 @@ fused multiply add (FMA) instruction, which may be faster and shorter than
 separate mul/add. FMA also might require storing less intermediate data. But I
 could be wrong here! It's worth experimenting.
 
+### A `Dot` operator
+
+If we know we're doing a dot product in the `Neuron` class and we know that
+operation is going to be fairly common, we might as well have one big `Dot`
+operation instead of a bunch of smaller `+` and `*` operations. This lets us
+forget about a bunch of the interstitial nodes for both forward and backward
+passes and generate code like:
+
+```c
+data[100] = data[0]*data[700]+data[1]*data[701]+data[2]*data[702] // ...
+data[101] = data[100]+data[800];
+data[102] = relu(data[101]);
+```
+
+This makes our generated code a little easier to reason about. There might be a
+way to indicate to the compiler, for example, that the dot products for a layer
+can be vectorized. Or that they can all be done in parallel. This might be a
+nice speedup.
+
 ### Compiling for training vs inference
 
 Right now our compilation strategy works for both training and inference. This
