@@ -1249,8 +1249,8 @@ follow-up on these later. I might not.
 How much faster can we make the Python version? If we only build the graph once
 and only topo sort once and just re-set the input every time, do we get faster?
 I think probably yes. My preliminary numbers show ~100-200x speedup on CPython
-and ~800x speedup on PyPy (and ~3300x speedup with `Dot`; see below). And we
-didn't even have to write a compiler!
+and ~800x speedup on PyPy (and ~3300x speedup with a `Dot` operator; see
+below). And we didn't even have to write a compiler!
 
 ### Fused multiply add
 
