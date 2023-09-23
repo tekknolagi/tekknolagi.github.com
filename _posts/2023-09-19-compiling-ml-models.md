@@ -1273,6 +1273,32 @@ way to indicate to the compiler, for example, that the dot products for a layer
 can be vectorized. Or that they can all be done in parallel. This might be a
 nice speedup.
 
+The code for compiling a `Dot` node is not that tricky:
+
+```python
+class Dot(Value):
+    def __init__(self, left_arr, right_arr):
+        assert len(left_arr) == len(right_arr)
+        assert left_arr
+        super().__init__(dot(left_arr, right_arr), tuple(set(left_arr+right_arr)), 'dot')
+        self.left_arr = left_arr
+        self.right_arr = right_arr
+
+    def compile(self):
+        products = (f"{li.var()}*{ri.var()}" for li, ri in zip(self.left_arr, self.right_arr))
+        return self.set(f"{'+'.join(products)}")
+
+    def backward_compile(self):
+        result = []
+        for i in range(len(self.left_arr)):
+            result += self.left_arr[i].setgrad(f"{self.right_arr[i].var()}*{self.getgrad()}")
+            result += self.right_arr[i].setgrad(f"{self.left_arr[i].var()}*{self.getgrad()}")
+        return result
+```
+
+It's left as an exercise for the reader to think about how backpropagation
+works.
+
 ### Compiling for training vs inference
 
 Right now our compilation strategy works for both training and inference. This
