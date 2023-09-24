@@ -60,7 +60,8 @@ I like making things [just for fun](https://justforfunnoreally.dev/).
 ## Sometimes I contribute to open source projects.
 
 * [PyPy](https://www.pypy.org/)
-  ([!818](https://foss.heptapod.net/pypy/pypy/-/merge_requests/848))
+  ([!818](https://foss.heptapod.net/pypy/pypy/-/merge_requests/848),
+  [!858](https://foss.heptapod.net/pypy/pypy/-/merge_requests/858))
 * [Cinder](https://github.com/facebookincubator/cinder)
 * [Skybison](https://github.com/tekknolagi/skybison)
   (fork of [original](https://github.com/facebookexperimental/skybison))
