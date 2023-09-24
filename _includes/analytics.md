@@ -8,4 +8,5 @@
 
   gtag('config', 'G-MNTD6DM8MP');
 </script>
+<script data-goatcounter="https://tekknolagi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 {% endif %}
