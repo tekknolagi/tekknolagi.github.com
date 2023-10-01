@@ -10,9 +10,7 @@ layout: page
 A tinkerer, pleb, old soul. Known as vintagemind or devargnes on the World Wide Web. I like to fence, play chess, 
 read books, do [ornithology research](https://ebird.org/profile/MzQ1MjU0Mg), and bush walking. 
 Currently a high school junior at Texas Tech University K-12 interning at
-[Market Mapper](https://www.marketmapper.io/) doing all things content.
-
-My main site can be found [here](https://vintagemind.github.io/).
+[Market Mapper](https://www.marketmapper.io/) doing all things content. My other site can be found [here](https://vintagemind.github.io/).
 
 ## Things I'm Interested In.
 
