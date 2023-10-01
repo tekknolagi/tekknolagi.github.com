@@ -1,13 +1,11 @@
 # Site settings
-title: Max Bernstein
+title: Bithiah Koshy
 # Site's name
-name: Max Bernstein's Blog
-author: Max Bernstein
-author_nickname: Max Bernstein
-email: max@bernsteinbear.com
+name: Bithiah's Abode
+author: Bithiah Koshy
 description: ""
 baseurl: ""
-url: "https://bernsteinbear.com"
+url: "https://devargnes.github.io"
 exclude: [vendor]
 # TODO(max): Use pagefind (pagefind --source . --root-selector .container) but
 # avoid scanning _site somehow.
@@ -16,11 +14,7 @@ include: [.well-known]
 future: false
 
 twitter:
-  username: tekknolagi
-
-repo:
-  repository_url: https://github.com/tekknolagi/tekknolagi.github.com
-  branch: main
+  username: vintagemind07
 
 permalink: '/blog/:title/'
 post_dirs: false
