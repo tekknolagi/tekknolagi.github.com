@@ -19,7 +19,7 @@ My main site can be found [here](https://vintagemind.github.io/).
 * Technical analysis: Thanks to the current work I do, I very much wish to pursue computational finance which is a blend of computer science, finance, and economics.
   It's a really unique field where I have to do calculus (wonderful). I often see people mix trading with technical analysis and they're two different things. Trading without
   having any knowledge of the markets whatsoever is very similar to Russian roulette in my kind opinion. Technical analysis
-* [Lightning Network]([https://github.com/facebookincubator/cinder](https://en.wikipedia.org/wiki/Lightning_Network): I have a personal
+* [Lightning Network](https://en.wikipedia.org/wiki/Lightning_Network): I have a personal
   [node](https://trycinder.com](https://github.com/raspiblitz/raspiblitz)) and wish to be a fulltime node runner (why not?). It is the next
   payment system where anyone and anywhere can transact BTC in form of sats with _very minimal fees_.
 * Crypto wallets: The complex architecture of wallets regardless whether it's non-custodial, custodial, or browser wallet is a marvel. Having
