@@ -8,7 +8,7 @@ layout: page
 <h1>I'm Bithiah Koshy.</h1>
 
 A tinkerer, pleb, old soul. Known as vintagemind or devargnes on the World Wide Web. I like to fence, play chess, 
-read books, do ornithology research, and bush walking. 
+read books, do [ornithology research](https://ebird.org/profile/MzQ1MjU0Mg), and bush walking. 
 Currently a high school junior at Texas Tech University K-12 interning at
 [Market Mapper]([http://www.franktip.org/](https://www.marketmapper.io/) doing all things content.
 
