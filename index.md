@@ -28,7 +28,7 @@ Currently a high school junior at Texas Tech University K-12 interning at
   
 * [Security engineering](https://pentesterlab.com/profile/3c9762377542915b2cc2fbdf94): Personally, security engineering isn't something I want to pursue but having
   the mindset is extremely vital. I like to do [CTFs](https://ctftime.org/team/226953) whenever I have time with tendency to solve OSINT, web, and misc challs.
-  welcome [to help keep it running](https://github.com/sponsors/tekknolagi). I would say security engineering on decentralized protocols/applications to be the highest of difficulty.
+  I would say security engineering on decentralized protocols/applications to be the highest of difficulty.
   Smart contracts are a whole another monster.
   
 * Economics: I'm a student memember at [Mises Institute](https://mises.org/) which favors the Austrian School of Economics (a school of thought). Though I favor this ideology
