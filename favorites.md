@@ -26,8 +26,8 @@ Act I • No. 6 Grande valse villageoise (Waltz).*
 * *Meyerbeer • Les Patineurs (Arr. Constant Lambert), Ballet Suite • 4. Andantino*
 * *Lehár • Gold und Silber, Waltz op. 79 • Tempo di marcia moderato*
 * *Khachaturian • Masquerade, Suite (1944) • 1. Waltz*
-* *Strauss • Die Tänzerin, Polka française op. 227 *
-* *Strauss • Ohne Aufenthalt (Without Stopping!), Polka schnell op. 112 *
+* *Strauss • Die Tänzerin, Polka française op. 227*
+* *Strauss • Ohne Aufenthalt (Without Stopping!), Polka schnell op. 112*
 * *Strauss Il (Jr.) • Tritsch-Tratsch-Polka (Chit-Chat Polka) op. 214 • Eingang - Polka - Trio - Finale*
 * *Strauss II (Jr.) • Künstler-Quadrille op. 201 *
 * *Strauss II (Jr.) • Freikugeln (Magic Bullets), Polka schnell op. 326 • Polka - Trio - Finale*
