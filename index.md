@@ -16,7 +16,7 @@ Currently a high school junior at Texas Tech University K-12 interning at
 
 * Technical analysis: Thanks to the current work I do, I very much wish to pursue computational finance which is a blend of computer science, finance, and economics.
   It's a really unique field where I have to do calculus (wonderful). I often see people mix trading with technical analysis and they're two different things. Trading without
-  having any knowledge of the markets whatsoever is very similar to Russian roulette in my kind opinion. Technical analysis gives you statistical based reasoning.
+  having any knowledge of the markets whatsoever is very similar to Russian roulette in my kind opinion. Technical analysis gives you statistical based view of the markets which can help you make positions, etc.
   
 * [Lightning Network](https://en.wikipedia.org/wiki/Lightning_Network): I have a personal
   [node](https://trycinder.com](https://github.com/raspiblitz/raspiblitz)) and wish to be a fulltime node runner (why not?). It is the next
