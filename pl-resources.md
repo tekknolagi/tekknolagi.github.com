@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Programming languages resources
+title: Writing 
 ---
 
 This page is a collection of my pieces of writing including full pieces and contributions as well as writings for leisure. This page will keep updating and hopefully no link rot will occur. 
