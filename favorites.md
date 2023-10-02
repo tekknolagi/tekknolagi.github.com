@@ -3,64 +3,66 @@ layout: page
 title: Favorite Things
 ---
 
-Inspired by the song My Favorite Things from The Sound of Music, why not list some of my favorite things? 
+Inspired by the song My Favorite Things from The Sound of Music, why not list some of my favorite things? I do ballet as rehab and used to do AMEB piano exmaniations hence a lot of classical music favs.
+Otherwise I love listening to 30s to late 50s songs as well as songs in other languages. Favourite music genres are jive, swing, blues, and traditional pop.
 
 Here is some of my favorite music:
 
-* *Peer Gynt Suite* by Edvard Grieg, conducted by Guillermo Garcia Calvo
-* *Siegfried* by Richard Wagner, conducted by Christian Thielemann
-* *Clarinet Concerto in A (K622)* by W.A. Mozart
-* *Bassoon Concerto in B-flat (K1-191, K6-186e)* by W.A. Mozart
-* *Oboe Concerto in C (K1-314, K6-285d)* by W.A. Mozart
-* *Symphony No. 25 in G minor (K1-183, K6-173dB)* by W.A. Mozart
-* *Die Entführung aus dem Serail (K384)* by W.A. Mozart
-* *Sinfonia Concertante for Violin, Viola, and Orchestra in E-flat (K1-364,
-  K6-320d)* by W.A. Mozart
-* *Don Giovanni (K527)* by W.A. Mozart
-- *Karelia Suite* by Jean Sibelius
-- *Finlandia* by Jean Sibelius
-* *Cello Concerto in B minor* by Antonín Dvořák, conducted by Paavo Järvi
-* *Symphony No. 9 -- New World* by Antonín Dvořák, conducted by Herbert von
-  Karajan
+Classical (I highly recommend [IDAGIO](https://www.idagio.com/):
+* *Strauss II (Jr.) • Künstlerleben (Artists' Life), Waltz op. 316 • Introduction - Waltz I-V - Coda*
+* *Shostakovich • Ballet Suite for Orchestra No. 2 (1951) • 1. Waltz*
+* *Shostakovich • Ballet Suite for Orchestra No. 2 (1951) • 3. Polka*
+* *Shostakovich • Ballet Suite for Orchestra No. 2 (1951) • 4. Romance*
+* *Claras Traum vom Nussknacker und Mäusekönig_(The Nutcracker, Ballet Suite op. 7la TH 35), Overtüre (Der Nussknacker) Op.71*
+* *Russian Suite (1987, rev. 2019) 1.- lan Scott (Clarinet), Robin White Royal Ballet Sinfonia*
+* *Vier letzte Lieder (Four Last Songs) for Voice and Orchestra TrV 296 2 September Der Garten trauert*
+* *Vier letzte Lieder (Four Last Songs) for Voice and Orchestra TrV 296*
+1. Frühling. In dämmrigen Grüften träumte ich lang*
+* *Don Giovanni (K527)* by W.A. Mozartv
+- *Rachmaninoff • Concerto for Piano and Orchestra No. 2 in C minor op. 18 • I. Moderato*
+- *Spiashchaia krasavitsa (The Sleeping Beauty) op. 66 TH 13*
+Act I • No. 6 Grande valse villageoise (Waltz).*
+* *Meyerbeer • Les Patineurs (Arr. Constant Lambert), Ballet Suite • 2. Andante espressivo*
+* *Meyerbeer • Les Patineurs (Arr. Constant Lambert), Ballet Suite • 4. Andantino*
+* *Lehár • Gold und Silber, Waltz op. 79 • Tempo di marcia moderato*
+* *Khachaturian • Masquerade, Suite (1944) • 1. Waltz*
+* *Strauss • Die Tänzerin, Polka française op. 227 *
+* *Strauss • Ohne Aufenthalt (Without Stopping!), Polka schnell op. 112 *
+* *Strauss Il (Jr.) • Tritsch-Tratsch-Polka (Chit-Chat Polka) op. 214 • Eingang - Polka - Trio - Finale*
+* *Strauss II (Jr.) • Künstler-Quadrille op. 201 *
+* *Strauss II (Jr.) • Freikugeln (Magic Bullets), Polka schnell op. 326 • Polka - Trio - Finale*
+* *Chopin • Sonata for Piano No. 3 in B minor op. 58 B. 155 • I. Allegro maestoso*
+* *Mozart • Le nozze di Figaro KV 492 • Overture*
 
 
-I am currently listening to some newer music, too:
+Real vintage (most of these you can get directly from [Internet Archive](https://archive.org/) in mp3 and even mp4 recordings):
 
-* <i style="font-variant: small-caps;">Отава ё</i> *(Otava Yo)*
-* *Dire Straits*
-* *Gipsy Kings*
-* *Mark Knopfler*
-* *ZZ Top*
-* *Gorillaz*
-* *Kanye West*
-* *Jay Z*
-* *Daft Punk*
-* <i style="font-variant: small-caps;">Нейромонах Феофан</i> *(Neuromonakh Feofan)*
-* *Florence + The Machine*
-* *Mumford & Sons*
-* *Punch Brothers*
-* *Muse*
-* *First Aid Kit*
-* *Elvis Crespo*
-* *Kishore Kumar*
-* *Run the Jewels*
-* *A Tribe Called Quest*
-* *Balkan Beat Box*
-* *Arcade Fire*
-* *Paul Simon*
-* *Ladysmith Black Mambazo*
-* *ⵜⵏⵔⵓⵏ (Tinariwen)*
-* *Sona Jobarteh*
-* *Ali Farka Touré*
-* *Pink Martini*
-* *Zimbaria*
-* *Alison Krauss*
-* *The Wailin' Jennys*
-* *Ruth Moody*
-* *Van Morrison*
-* *Yusuf Islam*
-* *Missy Elliott*
+* *Sixteen Tons - Tennessee Ernie Ford
+* *Fly Me to the Moon - Doris Day*
+* *Return to Me*
+* *Shoo-Shoo Baby*
+* *Cow Cow Boogie*
+* *Till the End of Time*
+* *You Belong To Me - Jo Stafford*
+* *You Call Everybody Darling*
+* *Tea For Two*
+* *You'll Never Know - Alice Faye*
+* *Don't Ask Me Why - Elvis*
+* *Maureen - Jim Reeves*
+* *Jambalaya*
+* *Pennsylvania 6-5000*
+* *In The Mood*
+* *Head on My Pillow - Tommy Dorsey*
+* *I Know Why (And So Do You)*
+* *Ten Days With Baby*
+* *You Don't Have to Know the Language*
+* *The Tennessee Waltz*
+* *Walkin' After Midnight*
+* *The Call of the Canvon - Tommy Dorsey*
+* *Bang Bang (My Baby Shot Me Down)*
+* And 100s more but that'll be too long of a list
 
+  
 Music in other languages:
 
 Hindi:
@@ -78,6 +80,7 @@ Japanese:
 * Kawa No Nagare No Youni - Hibari Misora
 
 Russian:
+* Калинка
 * Этот мир
 * Миллион алых роз
 * And Алла Пугачева's other songs
@@ -89,8 +92,8 @@ German:
 * Wenn es Nacht wird in Paris
 
 French:
-* La Derniere Valse
-
+* La Derniere Valse - Mireille Mathieu
+* La Vie En Rose - Edith Piaf
   Sung by Tino Rossi:
 * Adieu Hawai
 * Au-Delà des nuages 
