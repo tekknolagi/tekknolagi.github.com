@@ -78,7 +78,8 @@ Hindi:
 
 Chinese:
 * 月亮代表我的心 - Teresa Teng
-* 李香蘭 - 夜來香 
+* 李香蘭 - 夜來香
+* 白光- 等著你回來
 * 女人花 - Anita Mui
   
 Japanese:
