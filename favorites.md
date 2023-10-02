@@ -77,6 +77,7 @@ Hindi:
 * Aaj Tu Gair Sahi (आज तू गैर सही)
 
 Chinese:
+* 月亮代表我的心 - Teresa Teng
 * 李香蘭 - 夜來香 
 * 女人花 - Anita Mui
   
