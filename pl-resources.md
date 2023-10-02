@@ -3,10 +3,7 @@ layout: page
 title: Writing 
 ---
 
-This page is a collection of my pieces of writing including full pieces and contributions as well as writings for leisure. This page will keep updating and hopefully no link rot will occur. 
-
-
-## 
+This page is a collection of my pieces of writing including full pieces and contributions as well as writings for leisure. This page will keep updating and hopefully no link rot will occur. A blog post page will be created as soon as possible. Will need to migrate my old blog post site.
 
 
 ## TA & Trading
