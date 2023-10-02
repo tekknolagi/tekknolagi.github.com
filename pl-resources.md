@@ -30,6 +30,7 @@ Writing [Market Mapper](https://www.marketmapper.io/?utm_source=bithiah-personal
 ## Firefox 
 I was an [NDA'd contributor](https://wiki.mozilla.org/NDA) at Mozilla for 2 years where I did knowledge base writing and support (was [Social Support Moderator](https://support.mozilla.org/en-US/kb/how-be-social-support-moderator)). Some may say I'm mentally ill but don't worry. I like what I do. For the entire list of docs, visit [here](https://support.mozilla.org/en-US/user/VintageMind/documents).
 
+
 *[How to customize Firefox Suggest settings](https://support.mozilla.org/en-US/kb/firefox-suggest)
 *[Recover user data missing after Firefox update](https://support.mozilla.org/en-US/kb/recover-user-data-missing-after-firefox-update)
 *[Browsing history in Firefox - View the websites you have visited](https://support.mozilla.org/en-US/kb/browsing-history-firefox)
@@ -39,6 +40,7 @@ I was an [NDA'd contributor](https://wiki.mozilla.org/NDA) at Mozilla for 2 year
 *[Add-on Badges](https://support.mozilla.org/en-US/kb/add-on-badges)
 *[What happened to my Live Bookmarks?](https://support.mozilla.org/en-US/kb/live-bookmarks-migration)
 *[How to restore a browsing session from backup](https://support.mozilla.org/en-US/kb/how-restore-browsing-session-backup)
+
 
 ### Browser Security Related
 *[Choose a strong password](https://support.mozilla.org/en-US/kb/password-strength)
