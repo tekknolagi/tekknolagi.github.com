@@ -31,7 +31,12 @@ Currently a high school junior at Texas Tech University K-12 interning at
   I would say security engineering on decentralized protocols/applications to be the highest of difficulty.
   Smart contracts are a whole another monster.
   
+* Applied cryptography: This is a field with insane complexity just like other rabbit holes. Currently learning on [CryptoHack](https://cryptohack.org/) but it will take me years to really grasp the knowledge with tons
+  of practice. It's a very interesting topic with it being heavily tied to crypto wallets and protocols.
+  
 * Economics: I'm a student memember at [Mises Institute](https://mises.org/) which favors the Austrian School of Economics (a school of thought). Though I favor this ideology
   the most, the understanding of markets and market dynamics has always been an interest to me ever since I met a very knowledgable mentor who was the Vice President
   of Citibank (Australia) in the 1980s to early 1990s. She asked me so many questions and made me ponder on what is fiat money, how can we change that, and so much more.
   I'm forever grateful for her guidance and mentorship.
+
+
