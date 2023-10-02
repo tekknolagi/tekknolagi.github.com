@@ -8,7 +8,7 @@ Otherwise I love listening to 30s to late 50s songs as well as songs in other la
 
 Here is some of my favorite music:
 
-Classical (I highly recommend [IDAGIO](https://www.idagio.com/):
+Classical (I highly recommend [IDAGIO](https://www.idagio.com/)):
 * *Strauss II (Jr.) • Künstlerleben (Artists' Life), Waltz op. 316 • Introduction - Waltz I-V - Coda*
 * *Shostakovich • Ballet Suite for Orchestra No. 2 (1951) • 1. Waltz*
 * *Shostakovich • Ballet Suite for Orchestra No. 2 (1951) • 3. Polka*
