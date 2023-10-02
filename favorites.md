@@ -64,8 +64,14 @@ Real vintage (most of these you can get directly from [Internet Archive](https:/
 
 
 Some modern songs:
-* 
-
+* *Gangsta's Paradise (Ft. L.V.)*
+* *Jerusalema (feat. Nomcebo Zikode)*
+* *Daylight*
+* *Who Is She - I Monster*
+* *VALORANT ft. Grabbitz - Die For You*
+* *Post Malone, Swae Lee - Sunflower (Spider-Man- Into the Spider-Verse)*
+* *Cheri Cheri Lady*
+* *You don't know - Eminem*
   
 Music in other languages:
 
