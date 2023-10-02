@@ -37,7 +37,7 @@ Act I • No. 6 Grande valse villageoise (Waltz).*
 
 Real vintage (most of these you can get directly from [Internet Archive](https://archive.org/) in mp3 and even mp4 recordings):
 
-* *Sixteen Tons - Tennessee Ernie Ford
+* *Sixteen Tons - Tennessee Ernie Ford*
 * *Fly Me to the Moon - Doris Day*
 * *Return to Me*
 * *Shoo-Shoo Baby*
