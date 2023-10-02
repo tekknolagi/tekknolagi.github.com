@@ -62,6 +62,10 @@ Real vintage (most of these you can get directly from [Internet Archive](https:/
 * *Bang Bang (My Baby Shot Me Down)*
 * And 100s more but that'll be too long of a list
 
+
+Some modern songs:
+* 
+
   
 Music in other languages:
 
@@ -78,6 +82,7 @@ Chinese:
   
 Japanese:
 * Kawa No Nagare No Youni - Hibari Misora
+* Sukiyaki - Kyu Sakamoto 
 
 Russian:
 * Калинка
