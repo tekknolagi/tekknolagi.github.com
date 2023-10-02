@@ -6,7 +6,7 @@ title: Favorite Things
 Inspired by the song My Favorite Things from The Sound of Music, why not list some of my favorite things? I do ballet as rehab and used to do AMEB piano exmaniations hence a lot of classical music favs.
 Otherwise I love listening to 30s to late 50s songs as well as songs in other languages. Favourite music genres are jive, swing, blues, and traditional pop.
 
-Here is some of my favorite music:
+Here are some of my favorite music:
 
 Classical (I highly recommend [IDAGIO](https://www.idagio.com/)):
 * *Strauss II (Jr.) • Künstlerleben (Artists' Life), Waltz op. 316 • Introduction - Waltz I-V - Coda*
