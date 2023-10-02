@@ -15,7 +15,7 @@ Currently a high school junior at Texas Tech University K-12 interning at
 ## Things I'm Interested In.
 
 * Technical analysis: Thanks to the current work I do, I very much wish to pursue computational finance which is a blend of computer science, finance, and economics.
-  It's a really unique field where I have to do calculus (wonderful). I often see people mix trading with technical analysis and they're two different things. Trading without
+  It's a really unique field. I often see people mix trading with technical analysis and they're two different things. Trading without
   having any knowledge of the markets whatsoever is very similar to Russian roulette in my kind opinion. Technical analysis gives you statistical based view of the markets which can help you make positions, etc.
   
 * [Lightning Network](https://en.wikipedia.org/wiki/Lightning_Network): I have a personal
@@ -38,5 +38,7 @@ Currently a high school junior at Texas Tech University K-12 interning at
   the most, the understanding of markets and market dynamics has always been an interest to me ever since I met a very knowledgable mentor who was the Vice President
   of Citibank (Australia) in the 1980s to early 1990s. She asked me so many questions and made me ponder on what is fiat money, how can we change that, and so much more.
   I'm forever grateful for her guidance and mentorship.
+
+* Digital Signal Processing/Digital Image Processing: The mathematical rigor is on par with applied cryptography in all aspects. Just try it for yourself and you're smacked in the face with linear system theory for continuous time systems, discrete time signals, systems theory, Z-transform, Laplace transform, Fourier transform, and down you go. Studying really hard in theoretical and applied mathematics as much as I can but there's beauty in signal processing which is rather hard to comprehend. DSP is highly complementary to financial signal processing and can be even used to easily under RF hacking.
 
 
