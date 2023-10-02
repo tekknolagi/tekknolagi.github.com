@@ -38,7 +38,7 @@ Currently a high school junior at Texas Tech University K-12 interning at
   the most, the understanding of markets and market dynamics has always been an interest to me ever since I met a very knowledgable mentor who was the Vice President
   of Citibank (Australia) in the 1980s to early 1990s. She asked me so many questions and made me ponder on what is fiat money, how can we change that, and so much more.
   I'm forever grateful for her guidance and mentorship. Due to my notorious habit of reading, history classes were a breeze. Reading on systems of governance and power is always very enjoyable (don't confuse politics 
-  with understanding political behabiors, etc.). 
+  with understanding political behaviors, etc.). 
 
 * Digital Signal Processing/Digital Image Processing: The mathematical rigor is on par with applied cryptography in all aspects. Just try it for yourself and you're smacked in the face with [linear system theory for continuous time systems, discrete time signals,](https://ece.uwaterloo.ca/~ssundara/courses/notes/linear_systems.pdf) systems theory, Z-transform, Laplace transform, Fourier transform, and down you go. Studying really hard in theoretical and applied mathematics as much as I can but there's beauty in signal processing which is rather hard to comprehend. DSP is highly complementary to financial signal processing and can be even used to easily understand RF hacking.
 
