@@ -32,47 +32,30 @@ I was an [NDA'd contributor](https://wiki.mozilla.org/NDA) at Mozilla for 2 year
 
 
 * [How to customize Firefox Suggest settings](https://support.mozilla.org/en-US/kb/firefox-suggest)
-
 * [Recover user data missing after Firefox update](https://support.mozilla.org/en-US/kb/recover-user-data-missing-after-firefox-update)
-
 * [Browsing history in Firefox - View the websites you have visited](https://support.mozilla.org/en-US/kb/browsing-history-firefox)
-
 * [Switching from Chrome to Firefox](https://support.mozilla.org/en-US/kb/switching-chrome-firefox)
-
 * [Find what version of Firefox you are using](https://support.mozilla.org/en-US/kb/find-what-version-firefox-you-are-using)
-
 * [How to fix an error when trying to open Telegram or Slack on Firefox](https://support.mozilla.org/en-US/kb/how-fix-error-when-trying-open-telegram-or-slack)
-
 * [Add-on Badges](https://support.mozilla.org/en-US/kb/add-on-badges)
-
 * [What happened to my Live Bookmarks?](https://support.mozilla.org/en-US/kb/live-bookmarks-migration)
-
 * [How to restore a browsing session from backup](https://support.mozilla.org/en-US/kb/how-restore-browsing-session-backup)
 
 
 ### Browser Security Related
 * [Choose a strong password](https://support.mozilla.org/en-US/kb/password-strength)
-
 * [Common Myths about Private Browsing](https://support.mozilla.org/en-US/kb/common-myths-about-private-browsing)
-
 * [Firefox DNS-over-HTTPS](https://support.mozilla.org/en-US/kb/firefox-dns-over-https)
-
 * [What is search hijacking?](https://support.mozilla.org/en-US/kb/what-search-hijacking)
-
 * [Total Cookie Protection and website breakage FAQ](https://support.mozilla.org/en-US/kb/total-cookie-protection-and-website-breakage-faq)
-
 * [Enhanced Tracking Protection in Firefox for desktop](https://support.mozilla.org/en-US/kb/enhanced-tracking-protection-firefox-desktop)
 
 
 ### Customization Related:
 * [How to customize Firefox Suggest settings](https://support.mozilla.org/en-US/kb/firefox-suggest)
-
 * [Customize items on your Firefox New Tab page](https://support.mozilla.org/en-US/kb/customize-items-on-firefox-new-tab-page)
-
 * [Use themes to change the look of Firefox](https://support.mozilla.org/en-US/kb/use-themes-change-look-of-firefox)
-
 * [View articles recommended by Pocket on your Firefox New Tab and homepage](https://support.mozilla.org/en-US/kb/view-articles-recommended-pocket-firefox-new-tab-homepage)
-
 * [Access toolbar functions using the keyboard](https://support.mozilla.org/en-US/kb/access-toolbar-functions-using-keyboard)
 
 
