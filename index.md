@@ -3,8 +3,6 @@ title:
 layout: page
 ---
 
-<a rel="me" style="display:none;" href="https://mastodon.social/@tekknolagi">Mastodon</a>
-
 <h1>I'm Bithiah Koshy.</h1>
 
 A tinkerer, pleb, old soul. Known as vintagemind or devargnes on the World Wide Web. I like to fence, play chess, 
