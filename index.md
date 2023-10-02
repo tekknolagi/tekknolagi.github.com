@@ -19,7 +19,7 @@ Currently a high school junior at Texas Tech University K-12 interning at
   having any knowledge of the markets whatsoever is very similar to Russian roulette in my kind opinion. Technical analysis gives you statistical based view of the markets which can help you make positions, etc.
   
 * [Lightning Network](https://en.wikipedia.org/wiki/Lightning_Network): I have a personal
-  [node](https://trycinder.com](https://github.com/raspiblitz/raspiblitz)) and wish to be a fulltime node runner (why not?). It is the next
+  [node](https://github.com/raspiblitz/raspiblitz) and wish to be a fulltime node runner (why not?). It is the next
   payment system where anyone and anywhere can transact BTC in form of sats with _very minimal fees_. It has immense potential and more people hopping on board, the better.
   
 * Crypto wallets: The complex architecture of wallets regardless whether it's non-custodial, custodial, or browser wallet is a marvel. Having
