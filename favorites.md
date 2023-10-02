@@ -127,4 +127,4 @@ French:
 
 Films:
 
-* Don't get me started on it. Well, you can check out my[Reddit](https://www.reddit.com/user/Vintage_Mind) where I post old Hollywood stuff.
+* Don't get me started on it. Well, you can check out my [Reddit](https://www.reddit.com/user/Vintage_Mind) where I post old Hollywood stuff.
