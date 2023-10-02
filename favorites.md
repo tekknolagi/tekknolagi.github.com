@@ -70,8 +70,16 @@ Hindi:
 * Aaj Tu Gair Sahi (आज तू गैर सही)
 
 Chinese:
-* 李香蘭 - 夜來香 (Ye Lai Xiang)
-* 
+* 李香蘭 - 夜來香 
+* 女人花 - Anita Mui
+  
+Japanese:
+* Kawa No Nagare No Youni - Hibari Misora
+
+Russian:
+* Этот мир
+* Миллион алых роз
+* And Алла Пугачева's other songs
 
 German:
 * Dich wird' ich nie vergessen
@@ -79,14 +87,19 @@ German:
 * Ganz Paris träumt von der Liebe
 * Wenn es Nacht wird in Paris
 
-Russian:
-* Этот мир
-* Миллион алых роз
-* And Алла Пугачева's other songs
+French:
+* La Derniere Valse
 
+  Sung by Tino Rossi:
+* Adieu Hawai
+* Au-Delà des nuages 
+* C'est Ton Amour
+* C'est la valse amoureuse
+* Dans Le Jardin De Mes Rêves
+* Doux Secret D'amour
+* Cueillir Vos Lèvres (Questa Notte Ti Dire)
+* Du fond du coeur
+* Grenade, Mes Amours
+* Pour T'avoir Au Clair De Lune
 
-
-
-> i am the keeper of this computer, for years my family has guarded its cores
-> and cables, tell me traveller, what is it you wish to calculate, please dont
-> say hashes
+* La Mer - Charles Trenet
