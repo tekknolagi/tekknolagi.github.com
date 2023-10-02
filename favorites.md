@@ -123,5 +123,8 @@ French:
 * Grenade, Mes Amours
 * Pour T'avoir Au Clair De Lune
 
-
 * La Mer - Charles Trenet
+
+Films:
+
+* Don't get me started on it. Well, you can check out my[Reddit](https://www.reddit.com/user/Vintage_Mind) where I post old Hollywood stuff.
