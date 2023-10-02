@@ -88,6 +88,7 @@ Chinese:
 * 白光- 等著你回來
 * 女人花 - Anita Mui
 * 邓丽君- 甜蜜蜜
+* 何日君再來
   
 Japanese:
 * Kawa No Nagare No Youni - Hibari Misora
