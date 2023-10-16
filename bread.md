@@ -102,7 +102,7 @@ your dough tub, covered, in a warm environment, like an oven with the light on
 or an Instant Pot set to 80F on sous vide mode. Set a two hour timer.
 
 Let sit for 15 minutes. Stretch and fold with wet hands. Let sit for 15
-minutes. Stretch and fold with wet hands. Let sit for the duration of the time.
+minutes. Stretch and fold with wet hands. Let sit for the rest of the duration.
 The dough should have gotten pretty big and puffy.
 
 Rub olive oil on internal surfaces of pan. Olive oil your hands. Delicately
