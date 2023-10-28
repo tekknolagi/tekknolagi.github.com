@@ -242,7 +242,8 @@ I said you could think about it like an AST but it's not quite an AST because
 it's not a tree. It's expected and normal to have more of a directed acyclic
 graph (DAG)-like structure.
 
-```console?lang=python
+```console?lang=python&prompt=>>>,...
+>>> from micrograd.engine import Value
 >>> w = Value(2)
 >>> x = 1 + w
 >>> y = 3 * w
