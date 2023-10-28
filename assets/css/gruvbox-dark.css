@@ -22,6 +22,7 @@
 .highlight .gh { color: #b8bb26; font-weight: bold; } /* Generic.Heading */
 .highlight .gi { color: #282828; background-color: #b8bb26 } /* Generic.Inserted */
 .highlight .go { color: #ebdbb2; } /* Generic.Output */
+/* TODO(max): Consider making prompt, output noselect https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting */
 .highlight .gp { color: #ebdbb2; } /* Generic.Prompt */
 .highlight .gs { color: #ebdbb2; } /* Generic.Strong */
 .highlight .gu { color: #b8bb26; font-weight: bold; } /* Generic.Subheading */
