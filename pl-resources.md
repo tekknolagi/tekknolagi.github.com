@@ -7,6 +7,8 @@ This page is a collection of my favorite resources for people getting started
 writing programming languages. I hope to keep it updated as long as I continue
 to find great stuff.
 
+I made a <a class="newlink" href="https://www.zazzle.com/compiler_ampersand_2_t_shirt-235252907121889789">fun compilers t-shirt</a>
+
 ## Compilers
 
 * Tufts compilers course [COMP/CS 181](http://www.cs.tufts.edu/~sguyer/classes/comp181-2006/)
