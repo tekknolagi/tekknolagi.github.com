@@ -884,7 +884,7 @@ We could have done this similarly to the interpreted version, where each kind
 of operation has its own method (`__add__`, `__mul__`, etc), but it's easier to
 present the compiler all in one method. For that reason I am adding a `compile`
 function. See for example the implementation of constant values (`op==''`) and
-addition (`op=='+'`):
+multiplication (`op=='*'`):
 
 ```python
 class Value:
