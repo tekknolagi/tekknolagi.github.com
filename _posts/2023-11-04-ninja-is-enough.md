@@ -274,6 +274,10 @@ implementation that generates Ninja.
 Check out [depslint](https://github.com/maximuska/depslint), which can tell you
 if you have some missing dependencies in your Ninja file.
 
+Check out [bazel-to-cmake](https://github.com/google/bazel-to-cmake), so you
+can write Bazel files that turn into CMake files that turn into Ninja files
+that build your code.
+
 Check out [Build Systems à la
 Carte](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf)
 (PDF) if you are feeling adventurous.
