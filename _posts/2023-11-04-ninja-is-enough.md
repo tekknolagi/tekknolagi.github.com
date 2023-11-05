@@ -221,6 +221,9 @@ Check out the various Ninja implementations:
 * [Siso](https://chromium.googlesource.com/infra/infra/+/refs/heads/main/go/src/infra/build/siso/),
   which is meant to be a drop-in Ninja replacement with remote execution
 
+Check out [Kati](https://github.com/google/kati), which is a Make
+implementation that generates Ninja.
+
 Check out [Build Systems à la
 Carte](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf)
 (PDF) if you are feeling adventurous.
