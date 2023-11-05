@@ -278,6 +278,13 @@ Check out [bazel-to-cmake](https://github.com/google/bazel-to-cmake), so you
 can write Bazel files that turn into CMake files that turn into Ninja files
 that build your code.
 
+Maybe you could even vendor [PocketPy](https://github.com/blueloveTH/pocketpy)
+with your code. This would mean you only depend on a C++ compiler to compile
+PocketPy, which can run your Python build system, which generates Ninja. It's
+not fully featured right now (I had to make some small modifications to
+`ninja_syntax.py` to get it to work) but with a little more time it could work
+really nicely.
+
 Check out [Build Systems à la
 Carte](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf)
 (PDF) if you are feeling adventurous.
