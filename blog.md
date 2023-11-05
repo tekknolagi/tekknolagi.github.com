@@ -16,7 +16,7 @@ permalink: blog/
     {% endfor %}
 </ul>
 
-<h2>Runtime optimization, the series</h2>
+## Runtime optimization, the series
 <ul>
     {% assign posts_chrono = site.posts | where: "series","runtime-opt" | reverse %}
     {% for post in posts_chrono %}
@@ -27,8 +27,8 @@ permalink: blog/
     {% endfor %}
 </ul>
 
-<h2>Compiling a Lisp, the series</h2>
+## Compiling a Lisp, the series
 {% include compiling_a_lisp.md %}
 
-<h2>Writing a Lisp, the series</h2>
+## Writing a Lisp, the series
 {% include writing_a_lisp.md %}
