@@ -61,7 +61,14 @@ Altogether, it looks like Ninja *alone* is useful enough to replace small
 Makefiles that do not do anything interesting. But what if we want to
 dynamically change the values of variables, use different files on different
 platforms, or potentially something more complicated? Well, we need to generate
-the Ninja file.
+the Ninja file[^migration].
+
+[^migration]: It might be useful to have a tool that translates
+    raw/hand-written Ninja files into their equivalent Python programs to make
+    the growth of the project a little easier. This means you can start off
+    with a little bit of Ninja but as soon as you need to do some dynamic
+    things, you have an escape hatch and don't need to re-write everything
+    yourself.
 
 ## Generating Ninja
 
