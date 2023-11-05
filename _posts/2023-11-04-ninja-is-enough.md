@@ -207,6 +207,29 @@ It's much *much* smaller. And you could use any meta-build programming language
 you like if you write the Ninja syntax file. And now hopefully you know a
 little more about what is going on under the hood.
 
+For comparison, let's take a look at a `CMakeLists.txt` for the same
+hypothetical C project:
+
+```cmake
+# CMakeLists.txt
+project(demo)
+
+add_executable(main main.c lib.c)
+```
+
+It's pretty terse, but does a lot. There is a lot of hidden behavior:
+
+* Finding dependencies on `lib.h` by using the compiler
+* Making intermediate `.o` files instead of compiling all the `.c`
+* Supporting different compilers with `CMAKE_C_COMPILER`
+* Supporting different optimization levels with `CMAKE_BUILD_TYPE`
+* and more...
+
+That's great stuff, sure. It's all kind of hidden behavior that you need to
+discover over time. And you need to install CMake.
+
+You may want to use CMake for your project. You may not. Both are fine.
+
 ## Why I wrote this post
 
 I was looking at Cliff Click's new [expository
