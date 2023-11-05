@@ -39,7 +39,8 @@ build lib.o: cc lib.c | lib.h
 
 In this example we have three main constructs: variable declarations (`cc =
 clang`), variable references (`$cc`), rule declarations (`rule cc` ...), and
-build target declarations (`build main:` ...).
+build target declarations (`build main:` ...). We also have some undefined
+variables like `cflags` and `ldflags`. They expand to the empty string.
 
 This Ninja file is enough to build a small project consisting of `lib.h`,
 `lib.c`, and `main.c`. Ninja will automatically parallelize as much of the
