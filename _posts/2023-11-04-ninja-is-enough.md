@@ -57,6 +57,10 @@ $
 The `[3/3]` bit indicates that the third target of three has been built. The
 other output lines got erased, so my terminal is pretty clean.
 
+Speaking of clean, you don't even need to write your own `clean` rule like you
+would in a Makefile. Ninja has a built-in tool to remove all targets: `ninja
+-t clean`.
+
 Altogether, it looks like Ninja *alone* is useful enough to replace small
 Makefiles that do not do anything interesting. But what if we want to
 dynamically change the values of variables, use different files on different
