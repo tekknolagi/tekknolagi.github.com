@@ -218,6 +218,8 @@ Check out the various Ninja implementations:
     Turtles.
 * [ninja-rs](https://github.com/nikhilm/ninja-rs)
 * This [tiny little implementation in Python](https://github.com/gkbrk/scripts/blob/master/ninja.py)!
+* [Siso](https://chromium.googlesource.com/infra/infra/+/refs/heads/main/go/src/infra/build/siso/),
+  which is meant to be a drop-in Ninja replacement with remote execution
 
 Check out [Build Systems à la
 Carte](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf)
