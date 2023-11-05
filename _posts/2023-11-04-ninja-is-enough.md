@@ -218,3 +218,7 @@ Check out the various Ninja implementations:
     Turtles.
 * [ninja-rs](https://github.com/nikhilm/ninja-rs)
 * This [tiny little implementation in Python](https://github.com/gkbrk/scripts/blob/master/ninja.py)!
+
+Check out [Build Systems à la
+Carte](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf)
+(PDF) if you are feeling adventurous.
