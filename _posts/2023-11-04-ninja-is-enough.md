@@ -177,7 +177,8 @@ builds, nice output, and a small library of functions like `cc_binary`.
 [^how-to]: Andreas Zwinkau seems to think this might not actually be that
     difficult and one could theoretically re-use the wrapper program that Bazel
     uses. See [his post](https://beza1e1.tuxen.de/hermetic_builds.html) for
-    more information.
+    more information. Or maybe we could use Nix like
+    [Nix-Bazel](https://nix-bazel.build/).
 
 If you wanted the same kinds of guarantees about meta build system termination
 that Bazel and Buck provide, you probably can't use Python anymore. They don't
