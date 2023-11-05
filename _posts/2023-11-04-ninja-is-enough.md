@@ -16,8 +16,9 @@ etc) by hand. So the other default choice is Make, which comes with a lot of
 features built-in. Nice! But it also comes with some problems that I won't get
 into here. Not so nice.
 
-Fortunately, I am here to tell you that there is an interesting alternative:
-Ninja. And you can even write a program to generate Ninja for you, if you want.
+Fortunately, I am here to tell you that there is an interesting alternative for
+small projects: Ninja. And y u can even write a program to generate Ninja for
+you, if you want.
 
 ## A look at Ninja
 
