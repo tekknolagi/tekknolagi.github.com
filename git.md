@@ -99,3 +99,6 @@ I think [Jujutsu/`jj`](https://github.com/martinvonz/jj) is very neat. Also
 [Game of Trees](https://gameoftrees.org/). Also
 [dura](https://github.com/tkellogg/dura). Also
 [gitless](https://github.com/gitless-vcs/gitless).
+
+Learn how to [see the history of a
+method](https://calebhearth.com/git-method-history).
