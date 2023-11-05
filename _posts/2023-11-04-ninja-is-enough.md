@@ -171,8 +171,13 @@ At some point I wondered if we could replicate enough of Bazel or Buck syntax
 and semantics to be able to build small projects with this kind of hackery. I
 don't mean full hermeticity build farms or anything (although you might be able
 to get away with some tricks like [Landlock Make](https://justine.lol/make/)
-does). That all sounds complicated. I just mean having parallel builds, nice
-output, and a small library of functions like `cc_binary`.
+does). That all sounds complicated[^how-to]. I just mean having parallel
+builds, nice output, and a small library of functions like `cc_binary`.
+
+[^how-to]: Andreas Zwinkau seems to think this might not actually be that
+    difficult and one could theoretically re-use the wrapper program that Bazel
+    uses. See [his post](https://beza1e1.tuxen.de/hermetic_builds.html) for
+    more information.
 
 If you wanted the same kinds of guarantees about meta build system termination
 that Bazel and Buck provide, you probably can't use Python anymore. They don't
@@ -223,6 +228,9 @@ Check out the various Ninja implementations:
 
 Check out [Kati](https://github.com/google/kati), which is a Make
 implementation that generates Ninja.
+
+Check out [depslint](https://github.com/maximuska/depslint), which can tell you
+if you have some missing dependencies in your Ninja file.
 
 Check out [Build Systems à la
 Carte](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf)
