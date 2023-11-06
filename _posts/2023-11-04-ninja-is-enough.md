@@ -267,6 +267,8 @@ Check out the various Ninja implementations:
 * This [tiny little implementation in Python](https://github.com/gkbrk/scripts/blob/master/ninja.py)!
 * [Siso](https://chromium.googlesource.com/infra/infra/+/refs/heads/main/go/src/infra/build/siso/),
   which is meant to be a drop-in Ninja replacement with remote execution
+* [Shake](https://shakebuild.com/), a build system in its own right, that can
+  also execute Ninja files
 
 Check out [Kati](https://github.com/google/kati), which is a Make
 implementation that generates Ninja.
