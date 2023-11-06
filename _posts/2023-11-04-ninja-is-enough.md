@@ -254,7 +254,7 @@ Check out Julia Evans' [excellent
 post](https://jvns.ca/blog/2020/10/26/ninja--a-simple-way-to-do-builds/) about
 Ninja. This post is accidentally very similar for the first two thirds.
 
-Check out the various Ninja implementations:
+### The various Ninja implementations
 
 * [Ninja](https://github.com/ninja-build/ninja)
 * [Samurai](https://github.com/michaelforney/samurai)
@@ -269,6 +269,12 @@ Check out the various Ninja implementations:
   which is meant to be a drop-in Ninja replacement with remote execution
 * [Shake](https://shakebuild.com/), a build system in its own right, that can
   also execute Ninja files
+
+If you want to see a demo of `ninja_syntax.py` (from upstream Ninja) and
+`ninja.py` (from the wild) in action together, check out
+[ninja-demo](https://github.com/tekknolagi/ninja-demo).
+
+### Other Ninja-adjacent tools
 
 Check out [Kati](https://github.com/google/kati), which is a Make
 implementation that generates Ninja.
@@ -286,6 +292,8 @@ PocketPy, which can run your Python build system, which generates Ninja. It's
 not fully featured right now (I had to make some small modifications to
 `ninja_syntax.py` to get it to work) but with a little more time it could work
 really nicely.
+
+### Build systems papers
 
 Check out [Build Systems à la
 Carte](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf)
