@@ -267,7 +267,7 @@ Ninja. This post is accidentally very similar for the first two thirds.
 * This [tiny little implementation in Python](https://github.com/gkbrk/scripts/blob/master/ninja.py)!
 * [Siso](https://chromium.googlesource.com/infra/infra/+/refs/heads/main/go/src/infra/build/siso/),
   which is meant to be a drop-in Ninja replacement with remote execution
-* [Shake](https://shakebuild.com/), a build system in its own right, that can
+* [Shake](https://shakebuild.com/), a build system in its own right that can
   also execute Ninja files
 
 If you want to see a demo of `ninja_syntax.py` (from upstream Ninja) and
