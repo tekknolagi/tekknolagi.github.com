@@ -52,6 +52,7 @@ Here is some of my favorite music:
 * *Scheherazade* by Nikolai Rimsky-Korsakov, with director Valery Gergiev
 * *Turandot* by Giacomo Puccini, conducted by Zubin Mehta
 * *Symphony No. 8* by Anton Bruckner
+* *Symphony No. 2* by Gustav Mahler
 
 I am currently listening to some newer music, too:
 
