@@ -470,7 +470,11 @@ All of these are reasonable behaviors because each project has different goals.
 In addition to the normal types available, both Static Python and Mypyc allow
 typing parameters and other variables as primitive ints like `int8` so you can
 get the unboxed arithmetic that people tend to expect on first reading of the
-first code snippet in this post.
+first code snippet in this post[^finality].
+
+[^finality]: Implicit here is that these primitive int types are final, which
+    means that annotations like `a: int8` can be trusted. There is no subclass
+    of `int8` so we can optimize!
 
 Other projects take this further. The [Mojo](https://www.modular.com/mojo)
 project, for example, aims to create a much bigger and more visibly different
