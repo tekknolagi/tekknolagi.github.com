@@ -214,6 +214,8 @@ class Completer:
 
     def complete(self, text: str, state: int) -> Optional[str]:
         if state == 0:
+            # Is it important that they are sorted lexicographically? Or just
+            # have a stable order? Or...?
             options = sorted(self.env.keys())
             if not text:
                 self.matches = options[:]
