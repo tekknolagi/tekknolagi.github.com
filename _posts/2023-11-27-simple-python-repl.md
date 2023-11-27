@@ -228,6 +228,9 @@ env = {"add": lambda x, y: x + y, "abs": abs}  # some builtins or something
 if readline:
     readline.set_completer(Completer(env).complete)
     readline.parse_and_bind("tab: complete")  # or menu-complete
+
+repl = Repl()
+repl.interact(banner="", exitmsg="")
 ```
 
 ```console
