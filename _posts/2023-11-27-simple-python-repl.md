@@ -218,7 +218,7 @@ class Completer:
             # have a stable order? Or...?
             options = sorted(self.env.keys())
             if not text:
-                self.matches = options[:]
+                self.matches = options[:]  # shallow copy
             else:
                 self.matches = [key for key in options if key.startswith(text)]
         try:
