@@ -236,3 +236,7 @@ hickory% /tmp/repl.py
 abs  add
 >>> a
 ```
+
+## Changing the prompt
+
+<!-- TODO: do you have to change sys.ps1 and sys.ps2? -->
