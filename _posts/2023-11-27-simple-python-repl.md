@@ -4,10 +4,21 @@ layout: post
 date: 2023-11-27
 ---
 
+In a lot of my previous Python interpreter/compiler projects I hand-rolled a
+REPL. It turns out that Python comes with a bunch of batteries included and
+this is totally unnecessary---you get a lot of goodies for free. Let's take a
+look at how to use them, starting from embedding a normal Python REPL in your
+project.
+
+<!-- TODO: define REPL -->
 
 ## Programmatic control of Python REPL
 
+The bare minimum is controlling a Python REPL from inside Python. It's only a
+couple of lines:
+
 ```python
+#!/usr/bin/env python3
 # repl.py
 import code
 
@@ -15,6 +26,9 @@ import code
 repl = code.InteractiveConsole()
 repl.interact()
 ```
+
+If you (`chmod +x repl.py` and) run this, you get what looks like a normal
+Python REPL, plus a little extra output:
 
 ```console
 $ ./repl.py
@@ -30,6 +44,9 @@ $
 
 (I hit Control-D to exit.)
 
+Let's say we don't want the output. We can squash that first by specifying the
+banner, which is the topmost bit:
+
 ```python
 # repl.py
 import code
@@ -39,12 +56,16 @@ repl = code.InteractiveConsole()
 repl.interact(banner="")
 ```
 
+This removes all of the usual Python preamble.
+
 ```console
 $ ./repl.py
 >>> ^D
 now exiting InteractiveConsole...
 $
 ```
+
+We can also remove specify the exit message or completely silence it:
 
 ```python
 # repl.py
@@ -55,13 +76,22 @@ repl = code.InteractiveConsole()
 repl.interact(banner="", exitmsg="")
 ```
 
+And now we have a much quieter experience:
+
 ```console
 $ ./repl.py
 >>> ^D
 $
 ```
 
+Right. But that's not very interesting. Let's remove the Python bits so we can
+enter code written in our own programming language.
+
 ## Making it your own
+
+To integrate our own interpreter or compiler, we subclass `InteractiveConsole`
+and override the `runsource` method. We are just printing whatever input we
+receive, but you could wire it up to your lexer/parser/... at this junction:
 
 ```python
 import code
@@ -77,6 +107,8 @@ repl = Repl()
 repl.interact(banner="", exitmsg="")
 ```
 
+Take a look:
+
 ```console
 $ ./repl.py
 >>> 1 + 2
@@ -85,11 +117,48 @@ source: 1 + 2
 $
 ```
 
+It works! You could stop here. But you might want input over multiple lines,
+and what we have now just operates over lines.
+
+## Adding continuations
+
+To indicate to the caller of `runsource` that you are waiting for more input,
+perhaps until a statement-ending semicolon (for example), `return True`:
+
+```python
+class Repl(code.InteractiveConsole):
+    def runsource(self, source, filename="<input>", symbol="single"):
+        # TODO: Integrate your compiler/interpreter
+        if not source.endswith(";"):
+            return True
+        print("source:", source)
+```
+
+This will bring up the familiar "ps2" prompt until your input ends with a
+semicolon:
+
+```console
+$ ./repl.py
+>>> 1 +
+... 2;
+source: 1 +
+2;
+>>> 
+$
+```
+
+Very nice. You might do this by having your parser drive your lexer, or
+detecting "Unexpected EOF" errors in your parser, or something else entirely.
+
+This is another perfectly fine cut point. But you might be wondering: how hard
+is it to add line editing support? The arrow keys do not work right now. And
+it's not hard at all!
+
 ## Adding readline support
 
-This gives you up/down navigation, Emacs-like line navigation, etc.
-
 Just import `readline`.
+
+This gives you up/down navigation, Emacs-like line navigation, etc.
 
 ```python
 import code
