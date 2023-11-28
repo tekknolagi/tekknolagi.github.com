@@ -361,6 +361,9 @@ write a little interpreter just for fun.
 What about syntax highlighting as you type? That's become a popular thing to do
 these days.
 
+Add [undo support](https://ballingt.com/interactive-interpreter-undo/) with
+`fork`!
+
 ## Why not use cmd
 
 I found the [`cmd`](https://docs.python.org/3/library/cmd.html) module
