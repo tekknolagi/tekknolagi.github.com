@@ -10,6 +10,9 @@ included and this is totally unnecessary---you get a lot of goodies for free.
 Let's take a look at how to use them, starting from embedding a normal Python
 REPL in your project.
 
+I wrote this post as I finally figured all this stuff out for an unreleased
+runtime for a new content-addressable language. Keep an eye on this space...
+
 Take a look at the [`code`](https://docs.python.org/3/library/code.html) docs
 as you follow along.
 
