@@ -364,6 +364,9 @@ these days.
 Add [undo support](https://ballingt.com/interactive-interpreter-undo/) with
 `fork`!
 
+Do something else [after the REPL
+exits](https://stackoverflow.com/a/36868625/569183).
+
 ## Why not use cmd
 
 I found the [`cmd`](https://docs.python.org/3/library/cmd.html) module
