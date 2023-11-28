@@ -239,7 +239,8 @@ class Completer:
         if state == 0:
             # Some implementations check if text.strip() is empty but I can't
             # figure out how to get text to start or end with whitespace.
-            self.matches = sorted(key for key in self.env.keys() if key.startswith(text))
+            options = (key for key in self.env.keys() if key.startswith(text))
+            self.matches = sorted(options)
         try:
             return self.matches[state]
         except IndexError:
