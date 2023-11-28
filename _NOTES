@@ -1,0 +1,20 @@
+Use https://tdhock.github.io/blog/2021/python-prompt-commands-output/ to
+generate interactive Python REPL interactions from a file:
+
+# interact.py
+import code
+import sys
+class FileConsole(code.InteractiveConsole):
+    """Emulate python console but use file instead of stdin"""
+    def raw_input(self, prompt):
+        line = f.readline()
+        if line=="":
+            raise EOFError()
+        no_newline = line.replace("\n", "")
+        print(prompt, no_newline, sep="")
+        return no_newline
+sys.ps1 = "\n>>> "
+f = open(sys.argv[1])
+FileConsole().interact(banner="", exitmsg="")
+
+And run with ./interact.py foo.py
