@@ -273,3 +273,11 @@ in development.
 ## Changing the prompt
 
 <!-- TODO: do you have to change sys.ps1 and sys.ps2? -->
+
+<!-- TODO atexit history
+https://stackoverflow.com/questions/9468435/how-to-fix-column-calculation-in-python-readline-if-using-color-prompt/9468954#9468954
+-->
+
+<!-- TODO color prompts
+https://stackoverflow.com/questions/9468435/how-to-fix-column-calculation-in-python-readline-if-using-color-prompt/9468954#9468954
+-->
