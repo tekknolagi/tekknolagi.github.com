@@ -281,3 +281,19 @@ https://stackoverflow.com/questions/9468435/how-to-fix-column-calculation-in-pyt
 <!-- TODO color prompts
 https://stackoverflow.com/questions/9468435/how-to-fix-column-calculation-in-python-readline-if-using-color-prompt/9468954#9468954
 -->
+
+## Now what
+
+Go forth and either integrate this into your existing interpreter/compiler or
+write a little interpreter just for fun.
+
+## Why not use cmd
+
+I found the `cmd` module midway through this post and thought I might be
+reinventing the wheel again. But it turns out that `cmd.Cmd`, while it does
+provide you with some niceties, does not give anywhere near the same amount of
+flexibility and also generally requires a static list of commands---the
+expectation is that you write a bunch of `do_X` methods. You can sidestep that
+by overriding `onecmd` but then you still don't get multi-line editing out of
+the box. You can customize the prompt more neatly that overwriting `sys.ps1`,
+though.
