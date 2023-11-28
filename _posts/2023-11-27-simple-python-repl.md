@@ -5,10 +5,10 @@ date: 2023-11-27
 ---
 
 In a lot of my previous interpreter/compiler projects written in Python I
-hand-rolled a REPL. It turns out that Python comes with a bunch of batteries
-included and this is totally unnecessary---you get a lot of goodies for free.
-Let's take a look at how to use them, starting from embedding a normal Python
-REPL in your project.
+hand-rolled a REPL (read-eval-print-loop). It turns out that Python comes with
+a bunch of batteries included and this is totally unnecessary---you get a lot
+of goodies for free. Let's take a look at how to use them, starting from
+embedding a normal Python REPL in your project.
 
 I wrote this post as I finally figured all this stuff out for an unreleased
 runtime for a new content-addressable language. Keep an eye on this space...
