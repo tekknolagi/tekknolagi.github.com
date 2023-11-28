@@ -10,6 +10,9 @@ included and this is totally unnecessary---you get a lot of goodies for free.
 Let's take a look at how to use them, starting from embedding a normal Python
 REPL in your project.
 
+Take a look at the [`code`](https://docs.python.org/3/library/code.html) docs
+as you follow along.
+
 <!-- TODO: define REPL -->
 
 ## Programmatic control of Python REPL
@@ -289,7 +292,7 @@ write a little interpreter just for fun.
 
 ## Why not use cmd
 
-I found the [`cmd`](https://docs.python.org/3.10/library/cmd.html) module
+I found the [`cmd`](https://docs.python.org/3/library/cmd.html) module
 midway through this post and thought I might be reinventing the wheel again.
 But it turns out that `cmd.Cmd`, while it does provide you with some niceties,
 does not give anywhere near the same amount of flexibility and also generally
