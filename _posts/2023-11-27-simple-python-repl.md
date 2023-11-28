@@ -302,6 +302,8 @@ custom prompts via parameters or something.
     and `ps2`. This is *not* nice-looking either, but avoids the global
     patching.
 
+    (...some time later...)
+
     Turns out, yes, it's possible. You can use `copy_func` from [this
     StackOverflow answer](https://stackoverflow.com/a/49077211/569183) to get
     this monstrosity:
