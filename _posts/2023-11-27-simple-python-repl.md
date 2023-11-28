@@ -307,6 +307,11 @@ custom prompts via parameters or something.
     this monstrosity:
 
     ```python
+    import copy
+    import types
+    import functools
+
+
     def copy_func(f, globals=None, module=None):
         """Based on https://stackoverflow.com/a/13503277/2988730 (@unutbu)"""
         if globals is None:
