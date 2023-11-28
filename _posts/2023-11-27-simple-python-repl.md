@@ -1,6 +1,7 @@
 ---
 title: "Building a small REPL in Python"
 layout: post
+description: Don't go it alone. Take this!
 date: 2023-11-27
 ---
 
