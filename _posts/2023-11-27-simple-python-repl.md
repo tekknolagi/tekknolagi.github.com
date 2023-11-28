@@ -275,6 +275,28 @@ in development.
 
 ## Changing the prompt
 
+In order to change the prompt, we need to modify globals in the `sys` module.
+`ps1` is for the normal prompt, and `ps2` is for the continuation prompt.
+
+```python
+import sys
+
+# ...
+
+sys.ps1 = "> "
+sys.ps2 = ". "
+
+repl = Repl()
+repl.interact(banner="", exitmsg="")
+```
+
+This is a little gross but it's the only way to customize the prompt, as
+`InteractiveConsole.interact` directly reads from `sys`. And overriding
+`interact` defeats the purpose of the exercise since it has a fair bit of
+helpful logic in it. Maybe one day I will submit a pull request to allow custom
+prompts via parameters or something.
+
+
 <!-- TODO: do you have to change sys.ps1 and sys.ps2? -->
 
 <!-- TODO atexit history
