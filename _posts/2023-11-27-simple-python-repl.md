@@ -181,6 +181,9 @@ typing machinery.
 
 ## Adding history
 
+We already have `readline` and that supports reading/writing history files if
+we wire it up. So wire it up.
+
 ```python
 import os
 
@@ -199,7 +202,25 @@ if readline:
     readline.write_history_file(REPL_HISTFILE)
 ```
 
+Now you should be able to use the up arrow key in a new session to see what
+your previous session contained. Or Control-R, even.
+
+And now for the most exciting thing, maybe: tab completion.
+
 ## Adding tab completion
+
+It's helpful for learning about new tools and it can make you more efficient.
+So let's add tab completion.
+
+The `readline` API expects to be able given a state machine function that it
+can call multiple times in a row with different states. Most implementations I
+have seen of this online use a class, but you could also use nested functions
+or something like that.
+
+We'll make a `Completer` class that has a `complete` method. `readline` calls
+this with increasing `state`s, starting at 0. So if we are in state 0, we
+initialize our potential matches before returning the current match. If we are
+in any other state, we can just return the current match.
 
 <!-- TODO: atexit?? -->
 
@@ -214,13 +235,9 @@ class Completer:
 
     def complete(self, text: str, state: int) -> Optional[str]:
         if state == 0:
-            # Is it important that they are sorted lexicographically? Or just
-            # have a stable order? Or...?
-            options: List[str] = sorted(self.env.keys())
-            if not text:
-                self.matches = options[:]  # shallow copy
-            else:
-                self.matches = [key for key in options if key.startswith(text)]
+            # Some implementations check if text.strip() is empty but I can't
+            # figure out how to get text to start or end with whitespace.
+            self.matches = sorted(key for key in self.env.keys() if key.startswith(text))
         try:
             return self.matches[state]
         except IndexError:
@@ -235,12 +252,23 @@ repl = Repl()
 repl.interact(banner="", exitmsg="")
 ```
 
+Let's play around with it.
+
 ```console
 hickory% /tmp/repl.py
+>>> [^tab]
+abs  add
 >>> a[^tab]
 abs  add
 >>> a
 ```
+
+Nice.
+
+An important note: it seems like `readline` swallows any exceptions raised in
+your `complete` function, so this makes debugging a little tricky (bugs just
+result in autocomplete failing!). To combat this, I added a bunch of `print`s
+in development.
 
 ## Changing the prompt
 
