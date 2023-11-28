@@ -353,6 +353,11 @@ https://stackoverflow.com/questions/9468435/how-to-fix-column-calculation-in-pyt
 Go forth and either integrate this into your existing interpreter/compiler or
 write a little interpreter just for fun.
 
+## Other ideas
+
+What about syntax highlighting as you type? That's become a popular thing to do
+these days.
+
 ## Why not use cmd
 
 I found the [`cmd`](https://docs.python.org/3/library/cmd.html) module
