@@ -68,7 +68,7 @@ now exiting InteractiveConsole...
 $
 ```
 
-We can also remove specify the exit message or completely silence it:
+We can also specify the exit message or completely silence it:
 
 ```python
 # repl.py
@@ -121,7 +121,7 @@ $
 ```
 
 It works! You could stop here. But you might want input over multiple lines,
-and what we have now just operates over lines.
+and what we have now just operates over single lines.
 
 ## Adding continuations
 
@@ -154,8 +154,8 @@ Very nice. You might do this by having your parser drive your lexer, or
 detecting "Unexpected EOF" errors in your parser, or something else entirely.
 
 This is another perfectly fine cut point. But you might be wondering: how hard
-is it to add line editing support? The arrow keys do not work right now. And
-it's not hard at all!
+is it to add line editing support? The arrow keys do not work right now. It's
+not hard at all!
 
 ## Adding readline support
 
@@ -179,8 +179,7 @@ except ImportError:
 # ...
 ```
 
-We want to have types and also use the module later so there's a bunch of
-typing machinery.
+If you don't care about types, you can drop all the machinery and just `import readline`.
 
 ## Adding history
 
@@ -291,13 +290,47 @@ repl.interact(banner="", exitmsg="")
 ```
 
 This is a little gross but it's the only way to customize the prompt, as
-`InteractiveConsole.interact` directly reads from `sys`. And overriding
-`interact` defeats the purpose of the exercise since it has a fair bit of
-helpful logic in it. Maybe one day I will submit a pull request to allow custom
-prompts via parameters or something.
+`InteractiveConsole.interact` directly reads from `sys`[^override-globals]. And
+overriding `interact` defeats the purpose of the exercise since it has a fair
+bit of helpful logic in it. Maybe one day I will submit a pull request to allow
+custom prompts via parameters or something.
+
+[^override-globals]: I wonder if it's possible to make a custom `interact` in
+    our subclass which is just a copy of `InteractiveConsole.interact` with its
+    `__globals__` replaced to point to hacked-up `sys` that contains our `ps1`
+    and `ps2`. This is *not* nice-looking either, but avoids the global
+    patching.
+
+    Turns out, yes, it's possible. You can use `copy_func` from [this
+    StackOverflow answer](https://stackoverflow.com/a/49077211/569183) to get
+    this monstrosity:
+
+    ```python
+    def copy_func(f, globals=None, module=None):
+        """Based on https://stackoverflow.com/a/13503277/2988730 (@unutbu)"""
+        if globals is None:
+            globals = f.__globals__
+        g = types.FunctionType(f.__code__, globals, name=f.__name__,
+                               argdefs=f.__defaults__, closure=f.__closure__)
+        g = functools.update_wrapper(g, f)
+        if module is not None:
+            g.__module__ = module
+        g.__kwdefaults__ = copy.copy(f.__kwdefaults__)
+        return g
 
 
-<!-- TODO: do you have to change sys.ps1 and sys.ps2? -->
+    class MySys:
+        def __init__(self):
+            self.ps1 = "> "
+            self.ps2 = ". "
+
+
+    class Repl(code.InteractiveConsole):
+        # ...
+        interact = copy_func(code.InteractiveConsole.interact, globals={"sys": MySys()})
+    ```
+
+    Neat? I guess?
 
 <!-- TODO atexit history
 https://stackoverflow.com/questions/9468435/how-to-fix-column-calculation-in-python-readline-if-using-color-prompt/9468954#9468954
