@@ -139,6 +139,7 @@ Here are some websites I like:
 * [gossipsweb.net](https://gossipsweb.net/)
 * [mazzo.li](https://mazzo.li/archive.html)
 * [ryanhileman.com](http://ryanhileman.com/)
+* [blitiri.com.ar](https://blitiri.com.ar/)
 
 Some federated networking software:
 
