@@ -95,3 +95,5 @@ Cinder, CPython, PyPy, and Pyjion).
 
 * I [adopted the Person Biking emoji 🚴](https://twitter.com/unicode/status/1341803011501223936).
 * I once biked across Germany (Tübingen to Puttgarden).
+* I walked the entire [Walking City Trail](https://www.bostontrails.org/) in
+  one day. It took 10 hours of moving time and 2 hours of eating time.
