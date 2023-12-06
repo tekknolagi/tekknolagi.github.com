@@ -40,7 +40,7 @@ That's probably an understatement. Here are some of my favorite projects:
 * The [final project spec [PDF]](/resources/comp15-homework6.pdf)
   and reference implementation (2016) and
   [independent project spec [PDF]](/resources/comp15-independent.pdf)
-  (2016) for the data structures course I TA'ed
+  (2016) for the data structures course I TAed
 * A [distributed ray tracer](https://github.com/TheiaRT/tracer) (2015) that I
   made with friends for a concurrent programming course, with the
   [final writeup [PDF]](/resources/comp50-writeup.pdf)
@@ -49,12 +49,12 @@ I like making things [just for fun](https://justforfunnoreally.dev/).
 
 ## I like teaching.
 
-* I will be TAing Northeastern's CS4530 this fall
 * I taught [CS 50ISDT](/isdt/) (2021), a course [Tom](https://tchebb.me/) and I
   wrote for Tufts about software development tooling
 * I taught [EXP 57](/excollege/) (2018), a course
   [Yuki](https://yzan424.github.io/) and I wrote for Tufts about personal and
   professional development
+* I TAed CS 4530 at Northeastern (Fall 2023)
 * I TAed CS 11 (intro), 15 (data structures), 40 (machine structure), and
   Concurrent Programming at Tufts and was the head TA for 11 and 15
 
