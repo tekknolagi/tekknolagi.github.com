@@ -378,3 +378,6 @@ requires a static list of commands---the expectation is that you write a bunch
 of `do_X` methods. You can sidestep that by overriding `onecmd` but then you
 still don't get multi-line editing out of the box. You can customize the prompt
 more neatly that overwriting `sys.ps1`, though.
+
+<!-- TODO add tests for repl with mocking stdin/stdout
+https://news.ycombinator.com/item?id=38449933 -->
