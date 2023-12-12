@@ -8,6 +8,7 @@ writing programming languages. I hope to keep it updated as long as I continue
 to find great stuff.
 
 I made a <a class="newlink" href="https://www.zazzle.com/compiler_ampersand_2_t_shirt-235252907121889789">fun compilers t-shirt</a>
+and also a <a class="newlink" href="https://www.zazzle.com/jit_compiler_t_shirt-256576487744451029">fun JIT compilers t-shirt</a>
 
 ## Compilers
 
