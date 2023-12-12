@@ -200,7 +200,11 @@ characeteristics
 
 ### Other binding generators
 
+pybind11, nanobind, ...
+
 Even Argument Clinic in CPython
+
+### Hand-written
 
 ## Small useless benchmark
 
@@ -228,28 +232,49 @@ PyPyTypedMethodMetadata inc_sig = {
   .ml_name = "inc",
 };
 
-static PyMethodDef signature_methods[] = {
+static PyMethodDef mytypedmod_methods[] = {
     // TODO(max): Add METH_FASTCALL | METH_TYPED
     {inc_sig.ml_name, inc, METH_O | METH_TYPED, "Add one to an int"},
     {NULL, NULL, 0, NULL}};
 
-static struct PyModuleDef signature_definition = {
-    PyModuleDef_HEAD_INIT, "signature",
+static struct PyModuleDef mytypedmod_definition = {
+    PyModuleDef_HEAD_INIT, "mytypedmod",
     "A C extension module with type information exposed.", -1,
-    signature_methods,
+    mytypedmod_methods,
     NULL,
     NULL,
     NULL,
     NULL};
 
-PyMODINIT_FUNC PyInit_signature(void) {
-  PyObject* m = PyState_FindModule(&signature_definition);
+PyMODINIT_FUNC PyInit_mytypedmod(void) {
+  PyObject* m = PyState_FindModule(&mytypedmod_definition);
   if (m != NULL) {
     Py_INCREF(m);
     return m;
   }
-  return PyModule_Create(&signature_definition);
+  return PyModule_Create(&mytypedmod_definition);
 }
+```
+
+```python
+# bench.py
+import mytypedmod
+
+
+def bench():
+    result = 0
+    inc = mytypedmod.inc
+    for i in range(1_000_000):
+        result += inc(10)
+    return result
+
+
+bench()
+```
+
+```console
+$ pyp3 setup.py build
+$ pypy3 bench.py
 ```
 
 ## Looking forward
