@@ -1,0 +1,21 @@
+name: Make sure build works
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Nix
+      uses: cachix/install-nix-action@v17
+    - name: Fix Nix installation
+      run: |
+        nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+        nix-channel --update
+    - name: Build site
+      run: nix-shell --command "jekyll build"
