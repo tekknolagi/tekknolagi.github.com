@@ -277,6 +277,12 @@ $ pyp3 setup.py build
 $ pypy3 bench.py
 ```
 
+## Profiling large applications
+
+IG workload (for example)
+
+Use of Static Python as binding generator
+
 ## Looking forward
 
 ### Motivation for CPython to include
