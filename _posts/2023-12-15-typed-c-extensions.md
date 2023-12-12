@@ -115,6 +115,16 @@ cpdef int add(int a, int b):
     return a + b
 ```
 
+Cython will generate a very fast C function that adds two machine integers.
+Calls to this from Cython are type checked at compile time and will be as fast
+as your C compiler allows:
+
+```c
+static int add(int __pyx_v_a, int __pyx_v_b) {
+  return __pyx_v_a + __pyx_v_b;
+}
+```
+
 Since we used `cpdef` instead of `cdef`, Cython will also generate a wrapper C
 extension function so that this function can be called from Python.
 
@@ -127,10 +137,6 @@ so many if-statements and so much allocation and so many function calls."
 <!-- NOTE: this is worse, even, since it's unwrapping fastcall too -->
 
 ```c
-static int add(int __pyx_v_a, int __pyx_v_b) {
-  return __pyx_v_a + __pyx_v_b;
-}
-
 static PyObject *add_and_box(CYTHON_UNUSED PyObject *__pyx_self,
                              int __pyx_v_a,
                              int __pyx_v_b) {
