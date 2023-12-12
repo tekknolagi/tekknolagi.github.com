@@ -118,8 +118,11 @@ cpdef int add(int a, int b):
 Since we used `cpdef` instead of `cdef`, Cython will also generate a wrapper C
 extension function so that this function can be called from Python.
 
-This means that the generated Cython code looks like (a much uglier version
-of):
+This means that the generated Cython code looks like (a much uglier version of)
+below. **You don't need to understand or really even read the big blob** of
+cleaned-up generated code below. You just need to say "ooh" and "aah" and "wow,
+so many if-statements and so much allocation and so many function calls."
+
 
 <!-- NOTE: this is worse, even, since it's unwrapping fastcall too -->
 
