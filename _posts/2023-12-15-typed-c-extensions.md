@@ -278,3 +278,11 @@ $ pypy3 bench.py
 ```
 
 ## Looking forward
+
+### Motivation for CPython to include
+
+### Motivation for HPy to include
+
+### Implementing in binding generators
+
+### Typed dialects?
