@@ -283,6 +283,20 @@ IG workload (for example)
 
 Use of Static Python as binding generator
 
+## Approaches in other runtimes
+
+PyPy: differences from specifying C binding *in Python*
+
+JS: not much extension in the browser, just the shell
+JSC has DOMJIT
+V8 has Torque
+
+Ruby: ???
+
+Java: ???
+
+Hack Native: See if I can get details about this from Edwin
+
 ## Looking forward
 
 ### Motivation for CPython to include
