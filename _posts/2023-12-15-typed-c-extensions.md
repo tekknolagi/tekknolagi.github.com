@@ -107,7 +107,87 @@ None in PyPy standard library since they are all implemented in Python
 
 ### Cython
 
+In this snippet of Cython code, we make a function that adds two machine
+integers.
+
+```cython
+cpdef int add(int a, int b):
+    return a + b
+```
+
+Since we used `cpdef` instead of `cdef`, Cython will also generate a wrapper C
+extension function so that this function can be called from Python.
+
+This means that the generated Cython code looks like (a much uglier version
+of):
+
+<!-- NOTE: this is worse, even, since it's unwrapping fastcall too -->
+
+```c
+static int add(int __pyx_v_a, int __pyx_v_b) {
+  return __pyx_v_a + __pyx_v_b;
+}
+
+static PyObject *add_and_box(CYTHON_UNUSED PyObject *__pyx_self,
+                             int __pyx_v_a,
+                             int __pyx_v_b) {
+  int result = add(__pyx_v_a, __pyx_v_b, 0);
+  // Check if an error occurred (unnecessary in this case)
+  if (result == ((int)-1) && PyErr_Occurred()) {
+    return NULL;
+  }
+  // Wrap result in PyObject*
+  return PyLong_FromLong(result);
+}
+
+static PyObject *add_python(PyObject *__pyx_self,
+                            PyObject *const *__pyx_args,
+                            Py_ssize_t __pyx_nargs,
+                            PyObject *__pyx_kwds) {
+  // Check how many arguments were given
+  PyObject* values[2] = {0,0};
+  if (__pyx_nargs == 2) {
+    values[1] = __pyx_args[1];
+    values[0] = __pyx_args[0];
+  } else if (__pyx_nargs == 1) {
+    values[0] = __pyx_args[0];
+  }
+  // Check if any keyword arguments were given
+  Py_ssize_t kw_args = __Pyx_NumKwargs_FASTCALL(__pyx_kwds);
+  // Match up mix of position/keyword args to parameters
+  if (__pyx_nargs == 0) {
+    // ...
+  } else if (__pyx_nargs == 1) {
+    // ...
+  } else if (__pyx_nargs == 2) {
+    // ...
+  } else {
+    // ...
+  }
+  // Unwrap PyObject* args into C int
+  int __pyx_v_a = PyLong_AsLong(values[0]);
+  // Check for error (unnecessary if we know it's an int)
+  if ((__pyx_v_a == (int)-1) && PyErr_Occurred()) {
+    return NULL;
+  }
+  int __pyx_v_b = PyLong_AsLong(values[1]);
+  // Check for error (unnecessary if we know it's an int)
+  if ((__pyx_v_b == (int)-1) && PyErr_Occurred()) {
+    return NULL;
+  }
+  // Call generated C implementation of add
+  return add_and_box(__pyx_self, __pyx_v_a, __pyx_v_b);
+}
+```
+
+Now, to be clear: this is probably the fastest thing possible for interfacing
+with CPython. Cython has been worked on for years and years and it's *very*
+fast. But we have some other runtimes that have different performance
+characeteristics
+
 ### Other binding generators
+
+Even Argument Clinic in CPython
 
 ## Small useless benchmark
 
