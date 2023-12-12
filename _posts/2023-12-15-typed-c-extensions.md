@@ -60,6 +60,16 @@ allocation in Python code---PyPy could have unboxed some heap allocated int
 into a C int--- it still has to allocate a PyPy object, then a
 `PyObject*` ... only to throw both away soon after.
 
+[![](https://mermaid.ink/img/pako:eNqdkEtPhDAQgP9KM0eDBORR6GEv7mW9aKLGxHDpwrCL0hbLkBUJ_92ym93EGC_2NJ1837wmKE2FIKDHjwF1ietG7qxUhWbu3W2erlerW_ZiZdehFceANZqY7NnDeL99w5KuTuyFOhob1bWoUJOkxmjBnvVhUS8OI7PUOanaEDLb7PbETM1-y2vDeqOQHYx9Pzf7yfxrSrfdn4OBBwqtkk3lbjMtbgG0dw0LEC6ssJZDSwUUenaoHMg8jroEQXZAD4auknQ-JYhatr3LdlK_GqPOkPuCmOATRMRDP4wjHvAbnkR5kHowguCBH2YR52mWJHGa8WT24OvoB36a53EUOz7O8iRL52-MBZE1?type=png)](https://mermaid.live/edit#pako:eNqdkEtPhDAQgP9KM0eDBORR6GEv7mW9aKLGxHDpwrCL0hbLkBUJ_92ym93EGC_2NJ1837wmKE2FIKDHjwF1ietG7qxUhWbu3W2erlerW_ZiZdehFceANZqY7NnDeL99w5KuTuyFOhob1bWoUJOkxmjBnvVhUS8OI7PUOanaEDLb7PbETM1-y2vDeqOQHYx9Pzf7yfxrSrfdn4OBBwqtkk3lbjMtbgG0dw0LEC6ssJZDSwUUenaoHMg8jroEQXZAD4auknQ-JYhatr3LdlK_GqPOkPuCmOATRMRDP4wjHvAbnkR5kHowguCBH2YR52mWJHGa8WT24OvoB36a53EUOz7O8iRL52-MBZE1)
+<!--
+sequenceDiagram
+    JIT->>C Wrapper: Wrap int as PyObject*
+    C Wrapper->>C Implementation: Unwrap PyObject* to int
+    note right of C Implementation: Do some work
+    C Implementation->>C Wrapper: Wrap int as PyObject*
+    C Wrapper->>JIT: Unwrap PyObject* to int
+-->
+
 If there was a way to communicate that `foo` expects an `int` and is going to
 unbox it into a C int (and will also reutrn a C `int`) to PyPy, it wouldn't
 need to do any of these shenanigans
