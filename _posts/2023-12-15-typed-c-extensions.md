@@ -61,20 +61,22 @@ into a C int--- it still has to allocate a PyPy object, then a
 `PyObject*` ... only to throw both away soon after.
 
 <figure style="display: block; margin: 0 auto; max-width: 400px;">
-  <object class="svg" type="image/svg+xml" data="https://mermaid.ink/img/pako:eNqdkEtPhDAQgP9KM0eDBORR6GEv7mW9aKLGxHDpwrCL0hbLkBUJ_92ym93EGC_2NJ1837wmKE2FIKDHjwF1ietG7qxUhWbu3W2erlerW_ZiZdehFceANZqY7NnDeL99w5KuTuyFOhob1bWoUJOkxmjBnvVhUS8OI7PUOanaEDLb7PbETM1-y2vDeqOQHYx9Pzf7yfxrSrfdn4OBBwqtkk3lbjMtbgG0dw0LEC6ssJZDSwUUenaoHMg8jroEQXZAD4auknQ-JYhatr3LdlK_GqPOkPuCmOATRMRDP4wjHvAbnkR5kHowguCBH2YR52mWJHGa8WT24OvoB36a53EUOz7O8iRL52-MBZE1?type=svg">
+  <object class="svg" type="image/svg+xml" data="https://mermaid.ink/svg/pako:eNqVkV1LwzAUhv9KOJdSR2s_0uZioO5m3ihMEaQ3sT3d6pqcmqbMOfbfTTsnTkEwV0nO83KenOygoBJBQIevPeoCZ7VcGqlyzdzSZJE1WFlGFbuZ3wu2IIXsbmtXpNmQPHCudD6dXrNHI9sWjWCXTUOFtAN6-_yChT07gF_IiM9V26BCbaWtSQv2oDeu-jMzSph6uRotfqdmxLrBakNmfexyyvzfbXzrHzonM7mSxZpZ-j4W8EChUbIu3Wh3QzAHu3JGOQi3LbGSfWNzyPXeobK3tNjqAoQ1PXrQt6Xz-_wJEJVsOnfbSv1EpI6QO4LYwRuIkAeTIAq5zy94HGZ-4sEWBPcnQRpynqRxHCUpj_cevI95f5JkWRRGfhDGQRSlPNh_AK9DpdY">
   </object>
   <figcaption>Fig. 1 - something</figcaption>
 </figure>
 <!--
-https://mermaid.live/edit#pako:eNqdkEtPhDAQgP9KM0eDBORR6GEv7mW9aKLGxHDpwrCL0hbLkBUJ_92ym93EGC_2NJ1837wmKE2FIKDHjwF1ietG7qxUhWbu3W2erlerW_ZiZdehFceANZqY7NnDeL99w5KuTuyFOhob1bWoUJOkxmjBnvVhUS8OI7PUOanaEDLb7PbETM1-y2vDeqOQHYx9Pzf7yfxrSrfdn4OBBwqtkk3lbjMtbgG0dw0LEC6ssJZDSwUUenaoHMg8jroEQXZAD4auknQ-JYhatr3LdlK_GqPOkPuCmOATRMRDP4wjHvAbnkR5kHowguCBH2YR52mWJHGa8WT24OvoB36a53EUOz7O8iRL52-MBZE1
+https://mermaid.live/edit#pako:eNqVkV1LwzAUhv9KOJdSR2s_0uZioO5m3ihMEaQ3sT3d6pqcmqbMOfbfTTsnTkEwV0nO83KenOygoBJBQIevPeoCZ7VcGqlyzdzSZJE1WFlGFbuZ3wu2IIXsbmtXpNmQPHCudD6dXrNHI9sWjWCXTUOFtAN6-_yChT07gF_IiM9V26BCbaWtSQv2oDeu-jMzSph6uRotfqdmxLrBakNmfexyyvzfbXzrHzonM7mSxZpZ-j4W8EChUbIu3Wh3QzAHu3JGOQi3LbGSfWNzyPXeobK3tNjqAoQ1PXrQt6Xz-_wJEJVsOnfbSv1EpI6QO4LYwRuIkAeTIAq5zy94HGZ-4sEWBPcnQRpynqRxHCUpj_cevI95f5JkWRRGfhDGQRSlPNh_AK9DpdY
 -->
 <!--
 sequenceDiagram
-    JIT->>C Wrapper: Wrap int as PyObject*
-    C Wrapper->>C Implementation: Unwrap PyObject* to int
+    note left of JIT: Some Python code
+    JIT->>C Wrapper: Allocate PyObject*
+    C Wrapper->>C Implementation: Unwrap PyObject*
     note right of C Implementation: Do some work
-    C Implementation->>C Wrapper: Wrap int as PyObject*
-    C Wrapper->>JIT: Unwrap PyObject* to int
+    C Implementation->>C Wrapper: Allocate PyObject*
+    C Wrapper->>JIT: Unwrap PyObject*
+    note left of JIT: Back to Python code
 -->
 
 If there was a way to communicate that `foo` expects an `int` and is going to
