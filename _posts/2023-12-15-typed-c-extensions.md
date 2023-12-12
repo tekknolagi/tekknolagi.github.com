@@ -83,6 +83,9 @@ If there was a way to communicate that `foo` expects an `int` and is going to
 unbox it into a C int (and will also reutrn a C `int`) to PyPy, it wouldn't
 need to do any of these shenanigans
 
+And yes, ideally there wouldn't be a C API call at all. But sometimes you have
+to, and you might as well speed up that call
+
 ## Potsdam
 
 I talked to the authors of PyPy and GraalPython over some coffee at ECOOP 2022.
