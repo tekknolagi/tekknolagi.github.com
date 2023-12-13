@@ -103,6 +103,54 @@ https://github.com/faster-cpython/ideas/issues/546
 
 ## Sketchy C things
 
+The existing `PyMethodDef`
+
+```c
+// Old stuff
+struct PyMethodDef {
+    const char  *ml_name;   /* The name of the built-in function/method */
+    PyCFunction  ml_meth;   /* The C function that implements it */
+    int          ml_flags;  /* Combination of METH_xxx flags, which mostly
+                               describe the args expected by the C func */
+    const char  *ml_doc;    /* The __doc__ attribute, or NULL */
+};
+typedef struct PyMethodDef PyMethodDef;
+```
+
+We want to store this kind of metadata
+
+```c
+struct PyPyTypedMethodMetadata {
+  int arg_type;
+  int ret_type;
+  void* underlying_func;
+  const char ml_name[100];
+};
+typedef struct PyPyTypedMethodMetadata PyPyTypedMethodMetadata;
+```
+
+ABI changes are a no-no
+
+What to do?
+
+```c
+// New stuff
+struct PyPyTypedMethodMetadata {
+  int arg_type;
+  int ret_type;
+  void* underlying_func;
+  const char ml_name[100];
+};
+typedef struct PyPyTypedMethodMetadata PyPyTypedMethodMetadata;
+
+TypedMethodMetadata*
+GetTypedSignature(PyMethodDef* def)
+{
+  assert(def->ml_flags & METH_TYPED);
+  return (TypedMethodMetadata*)(def->ml_name - offsetof(TypedMethodMetadata, ml_name));
+}
+```
+
 ## Implementing in PyPy
 
 ## Where do all the C extensions come from?
