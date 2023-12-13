@@ -6,7 +6,9 @@ date: 2023-12-15
 
 ## intro
 
-Python is neat
+Python is neat. Sometimes you need a speed boost and try running your code in
+PyPy. But someone hit that local maximum before you and wrote a C extension to
+make the code faster in CPython.
 
 In order to work with existing C libraries (and also for performance reasons),
 Python has a C API. This C API goes two ways:
