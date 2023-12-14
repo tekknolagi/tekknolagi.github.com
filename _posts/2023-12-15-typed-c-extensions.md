@@ -20,34 +20,30 @@ all to get better performance. Unfortunately, this means that whenever you call
 a C API function from PyPy, it has to stop what it's doing, set up some C API
 scaffolding, do the C API call, and then take down the scaffolding.
 
-<!-- insert diagram like pyro's -->
-
 For example, the C API is centered around `PyObject` pointers. PyPy does not
 normally use `PyObject`s. It has to allocate a `PyObject`, make it point into
 the PyPy heap, call the C API function, and then (potentially) free the
 `PyObject`.
 
 <figure style="display: block; margin: 0 auto;">
-  <object class="svg" type="image/svg+xml" data="https://mermaid.ink/svg/pako:eNqVkV1LwzAUhv9KOJdSR2s_0uZioO5m3ihMEaQ3sT3d6pqcmqbMOfbfTTsnTkEwV0nO83KenOygoBJBQIevPeoCZ7VcGqlyzdzSZJE1WFlGFbuZ3wu2IIXsbmtXpNmQPHCudD6dXrNHI9sWjWCXTUOFtAN6-_yChT07gF_IiM9V26BCbaWtSQv2oDeu-jMzSph6uRotfqdmxLrBakNmfexyyvzfbXzrHzonM7mSxZpZ-j4W8EChUbIu3Wh3QzAHu3JGOQi3LbGSfWNzyPXeobK3tNjqAoQ1PXrQt6Xz-_wJEJVsOnfbSv1EpI6QO4LYwRuIkAeTIAq5zy94HGZ-4sEWBPcnQRpynqRxHCUpj_cevI95f5JkWRRGfhDGQRSlPNh_AK9DpdY">
-  </object>
+    <object class="svg" type="image/svg+xml" data="https://mermaid.ink/svg/pako:eNptUMtOhTAQ_ZVmlgYJyKPQxU3Uu9GNJldjYthUGB5KWywlVyT8uwUfQWNX0zPnnDkzE-SqQGDQ4-uAMsd9wyvNRSaJfVIZJC2WhqiSXF_dMXJQAsntaGolyaL85NnW6W53SR407zrUjJy3rcq5Wag3T8-Ym5ONoW6qenXcCPaK9Nba1I2syLEx9V_lD9cOWpPcy6MF_h3wK_EFz1-IUdvQ4IBALXhT2MWnRZiBqVFgBsyWBZZ8aE0GmZwtlQ9GHUaZAzN6QAeGrrCbfd0JWMnb3qIdl49KiW-S_QKb4A1YQH3XDwPq0TMaBakXOzACo57rJwGlcRJFYZzQaHbgfdV7bpymYRB66QInaUznD-SXhKM">
+    </object>
   <figcaption>Fig. 1 - something</figcaption>
 </figure>
-<!--
-https://mermaid.live/edit#pako:eNqVkV1LwzAUhv9KOJdSR2s_0uZioO5m3ihMEaQ3sT3d6pqcmqbMOfbfTTsnTkEwV0nO83KenOygoBJBQIevPeoCZ7VcGqlyzdzSZJE1WFlGFbuZ3wu2IIXsbmtXpNmQPHCudD6dXrNHI9sWjWCXTUOFtAN6-_yChT07gF_IiM9V26BCbaWtSQv2oDeu-jMzSph6uRotfqdmxLrBakNmfexyyvzfbXzrHzonM7mSxZpZ-j4W8EChUbIu3Wh3QzAHu3JGOQi3LbGSfWNzyPXeobK3tNjqAoQ1PXrQt6Xz-_wJEJVsOnfbSv1EpI6QO4LYwRuIkAeTIAq5zy94HGZ-4sEWBPcnQRpynqRxHCUpj_cevI95f5JkWRRGfhDGQRSlPNh_AK9DpdY
--->
 <!--
 sequenceDiagram
     note left of JIT: Some Python code
     JIT->>C Wrapper: Allocate PyObject*
-    C Wrapper->>C Implementation: Unwrap PyObject*
-    note right of C Implementation: Do some work
-    C Implementation->>C Wrapper: Allocate PyObject*
+    note right of C Wrapper: Do something with PyObject*
     C Wrapper->>JIT: Unwrap PyObject*
     note left of JIT: Back to Python code
 -->
+<!-- https://mermaid.live/edit#pako:eNptUMtOhTAQ_ZVmlgYJyKPQxU3Uu9GNJldjYthUGB5KWywlVyT8uwUfQWNX0zPnnDkzE-SqQGDQ4-uAMsd9wyvNRSaJfVIZJC2WhqiSXF_dMXJQAsntaGolyaL85NnW6W53SR407zrUjJy3rcq5Wag3T8-Ym5ONoW6qenXcCPaK9Nba1I2syLEx9V_lD9cOWpPcy6MF_h3wK_EFz1-IUdvQ4IBALXhT2MWnRZiBqVFgBsyWBZZ8aE0GmZwtlQ9GHUaZAzN6QAeGrrCbfd0JWMnb3qIdl49KiW-S_QKb4A1YQH3XDwPq0TMaBakXOzACo57rJwGlcRJFYZzQaHbgfdV7bpymYRB66QInaUznD-SXhKM -->
+
+That's a lot of overhead.
 
 Worse, the C API function may not even *need* the `PyObject` to exist in the
-first place. A lot of C API functions are structured like
+first place. A lot of C API functions are structured like:
 
 ```c
 long foo_impl(long num) {
@@ -65,15 +61,38 @@ PyObject* foo(PyObject* obj) {
 ```
 
 In this example, the `PyObject*` code is only a wrapper around another function
-that works directly on C integers
+that works directly on C integers.
+
+<figure style="display: block; margin: 0 auto;">
+  <object class="svg" type="image/svg+xml" data="https://mermaid.ink/svg/pako:eNqVkV1LwzAUhv9KOJdSR2s_0uZioO5m3ihMEaQ3sT3d6pqcmqbMOfbfTTsnTkEwV0nO83KenOygoBJBQIevPeoCZ7VcGqlyzdzSZJE1WFlGFbuZ3wu2IIXsbmtXpNmQPHCudD6dXrNHI9sWjWCXTUOFtAN6-_yChT07gF_IiM9V26BCbaWtSQv2oDeu-jMzSph6uRotfqdmxLrBakNmfexyyvzfbXzrHzonM7mSxZpZ-j4W8EChUbIu3Wh3QzAHu3JGOQi3LbGSfWNzyPXeobK3tNjqAoQ1PXrQt6Xz-_wJEJVsOnfbSv1EpI6QO4LYwRuIkAeTIAq5zy94HGZ-4sEWBPcnQRpynqRxHCUpj_cevI95f5JkWRRGfhDGQRSlPNh_AK9DpdY">
+  </object>
+  <figcaption>Fig. 2 - something</figcaption>
+</figure>
+<!--
+https://mermaid.live/edit#pako:eNqVkV1LwzAUhv9KOJdSR2s_0uZioO5m3ihMEaQ3sT3d6pqcmqbMOfbfTTsnTkEwV0nO83KenOygoBJBQIevPeoCZ7VcGqlyzdzSZJE1WFlGFbuZ3wu2IIXsbmtXpNmQPHCudD6dXrNHI9sWjWCXTUOFtAN6-_yChT07gF_IiM9V26BCbaWtSQv2oDeu-jMzSph6uRotfqdmxLrBakNmfexyyvzfbXzrHzonM7mSxZpZ-j4W8EChUbIu3Wh3QzAHu3JGOQi3LbGSfWNzyPXeobK3tNjqAoQ1PXrQt6Xz-_wJEJVsOnfbSv1EpI6QO4LYwRuIkAeTIAq5zy94HGZ-4sEWBPcnQRpynqRxHCUpj_cevI95f5JkWRRGfhDGQRSlPNh_AK9DpdY
+-->
+<!--
+sequenceDiagram
+    note left of JIT: Some Python code
+    JIT->>C Wrapper: Allocate PyObject*
+    C Wrapper->>C Implementation: Unwrap PyObject*
+    note right of C Implementation: Do some work
+    C Implementation->>C Wrapper: Allocate PyObject*
+    C Wrapper->>JIT: Unwrap PyObject*
+    note left of JIT: Back to Python code
+-->
+
+All of the bits in the middle between the JIT and the C implementation are
+"wasted work" because it's not needed for the actual execution of the user's
+program.
 
 So even if the PyPy JIT is doing great work and has eliminated memory
 allocation in Python code---PyPy could have unboxed some heap allocated int
-into a C int--- it still has to allocate a PyPy object, then a
-`PyObject*` ... only to throw both away soon after.
+into a C int---it still has to heap allocate a `PyObject*` ... only to throw
+both away soon after.
 
 If there was a way to communicate that `foo` expects an `int` and is going to
-unbox it into a C int (and will also reutrn a C `int`) to PyPy, it wouldn't
+unbox it into a C `int` (and will also reutrn a C `int`) to PyPy, it wouldn't
 need to do any of these shenanigans
 
 proposal: <!-- TODO -->
