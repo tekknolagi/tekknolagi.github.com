@@ -277,6 +277,24 @@ your `complete` function, so this makes debugging a little tricky (bugs just
 result in autocomplete failing!). To combat this, I added a bunch of `print`s
 in development.
 
+### What is a name?
+
+The `readline` library comes with a default notion of what constitutes
+delimiters in the input. If you have a funky programming language that does not
+share the same notion of identifiers as C, you may need to change the
+delimiters. In my case, I wanted `$` to be a valid part of identifiers, so I
+went a little nuts and said "just try and complete until whitespace".
+
+```python
+# what determines the end of a word; need to set so $ can be part of a
+# variable name
+readline.set_completer_delims(" \t\n")
+```
+
+I am not sure if this is ideal. I think it only matters for the names you say
+are matches in your completion function. You may want a stricter set to exclude
+(for example) quotation marks, etc.
+
 ## Changing the prompt
 
 In order to change the prompt, we need to modify globals in the `sys` module.
