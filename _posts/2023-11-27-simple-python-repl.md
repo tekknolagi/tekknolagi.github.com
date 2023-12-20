@@ -98,7 +98,7 @@ enter code written in our own programming language.
 
 To integrate our own interpreter or compiler, we subclass `InteractiveConsole`
 and override the `runsource` method. We are just printing whatever input we
-receive, but you could wire it up to your lexer/parser/... at this junction:
+receive, but you could wire it up to your lexer/parser/... at this point:
 
 ```python
 import code
