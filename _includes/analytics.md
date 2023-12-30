@@ -8,5 +8,12 @@
 
   gtag('config', 'G-MNTD6DM8MP');
 </script>
-<script data-goatcounter="https://tekknolagi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+    window.goatcounter = {
+        // Make sure the reported path has the domain, too
+        // See https://www.goatcounter.com/help/domains
+        path: function(p) { return location.host + p }
+    }
+</script>
+<script data-goatcounter="https://stats.bernsteinbear.com/count" async src="/assets/js/count.js"></script>
 {% endif %}
