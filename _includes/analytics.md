@@ -15,5 +15,5 @@
         path: function(p) { return location.host + p }
     }
 </script>
-<script data-goatcounter="https://stats.bernsteinbear.com/count" async src="/assets/js/count.js"></script>
+<script data-goatcounter="https://tekknolagi.goatcounter.com/count" async src="/assets/js/count.js"></script>
 {% endif %}
