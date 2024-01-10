@@ -46,10 +46,16 @@ sequenceDiagram
 
 That's a lot of overhead. (And there's more, too. See Antonio Cuni's [excellent
 blog
-post](https://www.pypy.org/posts/2018/09/inside-cpyext-why-emulating-cpython-c-8083064623681286567.html).
+post](https://www.pypy.org/posts/2018/09/inside-cpyext-why-emulating-cpython-c-8083064623681286567.html))[^capi-problem].
+
+[^capi-problem]: This C API problem has bitten pretty much every alternative
+    runtime to CPython. They all try changing something about the object model
+    for performance and then they all inevitably hit the problem of pervasive C
+    API modules in the wild. This is part of what hurt the
+    [Skybison](https://github.com/tekknolagi/skybison) project.
 
 Worse, the C API function may not even *need* the `PyObject` to exist in the
-first place. A lot of C API functions are structured like:
+first place. For example, a lot of C API functions are structured like this:
 
 ```c
 long foo_impl(long num) {
