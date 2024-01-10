@@ -463,6 +463,8 @@ $ time pypy3.10-patched bench.py
 $
 ```
 
+<!-- TODO(max): Compare with Skybison -->
+
 I honestly did not believe my eyes when I saw this number. It's a greater than
 10x performance improvement *and I think there is still room for more* (such as
 calling that C function to get the metadata instead of doing that inside the
@@ -476,9 +478,55 @@ profile how this change affects a *representative* workload. That would help
 motivate the inclusion of these type signatures in a binding generator such as
 Cython.
 
-<!-- TODO(max): Compare with Skybison -->
+## PyPy internals
 
-<!-- TODO(max): Add PyPy patch -->
+PyPy is comprised of two main parts:
+
+* A Python interpreter
+* A tool to transform interpreters into JIT compilers
+
+This means that instead of writing fancy JIT compiler changes to get this to
+work, I wrote an interpreter change. Their `cpyext` (C API) handling code
+already contains a little "interpreter" of sorts to make calls to C extensions.
+It looks at `ml_flags` to distinguish between `METH_O` and `METH_FASTCALL`, for
+example.
+
+So I added a new case that looks like this pseudocode:
+
+```diff
+diff --git a/tmp/interp.py b/tmp/typed-interp.py
+index 900fa9c..b973f13 100644
+--- a/tmp/interp.py
++++ b/tmp/typed-interp.py
+@@ -1,7 +1,17 @@
+ def make_c_call(meth, args):
+     if meth.ml_flags & METH_O:
+         assert len(args) == 1
++        if meth.ml_flags & METH_TYPED:
++            return handle_meth_typed(meth, args[0])
+         return handle_meth_o(meth, args[0])
+     if meth.ml_flags & METH_FASTCALL:
+         return handle_meth_fastcall(meth, args)
+     # ...
++
++def handle_meth_typed(meth, arg):
++    sig = call_scary_c_function_to_find_sig(meth)
++    if isinstance(arg, int) and sig.arg_type == int and sig.ret_type == int:
++        unboxed_arg = convert_to_unboxed(arg)
++        unboxed_result = call_f_func(sig.underlying_func, unboxed_arg)
++        return convert_to_boxed(unboxed_result)
++    # ...
+```
+
+Since the JIT probably already knows about the types of the arguments to the C
+function (and probably has also unboxed them), all of the intermediate work can
+be elided. This makes for much less work!
+
+To checkout the changes to PyPy, look at [this stack of
+commits](https://github.com/pypy/pypy/compare/3a06bbe5755a1ee05879b29e1717dcbe230fdbf8...branches/py3.10-mb-typed-sig-experiments).
+
+To see what this looks like from the JIT's perspective, we can peek at the
+generated IR before and after my change.
 
 <!-- TODO(max): Add PyPy traces before/after -->
 
