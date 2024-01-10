@@ -105,14 +105,15 @@ both away soon after.
 
 If there was a way to communicate that `foo` expects an `int` and is going to
 unbox it into a C `int` (and will also reutrn a C `int`) to PyPy, it wouldn't
-need to do any of these shenanigans
+need to do any of these shenanigans.
 
 proposal: <!-- TODO -->
 
 diagram: <!-- TODO -->
 
 And yes, ideally there wouldn't be a C API call at all. But sometimes you have
-to, and you might as well speed up that call
+to (perhaps because you have no control over the code), and you might as well
+speed up that call.
 
 ## Potsdam
 
