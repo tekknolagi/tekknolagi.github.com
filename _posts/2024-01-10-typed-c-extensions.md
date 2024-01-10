@@ -455,11 +455,11 @@ JIT).
 
 This is extraordinarily promising.
 
-## Profiling large applications
-
-IG workload (for example)
-
-Use of Static Python as binding generator
+As I said before, most applications don't consist of a Python program calling a
+C function and only a C function in a tight loop. It would be important to
+profile how this change affects a *representative* workload. That would help
+motivate the inclusion of these type signatures in a binding generator such as
+Cython.
 
 ## Approaches in other runtimes
 
