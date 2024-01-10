@@ -6,7 +6,8 @@ date: 2024-01-10
 
 ## what
 
-pypy's c-api has some performance trouble. i am working on a way to make pypy's
+pypy's c-api has some performance trouble. [Carl Friedrich
+Bolz-Tereick](https://cfbolz.de/) and i are working on a way to make pypy's
 c-api interactions much faster. it's looking very promising. here's a sketch of
 how it works.
 
