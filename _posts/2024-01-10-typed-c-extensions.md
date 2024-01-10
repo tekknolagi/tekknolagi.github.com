@@ -113,12 +113,25 @@ diagram: <!-- TODO -->
 
 And yes, ideally there wouldn't be a C API call at all. But sometimes you have
 to (perhaps because you have no control over the code), and you might as well
-speed up that call.
+speed up that call. Let's see if it can be done.
 
 ## Potsdam
 
-I talked to the authors of PyPy and GraalPython over some coffee at ECOOP 2022.
-They've been working on a project called HPy
+This is where I come into this. I was at the ECOOP conference in 2022 where
+[Carl Friedrich](https://cfbolz.de/) introduced me to some other implementors
+of alternative Python runtimes. I got to talk to the authors of PyPy and ZipPy
+and GraalPython over some coffee. They're really nice.
+
+They've been working on a project called HPy. HPy is a new design for a C API
+Python that takes alternative runtimes into account. As part of this design,
+they were investigating a way to pipe type information from the C module
+through the C API and into a place where the host runtime can read it.
+
+It's a tricky problem because not only is there a C API, but also a C ABI (note
+the "B"). While an API is an abstract contract between caller and callee, an
+ABI is more concrete. In the case of the C ABI, it means not changing structs,
+adding function parameters, things like that. This is kind of a tight
+constraint and it wasn't clear what the best way forward was.
 
 https://github.com/hpyproject/hpy/issues/129
 
@@ -128,10 +141,29 @@ https://github.com/faster-cpython/ideas/issues/546
 
 ## Sketchy C things
 
-The existing `PyMethodDef`
+This is the kind of type metadata we want to add to each typed method.
 
 ```c
-// Old stuff
+struct PyPyTypedMethodMetadata {
+  int arg_type;
+  int ret_type;
+  void* underlying_func;
+};
+typedef struct PyPyTypedMethodMetadata PyPyTypedMethodMetadata;
+```
+
+In this artificially limited example, we store the type information for one
+argument (but more could be added in the future), the type information for the
+return value, and the underlying (non-`PyObject*`) C function.
+
+But it's not clear where to put that.
+
+The existing `PyMethodDef` struct looks like this. It contains a little bit of
+metadata and a C function pointer (the `PyObject*` one). In an ideal world, we
+would "just" add the type metadata to this struct and be done with it. But we
+can't change its size for ABI reasons.
+
+```c
 struct PyMethodDef {
     const char  *ml_name;   /* The name of the built-in function/method */
     PyCFunction  ml_meth;   /* The C function that implements it */
@@ -142,42 +174,38 @@ struct PyMethodDef {
 typedef struct PyMethodDef PyMethodDef;
 ```
 
-We want to store this kind of metadata
+What to do? Well, I decided to get a little weird with it and see if we could
+sneak in a pointer to the metadata somehow. My original idea was to put the
+entire `PyPyTypedMethodMetadata` struct *behind* the `PyMethodDef` struct, but
+that wouldn't work so well: `PyMethodDef`s are commonly statically allocated in
+arrays, and we can't change the layout of those arrays. But what we can do is
+point the `ml_name` field to a buffer inside another struct[^linux-trick].
+
+[^linux-trick]: later learned that this is common in the Linux kernel
+
+Then, when we notice that a method is marked as typed (with a new `METH_TYPED`
+flag we can add to the `ml_flags` bitset), we can read backwards to find the
+`PyPyTypedMethodMetadata` struct. Here's how you might do that in C:
 
 ```c
 struct PyPyTypedMethodMetadata {
   int arg_type;
   int ret_type;
   void* underlying_func;
-  const char ml_name[100];
-};
-typedef struct PyPyTypedMethodMetadata PyPyTypedMethodMetadata;
-```
-
-(note that this only stores type information for one arg, but that can be
-extended easily enough)
-
-ABI changes are a no-no
-
-What to do?
-
-```c
-// New stuff
-struct PyPyTypedMethodMetadata {
-  int arg_type;
-  int ret_type;
-  void* underlying_func;
-  const char ml_name[100];
+  const char ml_name[100];  // New field!
 };
 typedef struct PyPyTypedMethodMetadata PyPyTypedMethodMetadata;
 
 PyPyTypedMethodMetadata*
 GetTypedSignature(PyMethodDef* def)
 {
-  assert(def->ml_flags & METH_TYPED);
+  assert(def->ml_flags & METH_TYPED);  // A new type of flag!
   return (PyPyTypedMethodMetadata*)(def->ml_name - offsetof(PyPyTypedMethodMetadata, ml_name));
 }
 ```
+
+And here's a diagram to illustrate this because it's really weird and
+confusing.
 
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595.5 280.69167393781254" width="595.5" height="280.69167393781254">
   <!-- svg-source:excalidraw -->
@@ -200,6 +228,14 @@ GetTypedSignature(PyMethodDef* def)
     
   </defs>
   <rect x="0" y="0" width="595.5" height="280.69167393781254" fill="#ffffff"></rect><g stroke-linecap="round" transform="translate(301.5 172.8591812698021) rotate(0 142 48.5)"><path d="M24.25 0 C96.98 0.07, 170.08 1.31, 259.75 0 M24.25 0 C91.64 1.01, 159.28 0.63, 259.75 0 M259.75 0 C277.18 -1.81, 282.61 8.34, 284 24.25 M259.75 0 C277.04 0.75, 286.19 8.14, 284 24.25 M284 24.25 C283.22 35.88, 284.64 52.64, 284 72.75 M284 24.25 C285.26 35.92, 284.01 49.77, 284 72.75 M284 72.75 C283.04 89.11, 277.03 98.59, 259.75 97 M284 72.75 C282.59 88.86, 276.09 98.31, 259.75 97 M259.75 97 C202.55 96.59, 145.75 96, 24.25 97 M259.75 97 C194.6 98.64, 130.77 99.23, 24.25 97 M24.25 97 C7.55 96.82, -0.08 87.92, 0 72.75 M24.25 97 C8.82 95.01, 0.75 90.45, 0 72.75 M0 72.75 C0.42 59.62, -0.5 44.56, 0 24.25 M0 72.75 C-0.31 62, 0.39 50.58, 0 24.25 M0 24.25 C0.6 7.93, 7.62 0.36, 24.25 0 M0 24.25 C-1.19 5.9, 7.1 1.56, 24.25 0" stroke="#000000" stroke-width="1" fill="none"></path></g><g transform="translate(12 10) rotate(0 136.49166870117188 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">PyPyTypedMethodMetadata</text></g><g transform="translate(320 145.75) rotate(0 64.375 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">PyMethodDef</text></g><g transform="translate(323 209.48459595774125) rotate(0 40.358333587646484 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">ml_name</text></g><g stroke-linecap="round"><g transform="translate(413 174.625) rotate(0 -0.5 47.5)"><path d="M-0.24 0.21 C-0.58 16.29, -0.7 80.09, -0.86 96.07 M-1.83 -0.72 C-2.41 15.08, -1.7 78.66, -1.73 94.5" stroke="#000000" stroke-width="1" fill="none"></path></g></g><mask></mask><g stroke-linecap="round"><g transform="translate(493.1505265640949 172.95269669828917) rotate(0 -0.5 47.5)"><path d="M-0.4 -0.76 C-0.62 15.2, -2.05 79.08, -2.04 94.86 M1.59 1.45 C1.79 17.69, 0.51 80.78, 0.13 96.33" stroke="#000000" stroke-width="1" fill="none"></path></g></g><mask></mask><g transform="translate(447 208.54647392583252) rotate(0 8.225000381469727 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">...</text></g><g transform="translate(526.7749996185303 209.17188861377167) rotate(0 8.225000381469727 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">...</text></g><g stroke-linecap="round" transform="translate(10 44.04372656020746) rotate(0 142 48.5)"><path d="M24.25 0 C81.4 0.59, 139.51 0.48, 259.75 0 M24.25 0 C76.66 2.05, 129.56 2.09, 259.75 0 M259.75 0 C277.04 -1.2, 285.14 8.12, 284 24.25 M259.75 0 C273.68 2.24, 284.4 8.52, 284 24.25 M284 24.25 C283.59 42.07, 286.16 59.02, 284 72.75 M284 24.25 C282.68 42.25, 282.83 60.97, 284 72.75 M284 72.75 C282.47 88.38, 276.34 95.42, 259.75 97 M284 72.75 C285.66 90.19, 275.08 97.5, 259.75 97 M259.75 97 C187.17 95.96, 117.77 97.99, 24.25 97 M259.75 97 C188.95 94.81, 118.66 94.88, 24.25 97 M24.25 97 C6.43 97.47, 0.64 89.78, 0 72.75 M24.25 97 C8.65 99.11, -2.04 90.05, 0 72.75 M0 72.75 C2.2 55.17, 2.17 40.39, 0 24.25 M0 72.75 C0.06 56.12, -0.19 39.47, 0 24.25 M0 24.25 C-1.99 8.14, 8.97 1.8, 24.25 0 M0 24.25 C0.69 9.54, 7.32 -1.75, 24.25 0" stroke="#000000" stroke-width="1" fill="none"></path></g><g transform="translate(111.5 80.11448964279407) rotate(0 40.358333587646484 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">ml_name</text></g><g stroke-linecap="round"><g transform="translate(101.5 45.80954529040514) rotate(0 -0.5 47.5)"><path d="M0.43 -0.92 C0.3 14.64, 0.02 77.99, -0.26 94.12 M-0.81 1.21 C-1.07 16.84, -0.59 79.74, -0.82 95.19" stroke="#000000" stroke-width="1" fill="none"></path></g></g><mask></mask><g stroke-linecap="round"><g transform="translate(201.6505265640949 44.13724198869454) rotate(0 -0.5 47.5)"><path d="M0.74 -0.88 C0.46 15.25, -1 79.72, -1.27 95.85 M-0.33 1.27 C-0.83 17.15, -2.16 78.71, -2.36 94.17" stroke="#000000" stroke-width="1" fill="none"></path></g></g><mask></mask><g transform="translate(55.5 79.45168744587136) rotate(0 8.225000381469727 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">...</text></g><g transform="translate(235.27499961853027 79.78308854433271) rotate(0 8.225000381469727 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">...</text></g><g stroke-linecap="round"><g transform="translate(314.88948191038185 202.0536137670765) rotate(0 -70.98591049402219 -42.714306883538256)"><path d="M-0.15 -0.22 C-23.58 -14.53, -117.3 -71.12, -140.82 -85.14 M-1.69 -1.38 C-25.15 -16.14, -117.84 -72.99, -141.16 -87.12" stroke="#000000" stroke-width="1" fill="none"></path></g><g transform="translate(314.88948191038185 202.0536137670765) rotate(0 -70.98591049402219 -42.714306883538256)"><path d="M-116.65 -82.17 C-123.91 -81.67, -129.93 -83.74, -141.16 -87.12 M-116.65 -82.17 C-126.68 -84.38, -135.51 -86.11, -141.16 -87.12" stroke="#000000" stroke-width="1" fill="none"></path></g><g transform="translate(314.88948191038185 202.0536137670765) rotate(0 -70.98591049402219 -42.714306883538256)"><path d="M-125.57 -67.58 C-130.42 -71.14, -133.94 -77.31, -141.16 -87.12 M-125.57 -67.58 C-132.19 -75.38, -137.56 -82.77, -141.16 -87.12" stroke="#000000" stroke-width="1" fill="none"></path></g></g><mask></mask></svg>
+
+I started off with a mock implementation of this in C (no Python C API, just
+fake structures to sketch it out) and it worked. So I implemented a hacky
+version of it in Cinder, but never shipped it because my integration with
+Cinder was a little too hacky.
+
+A year later, I decided to poke Carl Friedrich and see if we could implement it
+in PyPy.
 
 ## Implementing in PyPy
 
