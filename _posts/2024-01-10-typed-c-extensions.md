@@ -1,7 +1,7 @@
 ---
 title: "Mining type information for faster Python C extensions"
 layout: post
-date: 2023-12-15
+date: 2024-01-10
 ---
 
 ## intro
