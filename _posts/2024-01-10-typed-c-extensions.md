@@ -467,8 +467,8 @@ $
 
 I honestly did not believe my eyes when I saw this number. It's a greater than
 10x performance improvement *and I think there is still room for more* (such as
-calling that C function to get the metadata instead of doing that inside the
-JIT).
+doing the signature/metadata finding inside the JIT instead of calling that C
+function).
 
 This is extraordinarily promising.
 
