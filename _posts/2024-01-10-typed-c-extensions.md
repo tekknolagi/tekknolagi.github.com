@@ -168,6 +168,28 @@ GetTypedSignature(PyMethodDef* def)
 }
 ```
 
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 618.5 126.5" width="618.5" height="126.5">
+  <!-- svg-source:excalidraw -->
+  
+  <defs>
+    <style class="style-fonts">
+      @font-face {
+        font-family: "Virgil";
+        src: url("https://excalidraw.com/Virgil.woff2");
+      }
+      @font-face {
+        font-family: "Cascadia";
+        src: url("https://excalidraw.com/Cascadia.woff2");
+      }
+      @font-face {
+        font-family: "Assistant";
+        src: url("https://excalidraw.com/Assistant-Regular.woff2");
+      }
+    </style>
+    
+  </defs>
+  <rect x="0" y="0" width="618.5" height="126.5" fill="#ffffff"></rect><g stroke-linecap="round" transform="translate(10 10) rotate(0 216 48.5)"><path d="M24.25 0 C137.76 0.74, 252.66 1.25, 407.75 0 M24.25 0 C133.75 -1.6, 242.8 -2.49, 407.75 0 M407.75 0 C422.22 -0.06, 432.41 7.86, 432 24.25 M407.75 0 C424.83 1.55, 431.62 10.25, 432 24.25 M432 24.25 C431.26 36, 431.05 45.37, 432 72.75 M432 24.25 C431.31 37.25, 430.98 51.86, 432 72.75 M432 72.75 C433.23 88.41, 421.98 96.89, 407.75 97 M432 72.75 C430.17 90.62, 424.32 96.24, 407.75 97 M407.75 97 C313.85 98.48, 218.96 96.58, 24.25 97 M407.75 97 C309.98 97.32, 211.48 97.13, 24.25 97 M24.25 97 C7.8 98.52, -1.82 89.67, 0 72.75 M24.25 97 C7.43 95.29, -2.16 88.95, 0 72.75 M0 72.75 C0.75 59.9, -1.33 43.31, 0 24.25 M0 72.75 C-0.42 55.39, 0.78 37.15, 0 24.25 M0 24.25 C1.44 9.34, 8.8 1.32, 24.25 0 M0 24.25 C-0.4 8.7, 5.97 0.7, 24.25 0" stroke="#000000" stroke-width="1" fill="none"></path></g><g stroke-linecap="round" transform="translate(324.5 19.5) rotate(0 142 48.5)"><path d="M24.25 0 C96.98 0.07, 170.08 1.31, 259.75 0 M24.25 0 C91.64 1.01, 159.28 0.63, 259.75 0 M259.75 0 C277.18 -1.81, 282.61 8.34, 284 24.25 M259.75 0 C277.04 0.75, 286.19 8.14, 284 24.25 M284 24.25 C283.22 35.88, 284.64 52.64, 284 72.75 M284 24.25 C285.26 35.92, 284.01 49.77, 284 72.75 M284 72.75 C283.04 89.11, 277.03 98.59, 259.75 97 M284 72.75 C282.59 88.86, 276.09 98.31, 259.75 97 M259.75 97 C202.55 96.59, 145.75 96, 24.25 97 M259.75 97 C194.6 98.64, 130.77 99.23, 24.25 97 M24.25 97 C7.55 96.82, -0.08 87.92, 0 72.75 M24.25 97 C8.82 95.01, 0.75 90.45, 0 72.75 M0 72.75 C0.42 59.62, -0.5 44.56, 0 24.25 M0 72.75 C-0.31 62, 0.39 50.58, 0 24.25 M0 24.25 C0.6 7.93, 7.62 0.36, 24.25 0 M0 24.25 C-1.19 5.9, 7.1 1.56, 24.25 0" stroke="#000000" stroke-width="1" fill="none"></path></g><g transform="translate(35 48.375) rotate(0 136.49166870117188 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">PyPyTypedMethodMetadata</text></g><g transform="translate(459 53.125) rotate(0 64.375 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">PyMethodDef</text></g><g transform="translate(345 50.75) rotate(0 40.358333587646484 12.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#000000" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">ml_name</text></g></svg>
+
 ## Implementing in PyPy
 
 ## Where do all the C extensions come from?
