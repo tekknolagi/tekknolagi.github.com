@@ -4,6 +4,12 @@ layout: post
 date: 2024-01-10
 ---
 
+## what
+
+pypy's c-api has some performance trouble. i am working on a way to make pypy's
+c-api interactions much faster. it's looking very promising. here's a sketch of
+how it works.
+
 ## intro
 
 Python is pretty widely-used. For years, CPython was the only implementation,
@@ -469,6 +475,8 @@ C function and only a C function in a tight loop. It would be important to
 profile how this change affects a *representative* workload. That would help
 motivate the inclusion of these type signatures in a binding generator such as
 Cython.
+
+<!-- TODO(max): Compare with Skybison -->
 
 ## Next steps
 
