@@ -461,26 +461,11 @@ profile how this change affects a *representative* workload. That would help
 motivate the inclusion of these type signatures in a binding generator such as
 Cython.
 
-## Approaches in other runtimes
+## Next steps
 
-PyPy: differences from specifying C binding *in Python*
-
-JS: not much extension in the browser, just the shell
-JSC has DOMJIT
-V8 has Torque
-
-Ruby: ???
-
-Java: ???
-
-Hack Native: See if I can get details about this from Edwin
-
-## Looking forward
-
-### Motivation for CPython to include
-
-### Motivation for HPy to include
-
-### Implementing in binding generators
-
-### Typed dialects?
+* Get other native types (other int types, double) working
+* Get multiple parameters working
+* Hack a proof of concept of this idea into Cython
+* Make the signature more expressive
+  * Perhaps we should have a mini language kind of like CPython's Argument
+    Clinic
