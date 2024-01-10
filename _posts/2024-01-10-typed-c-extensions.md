@@ -345,47 +345,6 @@ Even Argument Clinic in CPython
 
 ## Small useless benchmark
 
-
-```c
-#include <Python.h>
-
-long inc_impl(long arg) {
-  return arg+1;
-}
-
-PyObject* inc(PyObject* module, PyObject* obj) {
-  (void)module;
-  long obj_int = PyLong_AsLong(obj);
-  if (obj_int == -1 && PyErr_Occurred()) {
-    return NULL;
-  }
-  long result = inc_impl(obj_int);
-  return PyLong_FromLong(result);
-}
-
-static PyMethodDef mytypedmod_methods[] = {
-    {"inc", inc, METH_O, "Add one to an int"},
-    {NULL, NULL, 0, NULL}};
-
-static struct PyModuleDef mytypedmod_definition = {
-    PyModuleDef_HEAD_INIT, "mytypedmod",
-    "A C extension module with type information exposed.", -1,
-    mytypedmod_methods,
-    NULL,
-    NULL,
-    NULL,
-    NULL};
-
-PyMODINIT_FUNC PyInit_mytypedmod(void) {
-  PyObject* m = PyState_FindModule(&mytypedmod_definition);
-  if (m != NULL) {
-    Py_INCREF(m);
-    return m;
-  }
-  return PyModule_Create(&mytypedmod_definition);
-}
-```
-
 Now let's try benchmarking the interpreter interaction with the native module
 with a silly benchmark. It's a little silly because it's not super common (in
 use cases I am familiar with anyway) to call C code in a hot loop like this
