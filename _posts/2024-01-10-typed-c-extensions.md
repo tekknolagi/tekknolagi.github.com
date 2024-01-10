@@ -336,6 +336,59 @@ PyMODINIT_FUNC PyInit_mytypedmod(void) {
 }
 ```
 
+Now let's try benchmarking the interpreter interaction with the native module
+with a silly benchmark. It's a little silly because it's not super common (in
+use cases I am familiar with anyway) to call C code in a hot loop like this
+without writing the loop in C as well. But it'll be a good reference for the
+maximum amount of performance we can win back.
+
+```python
+# bench.py
+import mytypedmod
+
+
+def main():
+    i = 0
+    while i < 10_000_000:
+        i = mytypedmod.inc(i)
+    return i
+
+
+if __name__ == "__main__":
+    print(main())
+```
+
+We'll try running it with CPython first because CPython doesn't have this
+problem making `PyObject*`---that is just the default object representation in
+the runtime.
+
+```console
+$ python3.10 setup.py build
+$ time python3.10 bench.py
+10000000
+846.6ms
+$
+```
+
+Okay so the output is a little fudged since I actually measured this with
+`hyperfine`, but you get the idea. CPython takes a very respectable 850ms to go
+back and forth with C *10 million times*.
+
+Now let's see how PyPy does on time, since it's doing a lot more work at the
+boundary.
+
+```console
+$ pypy3.10 setup.py build
+$ time pypy3.10 bench.py
+10000000
+2.269s
+$
+```
+
+Yeah, okay, so PyPy (before our changes) has to do a bunch of work with every
+call to `inc` and this difference in timing makes it clear. But this post is
+all about adding types. What if we add types to the C module?
+
 ```c
 // TODO(max): Turn this into a diff?
 #include <Python.h>
@@ -385,37 +438,22 @@ PyMODINIT_FUNC PyInit_mytypedmod(void) {
 }
 ```
 
-```python
-# bench.py
-import mytypedmod
-
-
-def main():
-    i = 0
-    while i < 10_000_000:
-        i = mytypedmod.inc(i)
-    return i
-
-
-if __name__ == "__main__":
-    print(main())
-```
+And now let's run it with our new patched PyPy.
 
 ```console
-$ python3.10 bench.py
-
-$ pypy3.10 setup.py build
-$ pypy3.10 bench.py
-
-$ pypy3.10-new setup.py build
-$ pypy3.10-new bench.py
+$ pypy3.10-patched setup.py build
+$ time pypy3.10-patched bench.py
+10000000
+168.1ms
+$
 ```
 
-perf measured with hyperfine:
+I honestly did not believe my eyes when I saw this number. It's a greater than
+10x performance improvement *and I think there is still room for more* (such as
+calling that C function to get the metadata instead of doing that inside the
+JIT).
 
-CPython3.10 846.6ms
-PyPy3.10nightly 2.269s
-PyPy3.10patched 168.1ms
+This is extraordinarily promising.
 
 ## Profiling large applications
 
