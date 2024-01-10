@@ -11,9 +11,13 @@ and CPython was not designed to be fast. The Python community needed some
 programs to go faster and determined that the best path forward was to write
 some modules in C and interact with them from Python. Worked just fine.
 
-Then other Python runtimes like PyPy came along. PyPy's execution of normal
-code is *very* fast, at least until it hits a call into a function written in
-C.
+Then other Python runtimes like PyPy came along. PyPy includes a JIT compiler
+and its execution of normal Python code is *very* fast, at least until it hits
+a call from Python to a C function. Then things go a little bit sideways. First
+and foremost because PyPy can't "see into" the native code; it's generated
+outside of the JIT and opaque. And second of all because the binding API for
+the aforementioned C modules ("The C API") uses a totally different
+representation than PyPy.
 
 PyPy has its own object model, runtime, and moving garbage collector. This is
 all to get better performance. Unfortunately, this means that whenever you call
