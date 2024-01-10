@@ -239,6 +239,9 @@ in PyPy.
 
 ## Implementing in PyPy
 
+<!-- TODO(max): A sketch of the implementation inside PyPy, or at least a link
+to the commit(s) -->
+
 ## Where do all the C extensions come from?
 
 None in PyPy standard library since they are all implemented in Python
