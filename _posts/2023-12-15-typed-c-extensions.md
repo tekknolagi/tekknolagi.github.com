@@ -143,6 +143,9 @@ struct PyPyTypedMethodMetadata {
 typedef struct PyPyTypedMethodMetadata PyPyTypedMethodMetadata;
 ```
 
+(note that this only stores type information for one arg, but that can be
+extended easily enough)
+
 ABI changes are a no-no
 
 What to do?
@@ -270,7 +273,49 @@ Even Argument Clinic in CPython
 
 ## Small useless benchmark
 
+
 ```c
+#include <Python.h>
+
+long inc_impl(long arg) {
+  return arg+1;
+}
+
+PyObject* inc(PyObject* module, PyObject* obj) {
+  (void)module;
+  long obj_int = PyLong_AsLong(obj);
+  if (obj_int == -1 && PyErr_Occurred()) {
+    return NULL;
+  }
+  long result = inc_impl(obj_int);
+  return PyLong_FromLong(result);
+}
+
+static PyMethodDef mytypedmod_methods[] = {
+    {"inc", inc, METH_O, "Add one to an int"},
+    {NULL, NULL, 0, NULL}};
+
+static struct PyModuleDef mytypedmod_definition = {
+    PyModuleDef_HEAD_INIT, "mytypedmod",
+    "A C extension module with type information exposed.", -1,
+    mytypedmod_methods,
+    NULL,
+    NULL,
+    NULL,
+    NULL};
+
+PyMODINIT_FUNC PyInit_mytypedmod(void) {
+  PyObject* m = PyState_FindModule(&mytypedmod_definition);
+  if (m != NULL) {
+    Py_INCREF(m);
+    return m;
+  }
+  return PyModule_Create(&mytypedmod_definition);
+}
+```
+
+```c
+// TODO(max): Turn this into a diff?
 #include <Python.h>
 
 long inc_impl(long arg) {
@@ -323,21 +368,32 @@ PyMODINIT_FUNC PyInit_mytypedmod(void) {
 import mytypedmod
 
 
-def bench():
-    result = 0
-    inc = mytypedmod.inc
-    for i in range(1_000_000):
-        result += inc(10)
-    return result
+def main():
+    i = 0
+    while i < 10_000_000:
+        i = mytypedmod.inc(i)
+    return i
 
 
-bench()
+if __name__ == "__main__":
+    print(main())
 ```
 
 ```console
-$ pyp3 setup.py build
-$ pypy3 bench.py
+$ python3.10 bench.py
+
+$ pypy3.10 setup.py build
+$ pypy3.10 bench.py
+
+$ pypy3.10-new setup.py build
+$ pypy3.10-new bench.py
 ```
+
+perf measured with hyperfine:
+
+CPython3.10 846.6ms
+PyPy3.10nightly 2.269s
+PyPy3.10patched 168.1ms
 
 ## Profiling large applications
 
