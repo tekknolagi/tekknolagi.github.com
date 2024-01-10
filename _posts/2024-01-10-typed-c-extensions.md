@@ -478,6 +478,10 @@ Cython.
 
 <!-- TODO(max): Compare with Skybison -->
 
+<!-- TODO(max): Add PyPy patch -->
+
+<!-- TODO(max): Add PyPy traces before/after -->
+
 ## Next steps
 
 * Get other native types (other int types, double) working
