@@ -160,11 +160,11 @@ struct PyPyTypedMethodMetadata {
 };
 typedef struct PyPyTypedMethodMetadata PyPyTypedMethodMetadata;
 
-TypedMethodMetadata*
+PyPyTypedMethodMetadata*
 GetTypedSignature(PyMethodDef* def)
 {
   assert(def->ml_flags & METH_TYPED);
-  return (TypedMethodMetadata*)(def->ml_name - offsetof(TypedMethodMetadata, ml_name));
+  return (PyPyTypedMethodMetadata*)(def->ml_name - offsetof(PyPyTypedMethodMetadata, ml_name));
 }
 ```
 
