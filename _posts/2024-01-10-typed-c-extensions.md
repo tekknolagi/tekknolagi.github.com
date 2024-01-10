@@ -519,8 +519,8 @@ index 900fa9c..b973f13 100644
 ```
 
 Since the JIT probably already knows about the types of the arguments to the C
-function (and probably has also unboxed them), all of the intermediate work can
-be elided. This makes for much less work!
+extension function (and probably has also unboxed them), all of the
+intermediate work can be elided. This makes for much less work!
 
 To checkout the changes to PyPy, look at [this stack of
 commits](https://github.com/pypy/pypy/compare/3a06bbe5755a1ee05879b29e1717dcbe230fdbf8...branches/py3.10-mb-typed-sig-experiments).
