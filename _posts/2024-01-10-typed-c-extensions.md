@@ -64,16 +64,16 @@ Worse, the C API function may not even *need* the `PyObject` to exist in the
 first place. For example, a lot of C API functions are structured like this:
 
 ```c
-long foo_impl(long num) {
-    return num * 2;
+long inc_impl(long num) {
+    return num + 1;
 }
 
-PyObject* foo(PyObject* obj) {
+PyObject* inc(PyObject* obj) {
     long num = PyLong_AsLong(obj);
     if (num < 0 && PyErr_Occurred()) {
         return NULL;
     }
-    long result = foo_impl(num);
+    long result = inc_impl(num);
     return PyLong_FromLong(result);
 }
 ```
@@ -106,11 +106,11 @@ program.
 
 So even if the PyPy JIT is doing great work and has eliminated memory
 allocation in Python code---PyPy could have unboxed some heap allocated int
-into a C int---it still has to heap allocate a `PyObject*` ... only to throw
+into a C long---it still has to heap allocate a `PyObject*` ... only to throw
 both away soon after.
 
-If there was a way to communicate that `foo` expects an `int` and is going to
-unbox it into a C `int` (and will also reutrn a C `int`) to PyPy, it wouldn't
+If there was a way to communicate that `inc` expects an `long` and is going to
+unbox it into a C `long` (and will also return a C `long`) to PyPy, it wouldn't
 need to do any of these shenanigans.
 
 proposal: <!-- TODO -->
