@@ -447,7 +447,7 @@ pybind11, nanobind, ...
 Even Argument Clinic in CPython
 -->
 
-## Small useless benchmark
+## A small, useless benchmark
 
 Let's try benchmarking the interpreter interaction with the native module with
 a silly benchmark. It's a little silly because it's not super common (in use
