@@ -562,9 +562,9 @@ $
 
 <!-- TODO(max): Compare with Skybison -->
 
-168ms! To refresh your memory, that's 5x faster than CPython and 13x greater
-than baseline PyPy. I honestly did not believe my eyes when I saw this number.
-And I think there is *still room for more* improvements like doing the
+168ms! To refresh your memory, that's **5x** faster than CPython and **13x**
+faster than baseline PyPy. I honestly did not believe my eyes when I saw this
+number. And I think there is *still room for more* improvements like doing the
 signature/metadata finding inside the JIT instead of calling that C function.
 
 This is extraordinarily promising.
