@@ -258,8 +258,8 @@ ideas](https://github.com/faster-cpython/ideas/issues/546) for posterity in
 case someone wanted to take up the project.
 
 A year later, nobody else had, so I decided to poke Carl Friedrich and see if
-we could implement it in PyPy. But first, an aside on where C extensions come
-from.
+we could implement it in PyPy. We'll see how that implementation looks in a
+minute. But first, an aside on where C extensions come from.
 
 ## Where do all the C extensions come from?
 
