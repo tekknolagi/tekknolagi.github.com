@@ -81,8 +81,8 @@ PyObject* inc(PyObject* obj) {
 }
 ```
 
-In this example, the `PyObject*` code is only a wrapper around another function
-that works directly on C integers.
+In this example, the `PyObject*` code `inc` is only a wrapper around another
+function `inc_impl` that works directly on C integers.
 
 <figure style="display: block; margin: 0 auto;">
   <object class="svg" type="image/svg+xml" data="https://mermaid.ink/svg/pako:eNqVkV1LwzAUhv9KOJdSR2s_0uZioO5m3ihMEaQ3sT3d6pqcmqbMOfbfTTsnTkEwV0nO83KenOygoBJBQIevPeoCZ7VcGqlyzdzSZJE1WFlGFbuZ3wu2IIXsbmtXpNmQPHCudD6dXrNHI9sWjWCXTUOFtAN6-_yChT07gF_IiM9V26BCbaWtSQv2oDeu-jMzSph6uRotfqdmxLrBakNmfexyyvzfbXzrHzonM7mSxZpZ-j4W8EChUbIu3Wh3QzAHu3JGOQi3LbGSfWNzyPXeobK3tNjqAoQ1PXrQt6Xz-_wJEJVsOnfbSv1EpI6QO4LYwRuIkAeTIAq5zy94HGZ-4sEWBPcnQRpynqRxHCUpj_cevI95f5JkWRRGfhDGQRSlPNh_AK9DpdY">
@@ -103,22 +103,18 @@ sequenceDiagram
     note left of JIT: Back to Python code
 -->
 
-All of the bits in the middle between the JIT and the C implementation are
-"wasted work" because it's not needed for the actual execution of the user's
-program.
+All of the bits in the middle between the JIT and the C implementation (the
+entire `inc` function, really) are "wasted work" because it's not needed for
+the actual execution of the user's program.
 
 So even if the PyPy JIT is doing great work and has eliminated memory
-allocation in Python code---PyPy could have unboxed some heap allocated int
-into a C long---it still has to heap allocate a `PyObject*` ... only to throw
-both away soon after.
+allocation in Python code---PyPy could have unboxed some heap allocated Python
+integer object into a C long---it still has to heap allocate a `PyObject*` for
+the C API... only to throw it away soon after.
 
-If there was a way to communicate that `inc` expects an `long` and is going to
+If there was a way to communicate that `inc` expects a `long` and is going to
 unbox it into a C `long` (and will also return a C `long`) to PyPy, it wouldn't
 need to do any of these shenanigans.
-
-proposal: <!-- TODO -->
-
-diagram: <!-- TODO -->
 
 And yes, ideally there wouldn't be a C API call at all. But sometimes you have
 to (perhaps because you have no control over the code), and you might as well
