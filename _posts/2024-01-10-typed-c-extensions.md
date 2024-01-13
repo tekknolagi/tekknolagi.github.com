@@ -20,21 +20,23 @@ some modules in C and interact with them from Python. Worked just fine.
 
 Then other Python runtimes like PyPy came along. PyPy includes a JIT compiler
 and its execution of normal Python code is *very* fast, at least until it hits
-a call from Python to a C function. Then things go a little bit sideways. First
-and foremost because PyPy can't "see into" the native code; it's generated
-outside of the JIT and opaque. And second of all because the binding API for
-the aforementioned C modules ("The C API") uses a totally different
-representation than PyPy.
+a call from Python to a C extension function. Then things go a little bit
+sideways. First and foremost because the PyPy JIT can't "see into" the native
+code; it's generated outside of the JIT by some other compiler and is therefore
+opaque. And second of all because the binding API for the aforementioned C
+modules ("The C API") requires a totally different object and memory
+representation than PyPy has internally.
 
-PyPy has its own object model, runtime, and moving garbage collector. This is
-all to get better performance. Unfortunately, this means that whenever you call
-a C API function from PyPy, it has to stop what it's doing, set up some C API
+PyPy has its own object model, runtime, and moving garbage collector, all to
+get better performance. Unfortunately, this means that whenever you call a C
+API function from PyPy, it has to stop what it's doing, set up some C API
 scaffolding, do the C API call, and then take down the scaffolding.
 
 For example, the C API is centered around `PyObject` pointers. PyPy does not
 normally use `PyObject`s. It has to allocate a `PyObject`, make it point into
 the PyPy heap, call the C API function, and then (potentially) free the
-`PyObject`.
+`PyObject`. (This ignores GIL stuff and exception checking, which is also an
+issue.)
 
 <figure style="display: block; margin: 0 auto;">
     <object class="svg" type="image/svg+xml" data="https://mermaid.ink/svg/pako:eNptUMtOhTAQ_ZVmlgYJyKPQxU3Uu9GNJldjYthUGB5KWywlVyT8uwUfQWNX0zPnnDkzE-SqQGDQ4-uAMsd9wyvNRSaJfVIZJC2WhqiSXF_dMXJQAsntaGolyaL85NnW6W53SR407zrUjJy3rcq5Wag3T8-Ym5ONoW6qenXcCPaK9Nba1I2syLEx9V_lD9cOWpPcy6MF_h3wK_EFz1-IUdvQ4IBALXhT2MWnRZiBqVFgBsyWBZZ8aE0GmZwtlQ9GHUaZAzN6QAeGrrCbfd0JWMnb3qIdl49KiW-S_QKb4A1YQH3XDwPq0TMaBakXOzACo57rJwGlcRJFYZzQaHbgfdV7bpymYRB66QInaUznD-SXhKM">
