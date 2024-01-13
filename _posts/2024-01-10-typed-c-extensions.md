@@ -636,7 +636,7 @@ generated IR before and after my change.
 ## Next steps
 
 * Get other native types (other int types, double) working
-* Get multiple parameters working
+* Get multiple parameters working (fastcall)
 * Hack a proof of concept of this idea into Cython
 * Make the signature more expressive
   * Perhaps we should have a mini language kind of like CPython's Argument
