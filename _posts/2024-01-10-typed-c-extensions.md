@@ -113,17 +113,17 @@ sequenceDiagram
 -->
 
 All of the bits in the middle between the JIT and the C implementation (the
-entire `inc` function, really) are "wasted work" because it's not needed for
-the actual execution of the user's program.
+entire `inc` function, really) are "wasted work" because the work is not needed
+for the actual execution of the user's program.
 
 So even if the PyPy JIT is doing great work and has eliminated memory
 allocation in Python code---PyPy could have unboxed some heap allocated Python
-integer object into a C long---it still has to heap allocate a `PyObject*` for
-the C API... only to throw it away soon after.
+integer object into a C long, for example---it still has to heap allocate a
+`PyObject` for the C API... only to throw it away soon after.
 
-If there was a way to communicate that `inc` expects a `long` and is going to
-unbox it into a C `long` (and will also return a C `long`) to PyPy, it wouldn't
-need to do any of these shenanigans.
+If there was a way to communicate to PyPy that `inc` expects a `long` and is
+going to unbox it into a C `long` (and will also return a C `long`), it
+wouldn't need to do any of these shenanigans.
 
 And yes, ideally there wouldn't be a C API call at all. But sometimes you have
 to (perhaps because you have no control over the code), and you might as well
