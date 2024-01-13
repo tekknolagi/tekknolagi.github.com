@@ -66,8 +66,10 @@ runtimes[^capi-problem].
     API modules in the wild. This is part of what hurt the
     [Skybison](https://github.com/tekknolagi/skybison) project.
 
-Worse, the C API function may not even *need* the `PyObject` to exist in the
-first place. For example, a lot of C API functions are structured like this:
+In addition to the overhead of boxing into a `PyObject`, the underlying C
+function that the C extension calls may not even *need* the `PyObject` to exist
+in the first place. For example, a lot of C API functions are structured like
+this:
 
 ```c
 long inc_impl(long num) {
