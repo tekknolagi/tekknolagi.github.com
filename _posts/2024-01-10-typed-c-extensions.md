@@ -256,7 +256,62 @@ to the commit(s) -->
 
 ## Where do all the C extensions come from?
 
-None in PyPy standard library since they are all implemented in Python
+Well, in PyPy, there are none in the standard library. PyPy has been almost
+entirely written in Python so that the code is visible to the JIT. But people
+like using Python packages, and some Python packages contain C extensions.
+
+There are a couple of different ways to write a C extension. The "simplest" (as
+in, all the components are visible and there is no magic and there are no
+external dependencies) is to hand-write it. If you don't want to do that, you
+can also use a binding generator to write the glue code for you.
+
+### Hand-written
+
+Let's recall the `inc`/`inc_impl` function from earlier. That's a reasonable
+example of a function that could be integrated as a hand-written C extension to
+Python. In order to make it callable from Python, we have to make a full C
+extension module. In this case, that's just a list of function pointers and how
+to call them.
+
+```c
+#include <Python.h>
+
+long inc_impl(long arg) {
+  return arg+1;
+}
+
+PyObject* inc(PyObject* module, PyObject* obj) {
+  (void)module;
+  long obj_int = PyLong_AsLong(obj);
+  if (obj_int == -1 && PyErr_Occurred()) {
+    return NULL;
+  }
+  long result = inc_impl(obj_int);
+  return PyLong_FromLong(result);
+}
+
+static PyMethodDef mytypedmod_methods[] = {
+    {"inc", inc, METH_O, "Add one to an int"},
+    {NULL, NULL, 0, NULL}};
+
+static struct PyModuleDef mytypedmod_definition = {
+    PyModuleDef_HEAD_INIT, "mytypedmod",
+    "A C extension module with type information exposed.", -1,
+    mytypedmod_methods,
+    NULL,
+    NULL,
+    NULL,
+    NULL};
+
+PyMODINIT_FUNC PyInit_mytypedmod(void) {
+  PyObject* m = PyState_FindModule(&mytypedmod_definition);
+  if (m != NULL) {
+    Py_INCREF(m);
+    return m;
+  }
+  return PyModule_Create(&mytypedmod_definition);
+}
+```
 
 ### Cython
 
@@ -352,9 +407,6 @@ characeteristics
 pybind11, nanobind, ...
 
 Even Argument Clinic in CPython
-
-### Hand-written
-
 ## Small useless benchmark
 
 Now let's try benchmarking the interpreter interaction with the native module
