@@ -536,9 +536,6 @@ codebase.
 
 ## Implementing in PyPy: PyPy internals
 
-<!-- TODO(max): A sketch of the implementation inside PyPy, or at least a link
-to the commit(s) -->
-
 <!-- TODO: flesh out -->
 
 PyPy is comprised of two main parts:
@@ -587,10 +584,11 @@ work!
 To check out the actual changes to PyPy, look at [this stack of
 commits](https://github.com/pypy/pypy/compare/3a06bbe5755a1ee05879b29e1717dcbe230fdbf8...branches/py3.10-mb-typed-sig-experiments).
 
+<!--
 To see what this looks like from the JIT's perspective, we can peek at the
-generated IR before and after my change.
+generated IR before and after the change.
 
-<!-- TODO(max): Add PyPy traces before/after -->
+TODO(max): Add PyPy traces before/after -->
 
 ## Next steps
 
