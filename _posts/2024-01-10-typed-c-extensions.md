@@ -4,14 +4,12 @@ layout: post
 date: 2024-01-10
 ---
 
-## what
-
 PyPy is an alternative implementation of the Python language. PyPy's C API has
 some performance issues. [Carl Friedrich Bolz-Tereick](https://cfbolz.de/) and
 I are working on a way to make PyPy's C API interactions much faster. It's
 looking very promising. Here's a sketch of how it works.
 
-## intro
+## The C API as lingua franca
 
 Python is pretty widely-used. For years, CPython was the only implementation,
 and CPython was not designed to be fast. The Python community needed some
