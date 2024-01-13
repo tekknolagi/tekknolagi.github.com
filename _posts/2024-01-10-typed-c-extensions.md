@@ -258,12 +258,8 @@ ideas](https://github.com/faster-cpython/ideas/issues/546) for posterity in
 case someone wanted to take up the project.
 
 A year later, nobody else had, so I decided to poke Carl Friedrich and see if
-we could implement it in PyPy.
-
-## Implementing in PyPy
-
-<!-- TODO(max): A sketch of the implementation inside PyPy, or at least a link
-to the commit(s) -->
+we could implement it in PyPy. But first, an aside on where C extensions come
+from.
 
 ## Where do all the C extensions come from?
 
@@ -589,7 +585,10 @@ generator such as Cython.
 In the meantime, let's take a look at how the changes look in the PyPy
 codebase.
 
-## PyPy internals
+## Implementing in PyPy: PyPy internals
+
+<!-- TODO(max): A sketch of the implementation inside PyPy, or at least a link
+to the commit(s) -->
 
 <!-- TODO: flesh out -->
 
