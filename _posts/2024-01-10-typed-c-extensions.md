@@ -625,7 +625,7 @@ extension function (and probably has also unboxed them), all of the
 intermediate checks and allocation can be elided. This makes for much less
 work!
 
-To checkout the changes to PyPy, look at [this stack of
+To check out the actual changes to PyPy, look at [this stack of
 commits](https://github.com/pypy/pypy/compare/3a06bbe5755a1ee05879b29e1717dcbe230fdbf8...branches/py3.10-mb-typed-sig-experiments).
 
 To see what this looks like from the JIT's perspective, we can peek at the
