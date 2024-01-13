@@ -125,28 +125,31 @@ speed up that call. Let's see if it can be done.
 This is where I come into this. I was at the ECOOP conference in 2022 where
 [Carl Friedrich](https://cfbolz.de/) introduced me to some other implementors
 of alternative Python runtimes. I got to talk to the authors of PyPy and ZipPy
-and GraalPython over some coffee. They're really nice.
+and GraalPython over some coffee and beer. They're really nice.
 
-They've been working on a project called HPy. HPy is a new design for a C API
-Python that takes alternative runtimes into account. As part of this design,
-they were investigating a way to pipe type information from the C module
+They've been collectively working on a project called HPy. HPy is a new design
+for a C API Python that takes alternative runtimes into account. As part of
+this design, they were [investigating a way to pipe type
+information](https://github.com/hpyproject/hpy/issues/129) from the C module
 through the C API and into a place where the host runtime can read it.
 
 It's a tricky problem because not only is there a C API, but also a C ABI (note
-the "B"). While an API is an abstract contract between caller and callee, an
-ABI is more concrete. In the case of the C ABI, it means not changing structs,
-adding function parameters, things like that. This is kind of a tight
-constraint and it wasn't clear what the best way forward was.
+the "B" for "binary"). While an API is an abstract contract between caller and
+callee for how to call a function, an ABI is more concrete. In the case of the
+C ABI, it means not changing struct layouts or sizes, adding function
+parameters, things like that. This is kind of a tight constraint and it wasn't
+clear what the best backward-compatible way to add type information was.
 
-https://github.com/hpyproject/hpy/issues/129
+Sometime either in this meeting or shortly after, I had an idea for how to do
+it without changing the API or ABI and I decided to take a stab at implementing
+it for [Cinder](https://github.com/facebookincubator/cinder/) (the Python
+runtime I was working on at the time).
 
-I decided to take a stab at implementing it for Cinder
+## The solution: sketchy C things?
 
-https://github.com/faster-cpython/ideas/issues/546
-
-## Sketchy C things
-
-This is the kind of type metadata we want to add to each typed method.
+In order to better understand the problems, let's take a look at the kind of
+type information we want to add. This is the kind of type metadata we want to
+add to each typed method, represented as a C struct.
 
 ```c
 struct PyPyTypedMethodMetadata {
@@ -159,14 +162,13 @@ typedef struct PyPyTypedMethodMetadata PyPyTypedMethodMetadata;
 
 In this artificially limited example, we store the type information for one
 argument (but more could be added in the future), the type information for the
-return value, and the underlying (non-`PyObject*`) C function.
+return value, and the underlying (non-`PyObject*`) C function pointer.
 
-But it's not clear where to put that.
-
-The existing `PyMethodDef` struct looks like this. It contains a little bit of
-metadata and a C function pointer (the `PyObject*` one). In an ideal world, we
-would "just" add the type metadata to this struct and be done with it. But we
-can't change its size for ABI reasons.
+But it's not clear where to put that in a `PyMethodDef`. The existing
+`PyMethodDef` struct looks like this. It contains a little bit of metadata and
+a C function pointer (the `PyObject*` one). In an ideal world, we would "just"
+add the type metadata to this struct and be done with it. But we can't change
+its size for ABI reasons.
 
 ```c
 struct PyMethodDef {
@@ -181,12 +183,15 @@ typedef struct PyMethodDef PyMethodDef;
 
 What to do? Well, I decided to get a little weird with it and see if we could
 sneak in a pointer to the metadata somehow. My original idea was to put the
-entire `PyPyTypedMethodMetadata` struct *behind* the `PyMethodDef` struct, but
-that wouldn't work so well: `PyMethodDef`s are commonly statically allocated in
-arrays, and we can't change the layout of those arrays. But what we can do is
-point the `ml_name` field to a buffer inside another struct[^linux-trick].
+entire `PyPyTypedMethodMetadata` struct *behind* the `PyMethodDef` struct (kind
+of like how `malloc` works), but that wouldn't work so well: `PyMethodDef`s are
+commonly statically allocated in arrays, and we can't change the layout of
+those arrays.
 
-[^linux-trick]: later learned that this is common in the Linux kernel
+But what we *can* do is point the `ml_name` field to a buffer inside another
+struct[^linux-trick].
+
+[^linux-trick]: I later learned that this is common in the Linux kernel.
 
 Then, when we notice that a method is marked as typed (with a new `METH_TYPED`
 flag we can add to the `ml_flags` bitset), we can read backwards to find the
@@ -237,10 +242,12 @@ confusing.
 I started off with a mock implementation of this in C (no Python C API, just
 fake structures to sketch it out) and it worked. So I implemented a hacky
 version of it in Cinder, but never shipped it because my integration with
-Cinder was a little too hacky.
+Cinder was a little too hacky. I [wrote up the
+ideas](https://github.com/faster-cpython/ideas/issues/546) for posterity in
+case someone wanted to take up the project.
 
-A year later, I decided to poke Carl Friedrich and see if we could implement it
-in PyPy.
+A year later, nobody else had, so I decided to poke Carl Friedrich and see if
+we could implement it in PyPy.
 
 ## Implementing in PyPy
 
