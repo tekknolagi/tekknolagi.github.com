@@ -602,6 +602,9 @@ and a microbenchmark, ideally we would do some more:
 * Make the signature more expressive
   * Perhaps we should have a mini language kind of like CPython's Argument
     Clinic
+* Integrate this into other runtimes such as GraalPython or even CPython
+  * While this won't help CPython *just* yet, they might find it useful when
+    they do some more optimizations in the JIT
 
 Let us know if you have any ideas!
 
