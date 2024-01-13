@@ -6,10 +6,10 @@ date: 2024-01-10
 
 ## what
 
-pypy's c-api has some performance trouble. [Carl Friedrich
-Bolz-Tereick](https://cfbolz.de/) and i are working on a way to make pypy's
-c-api interactions much faster. it's looking very promising. here's a sketch of
-how it works.
+PyPy is an alternative implementation of the Python language. PyPy's C API has
+some performance issues. [Carl Friedrich Bolz-Tereick](https://cfbolz.de/) and
+I are working on a way to make PyPy's C API interactions much faster. It's
+looking very promising. Here's a sketch of how it works.
 
 ## intro
 
