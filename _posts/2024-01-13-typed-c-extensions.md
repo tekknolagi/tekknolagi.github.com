@@ -253,7 +253,9 @@ like using Python packages, and some Python packages contain C extensions.
 There are a couple of different ways to write a C extension. The "simplest" (as
 in, all the components are visible and there is no magic and there are no
 external dependencies) is to hand-write it. If you don't want to do that, you
-can also use a binding generator to write the glue code for you.
+can also use a binding generator to write the glue code for you. I have the
+most experience with Cython, but other binding generators like nanobind,
+pybind11, and even CPython's own Argument Clinic exist too!
 
 ### Hand-written
 
@@ -421,14 +423,6 @@ runtimes such as PyPy.
 
 In order to justify such a code change, we have to see how much faster the
 typed metadata makes things. So let's benchmark.
-
-<!--
-### Other binding generators
-
-pybind11, nanobind, ...
-
-Even Argument Clinic in CPython
--->
 
 ## A small, useless benchmark
 
