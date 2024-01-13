@@ -653,3 +653,4 @@ generated IR before and after my change.
     Clinic
 
 <!-- TODO(max): Other languages? -->
+<!-- TODO(max): Static Python and type declarations with unboxed types -->
