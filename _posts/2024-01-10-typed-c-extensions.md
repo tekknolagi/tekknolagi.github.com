@@ -562,18 +562,21 @@ $
 
 <!-- TODO(max): Compare with Skybison -->
 
-I honestly did not believe my eyes when I saw this number. It's a greater than
-10x performance improvement *and I think there is still room for more* (such as
-doing the signature/metadata finding inside the JIT instead of calling that C
-function).
+168ms! To refresh your memory, that's 5x faster than CPython and 13x greater
+than baseline PyPy. I honestly did not believe my eyes when I saw this number.
+And I think there is *still room for more* improvements like doing the
+signature/metadata finding inside the JIT instead of calling that C function.
 
 This is extraordinarily promising.
 
-As I said before, most applications don't consist of a Python program calling a
-C function and only a C function in a tight loop. It would be important to
-profile how this change affects a *representative* workload. That would help
-motivate the inclusion of these type signatures in a binding generator such as
-Cython.
+But as I said before, most applications don't consist of a Python program
+calling a C function and only a C function in a tight loop. It would be
+important to profile how this change affects a *representative* workload. That
+would help motivate the inclusion of these type signatures in a binding
+generator such as Cython.
+
+In the meantime, let's take a look at how the changes look in the PyPy
+codebase.
 
 ## PyPy internals
 
