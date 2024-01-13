@@ -1,7 +1,7 @@
 ---
 title: "Type information for faster Python C extensions"
 layout: post
-date: 2024-01-10
+date: 2024-01-13
 ---
 
 PyPy is an alternative implementation of the Python language. PyPy's C API
