@@ -313,6 +313,12 @@ PyMODINIT_FUNC PyInit_mytypedmod(void) {
 }
 ```
 
+We have an array of `PyMethodDef` structs, one for each method we want to wrap.
+Then we have a `PyModuleDef` to define the module, which can also contain
+attributes and some other stuff. Then we provide a sort of `__new__` function
+for the module, in the form of a `PyInit_` function. This is found by `dlopen`
+in the C extension loader built into Python.
+
 ### Cython
 
 In this snippet of Cython code, we make a function that adds two machine
