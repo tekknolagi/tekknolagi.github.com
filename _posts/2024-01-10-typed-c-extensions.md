@@ -357,13 +357,14 @@ static int add(int __pyx_v_a, int __pyx_v_b) {
 Since we used `cpdef` instead of `cdef`, Cython will also generate a wrapper C
 extension function so that this function can be called from Python.
 
-This means that the generated Cython code looks like (a much uglier version of)
-below. **You don't need to understand or really even read the big blob** of
-cleaned-up generated code below. You just need to say "ooh" and "aah" and "wow,
-so many if-statements and so much allocation and so many function calls."
+This means that the generated Cython wrapper code looks like (a much uglier
+version of) below. **You don't need to understand or really even read** the big
+blob of cleaned-up and annotated generated code below. You just need to say
+"ooh" and "aah" and "wow, so many if-statements and so much allocation and so
+many function calls."
 
-
-<!-- NOTE: this is worse, even, since it's unwrapping fastcall too -->
+And it's also a little worse than the `METH_O` example above since it has to
+unwrap an array of fastcall args and do some argument processing.
 
 ```c
 static PyObject *add_and_box(CYTHON_UNUSED PyObject *__pyx_self,
@@ -420,21 +421,32 @@ static PyObject *add_python(PyObject *__pyx_self,
 
 Now, to be clear: this is probably the fastest thing possible for interfacing
 with CPython. Cython has been worked on for years and years and it's *very*
-fast. But we have some other runtimes that have different performance
-characeteristics
+fast. But CPython isn't the only runtime in town and the other runtimes have
+different performance characteristics, as we explored above.
 
+Since so many C extension are generated with Cython, there's a big opportunity:
+if we manage to get the Cython compiler to emit typed metadata for the
+functions it compiles, those functions could become *much* faster under
+runtimes such as PyPy.
+
+In order to justify such a code change, we have to see how much faster the
+typed metadata makes things. So let's benchmark.
+
+<!--
 ### Other binding generators
 
 pybind11, nanobind, ...
 
 Even Argument Clinic in CPython
+-->
+
 ## Small useless benchmark
 
-Now let's try benchmarking the interpreter interaction with the native module
-with a silly benchmark. It's a little silly because it's not super common (in
-use cases I am familiar with anyway) to call C code in a hot loop like this
-without writing the loop in C as well. But it'll be a good reference for the
-maximum amount of performance we can win back.
+Let's try benchmarking the interpreter interaction with the native module with
+a silly benchmark. It's a little silly because it's not super common (in use
+cases I am familiar with anyway) to call C code in a hot loop like this without
+writing the loop in C as well. But it'll be a good reference for the maximum
+amount of performance we can win back.
 
 ```python
 # bench.py
@@ -453,7 +465,7 @@ if __name__ == "__main__":
 ```
 
 We'll try running it with CPython first because CPython doesn't have this
-problem making `PyObject*`---that is just the default object representation in
+problem making `PyObject`s---that is just the default object representation in
 the runtime.
 
 ```console
@@ -464,7 +476,7 @@ $ time python3.10 bench.py
 $
 ```
 
-Okay so the output is a little fudged since I actually measured this with
+Okay so the text output is a little fudged since I actually measured this with
 `hyperfine`, but you get the idea. CPython takes a very respectable 850ms to go
 back and forth with C *10 million times*.
 
@@ -479,9 +491,12 @@ $ time pypy3.10 bench.py
 $
 ```
 
-Yeah, okay, so PyPy (before our changes) has to do a bunch of work with every
-call to `inc` and this difference in timing makes it clear. But this post is
-all about adding types. What if we add types to the C module?
+Yeah, okay, so all that extra unnecessary work that PyPy does (before our
+changes) ends up really adding up. Our benchmark of `inc` takes *three times as
+logn* as CPython. Oof. But this post is all about adding types. What if we add
+types to the C module and measure *with* our changes to PyPy?
+
+Here are the changes to the C module:
 
 ```c
 // TODO(max): Turn this into a diff?
@@ -501,15 +516,18 @@ PyObject* inc(PyObject* module, PyObject* obj) {
   return PyLong_FromLong(result);
 }
 
+// NEW
 PyPyTypedMethodMetadata inc_sig = {
   .arg_type = T_C_LONG,
   .ret_type = T_C_LONG,
   .underlying_func = inc_impl,
   .ml_name = "inc",
 };
+// END NEW
 
 static PyMethodDef mytypedmod_methods[] = {
     // TODO(max): Add METH_FASTCALL | METH_TYPED
+    // Note the change to `ml_name` and also the `METH_TYPED`.
     {inc_sig.ml_name, inc, METH_O | METH_TYPED, "Add one to an int"},
     {NULL, NULL, 0, NULL}};
 
@@ -532,7 +550,7 @@ PyMODINIT_FUNC PyInit_mytypedmod(void) {
 }
 ```
 
-And now let's run it with our new patched PyPy.
+And now let's run it with our new patched PyPy:
 
 ```console
 $ pypy3.10-patched setup.py build
@@ -558,6 +576,8 @@ motivate the inclusion of these type signatures in a binding generator such as
 Cython.
 
 ## PyPy internals
+
+<!-- TODO: flesh out -->
 
 PyPy is comprised of two main parts:
 
