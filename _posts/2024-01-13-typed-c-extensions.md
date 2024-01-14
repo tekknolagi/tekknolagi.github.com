@@ -477,7 +477,7 @@ $
 
 Yeah, okay, so all that extra unnecessary work that PyPy does (before our
 changes) ends up really adding up. Our benchmark of `inc` takes *three times as
-logn* as CPython. Oof. But this post is all about adding types. What if we add
+long* as CPython. Oof. But this post is all about adding types. What if we add
 types to the C module and measure *with* our changes to PyPy?
 
 Here are the changes to the C module:
