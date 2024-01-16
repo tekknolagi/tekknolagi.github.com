@@ -323,7 +323,7 @@ It is assumed that the graph won't have cycles in it[^rnn-unrolling].
     unrolled" meaning they copy and paste the structure in the IR instead of
     having an actual looping structure.
 
-So what does creating the graph look like in code? well, the `Value.__mul__`
+So what does creating the graph look like in code? Well, the `Value.__mul__`
 function, called on the left hand side of an `x*y` operation[^binop], looks
 like this:
 
