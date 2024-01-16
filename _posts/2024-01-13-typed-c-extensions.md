@@ -610,3 +610,21 @@ Let us know if you have any ideas!
 
 <!-- TODO(max): Other languages? -->
 <!-- TODO(max): Static Python and type declarations with unboxed types -->
+
+## Updates and other ideas
+
+*lifthrasiir* on Hacker News [points
+out](https://news.ycombinator.com/item?id=38989823) that this struct should be
+versioned for future-proofing. They also suggest potentially avoiding
+`METH_TYPED` by shipping a sort of sibling symbol `_PyPyTyped_foo` for each
+`foo`. That's interesting.
+
+Wenzel Jakob (of pybind11 and nanobind fame) wrote in that we should not ignore
+overloads (apparently fairly common in the wild) in our implementation.
+Apparently people like to make, for example, `myextension.abs(x)` where
+the call to `abs_float` or `abs_int` is dispatched in the binding glue. A JIT
+like PyPy could make the dynamic dispatch go away.
+
+Another idea, from Carl Friedrich, a little more difficult: what if the Cython
+compiler could generate Python code or bytecode? Or, what if PyPy could ingest
+Cython code?
