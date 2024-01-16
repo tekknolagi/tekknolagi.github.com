@@ -621,9 +621,11 @@ versioned for future-proofing. They also suggest potentially avoiding
 
 Wenzel Jakob (of pybind11 and nanobind fame) wrote in that we should not ignore
 overloads (apparently fairly common in the wild) in our implementation.
-Apparently people like to make, for example, `myextension.abs(x)` where
-the call to `abs_float` or `abs_int` is dispatched in the binding glue. A JIT
-like PyPy could make the dynamic dispatch go away.
+Apparently people like to make, for example, `myextension.abs(x)` where the
+call to `abs_float` or `abs_int` is dispatched in the binding glue (a real
+example that I found in a search on GitHub is [available
+here](https://github.com/lief-project/LIEF/blob/58f499a22221cee7ab6682986b1504b90acd8556/api/python/src/ELF/init.cpp#L100)).
+A JIT like PyPy could make the dynamic dispatch go away.
 
 Another idea, from Carl Friedrich, a little more difficult: what if the Cython
 compiler could generate Python code or bytecode? Or, what if PyPy could ingest
