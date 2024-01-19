@@ -32,10 +32,10 @@ API function from PyPy, it has to stop what it's doing, set up some C API
 scaffolding, do the C API call, and then take down the scaffolding.
 
 For example, the C API is centered around `PyObject` pointers. PyPy does not
-normally use `PyObject`s. It has to allocate a `PyObject`, make it point into
-the PyPy heap, call the C API function, and then (potentially) free the
-`PyObject`. (This ignores GIL stuff and exception checking, which is also an
-issue.)
+use `PyObject`s in the normal execution of Python code. When it interacts with
+C API code, it has to allocate a `PyObject`, make it point into the PyPy heap,
+call the C API function, and then (potentially) free the `PyObject`. (This
+ignores GIL stuff and exception checking, which is also an issue.)
 
 <figure style="display: block; margin: 0 auto;">
     <object class="svg" type="image/svg+xml" data="/assets/img/python-capi-box.svg">
