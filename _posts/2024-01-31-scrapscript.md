@@ -197,8 +197,8 @@ running the compiler (now JS code) on the web.
 
 ## Thanks for reading
 
-If this sounds interesting to you, please feel free to jump in and start
-contributing! Since we don't have a huge backlog of well-scoped projects just
-yet, I recommend posting in the [discourse
-group](https://scrapscript.discourse.group/) first to get an idea of what would
-be most useful and also interesting to you.
+If this sounds interesting to you, please feel free to take a look at [the
+repo](https://github.com/tekknolagi/scrapscript) and start contributing! Since
+we don't have a huge backlog of well-scoped projects just yet, I recommend
+posting in the [discourse group](https://scrapscript.discourse.group/) first to
+get an idea of what would be most useful and also interesting to you.
