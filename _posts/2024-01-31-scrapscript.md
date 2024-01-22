@@ -80,6 +80,25 @@ errors and other behavior as close to the implementation as possible. Also
 write full integration tests, because those can be used as a feature showcase
 and are easily portable to other implementations.
 
+```python
+class Tests(unittest.TestCase):
+    def test_tokenize_binary_sub_no_spaces(self) -> None:
+        self.assertEqual(tokenize("1-2"), [IntLit(1), Operator("-"), IntLit(2)])
+    # ...
+    def test_parse_binary_sub_returns_binop(self) -> None:
+        self.assertEqual(
+            parse([IntLit(1), Operator("-"), IntLit(2)]),
+            Binop(BinopKind.SUB, Int(1), Int(2)),
+        )
+    # ...
+    def test_eval_with_binop_sub(self) -> None:
+        exp = Binop(BinopKind.SUB, Int(1), Int(2))
+        self.assertEqual(eval_exp({}, exp), Int(-1))
+    # ...
+    def test_int_sub_returns_int(self) -> None:
+        self.assertEqual(self._run("1 - 2"), Int(-1))
+```
+
 Choosing Python was mostly a quirk. Python is not in general special; it just
 happens to be a language that Chris and I have worked with a lot.
 
