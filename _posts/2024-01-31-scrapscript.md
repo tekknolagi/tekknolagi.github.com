@@ -111,6 +111,20 @@ also meant that as we [gutted and re-built
 it](https://github.com/tekknolagi/scrapscript/commit/082e30375225394f30fd270ffdcee7f5d63173ae),
 we felt very confident that we weren't breaking everything.
 
+```diff
+ def tokenize(x: str) -> list[str]:
+-    # TODO: Make this a proper tokenizer that handles strings with blankspace.
+-    stripped = re.sub(r" *--[^\n]*", "", x).strip()
+-    return re.split(r"[\s\n]+", stripped)
++    lexer = Lexer(x)
++    tokens = []
++    while lexer.has_input():
++        tokens.append(lexer.read_one())
++    return tokens
+```
+
+All the tests continued to pass and we could enable a new one!
+
 ## Why is this interpreter different from all other interpreters?
 
 It's not. It's a pretty bog-standard tree-walking interpreter for a juiced-up
