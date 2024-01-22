@@ -159,7 +159,23 @@ never implemented before! In particular, scrapscript supports some pretty
 extensive pattern matching, which we had to learn how to implement from
 scratch.
 
-<!-- TODO: showcase pattern matching code a little -->
+```python
+def eval_exp(env: Env, exp: Object) -> Object:
+    # ...
+    if isinstance(exp, Apply):
+        callee = eval_exp(env, exp.func)
+        arg = eval_exp(env, exp.arg)
+        # ...
+        if isinstance(callee.func, MatchFunction):
+            arg = eval_exp(env, exp.arg)
+            for case in callee.func.cases:
+                m = match(arg, case.pattern)
+                if m is None:
+                    continue
+                return eval_exp({**callee.env, **m}, case.body)
+            raise MatchError("no matching cases")
+        # ...
+```
 
 It's also different because it's the first from-scratch language implementation
 I have worked on with someone else (I think). Chris has been an excellent
