@@ -111,6 +111,12 @@ I have worked on with someone else (I think). Chris has been an excellent
 co-implementor, which is very impressive considering it his first programming
 language implementation *ever*!
 
+## Some neat implementation features
+
+* REPL with readline
+* Web REPL
+* Cosmopolitan
+
 - Impl language design decisions
   - What is different from other interpreters/compilers I’ve built
   - What was it like teaching someone who is not in PL about building interpreters/compilers (Chris)
