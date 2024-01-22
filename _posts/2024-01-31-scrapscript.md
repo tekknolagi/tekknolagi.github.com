@@ -220,7 +220,7 @@ for more information.
 
 ### The web REPL
 
-## In progress
+## In progress features
 
 * Recursive serialization and deserialization
 * Scrapyard using Git
