@@ -95,11 +95,15 @@ we felt very confident that we weren't breaking everything.
 ## Why is this interpreter different from all other interpreters?
 
 It's not. It's a pretty bog-standard tree-walking interpreter for a juiced-up
-lambda calculus. Perhaps we'll eventually generate bytecode or some other IR
-and compile it, but we do not have any performance problems (yet). And
-scrapscript doesn't feel like an "industrial strength" language; nobody is
-writing large applications in it and the language is expressly not designed for
-that.
+lambda calculus[^church-encodings]. Perhaps we'll eventually generate bytecode
+or some other IR and compile it, but we do not have any performance problems
+(yet). And scrapscript doesn't feel like an "industrial strength" language;
+nobody is writing large applications in it and the language is expressly not
+designed for that.
+
+[^church-encodings]: Chris even built a [little
+    demo](https://github.com/gregorybchris/scraps/blob/6d8583e8a7df504b1a855687231f279a35b6de83/church.scrap)
+    of Church encodings for numbers.
 
 It's a little different *for me*, though, because it has features that I have
 never implemented before! In particular, scrapscript supports some pretty
@@ -111,33 +115,25 @@ I have worked on with someone else (I think). Chris has been an excellent
 co-implementor, which is very impressive considering it his first programming
 language implementation *ever*!
 
+<!-- TODO(chris): what do you think?
+- What was it like teaching someone who is not in PL about building interpreters/compilers (Chris)
+- C: Fun recap of COMP 105 but also brand new. Having second shot at PL
+  after not doing so well in 105 was neat. Cool doing something
+  collaborative and in the open. Interesting to have a foil / someone who
+  knows about PL. How to work on project without fighting
+-->
+
 ## Some neat implementation features
 
 * REPL with readline
 * Web REPL
 * Cosmopolitan
 
-- Impl language design decisions
-  - What is different from other interpreters/compilers I’ve built
-  - What was it like teaching someone who is not in PL about building interpreters/compilers (Chris)
-    - C: Fun recap of COMP 105 but also brand new. Having second shot at PL
-      after not doing so well in 105 was neat. Cool doing something
-      collaborative and in the open. Interesting to have a foil / someone who
-      knows about PL. How to work on project without fighting
-    - M: Historically not worked together on larger projects but smaller ones
-      went ok. What is making this one different? We’ll never know
-      - kshake
-      - 100prisoners
-  - A little lambda calculus (See church encodings)
-- Neat things
-  - Web REPL
-- Things that are broken
-  - Serialization (recursion/closures)
-- Things in progress
-  - Scrapyard using Git
-  - Graphics API
-  - Platforms
-  - Webserver platform with database
-  - Alternates
-- Call to action
-  - Try out the web REPL
+## In progress
+
+* Recursive serialization and deserialization
+* Scrapyard using Git
+* Graphics API
+* Platforms
+  * Webserver platform with database
+* Alternates
