@@ -191,9 +191,17 @@ language implementation *ever*!
 
 ## Some neat implementation features
 
-* REPL with readline
-* Web REPL
-* Cosmopolitan
+### The REPL
+
+You might have seen [my recent blog post](/blog/simple-python-repl/) about
+building a featureful REPL using a nice library that Python gives you. I wrote
+that post while learning about all that stuff for scrapscript. Scrapscript's
+REPL implementation is pretty short but it has `readline` support, tab
+completion, line continuation, and more. Thanks, Python!
+
+### An actually portable executable
+
+### The web REPL
 
 ## In progress
 
