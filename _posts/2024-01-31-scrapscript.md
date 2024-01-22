@@ -201,6 +201,14 @@ completion, line continuation, and more. Thanks, Python!
 
 ### An actually portable executable
 
+We build scrapscript as an Actually Portable Executable using
+[Cosmopolitan](https://justine.lol/cosmopolitan/) by Justine Tunney. This means
+that it is packaged with a small libc implementation and Python runtime into
+one (reasonably) small, self-contained executable. This executable is
+theoretically runnable on all major platforms without fuss. And the Dockerfile
+that uses it is less than 50MB in total (!) because it does not need to have a
+bunch of operating system stuff in the filesystem.
+
 ### The web REPL
 
 ## In progress
