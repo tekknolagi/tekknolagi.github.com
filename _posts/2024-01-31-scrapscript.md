@@ -110,6 +110,8 @@ never implemented before! In particular, scrapscript supports some pretty
 extensive pattern matching, which we had to learn how to implement from
 scratch.
 
+<!-- TODO: showcase pattern matching code a little -->
+
 It's also different because it's the first from-scratch language implementation
 I have worked on with someone else (I think). Chris has been an excellent
 co-implementor, which is very impressive considering it his first programming
