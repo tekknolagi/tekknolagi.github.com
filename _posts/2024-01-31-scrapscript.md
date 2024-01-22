@@ -167,7 +167,6 @@ def eval_exp(env: Env, exp: Object) -> Object:
         arg = eval_exp(env, exp.arg)
         # ...
         if isinstance(callee.func, MatchFunction):
-            arg = eval_exp(env, exp.arg)
             for case in callee.func.cases:
                 m = match(arg, case.pattern)
                 if m is None:
