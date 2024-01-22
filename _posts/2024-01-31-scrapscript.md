@@ -137,3 +137,9 @@ language implementation *ever*!
 * Platforms
   * Webserver platform with database
 * Alternates
+
+Last, but certainly not least, we are working on a scrapscript compiler. The
+neat thing, though, is that this compiler is written *in scrapscript*. The goal
+is to port scrapscript to the browser not by writing a new interpreter in JS,
+but by compiling the compiler to JS (on top of the Python interpreter), then
+running the compiler (now JS code) on the web.
