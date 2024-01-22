@@ -191,6 +191,9 @@ language implementation *ever*!
 
 ## Some neat implementation features
 
+Why have a little programming project if you don't get to try out some new
+tricks?
+
 ### The REPL
 
 You might have seen [my recent blog post](/blog/simple-python-repl/) about
