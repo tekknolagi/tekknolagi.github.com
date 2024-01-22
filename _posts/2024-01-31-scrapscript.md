@@ -212,6 +212,12 @@ theoretically runnable on all major platforms without fuss. And the Dockerfile
 that uses it is less than 50MB in total (!) because it does not need to have a
 bunch of operating system stuff in the filesystem.
 
+Check out
+[build-com](https://github.com/tekknolagi/scrapscript/blob/e38210f7aa8ce375a7e615b301922bd7b9710d37/build-com)
+and [the
+Dockerfile](https://github.com/tekknolagi/scrapscript/blob/e38210f7aa8ce375a7e615b301922bd7b9710d37/Dockerfile)
+for more information.
+
 ### The web REPL
 
 ## In progress
