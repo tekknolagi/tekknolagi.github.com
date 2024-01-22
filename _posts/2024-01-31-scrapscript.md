@@ -42,6 +42,22 @@ a little bummed. We love trying stuff out and getting a feel for how it works.
 A month or two passed and there still was not an implementation, so we decided
 to email Taylor and ask if we could help.
 
+> Subject: Chris and I would like to help you with scrapscript
+>
+> Hi Taylor,
+>
+> My friend Chris (cc'ed) and I are excited about scrapscript. This is the kind
+> of project we have talked about building for years. He's an ML guy with an
+> unreasonable interest in Haskell and I'm a PL/compilers guy (not as much into
+> Haskell) and would be very interested in chipping in, or at least trying
+> early betas.
+>
+> Chris: https://www.chrisgregory.me/\
+> Me: https://bernsteinbear.com/
+>
+> Cheers,\
+> Max
+
 Taylor was very gracious about the whole thing and shared his [small JavaScript
 implementation of
 scrapscript](https://github.com/tekknolagi/scrapscript/blob/71d1afecc32879aed9c80a3ed17cb81fe1c010d6/scrapscript.ts).
