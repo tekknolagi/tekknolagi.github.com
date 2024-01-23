@@ -220,6 +220,15 @@ for more information.
 
 ### The web REPL
 
+We wanted to have an interactive playground like a bunch of other programming
+languages do. I, however, didn't feel like implementing scrapscript a second
+time. So instead I wrote a little stateless server program in Python that is a
+function `(env, exp) -> (env', result)` and a JS program to drive the web
+requests. What you get is [the web REPL](https://scrapscript.fly.dev/repl).
+Building this required being able to serialize objects and environments so that
+they could be stored on the client as opaque blobs. That's mostly working, but
+I don't have a full solution for objects with cycles. Yet. It's in progress!
+
 ## In progress features
 
 * Recursive serialization and deserialization
