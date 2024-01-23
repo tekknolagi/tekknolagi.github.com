@@ -5,7 +5,7 @@ date: 2024-01-23
 ---
 
 [Scrapscript](https://scrapscript.org/) is a small, pure, functional,
-content-addressible, network-first programming language. It's designed to allow
+content-addressable, network-first programming language. It's designed to allow
 creating small, simply shareable programs. The language was created by
 [Taylor Troesh](https://taylor.town/) and the main implementation was created
 by me and [Chris](https://www.chrisgregory.me/).
