@@ -11,9 +11,9 @@ programming language. Now we would like to share it with you.
 ## What is scrapscript?
 
 Scrapscript is a small, pure, functional, content-addressible, network-first
-<!-- TODO: hmm not sure I love this wording --> programming language. The
-language was created by [Taylor Troesh](https://taylor.town/) and the main
-implementation was created by me and Chris.
+programming language. The language was created by [Taylor
+Troesh](https://taylor.town/) and the main implementation was created by me and
+Chris.
 
 ```
 fact 5
@@ -23,8 +23,6 @@ fact 5
 ```
 
 It's designed to allow creation of small, simply shareable programs.
-
-<!-- TODO -->
 
 I'm not going to fill out the [usual
 checklist](https://www.mcmillen.dev/language_checklist.html)---that's not the
@@ -139,7 +137,7 @@ we felt very confident that we weren't breaking everything.
 +    return tokens
 ```
 
-All the tests continued to pass and we could enable a new one!
+All the tests continued to pass and we could even enable a new one!
 
 ## Why is this interpreter different from all other interpreters?
 
@@ -181,14 +179,6 @@ I have worked on with someone else (I think). Chris has been an excellent
 co-implementor, which is very impressive considering it his first programming
 language implementation *ever*!
 
-<!-- TODO(chris): what do you think?
-- What was it like teaching someone who is not in PL about building interpreters/compilers (Chris)
-- C: Fun recap of COMP 105 but also brand new. Having second shot at PL
-  after not doing so well in 105 was neat. Cool doing something
-  collaborative and in the open. Interesting to have a foil / someone who
-  knows about PL. How to work on project without fighting
--->
-
 ## Some neat implementation features
 
 Why have a little programming project if you don't get to try out some new
@@ -202,15 +192,28 @@ that post while learning about all that stuff for scrapscript. Scrapscript's
 REPL implementation is pretty short but it has `readline` support, tab
 completion, line continuation, and more. Thanks, Python!
 
+```
+>>> $$[^tab]
+$$add         $$fetch       $$jsondecode  $$listlength  $$serialize
+>>> $$add
+```
+
 ### An actually portable executable
 
 We build scrapscript as an Actually Portable Executable using
 [Cosmopolitan](https://justine.lol/cosmopolitan/) by Justine Tunney. This means
 that it is packaged with a small libc implementation and Python runtime into
 one (reasonably) small, self-contained executable. This executable is
-theoretically runnable on all major platforms without fuss. And the Dockerfile
-that uses it is less than 50MB in total (!) because it does not need to have a
-bunch of operating system stuff in the filesystem.
+theoretically runnable on all major platforms without fuss. And the Docker
+container that we build with it is 36MB in total (!) because it does not need
+to have a bunch of operating system stuff in the filesystem.
+
+```
+$ docker images ghcr.io/tekknolagi/scrapscript
+REPOSITORY                      TAG    IMAGE ID       CREATED          SIZE
+ghcr.io/tekknolagi/scrapscript  trunk  1afb59c79f68   43 minutes ago   36.4MB
+$
+```
 
 Check out
 [build-com](https://github.com/tekknolagi/scrapscript/blob/e38210f7aa8ce375a7e615b301922bd7b9710d37/build-com)
