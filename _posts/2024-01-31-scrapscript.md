@@ -289,6 +289,21 @@ is to port scrapscript to the browser not by writing a new interpreter in JS,
 but by compiling the compiler to JS (on top of the Python interpreter), then
 running the compiler (now JS code) on the web.
 
+```
+compile =
+| {type="Int", value=value} -> $$int_as_str value
+| {type="Var", name=name} -> name
+| {type="String", value=value} -> $$str_as_str value
+| {type="Binop", op="++", left=left, right=right} ->
+    -- Special case string concat
+    (compile left) ++ "+" ++ (compile right)
+| {type="Binop", op=op, left=left, right=right} ->
+    (compile left) ++ op ++ (compile right)
+| {type="List", items=items} ->
+    "[" ++ (join ", " (map compile items)) ++ "]"
+-- ...
+```
+
 ## Thanks for reading
 
 If this sounds interesting to you, please feel free to take a look at [the
