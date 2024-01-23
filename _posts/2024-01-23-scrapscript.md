@@ -4,16 +4,11 @@ layout: post
 date: 2024-01-23
 ---
 
-For a little while now, [Chris](https://www.chrisgregory.me/) and I have been
-working on a little interpreter for the [scrapscript](https://scrapscript.org/)
-programming language. Now we would like to share it with you.
-
-## What is scrapscript?
-
-Scrapscript is a small, pure, functional, content-addressible, network-first
-programming language. The language was created by [Taylor
-Troesh](https://taylor.town/) and the main implementation was created by me and
-Chris.
+[Scrapscript](https://scrapscript.org/) is a small, pure, functional,
+content-addressible, network-first programming language. It's designed to allow
+creating small, simply shareable programs. The language was created by
+[Taylor Troesh](https://taylor.town/) and the main implementation was created
+by me and [Chris](https://www.chrisgregory.me/).
 
 ```
 fact 5
@@ -21,8 +16,6 @@ fact 5
   | 0 -> 1
   | n -> n * fact (n - 1)
 ```
-
-It's designed to allow creation of small, simply shareable programs.
 
 I'm not going to fill out the [usual
 checklist](https://www.mcmillen.dev/language_checklist.html)---that's not the
