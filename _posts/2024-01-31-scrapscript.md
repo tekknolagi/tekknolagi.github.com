@@ -241,6 +241,15 @@ website. It shouldn't be particularly difficult but nobody has implemented it
 yet. We did get symbols working, though, so we have `#true` and `#false`
 implemented inside scrapscript.
 
+```
+person :
+  #cowboy
+  #ron int
+  #parent (#m #f)
+  #friend int
+  #stranger text
+```
+
 We're also working on the first implementations of scrapyards. We're not sure
 exactly what design direction to go yet so Taylor and I have each prototyped it
 in different ways. My implementation uses Git as a versioned blob store to
@@ -253,6 +262,16 @@ prototype a "web platform". This was a little Python shell around a scrap that
 fed it web requests as scrap records. Then the scrap could use pattern matching
 to route the request and build up a request. As Taylor says on the website,
 scrapscript is pretty decent for an HTML DSL.
+
+```
+handler
+. handler =
+  | { path = "/" } -> (status 200 <| page "you're on the index")
+  | { path = "/about" } -> (status 200 <| page "you're on the about page")
+  | x -> (status 404 <| page "not found")
+. status = code -> content -> { code = code, content = content }
+. page = body -> "<!doctype html><html><body>" ++ body ++ "</body></html>"
+```
 
 In the future I think it could be fun to---similar to the web REPL---write a
 function `(db, request) -> (db', response)` and have a stateless webserver
