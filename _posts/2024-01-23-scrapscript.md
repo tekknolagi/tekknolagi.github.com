@@ -1,7 +1,7 @@
 ---
 title: "scrapscript.py"
 layout: post
-date: 2024-01-31
+date: 2024-01-23
 ---
 
 For a little while now, [Chris](https://www.chrisgregory.me/) and I have been
