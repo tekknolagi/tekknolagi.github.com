@@ -192,7 +192,7 @@ language implementation *ever*!
 ## Some neat implementation features
 
 Why have a little programming project if you don't get to try out some new
-tricks?
+tricks and techniques?
 
 ### The REPL
 
