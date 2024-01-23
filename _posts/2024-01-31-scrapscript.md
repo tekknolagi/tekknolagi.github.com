@@ -231,12 +231,38 @@ I don't have a full solution for objects with cycles. Yet. It's in progress!
 
 ## In progress features
 
-* Recursive serialization and deserialization
-* Scrapyard using Git
-* Graphics API
-* Platforms
-  * Webserver platform with database
-* Alternates
+As I mentioned before, serializing objects with cycles is a work in progress.
+This requires adding support for fake `ref` types inside the serializer and
+resolving them in the deserializer. It should be ready to ship soon enough,
+though.
+
+We also don't have full support for alternates as described on the main
+website. It shouldn't be particularly difficult but nobody has implemented it
+yet. We did get symbols working, though, so we have `#true` and `#false`
+implemented inside scrapscript.
+
+We're also working on the first implementations of scrapyards. We're not sure
+exactly what design direction to go yet so Taylor and I have each prototyped it
+in different ways. My implementation uses Git as a versioned blob store to
+be very lazy about it and re-use a bunch of existing infrastructure. That's one
+of my personal goals for this implementation: minimal implementation first.
+
+Scrapscript comes with a notion of platforms---different sets of APIs given to
+a scrap by the host running it. It's not really built in yet but I did
+prototype a "web platform". This was a little Python shell around a scrap that
+fed it web requests as scrap records. Then the scrap could use pattern matching
+to route the request and build up a request. As Taylor says on the website,
+scrapscript is pretty decent for an HTML DSL.
+
+In the future I think it could be fun to---similar to the web REPL---write a
+function `(db, request) -> (db', response)` and have a stateless webserver
+kernel that can still store data if the outside world applies the delta to the
+database.
+
+Chris and I also talked about building out a graphics API or graphics platform.
+We're not sure what this looks like, but he is into cellular automata and it
+would be neat to be able to write pixels directly from scrap without going
+through PPM or something.
 
 Last, but certainly not least, we are working on a scrapscript compiler. The
 neat thing, though, is that this compiler is written *in scrapscript*. The goal
