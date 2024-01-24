@@ -198,7 +198,7 @@ We build scrapscript as an Actually Portable Executable using
 that it is packaged with a small libc implementation and Python runtime into
 one (reasonably) small, self-contained executable. This executable is
 theoretically runnable on all major platforms without fuss. And the Docker
-container that we build with it is 36MB in total (!) because it does not need
+container that we build with it is ~~36MB~~ 25.5MB in total (!) because it does not need
 to have a bunch of operating system stuff in the filesystem.
 
 ```
