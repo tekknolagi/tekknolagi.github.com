@@ -203,8 +203,8 @@ to have a bunch of operating system stuff in the filesystem.
 
 ```
 $ docker images ghcr.io/tekknolagi/scrapscript
-REPOSITORY                      TAG    IMAGE ID       CREATED          SIZE
-ghcr.io/tekknolagi/scrapscript  trunk  1afb59c79f68   43 minutes ago   36.4MB
+REPOSITORY                      TAG    IMAGE ID       CREATED       SIZE
+ghcr.io/tekknolagi/scrapscript  trunk  16867189d853   3 hours ago   25.5MB
 $
 ```
 
