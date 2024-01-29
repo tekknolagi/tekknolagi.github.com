@@ -187,6 +187,9 @@ research around optimizing dynamic languages.
   * [BacCaml](https://github.com/prg-titech/baccaml) (OCaml)
   * [yk](https://github.com/ykjit/yk) (Rust), but it seems to be somewhat
     stealthily under development
+  * Deegen, as in
+    [LuaJIT-Remake](https://github.com/luajit-remake/luajit-remake) is a meta
+    (not tracing) JIT (C++)
 * Bump allocators: [always bump downwards](https://fitzgeraldnick.com/2019/11/01/always-bump-downwards.html)!
 * [Call-site optimization for Common Lisp](http://metamodular.com/SICL/call-site-optimization.pdf) (PDF)
 * Posts about trace optimization:
