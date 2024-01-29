@@ -185,6 +185,8 @@ research around optimizing dynamic languages.
   * [lineiform](https://github.com/chc4/lineiform) (Rust)
   * [redmagic](https://github.com/matthewfl/redmagic) (C)
   * [BacCaml](https://github.com/prg-titech/baccaml) (OCaml)
+  * [yk](https://github.com/ykjit/yk) (Rust), but it seems to be somewhat
+    stealthily under development
 * Bump allocators: [always bump downwards](https://fitzgeraldnick.com/2019/11/01/always-bump-downwards.html)!
 * [Call-site optimization for Common Lisp](http://metamodular.com/SICL/call-site-optimization.pdf) (PDF)
 * Posts about trace optimization:
