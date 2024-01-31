@@ -18,7 +18,7 @@ layout: none
               PS: this is a special RSS-only post that is not visible on the
               site. Enjoy.
             </description>
-            <pubDate>Tue, 23 Jan 2024 00:00:00 +0000</pubDate>
+            <pubDate>Wed, 31 Jan 2024 00:00:00 +0000</pubDate>
             <guid isPermaLink="false">rss-only-post-1</guid>
         </item>
         {% for post in site.posts limit:10 %}
