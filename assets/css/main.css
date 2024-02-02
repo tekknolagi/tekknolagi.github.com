@@ -43,7 +43,7 @@ pre {
     display: block;
     padding: 15px;
 }
-a.newlink:after {
+.newlink:after {
     content: "(new!)";
     padding-left: 5px;
     color: red;

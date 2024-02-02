@@ -11,8 +11,9 @@ I am a human and [programmer](https://github.com/tekknolagi). I like to read
 books, take photos, and ride bikes in the hills near my house. I [tweet
 things](https://twitter.com/tekknolagi) (and [toot
 things](https://mastodon.social/@tekknolagi)) about bread, legumes, and
-compilers. I am currently a PhD student at Northeastern University. **Hire me!
-I am looking for a dynamic language runtimes or compilers job.**
+compilers. I am currently a PhD student at Northeastern University. <span
+markdown="1" class="newlink">**Hire me! I am looking for a dynamic language
+runtimes or compilers job.**</span>
 
 You can [email me](mailto:contact@bernsteinbear.com) if you so desire. I'm
 happy to talk about education, programming languages, cycling, and more.
