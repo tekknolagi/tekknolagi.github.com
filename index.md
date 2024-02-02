@@ -11,9 +11,8 @@ I am a human and [programmer](https://github.com/tekknolagi). I like to read
 books, take photos, and ride bikes in the hills near my house. I [tweet
 things](https://twitter.com/tekknolagi) (and [toot
 things](https://mastodon.social/@tekknolagi)) about bread, legumes, and
-compilers. I am currently a PhD student at Northeastern University working with
-[Frank Tip](http://www.franktip.org/). **Hire me! I am looking for a compilers
-internship for Summer of 2024.**
+compilers. I am currently a PhD student at Northeastern University. **Hire me!
+I am looking for a dynamic language runtimes or compilers job.**
 
 You can [email me](mailto:contact@bernsteinbear.com) if you so desire. I'm
 happy to talk about education, programming languages, cycling, and more.
