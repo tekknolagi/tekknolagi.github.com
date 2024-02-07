@@ -18,6 +18,85 @@ internship for Summer of 2024.**
 You can [email me](mailto:contact@bernsteinbear.com) if you so desire. I'm
 happy to talk about education, programming languages, cycling, and more.
 
+## Latest nostr
+
+<div id="nostr-container"><ul></ul></div>
+
+<script type="text/javascript">
+const relay = "wss://offchain.pub";
+const socket = new WebSocket(relay);
+const pubkey =
+  "ff6560d3d0c180d8be922541650ca53debdfa50d10d30d05e1320c0a04b64584";
+const messages = [];
+
+function subscribe(pubkey) {
+  const filter = {
+    authors: [pubkey],
+  };
+  const subscription = ["REQ", "my-sub", filter];
+  socket.send(JSON.stringify(subscription));
+}
+
+function escapeHTML(unsafeText) {
+  // https://stackoverflow.com/a/48054293/569183
+  const div = document.createElement("div");
+  div.innerText = unsafeText;
+  return div.innerHTML;
+}
+
+function renderMessages(messages) {
+  const list = document.createElement("ul");
+  list.setAttribute("style", "list-style-type: none; padding-left: 0px; padding-bottom: 10px;");
+  for (const message of messages) {
+    const text = message.content;
+    const date = new Date(message.created_at * 1000);
+    const date_str = date.toLocaleDateString("en-US");
+    const time_str = date.toLocaleTimeString("en-US");
+    const element = document.createElement("li");
+    element.innerText = `${text}\n  ${time_str} on ${date_str}`;
+    element.setAttribute("style", "padding-bottom: 10px;");
+    list.appendChild(element);
+  }
+  const old_list = document.querySelector("#nostr-container ul");
+  document.querySelector("#nostr-container").replaceChild(list, old_list);
+}
+
+socket.addEventListener("open", function (event) {
+  console.log("open", event);
+  subscribe(pubkey);
+});
+
+socket.addEventListener("message", function (event) {
+  const message_data_json = event.data;
+  const message_data = JSON.parse(message_data_json);
+  if (!(message_data instanceof Array)) {
+    console.log("Invalid message: expected Array", message_data);
+    return;
+  }
+  if (message_data.length < 2) {
+    console.log("Invalid message: too short", message_data);
+    return;
+  }
+  const message_type = message_data[0];
+  if (message_type !== "EVENT") {
+    // Can ignore EOSE... for now? TODO: do we need to re-open a sub?
+    return;
+  }
+  if (message_data.length !== 3) {
+    console.log("Invalid EVENT message: too short", message_data);
+    return;
+  }
+  const event_data = message_data[2];
+  if (event_data.kind !== 1) {
+    // Ignore non text-note kinds for now
+    return;
+  }
+  messages.push(event_data);
+  messages.sort((a, b) => b.created_at - a.created_at);
+  renderMessages(messages.slice(0, 5));
+});
+</script>
+
 ## I like making things.
 
 That's probably an understatement. Here are some of my favorite projects:
