@@ -62,7 +62,6 @@ function renderMessages(messages) {
 }
 
 socket.addEventListener("open", function (event) {
-  console.log("open", event);
   subscribe(pubkey);
 });
 
