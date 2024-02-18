@@ -109,6 +109,23 @@ representative of the equivalence class---you need to call `.find()`.
 object at once, you start getting into e-graphs. [Fun
 stuff](https://egraphs-good.github.io/) awaits.)
 
+To get a feel for how union-find works, we can take a look at a small example.
+Let's say we have three nodes: a `+` and its two children:
+
+```python
+l = Value(1)
+r = Value(2)
+root = l + r
+```
+
+Right now, we have a three-node graph with the `+` being the root. If we find
+out that the `root` node is actually equivalent to the constant 3---say, via a
+constant folding pass---we can write `root.make_equal_to(Value(3))`. This
+doesn't delete anything from our graph. It actually adds to it. But when we
+later call `root.find()`, the representative is a constant instead of a plus
+node. So in some sense, the graph *has* shrunk, if you look at the graphs of
+only representatives.
+
 ## Current state of scalar math
 
 Remember that `dot(a, b) = a[0]*b[0] + ... + a[n]*b[n]`. Unfortunately, we
@@ -164,6 +181,11 @@ So, a plus made up of other nested plus nodes. If we take the children of `v2`
 Neat. And if `v4`'s children aren't all `+`, that's fine; we just leave the
 other operations as they are.
 
+To do this, we make a function to optimize one `Value` at a time:
+`optimize_one`. What we're looking for is a `+` made out of other `+` nodes---a
+many-argument `+`. If we find such a situation, we make a new, wider `+` node
+with the grandchildren added to it.
+
 ```python
 def optimize_one(v):
     if v._op == "+":
@@ -184,7 +206,8 @@ trees, we want to flatten them as well.
 
 That sounds to me like a good opportunity to build up the graph from the
 "bottom" (the leaves) up. And what operation do we already have to find that
-traversal order? `topo`, of course.
+traversal order? `topo`, of course. A topological sort of a graph orders node
+dependencies before the node itself---children before parents. Bottom up.
 
 ```python
 def run_optimize_one(v):
