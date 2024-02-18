@@ -5,12 +5,12 @@ description: Auto-vectorizing ML models using union-find.
 date: 2024-02-18
 ---
 
-Hello everyone I'm back. I wasn't satisfied with adding a `Dot` operator to
+Hello everyone! I'm back. I wasn't satisfied with adding a `Dot` operator to
 micrograd and manually using it in the MLP implementation. I kept wondering if
-it was possible to add that to the graph automatically in an optimizer. So I
+it was possible to add that to the graph automatically using an optimizer. So I
 did just that.
 
-So forget about all my changes to micrograd: we're going to start from a clean
+Forget about all my changes to micrograd: we're going to start from a clean
 micrograd and talk about autovectorization. The idea isn't new, but this seems
 to be a simple enough and small enough language that it is easy instead of very
 difficult.
@@ -24,9 +24,9 @@ We're going to try and find that high-level structure and lift it out.
 ## Union-find
 
 To do that we're going to use the union-find/disjoint-set data structure, which
-if you don't think about it too hard, is really simple. If you are a
-programming languages person and haven't used it much, I recommend taking a
-look at CF's [Implementing a Toy
+if you don't think about it too hard, is really simple (proving it fast is a
+different matter entirely). If you are a programming languages person and
+haven't used it much, I recommend taking a look at CF's [Implementing a Toy
 Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html). That was
 what a) made it stick, b) made it simple, and c) got me hooked.
 
@@ -325,3 +325,8 @@ and handful of adds (for the bias).
 
 Can we turn these `Dot` into `Matmul`s? What about automatically deriving
 `_backward` functions?
+
+What about scheduling? Sure, we have all these vector operations now, but no
+CPU actually supports that natively. We have to encode it as x86\_64 `dppd`
+instructions or something. Maybe e-graphs would be fun here to optimally
+schedule them.
