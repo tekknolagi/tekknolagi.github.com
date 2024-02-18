@@ -321,6 +321,11 @@ $
 All the `+` and `*` went away! 39,000 of each turned to just 51 dot products
 and handful of adds (for the bias).
 
+## A note
+
+Remember to think very hard if your machine learning is actually going to help
+people instead of being a solution search of a problem, or worse, hurt people.
+
 ## Next steps
 
 Can we turn these `Dot` into `Matmul`s? What about automatically deriving
