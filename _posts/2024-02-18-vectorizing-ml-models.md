@@ -96,7 +96,10 @@ the two operations are:
 And when you think of the sets as equivalence classes for operations---ops
 that, when run, would produce the same value---you can start to see its value
 in optimizing an SSA/SSI IR. You can optimize a node in the graph without
-rewriting all its uses.
+rewriting all its uses. So for an optimizer, the operations become:
+
+* What is the most-optimized version of this object?
+* Add a new most-optimized version of this object
 
 The main cognitive difference when using union-find in an optimizer is that
 when you are looking at an object, you need to make sure you are looking at the
