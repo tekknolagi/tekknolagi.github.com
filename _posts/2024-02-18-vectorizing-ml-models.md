@@ -348,3 +348,7 @@ What about scheduling? Sure, we have all these vector operations now, but no
 CPU actually supports that natively. We have to encode it as x86\_64 `dppd`
 instructions or something. Maybe e-graphs would be fun here to optimally
 schedule them.
+
+For my version of the code in this post, check out the [mb-vectorize
+branch](https://github.com/tekknolagi/micrograd/tree/mb-vectorize) of my fork
+of micrograd.
