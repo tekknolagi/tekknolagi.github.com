@@ -184,6 +184,9 @@ def run_optimize_one(v):
     topo = v.topo()
     for op in topo:
         optimize_one(op.find())
+
+def optimize(v):
+    run_optimize_one(v)
 ```
 
 If you wanted to write this as a DFS that returned a new copy of the graph you
@@ -201,7 +204,7 @@ net = MLP(dim_in, [50, 10])
 model = net([Value(i, (), "input") for i in range(dim_in)])
 loss = sum(model)  # fake "loss" function to turn the array into a scalar
 print(" ", count(loss.find()))
-changed = optimize(loss.find())
+optimize(loss.find())
 print(" ", count(loss.find()))
 ```
 
