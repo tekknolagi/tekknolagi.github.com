@@ -105,6 +105,10 @@ The main cognitive difference when using union-find in an optimizer is that
 when you are looking at an object, you need to make sure you are looking at the
 representative of the equivalence class---you need to call `.find()`.
 
+(And, by the way, if you want to hold multiple optimization versions of an
+object at once, you start getting into e-graphs. [Fun
+stuff](https://egraphs-good.github.io/) awaits.)
+
 ## Current state of scalar math
 
 Remember that `dot(a, b) = a[0]*b[0] + ... + a[n]*b[n]`. Unfortunately, we
