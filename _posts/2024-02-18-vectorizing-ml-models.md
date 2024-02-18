@@ -48,7 +48,7 @@ index afd82cc..1c1863a 100644
          self._backward = lambda: None
 -        self._prev = set(_children)
 +        self._prev = tuple(_children)
-         self._op = _op # the op that produced this node, for graphviz / debugging / etc
+         self._op = _op # the op that produced this node
 +        self.forwarded = None
 +
 +    def find(self):
