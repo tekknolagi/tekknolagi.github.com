@@ -28,7 +28,10 @@ which, if you don't think about it too hard, is really simple (proving it fast
 is a different matter entirely). If you are a programming languages person and
 haven't used it much, I recommend taking a look at CF's [Implementing a Toy
 Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html). That was
-what a) made it stick, b) made it simple, and c) got me hooked.
+what a) made it stick, b) made it simple, and c) got me hooked. I also
+recommend [this visualization
+tool](https://www.cs.usfca.edu/~galles/visualization/DisjointSets.html) by
+David Galles at USF. His other visualizations are excellent too.
 
 This is, regrettably, an invasive change we will have to make to the `Value`
 class. I think we could do it with a data structure on the side, but maybe I
