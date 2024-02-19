@@ -202,12 +202,17 @@ def optimize_one(v):
 
 Remember that `v0` and `v1` might be entire graphs on their own, so this is
 only one step of a bigger loop. If `v0` and `v1` are also deeply nested plus
-trees, we want to flatten them as well.
+trees, we want to flatten them as well. The "normal" way to do to this
+optimization in a functional style is to do a depth-first transformation and
+return a new copy of the graph. With union-find, we can avoid doing a bunch of
+those copies.
 
-That sounds to me like a good opportunity to build up the graph from the
-"bottom" (the leaves) up. And what operation do we already have to find that
-traversal order? `topo`, of course. A topological sort of a graph orders node
-dependencies before the node itself---children before parents. Bottom up.
+We also already have an operation to traverse leaf-first: topological sort. A
+topological sort of a graph orders node dependencies before the node
+itself---children before parents. Bottom up.
+
+So here is one loop over each node in the graph, optimizing from the leaves on
+up, doing cascading squishing of `+` nodes:
 
 ```python
 def run_optimize_one(v):
@@ -218,10 +223,6 @@ def run_optimize_one(v):
 def optimize(v):
     run_optimize_one(v)
 ```
-
-If you wanted to write this as a DFS that returned a new copy of the graph you
-could totally do that too, but you would construct a lot of copies that you
-don't need to make, I think.
 
 Let's check to see if this optimization works. To do that, I use a little
 `collections.Counter` to check the distribution of `Value` node types in the
