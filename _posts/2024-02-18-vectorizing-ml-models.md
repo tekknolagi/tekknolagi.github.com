@@ -5,6 +5,9 @@ description: Auto-vectorizing ML models using union-find.
 date: 2024-02-18
 ---
 
+> *NOTE: This post is going to be a compiler post, not a machine learning
+> tutorial, so please treat it as such. Less ML than the last post, even.*
+
 Hello everyone! I'm back. I wasn't satisfied with adding a `Dot` operator to
 micrograd and manually using it in the MLP implementation from the [last
 post](/blog/compiling-ml-models) (read that first if you want more context, but
@@ -409,6 +412,9 @@ What about scheduling? Sure, we have all these vector operations now, but no
 CPU actually supports that natively. We have to encode it as x86\_64 `dppd`
 instructions or something. Maybe e-graphs would be fun here to optimally
 schedule them.
+
+I would like to see how much we can optimize, say,
+[femtoGPT](https://github.com/cthiriet/femtoGPT) with this.
 
 For my version of the code in this post, check out the [mb-vectorize
 branch](https://github.com/tekknolagi/micrograd/tree/mb-vectorize) of my fork
