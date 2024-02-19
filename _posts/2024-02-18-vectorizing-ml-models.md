@@ -176,10 +176,44 @@ v2 = v0 + v1
 v4 = v2 + v3
 ```
 
+<figure style="display: block; margin: 0 auto;">
+  <object class="svg" type="image/svg+xml" data="/assets/img/vectorizing-ml-models-before.svg">
+  </object>
+</figure>
+<!--
+digraph {
+    rankdir="TB"
+    v2 [label="v2: +"];
+    v2 -> v0;
+    v2 -> v1;
+    v4 [label="v4: +"];
+    v4 -> v2;
+    v4 -> v3;
+}
+-->
+
 So, a plus made up of other nested plus nodes. If we take the children of `v2`
 (`v0` and `v1`) and bring them up to be children of `v4`, we get `v4 = v0 + v1 + v3`.
 Neat. And if `v4`'s children aren't all `+`, that's fine; we just leave the
 other operations as they are.
+
+```
+v5 = v0 + v1 + v3
+```
+
+<figure style="display: block; margin: 0 auto;">
+  <object class="svg" type="image/svg+xml" data="/assets/img/vectorizing-ml-models-after.svg">
+  </object>
+</figure>
+<!--
+digraph {
+    rankdir="TB"
+    v5 [label="v5: +"];
+    v5 -> v0;
+    v5 -> v1;
+    v5 -> v3;
+}
+-->
 
 To do this, we make a function to optimize one `Value` at a time:
 `optimize_one`. What we're looking for is a `+` made out of other `+` nodes---a
