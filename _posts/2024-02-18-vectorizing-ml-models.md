@@ -195,7 +195,8 @@ digraph {
 So, a plus made up of other nested plus nodes. If we take the children of `v2`
 (`v0` and `v1`) and bring them up to be children of `v4`, we get `v4 = v0 + v1 + v3`.
 Neat. And if `v4`'s children aren't all `+`, that's fine; we just leave the
-other operations as they are.
+other operations as they are. Except that we have to make a new node because
+we're not modifying the graph, so we get `v5`:
 
 ```
 v5 = v0 + v1 + v3
