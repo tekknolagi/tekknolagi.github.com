@@ -8,8 +8,9 @@ date: 2024-02-18
 Hello everyone! I'm back. I wasn't satisfied with adding a `Dot` operator to
 micrograd and manually using it in the MLP implementation from the [last
 post](/blog/compiling-ml-models) (read that first if you want more context, but
-it's not super necessary). I kept wondering if it was possible to add that to
-the graph automatically using an optimizer. So I did just that.
+it's not super necessary). I kept wondering if it was possible to turn all the
+`+`/`*` nodes in the graph to `Dot` nodes automatically using an optimizer. So
+I did just that.
 
 Forget about all my changes to micrograd: we're going to start from a clean
 micrograd and talk about autovectorization. The idea isn't new, but this seems
