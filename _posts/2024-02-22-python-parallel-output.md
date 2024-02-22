@@ -31,7 +31,6 @@ def func(repo_name):
     log(repo_name, "Running tests")
     randsleep()
     log(repo_name, f"Result in {repo_name}.json")
-    return f"{repo_name} done"
 
 repos = ["repoA", "repoB", "repoC", "repoD"]
 map(func, repos)
@@ -54,7 +53,7 @@ with multiprocessing.Pool() as pool:
 ```
 
 Unfortunately, the output is a little unwieldy. While each line is still nicely
-attributed to a repo, it's spewing lines left and ride and the lines are
+attributed to a repo, it's spewing lines left and right and the lines are
 intermingled. Don't you miss all the beautiful parallel output from tools such
 as Buck and Bazel and Cargo?
 
