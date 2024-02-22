@@ -62,26 +62,33 @@ answer for our needs:
 [Leedehai]: https://stackoverflow.com/questions/6840420/rewrite-multiple-lines-in-the-console/59147732#59147732
 
 ```python
+def fill_output():
+    to_fill = num_lines - len(last_output_per_process)
+    for _ in range(to_fill):
+        print()
+
+def clean_up():
+    for _ in range(num_lines):
+        print("\x1b[1A\x1b[2K", end="")  # move up cursor and delete whole line
+
 def log(repo_name, *args):
     with terminal_lock:
         last_output_per_process[repo_name] = " ".join(str(arg) for arg in args)
+        clean_up()
         sorted_lines = last_output_per_process.items()
-        for _ in sorted_lines:
-            print("\x1b[1A\x1b[2K", end="")  # move up cursor and delete whole line
         for repo_name, last_line in sorted_lines:
             print(f"{repo_name}: {last_line}")
+        fill_output()
 
 # ...
 
 with multiprocessing.Manager() as manager:
     last_output_per_process = manager.dict()
     terminal_lock = manager.Lock()
-    # Make space for our output
-    numprocs = multiprocessing.cpu_count()
-    for _ in range(numprocs):
-        print()
+    fill_output()
     with multiprocessing.Pool() as pool:
         pool.map(func, repos, chunksize=1)
+    clean_up()
 ```
 
 This will print each item's status, one line at a time, to the terminal. It
