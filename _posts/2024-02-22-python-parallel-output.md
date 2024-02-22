@@ -104,6 +104,9 @@ This technique is probably fairly portable to any programming language that has
 threads and locks. The key difference is those implementations should use
 threads instead of processes; I did processes because it's Python.
 
+Check out the expanded version [in this
+Gist](https://gist.github.com/tekknolagi/4bee494a6e4483e4d849559ba53d067b).
+
 ## A demo for you
 
 Since you read this far, here is a demo of the program as it is written:
