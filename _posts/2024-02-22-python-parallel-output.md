@@ -1,6 +1,7 @@
 ---
 title: Neat parallel output in Python
 layout: post
+description: Make parallel tasks print nicely with zero dependencies.
 date: 2024-02-22
 ---
 
@@ -20,7 +21,7 @@ def randsleep():
 
 def func(repo_name):
     log(repo_name, "Starting")
-    randsleep()
+    randsleep()  # Can be substituted for actual work
     log(repo_name, "Installing")
     randsleep()
     log(repo_name, "Building")
@@ -54,7 +55,8 @@ with multiprocessing.Pool() as pool:
 
 Unfortunately, the output is a little unwieldy. While each line is still nicely
 attributed to a repo, it's spewing lines left and ride and the lines are
-intermingled.
+intermingled. Don't you miss all the beautiful parallel output from tools such
+as Buck and Bazel and Cargo?
 
 Fortunately, StackOverflow user [Leedehai][Leedehai] is a terminal pro user and
 knows how to rewrite multiple lines at a time in the console. We can adapt that
@@ -100,5 +102,15 @@ Please write in if you find out or have neat solutions.
 
 Last, you can limit maximum output length to the number of active processes, by
 `del`ing from `last_output_per_process` at `func` exit.
+
+## A demo for you
+
+Since you read this far, here is a demo of the program as it is written:
+
+<script async id="asciicast-Xgwj7Jpk3nWUM596jjH2jWay5" src="https://asciinema.org/a/Xgwj7Jpk3nWUM596jjH2jWay5.js"></script>
+
+and also with the program cleaning up processes as they finish:
+
+<script async id="asciicast-ipLlGw70veSS7UARJUdyYs4pG" src="https://asciinema.org/a/ipLlGw70veSS7UARJUdyYs4pG.js"></script>
 
 Enjoy your newfound fun output!
