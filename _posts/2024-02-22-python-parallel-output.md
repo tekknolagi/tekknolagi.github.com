@@ -76,6 +76,10 @@ def log(repo_name, *args):
 with multiprocessing.Manager() as manager:
     last_output_per_process = manager.dict()
     terminal_lock = manager.Lock()
+    # Make space for our output
+    numprocs = multiprocessing.cpu_count()
+    for _ in range(numprocs):
+        print()
     with multiprocessing.Pool() as pool:
         pool.imap(func, repos, chunksize=1)
 ```
