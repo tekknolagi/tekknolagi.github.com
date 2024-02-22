@@ -103,6 +103,10 @@ Please write in if you find out or have neat solutions.
 Last, you can limit maximum output length to the number of active processes, by
 `del`ing from `last_output_per_process` at `func` exit.
 
+This technique is probably fairly portable to any programming language that has
+threads and locks. The key difference is those implementations should use
+threads instead of processes; I did processes because it's Python.
+
 ## A demo for you
 
 Since you read this far, here is a demo of the program as it is written:
