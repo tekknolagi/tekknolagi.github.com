@@ -214,12 +214,29 @@ v5 = v0 + v1 + v3
 <!--
 digraph {
     rankdir="TB"
+
+    v2 [label="v2: +", color="grey"];
+    v2 -> v0 [color="grey"];
+    v2 -> v1 [color="grey"];
+
+    v4 [label="v4: +", color="grey"];
+    v4 -> v2 [color="grey"];
+    v4 -> v3 [color="grey"];
+
     v5 [label="v5: +"];
     v5 -> v0;
     v5 -> v1;
     v5 -> v3;
+
+    v4 -> v5 [style="dotted", color="grey"];
 }
 -->
+
+In this graph diagram, I have kept around the old `v2` and `v4` because we
+never really delete them in our optimizer. The garbage collector might get to
+it eventually if nothing else uses them. It also illustrates (using a dotted
+line) that `v4` is *forwarded to* `v5`. That `v5` is now the representative for
+that equivalence class.
 
 To do this, we make a function to optimize one `Value` at a time:
 `optimize_one`. What we're looking for is a `+` made out of other `+` nodes---a
