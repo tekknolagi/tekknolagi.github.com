@@ -36,7 +36,7 @@ repos = ["repoA", "repoB", "repoC", "repoD"]
 map(func, repos)
 ```
 
-This is fine. It works. It's a little noisy, but it works. But then you get
+This is fine. It works. It's a little noisy, but it works. But then you
 discover some thing great: your problem is data parallel. That is, you can
 process as many repos as your system allows in parallel. Hoorah! You rewrite
 using `multiprocessing`:
