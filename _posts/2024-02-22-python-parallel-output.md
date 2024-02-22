@@ -112,7 +112,8 @@ Since you read this far, here is a demo of the program as it is written:
 
 <script async id="asciicast-Xgwj7Jpk3nWUM596jjH2jWay5" src="https://asciinema.org/a/Xgwj7Jpk3nWUM596jjH2jWay5.js"></script>
 
-and also with the program cleaning up processes as they finish:
+and also with the program cleaning up processes as they finish (`del
+last_output_per_process[repo_name]` at the end of `func` but remember to lock):
 
 <script async id="asciicast-ipLlGw70veSS7UARJUdyYs4pG" src="https://asciinema.org/a/ipLlGw70veSS7UARJUdyYs4pG.js"></script>
 
