@@ -42,8 +42,6 @@ process as many repos as your system allows in parallel. Hoorah! You rewrite
 using `multiprocessing`:
 
 ```python
-#!/usr/bin/env python3
-
 import multiprocessing
 
 # ...
@@ -64,10 +62,6 @@ answer for our needs:
 [Leedehai]: https://stackoverflow.com/questions/6840420/rewrite-multiple-lines-in-the-console/59147732#59147732
 
 ```python
-#!/usr/bin/env python
-
-import multiprocessing
-
 def log(repo_name, *args):
     with terminal_lock:
         last_output_per_process[repo_name] = " ".join(str(arg) for arg in args)
