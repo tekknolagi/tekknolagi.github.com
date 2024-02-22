@@ -80,6 +80,11 @@ def log(repo_name, *args):
             print(f"{repo_name}: {last_line}")
         fill_output()
 
+def func(repo_name):
+    # ...
+    with terminal_lock:
+        del last_output_per_process[repo_name]
+
 # ...
 
 with multiprocessing.Manager() as manager:
@@ -104,9 +109,6 @@ I'm not sure what this does if the log output is multiple lines long or if
 someone else is mucking with `stdout`/`stderr` (a stray `print`, perhaps).
 Please write in if you find out or have neat solutions.
 
-Last, you can limit maximum output length to the number of active processes, by
-`del`ing from `last_output_per_process` at `func` exit.
-
 This technique is probably fairly portable to any programming language that has
 threads and locks. The key difference is those implementations should use
 threads instead of processes; I did processes because it's Python.
@@ -116,13 +118,8 @@ Gist](https://gist.github.com/tekknolagi/4bee494a6e4483e4d849559ba53d067b).
 
 ## A demo for you
 
-Since you read this far, here is a demo of the program as it is written:
+Since you read this far, here is a demo of the program:
 
-<script async id="asciicast-Xgwj7Jpk3nWUM596jjH2jWay5" src="https://asciinema.org/a/Xgwj7Jpk3nWUM596jjH2jWay5.js"></script>
-
-and also with the program cleaning up processes as they finish (`del
-last_output_per_process[repo_name]` at the end of `func` but remember to lock):
-
-<script async id="asciicast-ipLlGw70veSS7UARJUdyYs4pG" src="https://asciinema.org/a/ipLlGw70veSS7UARJUdyYs4pG.js"></script>
+<script async id="asciicast-6xC2Q720qD5xpjNiVRhApzVRx" src="https://asciinema.org/a/6xC2Q720qD5xpjNiVRhApzVRx.js"></script>
 
 Enjoy your newfound fun output!
