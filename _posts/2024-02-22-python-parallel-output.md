@@ -47,7 +47,7 @@ import multiprocessing
 # ...
 
 with multiprocessing.Pool() as pool:
-    pool.imap(func, repos, chunksize=1)
+    pool.map(func, repos, chunksize=1)
 ```
 
 Unfortunately, the output is a little unwieldy. While each line is still nicely
@@ -81,7 +81,7 @@ with multiprocessing.Manager() as manager:
     for _ in range(numprocs):
         print()
     with multiprocessing.Pool() as pool:
-        pool.imap(func, repos, chunksize=1)
+        pool.map(func, repos, chunksize=1)
 ```
 
 This will print each item's status, one line at a time, to the terminal. It
