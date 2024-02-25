@@ -33,7 +33,8 @@ def func(repo_name):
     log(repo_name, f"Result in {repo_name}.json")
 
 repos = ["repoA", "repoB", "repoC", "repoD"]
-map(func, repos)
+for repo in repos:
+    func(repo)
 ```
 
 This is fine. It works. It's a little noisy, but it works. But then you
