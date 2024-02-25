@@ -88,6 +88,9 @@ def func(repo_name):
 
 # ...
 
+repos = ["repoA", "repoB", "repoC", "repoD"]
+num_procs = multiprocessing.cpu_count()
+num_lines = min(len(repos), num_procs)
 with multiprocessing.Manager() as manager:
     last_output_per_process = manager.dict()
     terminal_lock = manager.Lock()
