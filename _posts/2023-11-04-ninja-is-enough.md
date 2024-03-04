@@ -152,6 +152,26 @@ something[^other-ideas].
 [^other-ideas]: Or support out-of-tree builds, different platforms, or maybe
     you could even do some kind of easily distributed build using Erlang, or...
 
+**(a small update)**
+
+Andy Chu of Oils fame noted that Ninja can use compiler-generated Make `.d`
+depfiles natively. This means that we can remove the manual `implicit=` header
+dependencies from the individual `.o` rules and instead generate them using
+`-MD -MF $out.d` and `depfile=` in the `cc` rule.
+
+```python
+# ...
+writer.rule("cc", "$cc -MD -MF $out.d $cflags -c -o $out $in", depfile="$out.d")
+# ...
+writer.build("lib.o", "cc", "lib.c")
+```
+
+For compilers such that support this (GCC and Clang both do), this is a very
+convenient option. It even adds dependencies on system headers in case those
+change.
+
+**(end update)**
+
 Another question you might have: do you have to manually add new files to this
 Ninja-generator and re-generate Ninja manually?
 
