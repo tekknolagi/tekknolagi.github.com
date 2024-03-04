@@ -154,10 +154,10 @@ something[^other-ideas].
 
 **(a small update)**
 
-Andy Chu of Oils fame noted that Ninja can use compiler-generated Make `.d`
-depfiles natively. This means that we can remove the manual `implicit=` header
-dependencies from the individual `.o` rules and instead generate them using
-`-MD -MF $out.d` and `depfile=` in the `cc` rule.
+Andy Chu of [Oils](https://www.oilshell.org/) fame noted that Ninja can use
+compiler-generated Make `.d` depfiles natively. This means that we can remove
+the manual `implicit=` header dependencies from the individual `.o` rules and
+instead generate them using `-MD -MF $out.d` and `depfile=` in the `cc` rule.
 
 ```python
 # ...
