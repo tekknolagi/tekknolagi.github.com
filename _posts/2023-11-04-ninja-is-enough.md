@@ -170,6 +170,19 @@ For compilers such that support this (GCC and Clang both do), this is a very
 convenient option. It even adds dependencies on system headers in case those
 change.
 
+And, if you use GCC/Clang (and with some tweaking, MSVC), you can also add
+`deps="gcc"` or `deps="msvc"` to have Ninja internalize the `.d` file and
+delete it after it's been processed. According to the docs, this makes for
+faster builds on larger projects.
+
+```python
+# ...
+writer.rule("cc", "$cc -MD -MF $out.d $cflags -c -o $out $in", depfile="$out.d", deps="gcc")
+# ...
+```
+
+Enjoy.
+
 **(end update)**
 
 Another question you might have: do you have to manually add new files to this
