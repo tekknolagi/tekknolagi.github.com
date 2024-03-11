@@ -52,14 +52,26 @@ I like making things [just for fun](https://justforfunnoreally.dev/).
 
 ## I like teaching.
 
-* I taught [CS 50ISDT](/isdt/) (2021), a course [Tom](https://tchebb.me/) and I
-  wrote for Tufts about software development tooling
-* I taught [EXP 57](/excollege/) (2018), a course
-  [Yuki](https://yzan424.github.io/) and I wrote for Tufts about personal and
-  professional development
+* I will be teaching [CS 4973: ISDT](/isdt/) at Northeastern, Summer Session 2,
+  2024
+* I taught [CS 50ISDT](/isdt/) (2021) with Tom Hebb at Tufts
+* I taught [EXP 57](/excollege/) (2018) with Yuki Zaninovich at Tufts
+
+[Tom](https://tchebb.me/) and I wrote *Introduction to Software Development
+Tooling* (ISDT) originally for Tufts (as CS 50 ISDT), and then made some
+modifications to teach it at Northeastern (as CS 4973 ISDT).
+
+[Yuki](https://yzan424.github.io/) and I wrote *EXP 57: Tech Trends and
+Careers* for the Experimental College at Tufts University to teach students
+about personal and professional development. In 2021, we taught a
+much-condensed version of it as a multi-day workshop at Tufts.
+
 * I TAed CS 4530 at Northeastern (Fall 2023)
 * I TAed CS 11 (intro), 15 (data structures), 40 (machine structure), and
   Concurrent Programming at Tufts and was the head TA for 11 and 15
+
+I also worked at the Center for Education Research at Stanford (CERAS) in 2014
+and taught robotics at a summer camp some time between 2013 and 2018.
 
 ## Sometimes I contribute to open source projects.
 
