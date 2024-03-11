@@ -64,6 +64,17 @@ timeouts][timeouts], and a PTY option.
 
 I copy this into projects frequently.
 
+## Ninja generator and small Ninja
+
+It's pretty easy to generate Ninja files and BYOB[^byob] and I wrote a [blog
+post](/blog/ninja-is-enough/) about that. Then I discovered someone's very
+small single-file Ninja reimplementation in Python and mashed them up into a
+[little demo](https://github.com/tekknolagi/ninja-demo).
+
+[^byob]: Build Your Own Bazel
+
+This relies on `ninja_syntax.py` which is copied from the Ninja project.
+
 ## Parallel output
 
 Sometimes you have a bunch of tasks to run and want quick-n-dirty
