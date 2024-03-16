@@ -22,10 +22,16 @@ network controller and wake up a sleeping machine. That's fantastic, except:
 
 * Sometimes I leave the house, which (because of NAT) means I cannot easily
   send the computer a packet. I could probably find a way to get my router to
-  notice the packet coming from WAN and forward it appropriately, but... eh.
+  notice the packet coming from WAN and forward it appropriately, but...
+  eh[^assistant].
 * I could probably SSH into my router and send the appropriate packet, but
   installing tools on my router, even though it's running OpenWRT, is kind of
   irritating.
+
+[^assistant]: I just remembered as I wrote this that in college we also
+    configured a voice assistant to, when prompted with some key phrase, send
+    an HTTP request to our router, which would then send a WoL packet to our
+    media server. That was pretty useful.
 
 So I need to find a way to get the packet to *come from inside the house* and
 not from my router. Sounds like a great excuse to buy a low-power computer and
@@ -67,14 +73,8 @@ cedar%
 
 Then I thought it and remembered some of our old [college apartment
 infrastructure](/blog/how-to-mess-with-your-roommate/) and realized I should
-probably have a webpage as well[^assistant]. It would be neat to be able to
+probably have a webpage as well. It would be neat to be able to
 open a page on my laptop or phone and wake my desktop from its slumber.
-
-[^assistant]: I just remembered as I wrote this that in college we also
-    configured a voice assistant to, when prompted with some key phrase, send
-    an HTTP request to our router, which would then send a WoL packet to our
-    media server. That was pretty useful.
-
 <img src="/assets/img/wakemeup-desktop.png" style="display: block; margin: 0 auto; max-width: 80%;" alt="The buttons" />
 
 Because I wanted to write as little code and infrastructure as possible, this
