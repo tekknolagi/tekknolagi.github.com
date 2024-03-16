@@ -87,7 +87,7 @@ $ /usr/bin/busybox httpd -vv -p 80 -c /home/max/httpd.conf -f
 ```
 
 The configuration file just sets `index.html` as the default directory index
-page and sets the directory root.
+page and sets the root directory.
 
 When I click one of the buttons, it sends a request to---yes, you guessed
 it---a CGI handler. It's very small, and could even be smaller if I didn't log
