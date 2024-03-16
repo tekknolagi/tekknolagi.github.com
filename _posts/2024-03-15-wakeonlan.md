@@ -7,7 +7,8 @@ I have a desktop computer at home with a decent CPU and GPU and RAM and all
 that. I use it when I need to do Beefy Processing Things like compiling LLVM or
 when I want to save battery on my laptop. I like leaving it in hibernation mode
 to save power, but sometimes I forget to wake it up on a day that I might need
-it. For that, I need to be able to wake it up remotely.
+it from the library or something. For that, I need to be able to wake it up
+remotely.
 
 ## wakeonlan
 
