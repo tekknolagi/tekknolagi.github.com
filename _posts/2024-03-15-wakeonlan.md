@@ -42,9 +42,9 @@ that's because it was reasonably priced and available with a short walk.
 
 After some nonsense[^pi-setup] setting up the Pi, I managed to SSH into it and
 send a WoL packet. Nice! But I also have to be able to access the SSH server
-from outside the house. Instead of setting up port forwarding, I added the Pi
-to my Tailscale network (no, this is not an ad; just happy), which was pretty
-painless.
+from outside the house. Instead of setting up port forwarding or OpenVPN on my
+router, I added the Pi to my Tailscale network (no, this is not an ad; just
+happy), which was pretty painless.
 
 ```console
 cedar% ssh raspberrypi
