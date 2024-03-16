@@ -112,7 +112,10 @@ else:
 
 Because I didn't want to have to hit the back button and also vaguely
 remembered an interesting snippet of code I saw on lobste.rs recently, I
-decided to use HTMZ to inject this CGI-printed response into the original page.
+decided to use [HTMZ][htmz] to inject this CGI-printed response into the
+original page.
+
+[htmz]: https://leanrada.com/htmz/
 
 ```html
 <!DOCTYPE html>
@@ -123,7 +126,6 @@ decided to use HTMZ to inject this CGI-printed response into the original page.
       <button formaction="/cgi-bin/sleep.cgi#wake-response">Go to sleep</button>
     </form>
     <div id="wake-response"></div>
-    <!-- https://leanrada.com/htmz/ -->
     <iframe hidden name=htmz onload="setTimeout(()=>document.querySelector(contentWindow.location.hash||null)?.replaceWith(...contentDocument.body.childNodes))"></iframe>
   </body>
 </html>
