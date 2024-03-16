@@ -113,9 +113,14 @@ else:
 Because I didn't want to have to hit the back button and also vaguely
 remembered an interesting snippet of code I saw on lobste.rs recently, I
 decided to use [HTMZ][htmz] to inject this CGI-printed response into the
-original page.
+original page[^repeated].
 
 [htmz]: https://leanrada.com/htmz/
+
+[^repeated]: It doesn't really make sense for this project, but I learned while
+    poking around on the HTMZ page that a browser won't make repeated GET
+    requests from an iframe. Fortunately, there is a very slightly [different
+    version of HTMZ](https://leanrada.com/htmz/extensions/) for that.
 
 ```html
 <!DOCTYPE html>
