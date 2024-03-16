@@ -91,7 +91,7 @@ page and sets the root directory.
 
 When I click one of the buttons, it sends a request to---yes, you guessed
 it---a CGI handler. It's very small, and could even be smaller if I didn't log
-error output:
+error output. For example, here is the wake handler:
 
 [httpd]: https://openwrt.org/docs/guide-user/services/webserver/http.httpd
 
