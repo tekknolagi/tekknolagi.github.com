@@ -76,7 +76,7 @@ infrastructure](/blog/how-to-mess-with-your-roommate/) and realized I should
 probably have a webpage as well. It would be neat to be able to
 open a page on my laptop or phone and wake my desktop from its slumber.
 
-<img src="/assets/img/wakemeup-desktop.png" style="display: block; margin: 0 auto; max-width: 80%;" alt="The buttons" />
+<img src="/assets/img/wakemeup-desktop.png" style="display: block; margin: 0 auto; max-width: 80%;" alt="The very large buttons saying 'WAKE ME UP (wake me up inside)' and 'Go to sleep'" />
 
 Because I wanted to write as little code and infrastructure as possible, this
 is served via [Busybox httpd][httpd].
