@@ -1399,3 +1399,8 @@ on the fly? Would it blow the trace length limit?
 **What if you generated Python code or bytecode?** This doesn't even require
 writing the interpreter in RPython, but it does require writing a compiler from
 `Value` graphs to Python (bytecode). Could PyPy compile *this* effectively?
+
+## Follow-up post
+
+I wrote a [second post](/blog/vectorizing-ml-models/) about compiling ML! It's
+about automatically vectorizing the scalar IR.
