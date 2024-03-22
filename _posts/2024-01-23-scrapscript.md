@@ -238,10 +238,10 @@ yet. We did get symbols working, though, so we have `#true` and `#false`
 implemented inside scrapscript.
 
 ```
-person :
+some-sum-type :
   #cowboy
   #ron int
-  #parent (#m #f)
+  #favcolor (#green #blue #other)
   #friend int
   #stranger text
 ```
