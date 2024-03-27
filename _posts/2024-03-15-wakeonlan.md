@@ -187,6 +187,15 @@ This was probably the last dose of systems administration that I'll need for
 the next six years or so. See you all soon for some more programming languages
 or breadposting.
 
+## Sleep on LAN
+
+**Update on March 27, 2024:** I found
+[sleep-on-lan](https://github.com/SR-G/sleep-on-lan), which I can run on the
+desktop machine and it will make the computer *sleep* when it receives a magic
+packet. It does this by waiting for the same magic packet but to the *reversed*
+MAC address. I set that up as an unprivilged user service on the big desktop
+and now the "Sleep" button actually works.
+
 ## All the code
 
 To see all of the code and configuration in its brief glory, check out [the
