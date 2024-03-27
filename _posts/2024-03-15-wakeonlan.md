@@ -193,7 +193,7 @@ or breadposting.
 [sleep-on-lan](https://github.com/SR-G/sleep-on-lan), which I can run on the
 desktop machine and it will make the computer *sleep* when it receives a magic
 packet. It does this by waiting for the same magic packet but to the *reversed*
-MAC address. I set that up as an unprivilged user service on the big desktop
+MAC address. I set that up as an unprivileged user service on the big desktop
 and now the "Sleep" button actually works.
 
 ## All the code
