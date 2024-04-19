@@ -100,6 +100,13 @@ and taught robotics at a summer camp some time between 2013 and 2018.
 Fun fact: I have now contributed to five different Python runtimes (Skybison,
 Cinder, CPython, PyPy, and Pyjion).
 
+## I like writing.
+
+I have a blog but also now I have an academic paper! Check out [Dr Wenowdis:
+Specializing dynamic language C extensions using type
+information](/assets/img/dr-wenowdis.pdf) (PDF), which is accepted at PLDI SOAP
+2024.
+
 ## I will happily talk in front of people.
 
 * [*Compiling ML models*](/assets/img/compiling-ml-models.pdf) (PDF) at NEU Software Day 2023
