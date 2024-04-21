@@ -4,6 +4,9 @@ layout: post
 date: 2024-01-13
 ---
 
+**Update:** The paper version of this post is accepted at PLDI SOAP 2024. Take
+a look at the [preprint](/assets/img/dr-wenowdis.pdf) (PDF).
+
 PyPy is an alternative implementation of the Python language. PyPy's C API
 compatibility layer has some performance issues. [Carl Friedrich
 Bolz-Tereick](https://cfbolz.de/) and I are working on a way to make PyPy's C
