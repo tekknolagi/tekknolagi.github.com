@@ -8,7 +8,7 @@ date: 2024-01-13
 a look at the [preprint](/assets/img/dr-wenowdis.pdf) (PDF).
 
 PyPy is an alternative implementation of the Python language. PyPy's C API
-compatibility layer has some performance issues. [Carl Friedrich
+compatibility layer has some performance issues. [CF
 Bolz-Tereick](https://cfbolz.de/) and I are working on a way to make PyPy's C
 API interactions much faster. It's looking very promising. Here's a sketch of
 how it works.
@@ -136,7 +136,7 @@ speed up that call. Let's see if it can be done.
 ## Potsdam
 
 This is where I come into this. I was at the ECOOP conference in 2022 where
-[Carl Friedrich](https://cfbolz.de/) introduced me to some other implementors
+[CF](https://cfbolz.de/) introduced me to some other implementors
 of alternative Python runtimes. I got to talk to the authors of PyPy and ZipPy
 and GraalPython over some coffee and beer. They're really nice.
 
@@ -243,7 +243,7 @@ because my integration with Cinder was a little too hacky. I [wrote up the
 ideas](https://github.com/faster-cpython/ideas/issues/546) for posterity in
 case someone wanted to take up the project.
 
-A year later, nobody else had, so I decided to poke Carl Friedrich and see if
+A year later, nobody else had, so I decided to poke CF and see if
 we could implement it in PyPy. We'll see how that implementation looks in a
 minute. But first, an aside on where C extensions come from.
 
@@ -523,7 +523,7 @@ $
 
 168ms! To refresh your memory, that's **5x** faster than CPython and **13x**
 faster than baseline PyPy. I honestly did not believe my eyes when I saw this
-number. And Carl Friedrich and I think there is *still room for more*
+number. And CF and I think there is *still room for more*
 improvements like doing the signature/metadata finding inside the JIT instead
 of calling that C function.
 
@@ -630,6 +630,6 @@ example that I found in a search on GitHub is [available
 here](https://github.com/lief-project/LIEF/blob/58f499a22221cee7ab6682986b1504b90acd8556/api/python/src/ELF/init.cpp#L100)).
 A JIT like PyPy could make the dynamic dispatch go away.
 
-Another idea, from Carl Friedrich, a little more difficult: what if the Cython
+Another idea, from CF, a little more difficult: what if the Cython
 compiler could generate Python code or bytecode? Or, what if PyPy could ingest
 Cython code?
