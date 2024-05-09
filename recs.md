@@ -9,6 +9,7 @@ ul { list-style-type: none; }
 </style>
 
 <div id="filters">
+    <a href="#" onclick="document.querySelectorAll('li').forEach(elt => elt.style='')">reset</a>
 </div>
 
 <div id="recs">
@@ -68,8 +69,7 @@ ul { list-style-type: none; }
 </div>
 
 <noscript>
-<div style="background-color: #ffc107; padding: 5px;">
-<!-- #f8f3d6 -->
+<div style="background-color: #f8f3d6; padding: 5px;">
 NOTE: This page provides some filtering using JS. It's perfectly usable without.
 </div>
 </noscript>
@@ -87,6 +87,12 @@ for (const div of document.querySelectorAll("#recs div")) {
         for (const tag of div.classList) {
             entry.classList.add(tag);
         }
+        const locationLink = document.createElement("a");
+        const plusCode = entry.getAttribute("data-location");
+        locationLink.setAttribute("href", `https://plus.codes/${plusCode}`);
+        locationLink.append(document.createTextNode("(location)"));
+        entry.append(document.createTextNode("\u00A0"));
+        entry.append(locationLink);
     }
 }
 const filters = document.querySelector("#filters");
