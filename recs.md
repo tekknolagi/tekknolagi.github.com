@@ -64,8 +64,8 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="drinks" data-location="CRVQ+Q8 Palo Alto, California">The Rose &amp; Crown</li>
             <li class="drinks" data-location="CQJX+R9 Menlo Park, California">Dutch Goose</li>
             <li class="food" data-location="CVG4+M9 Palo Alto, California">Zareen's</li>
+            <li class="drinks"><del>Antonio's Nut House</del> Sadly closed</li>
         </ul>
-        Sadly closed: Antonio's Nut House.
     </div>
     <div class="city:san-mateo area:sfbay">
         <h2>San Mateo</h2>
