@@ -23,7 +23,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="food" data-location="QH5H+FR Mission District, San Francisco, CA">Garden Creamery</li>
             <li class="food" data-location="QH7M+7V Mission District, San Francisco, CA">Stable Cafe</li>
             <li class="tea vibes" data-location="QHF9+QP Lower Haight, San Francisco, CA">The Center</li>
-            <li class="food" data-location="QHM8+F7 Western Addition, San Francisco, CA">Jane the Bakery</li>
+            <li class="food bread" data-location="QHM8+F7 Western Addition, San Francisco, CA">Jane the Bakery</li>
             <li class="food" data-location="PHQM+MH Bernal Heights, San Francisco, CA">United Dumplings</li>
             <li class="food" data-location="QGGP+XG Inner Richmond, San Francisco, CA">Cinderella Bakery</li>
             <li class="books" data-location="QGMP+74 Inner Richmond, San Francisco, CA">Green Apple Books</li>
@@ -31,7 +31,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="park" data-location="QG98+HR Golden Gate Park, San Francisco, CA">Golden Gate Park</li>
             <li class="park" data-location="RG3M+JX Presidio of San Francisco, San Francisco, CA">Crissy Field</li>
             <li class="park" data-location="QH5F+W5 Mission Dolores, San Francisco, CA">Dolores Park</li>
-            <li class="food" data-location="QH6G+H9 Mission Dolores, San Francisco, CA">Tartine Bakery</li>
+            <li class="food bread" data-location="QH6G+H9 Mission Dolores, San Francisco, CA">Tartine Bakery</li>
             <li class="books" data-location="QH5H+8C Dolores Heights, San Francisco, CA">Dog Eared Books</li>
             <li class="books" data-location="PHXF+27 Noe Valley, San Francisco, CA">Omnivore Books on Food</li>
             <li class="activity"><a href="https://crosstowntrail.org/">Crosstown Trail</a></li>
@@ -71,6 +71,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
         <h2>San Mateo</h2>
         <ul>
             <li class="food" data-location="HM8G+7V San Mateo, California">Urban Momo</li>
+            <li class="food bread coffee" data-location="HM7F+8X San Mateo, California">Backhaus</li>
         </ul>
     </div>
     <div class="city:half-moon-bay area:sfbay">
