@@ -8,8 +8,9 @@ ul { list-style-type: none; }
 #filters a { padding-right: 5px; }
 </style>
 
-I love recommending places to people. Here are some recommendations. I have personally been to all of these and enjoyed
-them. I receive no kickbacks; the establishment owners don't even know I have this list.
+I love recommending places to people. Here are some recommendations from my "short list". I have personally been to all
+of these and enjoyed them enough to specifically call them out. I receive no kickbacks; the establishment owners don't
+even know I have this list.
 
 The food establishments tend to be vegetarian friendly, since I don't eat meat or fish.
 
@@ -49,6 +50,10 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="coffee" data-location="8WR8+QJ Boston, Massachusetts">Farmers Horse Coffee</li>
             <li class="food" data-location="9W8C+HP Cambridge, Massachusetts">The Helmand</li>
             <li class="activity"><a href="https://www.bostontrails.org/">Walking City Trail</a></li>
+            <li class="food" data-location="9VFJ+C5 Cambridge, Massachusetts">Joe's Pizza</li>
+            <li class="food coffee">Tatte (any)</li>
+            <li class="food" data-location="9VQJ+V2 Cambridge, Massachusetts">Sugar &amp; Spice</li>
+            <li class="food drinks" data-location="8WPF+QJ Boston, Massachusetts">Toro</li>
         </ul>
     </div>
     <div class="city:nyc">
@@ -56,22 +61,27 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
         <ul>
             <li class="coffee" data-location="P2H8+CJ New York">Lê Phin</li>
             <li class="drinks" data-location="PX4R+JV New York">Overstory</li>
+            <li class="food coffee" data-location="PX4R+XJ New York">Pi Bakerie</li>
+            <li class="food">Joe's Pizza (any)</li>
         </ul>
     </div>
     <div class="city:palo-alto area:sfbay">
-        <h2>Palo Alto</h2>
+        <h2>Palo Alto and Menlo Park</h2>
         <ul>
             <li class="drinks" data-location="CRVQ+Q8 Palo Alto, California">The Rose &amp; Crown</li>
             <li class="drinks" data-location="CQJX+R9 Menlo Park, California">Dutch Goose</li>
             <li class="food" data-location="CVG4+M9 Palo Alto, California">Zareen's</li>
+            <li class="food" data-location="FR47+77 Menlo Park, California">FEY</li>
             <li class="drinks"><del>Antonio's Nut House</del> Sadly closed</li>
         </ul>
     </div>
     <div class="city:san-mateo area:sfbay">
-        <h2>San Mateo</h2>
+        <h2>San Mateo and Burlingame</h2>
         <ul>
             <li class="food" data-location="HM8G+7V San Mateo, California">Urban Momo</li>
             <li class="food bread coffee" data-location="HM7F+8X San Mateo, California">Backhaus</li>
+            <li class="drinks" data-location="HMH3+WJ Burlingame, California">Barrelhouse</li>
+            <li class="drinks" data-location="GPR2+CC San Mateo, California">Fieldwork Brewing Company</li>
         </ul>
     </div>
     <div class="city:misc">
