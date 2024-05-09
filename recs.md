@@ -33,6 +33,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="park" data-location="RG3M+JX Presidio of San Francisco">Crissy Field</li>
             <li class="park" data-location="QH5F+W5 Mission Dolores">Dolores Park</li>
             <li class="food bread" data-location="QH6G+H9 Mission Dolores">Tartine Bakery</li>
+            <li class="food bread" data-location="849VQH6Q+Q6">Tartine Manufactory</li>
             <li class="books" data-location="QH5H+8C Dolores Heights">Dog Eared Books</li>
             <li class="books" data-location="PHXF+27 Noe Valley">Omnivore Books on Food</li>
             <li class="activity"><a href="https://crosstowntrail.org/">Crosstown Trail</a></li>
