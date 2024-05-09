@@ -54,6 +54,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="food coffee">Tatte (any)</li>
             <li class="food" data-location="9VQJ+V2 Cambridge, Massachusetts">Sugar &amp; Spice</li>
             <li class="food drinks" data-location="8WPF+QJ Boston, Massachusetts">Toro</li>
+            <li class="market" data-location="8WM9+83 Roxbury, Boston, MA">El Platanero</li>
         </ul>
     </div>
     <div class="city:nyc">
