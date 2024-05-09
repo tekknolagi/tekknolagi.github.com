@@ -81,6 +81,16 @@ ul { list-style-type: none; }
 <div style="background-color: #f8f3d6; padding: 5px;">
 NOTE: This page provides some filtering using JS. It's perfectly usable without.
 </div>
+<style>
+/* https://stackoverflow.com/a/24640763/569183 */
+li[data-location]:after {
+    content: attr(data-location);
+    display: inline-block;
+    color: #A9B0BB;
+    float: right;
+    font-style: italic;
+}
+</style>
 </noscript>
 
 <script>
