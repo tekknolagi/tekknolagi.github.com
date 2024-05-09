@@ -74,12 +74,6 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="food bread coffee" data-location="HM7F+8X San Mateo, California">Backhaus</li>
         </ul>
     </div>
-    <div class="city:half-moon-bay area:sfbay">
-        <h2>Half Moon Bay</h2>
-        <ul>
-            <li class="food" data-location="FH7C+X8 Half Moon Bay, California">San Benito Deli</li>
-        </ul>
-    </div>
     <div class="city:misc">
         <h2>Miscellaneous</h2>
         <ul>
@@ -95,6 +89,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="coffee" data-location="GCF3+P2 Berlin, Germany">Café Cinema</li>
             <li class="food" data-location="MJV5+F7 Copenhagen, Denmark">Reffen</li>
             <li class="food" data-location="MMQX+QW Shinjuku City, Tokyo, Japan">Taiyo no Tomato men with Cheese</li>
+            <li class="food" data-location="FH7C+X8 Half Moon Bay, California">San Benito Deli</li>
         </ul>
     </div>
 </div>
