@@ -13,9 +13,7 @@ them. I receive no kickbacks; the establishment owners don't even know I have th
 
 The food establishments tend to be vegetarian friendly, since I don't eat meat or fish.
 
-<div id="filters">
-    <a href="#" onclick="document.querySelectorAll('li').forEach(elt => elt.style='')">reset</a>
-</div>
+<div id="filters"></div>
 
 <div id="recs">
     <div class="city:sf area:sfbay">
@@ -140,6 +138,13 @@ for (const div of document.querySelectorAll("#recs div")) {
     }
 }
 const filters = document.querySelector("#filters");
+const reset = document.createElement("a");
+reset.setAttribute("href", "#");
+reset.append(document.createTextNode("reset"));
+reset.onclick = () => {
+    document.querySelectorAll('li').forEach(elt => elt.style='')
+};
+filters.append(reset);
 for (const tag of [...allTags].sort()) {
     const a = document.createElement("a");
     a.setAttribute("href", "#");
