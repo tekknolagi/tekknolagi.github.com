@@ -36,6 +36,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="books" data-location="QH5H+8C Dolores Heights, San Francisco, CA">Dog Eared Books</li>
             <li class="books" data-location="PHXF+27 Noe Valley, San Francisco, CA">Omnivore Books on Food</li>
             <li class="activity"><a href="https://crosstowntrail.org/">Crosstown Trail</a></li>
+            <li class="drinks" data-location="QHC9+PC Lower Haight, San Francisco, CA">Noc Noc</li>
         </ul>
     </div>
     <div class="city:boston">
@@ -102,6 +103,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="food" data-location="MMQX+QW Shinjuku City, Tokyo, Japan">Taiyo no Tomato men with Cheese</li>
             <li class="food" data-location="FH7C+X8 Half Moon Bay, California">San Benito Deli</li>
             <li class="hotel" data-location="MXVC+WJ Playa del Carmen, Quintana Roo, Mexico">Andaz Mayakoba</li>
+            <li class="drinks" data-location="G394+X4 Tübingen, Germany">Blauer Salon</li>
         </ul>
     </div>
 </div>
