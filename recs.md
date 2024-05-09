@@ -68,6 +68,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="drinks" data-location="PX4R+JV New York">Overstory</li>
             <li class="food coffee" data-location="PX4R+XJ New York">Pi Bakerie</li>
             <li class="food">Joe's Pizza (any)</li>
+            <li class="food market" data-location="Q2MC+W4 New York">Zabar's</li>
         </ul>
     </div>
     <div class="city:palo-alto area:sfbay">
