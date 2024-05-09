@@ -100,6 +100,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="food" data-location="MJV5+F7 Copenhagen, Denmark">Reffen</li>
             <li class="food" data-location="MMQX+QW Shinjuku City, Tokyo, Japan">Taiyo no Tomato men with Cheese</li>
             <li class="food" data-location="FH7C+X8 Half Moon Bay, California">San Benito Deli</li>
+            <li class="hotel" data-location="MXVC+WJ Playa del Carmen, Quintana Roo, Mexico">Andaz Mayakoba</li>
         </ul>
     </div>
 </div>
