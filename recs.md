@@ -38,6 +38,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="books" data-location="PHXF+27 Noe Valley">Omnivore Books on Food</li>
             <li class="activity"><a href="https://crosstowntrail.org/">Crosstown Trail</a></li>
             <li class="drinks" data-location="QHC9+PC Lower Haight">Noc Noc</li>
+            <li class="food" data-location="849VQHJQ+JXC">Montesacro Pinseria</li>
         </ul>
     </div>
     <div class="city:boston">
