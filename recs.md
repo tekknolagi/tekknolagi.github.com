@@ -20,42 +20,42 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
     <div class="city:sf area:sfbay">
         <h2>San Francisco</h2>
         <ul>
-            <li class="food" data-location="QH9C+F7 Duboce Triangle, San Francisco, CA">Beit Rima</li>
-            <li class="food" data-location="QH5H+FR Mission District, San Francisco, CA">Garden Creamery</li>
-            <li class="food" data-location="QH7M+7V Mission District, San Francisco, CA">Stable Cafe</li>
-            <li class="tea vibes" data-location="QHF9+QP Lower Haight, San Francisco, CA">The Center</li>
-            <li class="food bread" data-location="QHM8+F7 Western Addition, San Francisco, CA">Jane the Bakery</li>
-            <li class="food" data-location="PHQM+MH Bernal Heights, San Francisco, CA">United Dumplings</li>
-            <li class="food" data-location="QGGP+XG Inner Richmond, San Francisco, CA">Cinderella Bakery</li>
-            <li class="books" data-location="QGMP+74 Inner Richmond, San Francisco, CA">Green Apple Books</li>
-            <li class="park" data-location="QHG8+G3 Alamo Square, San Francisco, CA">Alamo Square Park</li>
-            <li class="park" data-location="QG98+HR Golden Gate Park, San Francisco, CA">Golden Gate Park</li>
-            <li class="park" data-location="RG3M+JX Presidio of San Francisco, San Francisco, CA">Crissy Field</li>
-            <li class="park" data-location="QH5F+W5 Mission Dolores, San Francisco, CA">Dolores Park</li>
-            <li class="food bread" data-location="QH6G+H9 Mission Dolores, San Francisco, CA">Tartine Bakery</li>
-            <li class="books" data-location="QH5H+8C Dolores Heights, San Francisco, CA">Dog Eared Books</li>
-            <li class="books" data-location="PHXF+27 Noe Valley, San Francisco, CA">Omnivore Books on Food</li>
+            <li class="food" data-location="QH9C+F7 Duboce Triangle">Beit Rima</li>
+            <li class="food" data-location="QH5H+FR Mission District">Garden Creamery</li>
+            <li class="food" data-location="QH7M+7V Mission District">Stable Cafe</li>
+            <li class="tea vibes" data-location="QHF9+QP Lower Haight">The Center</li>
+            <li class="food bread" data-location="QHM8+F7 Western Addition">Jane the Bakery</li>
+            <li class="food" data-location="PHQM+MH Bernal Heights">United Dumplings</li>
+            <li class="food" data-location="QGGP+XG Inner Richmond">Cinderella Bakery</li>
+            <li class="books" data-location="QGMP+74 Inner Richmond">Green Apple Books</li>
+            <li class="park" data-location="QHG8+G3 Alamo Square">Alamo Square Park</li>
+            <li class="park" data-location="QG98+HR Golden Gate Park">Golden Gate Park</li>
+            <li class="park" data-location="RG3M+JX Presidio of San Francisco">Crissy Field</li>
+            <li class="park" data-location="QH5F+W5 Mission Dolores">Dolores Park</li>
+            <li class="food bread" data-location="QH6G+H9 Mission Dolores">Tartine Bakery</li>
+            <li class="books" data-location="QH5H+8C Dolores Heights">Dog Eared Books</li>
+            <li class="books" data-location="PHXF+27 Noe Valley">Omnivore Books on Food</li>
             <li class="activity"><a href="https://crosstowntrail.org/">Crosstown Trail</a></li>
-            <li class="drinks" data-location="QHC9+PC Lower Haight, San Francisco, CA">Noc Noc</li>
+            <li class="drinks" data-location="QHC9+PC Lower Haight">Noc Noc</li>
         </ul>
     </div>
     <div class="city:boston">
         <h2>Boston</h2>
         <ul>
-            <li class="food" data-location="9WC3+64 Cambridge, Massachusetts">Oleana</li>
-            <li class="food" data-location="9W2P+H5 Boston, Massachusetts">Maria's Taqueria</li>
-            <li class="food" data-location="8WV2+68 Boston, Massachusetts">Phinista</li>
-            <li class="food" data-location="CV4R+4M Medford, Massachusetts">Oasis Brazilian Restaurant</li>
-            <li class="drinks" data-location="8WW7+VQ Boston, Massachusetts">Bukowski Tavern</li>
-            <li class="drinks" data-location="8WW6+MG Boston, Massachusetts">The Bebop</li>
-            <li class="coffee" data-location="8WR8+QJ Boston, Massachusetts">Farmers Horse Coffee</li>
-            <li class="food" data-location="9W8C+HP Cambridge, Massachusetts">The Helmand</li>
+            <li class="food" data-location="9WC3+64 Cambridge">Oleana</li>
+            <li class="food" data-location="9W2P+H5 Boston">Maria's Taqueria</li>
+            <li class="food" data-location="8WV2+68 Boston">Phinista</li>
+            <li class="food" data-location="CV4R+4M Medford">Oasis Brazilian Restaurant</li>
+            <li class="drinks" data-location="8WW7+VQ Boston">Bukowski Tavern</li>
+            <li class="drinks" data-location="8WW6+MG Boston">The Bebop</li>
+            <li class="coffee" data-location="8WR8+QJ Boston">Farmers Horse Coffee</li>
+            <li class="food" data-location="9W8C+HP Cambridge">The Helmand</li>
             <li class="activity"><a href="https://www.bostontrails.org/">Walking City Trail</a></li>
-            <li class="food" data-location="9VFJ+C5 Cambridge, Massachusetts">Joe's Pizza</li>
+            <li class="food" data-location="9VFJ+C5 Cambridge">Joe's Pizza</li>
             <li class="food coffee">Tatte (any)</li>
-            <li class="food" data-location="9VQJ+V2 Cambridge, Massachusetts">Sugar &amp; Spice</li>
-            <li class="food drinks" data-location="8WPF+QJ Boston, Massachusetts">Toro</li>
-            <li class="market" data-location="8WM9+83 Roxbury, Boston, MA">El Platanero</li>
+            <li class="food" data-location="9VQJ+V2 Cambridge">Sugar &amp; Spice</li>
+            <li class="food drinks" data-location="8WPF+QJ Boston">Toro</li>
+            <li class="market" data-location="8WM9+83 Roxbury, Boston">El Platanero</li>
         </ul>
     </div>
     <div class="city:nyc">
@@ -70,26 +70,26 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
     <div class="city:palo-alto area:sfbay">
         <h2>Palo Alto and Menlo Park</h2>
         <ul>
-            <li class="drinks" data-location="CRVQ+Q8 Palo Alto, California">The Rose &amp; Crown</li>
-            <li class="drinks" data-location="CQJX+R9 Menlo Park, California">Dutch Goose</li>
-            <li class="food" data-location="CVG4+M9 Palo Alto, California">Zareen's</li>
-            <li class="food" data-location="FR47+77 Menlo Park, California">FEY</li>
+            <li class="drinks" data-location="CRVQ+Q8 Palo Alto">The Rose &amp; Crown</li>
+            <li class="drinks" data-location="CQJX+R9 Menlo Park">Dutch Goose</li>
+            <li class="food" data-location="CVG4+M9 Palo Alto">Zareen's</li>
+            <li class="food" data-location="FR47+77 Menlo Park">FEY</li>
             <li class="drinks"><del>Antonio's Nut House</del> Sadly closed</li>
         </ul>
     </div>
     <div class="city:san-mateo area:sfbay">
         <h2>San Mateo and Burlingame</h2>
         <ul>
-            <li class="food" data-location="HM8G+7V San Mateo, California">Urban Momo</li>
-            <li class="food bread coffee" data-location="HM7F+8X San Mateo, California">Backhaus</li>
-            <li class="drinks" data-location="HMH3+WJ Burlingame, California">Barrelhouse</li>
-            <li class="drinks" data-location="GPR2+CC San Mateo, California">Fieldwork Brewing Company</li>
+            <li class="food" data-location="HM8G+7V San Mateo">Urban Momo</li>
+            <li class="food bread coffee" data-location="HM7F+8X San Mateo">Backhaus</li>
+            <li class="drinks" data-location="HMH3+WJ Burlingame">Barrelhouse</li>
+            <li class="drinks" data-location="GPR2+CC San Mateo">Fieldwork Brewing Company</li>
         </ul>
     </div>
     <div class="city:misc">
         <h2>Miscellaneous</h2>
         <ul>
-            <li class="food" data-location="4HC5+4X Yucca Valley, California">Algoberto's Taco Shop</li>
+            <li class="food" data-location="4HC5+4X Yucca Valley">Algoberto's Taco Shop</li>
             <li class="food" data-location="JWJF+XF Playa del Carmen, Quintana Roo, Mexico">Plantivoros</li>
             <li class="hotel" data-location="Q955+4W Ponta Delgada, Portugal">Senhora da Rosa</li>
             <li class="food" data-location="R8XG+M5 Paris, France">Fromagerie chez Alexandre</li>
@@ -101,7 +101,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="coffee" data-location="GCF3+P2 Berlin, Germany">Café Cinema</li>
             <li class="food" data-location="MJV5+F7 Copenhagen, Denmark">Reffen</li>
             <li class="food" data-location="MMQX+QW Shinjuku City, Tokyo, Japan">Taiyo no Tomato men with Cheese</li>
-            <li class="food" data-location="FH7C+X8 Half Moon Bay, California">San Benito Deli</li>
+            <li class="food" data-location="FH7C+X8 Half Moon Bay">San Benito Deli</li>
             <li class="hotel" data-location="MXVC+WJ Playa del Carmen, Quintana Roo, Mexico">Andaz Mayakoba</li>
             <li class="drinks" data-location="G394+X4 Tübingen, Germany">Blauer Salon</li>
         </ul>
