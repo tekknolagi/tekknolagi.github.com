@@ -149,7 +149,7 @@ const reset = document.createElement("a");
 reset.setAttribute("href", "#");
 reset.append(document.createTextNode("reset"));
 reset.onclick = () => {
-    document.querySelectorAll('li').forEach(elt => elt.style='')
+    document.querySelectorAll('li, div').forEach(elt => elt.style='')
 };
 filters.append(reset);
 for (const tag of [...allTags].sort()) {
