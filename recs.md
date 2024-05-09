@@ -24,6 +24,14 @@ ul { list-style-type: none; }
             <li class="food" data-location="PHQM+MH Bernal Heights, San Francisco, CA">United Dumplings</li>
             <li class="food" data-location="QGGP+XG Inner Richmond, San Francisco, CA">Cinderella Bakery</li>
             <li class="books" data-location="QGMP+74 Inner Richmond, San Francisco, CA">Green Apple Books</li>
+            <li class="park" data-location="QHG8+G3 Alamo Square, San Francisco, CA">Alamo Square Park</li>
+            <li class="park" data-location="QG98+HR Golden Gate Park, San Francisco, CA">Golden Gate Park</li>
+            <li class="park" data-location="RG3M+JX Presidio of San Francisco, San Francisco, CA">Crissy Field</li>
+            <li class="park" data-location="QH5F+W5 Mission Dolores, San Francisco, CA">Dolores Park</li>
+            <li class="food" data-location="QH6G+H9 Mission Dolores, San Francisco, CA">Tartine Bakery</li>
+            <li class="books" data-location="QH5H+8C Dolores Heights, San Francisco, CA">Dog Eared Books</li>
+            <li class="books" data-location="PHXF+27 Noe Valley, San Francisco, CA">Omnivore Books on Food</li>
+            <li class="activity"><a href="https://crosstowntrail.org/">Crosstown Trail</a></li>
         </ul>
     </div>
     <div class="city:boston">
@@ -37,6 +45,7 @@ ul { list-style-type: none; }
             <li class="drinks" data-location="8WW6+MG Boston, Massachusetts">The Bebop</li>
             <li class="coffee" data-location="8WR8+QJ Boston, Massachusetts">Farmers Horse Coffee</li>
             <li class="food" data-location="9W8C+HP Cambridge, Massachusetts">The Helmand</li>
+            <li class="activity"><a href="https://www.bostontrails.org/">Walking City Trail</a></li>
         </ul>
     </div>
     <div class="city:nyc">
@@ -87,12 +96,14 @@ for (const div of document.querySelectorAll("#recs div")) {
         for (const tag of div.classList) {
             entry.classList.add(tag);
         }
-        const locationLink = document.createElement("a");
         const plusCode = entry.getAttribute("data-location");
-        locationLink.setAttribute("href", `https://plus.codes/${plusCode}`);
-        locationLink.append(document.createTextNode("(location)"));
-        entry.append(document.createTextNode("\u00A0"));
-        entry.append(locationLink);
+        if (plusCode) {
+            const locationLink = document.createElement("a");
+            locationLink.setAttribute("href", `https://plus.codes/${plusCode}`);
+            locationLink.append(document.createTextNode("(location)"));
+            entry.append(document.createTextNode("\u00A0"));
+            entry.append(locationLink);
+        }
     }
 }
 const filters = document.querySelector("#filters");
