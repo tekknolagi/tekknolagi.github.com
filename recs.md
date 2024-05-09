@@ -157,7 +157,9 @@ for (const tag of [...allTags].sort()) {
     a.setAttribute("href", "#");
     a.append(document.createTextNode(tag));
     a.onclick = () => {
-        document.querySelectorAll("#recs li").forEach(elt => {
+        const isLocationBased = tag.startsWith("area:") || tag.startsWith("city:");
+        const elementsToFilter = isLocationBased ? "#recs div, #recs li" : "#recs li";
+        document.querySelectorAll(elementsToFilter).forEach(elt => {
             if (!elt.classList.contains(tag)) {
                 elt.style = "display: none;";
             }
