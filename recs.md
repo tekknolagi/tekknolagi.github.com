@@ -8,6 +8,11 @@ ul { list-style-type: none; }
 #filters a { padding-right: 5px; }
 </style>
 
+I love recommending places to people. Here are some recommendations. I have personally been to all of these and enjoyed
+them. I receive no kickbacks; the establishment owners don't even know I have this list.
+
+The food establishments tend to be vegetarian friendly, since I don't eat meat or fish.
+
 <div id="filters">
     <a href="#" onclick="document.querySelectorAll('li').forEach(elt => elt.style='')">reset</a>
 </div>
@@ -60,6 +65,7 @@ ul { list-style-type: none; }
         <ul>
             <li class="drinks" data-location="CRVQ+Q8 Palo Alto, California">The Rose &amp; Crown</li>
             <li class="drinks" data-location="CQJX+R9 Menlo Park, California">Dutch Goose</li>
+            <li class="food" data-location="CVG4+M9 Palo Alto, California">Zareen's</li>
         </ul>
         Sadly closed: Antonio's Nut House.
     </div>
@@ -73,6 +79,23 @@ ul { list-style-type: none; }
         <h2>Half Moon Bay</h2>
         <ul>
             <li class="food" data-location="FH7C+X8 Half Moon Bay, California">San Benito Deli</li>
+        </ul>
+    </div>
+    <div class="city:misc">
+        <h2>Miscellaneous</h2>
+        <ul>
+            <li class="food" data-location="4HC5+4X Yucca Valley, California">Algoberto's Taco Shop</li>
+            <li class="food" data-location="JWJF+XF Playa del Carmen, Quintana Roo, Mexico">Plantivoros</li>
+            <li class="hotel" data-location="Q955+4W Ponta Delgada, Portugal">Senhora da Rosa</li>
+            <li class="food" data-location="R8XG+M5 Paris, France">Fromagerie chez Alexandre</li>
+            <li class="tea" data-location="V8CF+6H Paris, France">Mariage Frères</li>
+            <li class="activity" data-location="86Q82P3F+HM Minneapolis">Bike along the Mississippi river</li>
+            <li class="food drinks coffee" data-location="9G9P+9P Zürich, Switzerland">La Stanza</li>
+            <li class="activity" data-location="8FVC9GV9+94 Zürich, Switzerland">Float on the Limmat</li>
+            <li class="food" data-location="G3C4+G6 Tübingen, Germany">Vegi</li>
+            <li class="coffee" data-location="GCF3+P2 Berlin, Germany">Café Cinema</li>
+            <li class="food" data-location="MJV5+F7 Copenhagen, Denmark">Reffen</li>
+            <li class="food" data-location="MMQX+QW Shinjuku City, Tokyo, Japan">Taiyo no Tomato men with Cheese</li>
         </ul>
     </div>
 </div>
