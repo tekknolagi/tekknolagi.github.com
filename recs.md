@@ -39,6 +39,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="activity"><a href="https://crosstowntrail.org/">Crosstown Trail</a></li>
             <li class="drinks" data-location="QHC9+PC Lower Haight">Noc Noc</li>
             <li class="food" data-location="849VQHJQ+JXC">Montesacro Pinseria</li>
+            <li class="food" data-location="QHC9+GR Lower Haight">Le Cafe du Soleil</li>
         </ul>
     </div>
     <div class="city:boston">
