@@ -1,0 +1,21 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 695.6661712552618 511.9476633495133" width="695.6661712552618" height="511.9476633495133">
+  <!-- svg-source:excalidraw -->
+  
+  <defs>
+    <style class="style-fonts">
+      @font-face {
+        font-family: "Virgil";
+        src: url("https://excalidraw.com/Virgil.woff2");
+      }
+      @font-face {
+        font-family: "Cascadia";
+        src: url("https://excalidraw.com/Cascadia.woff2");
+      }
+      @font-face {
+        font-family: "Assistant";
+        src: url("https://excalidraw.com/Assistant-Regular.woff2");
+      }
+    </style>
+    
+  </defs>
+  <rect x="0" y="0" width="695.6661712552618" height="511.9476633495133" fill="#ffffff"></rect><g stroke-linecap="round" transform="translate(10 43.086745499613244) rotate(0 337.8330856276309 229.43045892495002)"><path d="M32 0 C273.33 0, 514.66 0, 643.67 0 M32 0 C249.08 0, 466.15 0, 643.67 0 M643.67 0 C665 0, 675.67 10.67, 675.67 32 M643.67 0 C665 0, 675.67 10.67, 675.67 32 M675.67 32 C675.67 168.24, 675.67 304.48, 675.67 426.86 M675.67 32 C675.67 141, 675.67 249.99, 675.67 426.86 M675.67 426.86 C675.67 448.19, 665 458.86, 643.67 458.86 M675.67 426.86 C675.67 448.19, 665 458.86, 643.67 458.86 M643.67 458.86 C431.16 458.86, 218.66 458.86, 32 458.86 M643.67 458.86 C431.87 458.86, 220.08 458.86, 32 458.86 M32 458.86 C10.67 458.86, 0 448.19, 0 426.86 M32 458.86 C10.67 458.86, 0 448.19, 0 426.86 M0 426.86 C0 335.64, 0 244.41, 0 32 M0 426.86 C0 282.57, 0 138.28, 0 32 M0 32 C0 10.67, 10.67 0, 32 0 M0 32 C0 10.67, 10.67 0, 32 0" stroke="#1e1e1e" stroke-width="4" fill="none"></path></g><g transform="translate(36.99181869705353 10) rotate(0 24.600000381469727 16.800000000000182)"><text x="0" y="27.0375" font-family="Cascadia, Segoe UI Emoji" font-size="28px" fill="#1e1e1e" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">x86</text></g><g stroke-linecap="round" transform="translate(94.45827140690835 94.89362332137716) rotate(0 283.3438782683354 192.4255461951193)"><path d="M32 0 C229.33 0, 426.66 0, 534.69 0 M32 0 C195.15 0, 358.3 0, 534.69 0 M534.69 0 C556.02 0, 566.69 10.67, 566.69 32 M534.69 0 C556.02 0, 566.69 10.67, 566.69 32 M566.69 32 C566.69 100.87, 566.69 169.73, 566.69 352.85 M566.69 32 C566.69 101.11, 566.69 170.22, 566.69 352.85 M566.69 352.85 C566.69 374.18, 556.02 384.85, 534.69 384.85 M566.69 352.85 C566.69 374.18, 556.02 384.85, 534.69 384.85 M534.69 384.85 C353.68 384.85, 172.66 384.85, 32 384.85 M534.69 384.85 C343.21 384.85, 151.73 384.85, 32 384.85 M32 384.85 C10.67 384.85, 0 374.18, 0 352.85 M32 384.85 C10.67 384.85, 0 374.18, 0 352.85 M0 352.85 C0 228.51, 0 104.17, 0 32 M0 352.85 C0 249.24, 0 145.63, 0 32 M0 32 C0 10.67, 10.67 0, 32 0 M0 32 C0 10.67, 10.67 0, 32 0" stroke="#1e1e1e" stroke-width="4" fill="none"></path></g><g transform="translate(125.67659872326476 52.131261262995395) rotate(0 32.79999923706055 16.800000000000182)"><text x="0" y="27.0375" font-family="Cascadia, Segoe UI Emoji" font-size="28px" fill="#1e1e1e" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">wasm</text></g><g transform="translate(187.62358110318746 237.68905126707523) rotate(0 198 35)"><text x="0" y="24.528" font-family="Virgil, Segoe UI Emoji" font-size="28px" fill="#1e1e1e" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">~ mysterious transformed ~</text><text x="0" y="59.528" font-family="Virgil, Segoe UI Emoji" font-size="28px" fill="#1e1e1e" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">~ wasm soup ~</text></g></svg>
