@@ -76,6 +76,7 @@ class Compiler:
 
     def _mktemp(self, exp: str) -> str:
         temp = self.gensym()
+        # append to the internal code buffer... more about handles later
         return self._handle(temp, exp)
 ```
 
