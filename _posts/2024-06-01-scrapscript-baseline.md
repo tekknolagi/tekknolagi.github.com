@@ -557,14 +557,17 @@ void trace_roots(struct gc_heap* heap, VisitFn visit) {
 }
 ```
 
-Right now the compiler generates handles for *every local variable*. This is
-not efficient, but it is correct. In the future, I would like to do a liveness
-analysis and only generate handles for variables that are live across a
-function that might cause a GC.
+It's neat that we can add reasonably usable handles to Andy's GC in such a
+small amount of code.
 
 ## Cosmopolitan and WebAssembly
 
 ## Future projects
+
+Right now the compiler generates handles for *every local variable*. This is
+not efficient, but it is correct. In the future, I would like to do a liveness
+analysis and only generate handles for variables that are live across a
+function that might cause a GC.
 
 ## Thanks for reading
 
