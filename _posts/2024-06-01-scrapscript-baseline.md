@@ -425,6 +425,33 @@ it gets even worse if you are compiling to C: your C compiler might dump random
 variables onto the call stack. Whereas in assembly you have full control over
 your stack layout, in C you have none.
 
+The GC I want to use---Andy Wingo's---is a semispace collector and semispace
+collectors move pointers. Let's take a look at an example to illustrate the
+problems we run into.
+
+```c
+void foo(struct object* x) {
+  // point 0
+  struct object* y = mknum(heap, kSomeBigNumber);  // point 1
+  // point 2
+  struct object* z = num_add(x, y);  // point 3
+}
+```
+
+At point 0 we're good. Nothing has happened in the `foo` function and we can
+safely assume that the pointer `x` is valid.
+
+Ad point 1, we allocate a number on the heap. We might have room in our current
+GC space or we might not. If we don't, the collector will run and move all of
+our pointers around. We can't predict at compile-time which will happen, so we
+assume that everything moves. At this point, the `x` pointer becomes invalid.
+While the object *originally pointed to by x* is still alive and well, we now
+have a stale/dangling/invalid pointer into the previous GC space.
+
+This might be fine except for the fact that at point 3, we use `x`! We need it
+to still be a valid pointer. And `num_add` might cause a GC too, at which point
+`y` also becomes invalid.
+
 ## Cosmopolitan and WebAssembly
 
 ## Future projects
