@@ -344,6 +344,30 @@ size_t trace_heap_object(struct gc_obj* obj, struct gc_heap* heap,
 void trace_roots(struct gc_heap* heap, VisitFn visit);
 ```
 
+Let's talk about closures as a sample of a heap-allocated object. Each object
+has a header `struct gc_obj` (which, due to the way that C compilers lay out
+memory, effectively inlines it into the outer object) and then its own fields.
+
+In the case of closures, we have a C function pointer, a count of the number of
+free variables in the closure, and then a flexible-length in-line array of free
+variables.
+
+```c
+struct closure {
+  struct gc_obj HEAD;
+  ClosureFn fn;
+  size_t size;
+  struct object* env[];
+};
+```
+
+But not everything is heap-allocated and you may have noticed a discrepancy: we
+have both `struct gc_obj` and `struct object`. What's up with that?
+
+Well, not all pointers are pointers into the heap. Some pointers contain the
+entire object inside the 64 bits of the pointer itself. In order to distinguish
+the two cases in the code, we add some extra low bits to every pointer.
+
 ## Inside the runtime: tagged pointers
 
 ## Inside the runtime: handles
