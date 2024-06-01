@@ -457,8 +457,8 @@ to still be a valid pointer. And `num_add` might cause a GC too, at which point
 The common solution is to use a "shadow stack" or "handles". We used them in
 the [Skybison](https://github.com/tekknolagi/skybison) Python runtime, Dart and
 V8 use them, several JVMs use them, and so on. There have been multiple papers
-([^ppdp-99], [^ismm-02], [^cases-06], [^cc-07], [^ismm-09], probably more)
-written about this topic so let's use that research.
+([^ppdp-99], [^ismm-02], [^cases-06], [^cc-07], [^ismm-09], [^ismm-11],
+probably more) written about this topic so let's use that research.
 
 [^ppdp-99]: [C-—: A portable assembly language that supports garbage collection](/assets/img/c-minus-minus.pdf) (PDF)
 
@@ -469,6 +469,8 @@ written about this topic so let's use that research.
 [^cc-07]: [Accurate garbage collection in uncooperative environments with lazy pointer stacks](/assets/img/gc-lazy-stack.pdf) (PDF)
 
 [^ismm-09]: [Precise Garbage Collection for C](/assets/img/precise-gc-c.pdf) (PDF)
+
+[^ismm-11]: [Handles Revisited: Optimising Performance and Memory Costs in a Real-Time Collector](/assets/img/gc-handles-revisited.pdf) (PDF)
 
 ```c
 #define MAX_HANDLES 20
