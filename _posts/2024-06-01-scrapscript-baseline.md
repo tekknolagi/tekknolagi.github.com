@@ -472,6 +472,12 @@ probably more) written about this topic so let's use that research.
 
 [^ismm-11]: [Handles Revisited: Optimising Performance and Memory Costs in a Real-Time Collector](/assets/img/gc-handles-revisited.pdf) (PDF)
 
+The basic idea is to have your own "stack" of pointers that you know are valid
+and that you can walk to find pointers into the heap. Right now it is
+implemented as a linked list of chunks of pointers---where each chunk
+corresponds to a C stack frame---but as I am writing this it strikes me that I
+could just as easily have `mmap`ed one big linear chunk as a separate stack.
+
 ```c
 #define MAX_HANDLES 20
 
@@ -489,7 +495,19 @@ void pop_handles(void* local_handles) {
   (void)local_handles;
   handles = handles->next;
 }
+```
 
+The current shadow stack frame is always stored in the global `handles`
+variable and is modified on function entry and exit. Each frame gets some
+fixed number of handles (20 right now) and if you exceed that number, the
+runtime aborts and the compiler developer should increase that number I guess.
+That problem would go away if either I switched to the entirely linear model or
+switched to a full linked list model (but I would still hold onto the previous
+top of stack so I could pop all the handles at once).
+
+To make all of this a little easier to use, I added some macros to the runtime:
+
+```
 #define HANDLES()                                                              \
   struct handles local_handles                                                 \
       __attribute__((__cleanup__(pop_handles))) = {.next = handles};           \
@@ -500,7 +518,39 @@ void pop_handles(void* local_handles) {
 #define GC_HANDLE(type, name, val)                                             \
   type name = val;                                                             \
   GC_PROTECT(name)
+#define OBJECT_HANDLE(name, exp) GC_HANDLE(struct object*, name, exp)
 ```
+
+This means that the compiler can generate code that looks semi-readable:
+
+```c
+struct object* foo(struct object* x) {
+  HANDLES();
+  GC_PROTECT(x);
+  OBJECT_HANDLE(y, mknum(heap, kSomeBigNumber));
+  OBJECT_HANDLE(z, num_add(x, y));
+}
+```
+
+The core idea here is to store pointers to the local `struct object*` variables
+so that the C compiler is forced to read from and write to memory any time
+there could be side effects. Then, when a `collect` happens, all the right
+pointers in the shadow stack are visible to the garbage collector.
+
+```c
+void trace_roots(struct gc_heap* heap, VisitFn visit) {
+  for (struct handles* h = handles; h; h = h->next) {
+    for (size_t i = 0; i < h->stack_pointer; i++) {
+      visit(h->stack[i], heap);
+    }
+  }
+}
+```
+
+Right now the compiler generates handles for *every local variable*. This is
+not efficient, but it is correct. In the future, I would like to do a liveness
+analysis and only generate handles for variables that are live across a
+function that might cause a GC.
 
 ## Cosmopolitan and WebAssembly
 
