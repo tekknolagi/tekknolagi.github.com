@@ -180,6 +180,117 @@ that we support: match functions.
 
 ## Inside the compiler: pattern matching
 
+Scrapscript supports pattern matching similar to OCaml's `match` syntax:
+
+```
+| 0 -> 1
+| [1, two, 3] -> two + 1
+| [x, ...xs] -> x + sum xs
+| { x = 1, y = z } -> z
+| # tagged "value" -> 123
+```
+
+The above is a function that takes in some unnamed argument and immediately
+tries to match it against the given patterns, top to bottom. If none of the
+patterns match, the entire Scrapscript program aborts with an exception. (To
+avoid this, add a useless `default` or `_` pattern at the end.)
+
+Like OCaml and unlike Erlang, variables bind names in the patterns, so `two` is
+bound to the middle element of the list. It also supports destructuring lists
+and records with the `...` syntax.
+
+Implementing pattern matching took me a while. Matching integers and variables
+was pretty easy but I got stuck on lists and records. Finally, I asked Chris if
+he had time to pair on it and luckily he said yes. After two hours, we figured
+it out.
+
+It turns out that the key is writing the match function compiler *exactly* like
+the interpreted version. We had the logic right the first time. Fancy stuff
+like guaranteeing the minimal number of type checks can come later. To see what
+I mean, take a look at snippets of the interpreted match and compiled match
+side by side:
+
+```python
+# Interpreted
+def match(obj: Object, pattern: Object) -> Optional[Env]:
+    if isinstance(pattern, Int):
+        return {} if isinstance(obj, Int) and obj.value == pattern.value else None
+    if isinstance(pattern, Var):
+        return {pattern.name: obj}
+    if isinstance(pattern, List):
+        if not isinstance(obj, List):
+            return None
+        result: Env = {}  # type: ignore
+        use_spread = False
+        for i, pattern_item in enumerate(pattern.items):
+            if isinstance(pattern_item, Spread):
+                use_spread = True
+                if pattern_item.name is not None:
+                    assert isinstance(result, dict)  # for .update()
+                    result.update({pattern_item.name: List(obj.items[i:])})
+                break
+            if i >= len(obj.items):
+                return None
+            obj_item = obj.items[i]
+            part = match(obj_item, pattern_item)
+            if part is None:
+                return None
+            assert isinstance(result, dict)  # for .update()
+            result.update(part)
+        if not use_spread and len(pattern.items) != len(obj.items):
+            return None
+        return result
+```
+
+Gross, right? There are a bunch of edge cases for matching lists. It's a little
+cleaner if you ignore the spread feature, but the basic structure looks like:
+
+* Check that the input is a list
+* For each item, check that there is a corresponding item in the input list and
+  recursively match
+* Update the environment with the bindings from the variable patterns
+
+If there's a no match, return `None`. If there's a match but no bindings,
+return an empty environment `{}`. If there's a match with bindings, propagate
+the bindings upward.
+
+The end state of the compiler version looks so similar:
+
+```python
+class Compiler:
+    def try_match(self, env: Env, arg: str, pattern: Object, fallthrough: str) -> Env:
+        if isinstance(pattern, Int):
+            self._emit(f"if (!is_num({arg})) {{ goto {fallthrough}; }}")
+            self._emit(f"if (num_value({arg}) != {pattern.value}) {{ goto {fallthrough}; }}")
+            return {}
+        if isinstance(pattern, Var):
+            return {pattern.name: arg}
+        if isinstance(pattern, List):
+            self._emit(f"if (!is_list({arg})) {{ goto {fallthrough}; }}")
+            updates = {}
+            the_list = arg
+            use_spread = False
+            for i, pattern_item in enumerate(pattern.items):
+                if isinstance(pattern_item, Spread):
+                    use_spread = True
+                    if pattern_item.name:
+                        updates[pattern_item.name] = the_list
+                    break
+                # Not enough elements
+                self._emit(f"if (is_empty_list({the_list})) {{ goto {fallthrough}; }}")
+                list_item = self._mktemp(f"list_first({the_list})")
+                updates.update(self.try_match(env, list_item, pattern_item, fallthrough))
+                the_list = self._mktemp(f"list_rest({the_list})")
+            if not use_spread:
+                # Too many elements
+                self._emit(f"if (!is_empty_list({the_list})) {{ goto {fallthrough}; }}")
+            return updates
+```
+
+I felt very silly after this. It's a nice showcase, though, of the advice that
+people like to give about writing compilers: "just emit code that does what you
+*would do* if you were in the interpreter".
+
 ## Inside the runtime: garbage collection
 
 ## Inside the runtime: handles
