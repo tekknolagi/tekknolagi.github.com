@@ -371,7 +371,59 @@ the two cases in the code, we add some extra low bits to every pointer.
 
 ## Inside the runtime: tagged pointers
 
+In Scrapscript, numbers are arbitrary-size integers. Fortunately, most numbers
+are small [citation needed], and fortunately, 63 bits can represent a lot of
+them.
+
+Yes, 63, not 64. One of the pointer tagging tricks we do is bias heap-allocated
+objects by 1. Since all heap allocations are multiples of 8 bytes (at least;
+that's just the size of the `tag`), we know that the low three bits are
+normally 0. By setting the low bit of all heap-allocated objects to 1, and the
+low bit of all small integers to 0, we can distinguish between the two cases.
+
+```
+small int:   0bxxx...xx0
+heap object: 0bxxx...001
+```
+
+Actually, we can do better. We still have two more bits to play with. Using
+those extra bits we can encode holes (`()`), empty lists ("nil" in other
+languages), and small strings (<= 7 bytes). There's more to do here, probably,
+but that's what we have so far.
+
+Let's go back to the heap and talk about how we know which objects are live.
+
 ## Inside the runtime: handles
+
+The usual thing to do in a Scheme-like compiler is to scan the stack and look
+for things that look like pointers. If you have full control over the compiler
+pipeline---in other words, you are compiling to assembly---you can do this
+pretty easily. The call stack is but an array and if you know where it begins,
+you can walk it to find pointers.
+
+You run into some problems with that:
+
+1. Even if you are not emitting C, you are often beholden to the C calling
+   convention. The usual C calling conventions involv passing arguments in
+   registers, and fast code tends to use registers for everything.
+1. Hardware call or jump-and-link instructions push a return address onto the
+   stack. This is not a pointer to a heap-allocated object but instead a
+   pointer into the code stream.
+
+The typical solution to the second problem is solved if you have tagged
+pointers and don't mind aligning your code a little bit to make all return
+addresses look like small integers. It's also fine if your garbage collector
+does not move pointers.
+
+The first problem requires emitting code to save and restore registers so that
+the garbage collector knows the objects contained within are live---part of the
+root set. If your garbage collector doesn't move pointers, you don't even need
+to restore them.
+
+If your GC *does* move pointers, both problems require fussier solutions. And
+it gets even worse if you are compiling to C: your C compiler might dump random
+variables onto the call stack. Whereas in assembly you have full control over
+your stack layout, in C you have none.
 
 ## Cosmopolitan and WebAssembly
 
