@@ -444,9 +444,11 @@ safely assume that the pointer `x` is valid.
 Ad point 1, we allocate a number on the heap. We might have room in our current
 GC space or we might not. If we don't, the collector will run and move all of
 our pointers around. We can't predict at compile-time which will happen, so we
-assume that everything moves. At this point, the `x` pointer becomes invalid.
-While the object *originally pointed to by x* is still alive and well, we now
-have a stale/dangling/invalid pointer into the previous GC space.
+assume that everything moves.
+
+By point 2, the `x` has become invalid. While the object *originally pointed to
+by x* is still alive and well, we now have a stale/dangling/invalid pointer
+into the previous GC space.
 
 This might be fine except for the fact that at point 3, we use `x`! We need it
 to still be a valid pointer. And `num_add` might cause a GC too, at which point
