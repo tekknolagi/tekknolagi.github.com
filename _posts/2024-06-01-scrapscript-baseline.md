@@ -262,7 +262,7 @@ the bindings upward.
 The end state of the compiler version looks so similar:
 
 ```python
-{% raw %}
+{%- raw -%}
 class Compiler:
     def try_match(self, env: Env, arg: str, pattern: Object, fallthrough: str) -> Env:
         if isinstance(pattern, Int):
@@ -291,7 +291,7 @@ class Compiler:
                 # Too many elements
                 self._emit(f"if (!is_empty_list({the_list})) {{ goto {fallthrough}; }}")
             return updates
-{% endraw %}
+{% endraw -%}
 ```
 
 I felt very silly after this. It's a nice showcase, though, of the advice that
