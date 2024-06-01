@@ -140,6 +140,52 @@ functions are possible only by nesting functions. Here, the inner function only
 takes a `y` parameter but still has access to the `x` value that was bound when
 the outer function was called.
 
+In order to determine what variables need to be stored in the closure---what
+variables are *free* in a function---we can re-use the existing `free_in`
+function from the interpreter. We use it in the interpreter to avoid making
+closure objects so big that they contain the entire environment, and it turns
+out to be really handy here too.
+
+```python
+class Compiler:
+    def make_closure(self, env: Env, fn: CompiledFunction) -> str:
+        name = self._mktemp(f"mkclosure(heap, {fn.name}, {len(fn.fields)})")
+        for i, field in enumerate(fn.fields):
+            self._emit(f"closure_set({name}, {i}, {env[field]});")
+        return name
+```
+
+The `make_closure` function allocates a closure object (a `struct closure`) and
+then sets the fields of the closure to the values of the free variables. They
+are laid out linearly in memory and the compiler stores a mapping of variable
+name to its index.
+
+```c
+struct closure {
+  struct gc_obj HEAD;
+  ClosureFn fn;
+  size_t size;
+  struct object* env[];
+};
+```
+
+This is not very optimized. It would be great if we could avoid allocating a
+closure object for every function, but that would require a more sophisticated
+analysis: we would need to determine that a function has no free variables
+(easy; done) and that it is not passed around as a value (not bad but requires
+more analysis than we do right now).
+
+The bulk of the work in the compiler was spent on the other kind of function
+that we support: match functions.
+
+## Inside the compiler: pattern matching
+
+## Inside the runtime: garbage collection
+
+## Inside the runtime: handles
+
+## Cosmopolitan and WebAssembly
+
 ## Thanks for reading
 
 Well first, play with [the web REPL](https://scrapscript.fly.dev/repl). Then
