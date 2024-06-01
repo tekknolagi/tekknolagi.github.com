@@ -201,7 +201,7 @@ destructuring lists and records with the `...` syntax.
 
 [^variable-binding]: What I mean about Erlang is that I sometimes miss the
     feature where you can use a variable in a pattern to check that it matches
-    the existing value. For example, if `ThreadId` contains the value of the
+    the existing value. For example, if `ThreadId` contains the name of the
     current thread, you can match against messages that are only for the
     current thread by writing `{ThreadId, msg_contents}`.
 
