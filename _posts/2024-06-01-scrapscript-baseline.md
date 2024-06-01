@@ -297,6 +297,12 @@ I felt very silly after this. It's a nice showcase, though, of the advice that
 people like to give about writing compilers: "just emit code that does what you
 *would do* if you were in the interpreter".
 
+The rest of the compiler is mostly code in a similar vein: translate a tree
+representation of an expression to a linear series of instructions. In some
+cases, lean heavily on the runtime to provide some functionality.
+
+Speaking of the runtime...
+
 ## Inside the runtime: garbage collection
 
 I showed a little snippet of runtime code earlier. This `struct closure` is an
@@ -337,6 +343,8 @@ size_t trace_heap_object(struct gc_obj* obj, struct gc_heap* heap,
 // use case, this is the shadow stack/handles (more on this later).
 void trace_roots(struct gc_heap* heap, VisitFn visit);
 ```
+
+## Inside the runtime: tagged pointers
 
 ## Inside the runtime: handles
 
