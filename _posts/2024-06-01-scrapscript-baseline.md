@@ -299,6 +299,45 @@ people like to give about writing compilers: "just emit code that does what you
 
 ## Inside the runtime: garbage collection
 
+I showed a little snippet of runtime code earlier. This `struct closure` is an
+example of a heap-allocated object in Scrapscript. Unlike in the interpreter
+where we rely on the host Python runtime to garbage collect objects, in the
+compiler we have to do it all by ourselves.
+
+I adapted the initial semispace collector from Andy Wingo's [excellent blog
+post](https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector).
+The Wingo GC core provides a struct, an allocator function, and machinery for
+sweeping the heap:
+
+```c
+struct gc_obj {
+  uintptr_t tag;  // low bit is 0 if forwarding ptr
+  uintptr_t payload[0];
+};
+
+struct gc_heap* make_heap(size_t size) {
+void destroy_heap(struct gc_heap* heap);
+
+struct gc_obj* allocate(struct gc_heap* heap, size_t size);
+void collect(struct gc_heap* heap);
+```
+
+and relies on the user of the "library" to provide three functions that are
+application-specific:
+
+```c
+// How big is the given object in memory? Probably does dispatch on the `tag`
+// field in `gc_obj`.
+size_t heap_object_size(struct gc_obj* obj);
+// For every object pointer in the given object, call the given callback. For
+// lists, for example, visit every list item.
+size_t trace_heap_object(struct gc_obj* obj, struct gc_heap* heap,
+                         VisitFn visit);
+// For every root pointer in the application, call the given callback. For our
+// use case, this is the shadow stack/handles (more on this later).
+void trace_roots(struct gc_heap* heap, VisitFn visit);
+```
+
 ## Inside the runtime: handles
 
 ## Cosmopolitan and WebAssembly
