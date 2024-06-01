@@ -430,11 +430,12 @@ collectors move pointers. Let's take a look at an example to illustrate the
 problems we run into.
 
 ```c
-void foo(struct object* x) {
+struct object* foo(struct object* x) {
   // point 0
   struct object* y = mknum(heap, kSomeBigNumber);  // point 1
   // point 2
   struct object* z = num_add(x, y);  // point 3
+  return z;
 }
 ```
 
@@ -532,6 +533,7 @@ struct object* foo(struct object* x) {
   GC_PROTECT(x);
   OBJECT_HANDLE(y, mknum(heap, kSomeBigNumber));
   OBJECT_HANDLE(z, num_add(x, y));
+  return z;
 }
 ```
 
