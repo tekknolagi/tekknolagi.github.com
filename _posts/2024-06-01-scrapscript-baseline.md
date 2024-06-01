@@ -509,17 +509,17 @@ top of stack so I could pop all the handles at once).
 To make all of this a little easier to use, I added some macros to the runtime:
 
 ```c
-#define HANDLES()                                                              \
-  struct handles local_handles                                                 \
-      __attribute__((__cleanup__(pop_handles))) = {.next = handles};           \
+#define HANDLES()                                                             \
+  struct handles local_handles                                                \
+      __attribute__((__cleanup__(pop_handles))) = {.next = handles};          \
   handles = &local_handles
 
-#define GC_PROTECT(x)                                                          \
-  assert(local_handles.stack_pointer < MAX_HANDLES);                           \
+#define GC_PROTECT(x)                                                         \
+  assert(local_handles.stack_pointer < MAX_HANDLES);                          \
   local_handles.stack[local_handles.stack_pointer++] = (struct object**)(&x)
 
-#define GC_HANDLE(type, name, val)                                             \
-  type name = val;                                                             \
+#define GC_HANDLE(type, name, val)                                            \
+  type name = val;                                                            \
   GC_PROTECT(name)
 
 #define OBJECT_HANDLE(name, exp) GC_HANDLE(struct object*, name, exp)
