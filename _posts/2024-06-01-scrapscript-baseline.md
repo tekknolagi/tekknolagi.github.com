@@ -187,7 +187,7 @@ Scrapscript supports pattern matching similar to OCaml's `match` syntax:
 | [1, two, 3] -> two + 1
 | [x, ...xs] -> x + sum xs
 | { x = 1, y = z } -> z
-| # tagged "value" -> 123
+| #tagged "value" -> 123
 ```
 
 The above is a function that takes in some unnamed argument and immediately
@@ -298,6 +298,8 @@ people like to give about writing compilers: "just emit code that does what you
 ## Inside the runtime: handles
 
 ## Cosmopolitan and WebAssembly
+
+## Future projects
 
 ## Thanks for reading
 
