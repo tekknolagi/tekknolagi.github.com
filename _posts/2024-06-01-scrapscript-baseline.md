@@ -562,6 +562,19 @@ small amount of code.
 
 ## Cosmopolitan and WebAssembly
 
+While we already got Scrapscript working in the browser using the Python
+interpreter and Pyodide, we can also get Scrapscript programs working---and
+much smaller---by compiling the generated C code to WebAssembly. Right now it
+needs access to `mmap` because of the GC but the WASI SDK provides that as long
+as you specify the right compiler flags.
+
+It's the same state of affairs with Cosmopolitan: while we used to have to
+bundle the entire Python interpreter with the Scrapscript program, we can now
+use `cosmocc` to compile the generated C code to produce tiny and fast
+cross-platform executables. As I write this I wonder how `mmap` works on
+Windows. Perhaps Cosmopolitan libc provides a `mmap` implementation that calls
+`VirtualAlloc`.
+
 ## Future projects
 
 Right now the compiler generates handles for *every local variable*. This is
