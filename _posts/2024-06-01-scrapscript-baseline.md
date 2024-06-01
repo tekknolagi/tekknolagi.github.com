@@ -507,7 +507,7 @@ top of stack so I could pop all the handles at once).
 
 To make all of this a little easier to use, I added some macros to the runtime:
 
-```
+```c
 #define HANDLES()                                                              \
   struct handles local_handles                                                 \
       __attribute__((__cleanup__(pop_handles))) = {.next = handles};           \
