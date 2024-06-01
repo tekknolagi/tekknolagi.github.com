@@ -582,6 +582,27 @@ not efficient, but it is correct. In the future, I would like to do a liveness
 analysis and only generate handles for variables that are live across a
 function that might cause a GC.
 
+I would also like to build an intermediate representation instead of going
+straight to C. This would make it easier to do local and interprocedural
+optimizations. While we can do a decent amount of analysis and optimization
+directly on the AST, I think it's much easier to do it on a more linear IR.
+
+With this IR, I would like to do a mix of classic Scheme/ML and other SSA
+optimizations. Ideally we can make Scrapscript fly.
+
+The previous post mentioned a notion of "platforms" like the web platform.
+Compiling Scrapscript to C would make for pretty easy interoperation with
+existing libraries... for example, say, a little web server. I'm on the hunt
+for a small, fast, and easy-to-use web server library that I can bundle with a
+compiled Scrapscript program and have Scrapscript interact with the outside
+world.
+
+## Playing with the compiler
+
+Try running `./compiler.py --compile examples/0_home/factorial.scrap` which
+will produce both `output.c` and `a.out`. Then you can run `./a.out` to see the
+result of your program.
+
 ## Thanks for reading
 
 Well first, play with [the web REPL](https://scrapscript.fly.dev/repl). Then
