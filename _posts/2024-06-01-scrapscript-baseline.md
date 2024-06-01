@@ -452,7 +452,53 @@ into the previous GC space.
 
 This might be fine except for the fact that at point 3, we use `x`! We need it
 to still be a valid pointer. And `num_add` might cause a GC too, at which point
-`y` also becomes invalid.
+`y` also becomes invalid. What is there to do?
+
+The common solution is to use a "shadow stack" or "handles". We used them in
+the [Skybison](https://github.com/tekknolagi/skybison) Python runtime, Dart and
+V8 use them, several JVMs use them, and so on. There have been multiple papers
+([^ppdp-99], [^ismm-02], [^cases-06], [^cc-07], [^ismm-09], probably more)
+written about this topic so let's use that research.
+
+[^ppdp-99]: [C-—: A portable assembly language that supports garbage collection](/assets/img/c-minus-minus.pdf) (PDF)
+
+[^ismm-02]: [Accurate Garbage Collection in an Uncooperative Environment](/assets/img/gc-uncooperative.pdf) (PDF)
+
+[^cases-06]: [Supporting Precise Garbage Collection in Java Bytecode- to-C Ahead-of-Time Compiler for Embedded Systems](/assets/img/gc-jvm-bytecode-c.pdf) (PDF)
+
+[^cc-07]: [Accurate garbage collection in uncooperative environments with lazy pointer stacks](/assets/img/gc-lazy-stack.pdf) (PDF)
+
+[^ismm-09]: [Precise Garbage Collection for C](/assets/img/precise-gc-c.pdf) (PDF)
+
+```c
+#define MAX_HANDLES 20
+
+struct handles {
+  // TODO(max): Figure out how to make this a flat linked list with whole
+  // chunks popped off at function return
+  struct object** stack[MAX_HANDLES];
+  size_t stack_pointer;
+  struct handles* next;
+};
+
+static struct handles* handles = NULL;
+
+void pop_handles(void* local_handles) {
+  (void)local_handles;
+  handles = handles->next;
+}
+
+#define HANDLES()                                                              \
+  struct handles local_handles                                                 \
+      __attribute__((__cleanup__(pop_handles))) = {.next = handles};           \
+  handles = &local_handles
+#define GC_PROTECT(x)                                                          \
+  assert(local_handles.stack_pointer < MAX_HANDLES);                           \
+  local_handles.stack[local_handles.stack_pointer++] = (struct object**)(&x)
+#define GC_HANDLE(type, name, val)                                             \
+  type name = val;                                                             \
+  GC_PROTECT(name)
+```
 
 ## Cosmopolitan and WebAssembly
 
