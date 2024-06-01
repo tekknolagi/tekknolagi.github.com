@@ -195,9 +195,15 @@ tries to match it against the given patterns, top to bottom. If none of the
 patterns match, the entire Scrapscript program aborts with an exception. (To
 avoid this, add a useless `default` or `_` pattern at the end.)
 
-Like OCaml and unlike Erlang, variables bind names in the patterns, so `two` is
-bound to the middle element of the list. It also supports destructuring lists
-and records with the `...` syntax.
+Like OCaml and unlike Erlang[^variable-binding], variables bind names in the
+patterns, so `two` is bound to the middle element of the list. It also supports
+destructuring lists and records with the `...` syntax.
+
+[^variable-binding]: What I mean about Erlang is that I sometimes miss the
+    feature where you can use a variable in a pattern to check that it matches
+    the existing value. For example, if `ThreadId` contains the value of the
+    current thread, you can match against messages that are only for the
+    current thread by writing `{ThreadId, msg_contents}`.
 
 Implementing pattern matching took me a while. Matching integers and variables
 was pretty easy but I got stuck on lists and records. Finally, I asked Chris if
