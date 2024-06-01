@@ -535,6 +535,11 @@ struct object* foo(struct object* x) {
 }
 ```
 
+The `HANDLES` thing is a little weird pseudo-RAII trick that a) reduces code
+duplication and b) hopefully reduces errors in case of early function exits. I
+trust the C compiler to correctly insert calls to `pop_handles` more than I
+trust myself to.
+
 The core idea here is to store pointers to the local `struct object*` variables
 so that the C compiler is forced to read from and write to memory any time
 there could be side effects. Then, when a `collect` happens, all the right
