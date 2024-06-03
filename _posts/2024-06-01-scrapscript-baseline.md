@@ -322,7 +322,7 @@ struct gc_obj {
   uintptr_t payload[0];
 };
 
-struct gc_heap* make_heap(size_t size) {
+struct gc_heap* make_heap(size_t size);
 void destroy_heap(struct gc_heap* heap);
 
 struct gc_obj* allocate(struct gc_heap* heap, size_t size);
