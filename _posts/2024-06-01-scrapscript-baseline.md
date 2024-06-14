@@ -404,7 +404,7 @@ you can walk it to find pointers.
 You run into some problems with that:
 
 1. Even if you are not emitting C, you are often beholden to the C calling
-   convention. The usual C calling conventions involv passing arguments in
+   convention. The usual C calling conventions involve passing arguments in
    registers, and fast code tends to use registers for everything.
 1. Hardware call or jump-and-link instructions push a return address onto the
    stack. This is not a pointer to a heap-allocated object but instead a
