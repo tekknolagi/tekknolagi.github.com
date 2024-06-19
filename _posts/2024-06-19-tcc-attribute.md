@@ -11,6 +11,19 @@ with `__start_SECTION` and `__stop_SECTION` and you are getting linker errors
 about undefined symbols, don't worry. It's not you. And it's not exactly TCC,
 either.
 
+```console?prompt=$
+$ gcc const.c && ./a.out
+f: 0x5c97a966d020, g: 0x5c97a966d030
+start: 0x5c97a966d048, end 0x5c97a966d050
+$ clang const.c && ./a.out
+f: 0x574924409030, g: 0x574924409040
+start: 0x574924409068, end 0x574924409070
+$ tcc const.c
+tcc: error: undefined symbol '__stop_const_heap'
+tcc: error: undefined symbol '__start_const_heap'
+$
+```
+
 The fix is to add this snippet to the top of your code:
 
 ```c
