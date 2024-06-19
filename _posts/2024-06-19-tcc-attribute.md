@@ -24,7 +24,8 @@ tcc: error: undefined symbol '__start_const_heap'
 $
 ```
 
-The fix is to add this snippet to the top of your code:
+The fix is to add this snippet to the top of your code (after including the
+glibc headers):
 
 ```c
 #ifdef __TINYC__
