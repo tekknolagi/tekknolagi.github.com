@@ -46,6 +46,8 @@ Here are some projects that are occupying some brain space and that I am keeping
 * [Pydrofoil](https://github.com/pydrofoil/pydrofoil), a fast RISC-V emulator based on RPython, the PyPy internals
 * [Fil-C](https://github.com/pizlonator/llvm-project-deluge), a project where Fil Pizlo is making a memory-safe version of C
 * [Oil shell](https://github.com/oilshell/oil), a new Bash-compatible shell with fresh ideas and its own Python-esque compiler
+* [bigint](https://github.com/983/bigint), a small arbitrary precision integer library for C
+* [chibicc](https://github.com/rui314/chibicc)
 
 Not quite code but presenting very cool ideas:
 
@@ -62,6 +64,10 @@ Not quite code but presenting very cool ideas:
 * [Regular Expression Matching: the Virtual Machine Approach](https://swtch.com/~rsc/regexp/regexp2.html)
 * Interaction nets and HVM
 * [Make Your Self](https://marianoguerra.org/posts/make-your-self/)
+* Cheney list copying / GC
+    * Cheney on the MTA
+* Escape analysis and dead code elimination as compile-time GC
+* PGO for DCE: [tweet one](https://x.com/rui314/status/1788079197141049825) and [tweet two](https://x.com/rui314/status/1788099027889979782)
 
 What I am working on:
 
