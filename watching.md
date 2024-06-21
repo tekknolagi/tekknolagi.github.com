@@ -53,6 +53,7 @@ Not quite code but presenting very cool ideas:
 * [Egg](https://egraphs-good.github.io/), and more broadly egraphs, for program IRs
 * [Implementing a Toy Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html) and union-find in general
 * (To-be-written) Using Z3 to prove your static analyzer correct
+  * [More Stupid Z3Py Tricks: Simple Proofs](http://www.philipzucker.com/more-stupid-z3py-tricks-simple-proofs/) is a good jumping-off point, as is [Compiling with Constraints](https://www.philipzucker.com/compile_constraints/)
 * (To-be-written) From union-find to egraphs; exploring the tradeoffs
 * [a simple semi-space collector](https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector) explains how semi-space GCs work in ~100 lines of C
   * Note: the zero-length array member `payload` is non-standard and probably not needed
