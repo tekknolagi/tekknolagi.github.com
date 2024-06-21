@@ -45,6 +45,7 @@ Here are some projects that are occupying some brain space and that I am keeping
 * [LPython](https://github.com/lcompilers/lpython), a very early stages optimizing Python compiler
 * [Pydrofoil](https://github.com/pydrofoil/pydrofoil), a fast RISC-V emulator based on RPython, the PyPy internals
 * [Fil-C](https://github.com/pizlonator/llvm-project-deluge), a project where Fil Pizlo is making a memory-safe version of C
+* [Oil shell](https://github.com/oilshell/oil), a new Bash-compatible shell with fresh ideas and its own Python-esque compiler
 
 Not quite code but presenting very cool ideas:
 
@@ -60,6 +61,7 @@ Not quite code but presenting very cool ideas:
   * Note: `is_forwarded` should actually check if if the masked tag is `== 0`
 * [Regular Expression Matching: the Virtual Machine Approach](https://swtch.com/~rsc/regexp/regexp2.html)
 * Interaction nets and HVM
+* [Make Your Self](https://marianoguerra.org/posts/make-your-self/)
 
 What I am working on:
 
