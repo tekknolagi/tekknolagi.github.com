@@ -22,6 +22,8 @@ Here are some projects that are occupying some brain space and that I am keeping
 * [Iroh](https://github.com/n0-computer/iroh), a toolkit for building distributed applications
 * [simple-abstract-interpreter](https://github.com/sree314/simple-abstract-interpreter), just what it says on the tin
 * [ssa-optimizer](https://github.com/chrim05/ssa-optimizer), an educational SSA-based optimizer
+* [hindley-milner-python](git@github.com:rob-smallshire/hindley-milner-python.git), a small Damas Hindley Milner implementation in Python
+* [Hindley–Milner in Python](https://github.com/milesbarr/hindley-milner-in-python), another one of the same (but this one is a bit "trickier")
 * [micrograd](https://github.com/karpathy/micrograd/), [ccml](https://github.com/t4minka/ccml), and [cccc](https://github.com/skeeto/cccc), small, educational autodiff libraries
 * [Natalie](https://github.com/natalie-lang/natalie), an AOT Ruby compiler
 * [plzoo](https://github.com/andrejbauer/plzoo), which has multiple different small PL implementations with different semantics
