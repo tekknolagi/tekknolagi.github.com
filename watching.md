@@ -51,6 +51,7 @@ Here are some projects that are occupying some brain space and that I am keeping
 * [bigint](https://github.com/983/bigint), a small arbitrary precision integer library for C
 * [chibicc](https://github.com/rui314/chibicc)
 * [bcgen](https://github.com/Kimplul/bcgen), which is kind of like Ertl's VMGen, and [copyjit](https://github.com/Kimplul/copyjit), which is like Copy and Patch
+* [joos](https://github.com/just-js/joos), a KVM virtual machine manager in JavaScript
 
 Not quite code but presenting very cool ideas:
 
