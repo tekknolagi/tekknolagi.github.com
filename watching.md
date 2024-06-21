@@ -21,6 +21,7 @@ Here are some projects that are occupying some brain space and that I am keeping
 * [ir](https://github.com/dstogov/ir), the JIT internals for PHP
 * [Iroh](https://github.com/n0-computer/iroh), a toolkit for building distributed applications
 * [simple-abstract-interpreter](https://github.com/sree314/simple-abstract-interpreter), just what it says on the tin
+* [ssa-optimizer](https://github.com/chrim05/ssa-optimizer), an educational SSA-based optimizer
 * [micrograd](https://github.com/karpathy/micrograd/), [ccml](https://github.com/t4minka/ccml), and [cccc](https://github.com/skeeto/cccc), small, educational autodiff libraries
 * [Natalie](https://github.com/natalie-lang/natalie), an AOT Ruby compiler
 * [plzoo](https://github.com/andrejbauer/plzoo), which has multiple different small PL implementations with different semantics
@@ -52,8 +53,17 @@ Not quite code but presenting very cool ideas:
 * [Egg](https://egraphs-good.github.io/), and more broadly egraphs, for program IRs
 * [Implementing a Toy Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html) and union-find in general
 * (To-be-written) Using Z3 to prove your static analyzer correct
+* (To-be-written) From union-find to egraphs; exploring the tradeoffs
 * [a simple semi-space collector](https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector) explains how semi-space GCs work in ~100 lines of C
   * Note: the zero-length array member `payload` is non-standard and probably not needed
   * Note: `is_forwarded` should actually check if if the masked tag is `== 0`
 * [Regular Expression Matching: the Virtual Machine Approach](https://swtch.com/~rsc/regexp/regexp2.html)
 * Interaction nets and HVM
+
+What I am working on:
+
+* [Scrapscript](https://github.com/tekknolagi/scrapscript), an interpreter and compiler for a small functional language
+* [Dr Wenowdis](https://bernsteinbear.com/assets/img/dr-wenowdis.pdf) (PDF), where CF Bolz-Tereick and I are working on making C extensions faster in PyPy
+* A small rasterizer for my graphics class that uses [fenster](https://github.com/zserge/fenster)
+* [weval](https://github.com/cfallin/weval)-ing CPython
+* [Introduction to Software Development Tooling](https://bernsteinbear.com/isdt/)
