@@ -48,6 +48,7 @@ Here are some projects that are occupying some brain space and that I am keeping
 * [Oil shell](https://github.com/oilshell/oil), a new Bash-compatible shell with fresh ideas and its own Python-esque compiler
 * [bigint](https://github.com/983/bigint), a small arbitrary precision integer library for C
 * [chibicc](https://github.com/rui314/chibicc)
+* [bcgen](https://github.com/Kimplul/bcgen), which is kind of like Ertl's VMGen
 
 Not quite code but presenting very cool ideas:
 
@@ -61,6 +62,7 @@ Not quite code but presenting very cool ideas:
 * [a simple semi-space collector](https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector) explains how semi-space GCs work in ~100 lines of C
   * Note: the zero-length array member `payload` is non-standard and probably not needed
   * Note: `is_forwarded` should actually check if if the masked tag is `== 0`
+* [just-in-time code generation within webassembly](https://wingolog.org/archives/2022/08/18/just-in-time-code-generation-within-webassembly) and its accompanying [wasm-jit](https://github.com/wingo/wasm-jit)
 * [Regular Expression Matching: the Virtual Machine Approach](https://swtch.com/~rsc/regexp/regexp2.html)
 * Interaction nets and HVM
 * [Make Your Self](https://marianoguerra.org/posts/make-your-self/)
