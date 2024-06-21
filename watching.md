@@ -43,10 +43,17 @@ Here are some projects that are occupying some brain space and that I am keeping
 * [container2wasm](https://github.com/ktock/container2wasm), to run containers in WebAssembly
 * [LPython](https://github.com/lcompilers/lpython), a very early stages optimizing Python compiler
 * [Pydrofoil](https://github.com/pydrofoil/pydrofoil), a fast RISC-V emulator based on RPython, the PyPy internals
+* [Fil-C](https://github.com/pizlonator/llvm-project-deluge), a project where Fil Pizlo is making a memory-safe version of C
 
 Not quite code but presenting very cool ideas:
 
 * Verifying your whole register allocator too hard? No problem, just [write a verifier for a given allocation](https://cfallin.org/blog/2021/03/15/cranelift-isel-3/) and abort if it fails. This also lends itself nicely to fuzzing for automatically exploring large program state spaces.
 * [Copy and Patch](https://fredrikbk.com/publications/copy-and-patch.pdf) (PDF) compilation, which generates pretty fast code very quickly
 * [Egg](https://egraphs-good.github.io/), and more broadly egraphs, for program IRs
+* [Implementing a Toy Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html) and union-find in general
 * (To-be-written) Using Z3 to prove your static analyzer correct
+* [a simple semi-space collector](https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector) explains how semi-space GCs work in ~100 lines of C
+  * Note: the zero-length array member `payload` is non-standard and probably not needed
+  * Note: `is_forwarded` should actually check if if the masked tag is `== 0`
+* [Regular Expression Matching: the Virtual Machine Approach](https://swtch.com/~rsc/regexp/regexp2.html)
+* Interaction nets and HVM
