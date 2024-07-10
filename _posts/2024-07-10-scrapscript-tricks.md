@@ -224,6 +224,12 @@ if (tmp_0 != mk_immediate_variant(Tag_true)) { goto case_1; }
 (where `tmp_0`/`[rsp+0x8]`/`rdx` is the match argument, `0xf6` is the small int
 for `123`, and `0xf` is the tagged pointer for `# true ()`).
 
+I want to emphasize that these small strings, small ints, and other immediates
+are available *at run-time too*. They are not just limited to compiler
+constants. This means we have smart constructors such as `mkstring` that
+dynamically dispatch to either encoding a small string or heap-allocating a
+large one.
+
 This is great, but small strings and variants leave a lot still allocated.
 Sometimes in scraps there are entire constant data structures that get
 allocated at run-time, every time the parent closure is called. So we did
