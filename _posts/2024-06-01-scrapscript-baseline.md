@@ -606,7 +606,7 @@ result of your program.
 
 ## Thanks for reading
 
-Well first, play with [the web REPL](https://scrapscript.fly.dev/repl). Then
+Want to learn more? Well first, play with [the web REPL](https://scrapscript.fly.dev/repl). Then
 take a look at [the repo](https://github.com/tekknolagi/scrapscript) and start
 contributing! Since we don't have a huge backlog of well-scoped projects just
 yet, I recommend posting in the [discourse

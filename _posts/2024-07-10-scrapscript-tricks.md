@@ -54,6 +54,7 @@ are the rest of the bit patterns:
 0b000...00111  // hole
 0bxxx...01101  // small string
 0b000...01111  // immediate variant
+// and four more other, unused tags
 ```
 
 Immediate patterns have two constraints:
@@ -65,7 +66,8 @@ Immediate patterns have two constraints:
 
 Everything else is fair game. We technically could use as many of the high bits
 as we want and build in gigantic amounts of patterns but instead we are going
-to reserve those high bits for small strings[^escape-hatch].
+to limit ourselves to eight kinds of immediates and reserve the high bits for
+use in those immediates[^escape-hatch]. For example, in *small strings*.
 
 [^escape-hatch]: We could have an "escape hatch" where we have one low-bits
     encoding that says "look at the rest of the high bits to figure out what
@@ -116,9 +118,9 @@ the start of the string to the end.
 
 As a refresher, variants are kind of like a dynamically typed version of
 SML/OCaml variants. Whereas in OCaml and SML they are checked statically and
-erased at compile-time, Scrapscript keeps the tags around at run-time. You can
-kind of think of it like adding one string's worth of metadata to an object
-that you can match on.
+(mostly) erased at compile-time, Scrapscript keeps the tags around at run-time.
+You can kind of think of it like adding one string's worth of metadata to an
+object that you can match on.
 
 ```
 eval =
@@ -149,8 +151,8 @@ enum {
 ```
 
 It's kind of unfortunate, because it means that writing something like
-`#some_tag [a, b]` allocates an object first for the list and then also for the
-tagged wrapper object.
+`#some_tag [a, b]` allocates an object first for the list---several cons cells,
+in fact---and then *also* for the tagged wrapper object.
 
 But I vaguely recalled something about OCaml encoding variants with only a
 couple of bits so I checked out their [page on data
@@ -362,11 +364,14 @@ Try running `./scrapscript.py compile --compile examples/0_home/factorial.scrap`
 will produce both `output.c` and `a.out`. Then you can run `./a.out` to see the
 result of your program.
 
+We also now have a [compiler web REPL](https://scrapscript.fly.dev/compilerepl)
+if you don't want to download anything.
+
 ## Thanks for reading
 
-Well first, play with [the web REPL](https://scrapscript.fly.dev/repl). Then
-take a look at [the repo](https://github.com/tekknolagi/scrapscript) and start
-contributing! Since we don't have a huge backlog of well-scoped projects just
-yet, I recommend posting in the [discourse
-group](https://scrapscript.discourse.group/) first to get an idea of what would
-be most useful and also interesting to you.
+Want to learn more? Well first, play with [the web
+REPL](https://scrapscript.fly.dev/repl). Then take a look at [the
+repo](https://github.com/tekknolagi/scrapscript) and start contributing! Since
+we don't have a huge backlog of well-scoped projects just yet, I recommend
+posting in the [discourse group](https://scrapscript.discourse.group/) first to
+get an idea of what would be most useful and also interesting to you.
