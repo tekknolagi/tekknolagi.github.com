@@ -378,8 +378,9 @@ them.
 Yes, 63, not 64. One of the pointer tagging tricks we do is bias heap-allocated
 objects by 1. Since all heap allocations are multiples of 8 bytes (at least;
 that's just the size of the `tag`), we know that the low three bits are
-normally 0. By setting the low bit of all heap-allocated objects to 1, and the
-low bit of all small integers to 0, we can distinguish between the two cases.
+normally 0. By setting the low bits of all heap-allocated objects to 001, and
+the low bit of all small integers to 0, we can distinguish between the two
+cases.
 
 ```
 small int:   0bxxx...xx0

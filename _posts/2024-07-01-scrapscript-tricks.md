@@ -59,7 +59,11 @@ Immediate patterns have two constraints:
 
 Everything else is fair game. We technically could use as many of the high bits
 as we want and build in gigantic amounts of patterns but instead we are going
-to reserve those high bits for small strings.
+to reserve those high bits for small strings[^escape-hatch].
+
+[^escape-hatch]: We could have an "escape hatch" where we have one low-bits
+    encoding that says "look at the rest of the high bits to figure out what
+    this is" but we're trying to avoid a two-step decoding situation.
 
 ### Small strings
 
@@ -116,7 +120,8 @@ eval =
 | #add [left, right] -> left + right
 ```
 
-Until today, variants were all heap-allocated pairs of tag and value.
+Until this past weekend, variants were all heap-allocated pairs of tag and
+value.
 
 ```c
 struct variant {
@@ -140,6 +145,21 @@ enum {
 It's kind of unfortunate, because it means that writing something like
 `#some_tag [a, b]` allocates an object first for the list and then also for the
 tagged wrapper object.
+
+But I vaguely recalled something about OCaml encoding variants with only a
+couple of bits so I checked out their [page on data
+representations](https://ocaml.org/docs/memory-representation#blocks-and-values).
+On it, they have something that says:
+
+> `Foo | Bar` variants are stored as ascending OCaml ints, starting from 0.
+
+I was initially worried that OCaml could only do this because they have type
+inference and therefore the compiler knows much more about what type every
+AST/IR node is. Then I thought about it some more and realized that we still
+have that information---just at run-time, with the pointer tagging. If we
+combine our low-bits pointer tagging with the existing tag enum stuff, we're
+set.
+
 
 ### True and false
 
