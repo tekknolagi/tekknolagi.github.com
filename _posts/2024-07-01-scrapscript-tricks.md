@@ -164,7 +164,12 @@ combine our low-bits pointer tagging with the existing tag enum stuff, we're
 set.
 
 So I added a new kind of immediate to the compiler: immediate variants. They
-don't support the full range of objects, but they support any tagged *hole*...
+don't support the full range of objects[^full-range], but they support any
+tagged *hole*...
+
+[^full-range]: I wonder if it would be possible to find a tagging scheme that
+    supports immediate variants of *any* scrapscript object. Depending on the
+    machine, we might run out of bits to encode the tag.
 
 ### True and false
 
