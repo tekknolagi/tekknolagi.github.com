@@ -21,7 +21,9 @@ Pretty much all of these tricks are standard operating procedure for language
 runtimes (OCaml, MicroPython, Skybison, etc). We didn't invent them.
 
 They're also somewhat limited in scope; the goal was to be able to add as much
-as possible without making the runtime or compiler notably more complicated.
+as possible to the baseline compiler without making it or the runtime notably
+more complicated. A fully-featured optimizing compiler is coming soon&trade;
+but not ready yet.
 
 ## Immediate objects
 
