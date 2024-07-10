@@ -89,9 +89,31 @@ in Python code (which would mean the compiler has to have some magic constants
 in it), we generate a string of C code:
 
 [^stack-strings]: In fact, I used some similar code to obfuscate programs that
-    I wrote for a Windows malware course. Instead of encoding stack strings by
-    hand, I wrote a program to generate them for me for use in C programs.
-    TODO
+    I wrote for a malware course. Instead of encoding stack strings by hand, I
+    wrote a [crappy
+    program](https://gist.github.com/tekknolagi/3df691ad6f48e85e26bd995f6ec5c900)
+    to generate them for me for use in C programs.
+    ```c
+    uint64_t stack_strings[9] = {
+    0x202c6f6c6c6548,
+    0x2073692073696874,
+    0x67617373656d2061,
+    0x206d6f72662065,
+    0x6972662072756f79,
+    0x635320796c646e65,
+    0x7069726373706172,
+    0x6d6165742074,
+    };
+    stack_strings[8] = 1337;
+    char* str_Hello__ = (char*)&stack_strings[0];
+    char* str_this_is_a_message_from_ = (char*)&stack_strings[1];
+    char* str_your_friendly_Scrapscript_team = (char*)&stack_strings[4];
+    ```
+    That gross blob is the result of encoding three strings:
+    * `"Hello, ",`
+    * `"this is a message from ",`
+    * `"your friendly Scrapscript team",`
+
 
 ```python
 def small_string(value_str: str) -> str:
