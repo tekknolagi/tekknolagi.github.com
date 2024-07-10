@@ -19,7 +19,8 @@ Chris and I built. This post is about some optimization tricks that we've added
 since.
 
 Pretty much all of these tricks are standard operating procedure for language
-runtimes (OCaml, MicroPython, Skybison, etc). We didn't invent them.
+runtimes (OCaml, MicroPython, Objective-C, Skybison, etc). We didn't invent
+them.
 
 They're also somewhat limited in scope; the goal was to be able to add as much
 as possible to the baseline compiler without making it or the runtime notably
@@ -135,6 +136,11 @@ string representation to aid debugging.
 It's stored "backwards" if you print out the pointer MSB first but that's
 because we store it little-endian. This lets us shift byte-by-byte to read from
 the start of the string to the end.
+
+See also [Mike Ash's
+post](https://mikeash.com/pyblog/friday-qa-2015-07-31-tagged-pointer-strings.html)
+about small strings in Objective-C. They go way further with encoding tables
+and stuff.
 
 ### Variants
 
