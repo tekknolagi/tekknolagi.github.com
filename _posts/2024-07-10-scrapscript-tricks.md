@@ -15,7 +15,8 @@ fact 5
 ```
 
 My [previous post](/blog/scrapscript-baseline/) talked about the compiler that
-Chris and I built. This post is about some tricks that we've added since.
+Chris and I built. This post is about some optimization tricks that we've added
+since.
 
 Pretty much all of these tricks are standard operating procedure for language
 runtimes (OCaml, MicroPython, Skybison, etc). We didn't invent them.
@@ -27,10 +28,10 @@ but not ready yet.
 
 ## Immediate objects
 
-I mentioned that we can encode small integers and some other objects inside
-pointers so that we don't have to allocate them at all. In this post, I'll
-explain a little bit more how we encode small strings and also now certain
-kinds of variants!
+In the [last post](/blog/scrapscript-baseline/), I mentioned that we can encode
+small integers and some other objects inside pointers so that we don't have to
+heap allocate them at all. In this post, I'll explain a little bit more how we
+encode small strings and also now certain kinds of variants!
 
 The compiler assumes we are compiling to a 64 bit machine[^32-bit]. This means
 that with every pointer, we have 8 bytes to play with. We already use some of
@@ -108,8 +109,8 @@ head (0x63=="c", 0x62=="b", 0x61=="a", etc), we also helpfully print out the
 string representation to aid debugging.
 
 It's stored "backwards" if you print out the pointer MSB first but that's
-because we store it little-endian. I don't know if there's a specific reason
-for doing this... it's how we did it in Skybison and I kept that the same.
+because we store it little-endian. This lets us shift byte-by-byte to read from
+the start of the string to the end.
 
 ### Variants
 
