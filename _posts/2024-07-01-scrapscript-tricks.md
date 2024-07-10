@@ -20,6 +20,9 @@ Chris and I built. This post is about some tricks that we've added since.
 Pretty much all of these tricks are standard operating procedure for language
 runtimes (OCaml, MicroPython, Skybison, etc). We didn't invent them.
 
+They're also somewhat limited in scope; the goal was to be able to add as much
+as possible without making the runtime or compiler notably more complicated.
+
 ## Immediate objects
 
 I mentioned that we can encode small integers and some other objects inside
@@ -160,10 +163,159 @@ have that information---just at run-time, with the pointer tagging. If we
 combine our low-bits pointer tagging with the existing tag enum stuff, we're
 set.
 
+So I added a new kind of immediate to the compiler: immediate variants. They
+don't support the full range of objects, but they support any tagged *hole*...
 
 ### True and false
 
+...like `#true ()` and `#false ()`! These used to be heap-allocated, but now
+they are immediate objects, and with no compiler special-casing. It falls
+naturally out of the tag indexing and the pointer tagging.
+
+This is pretty great, because it makes pattern matching on booleans---or any
+similar tag---much faster. Look at the code that the compiler can now generate:
+
+```
+| #true () -> 123
+```
+
+turns into:
+
+```
+if (tmp_0 != mk_immediate_variant(Tag_true)) { goto case_1; }
+    2301:	48 8b 54 24 08       	mov    rdx,QWORD PTR [rsp+0x8]
+    2306:	b8 f6 00 00 00       	mov    eax,0xf6
+    230b:	48 83 fa 0f          	cmp    rdx,0xf
+    230f:	74 0b                	je     231c <fn_1+0x4c>
+```
+
+(where `tmp_0`/`[rsp+0x8]`/`rdx` is the match argument, `0xf6` is the small int
+for `123`, and `0xf` is the tagged pointer for `# true ()`).
+
+This is great, but small strings and variants leave a lot still allocated.
+Sometimes in scraps there are entire constant data structures that get
+allocated at run-time, every time the parent closure is called. So we did
+something about that.
+
 ## The const heap
+
+Consider the list `[1, 2, 3]`. The compiler and its runtime system represent it
+as three cons cells, `1 -> 2 -> 3 -> nil`. All of the cells contain data that
+is known constant---integer literals---and point to other constant data. It
+turns out that if we detect this at compile-time, we can allocate all of the
+cons cells as constant C globals.
+
+```python
+{%- raw -%}
+class Compiler:
+    def compile(self, env: Env, exp: Object) -> str:
+        if self._is_const(exp):
+            return self._emit_const(exp)
+        # ...
+
+    def _emit_const(self, exp: Object) -> str:
+        if isinstance(exp, Int):
+            # TODO(max): Bignum
+            return f"_mksmallint({exp.value})"
+        if isinstance(exp, List):
+            items = [self._emit_const(item) for item in exp.items]
+            result = "empty_list()"
+            for item in reversed(items):
+                result = self._const_cons(item, result)
+            return result
+        # ...
+
+    def _const_cons(self, first: str, rest: str) -> str:
+        return self._const_obj("list", "TAG_LIST", f".first={first}, .rest={rest}")
+
+    def _const_obj(self, type: str, tag: str, contents: str) -> str:
+        result = self.gensym(f"const_{type}")
+        self.const_heap.append(f"CONST_HEAP struct {type} {result} = {{.HEAD.tag={tag}, {contents} }};")
+        return f"ptrto({result})"
+{% endraw -%}
+```
+
+The `const_heap` is a list of structs that we emit at the top-level after
+traversing the whole AST for normal compilation. It's meant to look similar to
+our garbage-collected heap, but without actually using any of the GC's API.
+Instead of calling `allocate`, we emit the structs directly. See the before,
+where every time the function is called, it allocates:
+
+```c
+struct object* scrap_main() {
+  HANDLES();
+  OBJECT_HANDLE(tmp_0, empty_list());
+  OBJECT_HANDLE(tmp_1, list_cons(_mksmallint(3), tmp_0));
+  OBJECT_HANDLE(tmp_2, list_cons(_mksmallint(2), tmp_1));
+  OBJECT_HANDLE(tmp_3, list_cons(_mksmallint(1), tmp_2));
+  return tmp_3;
+}
+```
+
+and after our const heap changes:
+
+```c
+#define CONST_HEAP const __attribute__((section("const_heap")))
+CONST_HEAP struct list const_list_0 = {.HEAD.tag=TAG_LIST, .first=_mksmallint(3), .rest=empty_list() };
+CONST_HEAP struct list const_list_1 = {.HEAD.tag=TAG_LIST, .first=_mksmallint(2), .rest=ptrto(const_list_0) };
+CONST_HEAP struct list const_list_2 = {.HEAD.tag=TAG_LIST, .first=_mksmallint(1), .rest=ptrto(const_list_1) };
+struct object* scrap_main() {
+  HANDLES();
+  return ptrto(const_list_2);
+}
+```
+
+Hey presto, the main function just returns a pointer to constant data instead
+of allocating anything at run-time.
+
+In order of appearance, here are some of the confusing parts of the code:
+
+`CONST_HEAP` is macro that directs the linker to put the attached object into
+our custom section, `const_heap`. We also mark this data `const` so that the C
+compiler can optimize references to it. I should probably also mark it `static`
+and add some kind of `__attribute__((aligned(8)))` to make sure that we get the
+same heap object tagging support.
+
+`_mksmallint` is a macro that generates a small integer by shifting it left 1
+bit.
+
+`empty_list` is a macro that generates a tagged pointer to the empty list.
+
+`ptrto` takes the address of constant data and then tags with `0b1` so that it
+looks like a normal heap object. This means that there might be a bunch of
+references to constant data flying around our garbage-collected heap. That's a
+big problem because our GC attempts to *write to the data* and then *update
+references to it*, so we have to be catch this:
+
+```c
+// NEW
+extern char __start_const_heap[];
+extern char __stop_const_heap[];
+
+bool in_const_heap(struct gc_obj* obj) {
+  return (uword)obj >= (uword)__start_const_heap &&
+         (uword)obj < (uword)__stop_const_heap;
+}
+// END NEW
+
+void visit_field(struct object** pointer, struct gc_heap* heap) {
+  if (!is_heap_object(*pointer)) {
+    return;
+  }
+  struct gc_obj* from = as_heap_object(*pointer);
+  // NEW
+  if (in_const_heap(from)) {
+    return;
+  }
+  // END NEW
+  struct gc_obj* to = is_forwarded(from) ? forwarded(from) : copy(heap, from);
+  *pointer = heap_tag((uintptr_t)to);
+}
+```
+
+We do this by using the linker-provided symbols `__start_const_heap` and
+`__stop_const_heap` to get the bounds of the `const_heap` section. Then we can
+see if a pointer is within those bounds before trying to forward it.
 
 ## Playing with the compiler
 
