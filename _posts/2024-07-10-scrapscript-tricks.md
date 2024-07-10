@@ -397,6 +397,11 @@ Neat.
 I'm always interested in using Scrapscript as a compiler and runtime
 playground. Send ideas or full implementations my way please.
 
+I'm currently looking at immediate `double`s based on the
+[OpenSmalltalk](https://clementbera.wordpress.com/2018/11/09/64-bits-immediate-floats/).
+We don't use them often in Scrapscript but it could be fun. I'm also looking at
+how [ChakraCore](https://abchatra.github.io/TaggedFloat/) did it.
+
 ## Playing with the compiler
 
 Try running `./scrapscript.py compile --compile examples/0_home/factorial.scrap` which
