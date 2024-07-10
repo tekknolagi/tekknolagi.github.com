@@ -378,8 +378,9 @@ them.
 Yes, 63, not 64. One of the pointer tagging tricks we do is bias heap-allocated
 objects by 1. Since all heap allocations are multiples of 8 bytes (at least;
 that's just the size of the `tag`), we know that the low three bits are
-normally 0. By setting the low bit of all heap-allocated objects to 1, and the
-low bit of all small integers to 0, we can distinguish between the two cases.
+normally 0. By setting the low bits of all heap-allocated objects to 001, and
+the low bit of all small integers to 0, we can distinguish between the two
+cases.
 
 ```
 small int:   0bxxx...xx0
@@ -599,13 +600,13 @@ world.
 
 ## Playing with the compiler
 
-Try running `./compiler.py --compile examples/0_home/factorial.scrap` which
+Try running `./scrapscript.py compile --compile examples/0_home/factorial.scrap` which
 will produce both `output.c` and `a.out`. Then you can run `./a.out` to see the
 result of your program.
 
 ## Thanks for reading
 
-Well first, play with [the web REPL](https://scrapscript.fly.dev/repl). Then
+Want to learn more? Well first, play with [the web REPL](https://scrapscript.fly.dev/repl). Then
 take a look at [the repo](https://github.com/tekknolagi/scrapscript) and start
 contributing! Since we don't have a huge backlog of well-scoped projects just
 yet, I recommend posting in the [discourse
