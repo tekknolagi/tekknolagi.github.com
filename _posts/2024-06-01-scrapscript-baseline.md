@@ -600,7 +600,7 @@ world.
 
 ## Playing with the compiler
 
-Try running `./compiler.py --compile examples/0_home/factorial.scrap` which
+Try running `./scrapscript.py compile --compile examples/0_home/factorial.scrap` which
 will produce both `output.c` and `a.out`. Then you can run `./a.out` to see the
 result of your program.
 

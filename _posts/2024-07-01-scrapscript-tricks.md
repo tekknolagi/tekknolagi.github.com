@@ -317,9 +317,40 @@ We do this by using the linker-provided symbols `__start_const_heap` and
 `__stop_const_heap` to get the bounds of the `const_heap` section. Then we can
 see if a pointer is within those bounds before trying to forward it.
 
+We support pretty much all constant versions of objects, including:
+
+* Integers (currently only tagged small integers, but bignums would be similar)
+* Strings
+* Variants
+* Lists
+* Records
+* Closures (!)
+
+Yes, we also support constant closures. For now, this is only available for
+closures that don't capture any variables. We could support closures that
+capture only constant data, but that would require a little bit of finessing to
+keep a record of which variables are constant and which aren't. I want to
+figure out a way to do this in only 1 or 2 extra lines of code if possible.
+
+```c
+/*
+. fact =
+| 0 -> 1
+| n -> n * fact (n - 1)
+*/
+#define ptrto(obj) ((struct object*)((uword)&(obj) + 1))
+CONST_HEAP struct closure const_closure_5 = {.HEAD.tag=TAG_CLOSURE, .fn=fact_1, .size=0 };
+struct object* scrap_main() {
+  HANDLES();
+  return ptrto(const_closure_5);
+}
+```
+
+Neat.
+
 ## Playing with the compiler
 
-Try running `./compiler.py --compile examples/0_home/factorial.scrap` which
+Try running `./scrapscript.py compile --compile examples/0_home/factorial.scrap` which
 will produce both `output.c` and `a.out`. Then you can run `./a.out` to see the
 result of your program.
 
