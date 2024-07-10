@@ -358,6 +358,11 @@ struct object* scrap_main() {
 
 Neat.
 
+## Have suggestions?
+
+I'm always interested in using Scrapscript as a compiler and runtime
+playground. Send ideas or full implementations my way please.
+
 ## Playing with the compiler
 
 Try running `./scrapscript.py compile --compile examples/0_home/factorial.scrap` which
