@@ -153,7 +153,7 @@ object that you can match on.
 ```
 eval =
 | #int_lit x -> x
-| #add [left, right] -> left + right
+| #add [left, right] -> eval left + eval right
 ```
 
 Until this past weekend, variants were all heap-allocated pairs of tag and
