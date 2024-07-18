@@ -137,6 +137,34 @@ It's stored "backwards" if you print out the pointer MSB first but that's
 because we store it little-endian. This lets us shift byte-by-byte to read from
 the start of the string to the end.
 
+Here's the C code that the runtime uses to build non-constant strings:
+
+```c
+struct object* mksmallstring(const char* data, uword length) {
+  assert(length <= kMaxSmallStringLength);
+  uword result = 0;
+  for (word i = length - 1; i >= 0; i--) {
+    result = (result << kBitsPerByte) | data[i];
+  }
+  struct object* result_obj =
+      (struct object*)((result << kBitsPerByte) |
+                       (length << kImmediateTagBits) | kSmallStringTag);
+  assert(!is_heap_object(result_obj));
+  assert(is_small_string(result_obj));
+  assert(small_string_length(result_obj) == length);
+  return result_obj;
+}
+
+struct object* mkstring(struct gc_heap* heap, const char* data, uword length) {
+  if (length <= kMaxSmallStringLength) {
+    return mksmallstring(data, length);
+  }
+  struct object* result = mkstring_uninit_private(heap, length);
+  memcpy(as_heap_string(result)->data, data, length);
+  return result;
+}
+```
+
 See also [Mike Ash's
 post](https://mikeash.com/pyblog/friday-qa-2015-07-31-tagged-pointer-strings.html)
 about small strings in Objective-C. They go way further with encoding tables
