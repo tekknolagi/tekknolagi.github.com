@@ -168,11 +168,11 @@ bit of a number, which indicates if it is even or odd.
 The lattice is pretty similar to the positive/negative lattice:
 
 ```
-     top
-  /       \
-even      odd
-  \       /
-    bottom
+    top
+  /     \
+even    odd
+  \     /
+   bottom
 ```
 
 Let's define a data structure to represent this in Python code:
@@ -195,6 +195,32 @@ ODD = Parity("odd")
 BOTTOM = Parity("bottom")
 ```
 
+Now let's write a forward flow analysis of a basic block using this lattice.
+We'll do that by assuming that a method on `Parity` is defined for each IR
+operation. For example, `Parity.add`, `Parity.lshift`, etc.
+
+```python
+def analyze(block: Block) -> None:
+    parity = {v: BOTTOM for v in block}
+
+    def parity_of(value):
+        if isinstance(value, Constant):
+            return Parity.const(value)
+        return parity[value]
+
+    for op in block:
+        transfer = getattr(Parity, op.name)
+        args = [parity_of(arg.find()) for arg in op.args]
+        parity[op] = transfer(*args)
+```
+
+For every operation, we compute the abstract value---the parity---of the
+arguments and then call the corresponding method on `Parity` to get the
+abstract result.
+
+We need to special case `Constant`s due to a quirk of how the Toy IR is
+constructed: the constants don't appear in the instruction stream and instead
+are free-floating.
 
 ```
 v0 = getarg(0)
