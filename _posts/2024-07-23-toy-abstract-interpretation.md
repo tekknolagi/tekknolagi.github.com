@@ -61,7 +61,7 @@ Using abstract values from a lattice promises two things:
 Let's learn a little about abstract interpretation with an example program and
 example abstract domain. Here's the example program:
 
-```
+```python
 v0 = 1
 v1 = 2
 v2 = add(v0, v1)
@@ -85,7 +85,7 @@ represent the sets of all positive and negative numbers, respectively.
 We initialize all the variables `v0`, `v1`, and `v2` to *bottom* and then walk
 our IR, updating our knowledge as we go.
 
-```
+```python
 # here
 v0:bottom = 1
 v1:bottom = 2
@@ -105,7 +105,7 @@ them.
 
 Let's step through the constants at least:
 
-```
+```python
 v0:positive = 1
 v1:positive = 2
 # here
@@ -142,7 +142,7 @@ if both operands are positive or both operands are negative. Thankfully, in
 this example, both operands are known positive. So we can learn something about
 `v2`:
 
-```
+```python
 v0:positive = 1
 v1:positive = 2
 v2:positive = add(v0, v1)
@@ -239,7 +239,7 @@ class Parity:
 Seems reasonable enough. Let's pause on operations for a moment and consider an
 example program:
 
-```
+```python
 v0 = getarg(0)
 v1 = getarg(1)
 v2 = lshift(v0, 1)
@@ -302,7 +302,7 @@ Now, if we run our abstract interpretation, we'll collect some interesting
 properties about the program. If we temporarily hack on the internals of
 `bb_to_str`, we can print out parity information alongside the IR operations:
 
-```
+```python
 v0:top = getarg(0)
 v1:top = getarg(1)
 v2:even = lshift(v0, 1)
@@ -321,7 +321,7 @@ significant bit. This is a common pattern in C code, where you might see code
 like `y = x & 1`. Let's introduce a `bitand` IR operation that acts like the
 `&` operator in C/Python. Here is an example of use of it in our program:
 
-```
+```python
 v0 = getarg(0)
 v1 = getarg(1)
 v2 = lshift(v0, 1)
