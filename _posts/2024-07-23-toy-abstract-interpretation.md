@@ -119,12 +119,12 @@ Actual hardware memory constraints aside, this is kind of like a Python `int`.
 
 So let's look at what happens when we add two abstract numbers:
 
-|          | top | positive | negative | bottom |
-|----------|-----|----------|----------|--------|
-| top      | top | top      | top      | bottom |
-| positive | top | positive | top      | bottom |
-| negative | top | top      | negative | bottom |
-| bottom   | bottom | bottom | bottom   | bottom |
+|              | top | positive | negative | bottom |
+|--------------|-----|----------|----------|--------|
+| **top**      | top | top      | top      | bottom |
+| **positive** | top | positive | top      | bottom |
+| **negative** | top | top      | negative | bottom |
+| **bottom**   | bottom | bottom | bottom   | bottom |
 
 The short of this table is that we only really know the result of an addition
 if both operands are positive or both operands are negative. Thankfully, in
