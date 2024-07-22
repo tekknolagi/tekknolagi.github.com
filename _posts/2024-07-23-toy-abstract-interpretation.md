@@ -24,6 +24,9 @@ that you are familiar with the little IR, which I have reproduced unchanged in
 
 [toy-ir]: https://gist.github.com/tekknolagi/4425b28d5267e7bae8b0d7ef8fb4a671
 
+I'm writing the post to pave the way for CF's next post on proving abstract
+interpreters correct for range analysis and known bits analysis inside PyPy.
+
 Before we begin, I want to note a couple of things:
 
 * The Toy IR is in SSA form, which means that every variable is defined exactly
@@ -423,3 +426,13 @@ v6 = dummy(0)
 
 Hey, neat! `bitand` disappeared and the argument to `dummy` is now the constant
 `0` because we know the lowest bit.
+
+## Wrapping up
+
+Hopefully you have gained a little bit of an intuitive understanding of
+abstract interpretation. Last year, being able to write some code made me more
+comfortable with the math. Now being more comfortable with the math is helping
+me write the code. It's nice upward spiral.
+
+Stay tuned for CF's upcoming post about proving some of the abstract
+interpreters inside PyPy correct with Z3!
