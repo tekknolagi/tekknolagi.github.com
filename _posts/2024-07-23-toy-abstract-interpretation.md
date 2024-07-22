@@ -222,6 +222,23 @@ We need to special case `Constant`s due to a quirk of how the Toy IR is
 constructed: the constants don't appear in the instruction stream and instead
 are free-floating.
 
+Let's start by looking at the abstraction function for concrete
+values---constants:
+
+```python
+class Parity:
+    # ...
+    @staticmethod
+    def const(value):
+        if value.value % 2 == 0:
+            return EVEN
+        else:
+            return ODD
+```
+
+Seems reasonable enough. Let's pause on operations for a moment and consider an
+example program:
+
 ```
 v0 = getarg(0)
 v1 = getarg(1)
@@ -232,3 +249,33 @@ v5 = bitand(v4, 1)
 v6 = dummy(v5)
 ```
 
+This function (which is admittedly a little contrived) takes two inputs, shifts
+them left by one bit, adds the result, and then checks the least significant
+bit of the addition result. It then passes that result into a `dummy` function,
+which you can think of as "return" or "escape".
+
+To do some abstract interpretation on this program, we'll need to implement the
+transfer functions for `lshift`, `add`, and `bitand` (`dummy` will just always
+return `TOP`). We'll start with `add`. Remember that adding two even numbers
+returns an even number, adding two odd numbers returns an even number, and
+mixing even and odd returns an odd number.
+
+```python
+class Parity:
+    # ...
+    def add(self, other):
+        if self is BOTTOM or other is BOTTOM:
+            return BOTTOM
+        if self is TOP or other is TOP:
+            return TOP
+        if self is EVEN and other is EVEN:
+            return EVEN
+        if self is ODD and other is ODD:
+            return EVEN
+        return ODD
+```
+
+We also need to fill in the other cases where the operands are *top* or
+*bottom*. In this case, they are both "contagious"; if either operand is
+bottom, the result is as well. If neither is bottom but either operand is top,
+the result is as well.
