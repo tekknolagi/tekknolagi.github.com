@@ -338,4 +338,84 @@ exercise for the reader---and instead do something different.
 
 Instead, we'll see if we can optimize operations of the form `bitand(X, 1)`. If
 we statically know the parity as a result of abstract interpretation, we can
-optimize the `bitand` away into a constant `0` or `1`.
+replace the `bitand` with a constant `0` or `1`.
+
+We'll first modify the `analyze` function (and rename it) to return a new
+`Block` containing optimized instructions:
+
+```python
+def simplify(block: Block) -> Block:
+    parity = {v: BOTTOM for v in block}
+
+    def parity_of(value):
+        if isinstance(value, Constant):
+            return Parity.const(value)
+        return parity[value]
+
+    result = Block()
+    for op in block:
+        # TODO: Optimize op
+        # Emit
+        result.append(op)
+        # Analyze
+        transfer = getattr(Parity, op.name)
+        args = [parity_of(arg.find()) for arg in op.args]
+        parity[op] = transfer(*args)
+    return result
+```
+
+We're approaching this the way that PyPy does things under the hood, which is
+all in roughly a single pass. It tries to optimize an instruction away, and if
+it can't, it copies it into the new block.
+
+Now let's add in the `bitand` optimization. It's mostly some gross-looking
+pattern matching that checks if the right hand side of a bitwise `and`
+operation is `1` (TODO: the left hand side, too). CF had some neat ideas on how
+to make this more ergonomic, which I might save for later.
+
+Then, if we know the parity, optimize the `bitand` into a constant.
+
+```python
+def simplify(block: Block) -> Block:
+    parity = {v: BOTTOM for v in block}
+
+    def parity_of(value):
+        if isinstance(value, Constant):
+            return Parity.const(value)
+        return parity[value]
+
+    result = Block()
+    for op in block:
+        # Try to simplify
+        if isinstance(op, Operation) and op.name == "bitand":
+            arg = op.arg(0)
+            mask = op.arg(1)
+            if isinstance(mask, Constant) and mask.value == 1:
+                if parity_of(arg) is EVEN:
+                    op.make_equal_to(Constant(0))
+                    continue
+                elif parity_of(arg) is ODD:
+                    op.make_equal_to(Constant(1))
+                    continue
+        # Emit
+        result.append(op)
+        # Analyze
+        transfer = getattr(Parity, op.name)
+        args = [parity_of(arg.find()) for arg in op.args]
+        parity[op] = transfer(*args)
+    return result
+```
+
+Let's see how it works on our IR:
+
+```python
+v0 = getarg(0)
+v1 = getarg(1)
+v2 = lshift(v0, 1)
+v3 = lshift(v1, 1)
+v4 = add(v2, v3)
+v6 = dummy(0)
+```
+
+Hey, neat! `bitand` disappeared and the argument to `dummy` is now the constant
+`0` because we know the lowest bit.
