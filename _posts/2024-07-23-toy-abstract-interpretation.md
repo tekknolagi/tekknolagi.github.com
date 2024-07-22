@@ -406,6 +406,10 @@ def simplify(block: Block) -> Block:
     return result
 ```
 
+Remember: because we use union-find to rewrite instructions in the optimizer
+(`make_equal_to`), later uses of the same instruction get the new
+optimized version "for free" (`find`).
+
 Let's see how it works on our IR:
 
 ```python
