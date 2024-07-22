@@ -297,3 +297,19 @@ class Parity:
 This means that we will miss some opportunities to optimize, but it's a
 tradeoff that's just part of the game. (We could also add more elements to our
 lattice, but that's a topic for another day.)
+
+Now, if we run our abstract interpretation, we'll collect some interesting
+properties about the program. If we temporarily hack on the internals of
+`bb_to_str`, we can print out parity information alongside the IR operations:
+
+```
+v0:top = getarg(0)
+v1:top = getarg(1)
+v2:even = lshift(v0, 1)
+v3:even = lshift(v1, 1)
+v4:even = add(v2, v3)
+v5:top = dummy(v4)
+```
+
+This is pretty awesome, because we can see that `v4`, the result of the
+addition, is *always* even. Maybe we can do something with that information.
