@@ -245,8 +245,7 @@ v1 = getarg(1)
 v2 = lshift(v0, 1)
 v3 = lshift(v1, 1)
 v4 = add(v2, v3)
-v5 = bitand(v4, 1)
-v6 = dummy(v5)
+v5 = dummy(v4)
 ```
 
 This function (which is admittedly a little contrived) takes two inputs, shifts
@@ -255,10 +254,10 @@ bit of the addition result. It then passes that result into a `dummy` function,
 which you can think of as "return" or "escape".
 
 To do some abstract interpretation on this program, we'll need to implement the
-transfer functions for `lshift`, `add`, and `bitand` (`dummy` will just always
-return `TOP`). We'll start with `add`. Remember that adding two even numbers
-returns an even number, adding two odd numbers returns an even number, and
-mixing even and odd returns an odd number.
+transfer functions for `lshift` and `add` (`dummy` will just always return
+`TOP`). We'll start with `add`. Remember that adding two even numbers returns
+an even number, adding two odd numbers returns an even number, and mixing even
+and odd returns an odd number.
 
 ```python
 class Parity:
@@ -279,3 +278,22 @@ We also need to fill in the other cases where the operands are *top* or
 *bottom*. In this case, they are both "contagious"; if either operand is
 bottom, the result is as well. If neither is bottom but either operand is top,
 the result is as well.
+
+Now let's look at `lshift`. Shifting any number left by a non-zero number of
+bits will always result in an even number, but we need to be careful about the
+zero case! Shifting by zero doesn't change the number at all. Unfortunately,
+since our lattice has no notion of zero, we have to over-approximate here:
+
+```python
+class Parity:
+    # ...
+    def lshift(self, other):
+        # self << other
+        if other is ODD:
+            return EVEN
+        return TOP
+```
+
+This means that we will miss some opportunities to optimize, but it's a
+tradeoff that's just part of the game. (We could also add more elements to our
+lattice, but that's a topic for another day.)
