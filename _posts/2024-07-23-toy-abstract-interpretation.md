@@ -22,6 +22,16 @@ that you are familiar with the little IR, which I have reproduced unchanged in
 
 [toy-ir]: https://gist.github.com/tekknolagi/4425b28d5267e7bae8b0d7ef8fb4a671
 
+Before we begin, I want to note a couple of things:
+
+* The Toy IR is in SSA form, which means that every variable is defined exactly
+  once. This means that abstract properties of each variable are easy to track.
+* The Toy IR represents a linear trace without control flow, meaning we won't
+  talk about meet/join or fixpoints. They only make sense if the IR has a
+  notion of conditional branches or back edges (loops).
+
+Alright, let's get started.
+
 ## Welcome to abstract interpretation
 
 Abstract interpretation means a couple different things to different people.
@@ -137,6 +147,22 @@ Other interesting lattices include:
 * Range analysis (bounds on min and max of a number)
 * Known bits (using a bitvector representation of a number, which bits are
   always 0 or 1)
+
+For this blog post, we are going to do a very limited version of "known bits",
+called *parity*. This analysis only tracks the least significant bit of a
+number, which indicates if it is even or odd.
+
+## Parity
+
+The lattice is pretty similar to the positive/negative lattice:
+
+```
+     top
+  /       \
+even      odd
+  \       /
+    bottom
+```
 
 ```
 v0 = getarg(0)
