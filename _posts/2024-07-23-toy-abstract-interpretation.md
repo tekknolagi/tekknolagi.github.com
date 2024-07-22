@@ -4,6 +4,8 @@ layout: post
 date: 2024-07-23
 ---
 
+<!-- TODO(max): Add framing in intro for what all this stuff is for -->
+
 CF Bolz-Tereick wrote some excellent posts in which they [introduce a small IR
 and optimizer][toy-optimizer] and [extend it with allocation
 removal][toy-allocation-removal]. We also did a live stream together in which
