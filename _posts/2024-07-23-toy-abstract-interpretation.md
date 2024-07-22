@@ -98,6 +98,11 @@ positive or negative. For other operations, we have to define a function that
 takes the abstract values of the operands and returns the abstract value of the
 result.
 
+In order to be correct, transfer functions for operations have to be compatible
+with the behavior of their corresponding concrete implementations. You can
+think of them having an implicit universal quantifier *forall* in front of
+them.
+
 Let's step through the constants at least:
 
 ```
@@ -125,6 +130,12 @@ So let's look at what happens when we add two abstract numbers:
 | **positive** | top | positive | top      | bottom |
 | **negative** | top | top      | negative | bottom |
 | **bottom**   | bottom | bottom | bottom   | bottom |
+
+As an example, let's try to add two numbers `a` and `b`, where `a` is positive
+and `b` is negative. We don't know anything about their values other than their
+signs. They could be `5` and `-3`, where the result is `2`, or they could be
+`1` and `-100`, where the result is `-99`. This is why we can't say anything
+about the result of this operation and have to return *top*.
 
 The short of this table is that we only really know the result of an addition
 if both operands are positive or both operands are negative. Thankfully, in
