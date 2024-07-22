@@ -313,3 +313,27 @@ v5:top = dummy(v4)
 
 This is pretty awesome, because we can see that `v4`, the result of the
 addition, is *always* even. Maybe we can do something with that information.
+
+## Optimization
+
+One way that a program might check if a number is odd is by checking the least
+significant bit. This is a common pattern in C code, where you might see code
+like `y = x & 1`. Let's introduce a `bitand` IR operation that acts like the
+`&` operator in C/Python. Here is an example of use of it in our program:
+
+```
+v0 = getarg(0)
+v1 = getarg(1)
+v2 = lshift(v0, 1)
+v3 = lshift(v1, 1)
+v4 = add(v2, v3)
+v5 = bitand(v4, 1)  # new!
+v6 = dummy(v5)
+```
+
+We'll hold off on implementing the transfer function for it---that's left as an
+exercise for the reader---and instead do something different.
+
+Instead, we'll see if we can optimize operations of the form `bitand(X, 1)`. If
+we statically know the parity as a result of abstract interpretation, we can
+optimize the `bitand` away into a constant `0` or `1`.
