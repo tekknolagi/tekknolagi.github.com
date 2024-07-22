@@ -148,9 +148,9 @@ Other interesting lattices include:
 * Known bits (using a bitvector representation of a number, which bits are
   always 0 or 1)
 
-For this blog post, we are going to do a very limited version of "known bits",
-called *parity*. This analysis only tracks the least significant bit of a
-number, which indicates if it is even or odd.
+For the rest of this blog post, we are going to do a very limited version of
+"known bits", called *parity*. This analysis only tracks the least significant
+bit of a number, which indicates if it is even or odd.
 
 ## Parity
 
@@ -163,6 +163,27 @@ even      odd
   \       /
     bottom
 ```
+
+Let's define a data structure to represent this in Python code:
+
+```python
+class Parity:
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return self.name
+```
+
+And instantiate the members of the lattice:
+
+```python
+TOP = Parity("top")
+EVEN = Parity("even")
+ODD = Parity("odd")
+BOTTOM = Parity("bottom")
+```
+
 
 ```
 v0 = getarg(0)
