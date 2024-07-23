@@ -70,8 +70,9 @@ runs of the program.[^logozzo]
     there's no control flow but you can read about them elsewhere!
 
 Abstract values always represent sets of concrete values. Instead of literally
-storing a set (it would be pretty big since there are a lot of integers), we
-group them into named subsets.[^lattices]
+storing a set (in the world of integers, for example, it would be pretty
+big...there are a lot of integers), we group them into a finite number of named
+subsets.[^lattices]
 
 [^lattices]: These abstract values are arranged in a *lattice*, which is a
     mathematical structure with some properties but the most important ones are
