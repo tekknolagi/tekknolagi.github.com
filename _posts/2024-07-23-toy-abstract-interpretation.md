@@ -22,13 +22,12 @@ that you are familiar with the little IR, which I have reproduced unchanged in
 
 [toy-ir]: https://gist.github.com/tekknolagi/4425b28d5267e7bae8b0d7ef8fb4a671
 
-In CF's words, "[abstract interpretation is] a general framework for
-efficiently computing properties that must be true for all possible executions
-of a program. It's a very widely used approach both in compiler optimizations
-as well as static analysis for finding bugs, can be used for type inference
-etc". I'm writing this post to pave the way for CF's next post on proving
-abstract interpreters correct for range analysis and known bits analysis inside
-PyPy.
+Abstract interpretation is a general framework for efficiently computing
+properties that must be true for all possible executions of a program. It's a
+widely used approach both in compiler optimizations as well as offline static
+analysis for finding bugs. I'm writing this post to pave the way for CF's next
+post on proving abstract interpreters correct for range analysis and known bits
+analysis inside PyPy.
 
 Before we begin, I want to note a couple of things:
 
