@@ -458,8 +458,9 @@ me write the code. It's nice upward spiral.
 
 The two abstract domains we used in this post are simple and not very useful in
 practice but it's possible to get very far using slightly more complicated
-abstract domains. Constant propagation, type inference, range analysis, effect
-inference, liveness, etc
+abstract domains. Common domains include: constant propagation, type inference,
+range analysis, effect inference, liveness, etc. For example, here is a a
+sample lattice for constant propagation:
 
 <figure style="display: block; margin: 0 auto;">
 <!--
@@ -495,6 +496,10 @@ digraph G {
     <object class="svg" type="image/svg+xml" data="/assets/img/complex-lattice.svg">
     </object>
 </figure>
+
+It has multiple levels to indicate more and less precision. For example, you
+might learn that a variable is either `1` or `2` and be able to encode that as
+`positive` instead of just going straight to `top`.
 
 Check out some real-world abstract interpretation in open source projects:
 
