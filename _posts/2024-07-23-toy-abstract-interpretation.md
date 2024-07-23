@@ -85,6 +85,13 @@ v1 = 2
 v2 = add(v0, v1)
 ```
 
+<!-- TODO
+abs
+abs
+add
+abs
+-->
+
 And our abstract domain is "is the number positive" (where "positive" means
 nonnegative, but I wanted to keep the words distinct):
 
@@ -449,5 +456,44 @@ abstract interpretation. Last year, being able to write some code made me more
 comfortable with the math. Now being more comfortable with the math is helping
 me write the code. It's nice upward spiral.
 
-Stay tuned for CF's upcoming post about proving some of the abstract
-interpreters inside PyPy correct with Z3!
+The two abstract domains we used in this post are simple and not very useful in
+practice but it's possible to get very far using slightly more complicated
+abstract domains. Constant propagation, type inference, range analysis, effect
+inference, etc
+
+<figure style="display: block; margin: 0 auto;">
+<!--
+digraph G {
+    rankdir="BT";
+    top [shape=Msquare];
+    bottom [shape=Msquare];
+
+    bottom -> "-inf";
+    bottom -> "-2";
+    bottom -> "-1";
+    bottom -> 0;
+    bottom -> 1;
+    bottom -> 2;
+    bottom -> "+inf";
+
+    "-inf" -> negative;
+    "-2" -> negative;
+    "-1" -> negative;
+    0 -> top;
+    1 -> positive;
+    2 -> positive;
+    "+inf" -> positive;
+
+    negative -> nonzero;
+    positive -> nonzero;
+    nonzero->top;
+
+    {rank=same; "-inf"; "-2"; "-1"; 0; 1; 2; "+inf"}
+    {rank=same; positive; negative;}
+}
+-->
+    <object class="svg" type="image/svg+xml" data="/assets/img/complex-lattice.svg">
+    </object>
+</figure>
+
+TODO link to real abstract interpretation
