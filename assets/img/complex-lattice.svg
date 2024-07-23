@@ -141,27 +141,27 @@
 <path fill="none" stroke="#000000" d="M450.2643,-126.9829C431.3914,-164.3825 386.6786,-252.9877 363.8829,-298.1608"/>
 <polygon fill="#000000" stroke="#000000" points="360.6184,-296.8611 359.2378,-307.3657 366.8677,-300.0148 360.6184,-296.8611"/>
 </g>
-<!-- positive -->
+<!-- nonnegative -->
 <g id="node11" class="node">
-<title>positive</title>
+<title>nonnegative</title>
 <ellipse fill="none" stroke="#000000" cx="315" cy="-181.6718" rx="41.7308" ry="18"/>
-<text text-anchor="middle" x="315" y="-177.4718" font-family="Times,serif" font-size="14.00" fill="#000000">positive</text>
+<text text-anchor="middle" x="315" y="-177.4718" font-family="Times,serif" font-size="14.00" fill="#000000">nonnegative</text>
 </g>
-<!-- 1&#45;&gt;positive -->
+<!-- 1&#45;&gt;nonnegative -->
 <g id="edge12" class="edge">
-<title>1-&gt;positive</title>
+<title>1-&gt;nonnegative</title>
 <path fill="none" stroke="#000000" d="M258.2693,-124.9411C267.7945,-134.4663 280.2569,-146.9287 291.0743,-157.7461"/>
 <polygon fill="#000000" stroke="#000000" points="288.6981,-160.3197 298.2441,-164.9159 293.6479,-155.3699 288.6981,-160.3197"/>
 </g>
-<!-- 2&#45;&gt;positive -->
+<!-- 2&#45;&gt;nonnegative -->
 <g id="edge13" class="edge">
-<title>2-&gt;positive</title>
+<title>2-&gt;nonnegative</title>
 <path fill="none" stroke="#000000" d="M315,-127.8404C315,-135.5408 315,-144.6975 315,-153.2552"/>
 <polygon fill="#000000" stroke="#000000" points="311.5001,-153.2585 315,-163.2585 318.5001,-153.2586 311.5001,-153.2585"/>
 </g>
-<!-- +inf&#45;&gt;positive -->
+<!-- +inf&#45;&gt;nonnegative -->
 <g id="edge14" class="edge">
-<title>+inf-&gt;positive</title>
+<title>+inf-&gt;nonnegative</title>
 <path fill="none" stroke="#000000" d="M371.7307,-124.9411C362.2055,-134.4663 349.7431,-146.9287 338.9257,-157.7461"/>
 <polygon fill="#000000" stroke="#000000" points="336.3521,-155.3699 331.7559,-164.9159 341.3019,-160.3197 336.3521,-155.3699"/>
 </g>
@@ -177,9 +177,9 @@
 <path fill="none" stroke="#000000" d="M166.766,-194.3782C196.7665,-206.3784 241.8958,-224.4301 274.4754,-237.462"/>
 <polygon fill="#000000" stroke="#000000" points="273.5682,-240.8686 284.1528,-241.3329 276.1679,-234.3693 273.5682,-240.8686"/>
 </g>
-<!-- positive&#45;&gt;nonzero -->
+<!-- nonnegative&#45;&gt;nonzero -->
 <g id="edge16" class="edge">
-<title>positive-&gt;nonzero</title>
+<title>nonnegative-&gt;nonzero</title>
 <path fill="none" stroke="#000000" d="M315,-199.8404C315,-207.5408 315,-216.6975 315,-225.2552"/>
 <polygon fill="#000000" stroke="#000000" points="311.5001,-225.2585 315,-235.2585 318.5001,-225.2586 311.5001,-225.2585"/>
 </g>
