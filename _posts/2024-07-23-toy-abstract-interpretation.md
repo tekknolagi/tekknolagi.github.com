@@ -424,7 +424,9 @@ it can't, it copies it into the new block.
 Now let's add in the `bitand` optimization. It's mostly some gross-looking
 pattern matching that checks if the right hand side of a bitwise `and`
 operation is `1` (TODO: the left hand side, too). CF had some neat ideas on how
-to make this more ergonomic, which I might save for later.
+to make this more ergonomic, which I might save for later.[^match-args]
+
+[^match-args]: Something about `__match_args__` and `@property`...
 
 Then, if we know the parity, optimize the `bitand` into a constant.
 
