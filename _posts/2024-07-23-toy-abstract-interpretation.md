@@ -5,6 +5,7 @@ date: 2024-07-23
 ---
 
 <!-- TODO(max): Add framing in intro for what all this stuff is for -->
+<!-- TODO: I would like another paragraph about motivation somewhere at the beginning I think. Why are we interested in abstract interpretation at all? (it's a general framework for efficiently computing properties that must be true for all possible executions of a program. It's a very widely used approach both in compiler optimizations as well as static analysis for finding bugs, can be used for type inference etc) -->
 
 CF Bolz-Tereick wrote some excellent posts in which they [introduce a small IR
 and optimizer][toy-optimizer] and [extend it with allocation
@@ -45,6 +46,12 @@ our favorite power couple, and there's also sketchy hand-wavy stuff like what
 will follow in this post. In the end, all people are trying to do is reason
 about program behavior without running it.
 
+<!--
+'The three main elements of an abstract interpretation are: (i) the abstract elements (“which properties am I interested in?”); (ii) the abstract transfer functions (“which is the abstract semantics of basic statements?”); and (iii) the abstract operations (“how do I combine the abstract elements?”). ' (sentence I just read in the paper I'm currently reading)
+from
+Refining Abstract Interpretation-based Static Analyses with Hints
+-->
+
 In particular, abstract interpretation is an *over-approximation* of the
 behavior of a program. Correctly implemented abstract interpreters never lie,
 but they might be a little bit pessimistic. This is because instead of using
@@ -52,6 +59,10 @@ real values and running the program---which would produce a concrete result and
 some real-world behavior---we "run" the program with a parallel universe of
 *abstract* values.
 
+<!-- TODO Maybe you could mention that abstract values always represent sets of
+concrete values? -->
+
+<!-- TODO maybe remove lattice/meet because it's unused -->
 These abstract values are arranged in a *lattice*, which is a mathematical
 structure with some properties but the most important ones are that it has a
 top, a bottom, a partial order, a meet operation, and values can only move in
@@ -66,6 +77,8 @@ Using abstract values from a lattice promises two things:
 Let's learn a little about abstract interpretation with an example program and
 example abstract domain. Here's the example program:
 
+<!-- TODO maybe use abs(top)=positive in addition because constants are not
+satisfying -->
 ```python
 v0 = 1
 v1 = 2
@@ -223,6 +236,8 @@ For every operation, we compute the abstract value---the parity---of the
 arguments and then call the corresponding method on `Parity` to get the
 abstract result.
 
+<!-- TODO maybe learn more about different IRs and how they do constants.
+apparently pypy/llvm are free-floating; cinder is not -->
 We need to special case `Constant`s due to a quirk of how the Toy IR is
 constructed: the constants don't appear in the instruction stream and instead
 are free-floating.
