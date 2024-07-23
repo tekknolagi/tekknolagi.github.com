@@ -509,16 +509,16 @@ digraph G {
     "-2" -> negative;
     "-1" -> negative;
     0 -> top;
-    1 -> positive;
-    2 -> positive;
-    "+inf" -> positive;
+    1 -> nonnegative;
+    2 -> nonnegative;
+    "+inf" -> nonnegative;
 
     negative -> nonzero;
-    positive -> nonzero;
+    nonnegative -> nonzero;
     nonzero->top;
 
     {rank=same; "-inf"; "-2"; "-1"; 0; 1; 2; "+inf"}
-    {rank=same; positive; negative;}
+    {rank=same; nonnegative; negative;}
 }
 -->
     <object class="svg" type="image/svg+xml" data="/assets/img/complex-lattice.svg">
@@ -527,7 +527,7 @@ digraph G {
 
 It has multiple levels to indicate more and less precision. For example, you
 might learn that a variable is either `1` or `2` and be able to encode that as
-`positive` instead of just going straight to `top`.
+`nonnegative` instead of just going straight to `top`.
 
 Check out some real-world abstract interpretation in open source projects:
 
