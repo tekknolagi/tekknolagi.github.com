@@ -77,20 +77,11 @@ Using abstract values from a lattice promises two things:
 Let's learn a little about abstract interpretation with an example program and
 example abstract domain. Here's the example program:
 
-<!-- TODO maybe use abs(top)=positive in addition because constants are not
-satisfying -->
 ```python
 v0 = 1
 v1 = 2
 v2 = add(v0, v1)
 ```
-
-<!-- TODO
-abs
-abs
-add
-abs
--->
 
 And our abstract domain is "is the number positive" (where "positive" means
 nonnegative, but I wanted to keep the words distinct):
@@ -176,6 +167,32 @@ v2:positive = add(v0, v1)
 
 This may not seem useful in isolation, but analyzing more complex programs even
 with this simple domain may be able to remove checks such as `if (v2 < 0) { ... }`.
+
+Let's take a look at another example using an sample `absval` (absolute value)
+IR operation:
+
+```python
+v0 = getarg(0)
+v1 = getarg(1)
+v2 = absval(v0)
+v3 = absval(v1)
+v4 = add(v2, v3)
+v5 = absval(v4)
+```
+
+Even though we have no constant/concrete values, we can still learn something
+about the states of values throughout the program. Since we know that `absval`
+always returns a positive number, we learn that `v2`, `v3`, and `v4` are all
+positive. This means that we can optimize out the `absval` operation on `v5`:
+
+```python
+v0:top = getarg(0)
+v1:top = getarg(1)
+v2:positive = absval(v0)
+v3:positive = absval(v1)
+v4:positive = add(v2, v3)
+v5:positive = v4
+```
 
 Other interesting lattices include:
 
