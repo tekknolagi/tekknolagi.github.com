@@ -46,33 +46,41 @@ our favorite power couple, and there's also sketchy hand-wavy stuff like what
 will follow in this post. In the end, all people are trying to do is reason
 about program behavior without running it.
 
-<!--
-'The three main elements of an abstract interpretation are: (i) the abstract elements (“which properties am I interested in?”); (ii) the abstract transfer functions (“which is the abstract semantics of basic statements?”); and (iii) the abstract operations (“how do I combine the abstract elements?”). ' (sentence I just read in the paper I'm currently reading)
-from
-Refining Abstract Interpretation-based Static Analyses with Hints
--->
-
 In particular, abstract interpretation is an *over-approximation* of the
 behavior of a program. Correctly implemented abstract interpreters never lie,
 but they might be a little bit pessimistic. This is because instead of using
 real values and running the program---which would produce a concrete result and
 some real-world behavior---we "run" the program with a parallel universe of
-*abstract* values.
+*abstract* values. This abstract run gives us information about all possible
+runs of the program.[^logozzo]
 
-<!-- TODO Maybe you could mention that abstract values always represent sets of
-concrete values? -->
+[^logozzo]: In the words of abstract interpretation researchers Vincent Laviron
+    and Francesco Logozzo in their paper *Refining Abstract
+    Interpretation-based Static Analyses with Hints* (APLAS 2009):
 
-<!-- TODO maybe remove lattice/meet because it's unused -->
-These abstract values are arranged in a *lattice*, which is a mathematical
-structure with some properties but the most important ones are that it has a
-top, a bottom, a partial order, a meet operation, and values can only move in
-one direction on the lattice.
+    > The three main elements of an abstract interpretation are: (i) the
+    > abstract elements ("which properties am I interested in?"); (ii) the
+    > abstract transfer functions ("which is the abstract semantics of basic
+    > statements?"); and (iii) the abstract operations ("how do I combine the
+    > abstract elements?").
 
-Using abstract values from a lattice promises two things:
+    We don't have any of these "abstract operations" in this post because
+    there's no control flow but you can read about them elsewhere!
 
-* The analysis will terminate
-* The analysis will be correct for *any* run of the program, not just one
-  sample run
+Abstract values always represent sets of concrete values. Instead of literally
+storing a set (it would be pretty big since there are a lot of integers), we
+group them into named subsets.[^lattices]
+
+[^lattices]: These abstract values are arranged in a *lattice*, which is a
+    mathematical structure with some properties but the most important ones are
+    that it has a top, a bottom, a partial order, a meet operation, and values
+    can only move in one direction on the lattice.
+
+    Using abstract values from a lattice promises two things:
+
+    * The analysis will terminate
+    * The analysis will be correct for *any* run of the program, not just one
+      sample run
 
 Let's learn a little about abstract interpretation with an example program and
 example abstract domain. Here's the example program:
