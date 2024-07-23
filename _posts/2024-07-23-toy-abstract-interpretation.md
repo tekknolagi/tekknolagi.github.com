@@ -26,7 +26,7 @@ In CF's words, "[abstract interpretation is] a general framework for
 efficiently computing properties that must be true for all possible executions
 of a program. It's a very widely used approach both in compiler optimizations
 as well as static analysis for finding bugs, can be used for type inference
-etc". I'm writing the post to pave the way for CF's next post on proving
+etc". I'm writing this post to pave the way for CF's next post on proving
 abstract interpreters correct for range analysis and known bits analysis inside
 PyPy.
 
@@ -537,3 +537,8 @@ Check out some real-world abstract interpretation in open source projects:
 * [Range analysis in Linux eBPF](https://github.com/torvalds/linux/blob/28bbe4ea686a023929d907cc168430b61094811c/kernel/bpf/verifier.c#L13335)
 
 If you have some readable examples, please share them so I can add.
+
+## Acknowledgements
+
+Thank you to [CF Bolz-Tereick](https://cfbolz.de/) for the toy optimizer and
+helping edit this post!
