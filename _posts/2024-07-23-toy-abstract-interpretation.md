@@ -459,7 +459,7 @@ me write the code. It's nice upward spiral.
 The two abstract domains we used in this post are simple and not very useful in
 practice but it's possible to get very far using slightly more complicated
 abstract domains. Constant propagation, type inference, range analysis, effect
-inference, etc
+inference, liveness, etc
 
 <figure style="display: block; margin: 0 auto;">
 <!--
@@ -496,4 +496,12 @@ digraph G {
     </object>
 </figure>
 
-TODO link to real abstract interpretation
+Check out some real-world abstract interpretation in open source projects:
+
+* [Known bits in LLVM](https://github.com/llvm/llvm-project/blob/main/llvm/lib/Support/KnownBits.cpp)
+* [Constant range in LLVM](https://github.com/llvm/llvm-project/blob/main/llvm/lib/IR/ConstantRange.cpp)
+  * But I am told that the ranges don't form a lattice
+* [Tristate numbers for known bits in Linux eBPF](https://github.com/torvalds/linux/blob/master/kernel/bpf/tnum.c)
+* [Range analysis in Linux eBPF](https://github.com/torvalds/linux/blob/28bbe4ea686a023929d907cc168430b61094811c/kernel/bpf/verifier.c#L13335)
+
+If you have some readable examples, please share them so I can add.
