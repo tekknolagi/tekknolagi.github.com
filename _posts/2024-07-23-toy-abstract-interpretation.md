@@ -4,9 +4,6 @@ layout: post
 date: 2024-07-23
 ---
 
-<!-- TODO(max): Add framing in intro for what all this stuff is for -->
-<!-- TODO: I would like another paragraph about motivation somewhere at the beginning I think. Why are we interested in abstract interpretation at all? (it's a general framework for efficiently computing properties that must be true for all possible executions of a program. It's a very widely used approach both in compiler optimizations as well as static analysis for finding bugs, can be used for type inference etc) -->
-
 CF Bolz-Tereick wrote some excellent posts in which they [introduce a small IR
 and optimizer][toy-optimizer] and [extend it with allocation
 removal][toy-allocation-removal]. We also did a live stream together in which
@@ -25,8 +22,11 @@ that you are familiar with the little IR, which I have reproduced unchanged in
 
 [toy-ir]: https://gist.github.com/tekknolagi/4425b28d5267e7bae8b0d7ef8fb4a671
 
-I'm writing the post to pave the way for CF's next post on proving abstract
-interpreters correct for range analysis and known bits analysis inside PyPy.
+Abstract interpretation is a framework for efficiently computing properties
+true for all possible executions of a program. It's a very widely used approach
+both in compiler optimizations as well as offline static analysis. I'm writing
+the post to pave the way for CF's next post on proving abstract interpreters
+correct for range analysis and known bits analysis inside PyPy.
 
 Before we begin, I want to note a couple of things:
 
