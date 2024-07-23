@@ -534,9 +534,11 @@ Check out some real-world abstract interpretation in open source projects:
 
 * [Known bits in LLVM](https://github.com/llvm/llvm-project/blob/main/llvm/lib/Support/KnownBits.cpp)
 * [Constant range in LLVM](https://github.com/llvm/llvm-project/blob/main/llvm/lib/IR/ConstantRange.cpp)
-  * But I am told that the ranges don't form a lattice
+  * But I am told that the ranges don't form a lattice (see [Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss](https://dl.acm.org/doi/10.1145/2651360))
 * [Tristate numbers for known bits in Linux eBPF](https://github.com/torvalds/linux/blob/master/kernel/bpf/tnum.c)
 * [Range analysis in Linux eBPF](https://github.com/torvalds/linux/blob/28bbe4ea686a023929d907cc168430b61094811c/kernel/bpf/verifier.c#L13335)
+* [GDB prologue analysis](https://github.com/bminor/binutils-gdb/blob/master/gdb/prologue-value.c)
+  of assembly to understand the stack and find frame pointers ([some docs](https://sourceware.org/gdb/wiki/Internals/Prologue%20Analysis))
 
 If you have some readable examples, please share them so I can add.
 
