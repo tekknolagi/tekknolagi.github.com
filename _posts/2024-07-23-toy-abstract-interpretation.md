@@ -425,7 +425,9 @@ pattern matching that checks if the right hand side of a bitwise `and`
 operation is `1` (TODO: the left hand side, too). CF had some neat ideas on how
 to make this more ergonomic, which I might save for later.[^match-args]
 
-[^match-args]: Something about `__match_args__` and `@property`...
+[^match-args]: Something about `__match_args__` and `@property`... which
+    (update) I think I got working in [this
+    commit](https://github.com/tekknolagi/toy/commit/1dd285af2a8f64863c350f32925b1ccd0a17c918).
 
 Then, if we know the parity, optimize the `bitand` into a constant.
 
@@ -479,6 +481,9 @@ Hey, neat! `bitand` disappeared and the argument to `dummy` is now the constant
 `0` because we know the lowest bit.
 
 ## Wrapping up
+
+Check out the code in the [toy
+repository](https://github.com/tekknolagi/toy/tree/90e1a48a8ef7f8ac42b77f83d04278ed3161e248).
 
 Hopefully you have gained a little bit of an intuitive understanding of
 abstract interpretation. Last year, being able to write some code made me more
