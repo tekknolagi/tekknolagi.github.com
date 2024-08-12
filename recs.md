@@ -157,6 +157,7 @@ const filters = document.querySelector("#filters");
 const reset = document.createElement("a");
 reset.setAttribute("href", "#");
 reset.append(document.createTextNode("reset"));
+reset.setAttribute("style", "font-weight: bold;");
 reset.onclick = () => {
     document.querySelectorAll('li, div').forEach(elt => elt.style='')
 };
