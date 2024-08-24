@@ -170,7 +170,6 @@ def pretty(expr: Expr, prec: int = 0) -> str:
 To handle right-associativity for, say, exponentiation, we do the opposite:
 
 ```python
-# Ignore right-associativity for a second
 def pretty(expr: Expr, prec: int = 0) -> str:
     match expr:
         # ...
