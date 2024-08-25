@@ -142,6 +142,10 @@ def pretty(expr: Expr, prec: int = 0) -> str:
             return result
 ```
 
+This means all additions will be "flattened" like `1+2+3` and all
+multiplications will be as well. But it will still appropriately parenthesize
+mixtures of the two, like differentiating `1+2*3` and `(1+2)*3`.
+
 This falls apart when order matters, like with subtraction and division. Those
 associate to the left:
 
@@ -152,6 +156,12 @@ associate to the left:
 -4
 >>> 1-(2-3)
 2
+>>> 1/2/3
+0.16666666666666666
+>>> (1/2)/3
+0.16666666666666666
+>>> 1/(2/3)
+1.5
 >>>
 ```
 
@@ -171,6 +181,11 @@ def pretty(expr: Expr, prec: int = 0) -> str:
                 return "(" + result + ")"
             return result
 ```
+
+This means all left-nesting subtractions will be "flattened" like
+`Sub(Sub(Const(1), Const(2)), Const(3))` will become `1-2-3` (and same with
+division), but it will add parentheses with right-nesting and also mixed
+precedence.
 
 To handle right-associativity for, say, exponentiation, we do the opposite:
 
