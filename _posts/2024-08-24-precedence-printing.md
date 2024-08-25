@@ -4,6 +4,11 @@ layout: post
 date: 2024-08-24
 ---
 
+*This post follows from a conversation with [Chris
+Gregory](https://www.chrisgregory.me/) about parsing and pretty printing. We
+might integrate some or all of it into
+[Scrapscript](https://github.com/tekknolagi/scrapscript)!*
+
 I have some math expressions that I want to print infix, like
 `Add(Const(1), Mul(Const(2), Const(3)))`.
 
