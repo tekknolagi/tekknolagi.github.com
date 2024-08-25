@@ -5,7 +5,7 @@ RUN mkdir /site
 COPY . /site
 WORKDIR /site
 RUN bundle
-RUN bundle exec jekyll build
+RUN bundle exec jekyll build --future
 
 # Set things up
 FROM alpine:latest as build_server
