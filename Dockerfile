@@ -24,4 +24,4 @@ RUN bin/ape.elf bin/assimilate bin/redbean
 FROM scratch as web
 COPY --from=build_server /cosmo/bin/redbean .
 EXPOSE 8000
-ENTRYPOINT ["./redbean"]
+ENTRYPOINT ["./redbean", "-l", "0.0.0.0", "-p", "8000"]
