@@ -1,10 +1,15 @@
-FROM ruby:3-alpine as build_site
+FROM ruby:3-alpine as build_env
 RUN apk add --no-cache build-base
 RUN apk add --no-cache python3
 RUN mkdir /site
-COPY . /site
+COPY Gemfile /site
+COPY Gemfile.lock /site
+COPY .ruby-version /site
 WORKDIR /site
 RUN bundle
+
+FROM build_env as build_site
+COPY . /site
 RUN bundle exec jekyll build --future
 
 # Set things up
