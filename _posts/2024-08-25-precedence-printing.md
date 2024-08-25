@@ -71,8 +71,8 @@ are unnecessary. We know that `*` has higher precedence---binds tighter---than
 
 I looked for some articles on precedence-aware printing and really only found:
 
-* [this StackOverflow answer][first-stackoverflow]
-* [this StackOverflow answer][second-stackoverflow]
+* [this StackOverflow answer][first-stackoverflow] ("Pretty Printing AST with Minimal Parentheses")
+* [this StackOverflow answer][second-stackoverflow] ("Minimize parenthesis when printing expression")
 
 [first-stackoverflow]: https://stackoverflow.com/questions/13708837/pretty-printing-ast-with-minimal-parentheses/16685965#16685965
 [second-stackoverflow]: https://stackoverflow.com/questions/61159436/minimize-parenthesis-when-printing-expression/61160682#61160682
