@@ -1,7 +1,7 @@
 ---
 title: Precedence-aware pretty printing
 layout: post
-date: 2024-08-24
+date: 2024-08-25
 ---
 
 *This post follows from a conversation with [Chris
