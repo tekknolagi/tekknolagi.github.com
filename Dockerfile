@@ -5,7 +5,7 @@ RUN mkdir /site
 COPY . /site
 WORKDIR /site
 RUN bundle
-RUN bundle exec jekyll build
+RUN bundle exec jekyll build --future
 
 # Set things up
 FROM alpine:latest as build_server
@@ -21,7 +21,7 @@ WORKDIR ..
 RUN bin/ape.elf bin/assimilate bin/redbean
 
 # Set up the container
-FROM scratch
+FROM scratch as web
 COPY --from=build_server /cosmo/bin/redbean .
 EXPOSE 8000
-ENTRYPOINT ["./redbean"]
+ENTRYPOINT ["./redbean", "-l", "0.0.0.0", "-p", "8000"]
