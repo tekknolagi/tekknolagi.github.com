@@ -13,17 +13,27 @@ COPY . /site
 RUN bundle exec jekyll build --future
 
 # Set things up
-FROM alpine:latest as build_server
+FROM alpine:latest as redbean
+RUN apk add --no-cache zip
+ARG VER=3.0.0
+RUN wget https://redbean.dev/redbean-$VER.com -O redbean.com
+RUN chmod +x redbean.com
+RUN sh ./redbean.com --assimilate
+
+
+# Set things up
+FROM alpine:latest as redbean
 ARG VER=3.0.2
 ARG COSMO=cosmos-$VER.zip
 RUN wget https://github.com/jart/cosmopolitan/releases/download/$VER/$COSMO
 WORKDIR cosmo
-COPY --from=build_site /site/_site/. _site
 RUN unzip ../$COSMO bin/ape.elf bin/assimilate bin/zip bin/redbean
+RUN bin/ape.elf bin/assimilate bin/redbean
+
+FROM redbean as build_server
+COPY --from=build_site /site/_site/. _site
 WORKDIR _site
 RUN sh ../bin/zip -A -r ../bin/redbean *
-WORKDIR ..
-RUN bin/ape.elf bin/assimilate bin/redbean
 
 # Set up the container
 FROM scratch as web
