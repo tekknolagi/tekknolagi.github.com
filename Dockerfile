@@ -8,20 +8,6 @@ COPY .ruby-version /site
 WORKDIR /site
 RUN bundle
 
-FROM build_env as build_site
-COPY . /site
-RUN bundle exec jekyll build --future
-
-# Set things up
-FROM alpine:latest as redbean
-RUN apk add --no-cache zip
-ARG VER=3.0.0
-RUN wget https://redbean.dev/redbean-$VER.com -O redbean.com
-RUN chmod +x redbean.com
-RUN sh ./redbean.com --assimilate
-
-
-# Set things up
 FROM alpine:latest as redbean
 ARG VER=3.0.2
 ARG COSMO=cosmos-$VER.zip
@@ -30,12 +16,15 @@ WORKDIR cosmo
 RUN unzip ../$COSMO bin/ape.elf bin/assimilate bin/zip bin/redbean
 RUN bin/ape.elf bin/assimilate bin/redbean
 
+FROM build_env as build_site
+COPY . /site
+RUN bundle exec jekyll build --future
+
 FROM redbean as build_server
 COPY --from=build_site /site/_site/. _site
 WORKDIR _site
 RUN sh ../bin/zip -A -r ../bin/redbean *
 
-# Set up the container
 FROM scratch as web
 COPY --from=build_server /cosmo/bin/redbean .
 EXPOSE 8000
