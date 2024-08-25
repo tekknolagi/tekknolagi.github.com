@@ -21,7 +21,7 @@ WORKDIR ..
 RUN bin/ape.elf bin/assimilate bin/redbean
 
 # Set up the container
-FROM scratch
+FROM scratch as web
 COPY --from=build_server /cosmo/bin/redbean .
 EXPOSE 8000
 ENTRYPOINT ["./redbean"]

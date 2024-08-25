@@ -16,4 +16,3 @@ primary_region = "ewr"
   cpu_kind = "shared"
   cpus = 1
   memory_mb = 256
-
