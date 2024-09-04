@@ -255,3 +255,22 @@ for op in ops:
 # v1 = {Const<2>}
 # v2 = {Const<3>, Add v0 v1}
 ```
+
+That solves one problem: at any point, we can enumerate the equivalence classes
+stored in the union-find structure. But, like all data structures, the
+union-find representation we've chosen has a trade-off: fast to rewrite, slow
+to enumerate. We'll accept that for now.
+
+Now that we have the equivalence classes, we would like a function to match
+..... TODO
+
+## Matching
+
+TODO
+
+## Extracting
+
+## Further reading
+
+* PyPy eager union-find
+* egg(log)
