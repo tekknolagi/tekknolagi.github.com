@@ -87,3 +87,13 @@ A constant-folding pass can easily determine that `v2` is equivalent to `Const
 constant might unlock some further optimization opportunities elsewhere and
 there's probably no world in which we care to keep the addition representation
 of `v2` around.
+
+But not all compiler rewrites are so straightforward and unidirectional.
+Consider the expression `(a * 2) / 2`, which is the example from the [e-graphs
+good](https://egraphs-good.github.io/) website and paper. A strength reduction
+pass might rewrite `a * 2` to `a << 1` because left shifts are often faster
+than multiplications. That's great; we got a small speedup.
+
+Unfortunately, it stops another hypothetical pass from recognizing that
+expressions of the form `(a * b) / b` are equivalent to `a * (b / b)` and
+therefore equivalent to `a`.
