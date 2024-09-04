@@ -175,7 +175,11 @@ def optimize(ops: list[Expr]):
 ```
 
 Let's give it a go and see what it does to our initial smaller IR snippet that
-added two constants:
+added two constants[^printing-niceties]:
+
+[^printing-niceties]: I sneakily added some printing niceties to the `Expr`
+    class that I didn't show here. They're not important for the point I'm
+    making and appear in the full code listing.
 
 ```python
 ops = [
@@ -200,15 +204,54 @@ for op in ops:
 # v2 = Const<3>
 ```
 
+Alright, it works. We can fold `1+2` to `3`. Hurrah. But the point of this
+section of the post is to discover the equivalence classes implicitly
+constructed by the union-find structure. Let's write a function to do that.
+
+To build such a function, we'll need to iterate over all operations created. I
+chose to explicitly keep track of every operation in a list, but you could also
+write a function to walk the `forwarded` chains of all reachable operations.
+
 ```python
-def discover_eclasses(ops: list[Expr]) -> dict[int, set[Expr]]:
-    eclasses = {}
+every_op = []
+
+@dataclass
+class Expr:
+    # ...
+    def __post_init__(self) -> None:
+        every_op.append(self)
+
+# ...
+
+def discover_eclasses(ops: list[Expr]) -> dict[Expr, set[Expr]]:
+    eclasses: dict[Expr, set[Expr]] = {}
     for op in ops:
         found = op.find()
         if found not in eclasses:
+            # Key by the representative
             eclasses[found] = set()
         eclasses[found].add(op)
         if op is not found:
+            # Alias the entries so that looking up non-representatives also
+            # finds equivalent operations
             eclasses[op] = eclasses[found]
     return eclasses
+
+# ...
+print("ECLASSES:")
+eclasses = discover_eclasses(every_op.copy())
+for op in ops:
+    print(f"v{op.id} =", eclasses[op])
+# BEFORE:
+# v0 = Const<1>
+# v1 = Const<2>
+# v2 = Add v0 v1
+# AFTER:
+# v0 = Const<1>
+# v1 = Const<2>
+# v2 = Const<3>
+# ECLASSES:
+# v0 = {Const<1>}
+# v1 = {Const<2>}
+# v2 = {Const<3>, Add v0 v1}
 ```
