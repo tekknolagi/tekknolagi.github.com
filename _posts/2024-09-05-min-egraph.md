@@ -392,6 +392,24 @@ v3 = Var<a>
 where `v3` corresponds to our original big expression. Congratulations, you've
 successfully implemented a time-traveling compiler pass!
 
+Unfortunately, it's very specific: our match conditions are hard-coded into the
+loop structure and the loop structure (how many levels of nesting) is
+hard-coded into the function. This is the sort of thing that our programming
+giants invented SQL to solve[^egg-relational].
+
+[^egg-relational]: This is a bit of a head-nod to the good folks working on egg
+    and egglog, a team comprised of compilers people and database people. They
+    have realized that the e-graph and the relational database are very similar
+    and are building tools that do a neat domain crossover. Read [the
+    paper](https://dl.acm.org/doi/10.1145/3591239) (open access) if you are
+    interested in learning more!
+
+We don't have time or brainpower to implement a full query language, so in this
+post will implement a small pattern-matching DSL that kind of vaguely
+maybe-if-you-squint looks like something relational.
+
+TODO: a matching DSL
+
 ## Extracting
 
 ## Further reading
