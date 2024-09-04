@@ -301,8 +301,9 @@ to enumerate. We'll accept that for now.
 
 TODO parallel worlds of graphs
 
-Now that we have the equivalence classes, we would like a function to match
-..... TODO
+This enumeration feature on its own does not comprise one of the APIs of an
+e-graph. To graft on e-matching to union-find, we'll need to do one more step:
+a search. Some would call it `match`.
 
 ## Matching
 
