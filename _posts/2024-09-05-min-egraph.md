@@ -256,17 +256,140 @@ for op in ops:
 # v2 = {Const<3>, Add v0 v1}
 ```
 
+Let's go back to our more complicated IR example from the egg website, this
+time expressed in our little IR:
+
+```python
+ops = [
+    a := Var("a"),
+    b := Const(2),
+    c := Mul(a, b),
+    d := Div(c, b),
+]
+```
+
+If we run our optimizer on it right now, we'll eagerly rewrite the
+multiplication into a left-shift, but then rediscover the multiply in the
+equivalence classes (now I've added little `*` to indicate the union-find
+representatives of each equivalence class):
+
+```
+BEFORE:
+v0 = Var<a>
+v1 = Const<2>
+v2 = Mul v0 v1
+v3 = Div v2 v1
+AFTER:
+v0 = Var<a>
+v1 = Const<2>
+v2 = LeftShift v0 v5
+v3 = Div v6 v1
+ECLASSES:
+v0 = * {Var<a>}
+v1 = * {Const<2>}
+v2 =   {LeftShift v0 v5, Add v0 v0, Mul v0 v1}
+v3 = * {Div v6 v1}
+v4 =   {LeftShift v0 v5, Add v0 v0, Mul v0 v1}
+v5 = * {Const<1>}
+v6 = * {LeftShift v0 v5, Add v0 v0, Mul v0 v1}
+```
+
 That solves one problem: at any point, we can enumerate the equivalence classes
 stored in the union-find structure. But, like all data structures, the
 union-find representation we've chosen has a trade-off: fast to rewrite, slow
 to enumerate. We'll accept that for now.
+
+TODO parallel worlds of graphs
 
 Now that we have the equivalence classes, we would like a function to match
 ..... TODO
 
 ## Matching
 
-TODO
+So we can rediscover the multiplication even after reducing it to a left shift.
+That's nice. But how can we do pattern matching on this data representation?
+
+Let's return to `(a * b) / b`. This corresponds to the IR-land Python
+expression of `Div(Mul(a, b), b)` for any expressions `a` and `b` (and keeping
+the `b`s equal, which is not the default in a Python `match` pattern).
+
+For a given operation, we can see if there is a `Div` in its equivalence class
+by looping over the entire equivalence class:
+
+```python
+def optimize_match(op: Expr, eclasses: dict[Expr, set[Expr]]):
+    # Find cases of the form a / b
+    for e0 in eclasses[op]:
+        if isinstance(e0, Div):
+            # ...
+```
+
+That's all well and good, but how do we find if it's a `Div` of a `Mul`? We
+loop again!
+
+```python
+def optimize_match(op: Expr, eclasses: dict[Expr, set[Expr]]):
+    # Find cases of the form (a * b) / c
+    for e0 in eclasses[op]:
+        if isinstance(e0, Div):
+            div_left = e0.left
+            div_right = e0.right
+            for e1 in eclasses[div_left]:
+                if isinstance(e1, Mul):
+                    # ...
+```
+
+Note how we don't need to call `.find()` on anything because we've already
+aliased the set in the equivalence classes dictionary for convenience.
+
+And how do we hold the `b`s equal? Well, we can check if they match:
+
+```python
+def optimize_match(op: Expr, eclasses: dict[Expr, set[Expr]]):
+    # Find cases of the form (a * b) / b
+    for e0 in eclasses[op]:
+        if isinstance(e0, Div):
+            div_left = e0.left
+            div_right = e0.right
+            for e1 in eclasses[div_left]:
+                if isinstance(e1, Mul):
+                    mul_left = e1.left
+                    mul_right = e1.right
+                    if mul_right == div_right:
+                        # ...
+```
+
+And then we can rewrite the `Div` to the `Mul`'s left child:
+
+```python
+def optimize_match(op: Expr, eclasses: dict[Expr, set[Expr]]):
+    # Find cases of the form (a * b) / b and rewrite to a
+    for e0 in eclasses[op]:
+        if isinstance(e0, Div):
+            div_left = e0.left
+            div_right = e0.right
+            for e1 in eclasses[div_left]:
+                if isinstance(e1, Mul):
+                    mul_left = e1.left
+                    mul_right = e1.right
+                    if mul_right == div_right:
+                        op.make_equal_to(mul_left)
+                        return
+```
+
+If we run this optimization function for every node in our basic block, we end
+up with:
+
+```
+AFTER:
+v0 = Var<a>
+v1 = Const<2>
+v2 = LeftShift v0 v5
+v3 = Var<a>
+```
+
+where `v3` corresponds to our original big expression. Congratulations, you've
+successfully implemented a time-traveling compiler pass!
 
 ## Extracting
 
