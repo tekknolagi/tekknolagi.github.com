@@ -11,7 +11,30 @@ Zucker](https://www.philipzucker.com/), and various e-graphs people.*
 I love union-find. It enables fast, easy, in-place IR rewrites for compiler
 authors. Its API has two main functions: `union` and `find`. The minimal
 implementation is about 15 lines of code and is embeddable directly in your IR.
-See below an adaptation of CF's implementation from the toy optimizer series:
+See below an adaptation of CF's implementation from the toy optimizer
+series[^also-phil]:
+
+[^also-phil]: See also this tidy little union-find implementation by Phil from
+    [his blog post](https://www.philipzucker.com/compile_constraints/):
+
+    ```python
+    uf = {}
+    def find(x):
+      while x in uf:
+        x = uf[x]
+      return x
+
+    def union(x,y):
+      x = find(x)
+      y = find(y)
+      if x != y:
+        uf[x] = y
+      return y
+    ```
+
+    I really enjoy that it reads like a margin note. The only downside, IMO,
+    is that it requires the IR operations to be both hashable and comparable
+    (`__hash__` and `__eq__`).
 
 ```python
 from __future__ import annotations
