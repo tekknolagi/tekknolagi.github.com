@@ -429,6 +429,13 @@ with a cost function that takes into account the entire program?
 
 ## Extracting
 
+The final piece of the e-graph API is an `extract` function. This function
+finds the "lowest cost" or "most optimal" version of the program in the
+e-graph.
+
+This isn't entirely built-in to e-graph implementations; usually they allow
+library users to provide at least their own cost functions.
+
 ## Further reading
 
 * PyPy eager union-find
