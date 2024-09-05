@@ -410,6 +410,23 @@ maybe-if-you-squint looks like something relational.
 
 TODO: a matching DSL
 
+One thing to note: after every write with `make_equal_to`, we need to
+rediscover the eclasses. I think this is what the egg people call a "rebuild"
+and part of what made their paper interesting was finding a way to do this less
+often or faster.
+
+Now what we have is a bunch of parallel worlds for our basic block where each
+operation is actually a set of equivalent operations. But which element of the
+set should we pick? One approach, the one we were taking before, is to just
+pick the representative as the desired final form of each operation. This is a
+very union-find style approach. It's straightforward, it's fast, and it works
+well in a situation where we only ever do strength reduction type rewrites.
+
+But e-graphs popped into the world because people wanted to explore a bigger
+state space. It's possible that the representative of an equivalence class is
+locally optimal but not globally optimal. What if we want to find a program
+with a cost function that takes into account the entire program?
+
 ## Extracting
 
 ## Further reading
