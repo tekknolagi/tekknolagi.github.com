@@ -36,7 +36,7 @@ That's probably an understatement. Here are some of my favorite projects:
   finding, copying, and pasting that shrug emoji. If you like it, you are
   welcome [to help keep it running](https://github.com/sponsors/tekknolagi)
 
-and some more [older projects](/older-projects/).
+and some [older projects](/older-projects/).
 
 I like making things [just for fun](https://justforfunnoreally.dev/).
 
