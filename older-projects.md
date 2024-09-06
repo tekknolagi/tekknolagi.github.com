@@ -18,3 +18,6 @@ layout: page
 * A [distributed ray tracer](https://github.com/TheiaRT/tracer) (2015) that I
   made with friends for a concurrent programming course, with the
   [final writeup [PDF]](/resources/comp50-writeup.pdf)
+* An unexpectedly popular [virtual machine](https://github.com/tekknolagi/carp)
+  (2014) that got some Hacker News attention, along with its newer
+  and much better designed [cousin](https://github.com/RabbitVM/rabbit) (2016)
