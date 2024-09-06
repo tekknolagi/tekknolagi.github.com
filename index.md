@@ -21,6 +21,8 @@ happy to talk about education, programming languages, cycling, and more.
 
 That's probably an understatement. Here are some of my favorite projects:
 
+* The [National Malware Association](https://nationalmalware.org/), an
+  organization focused on security and education
 * [scrapscript.py](https://github.com/tekknolagi/scrapscript), an
   implementation of the Scrapscript language. Check out the [blog](/blog/scrapscript/)
   [posts](/blog/scrapscript-baseline/) too
@@ -33,19 +35,8 @@ That's probably an understatement. Here are some of my favorite projects:
 * [shru.gg](https://shru.gg), a website built just so I would have to stop
   finding, copying, and pasting that shrug emoji. If you like it, you are
   welcome [to help keep it running](https://github.com/sponsors/tekknolagi)
-* An [Lisp to x86-64 compiler](https://github.com/tekknolagi/ghuloum) I wrote
-  in C and accompanying [blog posts](/blog/lisp/)
-* The [term paper](/dat-paper/) I wrote for COMP 117 IDS
-  analyzing Dat and the Beaker browser
-* [Reason](https://reasonml.github.io/), a compiler front-end and toolchain for
-  OCaml
-* The [final project spec [PDF]](/resources/comp15-homework6.pdf)
-  and reference implementation (2016) and
-  [independent project spec [PDF]](/resources/comp15-independent.pdf)
-  (2016) for the data structures course I TAed
-* A [distributed ray tracer](https://github.com/TheiaRT/tracer) (2015) that I
-  made with friends for a concurrent programming course, with the
-  [final writeup [PDF]](/resources/comp50-writeup.pdf)
+
+and some more [older projects](/older-projects/).
 
 I like making things [just for fun](https://justforfunnoreally.dev/).
 
