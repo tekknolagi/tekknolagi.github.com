@@ -35,6 +35,13 @@ abstract away keys and mouse buttons. It's hacky and there's some stuff we
 still don't understand, but it works! And by "works" I mean draws the expected
 demo windows, handles mouse hover and click, and handles keyboard input.
 
+Things left to figure out:
+
+* How to determine when to render from the texture and when from the provided
+  drawing command's color
+* Mod keys like so that, for example, <kbd>Shift</kbd>+<kbd>1</kbd> renders <kbd>!</kbd>
+* Scrolling
+
 Check it out [here](https://github.com/tekknolagi/full-beans). It's designed to
 all be dropped directly into your project.
 
