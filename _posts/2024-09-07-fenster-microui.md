@@ -17,10 +17,12 @@ don't want to think about SDL.
 
 Fortunately, [microui](https://github.com/rxi/microui) by rxi exists and
 handles the translation from GUI elements into a simple retargetable drawing
-bytecode. Unfortunately, the demo program uses SDL as a backend for the
-bytecode. I'd been meaning to see if I could instead use fenster but
-understanding what a "quad" was or what "glScissor" did seemed intimidating.
-The project went nowhere.
+bytecode. It's similarly a small, drop-in library, weighing only 1500 LOC.
+
+Unfortunately, the demo program uses SDL as a backend for the bytecode. I'd
+been meaning to see if I could instead use fenster but understanding what a
+"quad" was or what "glScissor" did seemed intimidating. The project went
+nowhere.
 
 Then, as usual, [Kartik](https://akkartik.name/) and I had a small argument and
 that resulted in us creating the fenster backend for microui! I sent him a
