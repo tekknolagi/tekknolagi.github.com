@@ -45,4 +45,4 @@ Things left to figure out:
 Check it out [here](https://github.com/tekknolagi/full-beans). It's designed to
 all be dropped directly into your project.
 
-<img src="/assets/img/fenster-microui.png" alt="microui+fenster demo window in X11" width="80%"/>
+<img src="/assets/img/fenster-microui.png" alt="microui+fenster demo window in X11" width="100%"/>
