@@ -40,6 +40,7 @@ Tried, enjoyed, and repeated frequently by yours truly.
   * To simplify, use 1:7 for rice:water. Add ginger, stock, tamari. Cook and
     stir 45 mins. Enjoy.
 * [Cheesy Cabbage Tteokbokki](https://web.archive.org/web/20220616091010/https://cooking.nytimes.com/recipes/1023237-cheesy-cabbage-tteokbokki)
+  (also visible [here](https://www.justtherecipe.com/?url=https://cooking.nytimes.com/recipes/1023237-cheesy-cabbage-tteokbokki))
   * One pot, delicious
 
 ## Other text-based recipes
