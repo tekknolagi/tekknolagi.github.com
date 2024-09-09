@@ -77,7 +77,7 @@ for each IR node.
 
 [^advanced-features]: The naive implementations shown in this post are not the
     optimal ones that everyone oohs and ahhs about. Those have things like
-    pointer compression. The nice thing is that the pointer compression is an
+    path compression. The nice thing is that the path compression is an
     add-on feature that doesn't change the API at all. Then if you get
     hamstrung by the inverse Ackermann function, you have other problems with
     the size of your IR graph.
