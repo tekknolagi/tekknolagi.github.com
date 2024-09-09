@@ -8,6 +8,60 @@ date: 2024-09-05
 Bolz-Tereick](https://cfbolz.de/), [Philip
 Zucker](https://www.philipzucker.com/), and various e-graphs people.*
 
+Compilers are all about program representations. They take in a program in one,
+transform some number of ways through some different internal languages, and
+output the program in another language[^languages].
+
+[^languages]: This is not to say that the languages have to be distinct; the
+    compiler can, say, take in a program in C and emit a program in C. And
+    sometimes the term "language" gets fuzzy, since (for example) C23 is
+    *technically* a different language than C99 but they are both recognizable
+    as C. But there's value in a C23 to C99 compiler because not all compilers
+    can take in C23 input in the front-end yet. And also sometimes the term
+    compiler comes with an implication that the input language is in some way
+    "higher level" than the output language, and this vibe ended up producing
+    the term "transpiler", but eh. Compiler take program in and compiler emit
+    program out.
+
+Part of the value in the inter-language transformations is optimizing the
+program. This can mean making it faster, smaller, or more readable. Optimizing
+requires making changes to the program. For example, consider the following
+piece of code in a made-up IR:
+
+```
+func foo(p0) {
+  v0 = Const 1
+  v1 = Add v0 p0
+  Return v1
+}
+```
+
+If the compiler wants to specialize this snippet of code for a particular value
+of the parameter `p0` (maybe it has discovered that `p0` is the value `2` in
+some case), it has to go through and logically replace all uses of `p0` with
+the constant `2`. This is a rewrite.
+
+Many compilers will go through and iterate through every instruction and check
+if it's a use of `p0` and if so, replace it with `2`.
+
+```c++
+Instr *replacement = new Const(2);
+for (auto op : block.ops) {
+  if (op->is_use_of(p0)) {
+    op->replace_use(p0, replacement);
+  }
+}
+```
+
+This is fine. It's very traditional. Depending on the size and complexity of
+your programs, this can work. It's how the [Cinder
+JIT](https://github.com/facebookincubator/cinder/) works for its two IRs. It's
+very far from causing any performance problems in the compiler. But there are
+other compilers with other constraints and therefore other approaches to doing
+these rewrites.
+
+## Union-find
+
 I love union-find. It enables fast, easy, in-place IR rewrites for compiler
 authors. Its API has two main functions: `union` and `find`. The minimal
 implementation is about 15 lines of code and is embeddable directly in your IR.
@@ -72,6 +126,14 @@ Union-find can be so fast because it is limited in its expressiveness:
 * There's no built-in way to enumerate the elements of a set
 * Each set has a single representative element
 * We only care about the representative of a set
+
+(If you want to read more about it, check out the first half of my other post,
+[Vectorizing ML models for fun](/blog/vectorizing-ml-models/), the [toy
+optimizer](https://pypy.org/posts/2022/07/toy-optimizer.html), [allocation
+removal in the toy
+optimizer](https://pypy.org/posts/2022/10/toy-optimizer-allocation-removal.html),
+and [abstract interpretation in the toy
+optimizer](https://bernsteinbear.com/blog/toy-abstract-interpretation/).)
 
 This is really great for some compiler optimizations. Consider the following
 made-up IR snippet:
