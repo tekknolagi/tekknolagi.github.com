@@ -466,9 +466,16 @@ giants invented SQL to solve[^egg-relational].
     paper](https://dl.acm.org/doi/10.1145/3591239) (open access) if you are
     interested in learning more!
 
-We don't have time or brainpower to implement a full query language, so in this
-post will implement a small pattern-matching DSL that kind of vaguely
-maybe-if-you-squint looks like something relational.
+We don't have time or brainpower to implement a full query
+language[^nerd-snipe], so in this post will implement a small pattern-matching
+DSL that kind of vaguely maybe-if-you-squint looks like something relational.
+
+[^nerd-snipe]: As soon as I wrote this I thought "how hard could it be?" and
+    went off to learn more and find the smallest SQL-like implementation. I
+    eventually found [SQLToy](https://github.com/weinberg/SQLToy) (~500LOC JS)
+    and [ported it to Python](https://github.com/tekknolagi/db.py/) (~200 LOC).
+    I don't know that having this embedded in the post or a minimal e-graph
+    library would help, exactly, but it was a fun learning experience.
 
 TODO: a matching DSL
 
