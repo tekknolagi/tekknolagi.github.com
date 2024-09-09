@@ -65,6 +65,21 @@ these rewrites.
 I love union-find. It enables fast, easy, in-place IR rewrites for compiler
 authors. Its API has two main functions: `union` and `find`. The minimal
 implementation is about 15 lines of code and is embeddable directly in your IR.
+
+Instead of iterating through every operation in the basic block and swapping
+pointers, we instead mark our IR node as "pointing to" another node. This
+notion of a forwarding pointer can be either embedded in the IR node itself or
+in an auxiliary table. Each node maintains its source of truth, and each
+rewrite takes only one pointer swap (yes, there's some pointer chasing, but
+it's *very little* pointer chasing[^advanced-features]).
+
+[^advanced-features]: The naive implementations shown in this post are not the
+    optimal ones that everyone oohs and ahhs about. Those have things like
+    pointer compression. The nice thing is that the pointer compression is an
+    add-on feature that doesn't change the API at all. Then if you get
+    hamstrung by the inverse Ackermann function, you have other problems with
+    the size of your IR graph.
+
 See below an adaptation of CF's implementation from the toy optimizer
 series[^also-phil]:
 
