@@ -466,6 +466,11 @@ giants invented SQL to solve[^egg-relational].
     paper](https://dl.acm.org/doi/10.1145/3591239) (open access) if you are
     interested in learning more!
 
+    Yihong Zhang has implemented
+    [egraph-sqlite](https://github.com/yihozhang/egraph-sqlite), which is
+    delightfully small, in Racket. I would love to see it ported to other
+    langauges for fun and learning!
+
 We don't have time or brainpower to implement a full query
 language[^nerd-snipe], so in this post will implement a small pattern-matching
 DSL that kind of vaguely maybe-if-you-squint looks like something relational.
