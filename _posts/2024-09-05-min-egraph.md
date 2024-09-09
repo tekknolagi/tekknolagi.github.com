@@ -415,6 +415,8 @@ rediscover the eclasses. I think this is what the egg people call a "rebuild"
 and part of what made their paper interesting was finding a way to do this less
 often or faster.
 
+TODO also mention iterating to convergence (which, fingers crossed, happens)
+
 Now what we have is a bunch of parallel worlds for our basic block where each
 operation is actually a set of equivalent operations. But which element of the
 set should we pick? One approach, the one we were taking before, is to just
