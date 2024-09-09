@@ -24,7 +24,7 @@ output the program in another language[^languages].
     program out.
 
 Part of the value in the inter-language transformations is optimizing the
-program. This can mean making it faster, smaller, or more readable. Optimizing
+program. This can mean making it faster, smaller, or something else. Optimizing
 requires making changes to the program. For example, consider the following
 piece of code in a made-up IR:
 
