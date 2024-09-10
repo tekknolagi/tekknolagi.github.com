@@ -60,6 +60,11 @@ very far from causing any performance problems in the compiler. But there are
 other compilers with other constraints and therefore other approaches to doing
 these rewrites.
 
+In this post, I'm going to take you on a bit of a meandering walk. We'll start
+from an alternative to find-and-replace called *union-find* and then
+incrementally add features until we accidentally have built an another data
+strucutre called an *e-graph*. Hopefully it removes some of the mystery.
+
 ## Union-find
 
 I love union-find. It enables fast, easy, in-place IR rewrites for compiler
