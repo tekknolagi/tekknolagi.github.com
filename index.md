@@ -25,7 +25,8 @@ That's probably an understatement. Here are some of my favorite projects:
   organization focused on security and education
 * [scrapscript.py](https://github.com/tekknolagi/scrapscript), an
   implementation of the Scrapscript language. Check out the [blog](/blog/scrapscript/)
-  [posts](/blog/scrapscript-baseline/) too
+  [posts](/blog/scrapscript-baseline/) (and [three](/blog/scrapscript-tricks/))
+  too
 * [Cinder](https://github.com/facebookincubator/cinder), Instagram's
   performance-oriented fork of CPython---try it out on
   [trycinder.com](https://trycinder.com) (which I built!)
