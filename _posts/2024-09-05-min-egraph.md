@@ -67,11 +67,16 @@ authors. Its API has two main functions: `union` and `find`. The minimal
 implementation is about 15 lines of code and is embeddable directly in your IR.
 
 Instead of iterating through every operation in the basic block and swapping
-pointers, we instead mark our IR node as "pointing to" another node. This
-notion of a forwarding pointer can be either embedded in the IR node itself or
-in an auxiliary table. Each node maintains its source of truth, and each
-rewrite takes only one pointer swap (yes, there's some pointer chasing, but
-it's *very little* pointer chasing[^advanced-features]). It's a classic
+pointers, we instead mark our IR node as "pointing to" another node.
+
+```python
+p0.make_equal_to(Const(2))
+```
+
+This notion of a forwarding pointer can be either embedded in the IR node
+itself or in an auxiliary table. Each node maintains its source of truth, and
+each rewrite takes only one pointer swap (yes, there's some pointer chasing,
+but it's *very little* pointer chasing[^advanced-features]). It's a classic
 time-space trade-off, though. You have to store ~1 additional pointer of space
 for each IR node.
 
