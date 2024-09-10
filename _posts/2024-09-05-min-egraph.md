@@ -8,9 +8,9 @@ date: 2024-09-05
 Bolz-Tereick](https://cfbolz.de/), [Philip
 Zucker](https://www.philipzucker.com/), and various e-graphs people.*
 
-Compilers are all about program representations. They take in a program in one,
-transform some number of ways through some different internal languages, and
-output the program in another language[^languages].
+Compilers are all about program representations. They take in a program in one
+language, transform some number of ways through some different internal
+languages, and output the program in another language[^languages].
 
 [^languages]: This is not to say that the languages have to be distinct; the
     compiler can, say, take in a program in C and emit a program in C. And
