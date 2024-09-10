@@ -538,3 +538,4 @@ library users to provide at least their own cost functions.
 
 * PyPy eager union-find
 * egg(log)
+* aegraphs
