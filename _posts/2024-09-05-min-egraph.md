@@ -69,8 +69,8 @@ implementation is about 15 lines of code and is embeddable directly in your IR.
 Instead of iterating through every operation in the basic block and swapping
 pointers, we instead mark our IR node as "pointing to" another node.
 
-```python
-p0.make_equal_to(Const(2))
+```c++
+p0->make_equal_to(new Const(2));
 ```
 
 This notion of a forwarding pointer can be either embedded in the IR node
