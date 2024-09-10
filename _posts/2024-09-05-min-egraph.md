@@ -46,7 +46,7 @@ will swap all of its uses of `v2` with the replacement instruction.
 void very_specific_optimization(Instr* instr) {
   if (instr->IsMul() && instr->Operand(1)->IsConst() &&
       instr->Operand(1)->AsConst()->Value() == 8) {
-    Instr *replacement = new LeftShift(instr->Operand(0), new Const(3));
+    Instr* replacement = new LeftShift(instr->Operand(0), new Const(3));
     for (auto op : block.ops) {
       if (op->uses(instr)) {
         op->replace_use(instr, replacement);
