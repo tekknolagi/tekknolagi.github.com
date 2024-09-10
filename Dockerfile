@@ -1,12 +1,12 @@
-# FROM ruby:3-alpine as build_env
-# RUN apk add --no-cache build-base
-# RUN apk add --no-cache python3
-# RUN mkdir /site
-# COPY Gemfile /site
-# COPY Gemfile.lock /site
-# COPY .ruby-version /site
-# WORKDIR /site
-# RUN bundle
+FROM ruby:3-alpine as build_env
+RUN apk add --no-cache build-base
+RUN apk add --no-cache python3
+RUN mkdir /site
+COPY Gemfile /site
+COPY Gemfile.lock /site
+COPY .ruby-version /site
+WORKDIR /site
+RUN bundle
 
 FROM alpine:latest as redbean
 ARG VER=3.0.2
@@ -25,7 +25,8 @@ COPY --from=build_site /site/_site/. _site
 WORKDIR _site
 RUN sh ../bin/zip -A -r ../bin/redbean *
 
-FROM scratch as web
-COPY --from=build_server /cosmo/bin/redbean .
+FROM caddy as web
+COPY --from=build_site /site/_site/. .
+RUN echo ":8000" > /etc/caddy/Caddyfile
+RUN echo "file_server" >> /etc/caddy/Caddyfile
 EXPOSE 8000
-ENTRYPOINT ["./redbean", "-l", "0.0.0.0", "-p", "8000"]
