@@ -29,26 +29,29 @@ requires making changes to the program. For example, consider the following
 piece of code in a made-up IR:
 
 ```
-func foo(p0) {
-  v0 = Const 1
-  v1 = Add v0 p0
-  Return v1
-}
+v0 = ...
+v1 = Const 8
+v2 = v0 * v1
 ```
 
-If the compiler wants to specialize this snippet of code for a particular value
-of the parameter `p0` (maybe it has discovered that `p0` is the value `2` in
-some case), it has to go through and logically replace all uses of `p0` with
-the constant `2`. This is a rewrite.
+If the compiler wants to optimize the instruction for `v2`, it has to go
+through and logically replace all uses of `v2` with the replacement
+instruction. This is a rewrite.
 
 Many compilers will go through and iterate through every instruction and check
-if it's a use of `p0` and if so, replace it with `2`.
+if that instruction `op` uses the original instruction `v2`. If it does, it
+will swap all of its uses of `v2` with the replacement instruction.
 
 ```c++
-Instr *replacement = new Const(2);
-for (auto op : block.ops) {
-  if (op->uses(p0)) {
-    op->replace_use(p0, replacement);
+void very_specific_optimization(Instr* instr) {
+  if (instr->IsMul() && instr->Right()->IsConst() &&
+      instr->Right()->AsConst()->value() == 8) {
+    Instr *replacement = new LeftShift(v0, new Const(3));
+    for (auto op : block.ops) {
+      if (op->uses(instr)) {
+        op->replace_use(instr, replacement);
+      }
+    }
   }
 }
 ```
@@ -166,28 +169,26 @@ This is really great for some compiler optimizations. Consider the following
 made-up IR snippet:
 
 ```
-v0 = Const 1
-v1 = Const 2
-v2 = v0 + v1
+v0 = ...
+v1 = Const 8
+v2 = v0 * v1
 ```
 
-A constant-folding pass can easily determine that `v2` is equivalent to `Const
-3` and run `v2.make_equal_to(Const 3)`. This is an unalloyed good: making `v2`
-constant might unlock some further optimization opportunities elsewhere and
-there's probably no world in which we care to keep the addition representation
-of `v2` around.
+A strength reduction pass might rewrite `v2` as a left shift instead of a
+multiplication (`v2.make_equal_to(LeftShift(v0, 3))`) because left shifts are
+often faster than multiplications. That's great; we got a small speedup.
 
 But not all compiler rewrites are so straightforward and unidirectional.
 Consider the expression `(a * 2) / 2`, which is the example from the [e-graphs
-good](https://egraphs-good.github.io/) website and paper. A strength reduction
-pass might rewrite the `a * 2` subexpression to `a << 1` because left shifts
-are often faster than multiplications. That's great; we got a small speedup.
+good](https://egraphs-good.github.io/) website and paper. If our strength
+reduction pass eagerly rewrites `a * 2` to `a << 1`, we've lost some
+information.
 
-Unfortunately, it stops another hypothetical pass from recognizing that
-expressions of the form `(a * b) / b` are equivalent to `a * (b / b)` and
-therefore equivalent to `a`. This is because rewrites that use union-find are
-eager and destructive; we've gotten rid of the multiplication. How might we
-find it again?
+This rewrite stops another hypothetical pass from recognizing that expressions
+of the form `(a * b) / b` are equivalent to `a * (b / b)` and therefore
+equivalent to `a`. This is because rewrites that use union-find are
+destructive; we've gotten rid of the multiplication. How might we find it
+again?
 
 ## Enumerating the equivalence classes
 
