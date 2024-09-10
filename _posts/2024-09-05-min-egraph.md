@@ -180,8 +180,8 @@ multiplication (`v2.make_equal_to(LeftShift(v0, Const(3)))`) because left
 shifts are often faster than multiplications. That's great; we got a small
 speedup.
 
-But not all compiler rewrites are so straightforward and unidirectional.
-Consider the expression `(a * 2) / 2`, which is the example from the [e-graphs
+But seemingly obvious local rewrites can have less-local consequences. Consider
+the expression `(a * 2) / 2`, which is the example from the [e-graphs
 good](https://egraphs-good.github.io/) website and paper. If our strength
 reduction pass eagerly rewrites `a * 2` to `a << 1`, we've lost some
 information.
