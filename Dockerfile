@@ -1,12 +1,12 @@
-FROM ruby:3-alpine as build_env
-RUN apk add --no-cache build-base
-RUN apk add --no-cache python3
-RUN mkdir /site
-COPY Gemfile /site
-COPY Gemfile.lock /site
-COPY .ruby-version /site
-WORKDIR /site
-RUN bundle
+# FROM ruby:3-alpine as build_env
+# RUN apk add --no-cache build-base
+# RUN apk add --no-cache python3
+# RUN mkdir /site
+# COPY Gemfile /site
+# COPY Gemfile.lock /site
+# COPY .ruby-version /site
+# WORKDIR /site
+# RUN bundle
 
 FROM alpine:latest as redbean
 ARG VER=3.0.2
@@ -16,7 +16,7 @@ WORKDIR cosmo
 RUN unzip ../$COSMO bin/ape.elf bin/assimilate bin/zip bin/redbean
 RUN bin/ape.elf bin/assimilate bin/redbean
 
-FROM build_env as build_site
+FROM ghcr.io/tekknolagi/bernsteinbear-build-env:latest as build_site
 COPY . /site
 RUN bundle exec jekyll build --future
 
