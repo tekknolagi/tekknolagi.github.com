@@ -530,8 +530,9 @@ well in a situation where we only ever do strength reduction type rewrites.
 
 But e-graphs popped into the world because people wanted to explore a bigger
 state space. It's possible that the representative of an equivalence class is
-locally optimal but not globally optimal. What if we want to find a program
-with a cost function that takes into account the entire program?
+locally optimal but not globally optimal. If our optimality function---our cost
+function---considers the entire program, we have to find a way to broaden our
+search.
 
 ## Extracting
 
@@ -539,8 +540,32 @@ The final piece of the e-graph API is an `extract` function. This function
 finds the "lowest cost" or "most optimal" version of the program in the
 e-graph.
 
-This isn't entirely built-in to e-graph implementations; usually they allow
-library users to provide at least their own cost functions.
+The simplest extraction function is to iterate through the cartesian product of
+all of the equivalence classes for each IR node and find the one that minimizes
+the whole-program cost.
+
+```python
+import itertools
+def extract(program: list[Expr], eclasses: dict[Expr, set[Expr]]) -> list[Expr]:
+    best_cost = float("inf")
+    best_program = program
+    for trial_program in itertools.product(*[eclasses[op] for op in program]):
+        cost = whole_program_cost(trial_program)
+        if cost < best_cost:
+            best_cost = cost
+            best_program = trial_program.copy()
+    return best_program
+```
+
+Unfortunately, this is slow. As the number of nodes grows, your base grows and
+as the number of rewrites grows, your exponent grows. It's bad news bears.
+There are a bunch of different approaches that don't involve exhaustive search,
+but they do not always produce the globally optimal program. It's an active
+area of research.
+
+Another thing to note is that the cost function isn't normally built-in to
+e-graph implementations; usually they allow library users to provide at least
+their own cost functions, if not the entirety of *extract*.
 
 ## Further reading
 
