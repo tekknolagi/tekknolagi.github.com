@@ -44,9 +44,9 @@ will swap all of its uses of `v2` with the replacement instruction.
 
 ```c++
 void very_specific_optimization(Instr* instr) {
-  if (instr->IsMul() && instr->Right()->IsConst() &&
-      instr->Right()->AsConst()->value() == 8) {
-    Instr *replacement = new LeftShift(v0, new Const(3));
+  if (instr->IsMul() && instr->Operand(1)->IsConst() &&
+      instr->Operand(1)->AsConst()->Value() == 8) {
+    Instr *replacement = new LeftShift(instr->Operand(0), new Const(3));
     for (auto op : block.ops) {
       if (op->uses(instr)) {
         op->replace_use(instr, replacement);
@@ -75,10 +75,11 @@ authors. Its API has two main functions: `union` and `find`. The minimal
 implementation is about 15 lines of code and is embeddable directly in your IR.
 
 Instead of iterating through every operation in the basic block and swapping
-pointers, we instead mark our IR node as "pointing to" another node.
+pointers, we instead mark our IR node as "pointing to" another node. The below
+snippet replaces the entire loop in the previous example:
 
 ```c++
-p0->make_equal_to(new Const(2));
+instr->make_equal_to(new LeftShift(instr->Operand(0), new Const(3)));
 ```
 
 This notion of a forwarding pointer can be either embedded in the IR node
