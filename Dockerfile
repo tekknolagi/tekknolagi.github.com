@@ -25,8 +25,7 @@ COPY --from=build_site /site/_site/. _site
 WORKDIR _site
 RUN sh ../bin/zip -A -r ../bin/redbean *
 
-FROM caddy as web
+FROM busybox as web
 COPY --from=build_site /site/_site/. .
-RUN echo ":8000" > /etc/caddy/Caddyfile
-RUN echo "file_server" >> /etc/caddy/Caddyfile
+CMD ["busybox", "httpd", "-f", "-v", "-p", "8000"]
 EXPOSE 8000
