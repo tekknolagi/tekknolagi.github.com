@@ -120,6 +120,10 @@ Time to go look at the `warnings` module.
 
 [jitlist_bisect.py]: https://github.com/facebookincubator/cinder/blob/b1c65a7c3cd557854299d5c66bbfe6de1f4ed49d/Tools/scripts/jitlist_bisect.py
 
+See the core of the implementation extracted into a copy/pastable
+non-JIT-specific couple of functions
+[here](https://github.com/tekknolagi/omegastar).
+
 ## Other thoughts
 
 Manually or automatically slimming down your reproducing source code also helps
