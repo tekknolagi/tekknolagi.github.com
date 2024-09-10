@@ -166,8 +166,8 @@ optimizer](https://pypy.org/posts/2022/10/toy-optimizer-allocation-removal.html)
 and [abstract interpretation in the toy
 optimizer](https://bernsteinbear.com/blog/toy-abstract-interpretation/).)
 
-This is really great for some compiler optimizations. Consider the following
-made-up IR snippet:
+This is really great for some compiler optimizations, like the strength
+reduction we did above. Here is the IR snippet again:
 
 ```
 v0 = ...
@@ -176,8 +176,9 @@ v2 = v0 * v1
 ```
 
 A strength reduction pass might rewrite `v2` as a left shift instead of a
-multiplication (`v2.make_equal_to(LeftShift(v0, 3))`) because left shifts are
-often faster than multiplications. That's great; we got a small speedup.
+multiplication (`v2.make_equal_to(LeftShift(v0, Const(3)))`) because left
+shifts are often faster than multiplications. That's great; we got a small
+speedup.
 
 But not all compiler rewrites are so straightforward and unidirectional.
 Consider the expression `(a * 2) / 2`, which is the example from the [e-graphs
