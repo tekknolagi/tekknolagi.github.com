@@ -47,7 +47,7 @@ if it's a use of `p0` and if so, replace it with `2`.
 ```c++
 Instr *replacement = new Const(2);
 for (auto op : block.ops) {
-  if (op->is_use_of(p0)) {
+  if (op->uses(p0)) {
     op->replace_use(p0, replacement);
   }
 }
