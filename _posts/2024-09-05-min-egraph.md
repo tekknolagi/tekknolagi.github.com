@@ -391,7 +391,7 @@ stored in the union-find structure. But, like all data structures, the
 union-find representation we've chosen has a trade-off: fast to rewrite, slow
 to enumerate. We'll accept that for now.
 
-TODO parallel worlds of graphs
+<!-- TODO parallel worlds of graphs -->
 
 This enumeration feature on its own does not comprise one of the APIs of an
 e-graph. To graft on e-matching to union-find, we'll need to do one more step:
@@ -502,8 +502,14 @@ giants invented SQL to solve[^egg-relational].
     langauges for fun and learning!
 
 We don't have time or brainpower to implement a full query
-language[^nerd-snipe], so in this post will implement a small pattern-matching
-DSL that kind of vaguely maybe-if-you-squint looks like something relational.
+language[^nerd-snipe] and I ran out of ideas for making a small embedded
+matching DSL, so you will have to take my word for it that it's tractable.
+
+<!-- TODO: a matching DSL
+
+, so in this post will implement a small pattern-matching
+DSL that kind of vaguely maybe-if-you-squint looks like something
+relational. -->
 
 [^nerd-snipe]: As soon as I wrote this I thought "how hard could it be?" and
     went off to learn more and find the smallest SQL-like implementation. I
@@ -512,14 +518,15 @@ DSL that kind of vaguely maybe-if-you-squint looks like something relational.
     I don't know that having this embedded in the post or a minimal e-graph
     library would help, exactly, but it was a fun learning experience.
 
-TODO: a matching DSL
-
 One thing to note: after every write with `make_equal_to`, we need to
-rediscover the eclasses. I think this is what the egg people call a "rebuild"
-and part of what made their paper interesting was finding a way to do this less
-often or faster.
+rediscover the eclasses if we want to read from them again. I think this is
+what the egg people call a "rebuild" and part of what made their paper
+interesting was finding a way to do this less often or faster.
 
-TODO also mention iterating to convergence (which, fingers crossed, happens)
+Another thing we need to do, I think, is iterate until convergence. It's not
+guaranteed that we will always reach the so-called "congruence closure" with
+one pass over all of the operations, matching and rewriting. In some cases
+(which?), the graph may not even converge at all!
 
 Now what we have is a bunch of parallel worlds for our basic block where each
 operation is actually a set of equivalent operations. But which element of the
