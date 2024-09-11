@@ -640,3 +640,5 @@ And of course check out egg and egglog, the main e-graph libraries around. And
 Metatheory.jl, too.
 
 Please let me know what thoughts you have! This is a very new subject for me.
+
+Thanks to Kartik Agaram, Max Willsey, and Chris Fallin for reviewing drafts of this post.
