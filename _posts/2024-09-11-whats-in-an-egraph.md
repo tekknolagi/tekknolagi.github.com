@@ -615,6 +615,22 @@ Fallin's [excellent post][aegraph].
 
 [aegraph]: https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md
 
+In a [Zulip thread][zulip], Chris writes:
+
+> aegraphs are really about three key things:
+>
+> - a persistent immutable data structure that encodes eclasses directly -- via the use of "union nodes" that refer to two other nodes. This lets us refer to a "snapshot in time" of an eclass, before we union more things into it, which turns out to be important for acyclicity
+> - a rewrite strategy that is eager ("bottom-up"): as soon as we create a node, we apply rewrite rules just to that node. That was actually kind of my entrypoint to doing something "different" than egg: I was wondering how to apply rules in a more efficient way than "iterate over all nodes and apply all rules" and, well, doing rewrites just once is about as good as one can do
+> - acyclicity: in a classical egraph one can get cycles when merging nodes even when no cycles exist in the input. Consider `x + 0`, and a rule that rewrites that to `x`. Then we have one eclass that refers to itself -- in essence it's encoding the equivalence in *both* directions, so it could also be `x + (x + (x + 0))` or longer to infinity; that's what the cycle denotes. To avoid that we have to refer to a *snapshot* of the eclass as we know it in the args, and never re-intern a value node with new (union'd) arg eclasses. That enables the persistent immutable data structure; and requires the eager rewrite to work.
+>
+> (in my [talk about this](https://cfallin.org/pubs/egraphs2023_aegraphs_slides.pdf) I have this wonky three-sided figure where each of these concepts mutually reinforces the other...)
+>
+> One of the things that surprised me is that the single-pass eager rewrite *does* actually work -- it works if one's rules are structured in a certain way. The case one wants to avoid is where A rewrites to B, C rewrites to B, and then a better version of A is actually C (but no direct rewrite exists) -- that's where later unification in a full egraph would have grouped A and C together and that equivalence would be visible, but eager rewrites with snapshotted eclasses does not. It turns out the way we write rules in Cranelift at least is "directional" enough that we don't have this in practice (it would require C to be better than B, even though we have a B->C rewrite).
+>
+> There's a whole other side to Cranelift's use of aegraphs having to do with control flow, "elaboration", the way we do GVN (without partial redundancy) and LICM, keep side effects in the right place, and getting the reconstructed/reserialized sequence of computations correct with respect to dominance (extraction needs to worry about the domtree!).
+
+[zulip]: https://egraphs.zulipchat.com/#narrow/stream/375765-egg.2Fegglog/topic/incrementally.20.22discovering.22.20e-graphs.20from.20union-find
+
 PyPy has "union find" in its optimizer but it's smarter than normal union-find.
 It also has smart constructors and some other features that make its optimizer
 more e-graph like than union-find like. Perhaps CF will write a blog post about
