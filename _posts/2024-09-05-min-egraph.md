@@ -567,8 +567,52 @@ Another thing to note is that the cost function isn't normally built-in to
 e-graph implementations; usually they allow library users to provide at least
 their own cost functions, if not the entirety of *extract*.
 
+## Wrapping up
+
+This brings us to a complete e-graph implementation. We started with a simple
+union-find, and by incrementally adding `match` and `extract`, we ended with a
+full e-graph.
+
+A bit of a subtle note here is that unlike our more procedural/functional
+pattern matching situation with a manual `make_equal_to`, many (most?) e-graph
+implementations tend to suggest that the library user provides a set of
+declarative syntactic rewrite rules.
+[egglog](https://github.com/egraphs-good/egglog) uses a custom Datalog-like
+DSL;
+[Cranelift](https://cranelift.dev/)
+uses a DSL called ISLE; [Ego](https://ocaml.org/p/ego/0.0.6/doc/index.html)
+uses an embedded DSL.
+
+```lisp
+;; This is a Datalog-like pair of rules from an egglog example
+(rewrite (If T t f) t)
+(rewrite (If F t f) f)
+```
+
+This requires embedding your compiler's notion of the program into the
+library's domain, then extracting back out from the library's domain into your
+own IR.
+
+Part of the motivation for this blog post was to provide a kind of e-graph that
+can be embedded directly into your compiler project without mapping back and
+forth.
+
 ## Further reading
 
-* PyPy eager union-find
-* egg(log)
-* aegraphs
+Cranelift uses a modified form of e-graph called an [aegraph][aegraph]. It's
+different in that the entire e-graph can be topo sorted and equality arrows can
+only point to earlier nodes. There are probably some very interesting
+trade-offs here but I am not an expert and you should probably read Chris
+Fallin's [excellent post][aegraph].
+
+[aegraph]: https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md
+
+PyPy has "union find" in its optimizer but it's smarter than normal union-find.
+It also has smart constructors and some other features that make its optimizer
+more e-graph like than union-find like. Perhaps CF will write a blog post about
+this some day.
+
+And of course check out egg and egglog, the main e-graph libraries around. And
+Metatheory.jl, too.
+
+Please let me know what thoughts you have! This is a very new subject for me.
