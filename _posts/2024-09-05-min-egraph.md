@@ -1,12 +1,13 @@
 ---
 title: "What's in an e-graph?"
 layout: post
-date: 2024-09-05
+date: 2024-09-11
 ---
 
 *This post follows from several conversations with [CF
 Bolz-Tereick](https://cfbolz.de/), [Philip
-Zucker](https://www.philipzucker.com/), and various e-graphs people.*
+Zucker](https://www.philipzucker.com/), [Chris Fallin](https://cfallin.org/),
+and [Max Willsey](https://www.mwillsey.com/).*
 
 Compilers are all about program representations. They take in a program in one
 language, transform some number of ways through some different internal
