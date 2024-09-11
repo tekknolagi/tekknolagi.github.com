@@ -66,7 +66,7 @@ these rewrites.
 
 In this post, I'm going to take you on a bit of a meandering walk. We'll start
 from an alternative to find-and-replace called *union-find* and then
-incrementally add features until we accidentally have built an another data
+incrementally add features until we accidentally have built another data
 strucutre called an *e-graph*. Hopefully it removes some of the mystery.
 
 ## Union-find
