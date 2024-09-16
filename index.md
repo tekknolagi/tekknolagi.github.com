@@ -111,3 +111,4 @@ information](/assets/img/dr-wenowdis.pdf) (PDF), which is accepted at PLDI SOAP
 * I once biked across Germany (Tübingen to Puttgarden).
 * I walked the entire [Walking City Trail](https://www.bostontrails.org/) in
   one day. It took 10 hours of moving time and 2 hours of eating time.
+* I used to sell bread on the Internet.
