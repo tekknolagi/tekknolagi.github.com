@@ -639,6 +639,8 @@ this some day.
 And of course check out egg and egglog, the main e-graph libraries around. And
 Metatheory.jl, too.
 
+* [Efficient E-matching for SMT Solvers](http://leodemoura.github.io/files/ematching.pdf) (PDF)
+
 Please let me know what thoughts you have! This is a very new subject for me.
 
 Thanks to Kartik Agaram, Max Willsey, and Chris Fallin for reviewing drafts of this post.
