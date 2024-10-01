@@ -251,6 +251,10 @@ Unify doesn't fail but leaves `dyn` and/or run-time check
 
 ### Canonicalization or minification of type variables
 
+### Type-carrying code
+
+Can we make hashes of types?
+
 ## See also
 
 * Biunification (like CubiML)
