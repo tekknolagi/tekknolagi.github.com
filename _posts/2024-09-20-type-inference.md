@@ -119,13 +119,15 @@ The rules of inference are as follows:
   * invent a new type variable for the parameter `t` and add it
     to the environment while type checking the body `b`
   * constrain the type of `e` to be a function from `t` to `type(b)`
+  * return `type(e)`
 * if you see function application `e`,
   * infer the type of callee `f`
   * infer the type of the argument `a`
-  * constrain the callee type to be a function from `type(a)` to `type(e)`
-* if you see a variable `v`,
-  * look up the scheme of `v` in the environment
-  * instantiate the scheme to get the type of `v`
+  * constrain `type(f)` to be a function from `type(a)` to `type(e)`
+  * return `type(e)`
+* if you see a variable `e`,
+  * look up the scheme of `e` in the environment
+  * instantiate the scheme and return it
 * if you see a let binding `let n = v in b` (called "where" in scrapscript) `e`,
   * infer the type of the value `v`
   * generalize `type(v)` to get a scheme `s`
