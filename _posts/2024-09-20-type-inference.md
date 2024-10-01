@@ -17,6 +17,11 @@ It has constraints but the constraints give you rewards:
 As a general note: the more constrained your language/system is, the more you
 can optimize
 
+On a meta note, we start with Algorithm W because it's the most direct and
+doesn't have any "spooky action at a distance" like Algorithm J. It *is*
+definitely more visually confusing than Algorithm J, though, so if you get
+discouraged, you might want to skip ahead to Algorithm J.
+
 ## The data structures
 
 A monotype is a type that maps to a single type
@@ -67,7 +72,8 @@ Not all Hindley Milner types are expressible in terms of monotypes. Hindley
 Milner types also include a `forall` quantifier that allows for some amount of
 polymorphism. Consider the function `id = x -> x`. The type of `id` is `forall
 'a. 'a -> 'a`. This is kind of like a lambda for type variables. The `forall`
-construct binds type variables like normal lambdas bind normal variables.
+construct binds type variables like normal lambdas bind normal variables. Some
+of the literature calls these *type schemes*.
 
 ```python
 @dataclasses.dataclass
@@ -84,11 +90,28 @@ You can't directly use a `Forall` in a type expression. Instead, you have to
 with new variables in the right hand side---in the type. For example,
 instantiating `forall 'a. 'a -> 'a` might give you `'t123 -> 't123`.
 
-All of our Hindley Milner implementations will use these two basic data types
+All of our Hindley Milner implementations will use these three basic data types
+to do everything
 
 ## Algorithm W
 
-Substitutions
+Let's start with Algorithm W. It's probably the most famous one (citation
+needed) because it was presented in the paper as the easiest to prove correct.
+It's also purely functional, which probably appeals to Haskell nerds.
+
+The idea is that you have a function `infer_w` that takes an expression and an
+environment (a "context") and returns a substitution and a type. The
+substitution is a mapping from type variables to monotypes and the type is the
+type of the expression that you passed in. In Python syntax, that's:
+
+```python
+Subst = typing.Mapping[str, MonoType]  # type variable -> monotype
+Context = typing.Mapping[str, Forall]  # program variable -> type scheme
+def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]: ...
+```
+
+Note that while substitutions map type variables to monotypes,
+contexts map source-level variable names to type schemes.
 
 ```python
 def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
@@ -100,30 +123,24 @@ def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
     if isinstance(expr, Int):
         return {}, IntType
     if isinstance(expr, Function):
-        arg_tyvar = fresh_tyvar("a")
+        arg_tyvar = fresh_tyvar()
         assert isinstance(expr.arg, Var)
         body_ctx = {**ctx, expr.arg.name: Forall([], arg_tyvar)}
         body_subst, body_ty = infer_w(expr.body, body_ctx)
-        return body_subst, func_type(apply_ty(arg_tyvar, body_subst), body_ty)
+        return body_subst, TyCon("->", [apply_ty(arg_tyvar, body_subst), body_ty])
     if isinstance(expr, Apply):
         s1, ty = infer_w(expr.func, ctx)
         s2, p = infer_w(expr.arg, apply_ctx(ctx, s1))
-        r = fresh_tyvar("a")
+        r = fresh_tyvar()
         s3 = unify_w(apply_ty(ty, s2), TyCon("->", [p, r]))
         return compose(compose(s3, s2), s1), apply_ty(r, s3)
-    if isinstance(expr, Binop):
-        left, right = expr.left, expr.right
-        op = Var(BinopKind.to_str(expr.op))
-        return infer_w(Apply(Apply(op, left), right), ctx)
     if isinstance(expr, Where):
-        name, value, body = expr.binding.name, expr.binding.value, expr.body
+        name, value, body = expr.binding.name.name, expr.binding.value, expr.body
         s1, ty1 = infer_w(value, ctx)
         ctx1 = dict(ctx)  # copy
-        assert ctx1 is not ctx
-        # TODO(max): Figure out why we remove the name here
-        ctx1.pop(name.name, None)
+        ctx1.pop(name, None)
         scheme = generalize(ty1, apply_ctx(ctx1, s1))
-        ctx2 = {**ctx, name.name: scheme}
+        ctx2 = {**ctx, name: scheme}
         s2, ty2 = infer_w(body, apply_ctx(ctx2, s1))
         return compose(s2, s1), ty2
     raise TypeError(f"Unexpected type {type(expr)}")
@@ -154,10 +171,22 @@ Union (?) case functions
 
 RowSelect, RowExtend, RowRestrict
 
+* https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/scopedlabels.pdf
+
 ### Defer-dynamic
 
 Unify doesn't fail but leaves `dyn` and/or run-time check
 
+### Variants
+
+* https://drops.dagstuhl.de/storage/00lipics/lipics-vol263-ecoop2023/LIPIcs.ECOOP.2023.17/LIPIcs.ECOOP.2023.17.pdf
+
+### Canonicalization or minification of type variables
+
 ## See also
 
 * Biunification (like CubiML)
+* Static Basic Block Versioning
+* CFA / Lambda set defunctionalization
+* https://www.reddit.com/r/ProgrammingLanguages/comments/ijij9o/beyond_hindleymilner_but_keeping_principal_types/
+* https://okmij.org/ftp/ML/generalization.html
