@@ -8,6 +8,8 @@ layout: post
 A set of rules for discovering types from a program that contains no type
 annotations
 
+TODO: link to papers from Damas, Hindley, and Milner
+
 It has constraints but the constraints give you rewards:
 
 * Something something fast
