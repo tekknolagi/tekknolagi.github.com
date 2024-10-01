@@ -113,6 +113,26 @@ def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]: ...
 Note that while substitutions map type variables to monotypes,
 contexts map source-level variable names to type schemes.
 
+The rules of inference are as follows:
+
+* if you see a function `e`,
+  * invent a new type variable for the parameter `t` and add it
+    to the environment while type checking the body
+  * constrain the type of the expression to be a function from `t` to `type(e)`
+* if you see function application `e`,
+  * infer the type of callee `f`
+  * infer the type of the argument `a`
+  * constrain the callee type to be a function from `type(a)` to `type(e)`
+* if you see a variable `v`,
+  * look up the scheme of `v` in the environment
+  * instantiate the scheme to get the type of `v`
+* if you see a let binding `let n = v in b` (called "where" in scrapscript) `e`,
+  * infer the type of the value `v`
+  * generalize `type(v)` to get a scheme `s`
+  * add `n: s` to the environment while type checking the body `b`
+  * return `type(b)`
+
+
 ```python
 def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
     if isinstance(expr, Var):
