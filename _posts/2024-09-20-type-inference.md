@@ -134,6 +134,9 @@ The rules of inference are as follows:
   * add `n: s` to the environment while type checking the body `b`
   * return `type(b)`
 
+In order to keep the constraints (substitutions) flowing after each recursive
+call to `infer_w`, we need to be able to compose substitutions. It's not just a
+union of two dictionaries, but instead more like function composition
 
 ```python
 def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
@@ -179,7 +182,48 @@ Top-down (upside-down W, ha ha)
 
 Union-find
 
+Instead of explicitly threading through and composing substitutions, we
+implicitly modify the type variables as a way to keep track of the environment.
+
+```python
+def infer_j(expr: Object, ctx: Context) -> TyVar:
+    result = fresh_tyvar()
+    if isinstance(expr, Var):
+        scheme = ctx.get(expr.name)
+        if scheme is None:
+            raise TypeError(f"Unbound variable {expr.name}")
+        unify_j(result, instantiate(scheme))
+        return result
+    if isinstance(expr, Int):
+        unify_j(result, IntType)
+        return result
+    if isinstance(expr, Function):
+        arg_tyvar = fresh_tyvar("a")
+        assert isinstance(expr.arg, Var)
+        body_ctx = {**ctx, expr.arg.name: Forall([], arg_tyvar)}
+        body_ty = infer_j(expr.body, body_ctx)
+        unify_j(result, func_type(arg_tyvar, body_ty))
+        return result
+    if isinstance(expr, Apply):
+        func_ty = infer_j(expr.func, ctx)
+        arg_ty = infer_j(expr.arg, ctx)
+        unify_j(func_ty, func_type(arg_ty, result))
+        return result
+    if isinstance(expr, Where):
+        name, value, body = expr.binding.name.name, expr.binding.value, expr.body
+        value_ty = infer_j(value, ctx)
+        value_scheme = generalize(recursive_find(value_ty), ctx)
+        body_ty = infer_j(body, {**ctx, name: value_scheme})
+        unify_j(result, body_ty)
+        return result
+    raise TypeError(f"Unexpected type {type(expr)}")
+```
+
 ## Extensions for Scrapscript
+
+### Recursion
+
+TODO: call graphs and SCCs
 
 ### Let polymorphism
 
