@@ -236,3 +236,9 @@ answer][second-stackoverflow].
 Let me know if you have suggestions for improvement or if I am completely
 missing something. Parsing and precedence and associativity and things like
 that for whatever reason seem to bite me more than anything else in compilers.
+
+## See also
+
+River wrote a [follow-up
+post](https://k-monk.org/blog/minimal-parenthesization-of-lambda-terms/) for
+his Simply-Typed Lambda Calculus compiler in OCaml.
