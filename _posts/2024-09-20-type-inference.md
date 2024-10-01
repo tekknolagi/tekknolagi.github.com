@@ -254,5 +254,6 @@ Unify doesn't fail but leaves `dyn` and/or run-time check
 * Biunification (like CubiML)
 * Static Basic Block Versioning
 * CFA / Lambda set defunctionalization
+  * River's STLC
 * https://www.reddit.com/r/ProgrammingLanguages/comments/ijij9o/beyond_hindleymilner_but_keeping_principal_types/
 * https://okmij.org/ftp/ML/generalization.html
