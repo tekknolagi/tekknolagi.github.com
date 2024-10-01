@@ -117,8 +117,8 @@ The rules of inference are as follows:
 
 * if you see a function `e`,
   * invent a new type variable for the parameter `t` and add it
-    to the environment while type checking the body
-  * constrain the type of the expression to be a function from `t` to `type(e)`
+    to the environment while type checking the body `b`
+  * constrain the type of `e` to be a function from `t` to `type(b)`
 * if you see function application `e`,
   * infer the type of callee `f`
   * infer the type of the argument `a`
