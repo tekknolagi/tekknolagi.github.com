@@ -339,7 +339,35 @@ the type. Otherwise we might just see `'t0` or something.
 
 ### Pattern matching
 
-Binding new variables in pattern arms
+What's the type of a match case pattern? Until a couple of days ago, I didn't
+know. Turns out, it's the type that it looks like it should be, as long as you
+bind all the variables in the pattern to fresh type variables.
+
+```python
+def infer_j(expr: Object, ctx: Context) -> TyVar:
+    # ...
+    if isinstance(expr, MatchCase):
+        pattern_ctx = collect_vars_in_pattern(expr.pattern)
+        body_ctx = {**ctx, **pattern_ctx}
+        pattern_ty = infer_j(expr.pattern, body_ctx)
+        body_ty = infer_j(expr.body, body_ctx)
+        unify_j(result, func_type(pattern_ty, body_ty))
+        return result
+```
+
+Then we unify all of the case functions to make the pattern types line up and
+the return types line up.
+
+```python
+def infer_j(expr: Object, ctx: Context) -> TyVar:
+    # ...
+    if isinstance(expr, MatchFunction):
+        for case in expr.cases:
+            case_ty = infer_j(case, ctx)
+            unify_j(result, case_ty)
+        return result
+```
+
 
 Union (?) case functions
 
