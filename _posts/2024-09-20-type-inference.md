@@ -204,12 +204,12 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
         assert isinstance(expr.arg, Var)
         body_ctx = {**ctx, expr.arg.name: Forall([], arg_tyvar)}
         body_ty = infer_j(expr.body, body_ctx)
-        unify_j(result, func_type(arg_tyvar, body_ty))
+        unify_j(result, TyCon("->", [arg_tyvar, body_ty]))
         return result
     if isinstance(expr, Apply):
         func_ty = infer_j(expr.func, ctx)
         arg_ty = infer_j(expr.arg, ctx)
-        unify_j(func_ty, func_type(arg_ty, result))
+        unify_j(func_ty, TyCon("->", [arg_ty, result]))
         return result
     if isinstance(expr, Where):
         name, value, body = expr.binding.name.name, expr.binding.value, expr.body
