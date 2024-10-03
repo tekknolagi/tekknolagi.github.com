@@ -370,8 +370,33 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
 
 ### Row polymorphism
 
-RowSelect, RowExtend, RowRestrict
+Scrapscript has records (kind of like structs) and run-time row polymorphism.
+This means that you can have a function that pulls out a field from a record
+and any record with that field is a legal argument to the function.
 
+See for example two different looking records (2D point and 3D point):
+
+```
+get_x left + get_x right
+. left  = { x = 1, y = 2 }
+. right = { x = 1, y = 2, z = 3 }
+. get_x = | { x = x, ... } -> x
+```
+
+Hindley Milner doesn't come with support for this right out of the box. If you
+add support for records, then you end up with a more rigid system: the records
+have to have the same number of fields and same names of fields and same types
+of fields. This is safe but overly restrictive.
+
+I think it's possible to "easily" add row polymorphism but we haven't done it
+yet. Finding a simple, distilled version of the ideas in the papers has so far
+been elusive.
+
+<!--
+RowSelect, RowExtend, RowRestrict
+-->
+
+* http://www.cs.cmu.edu/~aldrich/courses/819/papers/row-poly.pdf
 * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/scopedlabels.pdf
 
 ### Defer-dynamic
