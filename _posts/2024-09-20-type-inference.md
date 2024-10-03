@@ -225,7 +225,28 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
 
 ### Recursion
 
-TODO: call graphs and SCCs
+Limited recursion: if typing the pattern `f = FUNCTION` or `f =
+MATCH_FUNCTION`, then bind `f` to some new type variable to "tie the knot" in
+the context
+
+```python
+def infer_j(expr: Object, ctx: Context) -> TyVar:
+    # ...
+    if isinstance(expr, Where):
+        name, value, body = expr.binding.name.name, expr.binding.value, expr.body
+        if isinstance(value, (Function, MatchFunction)):
+            # Letrec
+            func_ty = fresh_tyvar()
+            value_ty = infer_j(value, {**ctx, name: Forall([], func_ty)})
+        else:
+            # Let
+            value_ty = infer_j(value, ctx)
+        # ...
+```
+
+In an ideal world, we would have a way to type mutual recursion. I think this
+involves identifying call graphs and strongly connected components within
+thiose graphs
 
 ### Let polymorphism
 
