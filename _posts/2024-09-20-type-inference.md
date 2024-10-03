@@ -27,7 +27,8 @@ discouraged, you might want to skip ahead to Algorithm J.
 
 ## The data structures
 
-A monotype is a type that maps to a single type
+A monotype is a type that maps to a single type. For our purposes, this is
+either a type variable like `a` or a type constructor like `->`, `list`, etc
 
 There are two kinds: type variables and type constructors
 
@@ -210,7 +211,6 @@ def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
         return compose(s2, s1), ty2
     raise TypeError(f"Unexpected type {type(expr)}")
 ```
-
 
 ## Algorithm M
 
