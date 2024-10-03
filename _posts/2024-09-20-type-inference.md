@@ -93,6 +93,10 @@ You can't directly use a `Forall` in a type expression. Instead, you have to
 with new variables in the right hand side---in the type. For example,
 instantiating `forall 'a. 'a -> 'a` might give you `'t123 -> 't123`.
 
+```python
+def instantiate(scheme: Forall) -> MonoType: ...
+```
+
 All of our Hindley Milner implementations will use these three basic data types
 to do everything
 
@@ -137,11 +141,44 @@ The rules of inference are as follows:
   * add `n: s` to the environment while type checking the body `b`
   * return `type(b)`
 
+Generalize is kind of like the opposite of instantiate. It takes a type and
+turns it into a scheme using its free variables:
+
+```python
+def generalize(ty: MonoType, ctx: Context) -> Forall: ...
+```
+
 In order to keep the constraints (substitutions) flowing after each recursive
 call to `infer_w`, we need to be able to compose substitutions. It's not just a
 union of two dictionaries, but instead more like function composition
 
 ```python
+def compose(s1: Subst, s2: Subst) -> Subst: ...
+
+def apply_ty(ty: MonoType, subst: Subst) -> MonoType: ...
+
+def apply_ctx(ctx: Context, subst: Subst) -> Context: ...
+
+def unify_w(ty1: MonoType, ty2: MonoType) -> Subst:
+    if isinstance(ty1, TyVar):
+        return bind_var(ty2, ty1.name)
+    if isinstance(ty2, TyVar):  # Mirror
+        return unify_w(ty2, ty1)
+    if isinstance(ty1, TyCon) and isinstance(ty2, TyCon):
+        if ty1.name != ty2.name:
+            unify_fail(ty1, ty2)
+        if len(ty1.args) != len(ty2.args):
+            unify_fail(ty1, ty2)
+        result: Subst = {}
+        for l, r in zip(ty1.args, ty2.args):
+            result = compose(
+                unify_w(apply_ty(l, result), apply_ty(r, result)),
+                result,
+            )
+        return result
+    raise TypeError(f"ICE: Unexpected type {type(ty1)}")
+
+
 def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
     if isinstance(expr, Var):
         scheme = ctx.get(expr.name)
@@ -189,6 +226,27 @@ Instead of explicitly threading through and composing substitutions, we
 implicitly modify the type variables as a way to keep track of the environment.
 
 ```python
+def unify_j(ty1: MonoType, ty2: MonoType) -> None:
+    ty1 = ty1.find()
+    ty2 = ty2.find()
+    if isinstance(ty1, TyVar):
+        ty1.make_equal_to(ty2)
+        return
+    if isinstance(ty2, TyVar):  # Mirror
+        return unify_j(ty2, ty1)
+    if isinstance(ty1, TyCon) and isinstance(ty2, TyCon):
+        if ty1.name != ty2.name:
+            unify_fail(ty1, ty2)
+            return
+        if len(ty1.args) != len(ty2.args):
+            unify_fail(ty1, ty2)
+            return
+        for l, r in zip(ty1.args, ty2.args):
+            unify_j(l, r)
+        return
+    raise TypeError(f"Unexpected type {type(ty1)}")
+
+
 def infer_j(expr: Object, ctx: Context) -> TyVar:
     result = fresh_tyvar()
     if isinstance(expr, Var):
