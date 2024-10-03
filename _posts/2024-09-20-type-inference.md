@@ -273,8 +273,7 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
     if isinstance(expr, Where):
         name, value, body = expr.binding.name.name, expr.binding.value, expr.body
         value_ty = infer_j(value, ctx)
-        value_scheme = generalize(recursive_find(value_ty), ctx)
-        body_ty = infer_j(body, {**ctx, name: value_scheme})
+        body_ty = infer_j(body, {**ctx, name: Forall([], value_ty)})
         unify_j(result, body_ty)
         return result
     raise TypeError(f"Unexpected type {type(expr)}")
@@ -308,6 +307,35 @@ involves identifying call graphs and strongly connected components within
 thiose graphs
 
 ### Let polymorphism
+
+If you want to have polymorphic functions, you need to find a cut point for
+where to generalize. Maybe this means adding a `generic` keyword or maybe this
+means making all `let`-bound variables polymorphic.
+
+We chose to do the latter. This means that we need to take the type of the
+function (say, `a -> b -> c`) and generalize it before adding it to the
+environment:
+
+Before: `('t10->('t11->('t12->'t10)))`
+
+After: `(forall 't10, 't11, 't12. ('t10->('t11->('t12->'t10))))`
+
+```python
+def infer_j(expr: Object, ctx: Context) -> TyVar:
+    # ...
+    if isinstance(expr, Where):
+        name, value, body = expr.binding.name.name, expr.binding.value, expr.body
+        value_ty = infer_j(value, ctx)
+        value_scheme = generalize(recursive_find(value_ty), ctx)  # changed!
+        body_ty = infer_j(body, {**ctx, name: value_scheme})
+        unify_j(result, body_ty)
+        return result
+    # ...
+```
+
+Due to our union-find implementation, we also need to do this "recursive find"
+thing that calls `.find()` recursively to discover all of the type variables in
+the type. Otherwise we might just see `'t0` or something.
 
 ### Pattern matching
 
