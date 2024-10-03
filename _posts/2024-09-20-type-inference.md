@@ -368,9 +368,6 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
         return result
 ```
 
-
-Union (?) case functions
-
 ### Row polymorphism
 
 RowSelect, RowExtend, RowRestrict
