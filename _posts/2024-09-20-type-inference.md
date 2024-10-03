@@ -405,7 +405,9 @@ Unify doesn't fail but leaves `dyn` and/or run-time check
 
 ### Variants
 
+* https://caml.inria.fr/pub/papers/garrigue-polymorphic_variants-ml98.pdf
 * https://drops.dagstuhl.de/storage/00lipics/lipics-vol263-ecoop2023/LIPIcs.ECOOP.2023.17/LIPIcs.ECOOP.2023.17.pdf
+* https://cs.ioc.ee/tfp-icfp-gpce05/tfp-proc/21num.pdf
 
 ### Canonicalization or minification of type variables
 
