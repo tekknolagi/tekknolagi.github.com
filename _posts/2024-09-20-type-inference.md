@@ -1,6 +1,7 @@
 ---
 title: Little implementations of the various Damas-Hindley-Milner inference algorithms
 layout: post
+co_authors: River Dillon Keefer
 ---
 
 ## What is Damas-Hindley-Milner?
