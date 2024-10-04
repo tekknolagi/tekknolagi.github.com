@@ -6,31 +6,43 @@ co_authors: River Dillon Keefer
 
 ## What is Damas-Hindley-Milner?
 
-A set of rules for discovering types from a program that contains no type
-annotations
+A Damas-Hindley-Milner (HM) type system is a type system for the lambda
+calculus (later adapted for Standard ML and the ML-family languages) with
+parametric polymorphism, aka generic functions. It sits at a sweet spot in PL
+design: the type system is quite expressive, and there are well known type
+inference algorithms that require absolutely no annotations from the
+programmer. 
 
 TODO: link to papers from Damas, Hindley, and Milner
 
-It has constraints but the constraints give you rewards:
+The type system is limited, but by virtue of being limited, it confers these
+advantages:
 
-* Something something fast
+* Inference algorithms tend to be fast (roughly O(size of code))
 * Something something principal types
-* ???
+* ??? [It's a good type system, reader!](https://stackoverflow.com/a/399392)
 
-As a general note: the more constrained your language/system is, the more you
-can optimize
+<!--As a general note: the more constrained your language/system is, the more you
+can optimize-->
 
-On a meta note, we start with Algorithm W because it's the most direct and
-doesn't have any "spooky action at a distance" like Algorithm J. It *is*
-definitely more visually confusing than Algorithm J, though, so if you get
-discouraged, you might want to skip ahead to Algorithm J.
+In this post, we implement HM two ways, and then extend it a little bit. We'll
+do this in the context of [scrapscript](/blog/scrapscript), but the goal is to
+get a better understanding of HM in general.
+
+We'll start with Algorithm W because it's the OG, and doesn't depend on side
+effects like Algorithm J does. It *is* definitely more visually confusing than
+Algorithm J, though, so if you get discouraged, you might want to skip ahead to
+Algorithm J.
 
 ## The data structures
 
-A monotype is a type that maps to a single type. For our purposes, this is
-either a type variable like `a` or a type constructor like `->`, `list`, etc
+Every expression has exactly one type, called a monotype (we'll get to
+generalization later). For this type checker, instead of working with values,
+such as `5`, we're evaluating a program composed of types (`int`) and
+operations on types (`list`). For our purposes, a monotype is either a type
+variable like `a` or a type constructor like `->`, `list`, etc.
 
-There are two kinds: type variables and type constructors
+We represent that divide in python with classes:
 
 ```python
 @dataclasses.dataclass
@@ -42,21 +54,11 @@ class MonoType:
 class TyVar(MonoType):
     name: str
 
-    def __str__(self) -> str:
-        return f"'{self.name}"
-
 
 @dataclasses.dataclass
 class TyCon(MonoType):
     name: str
     args: list[MonoType]
-
-    def __str__(self) -> str:
-        if not self.args:
-            return self.name
-        if len(self.args) == 1:
-            return f"({self.args[0]} {self.name})"
-        return f"({self.name.join(map(str, self.args))})"
 ```
 
 A lot of people make HM type inference implementations by hard-coding functions
@@ -66,40 +68,15 @@ instead model them all in terms of `TyCon`:
 ```python
 IntType = TyCon("int", [])
 BoolType = TyCon("bool", [])
-NotFunc = TyCon("->", [BoolType, BoolType])
 
 def list_type(ty: MonoType) -> MonoType:
     return TyCon("list", [ty])
+
+def func_type(arg: MonoType, ret: MonoType) -> MonoType:
+    return TyCon("->", [arg, ret])
 ```
 
-Not all Hindley Milner types are expressible in terms of monotypes. Hindley
-Milner types also include a `forall` quantifier that allows for some amount of
-polymorphism. Consider the function `id = x -> x`. The type of `id` is `forall
-'a. 'a -> 'a`. This is kind of like a lambda for type variables. The `forall`
-construct binds type variables like normal lambdas bind normal variables. Some
-of the literature calls these *type schemes*.
-
-```python
-@dataclasses.dataclass
-class Forall:
-    tyvars: list[TyVar]
-    ty: MonoType
-
-    def __str__(self) -> str:
-        return f"(forall {', '.join(map(str, self.tyvars))}. {self.ty})"
-```
-
-You can't directly use a `Forall` in a type expression. Instead, you have to
-*instantiate* ("call", "apply") the `Forall`. This replaces the bound variables
-with new variables in the right hand side---in the type. For example,
-instantiating `forall 'a. 'a -> 'a` might give you `'t123 -> 't123`.
-
-```python
-def instantiate(scheme: Forall) -> MonoType: ...
-```
-
-All of our Hindley Milner implementations will use these three basic data types
-to do everything
+With these, we model the world.
 
 ## Algorithm W
 
@@ -214,6 +191,8 @@ def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
 
 ## Algorithm M
 
+https://www.classes.cs.uchicago.edu/archive/2007/spring/32001-1/papers/p707-lee.pdf
+
 Pass in a type variable? Annotate the AST?
 
 Top-down (upside-down W, ha ha)
@@ -281,6 +260,9 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
 
 ## Extensions for Scrapscript
 
+Adding type system features that go beyond HM in terms of expressivity often
+requires some type annotations from the programmer, or adding significant
+complexity to the inference algorithm.
 ### Recursion
 
 Limited recursion: if typing the pattern `f = FUNCTION` or `f =
@@ -307,6 +289,31 @@ involves identifying call graphs and strongly connected components within
 thiose graphs
 
 ### Let polymorphism
+
+Hindley Milner types also include a `forall` quantifier that allows for some
+amount of polymorphism. Consider the function `id = x -> x`. The type of `id`
+is `forall 'a. 'a -> 'a`. This is kind of like a lambda for type variables. The
+`forall` construct binds type variables like normal lambdas bind normal
+variables. Some of the literature calls these *type schemes*.
+
+```python
+@dataclasses.dataclass
+class Forall:
+    tyvars: list[TyVar]
+    ty: MonoType
+
+    def __str__(self) -> str:
+        return f"(forall {', '.join(map(str, self.tyvars))}. {self.ty})"
+```
+
+You can't directly use a `Forall` in a type expression. Instead, you have to
+*instantiate* ("call", "apply") the `Forall`. This replaces the bound variables
+with new variables in the right hand side---in the type. For example,
+instantiating `forall 'a. 'a -> 'a` might give you `'t123 -> 't123`.
+
+```python
+def instantiate(scheme: Forall) -> MonoType: ...
+```
 
 If you want to have polymorphic functions, you need to find a cut point for
 where to generalize. Maybe this means adding a `generic` keyword or maybe this
