@@ -76,6 +76,16 @@ def func_type(arg: MonoType, ret: MonoType) -> MonoType:
     return TyCon("->", [arg, ret])
 ```
 
+We'll also have something called a type scheme, which we'll use more later, but
+for now is a thin wrapper around a monotype:
+
+```python
+@dataclasses.dataclass
+class Forall:
+    tyvars: list[TyVar]
+    ty: MonoType
+```
+
 With these, we model the world.
 
 ## Algorithm W
@@ -88,7 +98,8 @@ nerds](https://hackage.haskell.org/package/union-find-array-0.1.0.4/docs/Control
 The idea is that you have a function `infer_w` that takes an expression and an
 environment (a "context") and returns a substitution and a type. A substitution
 is a mapping from type variables to monotypes and the type is the type of the
-expression that you passed in. In Python syntax, that's:
+expression that you passed in. We'll use the substitution to keep track of
+constraints on types as we walk the tree. In Python syntax, that's:
 
 ```python
 Subst = typing.Mapping[str, MonoType]  # type variable -> monotype
@@ -126,7 +137,8 @@ The rules of inference are as follows:
 
 In order to keep the constraints (substitutions) flowing after each recursive
 call to `infer_w`, we need to be able to compose substitutions. It's not just a
-union of two dictionaries, but instead more like function composition
+union of two dictionaries, but instead more like function composition. That's
+what `compose`, `apply_ty`, and `apply_ctx` are for.
 
 ```python
 def compose(s1: Subst, s2: Subst) -> Subst: ...
@@ -134,7 +146,16 @@ def compose(s1: Subst, s2: Subst) -> Subst: ...
 def apply_ty(ty: MonoType, subst: Subst) -> MonoType: ...
 
 def apply_ctx(ctx: Context, subst: Subst) -> Context: ...
+```
 
+This "constrain" process we talked about in the inference rules refers to
+*unification*, which we call `unify_w`. In Algorithm W, unification involves
+building up a substitution. Type variables are "easy"; bind them to a monotype.
+For type constructors, we have to check that the constructor name matches, then
+that they each have the same number of arguments, and finally build up
+constraints by unifying the arguments pairwise.
+
+```python
 def unify_w(ty1: MonoType, ty2: MonoType) -> Subst:
     if isinstance(ty1, TyVar):
         return bind_var(ty2, ty1.name)
@@ -153,8 +174,11 @@ def unify_w(ty1: MonoType, ty2: MonoType) -> Subst:
             )
         return result
     raise TypeError(f"Unexpected type {type(ty1)}")
+```
 
+Example: `unify_w(...) = blah`
 
+```python
 def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
     if isinstance(expr, Var):
         scheme = ctx.get(expr.name)
@@ -297,16 +321,6 @@ amount of polymorphism. Consider the function `id = x -> x`. The type of `id`
 is `forall 'a. 'a -> 'a`. This is kind of like a lambda for type variables. The
 `forall` construct binds type variables like normal lambdas bind normal
 variables. Some of the literature calls these *type schemes*.
-
-```python
-@dataclasses.dataclass
-class Forall:
-    tyvars: list[TyVar]
-    ty: MonoType
-
-    def __str__(self) -> str:
-        return f"(forall {', '.join(map(str, self.tyvars))}. {self.ty})"
-```
 
 Generalize is kind of like the opposite of instantiate. It takes a type and
 turns it into a scheme using its free variables:
