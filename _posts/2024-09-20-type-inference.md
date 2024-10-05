@@ -1,5 +1,5 @@
 ---
-title: Little implementations of the various Damas-Hindley-Milner inference algorithms
+title: Damas-Hindley-Milner inference two ways
 layout: post
 co_authors: River Dillon Keefer
 ---
@@ -11,7 +11,7 @@ calculus (later adapted for Standard ML and the ML-family languages) with
 parametric polymorphism, aka generic functions. It sits at a sweet spot in PL
 design: the type system is quite expressive, and there are well known type
 inference algorithms that require absolutely no annotations from the
-programmer. 
+programmer.
 
 TODO: link to papers from Damas, Hindley, and Milner
 
@@ -212,6 +212,8 @@ def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
 ```
 
 ## Algorithm M
+
+TODO
 
 https://www.classes.cs.uchicago.edu/archive/2007/spring/32001-1/papers/p707-lee.pdf
 
