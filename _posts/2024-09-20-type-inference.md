@@ -158,7 +158,7 @@ constraints by unifying the arguments pairwise.
 <!-- TODO: occurs check -->
 
 <!--
--- Z combinator doesn't type check
+-- Z combinator doesn't type check, similar to OCaml (we don't have -rectypes)
 Z factr 5
 
 . Z = f -> (x -> f (v -> (x x) v)) (x -> f (v -> (x x) v))
