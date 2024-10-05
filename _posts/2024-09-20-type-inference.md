@@ -394,10 +394,15 @@ turns it into a scheme using its free variables:
 def generalize(ty: MonoType, ctx: Context) -> Forall: ...
 ```
 
-You can't directly use a `Forall` in a type expression. Instead, you have to
-*instantiate* ("call", "apply") the `Forall`. This replaces the bound variables
-with new variables in the right hand side---in the type. For example,
-instantiating `forall 'a. 'a -> 'a` might give you `'t123 -> 't123`.
+For example, generalizing `'a` would be `forall 'a. 'a`. Or generalizing `'a
+list -> int` would result in `forall 'a. 'a list -> int` (the type scheme of
+the list `length` function).
+
+You can't directly use a type scheme, a `Forall`, in a type expression.
+Instead, you have to *instantiate* ("call", "apply") the `Forall`. This
+replaces the bound variables with new variables in the right hand side---in the
+type. For example, instantiating `forall 'a. 'a -> 'a` might give you `'t123 ->
+'t123`.
 
 ```python
 def instantiate(scheme: Forall) -> MonoType: ...
