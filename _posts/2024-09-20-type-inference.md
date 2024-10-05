@@ -474,11 +474,44 @@ those graphs. Sounds trickier than it's worth right now[^cfa].
 
 [^cfa]: But control flow analysis (CFA) is on my TODO list anyway, so...
 
+### More datatypes
+
+Scrapscript has lists. While Scrapscript allows for heterogeneous lists
+(a list can contain elements of different types at the same time), our type
+system will not (at least to start). In order to type these lists, we need to
+constrain all the list elements to be the same type when we see a list
+constructor.
+
+```python
+def infer_j(expr: Object, ctx: Context) -> TyVar:
+    # ...
+    if isinstance(expr, List):
+        list_item_ty = fresh_tyvar()
+        for item in expr.items:
+            item_ty = infer_j(item, ctx)
+            unify_j(list_item_ty, item_ty)
+        return TyCon("list", [list_item_ty])
+```
+
+This means that an empty list will have type `'a list`. And, interestingly
+enough, a `let`-bound empty list will have type scheme `forall 'a. 'a list`.
+
 ### Pattern matching
 
 What's the type of a match case pattern? Until a couple of days ago, I didn't
 know. Turns out, it's the type that it looks like it should be, as long as you
 bind all the variables in the pattern to fresh type variables.
+
+For example, the type of `| [x, y] -> x` is `'a list -> 'a` because the list
+constructor tells us this should be a list. But in order to avoid raising
+an `Unbound variable` exception when we see `x` in the pattern, we have to
+prefill the context with `x` bound to a fresh type variable.
+
+Similarly, the type of `| [x, 5] -> x` is `int list -> int` because the `5`
+literal makes the whole thing an `int list`. This means that we gain additional
+type information about `x` too!
+
+Let's look at the Python code for inferring a singular match case:
 
 ```python
 def infer_j(expr: Object, ctx: Context) -> TyVar:
@@ -492,8 +525,8 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
         return result
 ```
 
-Then we unify all of the case functions to make the pattern types line up and
-the return types line up.
+Then for an entire match function, we unify all of the case functions to make
+the pattern types line up and the return types line up.
 
 ```python
 def infer_j(expr: Object, ctx: Context) -> TyVar:
@@ -505,7 +538,19 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
         return result
 ```
 
-(Also add `MatchFunction` to the type check in the recursive `let`!)
+Similar to typing lists, match patterns have to (for now?) be homogeneous. That
+means that the following snippet of code, which is perfectly legal Scrapscript,
+wouldn't fly with our type inference:
+
+```
+| [x] -> x
+| {a=1} -> 2
+```
+
+It would be nice to support this but I don't know how right now.
+
+(Also remember to add `MatchFunction` to the type check in the recursive
+`let`!)
 
 ### Row polymorphism
 
