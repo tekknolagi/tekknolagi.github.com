@@ -402,7 +402,7 @@ You can't directly use a type scheme, a `Forall`, in a type expression.
 Instead, you have to *instantiate* (similar to "call" or "apply") the `Forall`.
 This replaces the bound variables ("parameters") with new variables in the
 right hand side---in the type. For example, instantiating `forall 'a. 'a -> 'a`
-might give you `'t123 -> 't123`.
+might give you `'t123 -> 't123`, where `'t123` is a fresh variable.
 
 ```python
 def instantiate(scheme: Forall) -> MonoType: ...
