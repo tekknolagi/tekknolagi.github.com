@@ -437,16 +437,24 @@ type variable or something.
 
 ### Recursion
 
-Limited recursion: if typing the pattern `f = FUNCTION` or `f =
-MATCH_FUNCTION`, then bind `f` to some new type variable to "tie the knot" in
-the context
+Another quality of life feature that people tend to want in programming
+languages, especially programming languages without loops, is recursion. Right
+now our infer function won't support functions referring to themselves; we
+don't add the function name to the environment when running inference on the
+function body.
+
+To add a limited form of recursion, we do the following:
+
+* if typing the pattern `f = FUNCTION` or `f = MATCH_FUNCTION`,
+  * then bind `f` to some new type variable to "tie the knot" in
+    the context
 
 ```python
 def infer_j(expr: Object, ctx: Context) -> TyVar:
     # ...
     if isinstance(expr, Where):
         name, value, body = expr.binding.name.name, expr.binding.value, expr.body
-        if isinstance(value, (Function, MatchFunction)):
+        if isinstance(value, Function):
             # Letrec
             func_ty = fresh_tyvar()
             value_ty = infer_j(value, {**ctx, name: Forall([], func_ty)})
@@ -456,9 +464,15 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
         # ...
 ```
 
-In an ideal world, we would have a way to type mutual recursion. I think this
-involves identifying call graphs and strongly connected components within
-thiose graphs
+This is helpful, but it's not a full solution. OCaml, for example, has `let
+rec`/`and` to write mutually recursive functions. We don't have the syntax to
+express that in Scrapscript.
+
+In an ideal world, we would have a way to type mutual recursion anyway. I think
+this involves identifying call graphs and strongly connected components within
+those graphs. Sounds trickier than it's worth right now[^cfa].
+
+[^cfa]: But control flow analysis (CFA) is on my TODO list anyway, so...
 
 ### Pattern matching
 
@@ -490,6 +504,8 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
             unify_j(result, case_ty)
         return result
 ```
+
+(Also add `MatchFunction` to the type check in the recursive `let`!)
 
 ### Row polymorphism
 
