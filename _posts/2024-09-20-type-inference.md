@@ -398,6 +398,8 @@ RowSelect, RowExtend, RowRestrict
 
 * http://www.cs.cmu.edu/~aldrich/courses/819/papers/row-poly.pdf
 * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/scopedlabels.pdf
+* https://cs.ioc.ee/tfp-icfp-gpce05/tfp-proc/21num.pdf
+* https://github.com/zrho/libra-types/blob/1443ee7e31625a1b9278c29cefb4da044be1c90b/book/src/type_system.md
 
 ### Defer-dynamic
 
@@ -407,7 +409,6 @@ Unify doesn't fail but leaves `dyn` and/or run-time check
 
 * https://caml.inria.fr/pub/papers/garrigue-polymorphic_variants-ml98.pdf
 * https://drops.dagstuhl.de/storage/00lipics/lipics-vol263-ecoop2023/LIPIcs.ECOOP.2023.17/LIPIcs.ECOOP.2023.17.pdf
-* https://cs.ioc.ee/tfp-icfp-gpce05/tfp-proc/21num.pdf
 
 ### Canonicalization or minification of type variables
 
