@@ -306,8 +306,7 @@ and unify it with some expected type. I don't think this is strictly necessary
 (we don't need a type variable to return `IntType` for int literals, for
 example), but I think it makes for easier reading. If I were to slim it down a
 bit, I think the rule I would use is "only invent a type variable if it needs
-to be constrained in the type of something else and not returned". Like in
-`Apply`.
+to be constrained in the type of something else". Like in `Apply`.
 
 ```python
 def infer_j(expr: Object, ctx: Context) -> TyVar:
