@@ -157,6 +157,17 @@ constraints by unifying the arguments pairwise.
 
 <!-- TODO: occurs check -->
 
+<!--
+-- Z combinator doesn't type check
+Z factr 5
+
+. Z = f -> (x -> f (v -> (x x) v)) (x -> f (v -> (x x) v))
+
+. factr = facti ->
+  | 0 -> 1
+  | n -> n * (facti (n - 1))
+-->
+
 ```python
 def unify_w(ty1: MonoType, ty2: MonoType) -> Subst:
     if isinstance(ty1, TyVar):
