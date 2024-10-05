@@ -345,6 +345,10 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
 There you have it. Algorithm J: looks like W, but simpler and (apparently)
 faster.
 
+This concludes the section on basic HM. I don't think any in-use language uses
+HM like this; they all build on extensions. We have added some of these
+extensions to make Scrapscript's type system more expressive.
+
 ## Extensions for Scrapscript
 
 Adding type system features that go beyond HM in terms of expressivity often
