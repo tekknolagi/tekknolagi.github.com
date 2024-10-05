@@ -219,10 +219,62 @@ Top-down (upside-down W, ha ha)
 
 ## Algorithm J
 
-Union-find
+Alright, so substitutions are a little clunky. Maybe there's a neat way to do
+this in functional languages by threading the state through automatically or
+something, but we're in Python and I'm a bit of a programming caveman, so we're
+doing side effects.
 
-Instead of explicitly threading through and composing substitutions, we
-implicitly modify the type variables as a way to keep track of the environment.
+Unlike Algorithm W, which builds up a map of substitutions, Algorithm J uses
+union-find on the type variables to store equivalences. (I wrote about
+Union-find previously in my intro to [Vectorizing ML
+models](/blog/vectorizing-ml-models/).)
+
+We have to add the usual `forwarded`/`find`/`make_equal_to` infrastructure to
+the types we defined above.
+
+```python
+@dataclasses.dataclass
+class MonoType:
+    forwarded: MonoType | None = dataclasses.field(init=False, default=None)
+
+    def find(self) -> MonoType:
+        result: MonoType = self
+        while isinstance(result, TyVar):
+            it = result.forwarded
+            if it is None:
+                return result
+            result = it
+        return result
+
+    def _set_forwarded(self, other: MonoType) -> None:
+        raise NotImplementedError
+
+
+@dataclasses.dataclass
+class TyVar(MonoType):
+    name: str
+
+    def make_equal_to(self, other: MonoType) -> None:
+        self.find()._set_forwarded(other)
+
+    def _set_forwarded(self, other: MonoType) -> None:
+        self.forwarded = other
+
+
+@dataclasses.dataclass
+class TyCon(MonoType):
+    name: str
+    args: list[MonoType]
+```
+
+While it doesn't really make sense to `find` or `make_equal_to` on a type
+constructor (it should always be a leaf in the union-find DAG), we still define
+`find` and `_set_forwarded` to make MyPy happy and make some code look a little
+more natural.
+
+Once we do that, we can write our unify implementation for Algorithm J. You can
+see that the general structure has not changed much, but the recursive bits
+in the `TyCon` case have gotten much simpler to read.
 
 ```python
 def unify_j(ty1: MonoType, ty2: MonoType) -> None:
@@ -236,16 +288,28 @@ def unify_j(ty1: MonoType, ty2: MonoType) -> None:
     if isinstance(ty1, TyCon) and isinstance(ty2, TyCon):
         if ty1.name != ty2.name:
             unify_fail(ty1, ty2)
-            return
         if len(ty1.args) != len(ty2.args):
             unify_fail(ty1, ty2)
-            return
         for l, r in zip(ty1.args, ty2.args):
             unify_j(l, r)
         return
     raise TypeError(f"Unexpected type {type(ty1)}")
+```
 
+Now that we have unify (which, remember, makes side-effecty changes using
+`make_equal_to`), we can write our infer function. It will look pretty similar
+to Algorithm J in overall structure, and in fact our plaintext algorithm
+applies just as well.
 
+The main difference is that we invent a new type variable for every AST node
+and unify it with some expected type. I don't think this is strictly necessary
+(we don't need a type variable to return `IntType` for int literals, for
+example), but I think it makes for easier reading. If I were to slim it down a
+bit, I think the rule I would use is "only invent a type variable if it needs
+to be constrained in the type of something else and not returned". Like in
+`Apply`.
+
+```python
 def infer_j(expr: Object, ctx: Context) -> TyVar:
     result = fresh_tyvar()
     if isinstance(expr, Var):
@@ -277,6 +341,9 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
         return result
     raise TypeError(f"Unexpected type {type(expr)}")
 ```
+
+There you have it. Algorithm J: looks like W, but simpler and (apparently)
+faster.
 
 ## Extensions for Scrapscript
 
