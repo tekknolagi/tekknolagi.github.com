@@ -155,6 +155,8 @@ For type constructors, we have to check that the constructor name matches, then
 that they each have the same number of arguments, and finally build up
 constraints by unifying the arguments pairwise.
 
+<!-- TODO: occurs check -->
+
 ```python
 def unify_w(ty1: MonoType, ty2: MonoType) -> Subst:
     if isinstance(ty1, TyVar):
@@ -275,6 +277,8 @@ more natural.
 Once we do that, we can write our unify implementation for Algorithm J. You can
 see that the general structure has not changed much, but the recursive bits
 in the `TyCon` case have gotten much simpler to read.
+
+<!-- TODO: occurs check -->
 
 ```python
 def unify_j(ty1: MonoType, ty2: MonoType) -> None:
