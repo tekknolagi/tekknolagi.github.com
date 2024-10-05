@@ -351,41 +351,36 @@ extensions to make Scrapscript's type system more expressive.
 
 ## Extensions for Scrapscript
 
+<!--
 Adding type system features that go beyond HM in terms of expressivity often
 requires some type annotations from the programmer, or adding significant
 complexity to the inference algorithm.
-### Recursion
-
-Limited recursion: if typing the pattern `f = FUNCTION` or `f =
-MATCH_FUNCTION`, then bind `f` to some new type variable to "tie the knot" in
-the context
-
-```python
-def infer_j(expr: Object, ctx: Context) -> TyVar:
-    # ...
-    if isinstance(expr, Where):
-        name, value, body = expr.binding.name.name, expr.binding.value, expr.body
-        if isinstance(value, (Function, MatchFunction)):
-            # Letrec
-            func_ty = fresh_tyvar()
-            value_ty = infer_j(value, {**ctx, name: Forall([], func_ty)})
-        else:
-            # Let
-            value_ty = infer_j(value, ctx)
-        # ...
-```
-
-In an ideal world, we would have a way to type mutual recursion. I think this
-involves identifying call graphs and strongly connected components within
-thiose graphs
+-->
 
 ### Let polymorphism
 
+The first quality of life feature that people tend to add, I think, is some
+kind of polymorphism. We alluded to it earlier because it was already baked
+into our implementation (and we had to scratch it out temporarily to write the
+post), and we're coming back to it now.
+
+In order to make polymorphism decidable (I think), you have to pick some
+limited set of points in the concrete syntax to generalize types. The usual
+place is in `let` bindings. This is why all `let`-bound program variables
+(including top-level definitions) are associated with *type schemes* in the
+context. I think you could also do it with a `generalize` or `template` keyword
+or something, but people tend to use `let` as the signal.
+
+The change to the inference algorithm is as follows:
+
 * if you see a let binding `let n = v in b` (called "where" in scrapscript) `e`,
   * infer the type of the value `v`
-  * generalize `type(v)` to get a scheme `s`
+  * **generalize `type(v)` to get a scheme `s`**
   * add `n: s` to the environment while type checking the body `b`
   * return `type(b)`
+
+Note that even though we generalize the type to store it into the environment,
+we *still return a monotype*.
 
 Hindley Milner types also include a `forall` quantifier that allows for some
 amount of polymorphism. Consider the function `id = x -> x`. The type of `id`
@@ -437,6 +432,32 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
 Due to our union-find implementation, we also need to do this "recursive find"
 thing that calls `.find()` recursively to discover all of the type variables in
 the type. Otherwise we might just see `'t0` or something.
+
+
+### Recursion
+
+Limited recursion: if typing the pattern `f = FUNCTION` or `f =
+MATCH_FUNCTION`, then bind `f` to some new type variable to "tie the knot" in
+the context
+
+```python
+def infer_j(expr: Object, ctx: Context) -> TyVar:
+    # ...
+    if isinstance(expr, Where):
+        name, value, body = expr.binding.name.name, expr.binding.value, expr.body
+        if isinstance(value, (Function, MatchFunction)):
+            # Letrec
+            func_ty = fresh_tyvar()
+            value_ty = infer_j(value, {**ctx, name: Forall([], func_ty)})
+        else:
+            # Let
+            value_ty = infer_j(value, ctx)
+        # ...
+```
+
+In an ideal world, we would have a way to type mutual recursion. I think this
+involves identifying call graphs and strongly connected components within
+thiose graphs
 
 ### Pattern matching
 
