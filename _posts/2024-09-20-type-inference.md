@@ -184,7 +184,7 @@ def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
         scheme = ctx.get(expr.name)
         if scheme is None:
             raise TypeError(f"Unbound variable {expr.name}")
-        return {}, instantiate(scheme)
+        return {}, scheme.ty
     if isinstance(expr, Int):
         return {}, IntType
     if isinstance(expr, Function):
@@ -315,7 +315,7 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
         scheme = ctx.get(expr.name)
         if scheme is None:
             raise TypeError(f"Unbound variable {expr.name}")
-        unify_j(result, instantiate(scheme))
+        unify_j(result, scheme.ty)
         return result
     if isinstance(expr, Int):
         unify_j(result, IntType)
@@ -408,21 +408,18 @@ might give you `'t123 -> 't123`, where `'t123` is a fresh variable.
 def instantiate(scheme: Forall) -> MonoType: ...
 ```
 
-If you want to have polymorphic functions, you need to find a cut point for
-where to generalize. Maybe this means adding a `generic` keyword or maybe this
-means making all `let`-bound variables polymorphic.
-
-We chose to do the latter. This means that we need to take the type of the
-function (say, `a -> b -> c`) and generalize it before adding it to the
-environment:
-
-Before: `('t10->('t11->('t12->'t10)))`
-
-After: `(forall 't10, 't11, 't12. ('t10->('t11->('t12->'t10))))`
+Now, to integrate let polymorphism into our Algorithm J inference engine, we
+need only change two lines:
 
 ```python
 def infer_j(expr: Object, ctx: Context) -> TyVar:
     # ...
+    if isinstance(expr, Var):
+        scheme = ctx.get(expr.name)
+        if scheme is None:
+            raise TypeError(f"Unbound variable {expr.name}")
+        unify_j(result, instantiate(scheme))  # changed!
+        return result
     if isinstance(expr, Where):
         name, value, body = expr.binding.name.name, expr.binding.value, expr.body
         value_ty = infer_j(value, ctx)
@@ -433,10 +430,10 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
     # ...
 ```
 
-Due to our union-find implementation, we also need to do this "recursive find"
-thing that calls `.find()` recursively to discover all of the type variables in
-the type. Otherwise we might just see `'t0` or something.
-
+Note that due to our union-find implementation, we also need to do this
+"recursive find" thing that calls `.find()` recursively to discover all of the
+type variables in the type. Otherwise we might just see `'t0` as our only free
+type variable or something.
 
 ### Recursion
 
