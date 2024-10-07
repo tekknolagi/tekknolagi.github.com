@@ -674,10 +674,10 @@ fine folks who reviewed the post before it went out:
 
 * Biunification (like CubiML)
 * Static Basic Block Versioning
-* CFA / Lambda set defunctionalization
+* CFA / [Lambda set defunctionalization](https://dl.acm.org/doi/abs/10.1145/3591260)
   * River's STLC
 * https://www.reddit.com/r/ProgrammingLanguages/comments/ijij9o/beyond_hindleymilner_but_keeping_principal_types/
-* https://okmij.org/ftp/ML/generalization.html
+* [More efficient generalization](https://okmij.org/ftp/ML/generalization.html)
 * Better error messages with [Wand 1986](https://dl.acm.org/doi/10.1145/512644.512648)
 * https://osa1.net/posts/2023-01-23-fast-polymorphic-record-access.html
 
