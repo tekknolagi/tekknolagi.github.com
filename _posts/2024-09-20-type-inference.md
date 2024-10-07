@@ -235,13 +235,23 @@ def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
 
 ## Algorithm M
 
-TODO
+Apparently there is a secret third thing that people do, which wasn't formally
+proven until 1998 in a paper called [Proofs about a Folklore Let-Polymorphic Type
+Inference Algorithm][algorithm-m] (PDF) by Lee and Yi. They call it Algorithm M
+because it's a top-down version of Algorithm W (ha ha).
 
-https://www.classes.cs.uchicago.edu/archive/2007/spring/32001-1/papers/p707-lee.pdf
+[algorithm-m]: https://www.classes.cs.uchicago.edu/archive/2007/spring/32001-1/papers/p707-lee.pdf
 
-Pass in a type variable? Annotate the AST?
+It looks pretty similar to W but there's a third parameter to the inference
+function, which is the monotype that you expect the expression to
+have[^bidirectional]. We won't have an implementation here, but you should go
+take a look at the paper which does a nice side-by-side of W and M. Reader, if
+you would like to contribute a small version of Algorithm M using our data
+structures, I would be happy to include it.
 
-Top-down (upside-down W, ha ha)
+[^bidirectional]: In that sense it maybe feels a little bit like bidirectional
+    type checking, but I also don't know much about that... just going off of
+    vibes.
 
 ## Algorithm J
 
@@ -332,9 +342,15 @@ applies just as well.
 The main difference is that we invent a new type variable for every AST node
 and unify it with some expected type. I don't think this is strictly necessary
 (we don't need a type variable to return `IntType` for int literals, for
-example), but I think it makes for easier reading. If I were to slim it down a
-bit, I think the rule I would use is "only invent a type variable if it needs
-to be constrained in the type of something else". Like in `Apply`.
+example[^annotate-phase]), but I think it makes for easier reading. If I were
+to slim it down a bit, I think the rule I would use is "only invent a type
+variable if it needs to be constrained in the type of something else". Like in
+`Apply`.
+
+[^annotate-phase]: I mean, some people even go so far as to split this out into
+    its own annotation phase that takes one pass over the AST and adds a type
+    variable for each tree node. This is probably helpful for error messages
+    and generally keeping type information around for longer.
 
 ```python
 def infer_j(expr: Object, ctx: Context) -> TyVar:
