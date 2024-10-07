@@ -654,6 +654,7 @@ Can we make hashes of types?
   * River's STLC
 * https://www.reddit.com/r/ProgrammingLanguages/comments/ijij9o/beyond_hindleymilner_but_keeping_principal_types/
 * https://okmij.org/ftp/ML/generalization.html
+* Better error messages with [Wand 1986](https://dl.acm.org/doi/10.1145/512644.512648)
 
 <!-- Feedback:
 
