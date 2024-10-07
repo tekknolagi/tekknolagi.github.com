@@ -657,8 +657,6 @@ Can we make hashes of types?
 
 - "It would be nice to support this but I don‚Äôt know how right now." I also don't know. If you figure it out you should publish about it :-)
 
-- The title says "two ways" but you list three ways: Algorithm M, algorithm W, algorithm J.
-
 - AFAICS the section on generalization doesn't mention the issues with variables escaping their binder's scope. Maybe fine for the purposes of this blog post.
 
 ---
