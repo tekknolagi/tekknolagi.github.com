@@ -168,7 +168,6 @@ finally that `c` is an `int` (subst 3). These three separate facts must be
 combined in order to fully realize that all three type variables are `int`.
 
 ```console?lang=python&prompt=>>>
->>> from type_inference import compose, Subst, TyVar, TyCon
 >>> s1 = {"a": TyVar("b")}
 >>> s2 = {"b": TyVar("c")}
 >>> s3 = {"c": TyCon("int", [])}
