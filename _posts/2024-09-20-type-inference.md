@@ -15,7 +15,8 @@ algorithms that require absolutely no annotations from the programmer.
 It seems to have been discovered independently multiple times over the years,
 but the most famous papers are the [original][original-milner] (PDF) by Milner
 and the [follow-on][damas-milner] (PDF) by Damas and Milner. Damas continued on
-to write his [thesis][damas-thesis] (PDF) about it.
+to write his [thesis][damas-thesis] (PDF) about it. (If you have a link to the
+appropriate Hindley paper, please let me know.)
 
 [original-milner]: /assets/img/milner-theory-type-polymorphism.pdf
 
