@@ -233,26 +233,6 @@ def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
     raise TypeError(f"Unexpected type {type(expr)}")
 ```
 
-## Algorithm M
-
-Apparently there is a secret third thing that people do, which wasn't formally
-proven until 1998 in a paper called [Proofs about a Folklore Let-Polymorphic Type
-Inference Algorithm][algorithm-m] (PDF) by Lee and Yi. They call it Algorithm M
-because it's a top-down version of Algorithm W (ha ha).
-
-[algorithm-m]: https://www.classes.cs.uchicago.edu/archive/2007/spring/32001-1/papers/p707-lee.pdf
-
-It looks pretty similar to W but there's a third parameter to the inference
-function, which is the monotype that you expect the expression to
-have[^bidirectional]. We won't have an implementation here, but you should go
-take a look at the paper which does a nice side-by-side of W and M. Reader, if
-you would like to contribute a small version of Algorithm M using our data
-structures, I would be happy to include it.
-
-[^bidirectional]: In that sense it maybe feels a little bit like bidirectional
-    type checking, but I also don't know much about that... just going off of
-    vibes.
-
 ## Algorithm J
 
 Alright, so substitutions are a little clunky. Maybe there's a neat way to do
@@ -470,6 +450,26 @@ Note that due to our union-find implementation, we also need to do this
 "recursive find" thing that calls `.find()` recursively to discover all of the
 type variables in the type. Otherwise we might just see `'t0` as our only free
 type variable or something.
+
+## Algorithm M
+
+Apparently there is a secret third thing that people do, which wasn't formally
+proven until 1998 in a paper called [Proofs about a Folklore Let-Polymorphic Type
+Inference Algorithm][algorithm-m] (PDF) by Lee and Yi. They call it Algorithm M
+because it's a top-down version of Algorithm W (ha ha).
+
+[algorithm-m]: https://www.classes.cs.uchicago.edu/archive/2007/spring/32001-1/papers/p707-lee.pdf
+
+It looks pretty similar to W but there's a third parameter to the inference
+function, which is the monotype that you expect the expression to
+have[^bidirectional]. We won't have an implementation here, but you should go
+take a look at the paper which does a nice side-by-side of W and M. Reader, if
+you would like to contribute a small version of Algorithm M using our data
+structures, I would be happy to include it.
+
+[^bidirectional]: In that sense it maybe feels a little bit like bidirectional
+    type checking, but I also don't know much about that... just going off of
+    vibes.
 
 ## Extensions for Scrapscript
 
