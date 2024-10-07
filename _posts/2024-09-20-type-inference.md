@@ -175,7 +175,9 @@ combined in order to fully realize that all three type variables are `int`.
 >>> compose(s2, s1)
 {'a': TyVar(name='c'), 'b': TyVar(name='c')}
 >>> compose(s3, compose(s2, s1))
-{'a': TyCon(name='int', args=[]), 'b': TyCon(name='int', args=[]), 'c': TyCon(name='int', args=[])}
+{'a': TyCon(name='int', args=[]),
+ 'b': TyCon(name='int', args=[]),
+ 'c': TyCon(name='int', args=[])}
 >>>
 ```
 
