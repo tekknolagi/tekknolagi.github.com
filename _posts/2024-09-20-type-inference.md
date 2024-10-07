@@ -50,8 +50,9 @@ Every expression has exactly one type, called a monotype (we'll get to
 generalization later). For this type checker, instead of working with values,
 such as `5`, we're evaluating a program composed of types (`int`) and
 operations on types (`list`). For our purposes, a monotype is either a type
-variable like `a` or a type constructor like `->` (a function, as in OCaml or
-Haskell), `list`, etc.
+variable like `'a` or the application of a type constructor like `->` (a
+function, as in OCaml or Haskell), `list`, etc to monotype arguments (`'a
+list`, `'a -> 'b`).
 
 We represent that divide in python with classes:
 
@@ -646,6 +647,18 @@ Unify doesn't fail but leaves `dyn` and/or run-time check
 
 Can we make hashes of types?
 
+## Acknowledgements
+
+Thank you to River Dillon Keefer for co-authoring the code and this post with
+me at [Recurse Center][rc]. Thank you to the following fine folks who reviewed
+the post before it went out:
+
+* [Burak Emir](https://burakemir.ch/)
+* [Chris Fallin](https://cfallin.org/)
+* [Sinan](https://osa1.net/)
+
+[rc]: https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb
+
 ## See also
 
 * Biunification (like CubiML)
@@ -655,6 +668,7 @@ Can we make hashes of types?
 * https://www.reddit.com/r/ProgrammingLanguages/comments/ijij9o/beyond_hindleymilner_but_keeping_principal_types/
 * https://okmij.org/ftp/ML/generalization.html
 * Better error messages with [Wand 1986](https://dl.acm.org/doi/10.1145/512644.512648)
+* https://osa1.net/posts/2023-01-23-fast-polymorphic-record-access.html
 
 <!-- Feedback:
 
@@ -698,7 +712,6 @@ big picture: might be a style thing / my own writing preferences but it might be
 
 some thoughts I jotted down as I read:
 
-- "or a type constructor like list" -> or a type constructor ... applied to monotype arguments?
 - "something called a type scheme" but class name is Forall -- address this? "one kind of type scheme for now, a forall"?
 - "instantiate the scheme and return it" -> forward-reference for what this means?
 - "instead more like function composition" -> give an example where composing two maps takes a type from a to b, then b to c?
