@@ -6,14 +6,22 @@ co_authors: River Dillon Keefer
 
 ## What is Damas-Hindley-Milner?
 
-A Damas-Hindley-Milner (HM) type system is a type system for the lambda
-calculus (later adapted for Standard ML and the ML-family languages) with
-parametric polymorphism, aka generic functions. It sits at a sweet spot in PL
-design: the type system is quite expressive, and there are well known type
-inference algorithms that require absolutely no annotations from the
-programmer.
+Damas-Hindley-Milner (HM) is a type system for the lambda calculus (later
+adapted for Standard ML and the ML-family languages) with parametric
+polymorphism, aka generic functions. It sits at a sweet spot in PL design: the
+type system is quite expressive, and there are well known type inference
+algorithms that require absolutely no annotations from the programmer.
 
-TODO: link to papers from Damas, Hindley, and Milner
+It seems to have been discovered independently multiple times over the years,
+but the most famous papers are the [original][original-milner] (PDF) by Milner
+and the [follow-on][damas-milner] (PDF) by Damas and Milner. Damas continued on
+to write his [thesis][damas-thesis] (PDF) about it.
+
+[original-milner]: /assets/img/milner-theory-type-polymorphism.pdf
+
+[damas-milner]: /assets/img/damas-milner-original.pdf
+
+[damas-thesis]: /assets/img/damas-thesis.pdf
 
 The type system is limited, but by virtue of being limited, it confers these
 advantages:
@@ -25,12 +33,13 @@ advantages:
 <!--As a general note: the more constrained your language/system is, the more you
 can optimize-->
 
-In this post, we implement HM two ways, and then extend it a little bit. We'll
-do this in the context of [scrapscript](/blog/scrapscript), but the goal is to
-get a better understanding of HM in general.
+In this post, we implement HM in two ways (and mention a third), and then
+extend it a little bit. We'll do this in the context of
+[scrapscript](/blog/scrapscript), but the goal is to get a better understanding
+of HM in general.
 
 We'll start with Algorithm W because it's the OG, and doesn't depend on side
-effects like Algorithm J does. It *is* definitely more visually confusing than
+effects like Algorithm J does. It *is* definitely more visually cluttered than
 Algorithm J, though, so if you get discouraged, you might want to skip ahead to
 Algorithm J.
 
@@ -40,7 +49,8 @@ Every expression has exactly one type, called a monotype (we'll get to
 generalization later). For this type checker, instead of working with values,
 such as `5`, we're evaluating a program composed of types (`int`) and
 operations on types (`list`). For our purposes, a monotype is either a type
-variable like `a` or a type constructor like `->`, `list`, etc.
+variable like `a` or a type constructor like `->` (a function, as in OCaml or
+Haskell), `list`, etc.
 
 We represent that divide in python with classes:
 
@@ -629,16 +639,6 @@ Can we make hashes of types?
 <!-- Feedback:
 
 1)
-
-My comments and feedback on https://bernsteinbear-com-pr-76.fly.dev/blog/type-inference/
-
-- "we implement HM two ways" <-- is there a missing "in"? "we implement HM in two ways"
-
-- "visually confusing" I don't know what it means for an algorithm to "visually" confusing..
-
-- "Type constructor like `->`, ..." I guess most readers will be familiar with OCaml or Haskell, and thus `->`, but depending on the background assumed you may want to explain what the arrow operator is for.
-
-- "it was presented in the paper" which paper? Would be good to have a link or at least the title of the paper.
 
 - "instantiate the scheme and return it" at this point it's a bit unclear what a scheme is, and instantiation is not defined yet. I suspect a reader who is unfamiliar with HM and wants to learn may get a bit confused.
 
