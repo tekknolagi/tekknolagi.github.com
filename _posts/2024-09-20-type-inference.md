@@ -685,41 +685,71 @@ fine folks who reviewed the post before it went out:
 
 1)
 
-- "instantiate the scheme and return it" at this point it's a bit unclear what a scheme is, and instantiation is not defined yet. I suspect a reader who is unfamiliar with HM and wants to learn may get a bit confused.
+- "instantiate the scheme and return it" at this point it's a bit unclear what
+  a scheme is, and instantiation is not defined yet. I suspect a reader who is
+  unfamiliar with HM and wants to learn may get a bit confused.
 
-- "if you see a let binding ..." so you don't do generalization yet? Why do you instantiate above if you don't have generalization?
+- "if you see a let binding ..." so you don't do generalization yet? Why do you
+  instantiate above if you don't have generalization?
 
-- `infer_w` doesn't seem to instantiate `scheme`. Or does `scheme.ty` instantiate?
+- `infer_w` doesn't seem to instantiate `scheme`. Or does `scheme.ty`
+  instantiate?
 
-- "It would be nice to support this but I don‚Äôt know how right now." I also don't know. If you figure it out you should publish about it :-)
+- "It would be nice to support this but I don‚Äôt know how right now." I also
+  don't know. If you figure it out you should publish about it :-)
 
-- AFAICS the section on generalization doesn't mention the issues with variables escaping their binder's scope. Maybe fine for the purposes of this blog post.
+- AFAICS the section on generalization doesn't mention the issues with
+  variables escaping their binder's scope. Maybe fine for the purposes of this
+  blog post.
 
 ---
 
-Not saying you should it this way, but I think it would also be interesting to see a blog post in the style of "you could have invented ...". I think the most common way of doing any kind of type inference in PLs is you start giving some abstract type variables to unknown types, then as you see the types used you add constraints to it (e.g. the type is an `int`, the type is a `list` of some type, the type must support this operation), then finally to allow polymorphism you "generalize" the inferred types. All the algorithms you list are ways of doing this.
+Not saying you should it this way, but I think it would also be interesting to
+see a blog post in the style of "you could have invented ...". I think the most
+common way of doing any kind of type inference in PLs is you start giving some
+abstract type variables to unknown types, then as you see the types used you
+add constraints to it (e.g. the type is an `int`, the type is a `list` of some
+type, the type must support this operation), then finally to allow polymorphism
+you "generalize" the inferred types. All the algorithms you list are ways of
+doing this.
 
 Anyway, cool post!
 
 
 2)
 
-- You could mention that the set of type equality constraints is a like a system of equations, that unification is a way to solve them, and that the solution is a substitution.
-- somewhere you mention records and not knowing how to combine with unification, it can be done with subtyping (I have seen that called "semi unification" since the equations become inequations)
-- I for one never really learnt, knew or cared about the letters of the algorithms, so would not have given them so much visibility
+- You could mention that the set of type equality constraints is a like a
+  system of equations, that unification is a way to solve them, and that the
+  solution is a substitution.
+- somewhere you mention records and not knowing how to combine with
+  unification, it can be done with subtyping (I have seen that called "semi
+  unification" since the equations become inequations)
+- I for one never really learnt, knew or cared about the letters of the
+  algorithms, so would not have given them so much visibility
 
 
 3)
 
-this is really helpful/informative for me at least -- I hadn't looked at some of the details here so thanks for the writeup!
-
-big picture: might be a style thing / my own writing preferences but it might be helpful to build up some motivation and intuition at the beginning -- we jump right in without saying what "unify" means or the intuition about (I think) slapping labels on everything then starting to constrain them with equality/merging, and going pairwise structurally down into a tree of type constructors to do so. right now this reads as a (very thorough) notes-as-I-implemented-it and a little less as a tutorial, depends on audience I suppose :-)
+big picture: might be a style thing / my own writing preferences but it might
+be helpful to build up some motivation and intuition at the beginning -- we
+jump right in without saying what "unify" means or the intuition about (I
+think) slapping labels on everything then starting to constrain them with
+equality/merging, and going pairwise structurally down into a tree of type
+constructors to do so. right now this reads as a (very thorough)
+notes-as-I-implemented-it and a little less as a tutorial, depends on audience
+I suppose :-)
 
 some thoughts I jotted down as I read:
 
-- "something called a type scheme" but class name is Forall -- address this? "one kind of type scheme for now, a forall"?
+- "something called a type scheme" but class name is Forall -- address this?
+  "one kind of type scheme for now, a forall"?
 - "instantiate the scheme and return it" -> forward-reference for what this means?
-- "instead more like function composition" -> give an example where composing two maps takes a type from a to b, then b to c?
-- constrain/unify: could give some intuition early on about the high-level idea? that we're naming everything we can with variables then when we know two types "should" be equal we're matching them up structurally? unification fundamentally results in knowing more about type vars when a type var unifies with something more concrete, right?
+- "instead more like function composition" -> give an example where composing
+  two maps takes a type from a to b, then b to c?
+- constrain/unify: could give some intuition early on about the high-level
+  idea? that we're naming everything we can with variables then when we know
+  two types "should" be equal we're matching them up structurally? unification
+  fundamentally results in knowing more about type vars when a type var unifies
+  with something more concrete, right?
 
 -->
