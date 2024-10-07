@@ -86,9 +86,9 @@ def func_type(arg: MonoType, ret: MonoType) -> MonoType:
     return TyCon("->", [arg, ret])
 ```
 
-We'll also have something called a forall (type scheme, universal
-quantification, polytype, ... used for polymorphism), which we'll talk about
-more later, but for now is a thin wrapper around a monotype:
+We'll also have something called a forall (also known as a type scheme,
+universal quantification, polytype, etc used for polymorphism), which we'll
+talk about more later, but for now is a thin wrapper around a monotype:
 
 ```python
 @dataclasses.dataclass
