@@ -383,9 +383,9 @@ kind of polymorphism. We alluded to it earlier because it was already baked
 into our implementation (and we had to scratch it out temporarily to write the
 post), and we're coming back to it now.
 
-In order to make polymorphism decidable (I think), you have to pick some
-limited set of points in the concrete syntax to generalize types. The usual
-place is in `let` bindings. This is why all `let`-bound program variables
+In order to make inference for polymorphism decidable (I think), you have to
+pick some limited set of points in the concrete syntax to generalize types. The
+usual place is in `let` bindings. This is why all `let`-bound program variables
 (including top-level definitions) are associated with *type schemes* in the
 context. I think you could also do it with a `generalize` or `template` keyword
 or something, but people tend to use `let` as the signal.
@@ -648,8 +648,6 @@ Can we make hashes of types?
 - `infer_w` doesn't seem to instantiate `scheme`. Or does `scheme.ty` instantiate?
 
 - Do you want to do path compression in `MonoType.find`? E.g. if you have a variable that's linked to another variable that's linked to a non-variable, you can make the initial variable directly to the non-variable after the `while` loop.
-
-- "In order to make polymorphism decidable" I think you want to make inference decidable? Or maybe I don't know what it means for polymorphism to be undecidable..
 
 - I don't understand why `infer_j` returns a type variable. Why not return a monotype instead? That's what you would do in a real implementation.
 
