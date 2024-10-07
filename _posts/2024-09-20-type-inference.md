@@ -377,10 +377,9 @@ extensions to make Scrapscript's type system more expressive.
 
 ## Let polymorphism
 
-The first quality of life feature that people tend to add, I think, is some
-kind of polymorphism. We alluded to it earlier because it was already baked
-into our implementation (and we had to scratch it out temporarily to write the
-post), and we're coming back to it now.
+We alluded to polymorphism earlier because it was already baked into our
+implementation (and we had to scratch it out temporarily to write the post),
+and we're coming back to it now.
 
 In order to make inference for polymorphism decidable (I think), you have to
 pick some limited set of points in the concrete syntax to generalize types. The
