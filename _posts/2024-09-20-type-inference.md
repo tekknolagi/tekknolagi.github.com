@@ -47,15 +47,12 @@ we go. If you get discouraged, you might want to skip ahead to Algorithm J.
 
 ## The data structures
 
-Every expression has exactly one type, called a monotype (we'll get to
-generalization later). For this type checker, instead of working with values,
-such as `5`, we're evaluating a program composed of types (`int`) and
-operations on types (`list`). For our purposes, a monotype is either a type
-variable like `'a` or the application of a type constructor like `->` (a
-function, as in OCaml or Haskell), `list`, etc to monotype arguments (`'a
-list`, `'a -> 'b`).
+Every expression has exactly one type, called a *monotype*. For our purposes, a
+monotype is either a type variable like `'a` or the application of a type
+constructor like `->` (a function, as in OCaml or Haskell), `list`, etc to
+monotype arguments (`'a list`, `'a -> 'b`).
 
-We represent that divide in python with classes:
+We represent those two kinds in Python with classes:
 
 ```python
 @dataclasses.dataclass
@@ -89,9 +86,9 @@ def func_type(arg: MonoType, ret: MonoType) -> MonoType:
     return TyCon("->", [arg, ret])
 ```
 
-We'll also have something called a type scheme (forall, universal
-quantification, ... used for polymorphism), which we'll talk about more later,
-but for now is a thin wrapper around a monotype:
+We'll also have something called a forall (type scheme, universal
+quantification, polytype, ... used for polymorphism), which we'll talk about
+more later, but for now is a thin wrapper around a monotype:
 
 ```python
 @dataclasses.dataclass
