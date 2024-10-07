@@ -173,9 +173,9 @@ combined in order to fully realize that all three type variables are `int`.
 >>> s2 = {"b": TyVar("c")}
 >>> s3 = {"c": TyCon("int", [])}
 >>> compose(s2, s1)
-{'a': TyVar(forwarded=None, name='c'), 'b': TyVar(forwarded=None, name='c')}
+{'a': TyVar(name='c'), 'b': TyVar(name='c')}
 >>> compose(s3, compose(s2, s1))
-{'a': TyCon(forwarded=None, name='int', args=[]), 'b': TyCon(forwarded=None, name='int', args=[]), 'c': TyCon(forwarded=None, name='int', args=[])}
+{'a': TyCon(name='int', args=[]), 'b': TyCon(name='int', args=[]), 'c': TyCon(name='int', args=[])}
 >>>
 ```
 
@@ -238,7 +238,7 @@ substitution:
 >>> ty1 = TyCon("list", [TyVar("a")])
 >>> ty2 = TyCon("list", [TyCon("int", [])])
 >>> unify_w(ty1, ty2)
-{'a': TyCon(forwarded=None, name='int', args=[])}
+{'a': TyCon(name='int', args=[])}
 >>>
 ```
 
