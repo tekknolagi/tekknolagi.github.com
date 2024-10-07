@@ -41,9 +41,9 @@ extend it a little bit. We'll do this in the context of
 of HM in general.
 
 We'll start with Algorithm W because it's the OG, and doesn't depend on side
-effects like Algorithm J does. It *is* definitely more visually cluttered than
-Algorithm J, though, so if you get discouraged, you might want to skip ahead to
-Algorithm J.
+effects like Algorithm J does. Having to thread all the state through by hand
+can look intimidating compared to Algorithm J, where we mutate global state as
+we go. If you get discouraged, you might want to skip ahead to Algorithm J.
 
 ## The data structures
 
