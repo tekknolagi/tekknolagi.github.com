@@ -230,7 +230,19 @@ def unify_w(ty1: MonoType, ty2: MonoType) -> Subst:
     raise TypeError(f"Unexpected type {type(ty1)}")
 ```
 
-Example: `unify_w(...) = blah`
+As an example of this pairwise unification, we can see that unifying a `'a
+list` with an `int list` means that `'a` gets marked equivalent to `int` in the
+substitution:
+
+```console?lang=python&prompt=>>>
+>>> ty1 = TyCon("list", [TyVar("a")])
+>>> ty2 = TyCon("list", [TyCon("int", [])])
+>>> unify_w(ty1, ty2)
+{'a': TyCon(forwarded=None, name='int', args=[])}
+>>>
+```
+
+OK, ...
 
 ```python
 def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
