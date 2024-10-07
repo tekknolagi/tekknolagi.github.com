@@ -285,7 +285,7 @@ doing side effects.
 
 Unlike Algorithm W, which builds up a map of substitutions, Algorithm J uses
 union-find on the type variables to store equivalences. (I wrote about
-Union-find previously in my intro to [Vectorizing ML
+union-find previously in my intro to [Vectorizing ML
 models](/blog/vectorizing-ml-models/).)
 
 We have to add the usual `forwarded`/`find`/`make_equal_to` infrastructure to
