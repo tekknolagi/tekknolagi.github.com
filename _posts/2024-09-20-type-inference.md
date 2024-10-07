@@ -381,6 +381,12 @@ We alluded to polymorphism earlier because it was already baked into our
 implementation (and we had to scratch it out temporarily to write the post),
 and we're coming back to it now.
 
+Hindley Milner types also include a `forall` quantifier that allows for some
+amount of polymorphism. Consider the function `id = x -> x`. The type of `id`
+is `forall 'a. 'a -> 'a`. This is kind of like a lambda for type variables. The
+`forall` construct binds type variables like normal lambdas bind normal
+variables. Some of the literature calls these *type schemes*.
+
 In order to make inference for polymorphism decidable (I think), you have to
 pick some limited set of points in the concrete syntax to generalize types. The
 usual place is in `let` bindings. This is why all `let`-bound program variables
@@ -398,12 +404,6 @@ The change to the inference algorithm is as follows:
 
 Note that even though we generalize the type to store it into the environment,
 we *still return a monotype*.
-
-Hindley Milner types also include a `forall` quantifier that allows for some
-amount of polymorphism. Consider the function `id = x -> x`. The type of `id`
-is `forall 'a. 'a -> 'a`. This is kind of like a lambda for type variables. The
-`forall` construct binds type variables like normal lambdas bind normal
-variables. Some of the literature calls these *type schemes*.
 
 Generalize is kind of like the opposite of instantiate. It takes a type and
 turns it into a scheme using its free variables:
