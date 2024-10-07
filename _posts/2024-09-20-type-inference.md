@@ -613,7 +613,7 @@ def infer_j(expr: Object, ctx: Context) -> MonoType:
         body_ctx = {**ctx, **pattern_ctx}
         pattern_ty = infer_j(expr.pattern, body_ctx)
         body_ty = infer_j(expr.body, body_ctx)
-        unify_j(result, func_type(pattern_ty, body_ty))
+        unify_j(result, TyCon("->", ppattern_ty, body_ty]))
         return result
 ```
 
