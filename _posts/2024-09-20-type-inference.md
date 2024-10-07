@@ -523,6 +523,8 @@ def infer_j(expr: Object, ctx: Context) -> TyVar:
 
 This means that an empty list will have type `'a list`. And, interestingly
 enough, a `let`-bound empty list will have type scheme `forall 'a. 'a list`.
+Note that this is only legal if your lists are immutable, as they are in
+Scrapscript.
 
 ### Pattern matching
 
@@ -652,8 +654,6 @@ Can we make hashes of types?
 - I don't understand why `infer_j` returns a type variable. Why not return a monotype instead? That's what you would do in a real implementation.
 
 - "I think this involves identifying call graphs and strongly connected components within those graphs" this is right.
-
-- "And, interestingly enough, a let-bound empty list will have type scheme forall 'a. 'a list" lists are immutable, right? Otherwise you can't generalize the type, see e.g. https://ocaml.org/manual/4.2/polymorphism.html#ss:valuerestriction.
 
 - "It would be nice to support this but I don‚Äôt know how right now." I also don't know. If you figure it out you should publish about it :-)
 
