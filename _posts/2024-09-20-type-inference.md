@@ -365,15 +365,7 @@ This concludes the section on basic HM. I don't think any in-use language uses
 HM like this; they all build on extensions. We have added some of these
 extensions to make Scrapscript's type system more expressive.
 
-## Extensions for Scrapscript
-
-<!--
-Adding type system features that go beyond HM in terms of expressivity often
-requires some type annotations from the programmer, or adding significant
-complexity to the inference algorithm.
--->
-
-### Let polymorphism
+## Let polymorphism
 
 The first quality of life feature that people tend to add, I think, is some
 kind of polymorphism. We alluded to it earlier because it was already baked
@@ -451,6 +443,14 @@ Note that due to our union-find implementation, we also need to do this
 "recursive find" thing that calls `.find()` recursively to discover all of the
 type variables in the type. Otherwise we might just see `'t0` as our only free
 type variable or something.
+
+## Extensions for Scrapscript
+
+<!--
+Adding type system features that go beyond HM in terms of expressivity often
+requires some type annotations from the programmer, or adding significant
+complexity to the inference algorithm.
+-->
 
 ### Recursion
 
