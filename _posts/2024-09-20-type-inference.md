@@ -645,6 +645,16 @@ Unify doesn't fail but leaves `dyn` and/or run-time check
 
 ### Canonicalization or minification of type variables
 
+```python
+def minimize(ty: MonoType) -> MonoType:
+    # Fingers crossed an expression that we're presenting to the programmer
+    # doesn't have more than 26 distinct type variables...
+    letters = iter("abcdefghijklmnopqrstuvwxyz")
+    free = ftv_ty(ty)
+    subst = {ftv: TyVar(next(letters)) for ftv in sorted(free)}
+    return apply_ty(ty, subst)
+```
+
 ### Type-carrying code
 
 Can we make hashes of types?
