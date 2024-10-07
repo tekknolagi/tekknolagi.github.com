@@ -720,8 +720,6 @@ Anyway, cool post!
 - somewhere you mention records and not knowing how to combine with
   unification, it can be done with subtyping (I have seen that called "semi
   unification" since the equations become inequations)
-- I for one never really learnt, knew or cared about the letters of the
-  algorithms, so would not have given them so much visibility
 
 
 3)
