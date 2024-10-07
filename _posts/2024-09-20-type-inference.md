@@ -649,9 +649,9 @@ Can we make hashes of types?
 
 ## Acknowledgements
 
-Thank you to River Dillon Keefer for co-authoring the code and this post with
-me at [Recurse Center][rc]. Thank you to the following fine folks who reviewed
-the post before it went out:
+Thank you to [River Dillon Keefer](https://k-monk.org/) for co-authoring the
+code and this post with me at [Recurse Center][rc]. Thank you to the following
+fine folks who reviewed the post before it went out:
 
 * [Burak Emir](https://burakemir.ch/)
 * [Chris Fallin](https://cfallin.org/)
