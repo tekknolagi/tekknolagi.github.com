@@ -27,7 +27,8 @@ appropriate Hindley paper, please let me know.)
 The type system is limited, but by virtue of being limited, it confers these
 advantages:
 
-* Inference algorithms tend to be fast (roughly O(size of code))
+* Inference algorithms tend to be fast (roughly O(size of code), but there are
+  pathological cases if you have tuple or record types)
 * Something something principal types
 * ??? [It's a good type system, reader!](https://stackoverflow.com/a/399392)
 
@@ -255,6 +256,7 @@ class MonoType:
     forwarded: MonoType | None = dataclasses.field(init=False, default=None)
 
     def find(self) -> MonoType:
+        # Exercise for the reader: path compression
         result: MonoType = self
         while isinstance(result, TyVar):
             it = result.forwarded
@@ -679,10 +681,6 @@ fine folks who reviewed the post before it went out:
 - "if you see a let binding ..." so you don't do generalization yet? Why do you instantiate above if you don't have generalization?
 
 - `infer_w` doesn't seem to instantiate `scheme`. Or does `scheme.ty` instantiate?
-
-- Do you want to do path compression in `MonoType.find`? E.g. if you have a variable that's linked to another variable that's linked to a non-variable, you can make the initial variable directly to the non-variable after the `while` loop.
-
-- "I think this involves identifying call graphs and strongly connected components within those graphs" this is right.
 
 - "It would be nice to support this but I don‚Äôt know how right now." I also don't know. If you figure it out you should publish about it :-)
 
