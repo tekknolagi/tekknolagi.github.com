@@ -334,7 +334,7 @@ variable if it needs to be constrained in the type of something else". Like in
     and generally keeping type information around for longer.
 
 ```python
-def infer_j(expr: Object, ctx: Context) -> TyVar:
+def infer_j(expr: Object, ctx: Context) -> MonoType:
     result = fresh_tyvar()
     if isinstance(expr, Var):
         scheme = ctx.get(expr.name)
@@ -429,7 +429,7 @@ Now, to integrate let polymorphism into our Algorithm J inference engine, we
 need only change two lines:
 
 ```python
-def infer_j(expr: Object, ctx: Context) -> TyVar:
+def infer_j(expr: Object, ctx: Context) -> MonoType:
     # ...
     if isinstance(expr, Var):
         scheme = ctx.get(expr.name)
@@ -495,7 +495,7 @@ To add a limited form of recursion, we do the following:
     the context
 
 ```python
-def infer_j(expr: Object, ctx: Context) -> TyVar:
+def infer_j(expr: Object, ctx: Context) -> MonoType:
     # ...
     if isinstance(expr, Where):
         name, value, body = expr.binding.name.name, expr.binding.value, expr.body
@@ -528,7 +528,7 @@ constrain all the list elements to be the same type when we see a list
 constructor.
 
 ```python
-def infer_j(expr: Object, ctx: Context) -> TyVar:
+def infer_j(expr: Object, ctx: Context) -> MonoType:
     # ...
     if isinstance(expr, List):
         list_item_ty = fresh_tyvar()
@@ -561,7 +561,7 @@ type information about `x` too!
 Let's look at the Python code for inferring a singular match case:
 
 ```python
-def infer_j(expr: Object, ctx: Context) -> TyVar:
+def infer_j(expr: Object, ctx: Context) -> MonoType:
     # ...
     if isinstance(expr, MatchCase):
         pattern_ctx = collect_vars_in_pattern(expr.pattern)
@@ -576,7 +576,7 @@ Then for an entire match function, we unify all of the case functions to make
 the pattern types line up and the return types line up.
 
 ```python
-def infer_j(expr: Object, ctx: Context) -> TyVar:
+def infer_j(expr: Object, ctx: Context) -> MonoType:
     # ...
     if isinstance(expr, MatchFunction):
         for case in expr.cases:
@@ -681,8 +681,6 @@ fine folks who reviewed the post before it went out:
 - `infer_w` doesn't seem to instantiate `scheme`. Or does `scheme.ty` instantiate?
 
 - Do you want to do path compression in `MonoType.find`? E.g. if you have a variable that's linked to another variable that's linked to a non-variable, you can make the initial variable directly to the non-variable after the `while` loop.
-
-- I don't understand why `infer_j` returns a type variable. Why not return a monotype instead? That's what you would do in a real implementation.
 
 - "I think this involves identifying call graphs and strongly connected components within those graphs" this is right.
 
