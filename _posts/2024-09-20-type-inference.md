@@ -325,8 +325,7 @@ class TyCon(MonoType):
 
 While it doesn't really make sense to `find` or `make_equal_to` on a type
 constructor (it should always be a leaf in the union-find DAG), we still define
-`find` and `_set_forwarded` to make MyPy happy and make some code look a little
-more natural.
+`find` to make MyPy happy and make some code look a little more natural.
 
 Once we do that, we can write our unify implementation for Algorithm J. You can
 see that the general structure has not changed much, but the recursive bits
