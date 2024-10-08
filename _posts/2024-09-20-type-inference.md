@@ -407,10 +407,6 @@ def infer_j(expr: Object, ctx: Context) -> MonoType:
 There you have it. Algorithm J: looks like W, but simpler and (apparently)
 faster.
 
-This concludes the section on basic HM. I don't think any in-use language uses
-HM like this; they all build on extensions. We have added some of these
-extensions to make Scrapscript's type system more expressive.
-
 ## Let polymorphism
 
 We alluded to polymorphism earlier because it was already baked into our
@@ -511,6 +507,10 @@ structures, I would be happy to include it.
 [^bidirectional]: In that sense it maybe feels a little bit like bidirectional
     type checking, but I also don't know much about that... just going off of
     vibes.
+
+This concludes the section on basic HM. I don't think any in-use language uses
+HM like this; they all build on extensions. We have added some of these
+extensions to make Scrapscript's type system more expressive.
 
 ## Extensions for Scrapscript
 
