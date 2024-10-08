@@ -294,7 +294,14 @@ the types we defined above.
 ```python
 @dataclasses.dataclass
 class MonoType:
+    def find(self) -> MonoType:
+        return self
+
+
+@dataclasses.dataclass
+class TyVar(MonoType):
     forwarded: MonoType | None = dataclasses.field(init=False, default=None)
+    name: str
 
     def find(self) -> MonoType:
         # Exercise for the reader: path compression
@@ -306,20 +313,10 @@ class MonoType:
             result = it
         return result
 
-    def _set_forwarded(self, other: MonoType) -> None:
-        raise NotImplementedError
-
-
-@dataclasses.dataclass
-class TyVar(MonoType):
-    name: str
-
     def make_equal_to(self, other: MonoType) -> None:
-        self.find()._set_forwarded(other)
-
-    def _set_forwarded(self, other: MonoType) -> None:
-        self.forwarded = other
-
+        chain_end = self.find()
+        assert isinstance(chain_end, TyVar), f"already resolved to {chain_end}"
+        chain_end.forwarded = other
 
 @dataclasses.dataclass
 class TyCon(MonoType):
