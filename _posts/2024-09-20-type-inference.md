@@ -297,7 +297,6 @@ class MonoType:
     def find(self) -> MonoType:
         return self
 
-
 @dataclasses.dataclass
 class TyVar(MonoType):
     forwarded: MonoType | None = dataclasses.field(init=False, default=None)
