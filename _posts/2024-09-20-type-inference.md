@@ -672,6 +672,12 @@ RowSelect, RowExtend, RowRestrict
 * https://cs.ioc.ee/tfp-icfp-gpce05/tfp-proc/21num.pdf
 * https://github.com/zrho/libra-types/blob/1443ee7e31625a1b9278c29cefb4da044be1c90b/book/src/type_system.md
 
+### Subtyping?
+
+TODO: Mention something about algebraic subtyping
+
+"semi-unification"; "inequations"
+
 ### Defer-dynamic
 
 Unify doesn't fail but leaves `dyn` and/or run-time check
@@ -730,16 +736,6 @@ fine folks who reviewed the post before it went out:
 - AFAICS the section on generalization doesn't mention the issues with
   variables escaping their binder's scope. Maybe fine for the purposes of this
   blog post.
-
-
-2)
-
-- You could mention that the set of type equality constraints is a like a
-  system of equations, that unification is a way to solve them, and that the
-  solution is a substitution.
-- somewhere you mention records and not knowing how to combine with
-  unification, it can be done with subtyping (I have seen that called "semi
-  unification" since the equations become inequations)
 
 
 3)
