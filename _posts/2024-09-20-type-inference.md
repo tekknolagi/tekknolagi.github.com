@@ -731,19 +731,6 @@ fine folks who reviewed the post before it went out:
   variables escaping their binder's scope. Maybe fine for the purposes of this
   blog post.
 
----
-
-Not saying you should it this way, but I think it would also be interesting to
-see a blog post in the style of "you could have invented ...". I think the most
-common way of doing any kind of type inference in PLs is you start giving some
-abstract type variables to unknown types, then as you see the types used you
-add constraints to it (e.g. the type is an `int`, the type is a `list` of some
-type, the type must support this operation), then finally to allow polymorphism
-you "generalize" the inferred types. All the algorithms you list are ways of
-doing this.
-
-Anyway, cool post!
-
 
 2)
 
