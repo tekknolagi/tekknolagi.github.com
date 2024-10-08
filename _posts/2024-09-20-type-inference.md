@@ -768,8 +768,6 @@ I suppose :-)
 
 some thoughts I jotted down as I read:
 
-- "instead more like function composition" -> give an example where composing
-  two maps takes a type from a to b, then b to c?
 - constrain/unify: could give some intuition early on about the high-level
   idea? that we're naming everything we can with variables then when we know
   two types "should" be equal we're matching them up structurally? unification
