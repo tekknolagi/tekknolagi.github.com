@@ -206,9 +206,12 @@ combined in order to fully realize that all three type variables are `int`.
 >>>
 ```
 
-TODO
+Now that we can create these substitutions, we also have to have some machinery
+for transforming types with the substitutions. For that, we have `apply_ty`
+(transform a type) and `apply_ctx` (transform all the types within a context).
 
-, `apply_ty`, and `apply_ctx` are for.
+In the above example, `apply_ctx(TyVar("a"), the_big_subst)` would return
+`TyCon(name='int', args=[])` (`int`).
 
 ```python
 def apply_ty(ty: MonoType, subst: Subst) -> MonoType: ...
