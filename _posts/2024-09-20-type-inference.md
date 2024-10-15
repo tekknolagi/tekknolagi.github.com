@@ -40,8 +40,34 @@ then extend it a little bit. We'll do this in the context of
 [scrapscript](/blog/scrapscript), but the goal is to get a better understanding
 of HM in general.
 
-After introducing the data structures, we'll start with Algorithm W because
-it's the OG.
+## The main idea
+
+The core idea in HM is to generate type constraints based on how variables and
+other expressions are used together and then solve these constraints. These
+constraints are based on equality (as opposed to inequality, set subset, etc).
+For example, one might look at the expression `a+b` (where `a` and `b` are any
+expression, but in this case variables) and deduce that since `+` is a function
+that takes two `int`s and returns an `int`,
+
+* `a` must have type `int`
+* `b` must have type `int`
+* `a+b` must have type `int`
+
+Perhaps, in the same example, later in a function, one might see `f a` (the
+application of the variable `f` to the argument `a`) and deduce that `f` must
+be a function.
+
+We can compose all of these constraints together to infer that `f` must be a
+function *that can take an integer as an argument*.
+
+Similarly, if we saw `[a, c]` (a list containing elements `a` and `c`) *and we
+require that our lists have homogeneous type elements*, then we can add the
+constraint that `a` and `c` have the same type. Then we can infer that `c` too
+must have type `int`.
+
+To keep track of all this information, we need some infrastructure. We need a
+notion of types, which we'll call *type constructors*, and placeholders in our
+system of type equations, which we'll call *type variables*.
 
 ## The data structures
 
