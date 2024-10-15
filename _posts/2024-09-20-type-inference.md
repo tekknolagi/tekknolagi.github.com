@@ -725,6 +725,7 @@ fine folks who reviewed the post before it went out:
 * [More efficient generalization](https://okmij.org/ftp/ML/generalization.html)
 * Better error messages with [Wand 1986](https://dl.acm.org/doi/10.1145/512644.512648)
 * https://osa1.net/posts/2023-01-23-fast-polymorphic-record-access.html
+* Thanks to https://github.com/bynect/algorithm-w
 
 <!-- Feedback:
 
