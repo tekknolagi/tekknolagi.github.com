@@ -382,6 +382,8 @@ def unify_j(ty1: MonoType, ty2: MonoType) -> None:
     raise TypeError(f"Unexpected type {type(ty1)}")
 ```
 
+<!-- TODO: pictures -->
+
 Now that we have unify (which, remember, makes side-effecty changes using
 `make_equal_to`), we can write our infer function. It will look pretty similar
 to Algorithm J in overall structure, and in fact our plaintext algorithm
@@ -491,7 +493,7 @@ def instantiate(scheme: Forall) -> MonoType: ...
 ```
 
 Now, to integrate let polymorphism into our Algorithm J inference engine, we
-need only change two lines:
+need only change two lines (marked "changed!"):
 
 ```python
 def infer_j(expr: Object, ctx: Context) -> MonoType:
@@ -696,27 +698,57 @@ been elusive.
 RowSelect, RowExtend, RowRestrict
 -->
 
-* http://www.cs.cmu.edu/~aldrich/courses/819/papers/row-poly.pdf
-* https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/scopedlabels.pdf
-* https://cs.ioc.ee/tfp-icfp-gpce05/tfp-proc/21num.pdf
-* https://github.com/zrho/libra-types/blob/1443ee7e31625a1b9278c29cefb4da044be1c90b/book/src/type_system.md
+We're currently reading:
 
+* [A Polymorphic Type System for Extensible Records and Variants](https://web.cecs.pdx.edu/~mpj/pubs/96-3.pdf) (PDF, 1996)
+* [Extensible records with scoped labels](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/scopedlabels.pdf) (PDF, 2005)
+* [Extensible Programming with First-Class Cases](https://dl.acm.org/doi/pdf/10.1145/1159803.1159836) (PDF, 2006)
+* [Set-Theoretic Types for Polymorphic Variants](https://dl.acm.org/doi/10.1145/2951913.2951928) (2016)
+* [Generic programming in OCaml](https://arxiv.org/pdf/1812.11665) (PDF, 2018)
+* [Abstracting extensible data types: or, rows by any other name](https://dl.acm.org/doi/pdf/10.1145/3290325) (PDF, 2019)
+  * Incredible paper title
+* [Structural Subtyping as Parametric Polymorphism](https://dl.acm.org/doi/abs/10.1145/3622836) (PDF, 2023)
+* [Fast polymorphic record access](https://osa1.net/posts/2023-01-23-fast-polymorphic-record-access.html) (2023)
+
+Please recommend additional papers, blog posts, and implementations.
+
+<!--
 ### Subtyping?
 
 TODO: Mention something about algebraic subtyping
 
 "semi-unification"; "inequations"
+-->
 
 ### Defer-dynamic
 
-Unify doesn't fail but leaves `dyn` and/or run-time check
+Scrapscript is designed to do significantly more than its current HM-based type
+system allows. Type inference is opt-in, so it's possible---encouraged,
+even---to run in dynamic mode. But it would be really cool to be able to use
+type inference in the compiler to optimize the code when possible, and leave in
+run-time checks when not possible. This probably involves inserting type-check
+nodes into the AST when unification fails. Something like `CheckInt` which has
+type `forall 'a. 'a -> int` (but aborts the program if given a non-integer at
+run-time).
 
 ### Variants
 
-* https://caml.inria.fr/pub/papers/garrigue-polymorphic_variants-ml98.pdf
-* https://drops.dagstuhl.de/storage/00lipics/lipics-vol263-ecoop2023/LIPIcs.ECOOP.2023.17/LIPIcs.ECOOP.2023.17.pdf
+Scrapscript supports variants or tags similar to OCaml's notion of [polymorphic
+variants](https://ocaml.org/manual/5.2/polyvariant.html). We don't have any
+encoding in the type system for these right now.
+
+We're currently reading:
+
+* [Programming with Polymorphic Variants](https://caml.inria.fr/pub/papers/garrigue-polymorphic_variants-ml98.pdf) (PDF, 1998)
+* [Restrictable Variants: A Simple and Practical Alternative to Extensible Variants](https://drops.dagstuhl.de/storage/00lipics/lipics-vol263-ecoop2023/LIPIcs.ECOOP.2023.17/LIPIcs.ECOOP.2023.17.pdf) (PDF, 2003)
+
+Please recommend additional papers, blog posts, and implementations.
 
 ### Canonicalization or minification of type variables
+
+When presenting a type to the programmer, it's not useful to spew out a bunch
+of generated type variable names like `'t123467` in errors. For this reason, we
+also support minimizing types to make them more presentable.
 
 ```python
 def minimize(ty: MonoType) -> MonoType:
@@ -730,7 +762,8 @@ def minimize(ty: MonoType) -> MonoType:
 
 ### Type-carrying code
 
-Can we make hashes of types?
+Can we make hashes of types? Something like proof-carrying code? TODO: think
+more about this...
 
 ## Acknowledgements
 
@@ -746,15 +779,14 @@ fine folks who reviewed the post before it went out:
 
 ## See also
 
-* Biunification (like CubiML)
-* Static Basic Block Versioning
-* CFA / [Lambda set defunctionalization](https://dl.acm.org/doi/abs/10.1145/3591260)
-  * River's STLC
-* https://www.reddit.com/r/ProgrammingLanguages/comments/ijij9o/beyond_hindleymilner_but_keeping_principal_types/
+* [Static Basic Block Versioning](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECOOP.2024.28)
+* CFA / [Lambda set defunctionalization](https://dl.acm.org/doi/abs/10.1145/3591260) (PDF)
+  * [River's STLC](https://github.com/rdck/compiler)
+* [Beyond Hindley-Milner (but Keeping Principal Types)](https://www.reddit.com/r/ProgrammingLanguages/comments/ijij9o/beyond_hindleymilner_but_keeping_principal_types/)
 * [More efficient generalization](https://okmij.org/ftp/ML/generalization.html)
-* Better error messages with [Wand 1986](https://dl.acm.org/doi/10.1145/512644.512648)
-* https://osa1.net/posts/2023-01-23-fast-polymorphic-record-access.html
-* Thanks to https://github.com/bynect/algorithm-w
+* Better error messages with [Wand 1986](https://dl.acm.org/doi/10.1145/512644.512648) (PDF)
+* Thanks to [bynect's implementation](https://github.com/bynect/algorithm-w) of
+  Algorithm W, which we used as inspiration.
 
 <!-- Feedback:
 
@@ -763,25 +795,5 @@ fine folks who reviewed the post before it went out:
 - AFAICS the section on generalization doesn't mention the issues with
   variables escaping their binder's scope. Maybe fine for the purposes of this
   blog post.
-
-
-3)
-
-big picture: might be a style thing / my own writing preferences but it might
-be helpful to build up some motivation and intuition at the beginning -- we
-jump right in without saying what "unify" means or the intuition about (I
-think) slapping labels on everything then starting to constrain them with
-equality/merging, and going pairwise structurally down into a tree of type
-constructors to do so. right now this reads as a (very thorough)
-notes-as-I-implemented-it and a little less as a tutorial, depends on audience
-I suppose :-)
-
-some thoughts I jotted down as I read:
-
-- constrain/unify: could give some intuition early on about the high-level
-  idea? that we're naming everything we can with variables then when we know
-  two types "should" be equal we're matching them up structurally? unification
-  fundamentally results in knowing more about type vars when a type var unifies
-  with something more concrete, right?
 
 -->
