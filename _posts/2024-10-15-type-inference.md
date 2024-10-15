@@ -226,7 +226,11 @@ For type constructors, we have to check that the constructor name matches, then
 that they each have the same number of arguments, and finally build up
 constraints by unifying the arguments pairwise.
 
-<!-- TODO: occurs check -->
+There's one catch for binding type variables: we have to check that we're not
+accidentally building recursive types. For example, consider: what does it mean
+to unify `'a` and `'a list`? Or `'b` and `'a -> 'b`? OCaml supports a limited
+version of recursive types with `-rectypes` but we will not (and do not
+currently know how to)... so we raise an exception.
 
 <!--
 -- Z combinator doesn't type check, similar to OCaml (we don't have -rectypes)
@@ -242,6 +246,8 @@ Z factr 5
 ```python
 def unify_w(ty1: MonoType, ty2: MonoType) -> Subst:
     if isinstance(ty1, TyVar):
+        if occurs_in(ty1, ty2):
+            raise InferenceError(f"Occurs check failed for {ty1} and {ty2}")
         return bind_var(ty2, ty1.name)
     if isinstance(ty2, TyVar):  # Mirror
         return unify_w(ty2, ty1)
@@ -363,13 +369,13 @@ Once we do that, we can write our unify implementation for Algorithm J. You can
 see that the general structure has not changed much, but the recursive bits
 in the `TyCon` case have gotten much simpler to read.
 
-<!-- TODO: occurs check -->
-
 ```python
 def unify_j(ty1: MonoType, ty2: MonoType) -> None:
     ty1 = ty1.find()
     ty2 = ty2.find()
     if isinstance(ty1, TyVar):
+        if occurs_in(ty1, ty2):
+            raise InferenceError(f"Occurs check failed for {ty1} and {ty2}")
         ty1.make_equal_to(ty2)
         return
     if isinstance(ty2, TyVar):  # Mirror
