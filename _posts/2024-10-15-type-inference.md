@@ -762,6 +762,19 @@ def minimize(ty: MonoType) -> MonoType:
 Can we make hashes of types? Something like proof-carrying code? TODO: think
 more about this...
 
+## Conclusion
+
+Thanks for getting this far. There's a lot of new words and some historical
+baggage in terminology, notation, and general vibes that can make things
+confusing to the casual reader (like myself).
+
+Take a look at our [PR to add HM inference to
+Scrapscript](https://github.com/tekknolagi/scrapscript/pull/195). We use
+Algorithm J. For Algorithm W and associated machinery, check out [this old
+commit on an unused
+branch](https://github.com/tekknolagi/scrapscript/blob/b8bc5fb24a97c997f3f0228b243d9a739409feb9/lc.py).
+It has a bunch of tests that hopefully make things clearer.
+
 ## Acknowledgements
 
 Thank you to [River Dillon Keefer](https://k-monk.org/) for co-authoring the
