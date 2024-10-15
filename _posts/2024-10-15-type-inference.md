@@ -770,6 +770,7 @@ fine folks who reviewed the post before it went out:
 
 * [Burak Emir](https://burakemir.ch/)
 * [Chris Fallin](https://cfallin.org/)
+* [Iain McDonald](https://github.com/iamcdonald)
 * [Sinan](https://osa1.net/)
 
 [rc]: https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb
