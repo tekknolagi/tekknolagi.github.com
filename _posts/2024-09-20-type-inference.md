@@ -269,7 +269,10 @@ substitution:
 >>>
 ```
 
-OK, ...
+OK, great. That's most of our lower-level type machinery done. Let's go back to
+our plaintext algorithm description and write it in Python using `apply_ty` and
+friends. We'll handle variables, integers, functions, function application, and
+`let` binding.
 
 ```python
 def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
@@ -349,9 +352,9 @@ class TyCon(MonoType):
     args: list[MonoType]
 ```
 
-While it doesn't really make sense to `find` or `make_equal_to` on a type
-constructor (it should always be a leaf in the union-find DAG), we still define
-`find` to make MyPy happy and make some code look a little more natural.
+While it doesn't really make sense to `find` on a type constructor (it should
+always be a leaf in the union-find DAG), we still define `find` to make MyPy
+happy and make some code look a little more natural.
 
 Once we do that, we can write our unify implementation for Algorithm J. You can
 see that the general structure has not changed much, but the recursive bits
