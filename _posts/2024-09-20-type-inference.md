@@ -302,12 +302,12 @@ def infer_w(expr: Object, ctx: Context) -> tuple[Subst, MonoType]:
     raise TypeError(f"Unexpected type {type(expr)}")
 ```
 
-## Algorithm J
-
 Alright, so substitutions are a little clunky. Maybe there's a neat way to do
 this in functional languages by threading the state through automatically or
 something, but we're in Python and I'm a bit of a programming caveman, so we're
 doing side effects.
+
+## Algorithm J
 
 Unlike Algorithm W, which builds up a map of substitutions, Algorithm J uses
 union-find on the type variables to store equivalences. (I wrote about
