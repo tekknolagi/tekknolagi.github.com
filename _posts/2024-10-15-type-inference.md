@@ -548,12 +548,6 @@ extensions to make Scrapscript's type system more expressive.
 
 ## Extensions for Scrapscript
 
-<!--
-Adding type system features that go beyond HM in terms of expressivity often
-requires some type annotations from the programmer, or adding significant
-complexity to the inference algorithm.
--->
-
 ### Recursion
 
 Another quality of life feature that people tend to want in programming
