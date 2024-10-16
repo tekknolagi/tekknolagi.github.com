@@ -552,6 +552,15 @@ This concludes the section on basic HM. I don't think any in-use language uses
 HM like this; they all build on extensions. We have added some of these
 extensions to make Scrapscript's type system more expressive.
 
+### A secret fourth thing?
+
+I have also seen another approach used in, among others, my undergraduate PL
+curriculum. It involves generating all of the constraints into a big list and
+then solving in one step at the end. I don't know what this is called, haven't
+seen it In The Wild, and wonder about the advantages and disadvantages of this
+approach. I just remember it being a very confusing approach to learn type
+inference... but maybe I would have been confused with any of these.
+
 ## Extensions for Scrapscript
 
 ### Recursion
