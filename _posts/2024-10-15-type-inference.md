@@ -583,6 +583,7 @@ Some examples:
 * [Cornell notes](https://slightknack.dev/passerine/type-inference/)
 * [Tufts assignment](https://www.cs.tufts.edu/comp/105-2016s/homework/ml-inf.html)
 * [Blog post](https://softoption.us/node/676)
+* [Write You A Haskell](https://smunix.github.io/dev.stephendiehl.com/fun/006_hindley_milner.html) (Haskell; See "Constraint Generation")
 * [Implementation by kseo](https://github.com/kseo/poly_constraints) (Haskell)
 * [Implementation by 7sharp9](https://github.com/7sharp9/write-you-an-inference-in-fsharp/blob/master/Hindley-Milner-Split-Solver.md) (F#)
 
