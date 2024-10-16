@@ -556,10 +556,21 @@ extensions to make Scrapscript's type system more expressive.
 
 I have also seen another approach used in, among others, my undergraduate PL
 curriculum. It involves generating all of the constraints into a big list and
-then solving in one step at the end. I don't know what this is called, haven't
-seen it In The Wild, and wonder about the advantages and disadvantages of this
-approach. I just remember it being a very confusing approach to learn type
-inference... but maybe I would have been confused with any of these.
+then solving in one step at the end. It was [written up][heeren] (PDF, 2002) by
+Heeren et al. I wonder about the advantages and disadvantages of this approach
+so I should probably read the paper. I just remember it being a very confusing
+approach to learn type inference... but maybe I would have been confused with
+any of these.
+
+[heeren]: /assets/img/hm-heeren.pdf
+
+Some examples:
+
+* [Cornell notes](https://slightknack.dev/passerine/type-inference/)
+* [Tufts assignment](https://www.cs.tufts.edu/comp/105-2016s/homework/ml-inf.html)
+* [Blog post](https://softoption.us/node/676)
+* [Implementation by kseo](https://github.com/kseo/poly_constraints) (Haskell)
+* [Implementation by 7sharp9](https://github.com/7sharp9/write-you-an-inference-in-fsharp/blob/master/Hindley-Milner-Split-Solver.md) (F#)
 
 ## Extensions for Scrapscript
 
