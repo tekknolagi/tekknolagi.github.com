@@ -391,7 +391,21 @@ def unify_j(ty1: MonoType, ty2: MonoType) -> None:
     raise TypeError(f"Unexpected type {type(ty1)}")
 ```
 
-<!-- TODO: pictures -->
+Let's take a look at some diagrams to see how this works for a simple type
+constructor like `int` (no args). We start with the type variables `a`, `b`,
+and `c` (and the built-in type `int`).
+
+![](/assets/img/unification-0.svg)
+
+If we `unify(a,c)` and then `unify(b,c)` and then `unify(c,int)` we end up with
+the following:
+
+![](/assets/img/unification-1.svg)
+
+If two monotypes are in the same equivalence class---if they are in the same
+graph component---then they are considered equivalent. It's the graph version
+of a substitution. The `find()` function chases the pointers to the leaf of
+each equivalence class.
 
 Now that we have unify (which, remember, makes side-effecty changes using
 `make_equal_to`), we can write our infer function. It will look pretty similar
