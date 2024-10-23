@@ -730,7 +730,7 @@ of fields. This is safe but overly restrictive.
 
 I think it's possible to "easily" add row polymorphism ~~but we haven't done it
 yet. Finding a simple, distilled version of the ideas in the papers has so far
-been elusive.~~ and we have a blog post coming soon.
+been elusive.~~ and we [wrote about it here](/blog/row-poly/).
 
 <!--
 RowSelect, RowExtend, RowRestrict
