@@ -717,7 +717,7 @@ and any record with that field is a legal argument to the function.
 See for example two different looking records (2D point and 3D point):
 
 ```
-get_x left + get_x right
+(get_x left) + (get_x right)
 . left  = { x = 1, y = 2 }
 . right = { x = 1, y = 2, z = 3 }
 . get_x = | { x = x, ... } -> x
@@ -728,9 +728,9 @@ add support for records, then you end up with a more rigid system: the records
 have to have the same number of fields and same names of fields and same types
 of fields. This is safe but overly restrictive.
 
-I think it's possible to "easily" add row polymorphism but we haven't done it
+I think it's possible to "easily" add row polymorphism ~~but we haven't done it
 yet. Finding a simple, distilled version of the ideas in the papers has so far
-been elusive.
+been elusive.~~ and we have a blog post coming soon.
 
 <!--
 RowSelect, RowExtend, RowRestrict
