@@ -93,7 +93,7 @@ Cinder, CPython, PyPy, and Pyjion).
 
 ## I like writing.
 
-I have a blog but also now I have an academic paper! Check out [Dr Wenowdis:
+I have a blog but now I also have an academic paper! Check out [Dr Wenowdis:
 Specializing dynamic language C extensions using type
 information](/assets/img/dr-wenowdis.pdf) (PDF), which is accepted at PLDI SOAP
 2024.
