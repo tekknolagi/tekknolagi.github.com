@@ -17,3 +17,6 @@ alive and well, did not respond. It's been a long time since it was published,
 so hopefully nobody minds.
 
 [On the Universal Relation](/assets/img/on-the-universal-relation.pdf) (PDF)
+
+I'm sorry about the bad scan. I had to keep the spine of the book intact and in
+decent condition, so I couldn't press it too flat.
