@@ -18,5 +18,7 @@ so hopefully nobody minds.
 
 [On the Universal Relation](/assets/img/on-the-universal-relation.pdf) (PDF)
 
+[On the Universal Relation (OCRed)](/assets/img/on-the-universal-relation-ocr.pdf) (PDF)
+
 I'm sorry about the bad scan. I had to keep the spine of the book intact and in
 decent condition, so I couldn't press it too flat.
