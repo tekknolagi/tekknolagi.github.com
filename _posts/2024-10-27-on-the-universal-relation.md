@@ -5,10 +5,10 @@ layout: post
 
 I took a databases class last year. In it, we learned about some theory and
 some practice and one of the most oft-cited papers was "On the Universal
-Relation" (1979? 1980?) by Marc H. Graham ("MH Graham" on Google Scholar) at
-the University of Toronto. It's apparently a classic. It's got some
-foundational work in databases. It's also nowhere to be found online, and local
-libraries did not have it. Everybody cites it... has anybody read it?
+Relation" (1979) by Marc H. Graham ("MH Graham" on Google Scholar) at the
+University of Toronto. It's apparently a classic. It's got some foundational
+work in databases. It's also nowhere to be found online, and local libraries
+did not have it. Everybody cites it... has anybody read it?
 
 I took a couple of days to track down a physical copy from across the country,
 ordered it to my local library, scanned the paper, and now I am putting it here
