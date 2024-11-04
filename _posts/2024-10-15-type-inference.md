@@ -587,6 +587,14 @@ Some examples:
 * [Implementation by kseo](https://github.com/kseo/poly_constraints) (Haskell)
 * [Implementation by 7sharp9](https://github.com/7sharp9/write-you-an-inference-in-fsharp/blob/master/Hindley-Milner-Split-Solver.md) (F#)
 
+### A secret fifth thing?
+
+(This is getting silly. There are so many variants.)
+
+People have also pointed me to [Algorithm
+W'](/assets/img/hm-algorithm-w-prime.pdf) (PDF, 1998) which focuses on unifying
+substitutions.
+
 ## Extensions for Scrapscript
 
 ### Recursion
