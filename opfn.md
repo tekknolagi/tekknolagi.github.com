@@ -1,0 +1,23 @@
+---
+layout: page
+title: Some computing notes
+---
+
+WebAssembly (Wasm)
+
+* [Fast in-place interpreter](https://dl.acm.org/doi/abs/10.1145/3563311)
+  * Fast interpreter technique for Wasm; no IR. For purposes of this page, I
+    value this more for a way to build a small, IR-less interpreter than for
+    generating an interpreter using a macro assembler.
+* [Wasm-R3](https://dl.acm.org/doi/10.1145/3689787)
+  * Instrument Wasm programs to track input/output; minimize replay traces up
+    to 99%. Injects Wasm code, but could also be done as a wrapper module
+    probably. Quasi-journaling?
+* [wizer](https://github.com/bytecodealliance/wizer)
+  * Start a Wasm program, pause it, and quiesce its entire state into a new
+    Wasm module with a new entrypoint
+* [polywasm](https://github.com/evanw/polywasm)
+  * Compile wasm to JS. Bundled, 2500LOC JS for the compiler. Little WASI stub
+    could be ~100LOC more.
+* [memfs](https://github.com/tekknolagi/llvm-project/tree/5dc09c94393510bc8d042a9f07382b53e845c0f2/binji)
+  * In-memory filesystem in C that can be compiled to Wasm
