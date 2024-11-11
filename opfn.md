@@ -21,3 +21,17 @@ WebAssembly (Wasm)
     could be ~100LOC more.
 * [memfs](https://github.com/tekknolagi/llvm-project/tree/5dc09c94393510bc8d042a9f07382b53e845c0f2/binji)
   * In-memory filesystem in C that can be compiled to Wasm
+* [ASC](https://dl.acm.org/doi/10.1145/2654822.2541985)
+  * Seltzer's group at Harvard build some wild stuff. Wonder if it would be
+    easier with a smaller/more introspectable machine like Wasm.
+
+Little Wasms
+
+* [Wasmbox](https://github.com/imasahiro/wasmbox)
+* [tiny-wasm-runtime](https://github.com/r1ru/tiny-wasm-runtime)
+* [winter](https://github.com/peterseymour/winter)
+* [cjwasm?](https://github.com/jeaiii/cjwasm)
+
+Other
+
+* [Hermit](https://github.com/dylibso/hermit)
