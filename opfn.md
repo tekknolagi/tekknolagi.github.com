@@ -35,3 +35,5 @@ Little Wasms
 Other
 
 * [Hermit](https://github.com/dylibso/hermit)
+* [keyvm](https://github.com/void4/keyvm)
+* [rarvm](https://github.com/void4/rarust)
