@@ -11,8 +11,7 @@ I am a human and [programmer](https://github.com/tekknolagi). I like to read
 books, take photos, and ride bikes in the hills near my house. I [tweet
 things](https://twitter.com/tekknolagi) (and [toot
 things](https://mastodon.social/@tekknolagi)) about bread, legumes, and
-compilers. **Hire me! I am looking for a dynamic language runtimes or compilers
-job.** (Still true in Oct 2024)
+compilers.
 
 You can [email me](mailto:contact@bernsteinbear.com) if you so desire. I'm
 happy to talk about education, programming languages, cycling, and more.
