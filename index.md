@@ -42,8 +42,7 @@ I like making things [just for fun](https://justforfunnoreally.dev/).
 
 ## I like teaching.
 
-* I taught [CS 4973: ISDT](/isdt/) at Northeastern, Summer Session 2,
-  2024
+* I taught [CS 4973: ISDT](/isdt/) (2024) at Northeastern
 * I taught [CS 50ISDT](/isdt/) (2021) with Tom Hebb at Tufts
 * I taught [EXP 57](/excollege/) (2018) with Yuki Zaninovich at Tufts
 
