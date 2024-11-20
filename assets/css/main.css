@@ -4,6 +4,10 @@ body {
 div.pagecontents {
     margin: 30px auto 0px auto;
 }
+div.pagecontents p, div.pagecontents li {
+    line-height: 1.2;
+    font-size: 16px;
+}
 div.pagecontents, code, pre {
     max-width: 650px;
 }
