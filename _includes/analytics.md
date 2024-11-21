@@ -9,6 +9,9 @@
   gtag('config', 'G-MNTD6DM8MP');
 </script>
 <script>
+    if (location.hostname !== "bernsteinbear.com") {
+      alert("Please remove all mentions of me (socials, Google Analytics, GoatCounter, ...) from your fork of my website. Thanks!");
+    }
     let code = location.hostname == 'bernsteinbear.com' ? 'tekknolagi' : 'no';
     window.goatcounter = {
         endpoint: 'https://' + code + '.goatcounter.com/count',
