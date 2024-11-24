@@ -178,7 +178,7 @@ v2:positive = add(v0, v1)
 This may not seem useful in isolation, but analyzing more complex programs even
 with this simple domain may be able to remove checks such as `if (v2 < 0) { ... }`.
 
-Let's take a look at another example using an sample `absval` (absolute value)
+Let's take a look at another example using a sample `absval` (absolute value)
 IR operation:
 
 ```python
