@@ -22,8 +22,6 @@ Here are some projects that are occupying some brain space and that I am keeping
 * [Iroh](https://github.com/n0-computer/iroh), a toolkit for building distributed applications
 * [simple-abstract-interpreter](https://github.com/sree314/simple-abstract-interpreter), just what it says on the tin
 * [ssa-optimizer](https://github.com/chrim05/ssa-optimizer), an educational SSA-based optimizer
-* [hindley-milner-python](git@github.com:rob-smallshire/hindley-milner-python.git), a small Damas Hindley Milner implementation in Python
-* [Hindley–Milner in Python](https://github.com/milesbarr/hindley-milner-in-python), another one of the same (but this one is a bit "trickier")
 * [micrograd](https://github.com/karpathy/micrograd/), [ccml](https://github.com/t4minka/ccml), and [cccc](https://github.com/skeeto/cccc), small, educational autodiff libraries
 * [Natalie](https://github.com/natalie-lang/natalie), an AOT Ruby compiler
 * [plzoo](https://github.com/andrejbauer/plzoo), which has multiple different small PL implementations with different semantics
@@ -57,6 +55,8 @@ Not quite code but presenting very cool ideas:
 
 * Verifying your whole register allocator too hard? No problem, just [write a verifier for a given allocation](https://cfallin.org/blog/2021/03/15/cranelift-isel-3/) and abort if it fails. This also lends itself nicely to fuzzing for automatically exploring large program state spaces.
 * [Copy and Patch](https://fredrikbk.com/publications/copy-and-patch.pdf) (PDF) compilation, which generates pretty fast code very quickly
+  * Related: [Deegen](https://arxiv.org/abs/2411.11469), which gives you an
+    interpreter and a JIT with caching and other goodies
 * [Egg](https://egraphs-good.github.io/), and more broadly egraphs, for program IRs
 * [Implementing a Toy Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html) and union-find in general
 * (To-be-written) Using Z3 to prove your static analyzer correct
