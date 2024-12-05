@@ -95,11 +95,11 @@ I have a blog and now I also have some academic papers!
 
 * *Partial Evaluation, Whole-Program Compilation* (preprint; do not distribute) \
   Chris Fallin, **Maxwell Bernstein** \
-  [[PDF](/assets/img/wasm-partial-eval.pdf)]
+  [[PDF](/assets/img/wasm-partial-eval.pdf)] [[ARX](https://arxiv.org/abs/2411.10559)]
 * *Dr Wenowdis: Specializing dynamic language C extensions using type information* (2024) \
   **Maxwell Bernstein**, CF Bolz-Tereick \
   in PLDI SOAP 2024 \
-  [[PDF](/assets/img/dr-wenowdis.pdf)] [[DOI](https://doi.org/10.1145/3652588.3663316)]
+  [[PDF](/assets/img/dr-wenowdis.pdf)] [[DOI](https://doi.org/10.1145/3652588.3663316)] [[ARX](https://arxiv.org/abs/2403.02420)]
 
 ## I will happily talk in front of people.
 
