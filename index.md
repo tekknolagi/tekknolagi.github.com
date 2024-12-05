@@ -11,7 +11,8 @@ I am a human and [programmer](https://github.com/tekknolagi). I like to read
 books, take photos, and ride bikes in the hills near my house. I [tweet
 things](https://twitter.com/tekknolagi) (and [toot
 things](https://mastodon.social/@tekknolagi)) about bread, legumes, and
-compilers.
+compilers. I did a half-batch of [Recurse Center](https://www.recurse.com/)
+(Fall 2 2024) and really enjoyed it.
 
 You can [email me](mailto:contact@bernsteinbear.com) if you so desire. I'm
 happy to talk about education, programming languages, cycling, and more.
