@@ -24,6 +24,17 @@
         {% endif %}
         </div>
         <div class="container">
+<details>
+  <summary>Cite using BibTex</summary>
+        <code>
+@misc&#123;bernstein{{ page.date | date: '%Y' }},<br />
+&nbsp;&nbsp;author=&#123;Bernstein, Maxwell&#125;,<br />
+&nbsp;&nbsp;title=&#123;{{ page.title }}&#125;,<br />
+&nbsp;&nbsp;year=&#123;{{ page.date | date: '%Y' }}&#125;,<br />
+&nbsp;&nbsp;howpublished=&#123;\url&#123;{{ site.url }}{{ page.url }}&#125;&#125;,<br />
+&#125;
+        </code>
+</details>
             {{ content }}
         </div>
         {% include footer.md %}
