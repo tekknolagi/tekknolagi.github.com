@@ -6,6 +6,11 @@
       <br />
       <img style="padding-top: 5px;" src="/assets/img/banner.png" />
       <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="{{ site.rc_scout }}">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
     </footer>
     <!-- Workaround for FB MITM -->
     <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>

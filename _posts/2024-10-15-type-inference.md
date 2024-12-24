@@ -827,15 +827,13 @@ It has a bunch of tests that hopefully make things clearer.
 ## Acknowledgements
 
 Thank you to [River Dillon Keefer](https://k-monk.org/) for co-authoring the
-code and this post with me at [Recurse Center][rc]. Thank you to the following
-fine folks who reviewed the post before it went out:
+code and this post with me at [Recurse Center]({{site.rc_scout}}). Thank you to
+the following fine folks who reviewed the post before it went out:
 
 * [Burak Emir](https://burakemir.ch/)
 * [Chris Fallin](https://cfallin.org/)
 * [Iain McDonald](https://github.com/iamcdonald)
 * [Sinan](https://osa1.net/)
-
-[rc]: https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb
 
 ## See also
 
