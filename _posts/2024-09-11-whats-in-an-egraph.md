@@ -613,7 +613,7 @@ only point to earlier nodes. There are probably some very interesting
 trade-offs here but I am not an expert and you should probably read Chris
 Fallin's [excellent post][aegraph].
 
-[aegraph]: https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md
+[aegraph]: https://github.com/bytecodealliance/rfcs/blob/0300c5fc514d39e2b935707bb169bd5952545f4d/accepted/cranelift-egraph.md
 
 In a [Zulip thread][zulip], Chris writes:
 
