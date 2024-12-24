@@ -640,6 +640,7 @@ And of course check out egg and egglog, the main e-graph libraries around. And
 Metatheory.jl, too.
 
 * [Efficient E-matching for SMT Solvers](http://leodemoura.github.io/files/ematching.pdf) (PDF)
+* [Luau's C++ E-graph implementation](https://github.com/luau-lang/luau/blob/9a102e2aff99ecaf2ad1e5ca59fc1c893d5e9b7c/EqSat/include/Luau/EGraph.h)
 
 Please let me know what thoughts you have! This is a very new subject for me.
 
