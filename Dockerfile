@@ -18,6 +18,7 @@ RUN bin/ape.elf bin/assimilate bin/redbean
 
 FROM ghcr.io/tekknolagi/bernsteinbear-build-env:latest as build_site
 COPY . /site
+RUN rm /site/Gemfile.lock
 RUN bundle exec jekyll build --future
 
 FROM redbean as build_server
