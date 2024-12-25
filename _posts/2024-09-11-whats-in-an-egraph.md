@@ -628,6 +628,29 @@ In a [Zulip thread][zulip], Chris writes:
 > One of the things that surprised me is that the single-pass eager rewrite *does* actually work -- it works if one's rules are structured in a certain way. The case one wants to avoid is where A rewrites to B, C rewrites to B, and then a better version of A is actually C (but no direct rewrite exists) -- that's where later unification in a full egraph would have grouped A and C together and that equivalence would be visible, but eager rewrites with snapshotted eclasses does not. It turns out the way we write rules in Cranelift at least is "directional" enough that we don't have this in practice (it would require C to be better than B, even though we have a C->B rewrite).
 >
 > There's a whole other side to Cranelift's use of aegraphs having to do with control flow, "elaboration", the way we do GVN (without partial redundancy) and LICM, keep side effects in the right place, and getting the reconstructed/reserialized sequence of computations correct with respect to dominance (extraction needs to worry about the domtree!).
+>
+> [...]
+>
+> So, a little more detail: the aegraph's representation of eclasses is not exactly a union-find; we also keep a separate (traditional) union-find data structure to map each enode to the canonical enode, and test whether enodes are in the same eclass. The purpose of the union-node is to build a tree that reaches all enodes in the class. Said another way: follow the links in the union-find and you get to the canonical/first enode (all enodes in the class "fan in" to one point); follow the links in union nodes and you get to all enodes (all union-nodes "fan out" in a binary tree).
+>
+> You can think of the derivation something like:
+> * We start with an SSA IR with value nodes; each value is an ordinary operator, an alias (used for rewriting without editing all uses), or a blockparam (our version of phi nodes).
+> * We add one new kind of value node: the union.
+> * When in the aegraph rewriting phase, there is logically (not physically!) an implied aegraph on top of the SSA IR:
+>   * We keep a union-find to track the equivalence classes of SSA values;
+>   * We only ever create new value nodes, we never rewrite them;
+>   * When creating a new node,
+>     * We check the GVN map and dedup if possible;
+>     * If not present, we create the ordinary value node (and that's it).
+>   * When union'ing a node into an eclass,
+>     * We merge its SSA value number in the union-find with the SSA value number of any other enode in the eclass;
+>     * We build a new union node whose two children are the new node, and the latest eclass ID;
+>     * this union node is the new eclass ID.
+>
+> A few corollaries:
+> * There is only one index space, the SSA value index space. "Enodes" are individual SSA values, and "Eclasses" are also SSA values, that either are ordinary operator nodes (singleton eclass case) or union nodes.
+> * As we build the aegraph, we keep two values per eclass: the "canonical ID", which is the oldest node and the one that the union-find maps to; and the "latest ID", which is the current head of the union-node-spine that reaches all the eclass members.
+> * If we record the "latest ID" at any point (e.g., when we see a use of the eclass's value), we capture the tree that reaches all eclass members at that time. Other new members that are merged in later will be union'd in the union-find, but the tree that reaches them will be built "on top of" our reference and we won't see it.
 
 [zulip]: https://egraphs.zulipchat.com/#narrow/stream/375765-egg.2Fegglog/topic/incrementally.20.22discovering.22.20e-graphs.20from.20union-find
 
