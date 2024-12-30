@@ -115,7 +115,7 @@ def render_post(post):
     builder.end("br")
     builder.start("small", {})
     builder.start("a", {"href": post["url"]})
-    builder.data("(link)")
+    builder.data(post["created_at"])
     builder.end("a")
     builder.end("small")
     builder.end("li")
