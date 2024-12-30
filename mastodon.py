@@ -52,7 +52,7 @@ def get_all_toots(user_id, min_id):
         batch = get_toots(user_id, {"min_id": min_id, "limit": 40})
         if not batch:
             break
-        min_id = min(int(id) for id in batch.keys())
+        min_id = max(int(id) for id in batch.keys())
         yield batch
 
 
@@ -61,7 +61,7 @@ def update_db(db):
         db["user"] = lookup_user(USER)
     user_id = db["user"]["id"]
     if "toots" in db:
-        min_id = min(int(id) for id in db["toots"].keys())
+        min_id = max(int(id) for id in db["toots"].keys())
     else:
         db["toots"] = {}
         min_id = 0
