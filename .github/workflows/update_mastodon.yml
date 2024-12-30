@@ -1,0 +1,24 @@
+name: Update copy of microblog
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 19 * * *"  # Daily at 7pm (time arbitrarily chosen)
+permissions:
+  contents: write
+jobs:
+  update_and_render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Update DB and render
+        run: python3 mastodon.py --update
+      - name: Commit and push
+        run: |
+          git config --global user.name 'Max Bernstein'
+          git config --global user.email 'tekknolagi@users.noreply.github.com'
+          git add mastodon.json microblog.html
+          git commit -m "Update Mastodon microblog"
+          git push
