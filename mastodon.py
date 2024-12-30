@@ -1,14 +1,17 @@
 import argparse
 import json
+import os
 import urllib.error
+import xml.etree.ElementTree as ET
 from urllib.parse import urlencode
-from urllib.request import urlopen
+from urllib.request import urlopen, urlretrieve
 
 
 API = "https://mastodon.social/api/v1"
 DB = "mastodon.json"
 PAGE = "microblog.html"
 USER = "tekknolagi"
+MASTODON_MEDIA = "assets/mastodon"
 
 
 def open_db():
@@ -78,8 +81,45 @@ def should_display(post):
     return True
 
 
+def rewrite_media_filename(media_url, media_id):
+    _, media_ext = os.path.splitext(media_url)
+    return f"{MASTODON_MEDIA}/{media_id}{media_ext}"
+
+
 def render_post(post):
-    return f"""<li>{post["content"]} <small><a href="{post["url"]}">(link)</a></small></li>"""
+    builder = ET.TreeBuilder()
+    li = builder.start("li", {})
+    try:
+        # Make a wrapper root element or ET will complain
+        li.append(ET.fromstring("<div>" + post["content"] + "</div>"))
+    except ET.ParseError as e:
+        print(f"Error parsing content for post {post['id']}: {e}")
+        print(post["content"])
+        raise
+    for media in post["media_attachments"]:
+        if media["type"] == "image":
+            height = str(media["meta"]["small"]["height"])
+            width = str(media["meta"]["small"]["width"])
+            media_filename = rewrite_media_filename(media["url"], media["id"])
+            media_url = f"/{media_filename}"
+            media_desc = media.get("description", None)
+            attrs = {"src": media_url, "height": height, "width": width}
+            if media_desc:
+                attrs["alt"] = media_desc
+            builder.start("img", attrs)
+            builder.end("img")
+        else:
+            # TODO(max): Figure out how (if?) we want to embed other media
+            pass
+    builder.start("br", {})
+    builder.end("br")
+    builder.start("small", {})
+    builder.start("a", {"href": post["url"]})
+    builder.data("(link)")
+    builder.end("a")
+    builder.end("small")
+    builder.end("li")
+    return ET.tostring(builder.close(), encoding="unicode")
 
 
 def render(db):
@@ -99,6 +139,7 @@ layout: page
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--download-media", action="store_true")
     parser.add_argument("--update", action="store_true")
     args = parser.parse_args()
     db = open_db()
@@ -110,6 +151,16 @@ if __name__ == "__main__":
                 print("Rate limited. Try again later.")
             else:
                 raise
+    if args.download_media:
+        print("Downloading media...")
+        os.makedirs(MASTODON_MEDIA, exist_ok=True)
+        for post in db["toots"].values():
+            for media in post["media_attachments"]:
+                media_id = media["id"]
+                media_url = media["url"]
+                media_filename = rewrite_media_filename(media_url, media_id)
+                if not os.path.exists(media_filename):
+                    urlretrieve(media_url, media_filename)
     text = render(db)
     with open(PAGE, "w+") as f:
         f.write(text)

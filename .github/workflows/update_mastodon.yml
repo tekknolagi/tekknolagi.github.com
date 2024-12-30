@@ -14,11 +14,11 @@ jobs:
         with:
           python-version: '3.10'
       - name: Update DB and render
-        run: python3 mastodon.py --update
+        run: python3 mastodon.py --update --download-media
       - name: Commit and push
         run: |
           git config --global user.name 'Max Bernstein'
           git config --global user.email 'tekknolagi@users.noreply.github.com'
-          git add mastodon.json microblog.html
+          git add mastodon.json microblog.html assets/mastodon
           git commit -m "Update Mastodon microblog"
           git push
