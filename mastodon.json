@@ -1295,7 +1295,7 @@
           "header_static": "https://files.mastodon.social/cache/accounts/headers/000/407/167/original/8493d576f79d7677.jpeg",
           "followers_count": 8414,
           "following_count": 873,
-          "statuses_count": 4324,
+          "statuses_count": 4325,
           "last_status_at": "2024-12-30",
           "hide_collections": false,
           "emojis": [],
@@ -3359,7 +3359,7 @@
       "uri": "https://mastodon.social/users/tekknolagi/statuses/109595316594060750",
       "url": "https://mastodon.social/@tekknolagi/109595316594060750",
       "replies_count": 0,
-      "reblogs_count": 0,
+      "reblogs_count": 1,
       "favourites_count": 0,
       "edited_at": null,
       "content": "<p>\ud83c\udfb5 do you hear the noodles sing<br />singing the song of tantan men \ud83c\udfb5</p>",
@@ -6257,7 +6257,7 @@
           "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/276/878/896/762/751/original/52a44185e012a8c3.jpg",
           "header": "https://files.mastodon.social/cache/accounts/headers/109/276/878/896/762/751/original/11c660f53b8ae4be.jpeg",
           "header_static": "https://files.mastodon.social/cache/accounts/headers/109/276/878/896/762/751/original/11c660f53b8ae4be.jpeg",
-          "followers_count": 22702,
+          "followers_count": 22710,
           "following_count": 2078,
           "statuses_count": 7766,
           "last_status_at": "2024-12-30",
@@ -6267,12 +6267,12 @@
             {
               "name": "Blog",
               "value": "<a href=\"https://simonwillison.net\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">simonwillison.net</span><span class=\"invisible\"></span></a>",
-              "verified_at": "2024-12-28T15:27:47.548+00:00"
+              "verified_at": "2024-12-30T22:45:04.454+00:00"
             },
             {
               "name": "GitHub",
               "value": "<a href=\"https://simonw.github.io\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">simonw.github.io</span><span class=\"invisible\"></span></a>",
-              "verified_at": "2024-12-28T15:27:47.868+00:00"
+              "verified_at": "2024-12-30T22:45:04.613+00:00"
             },
             {
               "name": "Twitter",
@@ -6282,7 +6282,7 @@
             {
               "name": "TIL",
               "value": "<a href=\"https://til.simonwillison.net\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">til.simonwillison.net</span><span class=\"invisible\"></span></a>",
-              "verified_at": "2024-12-28T15:27:49.428+00:00"
+              "verified_at": "2024-12-30T22:45:06.054+00:00"
             }
           ]
         },
@@ -12673,7 +12673,7 @@
           "header": "https://files.mastodon.social/cache/accounts/headers/109/216/203/764/926/662/original/8ac157f0319c4c06.jpeg",
           "header_static": "https://files.mastodon.social/cache/accounts/headers/109/216/203/764/926/662/original/8ac157f0319c4c06.jpeg",
           "followers_count": 14825,
-          "following_count": 3740,
+          "following_count": 3743,
           "statuses_count": 42329,
           "last_status_at": "2024-12-30",
           "hide_collections": true,
@@ -12681,8 +12681,8 @@
           "fields": [
             {
               "name": "blog",
-              "value": "<a href=\"https://rys.io\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">rys.io</span><span class=\"invisible\"></span></a>",
-              "verified_at": "2024-12-29T00:22:20.918+00:00"
+              "value": "<a href=\"https://rys.io\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">rys.io</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
             },
             {
               "name": "Black Lives",
@@ -13398,7 +13398,7 @@
           "header_static": "https://mastodon.social/headers/original/missing.png",
           "followers_count": 862,
           "following_count": 281,
-          "statuses_count": 3280,
+          "statuses_count": 3281,
           "last_status_at": "2024-12-30",
           "hide_collections": false,
           "emojis": [],
@@ -15708,6 +15708,828 @@
           "username": "sdw",
           "url": "https://mastodon.social/@sdw",
           "acct": "sdw"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110815193938652774": {
+      "id": "110815193938652774",
+      "created_at": "2023-08-01T16:01:09.245Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110815193938652774/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/110815193938652774/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "110810172640495110",
+        "created_at": "2023-07-31T18:44:10.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://infosec.exchange/users/jjtech/statuses/110810172625103835",
+        "url": "https://infosec.exchange/@jjtech/110810172625103835",
+        "replies_count": 9,
+        "reblogs_count": 61,
+        "favourites_count": 18,
+        "edited_at": "2023-07-31T19:14:27.000Z",
+        "content": "<p>It's ready! <a href=\"https://infosec.exchange/tags/pypush\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>pypush</span></a> can now send and receive <a href=\"https://infosec.exchange/tags/iMessage\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>iMessage</span></a>, on <em>any</em> platform, completely server-less and open-source! \ud83c\udf89 </p><p><a href=\"https://github.com/JJTech0130/pypush\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">github.com/JJTech0130/pypush</span><span class=\"invisible\"></span></a></p>",
+        "reblog": null,
+        "account": {
+          "id": "109393382280546407",
+          "username": "jjtech",
+          "acct": "jjtech@infosec.exchange",
+          "display_name": "JJTech",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2022-11-22T00:00:00.000Z",
+          "note": "<p>Reverse engineer, student</p><p>Currently contracting for Beeper</p>",
+          "url": "https://infosec.exchange/@jjtech",
+          "uri": "https://infosec.exchange/users/jjtech",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/109/393/382/280/546/407/original/6cc3ae1ebd43ab4d.png",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/393/382/280/546/407/original/6cc3ae1ebd43ab4d.png",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "followers_count": 574,
+          "following_count": 224,
+          "statuses_count": 878,
+          "last_status_at": "2024-12-30",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Blog",
+              "value": "<a href=\"https://jjtech.dev\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">jjtech.dev</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2024-12-30T19:33:56.392+00:00"
+            },
+            {
+              "name": "GitHub",
+              "value": "<a href=\"https://github.com/JJTech0130\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/JJTech0130</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2024-12-30T19:33:56.876+00:00"
+            },
+            {
+              "name": "Email",
+              "value": "jjtech@jjtech.dev",
+              "verified_at": null
+            },
+            {
+              "name": "pypush",
+              "value": "<a href=\"https://github.com/beeper/pypush\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">github.com/beeper/pypush</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+          {
+            "name": "pypush",
+            "url": "https://mastodon.social/tags/pypush"
+          },
+          {
+            "name": "imessage",
+            "url": "https://mastodon.social/tags/imessage"
+          }
+        ],
+        "emojis": [],
+        "card": {
+          "url": "https://github.com/JJTech0130/pypush",
+          "title": "GitHub - JJTech0130/pypush: Cross-platform iMessage POC",
+          "description": "Cross-platform iMessage POC. Contribute to JJTech0130/pypush development by creating an account on GitHub.",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "GitHub",
+          "provider_url": "",
+          "html": "",
+          "width": 1200,
+          "height": 600,
+          "image": null,
+          "image_description": "Cross-platform iMessage POC. Contribute to JJTech0130/pypush development by creating an account on GitHub.",
+          "embed_url": "",
+          "blurhash": "UKSPb4s9ozs:%Lo0kCj@9Gayoeay~VW;e.WV",
+          "published_at": null,
+          "authors": []
+        },
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110816101473056345": {
+      "id": "110816101473056345",
+      "created_at": "2023-08-01T19:51:57.106Z",
+      "in_reply_to_id": "110816070778038090",
+      "in_reply_to_account_id": "109287998926509211",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110816101473056345",
+      "url": "https://mastodon.social/@tekknolagi/110816101473056345",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://fosstodon.org/@pamelafox\" class=\"u-url mention\">@<span>pamelafox</span></a></span> muster point?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109287998926509211",
+          "username": "pamelafox",
+          "url": "https://fosstodon.org/@pamelafox",
+          "acct": "pamelafox@fosstodon.org"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110817345170901051": {
+      "id": "110817345170901051",
+      "created_at": "2023-08-02T01:08:14.431Z",
+      "in_reply_to_id": "110817342236374970",
+      "in_reply_to_account_id": "109383545462270367",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110817345170901051",
+      "url": "https://mastodon.social/@tekknolagi/110817345170901051",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://hachyderm.io/@mattgodbolt\" class=\"u-url mention\">@<span>mattgodbolt</span></a></span> are congratulations in order? Congratulations!</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109383545462270367",
+          "username": "mattgodbolt",
+          "url": "https://hachyderm.io/@mattgodbolt",
+          "acct": "mattgodbolt@hachyderm.io"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110817457284676857": {
+      "id": "110817457284676857",
+      "created_at": "2023-08-02T01:36:45.150Z",
+      "in_reply_to_id": "110817434099451320",
+      "in_reply_to_account_id": "109383545462270367",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110817457284676857",
+      "url": "https://mastodon.social/@tekknolagi/110817457284676857",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://hachyderm.io/@mattgodbolt\" class=\"u-url mention\">@<span>mattgodbolt</span></a></span> oof</p><p>Good luck</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109383545462270367",
+          "username": "mattgodbolt",
+          "url": "https://hachyderm.io/@mattgodbolt",
+          "acct": "mattgodbolt@hachyderm.io"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110821341222784344": {
+      "id": "110821341222784344",
+      "created_at": "2023-08-02T18:04:29.344Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110821341222784344",
+      "url": "https://mastodon.social/@tekknolagi/110821341222784344",
+      "replies_count": 2,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>I know there is research on resumable/sporadic computing. I know that NFC exists and transmits a small amount of power. Are there any projects that exist that are tiny computers/microchips that do work whenever they are scanned? Or passively powered some other way?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110821354374384394": {
+      "id": "110821354374384394",
+      "created_at": "2023-08-02T18:07:49.999Z",
+      "in_reply_to_id": "110821341222784344",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110821354374384394",
+      "url": "https://mastodon.social/@tekknolagi/110821354374384394",
+      "replies_count": 1,
+      "reblogs_count": 1,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>This kind of extremely low-power display is in line with what I am interested in, I think: <a href=\"https://www.ynvisible.com/shop\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">ynvisible.com/shop</span><span class=\"invisible\"></span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://www.ynvisible.com/shop",
+        "title": "Shop - Ynvisible",
+        "description": "We can now add your preferred color combination to our thin, lightweight, and flexible displays. It is suitable for a large number of low power applications.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 2560,
+        "height": 1440,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": "UVNwK5%h?wrpD$kDbcV??vRPD%R-M|WAj@oz",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
+    },
+    "110821391662042932": {
+      "id": "110821391662042932",
+      "created_at": "2023-08-02T18:17:18.982Z",
+      "in_reply_to_id": "110821354374384394",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110821391662042932",
+      "url": "https://mastodon.social/@tekknolagi/110821391662042932",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Looks like they even have some LinkedIn post talking about NFC-powering their displays--neat!--can we do more? And they had this awesome project called Printoo that had ultra low power microcontrollers and peripherals but that is apparently no more</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110821435698532519": {
+      "id": "110821435698532519",
+      "created_at": "2023-08-02T18:28:30.927Z",
+      "in_reply_to_id": "110821391662042932",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110821435698532519",
+      "url": "https://mastodon.social/@tekknolagi/110821435698532519",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Sigh. Printoo looked so neat: <a href=\"https://www.kickstarter.com/projects/1030661323/printoo-paper-thin-flexible-arduinotm-compatible-m\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"ellipsis\">kickstarter.com/projects/10306</span><span class=\"invisible\">61323/printoo-paper-thin-flexible-arduinotm-compatible-m</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110821464875800780": {
+      "id": "110821464875800780",
+      "created_at": "2023-08-02T18:35:56.134Z",
+      "in_reply_to_id": "110821435698532519",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110821464875800780",
+      "url": "https://mastodon.social/@tekknolagi/110821464875800780",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>These are little LEDs for nails that blink when in the presence of a NFC field!</p><p><a href=\"https://www.adafruit.com/product/3781\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">adafruit.com/product/3781</span><span class=\"invisible\"></span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://www.adafruit.com/product/3781",
+        "title": "RFID/NFC Nail Stickers - 5 Pack with White LEDs",
+        "description": "You're at New York's hottest cyberpunk club is Near Field Commune(ication), and it's got everything, Adabot & the Circuit Playground,\u00a0Collin's wondrous,  ...",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 480,
+        "height": 360,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/007/409/957/original/7f4832400611040f.jpg",
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": "UKD+o6j@9wj[Ioazoej@0iaz%0ayj?fQRlaz",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
+    },
+    "110821578297960062": {
+      "id": "110821578297960062",
+      "created_at": "2023-08-02T19:04:46.825Z",
+      "in_reply_to_id": "110821396933845484",
+      "in_reply_to_account_id": "109306393408330356",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110821578297960062",
+      "url": "https://mastodon.social/@tekknolagi/110821578297960062",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@adrian\" class=\"u-url mention\">@<span>adrian</span></a></span> Unfortunately &quot;NFC WISP&quot; page 404s so I am not hopeful</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109306393408330356",
+          "username": "adrian",
+          "url": "https://discuss.systems/@adrian",
+          "acct": "adrian@discuss.systems"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110822056061361608": {
+      "id": "110822056061361608",
+      "created_at": "2023-08-02T21:06:16.914Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110822056061361608",
+      "url": "https://mastodon.social/@tekknolagi/110822056061361608",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>I have four bsky invites and know not what to do with them. hmu</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110822244986055802": {
+      "id": "110822244986055802",
+      "created_at": "2023-08-02T21:54:19.676Z",
+      "in_reply_to_id": "110822203854877427",
+      "in_reply_to_account_id": "1306813",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110822244986055802",
+      "url": "https://mastodon.social/@tekknolagi/110822244986055802",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@akkartik\" class=\"u-url mention\">@<span>akkartik</span></a></span> have you considered just not using the package manager</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "1306813",
+          "username": "akkartik",
+          "url": "https://merveilles.town/@akkartik",
+          "acct": "akkartik@merveilles.town"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110822262502467829": {
+      "id": "110822262502467829",
+      "created_at": "2023-08-02T21:58:46.955Z",
+      "in_reply_to_id": "110822260460207329",
+      "in_reply_to_account_id": "1306813",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110822262502467829",
+      "url": "https://mastodon.social/@tekknolagi/110822262502467829",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@akkartik\" class=\"u-url mention\">@<span>akkartik</span></a></span> then ???</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "1306813",
+          "username": "akkartik",
+          "url": "https://merveilles.town/@akkartik",
+          "acct": "akkartik@merveilles.town"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110822281534440854": {
+      "id": "110822281534440854",
+      "created_at": "2023-08-02T22:03:37.362Z",
+      "in_reply_to_id": "110822276825572996",
+      "in_reply_to_account_id": "1306813",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110822281534440854",
+      "url": "https://mastodon.social/@tekknolagi/110822281534440854",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@akkartik\" class=\"u-url mention\">@<span>akkartik</span></a></span> since it&#39;s all open source, the nice thing is that you can use your tools the way you want</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "1306813",
+          "username": "akkartik",
+          "url": "https://merveilles.town/@akkartik",
+          "acct": "akkartik@merveilles.town"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110822322770980855": {
+      "id": "110822322770980855",
+      "created_at": "2023-08-02T22:14:06.582Z",
+      "in_reply_to_id": "110822318932308207",
+      "in_reply_to_account_id": "1376897",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110822322770980855",
+      "url": "https://mastodon.social/@tekknolagi/110822322770980855",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@maxc\" class=\"u-url mention\">@<span>maxc</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@akkartik\" class=\"u-url mention\">@<span>akkartik</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.xyz/@maxime_andre\" class=\"u-url mention\">@<span>maxime_andre</span></a></span> to be fair I could never figure out how to get it to work</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "1376897",
+          "username": "maxc",
+          "url": "https://merveilles.town/@maxc",
+          "acct": "maxc@merveilles.town"
+        },
+        {
+          "id": "1306813",
+          "username": "akkartik",
+          "url": "https://merveilles.town/@akkartik",
+          "acct": "akkartik@merveilles.town"
+        },
+        {
+          "id": "33194",
+          "username": "maxime_andre",
+          "url": "https://mastodon.xyz/@maxime_andre",
+          "acct": "maxime_andre@mastodon.xyz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110825791304380855": {
+      "id": "110825791304380855",
+      "created_at": "2023-08-03T12:56:12.197Z",
+      "in_reply_to_id": "110821464875800780",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110825791304380855",
+      "url": "https://mastodon.social/@tekknolagi/110825791304380855",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>Holy shit a whole microcontroller</p><p><a href=\"https://www.nxp.com/video/demonstrating-energy-harvesting-capabilities-on-the-lpc8n04:LPC8N04-MCU\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"ellipsis\">nxp.com/video/demonstrating-en</span><span class=\"invisible\">ergy-harvesting-capabilities-on-the-lpc8n04:LPC8N04-MCU</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://www.nxp.com/video/demonstrating-energy-harvesting-capabilities-on-the-lpc8n04:LPC8N04-MCU",
+        "title": "Demonstrating Energy Harvesting Capabilities on the LPC8N04 | NXP Semiconductors",
+        "description": "",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
+    },
+    "110825821674635314": {
+      "id": "110825821674635314",
+      "created_at": "2023-08-03T13:03:55.614Z",
+      "in_reply_to_id": "110825803862293761",
+      "in_reply_to_account_id": "523512",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110825821674635314",
+      "url": "https://mastodon.social/@tekknolagi/110825821674635314",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> I saw ynvisible do that for their display! Neat stuff</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110831636240848479": {
+      "id": "110831636240848479",
+      "created_at": "2023-08-04T13:42:38.855Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110831636240848479",
+      "url": "https://mastodon.social/@tekknolagi/110831636240848479",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>I don&#39;t like it when Google Maps lies and says that the bus has departed. No it didn&#39;t!! I was right here!</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110833512411712284": {
+      "id": "110833512411712284",
+      "created_at": "2023-08-04T21:39:46.948Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110833512411712284",
+      "url": "https://mastodon.social/@tekknolagi/110833512411712284",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>I use exclusively dark mode for terminal &amp; terminal text editors but I use light mode for GUI IDEs. Is that weird or do other people do that too</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110834210117017099": {
+      "id": "110834210117017099",
+      "created_at": "2023-08-05T00:37:13.085Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110834210117017099",
+      "url": "https://mastodon.social/@tekknolagi/110834210117017099",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Accidentally bought vegan pupusas?? What am I supposed to do without cheese help</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "110834319120223103": {
+      "id": "110834319120223103",
+      "created_at": "2023-08-05T01:04:56.342Z",
+      "in_reply_to_id": "110834000661347475",
+      "in_reply_to_account_id": "109842565168127300",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/110834319120223103",
+      "url": "https://mastodon.social/@tekknolagi/110834319120223103",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://gamedev.lgbt/@typeswitch\" class=\"u-url mention\">@<span>typeswitch</span></a></span> have you read Ra by Sam Hughes?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109842565168127300",
+          "username": "typeswitch",
+          "url": "https://gamedev.lgbt/@typeswitch",
+          "acct": "typeswitch@gamedev.lgbt"
         }
       ],
       "tags": [],
