@@ -1,3 +1,6 @@
+---
+no_index: true
+---
 # Lisp compiler source
 
 [![builds.sr.ht status](https://builds.sr.ht/~max/bernsteinbear.com.svg)](https://builds.sr.ht/~max/bernsteinbear.com?)

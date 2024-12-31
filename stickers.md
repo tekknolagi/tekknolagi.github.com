@@ -1,5 +1,6 @@
 ---
 title: Stickers
+no_index: true
 ---
 
 Stickers page has been removed because StickerMule no longer has custom sticker
