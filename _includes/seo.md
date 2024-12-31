@@ -6,3 +6,4 @@
     <meta property="og:image" content="{{ page.og_image | default: site.default_og_image | absolute_url }}" />
     {% seo %}
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
