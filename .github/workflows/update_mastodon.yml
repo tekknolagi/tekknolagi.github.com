@@ -2,7 +2,7 @@ name: Update copy of microblog
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "0 19 * * *"  # Daily at 7pm (time arbitrarily chosen)
+    - cron: "0 * * * *"  # Hourly
 permissions:
   contents: write
 jobs:
@@ -17,8 +17,11 @@ jobs:
         run: python3 mastodon.py --update --download-media
       - name: Commit and push
         run: |
-          git config --global user.name 'Max Bernstein'
-          git config --global user.email 'tekknolagi@users.noreply.github.com'
-          git add mastodon.json microblog.html assets/mastodon
-          git commit -m "Update Mastodon microblog"
-          git push
+          if ! ( git update-index --refresh && git diff-index --quiet HEAD -- ); then
+            # Only try to commit & push if there are changes
+            git config --global user.name 'Max Bernstein'
+            git config --global user.email 'tekknolagi@users.noreply.github.com'
+            git add mastodon.json microblog.html assets/mastodon
+            git commit -m "Update Mastodon microblog"
+            git push
+          fi
