@@ -33,6 +33,7 @@ Little Wasms
 * [cjwasm?](https://github.com/jeaiii/cjwasm)
 * [baseline wasm compiler](https://wingolog.org/archives/2020/03/25/firefoxs-low-latency-webassembly-compiler)
 * [Whose baseline compiler is it anyway?](https://arxiv.org/abs/2305.13241)
+* [wasm-interpreter](https://github.com/csjh/wasm-interpreter)
 
 Other
 
