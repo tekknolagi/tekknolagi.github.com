@@ -1,5 +1,5 @@
 ---
-title: Older Projects
+title: Older projects
 layout: page
 ---
 
