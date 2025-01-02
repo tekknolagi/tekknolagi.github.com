@@ -47145,6 +47145,97 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113755807876069497": {
+      "id": "113755807876069497",
+      "created_at": "2025-01-01T23:57:57.012Z",
+      "in_reply_to_id": "113745417634635115",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113755807876069497",
+      "url": "https://mastodon.social/@tekknolagi/113755807876069497",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>what about: has anyone ever done an x86 in the style of CESK</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113755803525587130": {
+      "id": "113755803525587130",
+      "created_at": "2025-01-01T23:56:50.634Z",
+      "in_reply_to_id": "113755740821023635",
+      "in_reply_to_account_id": "147970",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113755803525587130",
+      "url": "https://mastodon.social/@tekknolagi/113755803525587130",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@regehr\" class=\"u-url mention\">@<span>regehr</span></a></span> please let us know how it goes... very interested in the results</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "147970",
+          "username": "regehr",
+          "url": "https://mastodon.social/@regehr",
+          "acct": "regehr"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113755800333541535": {
+      "id": "113755800333541535",
+      "created_at": "2025-01-01T23:56:02.021Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113755800333541535",
+      "url": "https://mastodon.social/@tekknolagi/113755800333541535",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "edited_at": null,
+      "content": "<p>2025 is going to be the year I write a register allocator. I can feel it</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
