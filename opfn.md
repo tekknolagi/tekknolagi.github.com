@@ -24,6 +24,11 @@ WebAssembly (Wasm)
 * [ASC](https://dl.acm.org/doi/10.1145/2654822.2541985)
   * Seltzer's group at Harvard build some wild stuff. Wonder if it would be
     easier with a smaller/more introspectable machine like Wasm.
+* [wasmstore](https://github.com/dylibso/wasmstore) is content addressable Wasm
+* [wasm-persist](https://github.com/dfinity-side-projects/wasm-persist) can
+  hibernate a Wasm instance
+* [Gate](https://github.com/gate-computer/gate) is content-addressable Wasm,
+  RPC, and snapshot/restore
 
 Little Wasms
 
