@@ -47264,6 +47264,53 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113772171319838990": {
+      "id": "113772171319838990",
+      "created_at": "2025-01-04T21:19:23.354Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113772171319838990",
+      "url": "https://mastodon.social/@tekknolagi/113772171319838990",
+      "replies_count": 0,
+      "reblogs_count": 1,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>I now understand how to implement weakrefs<br /><a href=\"https://bernsteinbear.com/blog/weakrefs/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bernsteinbear.com/blog/weakref</span><span class=\"invisible\">s/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://bernsteinbear.com/blog/weakrefs/",
+        "title": "Weak references and garbage collectors",
+        "description": "From 2018 to 2021, I worked on a greenfield Python runtime called Skybison. One of its major differences from CPython was that it used a moving garbage collector (GC). This I understood in theory\u2014I knew that it ran when the heap filled up, knew we needed handles to update pointers in the runtime\u2019s code, had read the Moon paper (PDF)\u2014but the other day, I wanted to implement weak references and couldn\u2019t immediately figure it out. Skybison thankfully has a reasonably clear implementation. So now I\u2019m writing this post, mostly for myself, but maybe it will be useful to you as well.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Max Bernstein",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": "2025-01-04T00:00:00.000Z",
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
