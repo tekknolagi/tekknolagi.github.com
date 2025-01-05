@@ -50,6 +50,9 @@ Here are some projects that are occupying some brain space and that I am keeping
 * [chibicc](https://github.com/rui314/chibicc)
 * [bcgen](https://github.com/Kimplul/bcgen), which is kind of like Ertl's VMGen, and [copyjit](https://github.com/Kimplul/copyjit), which is like Copy and Patch
 * [joos](https://github.com/just-js/joos), a KVM virtual machine manager in JavaScript
+* [pocketpy](https://github.com/pocketpy/pocketpy), a little Python implementation that can be bundled into one C file
+* [gate](https://github.com/gate-computer/gate), content-addressable Wasm RPC/RCE
+* [cjit](https://github.com/dyne/cjit), a JIT for C
 
 Not quite code but presenting very cool ideas:
 
