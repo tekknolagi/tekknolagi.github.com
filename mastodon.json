@@ -47311,6 +47311,41 @@
         "authors": []
       },
       "poll": null
+    },
+    "113779028044541741": {
+      "id": "113779028044541741",
+      "created_at": "2025-01-06T02:23:08.672Z",
+      "in_reply_to_id": "113778532982162969",
+      "in_reply_to_account_id": "109390099639285430",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113779028044541741",
+      "url": "https://mastodon.social/@tekknolagi/113779028044541741",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://types.pl/@lenary\" class=\"u-url mention\">@<span>lenary</span></a></span> Ghostty was a pretty seamless transition for me from Konsole and WezTerm. The others seem like bigger changes</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109390099639285430",
+          "username": "lenary",
+          "url": "https://types.pl/@lenary",
+          "acct": "lenary@types.pl"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
