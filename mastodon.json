@@ -47346,6 +47346,163 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113782206014250590": {
+      "id": "113782206014250590",
+      "created_at": "2025-01-06T15:51:20.642Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113782206014250590/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/113782206014250590/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "113781853208563810",
+        "created_at": "2025-01-06T14:21:37.254Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.social/users/shriramk/statuses/113781853208563810",
+        "url": "https://mastodon.social/@shriramk/113781853208563810",
+        "replies_count": 0,
+        "reblogs_count": 13,
+        "favourites_count": 19,
+        "edited_at": null,
+        "content": "<p>Last year I asked a question about the state of tracing JITs, and it led to a wonderful exchange. <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> has written a terrific summary that captures a lot of folk knowledge that would otherwise be lost. Thanks!<br /><a href=\"https://pypy.org/posts/2025/01/musings-tracing.html\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">pypy.org/posts/2025/01/musings</span><span class=\"invisible\">-tracing.html</span></a></p>",
+        "reblog": null,
+        "application": {
+          "name": "Web",
+          "website": null
+        },
+        "account": {
+          "id": "108262011720829669",
+          "username": "shriramk",
+          "acct": "shriramk",
+          "display_name": "Shriram Krishnamurthi",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": false,
+          "group": false,
+          "created_at": "2022-05-07T00:00:00.000Z",
+          "note": "<p>Brown Computer Science / Brown University || BootstrapWorld || Pyret || Racket</p><p>I&#39;m unreasonably fascinated by, delighted by, and excited about <a href=\"https://mastodon.social/tags/compsci\" class=\"mention hashtag\" rel=\"tag\">#<span>compsci</span></a> <a href=\"https://mastodon.social/tags/education\" class=\"mention hashtag\" rel=\"tag\">#<span>education</span></a> <a href=\"https://mastodon.social/tags/cycling\" class=\"mention hashtag\" rel=\"tag\">#<span>cycling</span></a> <a href=\"https://mastodon.social/tags/cricket\" class=\"mention hashtag\" rel=\"tag\">#<span>cricket</span></a> and the general human experience.</p><p>See <a href=\"https://mastodon.social/@shriramk/109302532598801863\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">mastodon.social/@shriramk/1093</span><span class=\"invisible\">02532598801863</span></a> for longer <a href=\"https://mastodon.social/tags/intro\" class=\"mention hashtag\" rel=\"tag\">#<span>intro</span></a>.</p><p>I wish to be searchable by tootfinder</p>",
+          "url": "https://mastodon.social/@shriramk",
+          "uri": "https://mastodon.social/users/shriramk",
+          "avatar": "https://files.mastodon.social/accounts/avatars/108/262/011/720/829/669/original/21d7b109c09f7c06.jpg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/108/262/011/720/829/669/original/21d7b109c09f7c06.jpg",
+          "header": "https://files.mastodon.social/accounts/headers/108/262/011/720/829/669/original/53fd1ae20e2c08b5.jpeg",
+          "header_static": "https://files.mastodon.social/accounts/headers/108/262/011/720/829/669/original/53fd1ae20e2c08b5.jpeg",
+          "followers_count": 3142,
+          "following_count": 740,
+          "statuses_count": 5202,
+          "last_status_at": "2025-01-06",
+          "hide_collections": false,
+          "noindex": false,
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "Work Home",
+              "value": "<a href=\"https://cs.brown.edu/~sk/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">cs.brown.edu/~sk/</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2022-11-12T02:13:16.252+00:00"
+            },
+            {
+              "name": "Blog",
+              "value": "<a href=\"https://parentheticallyspeaking.org/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">parentheticallyspeaking.org/</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2022-12-17T14:47:44.402+00:00"
+            },
+            {
+              "name": "ORCID",
+              "value": "<a href=\"https://orcid.org/0000-0001-5184-1975\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">orcid.org/0000-0001-5184-1975</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [
+          {
+            "id": "64048",
+            "username": "cfbolz",
+            "url": "https://mastodon.social/@cfbolz",
+            "acct": "cfbolz"
+          }
+        ],
+        "tags": [],
+        "emojis": [],
+        "card": {
+          "url": "https://pypy.org/posts/2025/01/musings-tracing.html",
+          "title": "Musings on Tracing in PyPy",
+          "description": "Last summer, Shriram Krishnamurthi asked on\nTwitter:\n\n\"I'm curious what the current state of tracing JITs is. They used to be all the\nrage for a while, then I though I heard they weren't so effective,",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "PyPy",
+          "provider_url": "",
+          "html": "",
+          "width": 0,
+          "height": 0,
+          "image": null,
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": null,
+          "published_at": "2025-01-05T17:01:09.000Z",
+          "authors": []
+        },
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113781696895171136": {
+      "id": "113781696895171136",
+      "created_at": "2025-01-06T13:41:52.099Z",
+      "in_reply_to_id": "113780668259800037",
+      "in_reply_to_account_id": "109390099639285430",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113781696895171136",
+      "url": "https://mastodon.social/@tekknolagi/113781696895171136",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://types.pl/@lenary\" class=\"u-url mention\">@<span>lenary</span></a></span> oh sure, that would be a shift</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109390099639285430",
+          "username": "lenary",
+          "url": "https://types.pl/@lenary",
+          "acct": "lenary@types.pl"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
