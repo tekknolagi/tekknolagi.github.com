@@ -176,7 +176,7 @@ blockquote.post a:focus {{
   text-decoration: underline;
 }}
 
-<!-- Thanks to https://codepen.io/miyano/pen/oMREdZ -->
+/* Thanks to https://codepen.io/miyano/pen/oMREdZ */
 .mstdn{{
   display:inline-block;
   background-color:#282c37;
