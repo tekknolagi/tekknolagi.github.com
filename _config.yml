@@ -18,6 +18,10 @@ future: false
 twitter:
   username: tekknolagi
 
+mastodon:
+  username: tekknolagi
+  url: "https://mastodon.social/@tekknolagi"
+
 repo:
   repository_url: https://github.com/tekknolagi/tekknolagi.github.com
   branch: main

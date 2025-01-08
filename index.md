@@ -3,7 +3,7 @@ title:
 layout: page
 ---
 
-<a rel="me" style="display:none;" href="https://mastodon.social/@tekknolagi">Mastodon</a>
+<a rel="me" style="display:none;" href="{{ site.mastodon.url }}">Mastodon</a>
 
 # I'm Max Bernstein.
 
