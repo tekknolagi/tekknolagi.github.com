@@ -47573,6 +47573,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113796121054592138": {
+      "id": "113796121054592138",
+      "created_at": "2025-01-09T02:50:07.304Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113796121054592138",
+      "url": "https://mastodon.social/@tekknolagi/113796121054592138",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>What is the point of __init__ in ChocoPy? It seems like you can&#39;t override methods with incompatible signatures, so you can&#39;t pass arguments to a subclass __init__. And you already have default values for attributes in the class definition. What am I missing?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
