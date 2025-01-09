@@ -47636,6 +47636,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113799952487585675": {
+      "id": "113799952487585675",
+      "created_at": "2025-01-09T19:04:30.333Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113799952487585675",
+      "url": "https://mastodon.social/@tekknolagi/113799952487585675",
+      "replies_count": 0,
+      "reblogs_count": 3,
+      "favourites_count": 5,
+      "edited_at": null,
+      "content": "<p>All AOT compilers are alike; each JIT compiler is fucked up in its own way.<br />-- Leo Tolstoy<br />-- Michael Scott</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
