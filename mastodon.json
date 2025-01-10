@@ -47664,6 +47664,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113802122695912576": {
+      "id": "113802122695912576",
+      "created_at": "2025-01-10T04:16:25.079Z",
+      "in_reply_to_id": "113796121054592138",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113802122695912576",
+      "url": "https://mastodon.social/@tekknolagi/113802122695912576",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>It also seems like no implementation completes part of the spec: you can&#39;t (explicitly or implicitly) return None in a function declared to return int/str/bool. Seems like that would require some flow analysis in the type checker</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
