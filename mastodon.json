@@ -47692,6 +47692,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113823461441267406": {
+      "id": "113823461441267406",
+      "created_at": "2025-01-13T22:43:08.499Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113823461441267406",
+      "url": "https://mastodon.social/@tekknolagi/113823461441267406",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>Had some weird issue with a specific version of Python on my Ubuntu install. Uninstalled it. Machine no longer has a graphical interface. Why? I think I somehow uninstalled KDE?? Reinstalling kubuntu-desktop... wish me luck :(</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
