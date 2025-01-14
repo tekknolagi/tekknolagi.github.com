@@ -47806,6 +47806,163 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113827406551157233": {
+      "id": "113827406551157233",
+      "created_at": "2025-01-14T15:26:26.101Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113827406551157233/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/113827406551157233/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "113826311884349300",
+        "created_at": "2025-01-14T10:48:02.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.acm.org/users/smarr/statuses/113826311846693184",
+        "url": "https://mastodon.acm.org/@smarr/113826311846693184",
+        "replies_count": 0,
+        "reblogs_count": 9,
+        "favourites_count": 3,
+        "edited_at": "2025-01-14T12:30:06.000Z",
+        "content": "<p>A fun BA thesis from down under:</p><p>Reinvestigating Typed Assembly<br>Language for the Garbage<br>Collection Interface</p><p>by <span class=\"h-card\" translate=\"no\"><a href=\"https://social.applied-langua.ge/users/hayley\" class=\"u-url mention\" rel=\"nofollow noopener\" target=\"_blank\">@<span>hayley</span></a></span> <br><a href=\"https://applied-langua.ge/~hayley/honours-thesis.pdf\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">applied-langua.ge/~hayley/hono</span><span class=\"invisible\">urs-thesis.pdf</span></a></p>",
+        "reblog": null,
+        "account": {
+          "id": "110894036049625455",
+          "username": "smarr",
+          "acct": "smarr@mastodon.acm.org",
+          "display_name": "Stefan Marr",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2023-08-15T00:00:00.000Z",
+          "note": "<p>Researcher, Royal Society Industry Fellow, Associate Professor/Senior Lecturer. Working on interpreters, compilation, concurrency, and debugging tools.</p>",
+          "url": "https://mastodon.acm.org/@smarr",
+          "uri": "https://mastodon.acm.org/users/smarr",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/110/894/036/049/625/455/original/ef410d86031c2566.jpg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/110/894/036/049/625/455/original/ef410d86031c2566.jpg",
+          "header": "https://files.mastodon.social/cache/accounts/headers/110/894/036/049/625/455/original/72a2508fee1b37e4.jpg",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/110/894/036/049/625/455/original/72a2508fee1b37e4.jpg",
+          "followers_count": 201,
+          "following_count": 108,
+          "statuses_count": 394,
+          "last_status_at": "2025-01-14",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Blog",
+              "value": "<a href=\"https://stefan-marr.de/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">stefan-marr.de/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [
+          {
+            "id": "109475323609483361",
+            "username": "hayley",
+            "url": "https://social.applied-langua.ge/users/hayley",
+            "acct": "hayley@social.applied-langua.ge"
+          }
+        ],
+        "tags": [],
+        "emojis": [],
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113827405054613141": {
+      "id": "113827405054613141",
+      "created_at": "2025-01-14T15:26:03.280Z",
+      "in_reply_to_id": "113827371848275370",
+      "in_reply_to_account_id": "147970",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113827405054613141",
+      "url": "https://mastodon.social/@tekknolagi/113827405054613141",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@regehr\" class=\"u-url mention\">@<span>regehr</span></a></span> fingers crossed you&#39;ll warm up right quick</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "147970",
+          "username": "regehr",
+          "url": "https://mastodon.social/@regehr",
+          "acct": "regehr"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113827355657870890": {
+      "id": "113827355657870890",
+      "created_at": "2025-01-14T15:13:29.530Z",
+      "in_reply_to_id": "113827340556508641",
+      "in_reply_to_account_id": "147970",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113827355657870890",
+      "url": "https://mastodon.social/@tekknolagi/113827355657870890",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@regehr\" class=\"u-url mention\">@<span>regehr</span></a></span> oh that sounds really fun actually</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "147970",
+          "username": "regehr",
+          "url": "https://mastodon.social/@regehr",
+          "acct": "regehr"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
