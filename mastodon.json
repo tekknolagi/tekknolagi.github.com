@@ -47963,6 +47963,104 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113886384616931380": {
+      "id": "113886384616931380",
+      "created_at": "2025-01-25T01:25:19.962Z",
+      "in_reply_to_id": "113886372239423614",
+      "in_reply_to_account_id": "523512",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113886384616931380",
+      "url": "https://mastodon.social/@tekknolagi/113886384616931380",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> I don&#39;t mean to try and squeeze everything through a compilers lens</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113886372239423614": {
+      "id": "113886372239423614",
+      "created_at": "2025-01-25T01:22:11.096Z",
+      "in_reply_to_id": "113886350137591807",
+      "in_reply_to_account_id": "523512",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113886372239423614",
+      "url": "https://mastodon.social/@tekknolagi/113886372239423614",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> Okay so that&#39;s a lot of things that I think I have never done for personal projects or for work. Are there any compiler (-adjacent) use-cases?</p><p>I ask because from some descriptions it *seems* like there might be a graph-related use-case somehow.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113886319109946566": {
+      "id": "113886319109946566",
+      "created_at": "2025-01-25T01:08:40.405Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113886319109946566",
+      "url": "https://mastodon.social/@tekknolagi/113886319109946566",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>I feel like I should know why and how to use Fenwick trees but every resource does (imo) a poor job at motivating them. What&#39;s a cool application?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
