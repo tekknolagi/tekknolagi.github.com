@@ -48339,6 +48339,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113913297814394642": {
+      "id": "113913297814394642",
+      "created_at": "2025-01-29T19:29:42.768Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113913297814394642",
+      "url": "https://mastodon.social/@tekknolagi/113913297814394642",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>If you&#39;re familiar with differential dataflow (in Rust), can I take 30 minutes of your time to ask questions about using it for static analysis? I&#39;m finding the API confusing</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
