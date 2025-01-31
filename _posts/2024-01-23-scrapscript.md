@@ -54,7 +54,7 @@ implementation of
 scrapscript](https://github.com/tekknolagi/scrapscript/blob/71d1afecc32879aed9c80a3ed17cb81fe1c010d6/scrapscript.ts).
 For such a little file, it implemented an impressive featureset.
 
-Chris nor I are particularly good at JavaScript and we figured more
+Neither Chris nor I are particularly good at JavaScript and we figured more
 implementations couldn't hurt, so we decided to make a parallel implementation
 with the same features. While Taylor's primary design constraint was
 implementation size, ours was some combination of readability and correctness.
