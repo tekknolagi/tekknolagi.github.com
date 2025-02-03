@@ -280,6 +280,28 @@ class DeadCodeElimination:
                     instr.make_equal_to(Nop())
 ```
 
+The last problem, the lack of constant folding, could be solved by a pass that
+looks something like this:
+
+```python
+def simplify(fn):
+    changed = True
+    while changed:
+        changed = False
+        for block in fn.blocks:
+            for instr in block.instrs:
+                changed |= try_simplify(instr)
+```
+
+This would probably work, but it would do many passes over the entire control
+flow graph for each function. For big functions with many small reduction
+steps, this could take a long time.
+
+Additionally, it doesn't include any type inference. Each instruction is
+limited to the type information visible from its local context. For small
+optimizations like our `2+3` or list cons, this might be fine, but there are
+situations where local type information would not be enough to simplify
+an instruction.
 
 ## More advanced optimizations
 
