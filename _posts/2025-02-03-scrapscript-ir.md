@@ -316,6 +316,8 @@ Interprocedural
 
 ## Compiling to C
 
+Phi and parallel copy
+
 ## SSA vs CPS
 
 ## Testing
