@@ -181,6 +181,23 @@ In the true case, if the argument is 1, we add up 2 and 3 using the `IntAdd`
 instruction. Otherwise, in `bb1`, we encounter our last control instruction:
 `MatchFail`. This aborts the program.
 
+### Cleaning up
+
+You might notice that this IR snippet leaves something to be desired. For one,
+we have an unconditional jump from `bb0` to `bb2` and `bb2` has no other
+incoming control flow from any other blocks. It seems like we should be able to
+smush the contents of `bb2` into `bb0` instead.
+
+You might also notice that the closure parameter is completely unused. We
+could get rid of it because nothing uses `v0`.
+
+Last, you might notice that, similar to the first example with the list, we
+have two constant operands to an instruction that seems like it should be able
+to be computed at compile-time.
+
+Some good news: all of these can be dealt with using very generic compiler
+passes over the IR.
+
 ## Some optimization passes
 
 ## Design decisions: what's up with SSA?
