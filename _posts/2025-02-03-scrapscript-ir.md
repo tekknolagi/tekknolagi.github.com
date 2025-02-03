@@ -153,6 +153,21 @@ Whoa, multiple blocks! Let's go through them one by one.
 The first block contains instructions that exist to give names to function
 parameters. It might be a little confusing that we have not one but *two*
 parameters for a function that has no parameters visible in the program text.
+Here's why we need each of them:
+
+* We need the second one, `arg_0`, because it exists implicitly in the program.
+  It's the unnamed thing being matched---in this case, checked to see if the
+  value is 1.
+* We have (but don't apparently need) the first one because in its un-optimized
+  state, *every* function has a closure parameter. This is part of the "closure
+  conversion" process whereby the abstract world-of-ideas notion of "function
+  code + environment" gets turned (later) into "C code + tack-on struct". It
+  makes functions callable with a very generic (slow) calling convention by
+  default, but we might be able to optimize functions into a faster calling
+  convention later in the project.
+
+Then we have a new control instruction, `Jump`, that represents continuing the
+flow of execution at another block. In this case, `bb2`.
 
 ## Some optimization passes
 
