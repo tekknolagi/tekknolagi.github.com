@@ -81,9 +81,12 @@ IR involves classes and pointers and data structures, but I sometimes find it
 helpful to think in "text space".
 
 The IR contains one function, `fn0`, which has one basic block, `bb0`, which
-has a number of instructions. The first two are the `Const` instruction and
-they carry constant data known to the compiler at compile-time. These are
-represented by "immediates" enclosed in `<`angle brackets`>`.
+has a number of instructions. Each instruction is given a name which also
+corresponds to the value it produces.
+
+The first two are the `Const` instruction and they carry constant data known to
+the compiler at compile-time. These are represented by "immediates" enclosed in
+`<`angle brackets`>`.
 
 The third is the `ListCons` instruction. This corresponds to a heap allocation:
 building a new linked list node at run-time. It takes two operands, `v1` and
