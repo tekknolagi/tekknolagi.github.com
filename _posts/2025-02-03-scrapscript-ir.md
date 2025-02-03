@@ -50,6 +50,8 @@ marvels. But it's too big for this dinky little tugboat of a project.
 
 ## What does the IR look like?
 
+### A small example
+
 Let's start small and make a list. The Scrapscript expression `[1, 2]`, when
 evaluated, creates a list containing two elements. The language doesn't
 expressly guarantee how lists are stored in memory but the baseline compiler
@@ -94,9 +96,61 @@ building a new linked list node at run-time. It takes two operands, `v1` and
 respectively.
 
 The last one is the `Return` instruction, which exits the current function with
-the given operand.
+the given operand. `Return` is a control flow instruction. Control flow is only
+allowed to happen at the end of a basic block, which makes all the instructions
+inside a block nicely control flow free.
+
+### A bigger example
+
+Let's do a slightly more complicated example that involves pattern matching.
+We'll take a look at the IR corresponding to the Scrapscript program `| 1 -> 2
++ 3`, which is a pattern matching function. If the argument to the function is
+equal to 1, it returns 5. Otherwise, it aborts.
+
+We'll first look at the function that contains---that creates---the pattern
+matching function. The "main function", if you will.
+
+```
+fn0 {
+  bb0 {
+    v0 = NewClosure<fn1>
+    Return v0
+  }
+}
+```
+
+This function allocates a closure object on the heap corresponding to the
+function `fn1`. we'll come back to the details later, but the important thing
+to know is that unlike in the source program and AST, `fn1` is not a name to be
+looked up later as a string. Instead, it's a direct pointer to a known IR
+function. And that function's IR looks like this:
+
+```
+fn1 {
+  bb0 {
+    v0 = Param<0; $clo>
+    v1 = Param<1; arg_0>
+    Jump bb2
+  }
+  bb2 {
+    v2 = IsIntEqualWord v1, 1
+    CondBranch v2, bb3, bb1
+  }
+  bb1 {
+    MatchFail
+  }
+  bb3 {
+    v3 = Const<2>
+    v4 = Const<3>
+    v5 = IntAdd v3, v4
+    Return v5
+  }
+}
+```
 
 ## Design decisions: what's up with SSA?
+
+### SSI
 
 ## Some optimization passes
 
