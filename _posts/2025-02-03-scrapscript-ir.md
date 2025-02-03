@@ -97,6 +97,8 @@ the given operand.
 
 ## Some optimization passes
 
+## Compiling to C
+
 ## SSA vs CPS
 
 ## Testing
