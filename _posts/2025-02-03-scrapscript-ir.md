@@ -103,9 +103,9 @@ inside a block nicely control flow free.
 ### A bigger example
 
 Let's do a slightly more complicated example that involves pattern matching.
-We'll take a look at the IR corresponding to the Scrapscript program `| 1 -> 2
-+ 3`, which is a pattern matching function. If the argument to the function is
-equal to 1, it returns 5. Otherwise, it aborts.
+We'll take a look at the IR corresponding to the Scrapscript program `| 1 -> 2 + 3`,
+which is a pattern matching function. If the argument to the function is equal
+to 1, it returns 5. Otherwise, it aborts.
 
 We'll first look at the function that contains---that creates---the pattern
 matching function. The "main function", if you will.
