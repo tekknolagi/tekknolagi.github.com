@@ -230,8 +230,8 @@ class CleanCFG:
 To remove dead code, we have a reasonably straightforward implementation of
 dead code elimination (DCE). DCE is kind of like a garbage collector for
 instructions: it finds the root set (the required instructions, kind of like
-the backbone of the program), marks them, and then transitively marks the
-instructions they depend on. Then it removes (sweeps) the rest.
+the backbone of the program), marks them, and then marks the instructions they
+indirectly/transitively depend on. Then it removes (sweeps) the rest.
 
 Because each instruction embeds a union-find data structure in it, I
 "soft-delete" instructions by marking them equivalent to a no-op instruction. I
