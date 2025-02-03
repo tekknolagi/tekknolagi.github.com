@@ -48,6 +48,9 @@ is watching it download a huge LLVM bundle and then compile it. It does a heck
 of a lot. It's very impressive. It's many person-lifetimes of engineering
 marvels. But it's too big for this dinky little tugboat of a project.
 
+(What about QBE? Well, if I can figure out how to integrate our GC and its
+notion of handles into a QBE IR, great. But for now it's C only.)
+
 ## What does the IR look like?
 
 ### A small example
