@@ -202,6 +202,31 @@ passes over the IR.
 
 Let's tackle each of the aforementioned concerns one by one.
 
+To merge basic blocks, I adapted a compiler pass called CleanCFG from the
+Cinder project, which is itself an adapted form of the compiler pass CleanCFG
+from the HHVM project.
+
+```python
+@dataclasses.dataclass
+class CleanCFG:
+    fn: IRFunction
+
+    def run(self) -> None:
+        changed = True
+        while changed:
+            changed = False
+            for block in self.fn.cfg.rpo():
+                if not block.instrs:
+                    # Ignore transient empty blocks.
+                    continue
+                # Keep working on the current block until no further changes are made.
+                while self.absorb_dst_block(block):
+                    pass
+            changed = self.remove_unreachable_blocks()
+
+    # ...
+```
+
 ## More advanced optimizations
 
 Interprocedural
