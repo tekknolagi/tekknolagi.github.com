@@ -148,11 +148,17 @@ fn1 {
 }
 ```
 
+Whoa, multiple blocks! Let's go through them one by one.
+
+The first block contains instructions that exist to give names to function
+parameters. It might be a little confusing that we have not one but *two*
+parameters for a function that has no parameters visible in the program text.
+
+## Some optimization passes
+
 ## Design decisions: what's up with SSA?
 
 ### SSI
-
-## Some optimization passes
 
 ## Compiling to C
 
