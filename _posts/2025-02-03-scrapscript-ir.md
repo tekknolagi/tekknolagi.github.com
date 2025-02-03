@@ -227,6 +227,60 @@ class CleanCFG:
     # ...
 ```
 
+To remove dead code, we have a reasonably straightforward implementation of
+dead code elimination (DCE). DCE is kind of like a garbage collector for
+instructions: it finds the root set (the required instructions, kind of like
+the backbone of the program), marks them, and then transitively marks the
+instructions they depend on. Then it removes (sweeps) the rest.
+
+Because each instruction embeds a union-find data structure in it, I
+"soft-delete" instructions by marking them equivalent to a no-op instruction. I
+could have also gone through and deleted them, but deleting instructions from
+the middle of list while iterating over it felt finicky and bothersome. `Nop`
+instructions are not shown in the `to_string` representation of the IR and
+don't compile to any C code.
+
+```python
+@dataclasses.dataclass
+class DeadCodeElimination:
+    fn: IRFunction
+
+    def is_critical(self, instr: Instr) -> bool:
+        if isinstance(instr, Const):
+            return False
+        if isinstance(instr, IntAdd):
+            return False
+        # TODO(max): Add more. Track heap effects?
+        return True
+
+    def run(self) -> None:
+        worklist: list[Instr] = []
+        marked: set[Instr] = set()
+        blocks = self.fn.cfg.rpo()
+        # Mark
+        for block in blocks:
+            for instr in block.instrs:
+                instr = instr.find()
+                if self.is_critical(instr):
+                    marked.add(instr)
+                    worklist.append(instr)
+        while worklist:
+            instr = worklist.pop(0).find()
+            if isinstance(instr, HasOperands):
+                for op in instr.operands:
+                    op = op.find()
+                    if op not in marked:
+                        marked.add(op)
+                        worklist.append(op)
+        # Sweep
+        for block in blocks:
+            for instr in block.instrs:
+                instr = instr.find()
+                if instr not in marked:
+                    instr.make_equal_to(Nop())
+```
+
+
 ## More advanced optimizations
 
 Interprocedural
