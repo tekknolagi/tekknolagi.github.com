@@ -40,7 +40,7 @@ like this. They can probably do some impressive things, but they would do
 better if purpose-built domain-specific analyses unwrapped some of the
 functional abstractions first.
 
-Still, you might be wondering why we then compile to our IR C instead of LLVM.
+Still, you might be wondering why we then compile our IR to C instead of LLVM.
 Two reasons: 1) we already have an existing C runtime and 2) I really, really,
 really do not want to be tied to a particular LLVM version and its quirks. One
 of the most frustrating things when hacking on someone else's language project
