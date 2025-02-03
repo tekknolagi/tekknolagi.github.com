@@ -169,6 +169,18 @@ Here's why we need each of them:
 Then we have a new control instruction, `Jump`, that represents continuing the
 flow of execution at another block. In this case, `bb2`.
 
+`bb2` checks if `v1` is equal to the integer 1 and returns a native boolean
+(not a Scrapscript object). This gets fed into our third control instruction so
+far, `CondBranch`.
+
+`CondBranch` takes a condition and two basic blocks. If the condition is true,
+it passes control the first one. If it's false, to the second. This gives us
+the ability to support conditionals in the source language.
+
+In the true case, if the argument is 1, we add up 2 and 3 using the `IntAdd`
+instruction. Otherwise, in `bb1`, we encounter our last control instruction:
+`MatchFail`. This aborts the program.
+
 ## Some optimization passes
 
 ## Design decisions: what's up with SSA?
