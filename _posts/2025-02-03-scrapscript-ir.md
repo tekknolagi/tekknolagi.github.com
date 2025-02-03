@@ -203,8 +203,8 @@ passes over the IR.
 Let's tackle each of the aforementioned concerns one by one.
 
 To merge basic blocks, I adapted a compiler pass called CleanCFG from the
-Cinder project, which is itself an adapted form of the compiler pass CleanCFG
-from the HHVM project.
+Cinder project, which I previously adapted from the compiler pass CleanCFG from
+the HHVM project.
 
 ```python
 @dataclasses.dataclass
