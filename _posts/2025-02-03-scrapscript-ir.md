@@ -200,6 +200,12 @@ passes over the IR.
 
 ## Some optimization passes
 
+Let's tackle each of the aforementioned concerns one by one.
+
+## More advanced optimizations
+
+Interprocedural
+
 ## Design decisions: what's up with SSA?
 
 ### SSI
