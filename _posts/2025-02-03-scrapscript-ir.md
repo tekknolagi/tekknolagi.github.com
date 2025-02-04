@@ -468,7 +468,10 @@ This is great, but unfortunately three bad things happen:
 
 Right now we conservatively use handles for *every intermediate object*.
 However, using a liveness analysis, we can determine which objects don't live
-across allocations and therefore don't need to be stored in handles. Neat!
+across allocations and therefore don't need to be stored in handles. Neat! We
+can also use some additional type/range information to track which IR nodes
+correspond to small integers, small strings, etc and aren't heap allocated at
+all. These objects do not ever need handles.
 
 There are other similarly interesting abstract interpretation based analyses we
 could do to generate better code.[^theorem-finding]
