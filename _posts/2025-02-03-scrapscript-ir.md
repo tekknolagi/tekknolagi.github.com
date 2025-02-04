@@ -556,7 +556,55 @@ so please write in.
 
 ## Compiling to C
 
-Phi and parallel copy
+At this point we can construct and optimize an IR but it's not executable yet.
+For that, we have to leave SSA. I chose to compile to C because we have an
+existing functional runtime written in C.
+
+The code generator is almost the same as in the baseline compiler except that
+we don't need to think about inventing temporary variables or doing ad-hoc
+optimizations anymore---all of that is done for us in either the IR builder or
+the optimizer.
+
+The code generator mostly consists of iterating over functions, which iterate
+over basic blocks, which iterate over instructions:
+
+```python
+class IRFunction:
+    # ...
+    def _to_c(self, f: io.StringIO, block: Block, gvn: InstrId) -> None:
+        f.write(f"{block.name()}:;\n")
+        for instr in block.instrs:
+            instr = instr.find()
+            if isinstance(instr, Nop):
+                continue
+            f.write(self._instr_to_c(instr, gvn))
+
+    def _instr_to_c(self, instr: Instr, gvn: InstrId) -> str:
+        def _handle(rhs: str) -> str:
+            return f"OBJECT_HANDLE({gvn.name(instr)}, {rhs});\n"
+
+        if isinstance(instr, IntAdd):
+            operands = ", ".join(gvn.name(op) for op in instr.operands)
+            return _handle(f"num_add({operands})")
+        # ...
+```
+
+Oh. Yeah. This `gvn`/`InstrId` thing. For the IR-to-string printer and the
+IR-to-C printer both, we have to come up with names to point to each
+instruction. To do this, we have an identity hash table that assigns string
+names to instructions in the order that it sees them.
+
+This way, we don't have to store any additional IDs or names on the `Instr`
+class and the numbers don't grow very big as we continue to optimize the
+function (and allocate new instructions).
+
+One nice thing about this code generator is that it's out-of-SSA on easy mode:
+the only join points we have are at function calls and returns (so far), so we
+don't (yet) have any need to deconstruct `Phi` instructions into parallel
+copies.
+
+When the optimizer gets more advanced, we'll probably need to invent a `Phi`
+instruction and deal with that.
 
 ## SSA vs CPS
 
