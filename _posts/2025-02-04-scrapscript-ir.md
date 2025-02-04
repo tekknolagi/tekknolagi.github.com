@@ -494,7 +494,8 @@ correspond to small integers, small strings, etc and aren't heap allocated at
 all. These objects do not ever need handles.
 
 There are other similarly interesting abstract interpretation based analyses we
-could do to generate better code.[^theorem-finding]
+could do to generate better code, such as allocation removal/escape analysis,
+load/store forwarding, and dead store removal.[^theorem-finding]
 
 [^theorem-finding]: In a class I took with Olin Shivers, he called this process
     "automated theorem finding" and I like that perspective.
