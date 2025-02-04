@@ -628,3 +628,9 @@ instruction and deal with that.
 -->
 
 ## Wrapping up
+
+That's all for today, folks. I'll mostly be continuing to write some
+optimization passes for the IR. I'm using this as a playground to learn about
+compiler things, which is neat, but it's a little disappointing that there are
+not (yet?) large and slow programs in Scrapscript that I can use to benchmark
+the compiler.
