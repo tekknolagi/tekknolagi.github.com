@@ -484,7 +484,75 @@ like common subexpression elimination (CSE).
 
 ## Design decisions: what's up with SSA?
 
+Control flow graph based IRs give you basic blocks and linearizations of
+instructions and stuff like that. CFGs are useful on their own but require
+constructing additional metadata on the side to track what "version of a name"
+something actually points to in an optimization. For example, in the following
+snippet, which definition of `x` is being used?
+
+```python
+# Not SSA
+x = 3
+x = 4
+print(x + 5)
+```
+
+In this case, it might be clear from a top-to-bottom reading that the second
+definition, `x = 4`, is in use at `print(x + 5)`. But for an analysis, that
+requires keeping a bunch of state around on the side.
+
+Why not instead *unroll* that information directly into your IR? If you can
+encode this metadata into the name, your analysis gets much easier. Consider:
+
+```python
+# SSA
+x0 = 3
+x1 = 4
+print(x1 + 5)
+```
+
+Now that we've added the SSA invariant of one definition per name, we know that
+we're definitely using `x1`. No context needed.
+
+Once you start thinking like this you eventually arrive at the same place as
+Scott Ananian and co: Static Single Information form.
+
 ### SSI
+
+I'm going to handwave a bit because I don't think a lot of compilers need
+"full SSI", but the essence is that you can encode other properties of the SSA
+variables in new names.
+
+In the following example pseudocode, we can learn something about the `x`
+variable in the "then" branch of the if-statement: it's 0.
+
+```python
+def foo(x):
+    if x == 0:
+        return x + 5
+  # ...
+```
+
+We could keep track of this in some type environment in a static analysis, but
+that information would be specific to a context in the CFG: the particular
+basic block (and blocks dominated by it).
+
+*Or*, we could add a refinement instruction. Maybe something like this:
+
+```python
+def foo(x):
+    if x == 0:
+        x1 = refine(x, 0)
+        return x1 + 5
+  # ...
+```
+
+Once we replace uses of `x` dominated by that basic block, we can run a type
+inference and cache the fact that `x1` is always 0. Then it can be looked up
+without context.
+
+There are probably other similar ideas to SSA and SSI here that I am missing,
+so please write in.
 
 ## Compiling to C
 
