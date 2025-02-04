@@ -306,6 +306,92 @@ optimizations like our `2+3` or list cons, this might be fine, but there are
 situations where local type information would not be enough to simplify
 an instruction.
 
+Instead, we crack open the [Constant propagation with conditional branches][sccp] paper (known informally as SCCP) which takes a smarter worklist approach.
+
+[sccp]: https://dl.acm.org/doi/10.1145/103135.103136
+
+Two worklists, actually. It uses one to hold basic blocks and one to hold
+instructions. Starting at the entrypoint, it constructs a set of reachable
+blocks and flows types (members of the constant propagation lattice) through
+the instructions.
+
+The exciting bit is that it uses the types in discovering the control flow: if
+a conditional branch is known to branch a certain way at analysis time, the
+other branch is not analyzed at all and its computation does not pollute the
+analysis results.
+
+Here is a snippet of SCCP, excluding the type lattice. The type lattice is an
+interesting concept that I am implementing poorly and I would like to do a
+better job (faster, smaller code, ...) later.
+
+```python
+@dataclasses.dataclass
+class SCCP:
+    fn: IRFunction
+    instr_type: dict[Instr, ConstantLattice]
+    block_executable: set[Block]
+    instr_uses: dict[Instr, set[Instr]]
+
+    def type_of(self, instr: Instr) -> ConstantLattice:
+        ...
+
+    def run(self) -> dict[Instr, ConstantLattice]:
+        block_worklist: list[Block] = [self.fn.cfg.entry]
+        instr_worklist: list[Instr] = []
+
+        while block_worklist or instr_worklist:
+            if instr_worklist and (instr := instr_worklist.pop(0)):
+                instr = instr.find()
+                if isinstance(instr, HasOperands):
+                    for operand in instr.operands:
+                        if operand not in self.instr_uses:
+                            self.instr_uses[operand] = set()
+                        self.instr_uses[operand].add(instr)
+                new_type: ConstantLattice = CBottom()
+                if isinstance(instr, Const):
+                    value = instr.value
+                    if isinstance(value, Int):
+                        new_type = CInt(value.value)
+                    if isinstance(value, List):
+                        new_type = CList()
+                # ...
+                elif isinstance(instr, CondBranch):
+                    match self.type_of(instr.operands[0]):
+                        case CCBool(True):
+                            instr.make_equal_to(Jump(instr.conseq))
+                            block_worklist.append(instr.conseq)
+                        case CCBool(False):
+                            instr.make_equal_to(Jump(instr.alt))
+                            block_worklist.append(instr.alt)
+                        case CBottom():
+                            pass
+                        case _:
+                            block_worklist.append(instr.conseq)
+                            block_worklist.append(instr.alt)
+                elif isinstance(instr, IntAdd):
+                    match (self.type_of(instr.operands[0]), self.type_of(instr.operands[1])):
+                        case (CInt(int(l)), CInt(int(r))):
+                            new_type = CInt(l + r)
+                            instr.make_equal_to(Const(Int(l+r)))
+                        case (CInt(_), CInt(_)):
+                            new_type = CInt()
+                # ...
+                old_type = self.type_of(instr)
+                if union(old_type, new_type) != old_type:
+                    self.instr_type[instr] = new_type
+                    for use in self.instr_uses.get(instr, set()):
+                        instr_worklist.append(use)
+            if block_worklist and (block := block_worklist.pop(0)):
+                if block not in self.block_executable:
+                    self.block_executable.add(block)
+                    instr_worklist.extend(block.instrs)
+
+        return self.instr_type
+```
+
+Also please ignore the using-lists-as-queues thing which is terribly slow. You
+should instead use a proper queue or deque structure.
+
 ## More advanced optimizations
 
 Interprocedural
