@@ -389,6 +389,11 @@ class SCCP:
         return self.instr_type
 ```
 
+One thing to note is that SCCP requires either pre-computing or incrementally
+discovering *use edges* in your IR. That is, when it updates the type of
+instruction *A*, it needs to know what other instructions use *A* so that they
+can be re-queued for analysis.
+
 Also please ignore the using-lists-as-queues thing which is terribly slow. You
 should instead use a proper queue or deque structure.
 
