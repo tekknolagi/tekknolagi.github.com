@@ -569,6 +569,7 @@ The code generator mostly consists of iterating over functions, which iterate
 over basic blocks, which iterate over instructions:
 
 ```python
+{%- raw -%}
 class IRFunction:
     # ...
     def to_c(self) -> str:
@@ -600,6 +601,7 @@ class IRFunction:
             operands = ", ".join(gvn.name(op) for op in instr.operands)
             return _handle(f"num_add({operands})")
         # ...
+{% endraw -%}
 ```
 
 Oh. Yeah. This `gvn`/`InstrId` thing. For the IR-to-string printer and the
@@ -619,6 +621,10 @@ copies.
 When the optimizer gets more advanced, we'll probably need to invent a `Phi`
 instruction and deal with that.
 
+<!--
 ## SSA vs CPS
 
 ## Testing
+-->
+
+## Wrapping up
