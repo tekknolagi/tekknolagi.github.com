@@ -397,9 +397,87 @@ can be re-queued for analysis.
 Also, please ignore the using-lists-as-queues thing which is terribly slow. You
 should instead use a proper queue or deque structure.
 
+SCCP is pretty powerful but at least as shown in the paper, it is a little bit
+limited. The paper constrains the lattice to ensure that the number of passes
+over the IR is bounded by a small constant factor (the height of the lattice),
+but I think more interesting things happen if your lattice is taller...
+
+What if you use your full type lattice instead of just a constant propagation
+lattice? It should still have a finite height to guarantee that the analysis
+terminates, but you could get more information than just "constant or not". In
+the example above, you can see a little snippet of that: `CInt` indicates that
+an object is an integer, whereas `CInt(...)` indicates that it is an integer
+*with a specific value*. You can maybe imagine extending this to work on sets
+of functions, at which point this begins to look a little bit like
+CFA/points-to analysis.
+
+I may have some writing coming out in a couple of weeks about interprocedural
+SCCP.
+
 ## More advanced optimizations
 
-Interprocedural
+Types are great but they aren't everything. Sometimes, the analysis runs on a
+totally different lattice that describes a different property of how the data
+is used. Sometimes, the analysis even runs backwards!
+
+A great example of this is *liveness analysis*, which is used in, among other
+things, register allocation. Liveness starts from the end(s) of a function and
+work their way up. Variables start dead, become live at their first use, and
+then become... undead? I guess? at their definition:
+
+```python
+a = 1  # a is (un)dead before this expression
+b = a + 2  # a is live in this expression and above
+print(b)  # a is dead here
+```
+
+It's also useful for something I mentioned obliquely in previous Scrapscript
+posts for *handle elision*. For some context, the garbage collector deletes
+unused memory. In order to find out what is used, it iterates over the *root
+set*---things known to the runtime absolutely be live---and anything
+transitively reachable from there. Anything not reachable is garbage.
+
+In an interpreter, this is "easy"---scan the stack data structure you're using
+for intermediate results. In compiled code, we have no such stack (...ish), so
+we have to instead tell the garbage collector which pointers on the native
+stack to keep around. We do this with some macros called `GC_PROTECT` and
+`OBJECT_HANDLE` which push pointers to those pointers (`struct object**`) to
+some global data structure accessible by the garbage collector.
+
+```c
+struct object* f_0(struct object* this, struct object* x) {
+  HANDLES();
+  GC_PROTECT(x);
+  if (!(is_num(x))) {
+    fprintf(stderr, "assertion is_num(x) failed\n");
+    abort();
+  }
+  OBJECT_HANDLE(tmp_1, num_add(x, _mksmallint(1)));
+  // ...
+}
+```
+
+This is great, but unfortunately three bad things happen:
+
+* These objects become kind of opaque to the C compiler's optimizer because
+  from its function-at-a-time perspective, "anything" could happen to those
+  pointers at function call boundaries
+* This not only limits Clang's (for example) optimization potential but also
+  clutters the generated code with a bunch of loads and stores
+* And it makes garbage collection slower because there are more roots to scan
+
+Right now we conservatively use handles for *every intermediate object*.
+However, using a liveness analysis, we can determine which objects don't live
+across allocations and therefore don't need to be stored in handles. Neat!
+
+There are other similarly interesting abstract interpretation based analyses we
+could do to generate better code.[^theorem-finding]
+
+[^theorem-finding]: In a class I took with Olin Shivers, he called this process
+    "automated theorem finding" and I like that perspective.
+
+There are also non-abstract-interpretation based analyses that I should add
+like common subexpression elimination (CSE).
 
 ## Design decisions: what's up with SSA?
 
