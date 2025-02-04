@@ -26,7 +26,7 @@ That's probably an understatement. Here are some of my favorite projects:
 * [scrapscript.py](https://github.com/tekknolagi/scrapscript), an
   implementation of the Scrapscript language. Check out the [blog](/blog/scrapscript/)
   [posts](/blog/scrapscript-baseline/) (and [three](/blog/scrapscript-tricks/),
-  [four](/blog/type-inference/), [five](/blog/row-poly/)) too
+  [four](/blog/type-inference/), [five](/blog/row-poly/), [six](/blog/scrapscript-ir/)) too
 * [Cinder](https://github.com/facebookincubator/cinder), Instagram's
   performance-oriented fork of CPython---try it out on
   [trycinder.com](https://trycinder.com) (which I built!)
