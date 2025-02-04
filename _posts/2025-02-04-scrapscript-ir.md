@@ -414,6 +414,26 @@ CFA/points-to analysis.
 I may have some writing coming out in a couple of weeks about interprocedural
 SCCP.
 
+In any case, here is the result of running these passes over the CFG. You can
+see that a lot of the things we thought were sub-optimal have been removed:
+
+```
+fn1 {
+  bb0 {
+    v0 = Param<1; arg_0>
+    v1 = IsIntEqualWord v0, 1
+    CondBranch v1, bb3, bb1
+  }
+  bb1 {
+    MatchFail
+  }
+  bb3 {
+    v2 = Const<5>
+    Return v2
+  }
+}
+```
+
 ## More advanced optimizations
 
 Types are great but they aren't everything. Sometimes, the analysis runs on a
