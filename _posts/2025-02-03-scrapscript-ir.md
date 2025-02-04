@@ -571,7 +571,20 @@ over basic blocks, which iterate over instructions:
 ```python
 class IRFunction:
     # ...
-    def _to_c(self, f: io.StringIO, block: Block, gvn: InstrId) -> None:
+    def to_c(self) -> str:
+        with io.StringIO() as f:
+            f.write(f"{self.c_decl()} {{\n")
+            f.write("HANDLES();\n")
+            for param in self.params:
+                f.write(f"GC_PROTECT({param});\n")
+            gvn = InstrId()
+            for block in self.cfg.rpo():
+                self._block_to_c(f, block, gvn)
+            f.write("}")
+            return f.getvalue()
+        return
+
+    def _block_to_c(self, f: io.StringIO, block: Block, gvn: InstrId) -> None:
         f.write(f"{block.name()}:;\n")
         for instr in block.instrs:
             instr = instr.find()
