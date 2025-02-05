@@ -6,8 +6,8 @@ layout: post
 I wrote previously about different slices of life in the various
 implementations of the Scrapscript programming language. Until two weeks ago,
 the most interesting implementation was a so-called ["baseline
-compiler"](/blog/scrapscript-baseline/) directly from the AST to C. Now there
-we have an intermediate representation---an IR.
+compiler"](/blog/scrapscript-baseline/) directly from the AST to C. Now we have
+an intermediate representation---an IR.
 
 ## Why add an IR?
 
