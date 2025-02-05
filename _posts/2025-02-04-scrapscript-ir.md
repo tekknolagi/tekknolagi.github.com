@@ -11,8 +11,8 @@ an intermediate representation---an IR.
 
 ## Why add an IR?
 
-The AST is fine. It's a very abstract representation of the progam and it is
-easy to generate directly from the source text. None of the names are
+The AST is fine. It's a very abstract representation of the progam text and it
+is easy to generate directly from the source text. None of the names are
 resolved (there are a bunch of strings everywhere), there is a lot left
 implicit in the representation, and evaluating it requires having a stack or
 recursion to keep temporary data around. But hey, it works and it's reasonably
@@ -229,6 +229,8 @@ class CleanCFG:
 
     # ...
 ```
+
+(where `rpo` is a reverse post-order traversal of the CFG)
 
 To remove dead code, we have a reasonably straightforward implementation of
 dead code elimination (DCE). DCE is kind of like a garbage collector for
@@ -462,7 +464,8 @@ for intermediate results. In compiled code, we have no such stack (...ish), so
 we have to instead tell the garbage collector which pointers on the native
 stack to keep around. We do this with some macros called `GC_PROTECT` and
 `OBJECT_HANDLE` which push pointers to those pointers (`struct object**`) to
-some global data structure accessible by the garbage collector.
+some global data structure accessible by the garbage collector (often called a
+shadow stack).
 
 ```c
 struct object* f_0(struct object* this, struct object* x) {
@@ -542,7 +545,8 @@ Scott Ananian and co: Static Single Information form.
 
 I'm going to handwave a bit because I don't think a lot of compilers need
 "full SSI", but the essence is that you can encode other properties of the SSA
-variables in new names.
+variables in new names (this is apparently called "sparseness" in the
+literature).
 
 In the following example pseudocode, we can learn something about the `x`
 variable in the "then" branch of the if-statement: it's 0.
@@ -637,7 +641,9 @@ function (and allocate new instructions).
 One nice thing about this code generator is that it's out-of-SSA on easy mode:
 the only join points we have are at function calls and returns (so far), so we
 don't (yet) have any need to deconstruct `Phi` instructions into parallel
-copies.
+copies. (Speaking of join points, I'd love to implement proper tail call
+optimization soon because it's the only way to do loops. That will probably
+require some Shenanigans.)
 
 When the optimizer gets more advanced, we'll probably need to invent a `Phi`
 instruction and deal with that.
@@ -650,8 +656,14 @@ instruction and deal with that.
 
 ## Wrapping up
 
-That's all for today, folks. I'll mostly be continuing to write some
-optimization passes for the IR. I'm using this as a playground to learn about
-compiler things, which is neat, but it's a little disappointing that there are
-not (yet?) large and slow programs in Scrapscript that I can use to benchmark
-the compiler.
+That's all for today, folks. The code is available in [this
+branch](https://github.com/tekknolagi/scrapscript/tree/mb-ir-3), which I will
+merge when it catches up and has all the weird ad-hoc optimizations that the
+baseline compiler does. I'll mostly be continuing to write some optimization
+passes for the IR. I'm using this as a playground to learn about compiler
+things, which is neat, but it's a little disappointing that there are not
+(yet?) large and slow programs in Scrapscript that I can use to benchmark the
+compiler.
+
+Thank you to [CF Bolz-Tereick](https://cfbolz.de/) for excellent writing
+feedback.
