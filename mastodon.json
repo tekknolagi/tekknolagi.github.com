@@ -48800,6 +48800,125 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113969444153846801": {
+      "id": "113969444153846801",
+      "created_at": "2025-02-08T17:28:27.917Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113969444153846801/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/113969444153846801/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "113964531088625904",
+        "created_at": "2025-02-07T20:38:53.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mathstodon.xyz/users/tao/statuses/113964530657328781",
+        "url": "https://mathstodon.xyz/@tao/113964530657328781",
+        "replies_count": 2,
+        "reblogs_count": 13,
+        "favourites_count": 1,
+        "edited_at": null,
+        "content": "<p><a href=\"https://mathstodon.xyz/tags/DARPA\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>DARPA</span></a> just announced a forthcoming program entitled \"Exponentiating Mathematics\", focusing on challenges to auto-formalization (and auto-decomposition of large proofs into small lemmas).  The preliminary announcement (still short on many details) can be found at <a href=\"https://sam.gov/opp/4def3c13ca3947069b1779e7ff697c6a/view\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">sam.gov/opp/4def3c13ca3947069b</span><span class=\"invisible\">1779e7ff697c6a/view</span></a></p><p>[As mentioned in previous posts, there is significant uncertainty in the federal funding environment at present, nevertheless there is still activity in launching new proposals.]</p>",
+        "reblog": null,
+        "account": {
+          "id": "109379127839036417",
+          "username": "tao",
+          "acct": "tao@mathstodon.xyz",
+          "display_name": "Terence Tao",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": false,
+          "group": false,
+          "created_at": "2022-11-20T00:00:00.000Z",
+          "note": "<p>Professor of <a href=\"https://mathstodon.xyz/tags/Mathematics\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>Mathematics</span></a> at the University of California, Los Angeles  <a href=\"https://mathstodon.xyz/tags/UCLA\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>UCLA</span></a> (he/him).</p>",
+          "url": "https://mathstodon.xyz/@tao",
+          "uri": "https://mathstodon.xyz/users/tao",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/109/379/127/839/036/417/original/0641fe79e08bbf7d.jpg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/379/127/839/036/417/original/0641fe79e08bbf7d.jpg",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "followers_count": 16298,
+          "following_count": 112,
+          "statuses_count": 683,
+          "last_status_at": "2025-02-08",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Home page",
+              "value": "<a href=\"https://www.math.ucla.edu/~tao\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"\">math.ucla.edu/~tao</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "Blog",
+              "value": "<a href=\"https://terrytao.wordpress.com/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">terrytao.wordpress.com/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "Bluesky",
+              "value": "<a href=\"https://bsky.app/profile/teorth.bsky.social\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bsky.app/profile/teorth.bsky.s</span><span class=\"invisible\">ocial</span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "Cosmic distance ladder",
+              "value": "<a href=\"https://www.instagram.com/cosmic_distance_ladder/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"ellipsis\">instagram.com/cosmic_distance_</span><span class=\"invisible\">ladder/</span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+          {
+            "name": "darpa",
+            "url": "https://mastodon.social/tags/darpa"
+          }
+        ],
+        "emojis": [],
+        "card": {
+          "url": "https://sam.gov/opp/4def3c13ca3947069b1779e7ff697c6a/view",
+          "title": "SAM.gov",
+          "description": "",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "",
+          "provider_url": "",
+          "html": "",
+          "width": 0,
+          "height": 0,
+          "image": null,
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": null,
+          "published_at": null,
+          "authors": []
+        },
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
