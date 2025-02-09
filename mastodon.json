@@ -49029,6 +49029,139 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113974703313489488": {
+      "id": "113974703313489488",
+      "created_at": "2025-02-09T15:45:56.323Z",
+      "in_reply_to_id": "113974645570642929",
+      "in_reply_to_account_id": "254683",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113974703313489488",
+      "url": "https://mastodon.social/@tekknolagi/113974703313489488",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://tiny.tilde.website/@kingcons\" class=\"u-url mention\">@<span>kingcons</span></a></span> I forgot about Jolla. They and Nothing look interesting</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "254683",
+          "username": "kingcons",
+          "url": "https://tiny.tilde.website/@kingcons",
+          "acct": "kingcons@tiny.tilde.website"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113974632958940737": {
+      "id": "113974632958940737",
+      "created_at": "2025-02-09T15:28:02.798Z",
+      "in_reply_to_id": "113974620916515265",
+      "in_reply_to_account_id": "64048",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113974632958940737",
+      "url": "https://mastodon.social/@tekknolagi/113974632958940737",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> It&#39;s with every one of my Bluetooth devices &gt;:(</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113974630732983728": {
+      "id": "113974630732983728",
+      "created_at": "2025-02-09T15:27:28.829Z",
+      "in_reply_to_id": "113974526489299459",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113974630732983728",
+      "url": "https://mastodon.social/@tekknolagi/113974630732983728",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 3,
+      "edited_at": null,
+      "content": "<p>&quot;Oh our software update fixes-&quot;</p><p>1) I don&#39;t trust you at all anymore<br />2) The software update fails</p><p>I hope everyone involved feels a deep sense of shame</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113974546695694932": {
+      "id": "113974546695694932",
+      "created_at": "2025-02-09T15:06:06.528Z",
+      "in_reply_to_id": "113974543049010937",
+      "in_reply_to_account_id": "109362339998015314",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113974546695694932",
+      "url": "https://mastodon.social/@tekknolagi/113974546695694932",
+      "replies_count": 0,
+      "reblogs_count": 1,
+      "favourites_count": 2,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://circumstances.run/@hipsterelectron\" class=\"u-url mention\">@<span>hipsterelectron</span></a></span> Going to go back to my default state from 12 years ago of carrying a netbook around at all times</p><p>Unfortunately nobody makes netbooks anymore</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109362339998015314",
+          "username": "hipsterelectron",
+          "url": "https://circumstances.run/@hipsterelectron",
+          "acct": "hipsterelectron@circumstances.run"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
