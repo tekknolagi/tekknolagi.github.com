@@ -48919,6 +48919,53 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113972128826666859": {
+      "id": "113972128826666859",
+      "created_at": "2025-02-09T04:51:12.772Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113972128826666859",
+      "url": "https://mastodon.social/@tekknolagi/113972128826666859",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Join us playing geoguessr: <a href=\"https://www.geoguessr.com/join/E5MM?s=Url\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">geoguessr.com/join/E5MM?s=Url</span><span class=\"invisible\"></span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://www.geoguessr.com/join/E5MM?s=Url",
+        "title": "GeoGuessr - Let's explore the world!",
+        "description": "GeoGuessr is a geography game which takes you on a journey around the world and challenges your ability to recognize your surroundings.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 662,
+        "height": 348,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/131/848/031/original/47317fa9263de87a.png",
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": "UB8psAT10~WB-rXUNya#0zbc^kj[EMfR$*j[",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
