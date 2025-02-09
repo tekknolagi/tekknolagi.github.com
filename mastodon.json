@@ -48966,6 +48966,69 @@
         "authors": []
       },
       "poll": null
+    },
+    "113974541693822880": {
+      "id": "113974541693822880",
+      "created_at": "2025-02-09T15:04:50.204Z",
+      "in_reply_to_id": "113974537609659662",
+      "in_reply_to_account_id": "109362339998015314",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113974541693822880",
+      "url": "https://mastodon.social/@tekknolagi/113974541693822880",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://circumstances.run/@hipsterelectron\" class=\"u-url mention\">@<span>hipsterelectron</span></a></span> Unfortunately I am stuck (tm) in Google software land for now for Reasons</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109362339998015314",
+          "username": "hipsterelectron",
+          "url": "https://circumstances.run/@hipsterelectron",
+          "acct": "hipsterelectron@circumstances.run"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113974526489299459": {
+      "id": "113974526489299459",
+      "created_at": "2025-02-09T15:00:58.202Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113974526489299459",
+      "url": "https://mastodon.social/@tekknolagi/113974526489299459",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>Unbelievable that Google made my Pixel 4a unusable with their battery update and then has horrific Bluetooth stutters on the Pixel 8a. I had a perfectly usable phone and now I can&#39;t even listen to music in the year twenty twenty five?! What the *fuck*</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
