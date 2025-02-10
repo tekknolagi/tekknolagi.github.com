@@ -49298,6 +49298,110 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113981318333181658": {
+      "id": "113981318333181658",
+      "created_at": "2025-02-10T19:48:13.509Z",
+      "in_reply_to_id": "113981136398951379",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113981318333181658",
+      "url": "https://mastodon.social/@tekknolagi/113981318333181658",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>Back to wired headphones like it&#39;s 2016. Audio is perfect. Rossini is gorgeous in my ears. I was so right to pursue phones that kept 3.5mm around &lt;/3</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113981216355762271": {
+      "id": "113981216355762271",
+      "created_at": "2025-02-10T19:22:17.462Z",
+      "in_reply_to_id": "113981208438901032",
+      "in_reply_to_account_id": "108747234402531074",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113981216355762271",
+      "url": "https://mastodon.social/@tekknolagi/113981216355762271",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://libranet.de/profile/petrescatraian\" class=\"u-url mention\">@<span>petrescatraian</span></a></span> Appreciate it. I am trying to put in less effort managing my personal devices. Somehow I have gotten away unscathed with my linux on the desktop thing and I would like my phone to be as simple and supported as possible :/</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108747234402531074",
+          "username": "petrescatraian",
+          "url": "https://libranet.de/profile/petrescatraian",
+          "acct": "petrescatraian@libranet.de"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113981189447992516": {
+      "id": "113981189447992516",
+      "created_at": "2025-02-10T19:15:26.883Z",
+      "in_reply_to_id": "113981153099353968",
+      "in_reply_to_account_id": "108747234402531074",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113981189447992516",
+      "url": "https://mastodon.social/@tekknolagi/113981189447992516",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://libranet.de/profile/petrescatraian\" class=\"u-url mention\">@<span>petrescatraian</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://circumstances.run/@hipsterelectron\" class=\"u-url mention\">@<span>hipsterelectron</span></a></span> Is it too much to ask for to get something that works when you pay four hundred dollaroos</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108747234402531074",
+          "username": "petrescatraian",
+          "url": "https://libranet.de/profile/petrescatraian",
+          "acct": "petrescatraian@libranet.de"
+        },
+        {
+          "id": "109362339998015314",
+          "username": "hipsterelectron",
+          "url": "https://circumstances.run/@hipsterelectron",
+          "acct": "hipsterelectron@circumstances.run"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
