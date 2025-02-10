@@ -49216,6 +49216,88 @@
         "authors": []
       },
       "poll": null
+    },
+    "113981136398951379": {
+      "id": "113981136398951379",
+      "created_at": "2025-02-10T19:01:57.413Z",
+      "in_reply_to_id": "113981121403128864",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113981136398951379",
+      "url": "https://mastodon.social/@tekknolagi/113981136398951379",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [
+        {
+          "id": "113981135609825862",
+          "type": "image",
+          "url": "https://files.mastodon.social/media_attachments/files/113/981/135/609/825/862/original/d6ae261777784abb.png",
+          "preview_url": "https://files.mastodon.social/media_attachments/files/113/981/135/609/825/862/small/d6ae261777784abb.png",
+          "remote_url": null,
+          "preview_remote_url": null,
+          "text_url": null,
+          "meta": {
+            "original": {
+              "width": 1080,
+              "height": 2400,
+              "size": "1080x2400",
+              "aspect": 0.45
+            },
+            "small": {
+              "width": 322,
+              "height": 716,
+              "size": "322x716",
+              "aspect": 0.44972067039106145
+            }
+          },
+          "description": "In the help menu when I try to contact someone about this, \"something went wrong\" and I can't submit a request \n\nYeah it sure did",
+          "blurhash": "U03[#b%MNFof?btQofWBbvWVoga|IUR*xvof"
+        }
+      ],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113981121403128864": {
+      "id": "113981121403128864",
+      "created_at": "2025-02-10T18:58:08.594Z",
+      "in_reply_to_id": "113974630732983728",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113981121403128864",
+      "url": "https://mastodon.social/@tekknolagi/113981121403128864",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>You&#39;ll never guess what happened next... Update does not in fact fix Bluetooth stuttering!!!</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
