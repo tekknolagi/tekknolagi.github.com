@@ -49402,6 +49402,41 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113983567456313297": {
+      "id": "113983567456313297",
+      "created_at": "2025-02-11T05:20:12.411Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113983567456313297",
+      "url": "https://mastodon.social/@tekknolagi/113983567456313297",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@shriramk\" class=\"u-url mention\">@<span>shriramk</span></a></span> do you have a print version of DCIC World? I&#39;d like to buy it for someone and surreptitiously leave it places where I think they might be bored as a way of sniping them into learning how to code</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108262011720829669",
+          "username": "shriramk",
+          "url": "https://mastodon.social/@shriramk",
+          "acct": "shriramk"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
