@@ -49661,6 +49661,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113985889330594969": {
+      "id": "113985889330594969",
+      "created_at": "2025-02-11T15:10:41.400Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113985889330594969",
+      "url": "https://mastodon.social/@tekknolagi/113985889330594969",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "edited_at": null,
+      "content": "<p>You can just *do things*. For example, I put instant coffee powder in my chia seeds this morning,</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
