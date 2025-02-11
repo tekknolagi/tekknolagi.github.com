@@ -49724,6 +49724,164 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "113987654543694067": {
+      "id": "113987654543694067",
+      "created_at": "2025-02-11T22:39:36.422Z",
+      "in_reply_to_id": "113987650899029985",
+      "in_reply_to_account_id": "113986692103221705",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113987654543694067",
+      "url": "https://mastodon.social/@tekknolagi/113987654543694067",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mathstodon.xyz/@slava\" class=\"u-url mention\">@<span>slava</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://hachyderm.io/@zwarich\" class=\"u-url mention\">@<span>zwarich</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> What was the typo?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "113986692103221705",
+          "username": "slava",
+          "url": "https://mathstodon.xyz/@slava",
+          "acct": "slava@mathstodon.xyz"
+        },
+        {
+          "id": "109521187770902844",
+          "username": "zwarich",
+          "url": "https://hachyderm.io/@zwarich",
+          "acct": "zwarich@hachyderm.io"
+        },
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113987651173520498": {
+      "id": "113987651173520498",
+      "created_at": "2025-02-11T22:38:44.991Z",
+      "in_reply_to_id": "113987639568753471",
+      "in_reply_to_account_id": "109521187770902844",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113987651173520498",
+      "url": "https://mastodon.social/@tekknolagi/113987651173520498",
+      "replies_count": 2,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://hachyderm.io/@zwarich\" class=\"u-url mention\">@<span>zwarich</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> Thanks for the links. Do you have a link to the non-thesis paper(s) that talk about the Sreedhar-Gao approach?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109521187770902844",
+          "username": "zwarich",
+          "url": "https://hachyderm.io/@zwarich",
+          "acct": "zwarich@hachyderm.io"
+        },
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113987587792884357": {
+      "id": "113987587792884357",
+      "created_at": "2025-02-11T22:22:37.876Z",
+      "in_reply_to_id": "113987579623198482",
+      "in_reply_to_account_id": "109337913296719557",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113987587792884357",
+      "url": "https://mastodon.social/@tekknolagi/113987587792884357",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://fediscience.org/@MatthieuLemerre\" class=\"u-url mention\">@<span>MatthieuLemerre</span></a></span> I will take a look this week probably! Thank you</p><p>I&#39;m a little bit nervous around many squiggly lines</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109337913296719557",
+          "username": "MatthieuLemerre",
+          "url": "https://fediscience.org/@MatthieuLemerre",
+          "acct": "MatthieuLemerre@fediscience.org"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113987555038822653": {
+      "id": "113987555038822653",
+      "created_at": "2025-02-11T22:14:18.090Z",
+      "in_reply_to_id": "113987359788195572",
+      "in_reply_to_account_id": "64048",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113987555038822653",
+      "url": "https://mastodon.social/@tekknolagi/113987555038822653",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> wait. Shit. So you can get irreducible control flow? Or...? I&#39;ll have to read this later</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
