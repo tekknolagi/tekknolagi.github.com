@@ -49528,6 +49528,139 @@
         ]
       },
       "poll": null
+    },
+    "113985720844766146": {
+      "id": "113985720844766146",
+      "created_at": "2025-02-11T14:27:50.509Z",
+      "in_reply_to_id": "113985717568273677",
+      "in_reply_to_account_id": "64048",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113985720844766146",
+      "url": "https://mastodon.social/@tekknolagi/113985720844766146",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> it&#39;s such a great film. Evergreen. Quotable</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "113985719907751996": {
+      "id": "113985719907751996",
+      "created_at": "2025-02-11T14:27:36.216Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/113985719907751996/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/113985719907751996/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "113985717568273677",
+        "created_at": "2025-02-11T14:27:00.527Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.social/users/cfbolz/statuses/113985717568273677",
+        "url": "https://mastodon.social/@cfbolz/113985717568273677",
+        "replies_count": 1,
+        "reblogs_count": 1,
+        "favourites_count": 7,
+        "edited_at": null,
+        "content": "<p>&quot;saying SSA construction is abstract interpretation is like saying &#39;Kung Fu lives in everything we do&#39;, which can be deep or silly depending how you look at it&quot; - <a href=\"https://mastodon.social/tags/shitmaxsays\" class=\"mention hashtag\" rel=\"tag\">#<span>shitmaxsays</span></a> /cc <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@tekknolagi\" class=\"u-url mention\">@<span>tekknolagi</span></a></span></p>",
+        "reblog": null,
+        "application": {
+          "name": "Pinafore",
+          "website": "https://pinafore.social"
+        },
+        "account": {
+          "id": "64048",
+          "username": "cfbolz",
+          "acct": "cfbolz",
+          "display_name": "CF Bolz-Tereick",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2017-04-08T00:00:00.000Z",
+          "note": "<p>PyPy/RPython contributor. Half time teaching at Uni D\u00fcsseldorf. Works on dynamic language implementations. Vegan. Love street art and art in public spaces, hiking, reading.<br />they/them</p>",
+          "url": "https://mastodon.social/@cfbolz",
+          "uri": "https://mastodon.social/users/cfbolz",
+          "avatar": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "header": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "header_static": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "followers_count": 930,
+          "following_count": 1054,
+          "statuses_count": 2162,
+          "last_status_at": "2025-02-11",
+          "hide_collections": false,
+          "noindex": false,
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "website",
+              "value": "<a href=\"https://www.cfbolz.de\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">cfbolz.de</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2022-12-26T10:32:06.422+00:00"
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [
+          {
+            "id": "1300106",
+            "username": "tekknolagi",
+            "url": "https://mastodon.social/@tekknolagi",
+            "acct": "tekknolagi"
+          }
+        ],
+        "tags": [
+          {
+            "name": "shitmaxsays",
+            "url": "https://mastodon.social/tags/shitmaxsays"
+          }
+        ],
+        "emojis": [],
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
