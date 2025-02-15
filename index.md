@@ -33,7 +33,7 @@ That's probably an understatement. Here are some of my favorite projects:
 * [Skybison](https://github.com/tekknolagi/skybison) (fork of
   [original](https://github.com/facebookexperimental/skybison)), Instagram's
   performance-oriented greenfield implementation of Python
-* [shru.gg](https://shru.gg), a website built just so I would have to stop
+* [shru.gg](https://shru.gg), a website built just so I could stop
   finding, copying, and pasting that shrug emoji. If you like it, you are
   welcome [to help keep it running](https://github.com/sponsors/tekknolagi)
 
