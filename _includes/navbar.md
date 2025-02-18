@@ -1,4 +1,13 @@
 <ul>
+    <li>
+        <form method="get" id="searchform" action="/search" submit=false>
+            <label class="hidden" for="s">Search for:</label>
+            <div>
+                <input type="text" name="s" id="s">
+                <input type="submit" id="searchsubmit" value="Search">
+            </div>
+        </form>
+    </li>
     <li class="pagenav">
         <ul>
           <li class="page_item"><a href="/">home</a></li>
