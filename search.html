@@ -28,6 +28,7 @@ body .entry li div {
         "category": "{{ post.category | xml_escape }}",
         "content": {{ post.content | replace: newline, ' ' | strip_html | jsonify }},
         "url": "{{ post.url | xml_escape }}",
+        "date_seconds": {{ post.date | date: "%s" }},
         "date": '{{ post.date | date: "%s" | minus: 631139040 | date: '%B %-d, %Y' }}'
       }
       {% unless forloop.last %},{% endunless %}
@@ -45,6 +46,11 @@ body .entry li div {
         searchResults.innerHTML = '<li>No results found</li>';
         return;
       }
+
+      // Rank newer posts first
+      results.sort(function(left, right) {
+        return store[right.ref].date_seconds - store[left.ref].date_seconds;
+      });
 
       let result = '';
       for (let i = 0; i < results.length; i++) {  // Iterate over them and generate html
