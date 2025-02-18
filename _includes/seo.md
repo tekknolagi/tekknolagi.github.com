@@ -7,6 +7,3 @@
     {% seo %}
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
     <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
-    <script>
-    window.history.replaceState(null, null, "/page.shtml?url={{ page.url }}");
-    </script>

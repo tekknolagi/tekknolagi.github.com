@@ -9,3 +9,12 @@
     <!-- Workaround for FB MITM -->
     <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
     {% include analytics.md %}
+    <script>
+    if ("{{ page.url }}" == window.location.pathname) {
+        let url = "/page.shtml?url=" + window.location.pathname;
+        if (window.location.search) {
+            url += encodeURIComponent(window.location.search);
+        }
+        window.history.replaceState(null, null, url);
+    }
+    </script>
