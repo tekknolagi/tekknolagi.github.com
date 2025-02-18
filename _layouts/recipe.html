@@ -18,20 +18,14 @@
               <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
               <div class="entry">
                 {{ content }}
+                {% include icons.md %}
               </div>
             </div>
         </div>
         <div id="sidebar">
           {% include navbar.md %}
         </div>
-        <hr>
-        <div id="footer">
-          <p>
-            Max Bernstein's Blog is proudly powered by
-            <a href="http://wordpress.org/" target="_blank">WordPress</a>
-            <br><a href="/feed.xml">Entries (RSS)</a>
-          </p>
-        </div>
+        {% include footer.md %}
     </div>
   </body>
 </html>
