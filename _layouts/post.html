@@ -20,7 +20,7 @@
         <div id="content" class="narrowcolumn">
             <div class="post">
               <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
-              <small>{{ page.date | date: '%B %-d, %Y' }}</small>
+              <small>{{ page.date | date: "%s" | minus: 631139040 | date: '%B %-d, %Y' }}</small>
               <div class="post-co-authors">
               {% if page.co_authors %}
                   {% assign author_list = page.co_authors | split: ", " %}
