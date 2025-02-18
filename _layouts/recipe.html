@@ -3,15 +3,35 @@
   <head>
     {% include seo.md %}
     {% include css.md %}
-   </head>
+  </head>
   <body>
-    <div class="pagecontents">
-        {% include navbar.md %}
-        <h1 class="post-title">{{ page.title }}</h1>
-        <div class="container">
-            {{ content }}
+    <div id="page">
+        <div id="header">
+          <div id="headerimg">
+            <h1><a href="/">Max Bernstein's Blog</a></h1>
+            <div class="description">Writing about compilers on my WordPress blog.</div>
+          </div>
         </div>
-        {% include footer.md %}
+        <hr />
+        <div id="content" class="narrowcolumn">
+            <div class="post">
+              <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
+              <div class="entry">
+                {{ content }}
+              </div>
+            </div>
+        </div>
+        <div id="sidebar">
+          {% include navbar.md %}
+        </div>
+        <hr>
+        <div id="footer">
+          <p>
+            Max Bernstein's Blog is proudly powered by
+            <a href="http://wordpress.org/" target="_blank">WordPress</a>
+            <br><a href="/feed.xml">Entries (RSS)</a>
+          </p>
+        </div>
     </div>
   </body>
 </html>
