@@ -9,6 +9,7 @@
         </form>
     </li>
     <li class="pagenav">
+        <h2>Pages</h2>
         <ul>
           <li class="page_item"><a href="/">home</a></li>
           <li class="page_item"><a href="/blog/">blog</a></li>
