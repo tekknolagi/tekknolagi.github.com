@@ -20,6 +20,15 @@ body .entry li div {
   {%- capture newline %}
 {% endcapture %}
   const posts = [
+    {% for page in site.pages %}
+      {
+        "id": "{{ page.url | slugify }}",
+        "title": "{{ page.title | xml_escape }}",
+        "content": {{ page.content | replace: newline, ' ' | strip_html | jsonify }},
+        "url": "{{ page.url | xml_escape }}",
+        "date": 'April 1, 2000'
+      },
+    {% endfor %}
     {% for post in site.posts %}
       {
         "id": "{{ post.url | slugify }}",
