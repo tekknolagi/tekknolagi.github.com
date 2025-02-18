@@ -19,9 +19,9 @@ layout: page
         "title": "{{ post.title | xml_escape }}",
         "author": "{{ post.author | xml_escape }}",
         "category": "{{ post.category | xml_escape }}",
-        "content": {{ post.content | replace: newline, ' ' | strip_html | xml_escape | jsonify }},
+        "content": {{ post.content | replace: newline, ' ' | strip_html | jsonify }},
         "url": "{{ post.url | xml_escape }}",
-        "date": {{ post.date | date: "%s" }}
+        "date": '{{ post.date | date: "%s" | minus: 631139040 | date: '%B %-d, %Y' }}'
       }
       {% unless forloop.last %},{% endunless %}
     {% endfor %}
@@ -37,7 +37,8 @@ layout: page
         for (let i = 0; i < results.length; i++) {  // Iterate over them and generate html
           const item = store[results[i].ref];
           appendString += '<li><a href="' + item.url + '"><b>' + item.title + '</b></a>';
-          appendString += '<p>' + item.content.substring(0, 250) + '...</p></li>';
+          appendString += '<br><small>' + item.date + '</small>';
+          appendString += '<div>' + item.content.substring(0, 250) + '...</div></li>';
         }
 
         searchResults.innerHTML = appendString;
