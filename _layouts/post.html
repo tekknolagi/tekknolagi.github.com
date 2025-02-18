@@ -19,7 +19,7 @@
         <hr />
         <div id="content" class="narrowcolumn">
             <div class="post">
-              <h2><a href="/">{{ page.title }}</a></h2>
+              <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
               <small>{{ page.date | date: '%B %-d, %Y' }}</small>
               <div class="post-co-authors">
               {% if page.co_authors %}
