@@ -20,7 +20,8 @@ body .entry li div {
   {%- capture newline %}
 {% endcapture %}
   const posts = [
-    {% for page in site.pages %}
+    {% assign non_index_pages = site.blog_lisp | where_exp: "page","page.blog_index != true" %}
+    {% for page in non_index_pages %}
       {
         "id": "{{ page.url | slugify }}",
         "title": "{{ page.title | xml_escape }}",
@@ -36,7 +37,8 @@ body .entry li div {
         "url": "{{ recipe.url | xml_escape }}",
       },
     {% endfor %}
-    {% for post in site.blog_lisp %}
+    {% assign blog_lisp = site.blog_lisp | where_exp: "post","post.blog_index != true" %}
+    {% for post in blog_lisp %}
       {
         "id": "{{ post.url | slugify }}",
         "title": "{{ post.title | xml_escape }}",
