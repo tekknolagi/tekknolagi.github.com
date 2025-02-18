@@ -1,10 +1,14 @@
-<div class="navbar">
-  <a href="/">home</a>
-  <a href="/blog/">blog</a>
-  <a href="/microblog/">microblog</a>
-  <a href="/favorites/">favorites</a>
-  <a href="/pl-resources/">pl resources</a>
-  <a href="/bread/">bread</a>
-  <a href="/recipes/">recipes</a>
-  <a href="/feed.xml">rss</a>
-</div>
+<ul>
+    <li class="pagenav">
+        <ul>
+          <li class="page_item"><a href="/">home</a></li>
+          <li class="page_item"><a href="/blog/">blog</a></li>
+          <li class="page_item"><a href="/microblog/">microblog</a></li>
+          <li class="page_item"><a href="/favorites/">favorites</a></li>
+          <li class="page_item"><a href="/pl-resources/">pl resources</a></li>
+          <li class="page_item"><a href="/bread/">bread</a></li>
+          <li class="page_item"><a href="/recipes/">recipes</a></li>
+          <li class="page_item"><a href="/feed.xml">rss</a></li>
+        </ul>
+    </li>
+</ul>

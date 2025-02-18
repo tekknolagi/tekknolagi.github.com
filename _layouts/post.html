@@ -9,27 +9,51 @@
     <link rel="alternate" type="application/rss+xml" title="Blog" href="{{ site.url }}/feed.xml" />
    </head>
   <body>
-    <div class="pagecontents">
-        {% include navbar.md %}
-        <h1 class="post-title">{{ page.title }}</h1>
-        {% if page.index != true %}
-        <div class="post-inline-date"><i>{{ page.date | date: '%B %-d, %Y' }}</i></div>
-        {% endif %}
-        <div class="post-co-authors">
-        {% if page.co_authors %}
-            {% assign author_list = page.co_authors | split: ", " %}
-            {% assign num_authors = author_list | size %}
-            {% if num_authors > 1 %}
-                With co-authors <i>{{ author_list | join: ", "}}</i>!
-            {% else %}
-                With co-author <i>{{ author_list | join: ", "}}</i>!
-            {% endif %}
-        {% endif %}
+    <div id="page">
+        <div id="header">
+          <div id="headerimg">
+            <h1><a href="/">Max Bernstein's Blog</a></h1>
+            <div class="description">Writing about compilers on my WordPress blog.</div>
+          </div>
         </div>
-        <div class="container">
-            {{ content }}
+        <hr />
+        <div id="content" class="narrowcolumn">
+            <div class="post">
+              <h2><a href="/">{{ page.title }}</a></h2>
+              <small>{{ page.date | date: '%B %-d, %Y' }}</small>
+              <div class="post-co-authors">
+              {% if page.co_authors %}
+                  {% assign author_list = page.co_authors | split: ", " %}
+                  {% assign num_authors = author_list | size %}
+                  {% if num_authors > 1 %}
+                      With co-authors <i>{{ author_list | join: ", "}}</i>!
+                  {% else %}
+                      With co-author <i>{{ author_list | join: ", "}}</i>!
+                  {% endif %}
+              {% endif %}
+              </div>
+              <div class="entry">
+                {{ content }}
+              </div>
+              <p class="postmetadata">Tags:
+              <a href="#" rel="tag">april</a>,
+              <a href="#" rel="tag">fools</a>,
+              <a href="#" rel="tag">joke</a>
+              <br> Posted in <a href="#" rel="category">Uncategorized</a> |
+              <span>Comments Off</span></p>
+            </div>
         </div>
-        {% include footer.md %}
+        <div id="sidebar">
+          {% include navbar.md %}
+        </div>
+        <hr>
+        <div id="footer">
+          <p>
+            Max Bernstein's Blog is proudly powered by
+            <a href="http://wordpress.org/" target="_blank">WordPress</a>
+            <br><a href="/feed.xml">Entries (RSS)</a>
+          </p>
+        </div>
     </div>
   </body>
 </html>
