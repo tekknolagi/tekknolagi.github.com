@@ -51,7 +51,7 @@ body .entry li div {
         const item = store[results[i].ref];
         result += '<li><a href="' + item.url + '"><b>' + item.title + '</b></a>';
         result += '<br><small>' + item.date + '</small>';
-        result += '<div>' + item.content.substring(0, 250) + '...</div></li>';
+        result += '<div>' + item.content.substring(0, 150) + '...</div></li>';
       }
       searchResults.innerHTML = result;
     }
