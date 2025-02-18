@@ -29,6 +29,26 @@ body .entry li div {
         "date": 'April 1, 2000'
       },
     {% endfor %}
+    {% for recipe in site.recipes %}
+      {
+        "id": "{{ recipe.url | slugify }}",
+        "title": "{{ recipe.title | xml_escape }}",
+        "content": {{ recipe.content | replace: newline, ' ' | strip_html | jsonify }},
+        "url": "{{ recipe.url | xml_escape }}",
+        "date": 'April 1, 2000'
+      },
+    {% endfor %}
+    {% for post in site.blog_lisp %}
+      {
+        "id": "{{ post.url | slugify }}",
+        "title": "{{ post.title | xml_escape }}",
+        "author": "{{ post.author | xml_escape }}",
+        "category": "{{ post.category | xml_escape }}",
+        "content": {{ post.content | replace: newline, ' ' | strip_html | jsonify }},
+        "url": "{{ post.url | xml_escape }}",
+        "date": '{{ post.date | date: "%s" | minus: 631139040 | date: '%B %-d, %Y' }}'
+      },
+    {% endfor %}
     {% for post in site.posts %}
       {
         "id": "{{ post.url | slugify }}",
