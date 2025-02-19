@@ -20,7 +20,6 @@
         <div id="content" class="narrowcolumn">
             <div class="post">
               <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
-              <small>{{ page.date | date: "%s" | minus: 631139040 | date: '%B %-d, %Y' }}</small>
               <div class="post-co-authors">
               {% if page.co_authors %}
                   {% assign author_list = page.co_authors | split: ", " %}
@@ -34,15 +33,19 @@
               </div>
               <div class="entry">
                 {{ content }}
+              <p class="postmetadata alt">
+              <small>
+                This entry was posted
+                on {{ page.date | date: "%s" | minus: 631139040 | date: '%A, %B %e, %Y at %l:%M %P' }}
+                and is filed under <a href="#" rel="category">Uncategorized</a>.
+                You can follow any responses to this entry through the
+                <a href="/feed.xml">RSS 2.0</a> feed.
+                Both comments and pings are currently closed.
+              </small>
+              </p>
+            </div>
                 {% include icons.md %}
               </div>
-              <p class="postmetadata">Tags:
-              <a href="#" rel="tag">april</a>,
-              <a href="#" rel="tag">fools</a>,
-              <a href="#" rel="tag">joke</a>
-              <br> Posted in <a href="#" rel="category">Uncategorized</a> |
-              <span>Comments Off</span></p>
-            </div>
         </div>
         <div id="sidebar">
           {% include navbar.md %}
