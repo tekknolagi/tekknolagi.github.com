@@ -46,8 +46,56 @@
           </div>
           {% include icons.md %}
         </div>
+        {% if page.comments %}
+        <h3 id="comments">{{ page.comments | size }} Responses to “{{ page.title }}!”</h3>
+        <ol class="commentlist">
+          {% for comment in page.comments %}
+          {% assign is_alt = forloop.index | modulo: 2 %}
+          <li {% if is_alt == 1 %} class="alt" {% endif %} id="comment-{{ forloop.index }}">
+            <cite><a href="{{ comment.url }}" class="comment-author-link url" rel="ugc external nofollow" target="_blank">{{ comment.author }}</a></cite>
+            Says:<br>
+            <small class="commentmetadata"><a href="#comment-{{ forloop.index }}" title="">{{ comment.date | date: '%A, %B %e, %Y at %l:%M %P' }}</a></small>
+            <p>{{ comment.body }}</p>
+          </li>
+          {% endfor %}
+        </ol>
+        {% else %}
+        <p class="nocomments">Comments are closed.</p>
+        {% endif %}
       </div>
       {% include footer.md %}
     </div>
+    <script>
+      // Thanks to tomxor: https://news.ycombinator.com/item?id=30666999
+      for (const u of document.querySelectorAll('.comment-author-link')) {
+          const p=4;
+          // seed state
+          let s=u.innerText, r=1;
+          for (let i=s.length; i--;) {
+              // xorshift32
+              r^=r<<13, r^=r>>>17, r^=r<<5;
+              // seed
+              r+=s.charCodeAt(i);
+          }
+          // init canvas
+          const c=document.createElement('canvas');
+              c.setAttribute("class", "avatar avatar-32 photo");
+              c.width=p*8, c.height=p*8;
+              u.parentElement.prepend(c);
+          const x=c.getContext('2d');
+              x.fillStyle='#'+(r>>8&0xFFFFFF)
+              .toString(16).padStart(0, 6)
+          // draw pixels
+          for (let i=28; i--;) {
+              // xorshift32
+              r^=r<<13, r^=r>>>17, r^=r<<5;
+              // pixels
+              const X=i&3, Y=i>>2;
+              if (r>>>29 > X*X/3+Y/2)
+                  x.fillRect(p*3.5+p*X, p*0.5+p*Y, p, p),
+                  x.fillRect(p*3.5-p*X, p*0.5+p*Y, p, p);
+          }
+      }
+    </script>
   </body>
 </html>
