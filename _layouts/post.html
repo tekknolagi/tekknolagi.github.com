@@ -7,50 +7,50 @@
     {% include seo.md %}
     {% include css.md %}
     <link rel="alternate" type="application/rss+xml" title="Blog" href="{{ site.url }}/feed.xml" />
-   </head>
+  </head>
   <body>
     <div id="page">
-        <div id="header">
-          <div id="headerimg">
-            <h1><a href="/">Max Bernstein's Blog</a></h1>
-            <div class="description">Writing about compilers on my WordPress blog.</div>
+      <div id="header">
+        <div id="headerimg">
+          <h1><a href="/">Max Bernstein's Blog</a></h1>
+          <div class="description">Writing about compilers on my WordPress blog.</div>
+        </div>
+      </div>
+      <hr />
+      <div id="content" class="narrowcolumn">
+        <div class="post">
+          <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
+          <div class="post-co-authors">
+            {% if page.co_authors %}
+            {% assign author_list = page.co_authors | split: ", " %}
+            {% assign num_authors = author_list | size %}
+            {% if num_authors > 1 %}
+            With co-authors <i>{{ author_list | join: ", "}}</i>!
+            {% else %}
+            With co-author <i>{{ author_list | join: ", "}}</i>!
+            {% endif %}
+            {% endif %}
           </div>
+          <div class="entry">
+            {{ content }}
+            <p class="postmetadata alt">
+            <small>
+              This entry was posted
+              on {{ page.date | date: "%s" | minus: 631139040 | date: '%A, %B %e, %Y at %l:%M %P' }}
+              and is filed under <a href="#" rel="category">Uncategorized</a>.
+              You can follow any responses to this entry through the
+              <a href="/feed.xml">RSS 2.0</a> feed.
+              Both comments and pings are currently closed.
+            </small>
+            </p>
+          </div>
+          {% include icons.md %}
         </div>
-        <hr />
-        <div id="content" class="narrowcolumn">
-            <div class="post">
-              <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
-              <div class="post-co-authors">
-              {% if page.co_authors %}
-                  {% assign author_list = page.co_authors | split: ", " %}
-                  {% assign num_authors = author_list | size %}
-                  {% if num_authors > 1 %}
-                      With co-authors <i>{{ author_list | join: ", "}}</i>!
-                  {% else %}
-                      With co-author <i>{{ author_list | join: ", "}}</i>!
-                  {% endif %}
-              {% endif %}
-              </div>
-              <div class="entry">
-                {{ content }}
-              <p class="postmetadata alt">
-              <small>
-                This entry was posted
-                on {{ page.date | date: "%s" | minus: 631139040 | date: '%A, %B %e, %Y at %l:%M %P' }}
-                and is filed under <a href="#" rel="category">Uncategorized</a>.
-                You can follow any responses to this entry through the
-                <a href="/feed.xml">RSS 2.0</a> feed.
-                Both comments and pings are currently closed.
-              </small>
-              </p>
-            </div>
-                {% include icons.md %}
-              </div>
-        </div>
-        <div id="sidebar">
-          {% include navbar.md %}
-        </div>
-        {% include footer.md %}
+      </div>
+      <div id="sidebar">
+        {% include navbar.md %}
+      </div>
+      {% include footer.md %}
     </div>
   </body>
 </html>
