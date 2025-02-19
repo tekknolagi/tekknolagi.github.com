@@ -6,11 +6,13 @@ co_authors: River Dillon Keefer
 
 ## What is Damas-Hindley-Milner?
 
-Damas-Hindley-Milner (HM) is a type system for Standard ML and the ML-family
+[Damas-Hindley-Milner (HM)][hm-wiki] is a type system for Standard ML and the ML-family
 languages with parametric polymorphism, aka generic functions. It sits at a
 sweet spot in PL design: the type system is quite expressive, and there are
 well known type inference algorithms that require absolutely no annotations
 from the programmer.
+
+[hm-wiki]: https://bernsteinbear.com/blog/type-inference/
 
 It seems to have been discovered independently multiple times over the years,
 but the most famous papers are the [original][original-milner] (PDF) by Milner
