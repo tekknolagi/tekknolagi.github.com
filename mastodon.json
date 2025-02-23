@@ -49970,6 +49970,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114054188916467223": {
+      "id": "114054188916467223",
+      "created_at": "2025-02-23T16:40:10.372Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114054188916467223",
+      "url": "https://mastodon.social/@tekknolagi/114054188916467223",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>I know it&#39;s a rabbit hole but: any recs for a mechanical keyboard that has the satisfying ka-chunk with none of the high-pitched click? I have two kbs with mx blues and I am looking for something different</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
