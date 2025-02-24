@@ -50218,6 +50218,64 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114061301285057132": {
+      "id": "114061301285057132",
+      "created_at": "2025-02-24T22:48:56.506Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114061301285057132",
+      "url": "https://mastodon.social/@tekknolagi/114061301285057132",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Hmmm. What if sans-serif?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [
+        {
+          "id": "114061299201557549",
+          "type": "image",
+          "url": "https://files.mastodon.social/media_attachments/files/114/061/299/201/557/549/original/f1d6f3b6e7b75a7d.png",
+          "preview_url": "https://files.mastodon.social/media_attachments/files/114/061/299/201/557/549/small/f1d6f3b6e7b75a7d.png",
+          "remote_url": null,
+          "preview_remote_url": null,
+          "text_url": null,
+          "meta": {
+            "original": {
+              "width": 1221,
+              "height": 1263,
+              "size": "1221x1263",
+              "aspect": 0.9667458432304038
+            },
+            "small": {
+              "width": 472,
+              "height": 488,
+              "size": "472x488",
+              "aspect": 0.9672131147540983
+            },
+            "focus": {
+              "x": 0.0,
+              "y": 0.0
+            }
+          },
+          "description": "Screenshot of bernsteinbear.com where the body's font-family has been changed from serif to sans-serif",
+          "blurhash": "U8RC[801-;?ab]NFt6WB-=WUoJofx]oNxuxt"
+        }
+      ],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
