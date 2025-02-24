@@ -5,7 +5,7 @@ date: 2022-05-02
 description: >
   Inlining is one of the most important compiler optimizations. This post
   describes the Cinder JIT's function inliner and how it speeds up Python code.
-canonical_url: https://engineering.fb.com/2022/05/02/open-source/cinder-jits-instagram/
+canonical_url: "https://engineering.fb.com/2022/05/02/open-source/cinder-jits-instagram/"
 ---
 
 *Originally published on the [Meta Engineering Blog](https://engineering.fb.com/2022/05/02/open-source/cinder-jits-instagram/).*
