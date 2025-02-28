@@ -259,4 +259,5 @@ Cinder also has some other features embedded into the same type bitset:
 
 ## In other compilers
 
-???
+* HHVM
+* ???
