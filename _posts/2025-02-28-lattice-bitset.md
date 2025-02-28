@@ -259,5 +259,10 @@ Cinder also has some other features embedded into the same type bitset:
 
 ## In other compilers
 
-* HHVM
+* HHVM has a similar looking [type.h][hhvm-type] and
+  [specialization][hhvm-type-spec]. It's similar looking because both Cinder's
+  and HHVM's were written by my friend and former coworker Brett Simmers!
 * ???
+
+[hhvm-type]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type.h
+[hhvm-type-spec]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type-specialization-inl.h
