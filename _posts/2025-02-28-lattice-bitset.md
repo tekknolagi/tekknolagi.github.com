@@ -264,7 +264,7 @@ Cinder also has some other features embedded into the same type bitset:
   and HHVM's were written by my friend and former coworker Brett Simmers!
 * iv, written by Constellation (JavaScriptCore committer), has a [smaller bitset
   lattice][iv-type]
-* V8's Turbofan compiler has [something similar][turbovan-type]
+* V8's Turbofan compiler has [something similar][turbofan-type]
 * ???
 
 [hhvm-type]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type.h
