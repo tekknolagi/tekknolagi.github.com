@@ -44,7 +44,7 @@ ignores GIL stuff and exception checking, which is also an issue.)
     <object class="svg" type="image/svg+xml" data="/assets/img/python-capi-box.svg">
     </object>
   <figcaption markdown="1">
-  Fig. 1 - C extensions deal in `PyObject*` so any runtime that wants to
+  C extensions deal in `PyObject*` so any runtime that wants to
   interface with them has to also deal in `PyObject*`.
   </figcaption>
 </figure>
@@ -97,7 +97,7 @@ function `inc_impl` that works directly on C integers.
   <object class="svg" type="image/svg+xml" data="/assets/img/python-capi-box-unbox.svg">
   </object>
   <figcaption markdown="1">
-  Fig. 2 - The runtimes still have to manufacture `PyObject*` even if the
+  The runtimes still have to manufacture `PyObject*` even if the
   underlying C code doesn't know anything about Python. The unboxing is an
   another source of overhead, unfortunately.
   </figcaption>
