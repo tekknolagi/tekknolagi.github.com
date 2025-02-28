@@ -4,3 +4,4 @@ _site
 *.swo
 .jekyll-metadata
 .jekyll-cache
+.DS_Store
