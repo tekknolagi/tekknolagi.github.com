@@ -70,15 +70,14 @@ digraph G {
 }
 -->
 
-<figure>
+<figure style="display: block; margin: 0 auto;">
   <img src="/assets/img/typelattice.svg" alt="A diagram of multiple labeled sets: Empty,
   known Integer constants, Integer, known String constants, String, a set of
   classes, and the topmost set of all objects, Any. The diagram is vertical, with
   arrows going from bottom to top with decreasing specificity." />
-  <figcaption>An example lattice similar to the one we use in our demo static
-  analysis. At the bottom are the more specific types and at the top are the
-  less specific types. Arrows indicate that results can only become less
-  precise as more merging happens.</figcaption>
+  <figcaption>Fig. 1 - An example type lattice. At the bottom are the more specific
+  types and at the top are the less specific types. Arrows indicate that
+  results can only become less precise as more merging happens.</figcaption>
 </figure>
 
 This is great. Solves all of our problems, right?
