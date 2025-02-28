@@ -262,7 +262,10 @@ Cinder also has some other features embedded into the same type bitset:
 * HHVM has a similar looking [type.h][hhvm-type] and
   [specialization][hhvm-type-spec]. It's similar looking because both Cinder's
   and HHVM's were written by my friend and former coworker Brett Simmers!
+* iv, written by Constellation (JavaScriptCore committer), has a [smaller bitset
+  lattice][iv-type]
 * ???
 
 [hhvm-type]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type.h
 [hhvm-type-spec]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type-specialization-inl.h
+[iv-type]: https://github.com/Constellation/iv/blob/64c3a9c7c517063f29d90d449180ea8f6f4d946f/iv/lv5/breaker/type.h
