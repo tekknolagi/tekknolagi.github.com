@@ -75,7 +75,7 @@ digraph G {
   known Integer constants, Integer, known String constants, String, a set of
   classes, and the topmost set of all objects, Any. The diagram is vertical, with
   arrows going from bottom to top with decreasing specificity." />
-  <figcaption>Fig. 1 - An example type lattice. At the bottom are the more specific
+  <figcaption>An example type lattice. At the bottom are the more specific
   types and at the top are the less specific types. Arrows indicate that
   results can only become less precise as more merging happens.</figcaption>
 </figure>
