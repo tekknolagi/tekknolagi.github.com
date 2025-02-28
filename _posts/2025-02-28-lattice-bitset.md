@@ -7,6 +7,14 @@ The Cinder JIT compiler does some cool stuff with how they represent types so
 I'm going to share it with you here. The core of it is thinking about types as
 *sets*, and picking a compact set representation.
 
+The core constraints are:
+
+* We want full unions, not the discriminated unions given to us by `enum`s
+* We want types to be very quick to allocate and free, since the compiler will
+  create them with abandon
+* We want a union/meet operation (all set operations, really) to be fast, since
+  they will be used a lot during optimization
+
 I'll be using some Cinder-specific notation for the duration of the blog post,
 but it should be easy enough to get used to. The notation looks like this:
 
@@ -20,6 +28,17 @@ the perfect use case for a bitset. Assign the "leaf types" in the hierarchy
 one bit each and then unions are sets of 1 bits. It's really fast, too! Bitwise
 `&` and `|` are one hardware instruction each and can quickly compute the
 information we need. Amazing, right?
+
+> Not only is this slower with an enum approach but it is also more difficult
+> to get right. Say you have an `enum { Object, String, Int, SpecificInt(i32) }`.
+> There are a lot of corner cases for union, intersection, and subtraction that
+> you have to think about that you would otherwise get "for free" using a
+> bitset approach.
+>
+> So you lose your language-given pattern matching feature to check what type
+> an instruction is. But that's okay! We almost never want to know *exactly*
+> what type an instruction is when optimizing, but instead if it's a subtype of
+> the desired type.
 
 It also wants the types to form a *lattice*, so there has to be a way to
 represent some element `Top` (could be any value of any type; everything is a
