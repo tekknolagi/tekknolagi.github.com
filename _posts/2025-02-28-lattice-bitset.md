@@ -183,9 +183,9 @@ Cinder version has a couple more quirks that are not crucial to understanding
 the core of this post:
 
 ```python
-class Type(NamedTuple):
+class UnionSpec(NamedTuple):
     name: str
-    bits: int
+    components: List[str]
 
 # All the leaf types, each of which gets a bit
 BASIC_FINAL_TYPES: List[str] = [
