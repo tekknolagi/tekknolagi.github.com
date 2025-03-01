@@ -2,6 +2,7 @@ body {
     font-family: serif;
 }
 div.pagecontents {
+    counter-reset: figures;
     margin: 30px auto 0px auto;
 }
 div.pagecontents p, div.pagecontents li {
@@ -171,4 +172,9 @@ a.footnote:after {
 }
 figure object.svg {
   max-width: 100%;
+}
+figcaption::before {
+    counter-increment: figures;
+    content: "Fig. " counter(figures) " - ";
+    font-weight: bold;
 }
