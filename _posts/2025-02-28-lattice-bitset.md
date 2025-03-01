@@ -81,8 +81,9 @@ digraph G {
   classes, and the topmost set of all objects, Any. The diagram is vertical, with
   arrows going from bottom to top with decreasing specificity." />
   <figcaption>An example type lattice. At the bottom are the more specific
-  types and at the top are the less specific types. Arrows indicate that
-  results can only become less precise as more merging happens.</figcaption>
+  types and at the top are the less specific types. An arrow from A to B
+  indicates that A is a subtype of B. Arrows also indicate that results can
+  only become less precise as more merging happens.</figcaption>
 </figure>
 
 This is great. Solves all of our problems, right?
