@@ -263,6 +263,11 @@ Cinder also has some other features embedded into the same type bitset:
 
 [immortal-pep]: https://peps.python.org/pep-0683/
 
+See also the [type.md][type-md] document which goes into detail about Cinder's
+type system.
+
+[type-md]: https://github.com/facebookincubator/cinderx/blob/08ec283e5eaf29196d92f8d308aaadc8e82bc0c0/Jit/hir/type.md
+
 ## In other compilers
 
 * HHVM has a similar looking [type.h][hhvm-type] and
