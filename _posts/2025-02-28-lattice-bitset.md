@@ -18,7 +18,11 @@ The core constraints are:
 I'll be using some Cinder-specific notation for the duration of the blog post,
 but it should be easy enough to get used to. The notation looks like this:
 
-* `AType` means that type (the set of all possible instances)
+* `ATypeExact` means that exact type (the set of all possible instances of that
+  exact type)
+* `ATypeUser` means that a subclass of that type (the set of all possible
+  instances of subclasses of that type)
+* `AType` is the union of `ATypeExact` and `ATypeUser`
 * `AType[something]` means a *specific* instance of that type
 * `AType|AnotherType` means either `AType` or `AnotherType` (the union/meet of
   the two sets)
@@ -42,9 +46,10 @@ information we need. Amazing, right?
 
 It also wants the types to form a *lattice*, so there has to be a way to
 represent some element `Top` (could be any value of any type; everything is a
-subtype of Top) and some element `Bottom` (has no value, or unreachable; Bottom
-is a subtype of everything). This is also straightforward: `Top` is represented
-by setting every bit and `Bottom` by setting none of the bits.
+subtype of Top) and some element `Bottom` (has no value, or the instruction
+that produces it does not return; Bottom is a subtype of everything). This is
+also straightforward: `Top` is represented by setting every bit and `Bottom` by
+setting none of the bits.
 
 See an example type lattice, where the arrows represent monotonic (going only
 in one direction) loss of information:
