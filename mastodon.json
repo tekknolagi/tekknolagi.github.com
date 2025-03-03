@@ -50770,6 +50770,123 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114095884565392831": {
+      "id": "114095884565392831",
+      "created_at": "2025-03-03T01:23:55.490Z",
+      "in_reply_to_id": "114095882350170231",
+      "in_reply_to_account_id": "147970",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114095884565392831",
+      "url": "https://mastodon.social/@tekknolagi/114095884565392831",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@regehr\" class=\"u-url mention\">@<span>regehr</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.acm.org/@smarr\" class=\"u-url mention\">@<span>smarr</span></a></span> (say for example that being included in the proceedings was valuable to me)</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "147970",
+          "username": "regehr",
+          "url": "https://mastodon.social/@regehr",
+          "acct": "regehr"
+        },
+        {
+          "id": "110894036049625455",
+          "username": "smarr",
+          "url": "https://mastodon.acm.org/@smarr",
+          "acct": "smarr@mastodon.acm.org"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114095882350170231": {
+      "id": "114095882350170231",
+      "created_at": "2025-03-03T01:23:21.684Z",
+      "in_reply_to_id": "114095860665455380",
+      "in_reply_to_account_id": "147970",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114095882350170231",
+      "url": "https://mastodon.social/@tekknolagi/114095882350170231",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@regehr\" class=\"u-url mention\">@<span>regehr</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.acm.org/@smarr\" class=\"u-url mention\">@<span>smarr</span></a></span> ok well sure but if I were to submit an abstract, for example, are there meaningful differences in (style/content/...) requirements from submitting a blog post?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "147970",
+          "username": "regehr",
+          "url": "https://mastodon.social/@regehr",
+          "acct": "regehr"
+        },
+        {
+          "id": "110894036049625455",
+          "username": "smarr",
+          "url": "https://mastodon.acm.org/@smarr",
+          "acct": "smarr@mastodon.acm.org"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114095756607067712": {
+      "id": "114095756607067712",
+      "created_at": "2025-03-03T00:51:22.995Z",
+      "in_reply_to_id": "114072309450889315",
+      "in_reply_to_account_id": "110894036049625455",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114095756607067712",
+      "url": "https://mastodon.social/@tekknolagi/114095756607067712",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": "2025-03-03T00:51:42.944Z",
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.acm.org/@smarr\" class=\"u-url mention\">@<span>smarr</span></a></span> What is the difference in content and presentation between an extended abstract and a blog post? I&#39;ve not done either [for a conference]</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110894036049625455",
+          "username": "smarr",
+          "url": "https://mastodon.acm.org/@smarr",
+          "acct": "smarr@mastodon.acm.org"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
