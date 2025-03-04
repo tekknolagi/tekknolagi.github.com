@@ -108,7 +108,7 @@ list. Take a look at this handy diagram.
 
 <figure style="display: block; margin: 0 auto; max-width: 400px;">
   <img class="svg" style="max-width: 400px;" src="/assets/img/lisp/03_lists_cons.svg" />
-  <figcaption>Fig. 1 - Cons cell list, courtesy of Wikipedia.</figcaption>
+  <figcaption>Cons cell list, courtesy of Wikipedia.</figcaption>
 </figure>
 
 This represents the list `(list 42 69 613)`, which can also be denoted `(cons

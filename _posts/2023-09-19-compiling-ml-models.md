@@ -91,7 +91,7 @@ In case visual learning is your thing, here is a small diagram:
   <object class="svg" type="image/svg+xml" data="/assets/img/nn.svg">
   If you're seeing this text, it means your browser cannot render SVG.
   </object>
-  <figcaption>Fig. 1 - Multi-layer Perceptron diagram. Well, a layer of one,
+  <figcaption>Multi-layer Perceptron diagram. Well, a layer of one,
   anyway. I made this in Excalidraw. I love Excalidraw.</figcaption>
 </figure>
 
@@ -312,7 +312,7 @@ pattern.
 </g>
 </g>
 </svg>
-  <figcaption>Fig. 2 - A dependency graph that has diamond-shaped dependencies
+  <figcaption>A dependency graph that has diamond-shaped dependencies
   in it, making it a directed graph instead of a tree.</figcaption>
 </figure>
 
@@ -659,7 +659,7 @@ Here is a diagram I made to explain "adding loss on top" to someone:
   If you're seeing this text, it means your browser cannot render SVG.
   </object>
   <figcaption markdown="1">
-  Fig. 3 - A sketch-like illustration of a model's computation graph and loss.
+  A sketch-like illustration of a model's computation graph and loss.
   The model outputs one value, but how do we know how good it is? Well, we feed
   it into another subgraph---the loss function---which takes in a second input
   (the expected value) and itself outputs one value. I made this in Excalidraw.
@@ -731,7 +731,7 @@ I ran Scalene on our little micrograd MNIST and this is what it looks like.
 <figure style="display: block; margin: 0 auto; max-width: 600px;">
   <a href="/assets/img/scalene-nn.png"><img style="max-width: 600px;" src="/assets/img/scalene-nn.png" /></a>
   <figcaption markdown="1">
-  Fig. 4 - A screenshot of the Scalene profiler's view of micrograd. It looks
+  A screenshot of the Scalene profiler's view of micrograd. It looks
   like there is a lot of `Value` allocation and `self._prev` being a set could
   even be a leak somehow! You can especially see there are a lot of `+` and `*`
   operations because `__add__` and `__mul__` allocate a lot.
