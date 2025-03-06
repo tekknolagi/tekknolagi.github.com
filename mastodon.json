@@ -50887,6 +50887,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114113696272302486": {
+      "id": "114113696272302486",
+      "created_at": "2025-03-06T04:53:40.563Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114113696272302486",
+      "url": "https://mastodon.social/@tekknolagi/114113696272302486",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Oh. There is a Python implementation of Liquid. Should I ignore the siren song or should I make a stripped-down single-file checked-in &quot;Jekyll&quot; clone that can build my site?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
