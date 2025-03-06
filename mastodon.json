@@ -51071,6 +51071,47 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114116159025977300": {
+      "id": "114116159025977300",
+      "created_at": "2025-03-06T15:19:59.205Z",
+      "in_reply_to_id": "114116150490470069",
+      "in_reply_to_account_id": "113211473838980739",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114116159025977300",
+      "url": "https://mastodon.social/@tekknolagi/114116159025977300",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@mgaudet\" class=\"u-url mention\">@<span>mgaudet</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.world/@cfallin\" class=\"u-url mention\">@<span>cfallin</span></a></span> that&#39;s a hilarious way to put that</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "113211473838980739",
+          "username": "mgaudet",
+          "url": "https://discuss.systems/@mgaudet",
+          "acct": "mgaudet@discuss.systems"
+        },
+        {
+          "id": "109576349872070104",
+          "username": "cfallin",
+          "url": "https://mastodon.world/@cfallin",
+          "acct": "cfallin@mastodon.world"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
