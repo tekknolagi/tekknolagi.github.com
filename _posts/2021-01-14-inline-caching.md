@@ -1,7 +1,7 @@
 ---
 title: Inline caching
 layout: post
-date: 2021-01-14 00:00:00 PT
+date: 2021-01-14
 description: Optimizing bytecode interpreters by avoiding method lookups
 series: runtime-opt
 ---
