@@ -7,6 +7,28 @@ The Cinder JIT compiler does some cool stuff with how they represent types so
 I'm going to share it with you here. The core of it is thinking about types as
 *sets*, and picking a compact set representation.
 
+We'll start from first principles and build our way up to roughly what Cinder
+has.
+
+## Starting simple
+
+Say you want to represent types in your compiler. A reasonable first way to do
+that is with an enum:
+
+```c
+enum {
+    Int,
+    List,
+    String,
+    Object,  // catch-all
+};
+```
+
+Not bad. We can represent some built-in types and we have a catch-all case to
+use when we don't know what type something is or the type doesn't fit neatly
+into our enum.
+
+
 The core constraints are:
 
 * We want full unions, not the discriminated unions given to us by `enum`s
