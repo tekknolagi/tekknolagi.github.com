@@ -50915,6 +50915,127 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114114342186297663": {
+      "id": "114114342186297663",
+      "created_at": "2025-03-06T07:37:56.436Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114114342186297663/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114114342186297663/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114114331090878568",
+        "created_at": "2025-03-06T07:35:06.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.world/users/cfallin/statuses/114114331059420602",
+        "url": "https://mastodon.world/@cfallin/114114331059420602",
+        "replies_count": 1,
+        "reblogs_count": 1,
+        "favourites_count": 1,
+        "edited_at": "2025-03-06T07:41:40.000Z",
+        "content": "<p>Excited to hear that our paper on weval, the Wasm partial evaluator, was conditionally accepted to PLDI!</p><p>I wrote about weval in a blog-post series (<a href=\"https://cfallin.org/blog/2024/08/28/weval/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">cfallin.org/blog/2024/08/28/we</span><span class=\"invisible\">val/</span></a>). It's a way to turn interpreters into compilers \"for free\".</p><p> After I gave a talk at NEU last year, <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@tekknolagi\" class=\"u-url mention\" rel=\"nofollow noopener\" target=\"_blank\">@<span>tekknolagi</span></a></span> was interested enough to do some impromptu hacking with me, evaluate the tool on some other interpreters, and we wrote up a paper together.</p><p>Our preprint from November is here (<a href=\"https://arxiv.org/abs/2411.10559\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">arxiv.org/abs/2411.10559</span><span class=\"invisible\"></span></a>); more later!</p>",
+        "reblog": null,
+        "account": {
+          "id": "109576349872070104",
+          "username": "cfallin",
+          "acct": "cfallin@mastodon.world",
+          "display_name": "Chris Fallin",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": true,
+          "group": false,
+          "created_at": "2022-12-20T00:00:00.000Z",
+          "note": "<p>Nerd-of-all-trades, happiest when hacking deep innards of a compiler or runtime.</p>",
+          "url": "https://mastodon.world/@cfallin",
+          "uri": "https://mastodon.world/users/cfallin",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/109/576/349/872/070/104/original/180a8e79d6f52cf7.jpg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/576/349/872/070/104/original/180a8e79d6f52cf7.jpg",
+          "header": "https://files.mastodon.social/cache/accounts/headers/109/576/349/872/070/104/original/6c821a8da219ab8c.jpeg",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/109/576/349/872/070/104/original/6c821a8da219ab8c.jpeg",
+          "followers_count": 453,
+          "following_count": 288,
+          "statuses_count": 442,
+          "last_status_at": "2025-03-06",
+          "hide_collections": true,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "www",
+              "value": "<a href=\"https://cfallin.org/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">cfallin.org/</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2025-02-11T18:05:32.441+00:00"
+            },
+            {
+              "name": "whereabouts",
+              "value": "sunnyvale, california (SF bay area)",
+              "verified_at": null
+            },
+            {
+              "name": "pronouns",
+              "value": "he/him",
+              "verified_at": null
+            },
+            {
+              "name": "affiliation",
+              "value": "currently software engineer @ F5; previously Fastly, Mozilla, PhD @ CMU ECE, Google, Intel",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [
+          {
+            "id": "1300106",
+            "username": "tekknolagi",
+            "url": "https://mastodon.social/@tekknolagi",
+            "acct": "tekknolagi"
+          }
+        ],
+        "tags": [],
+        "emojis": [],
+        "card": {
+          "url": "https://cfallin.org/blog/2024/08/28/weval/",
+          "title": "Compilation of JavaScript to Wasm, Part 3: Partial Evaluation",
+          "description": "",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "",
+          "provider_url": "",
+          "html": "",
+          "width": 0,
+          "height": 0,
+          "image": null,
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": null,
+          "published_at": null,
+          "authors": []
+        },
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
