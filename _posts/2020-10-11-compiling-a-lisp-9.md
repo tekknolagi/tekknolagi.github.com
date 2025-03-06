@@ -1,7 +1,7 @@
 ---
 title: "Compiling a Lisp: Heap allocation"
 layout: post
-date: 2020-10-11 00:00:00 PT
+date: 2020-10-11
 description: Compiling Lisp cons, car, and cdr to x86-64
 og_image: /assets/img/compiling-a-lisp-og-image.png
 series: compiling-a-lisp

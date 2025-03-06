@@ -1,7 +1,7 @@
 ---
 title: "Inline caching: quickening"
 layout: post
-date: 2021-02-03 00:00:00 PT
+date: 2021-02-03
 description: Further optimizing bytecode interpreters by removing branches and indirection
 series: runtime-opt
 ---

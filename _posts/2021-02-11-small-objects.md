@@ -1,7 +1,7 @@
 ---
 title: Small objects and pointer tagging
 layout: post
-date: 2021-02-11 00:00:00 PT
+date: 2021-02-11
 description: Optimizing bytecode interpreters by avoiding heap allocation
 series: runtime-opt
 ---
