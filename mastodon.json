@@ -51147,6 +51147,60 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114121827849091522": {
+      "id": "114121827849091522",
+      "created_at": "2025-03-07T15:21:38.579Z",
+      "in_reply_to_id": "114121360179723213",
+      "in_reply_to_account_id": "110894036049625455",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114121827849091522",
+      "url": "https://mastodon.social/@tekknolagi/114121827849091522",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.acm.org/@smarr\" class=\"u-url mention\">@<span>smarr</span></a></span> also sharing here for others: <a href=\"https://clementbera.wordpress.com/2018/11/09/64-bits-immediate-floats/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">clementbera.wordpress.com/2018</span><span class=\"invisible\">/11/09/64-bits-immediate-floats/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110894036049625455",
+          "username": "smarr",
+          "url": "https://mastodon.acm.org/@smarr",
+          "acct": "smarr@mastodon.acm.org"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://clementbera.wordpress.com/2018/11/09/64-bits-immediate-floats/",
+        "title": "64 bits Immediate Floats",
+        "description": "Hi all, In this post I will try to discuss some inner details of OpenSmalltalk-VM immediate floats. Immediate floats are present only in 64 bits hence I won\u2019t talk about 32 bits VM in the who\u2026",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Cl\u00e9ment B\u00e9ra",
+        "provider_url": "",
+        "html": "",
+        "width": 512,
+        "height": 228,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/136/001/555/original/6fd6bdbadf746a65.png",
+        "image_description": "Immediate",
+        "embed_url": "",
+        "blurhash": "UJQvwOD$_4t9-=ofRij@-;t8M_ax?bWBaxax",
+        "published_at": "2018-11-09T19:04:03.000Z",
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
