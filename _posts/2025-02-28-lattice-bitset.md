@@ -8,7 +8,7 @@ I'm going to share it with you here. The core of it is thinking about types as
 *sets*, and picking a compact set representation.
 
 We'll start from first principles and build our way up to roughly what Cinder
-has.
+has (and we could go further from there).
 
 ## Starting simple
 
@@ -26,7 +26,85 @@ enum {
 
 Not bad. We can represent some built-in types and we have a catch-all case to
 use when we don't know what type something is or the type doesn't fit neatly
-into our enum.
+into our enum (`Object`).
+
+Using this enum, we can assign types to variables (for the purposes of this
+post, SSA values) and use those types to optimize. For example, we might see
+the following pseudo-Python snippet:
+
+```python
+a = [...]
+return len(a)
+```
+
+If we know that the type of `a` is `List`, we can optimize the call to
+`len`[^redefining-len] to a direct call to the `list` class's `__len__` method,
+or---even better, since we know about CPython's runtime details---read the
+`ob_size` field directly off the object.
+
+[^redefining-len]: Pretend for now that we can't redefine or shadow `len`
+    because that trickiness is unrelated to this post.
+
+That's great! It will catch a bunch of real-world cases and speed up code.
+Unfortunately, it gives up a little too easily. Consider some silly-ish code
+that either assigns a `str` or a `list` depending on some condition:
+
+```python
+def foo(cond):
+    if cond:
+        a = "..."
+    else:
+        a = [...]
+    return len(a)
+```
+
+Because `a` could have either type, we have to union the type information we
+know into a more general type. Since we don't have  `ListOrString` case in our
+enum (nor should we), we have to pick something more general: `Object`.
+
+That's a bummer, because we as runtime implementors know that both `str` and
+`list` have `__len__` methods that just read the `ob_size` field. Now that we
+have lost so much information in the type union, we have to do a very generic
+call to the `len` function.
+
+To get around this, we can turn the straightforward enum into a *bitset*.
+
+## Bitsets
+
+Bitsets encode set information by assigning each bit in some number (say, a
+64-bit word) a value. If that bit is 1, the value is in the set. Otherwise, it
+isn't.
+
+Here's the enum from earlier, remade as a bitset:
+
+```c
+enum {
+    Int    = 1 << 0,
+    List   = 1 << 1,
+    String = 1 << 2,
+    Object = 7,  // 0b111; catch-all
+};
+```
+
+We have three elements: `Int`, `List`, and `String`. Since we have a bit for
+each object and they can be addressed individually, we can very
+straightforwardly encode the `ListOrString` type using bitwise arithmetic:
+
+```c
+List | String  // 0b110
+```
+
+It doesn't even need to be a basic type in our enum. We can construct it using
+our built-in building blocks.
+
+We have also set our unknown/catch-all/`Object` type as the value with *all*
+bits set, so that if we *or* together all of our known types
+(`Int|List|String`), the unknown-ness falls out naturally.
+
+
+---
+
+
 
 
 The core constraints are:
