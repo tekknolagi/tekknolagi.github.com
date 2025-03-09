@@ -1,6 +1,7 @@
 ---
 title: Representing type lattices compactly
 layout: post
+co_authors: Brett Simmers
 ---
 
 The Cinder JIT compiler does some cool stuff with how they represent types so
@@ -110,6 +111,64 @@ bits set, so that if we *or* together all of our known types
 Top/Any, Bottom/Empty
 
 ## Bottom API
+
+A common mistake when handling `Bottom` is treating it as an error, or assuming
+it will never show up in your program. To expand on its brief introduction
+above, the two main consequences of `Bottom`'s place at the bottom of the type
+lattice are:
+
+1. A value of type `Bottom` can never be *defined*. An instruction with an
+   output of type `Bottom` will therefore never define its output. Such an
+   instruction might loop infinitely, it might crash your program, or it might
+   jump to another location in the program (if your compiler supports
+   control-flow instructions that define values).
+2. A value of type `Bottom` can never be *used*, so an instruction with an
+   input of type `Bottom` is unreachable. This follows from the previous item
+   (since you obviously can't use a value you can't define), but is worth
+   calling out separately.
+
+These two properties make checking for `Bottom` useful in an unreachable code
+elimination pass. Otherwise, though, `Bottom` is just another type, and your
+type predicates will generally be cleaner if you design them to correctly
+handle `Bottom` without explicitly testing for it.
+
+Most of the time, `Bottom` support happens out naturally:
+
+```c++
+if (t <= TLongExact) {
+    // generate int-specific code
+}
+```
+
+In this example, `t == TBottom` will be fine: any code that is generated (if
+your compiler doesn't eliminate unreachable code) will never run, so it's
+perfectly fine to call a helper function that expects an `int`, or to load a
+field of `PyLongObject`, etc.
+
+Sometimes, however, we want to get a concrete value out of a type at
+compile-time for an optimization such as constant folding. It may be tempting
+to assume that if your type `t` is a strict subtype of `LongExact`, it
+represents a specific `int` object:
+
+```c++
+if (t < TLongExact) {
+    PyLongObject* a_long = t.asPyObject();
+    // ... optimize based on a_long
+}
+```
+
+This code is broken for plenty of cases other than `Bottom` (e.g.,
+range-constrained `int` types), but in many compilers, `Bottom` will usually be
+the first type that causes a crash or failed assertion here. Rather than
+excluding `Bottom` by name, with code like `if (t != TBottom && t <
+TLongExact)`, you can handle `Bottom` (and all other types!) correctly by
+refining your type predicate to what you *really* mean.
+
+In this case, you want to know if `t` represents exactly one value, so you
+might use an API like `t.admitsSingleValue(TLongExact)`. That will correctly
+exclude `Bottom`, which represents zero values, but it will also correctly
+exclude a type that means "an `int` that is less than 0", which is a strict
+subtype of `TLongExact` but doesn't represent a single value.
 
 ## Specialization
 
