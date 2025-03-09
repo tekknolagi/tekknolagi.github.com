@@ -528,6 +528,8 @@ struct Type {
         String = 1 << 2,  // 0b100
         Top    = 7,       // 0b111
     } type;
+    // If you are feeling clever, you can also steal some `type` bits for the
+    // `spec_kind` instead of putting it in a separate field.
     struct Spec {
         enum {
             SpecTop,
