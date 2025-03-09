@@ -447,7 +447,7 @@ struct Spec {
         SpecTop,
         SpecInt,
         SpecBottom,
-    } spec_type;
+    } spec_kind;
     int value;
 };
 ```
@@ -532,9 +532,19 @@ struct Type {
             SpecTop,
             SpecInt,
             SpecBottom,
-        } spec_type;
+        } spec_kind;
         int value;
     } spec;
+};
+
+struct Type TTop = (struct Type) {
+    .type = Top,
+    .spec = (struct Spec) { .spec_kind = SpecTop },
+};
+// Invariant: .type == Bottom if and only if .spec_kind == SpecBottom.
+struct Type TBottom = (struct Type) {
+    .type = Bottom,
+    .spec = (struct Spec) { .spec_kind = SpecBottom },
 };
 ```
 
@@ -562,7 +572,7 @@ If we decompose the problem that way, we can write some lattice operations for
 ```c++
 // Ask if `left` is a subtype of `right`
 bool spec_is_subtype(struct Spec left, struct Spec right) {
-    if (right.spec_type == SpecTop || left.spec_type == SpecBottom) {
+    if (right.spec_kind == SpecTop || left.spec_kind == SpecBottom) {
         // Top is a supertype of everything and Bottom is a subtype of
         // everything
         return true;
@@ -571,8 +581,8 @@ bool spec_is_subtype(struct Spec left, struct Spec right) {
     // right is now either SpecInt or SpecBottom
     // The only way left could be a subtype of right is if they are both
     // SpecInt and the value is the same
-    if (left.spec_type == SpecInt &&
-        right.spec_type == SpecInt &&
+    if (left.spec_kind == SpecInt &&
+        right.spec_kind == SpecInt &&
         left.value == right.value) {
         return true;
     }
@@ -592,7 +602,7 @@ struct Spec spec_join(struct Spec left, struct Spec right) {
     // because that would have been covered in one of the subtype cases, so
     // we're join-ing two SpecInts. That's SpecTop.
     struct Spec result;
-    result.spec_type = SpecTop;
+    result.spec_kind = SpecTop;
     return result;
 }
 ```
