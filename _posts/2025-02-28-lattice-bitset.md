@@ -121,11 +121,310 @@ sets still (which we should be), then 0 means no bits set, which means it
 represents 0 elements, which means it's the empty set!
 
 We're starting to approach a very useful mathematical structure called a
-*lattice*.
+*semilattice*.
 
-## Lattices
+## Semilattices
 
-Top/Any, Bottom/Empty
+I'm not going to quote you any formal definitions because I'm not very mathy,
+but a semilattice is a partial (not total) order of a set with a *join*
+(*union*) operation. It has a top element and a bottom element.
+
+For our limited type data structure, our partial order is determined by set
+membership and our *join* is set union. Top represents "all possible objects"
+and bottom represents "no objects":
+
+* bottom is less than every other set, because it has no elements
+* int, list, and string are not ordered amongst themselves because none of them
+  is a superset of any of the others
+* top (object) is greater than every set, because it has all elements
+
+Check out this handy diagram of our original enum-based type lattice:
+
+<!--
+digraph G {
+    rankdir="BT";
+    empty -> list;
+    empty -> str;
+    empty -> int;
+
+    int -> any;
+    str -> any;
+    list -> any;
+
+    empty [label="Bottom/Empty"];
+    any [label="Object/Top/Any"];
+    int [label="Int"];
+    str [label="String"];
+    list[label="List"];
+}
+-->
+
+<figure>
+<svg width="244pt" height="188pt" viewBox="0.00 0.00 244.38 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-184 240.38,-184 240.38,4 -4,4"/>
+<!-- empty -->
+<g id="node1" class="node">
+<title>empty</title>
+<ellipse fill="none" stroke="black" cx="107" cy="-18" rx="68.45" ry="18"/>
+<text text-anchor="middle" x="107" y="-13.8" font-family="Times,serif" font-size="14.00">Bottom/Empty</text>
+</g>
+<!-- list -->
+<g id="node2" class="node">
+<title>list</title>
+<ellipse fill="none" stroke="black" cx="27" cy="-90" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-85.8" font-family="Times,serif" font-size="14.00">List</text>
+</g>
+<!-- empty&#45;&gt;list -->
+<g id="edge1" class="edge">
+<title>empty-&gt;list</title>
+<path fill="none" stroke="black" d="M88.04,-35.59C77.07,-45.19 63.14,-57.37 51.37,-67.68"/>
+<polygon fill="black" stroke="black" points="49.22,-64.91 44,-74.13 53.83,-70.17 49.22,-64.91"/>
+</g>
+<!-- str -->
+<g id="node3" class="node">
+<title>str</title>
+<ellipse fill="none" stroke="black" cx="107" cy="-90" rx="34.65" ry="18"/>
+<text text-anchor="middle" x="107" y="-85.8" font-family="Times,serif" font-size="14.00">String</text>
+</g>
+<!-- empty&#45;&gt;str -->
+<g id="edge2" class="edge">
+<title>empty-&gt;str</title>
+<path fill="none" stroke="black" d="M107,-36.3C107,-43.59 107,-52.27 107,-60.46"/>
+<polygon fill="black" stroke="black" points="103.5,-60.38 107,-70.38 110.5,-60.38 103.5,-60.38"/>
+</g>
+<!-- int -->
+<g id="node4" class="node">
+<title>int</title>
+<ellipse fill="none" stroke="black" cx="198" cy="-90" rx="38.38" ry="18"/>
+<text text-anchor="middle" x="198" y="-85.8" font-family="Times,serif" font-size="14.00">Int</text>
+</g>
+<!-- empty&#45;&gt;int -->
+<g id="edge3" class="edge">
+<title>empty-&gt;int</title>
+<path fill="none" stroke="black" d="M128.11,-35.24C140.48,-44.75 156.26,-56.9 169.7,-67.23"/>
+<polygon fill="black" stroke="black" points="167.3,-69.8 177.36,-73.12 171.57,-64.25 167.3,-69.8"/>
+</g>
+<!-- any -->
+<g id="node5" class="node">
+<title>any</title>
+<ellipse fill="none" stroke="black" cx="107" cy="-162" rx="74.33" ry="18"/>
+<text text-anchor="middle" x="107" y="-157.8" font-family="Times,serif" font-size="14.00">Object/Top/Any</text>
+</g>
+<!-- list&#45;&gt;any -->
+<g id="edge6" class="edge">
+<title>list-&gt;any</title>
+<path fill="none" stroke="black" d="M42.81,-104.83C53.21,-113.94 67.12,-126.1 79.33,-136.79"/>
+<polygon fill="black" stroke="black" points="76.87,-139.29 86.7,-143.24 81.48,-134.02 76.87,-139.29"/>
+</g>
+<!-- str&#45;&gt;any -->
+<g id="edge5" class="edge">
+<title>str-&gt;any</title>
+<path fill="none" stroke="black" d="M107,-108.3C107,-115.59 107,-124.27 107,-132.46"/>
+<polygon fill="black" stroke="black" points="103.5,-132.38 107,-142.38 110.5,-132.38 103.5,-132.38"/>
+</g>
+<!-- int&#45;&gt;any -->
+<g id="edge4" class="edge">
+<title>int-&gt;any</title>
+<path fill="none" stroke="black" d="M178.7,-105.85C166.75,-115.04 151.13,-127.05 137.53,-137.52"/>
+<polygon fill="black" stroke="black" points="135.49,-134.67 129.7,-143.54 139.76,-140.22 135.49,-134.67"/>
+</g>
+</g>
+</svg>
+</figure>
+
+The arrows indicate that applying a *join* will only ever move us upward along
+an arrow. For example, `join(Bottom, Bottom)` is `Bottom` (it remains empty),
+`join(Bottom, List)` is `List` (no new elements), and `join(List, String)` is
+`Top` (we don't have any finer-grained way to represent all lists and all
+strings).
+
+Compare this with, for example, what we can represent with our bitset type
+representation:
+
+<!--
+digraph G {
+    rankdir="BT";
+    empty -> list;
+    empty -> str;
+    empty -> int;
+
+    int -> int_str;
+    int -> int_list;
+    str -> int_str;
+    str -> str_list;
+    list -> int_list;
+    list -> str_list;
+
+    int_str -> any;
+    int_list -> any;
+    str_list -> any;
+
+    empty [label="Bottom/Empty"];
+    int_str [label="Int|String"];
+    int_list [label="Int|List"];
+    str_list [label="String|List"];
+    any [label="Object/Top/Any"];
+    int [label="Int"];
+    str [label="String"];
+    list[label="List"];
+}
+-->
+
+<figure>
+<svg width="386pt" height="260pt" viewBox="0.00 0.00 385.53 260.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 256)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-256 381.53,-256 381.53,4 -4,4"/>
+<!-- empty -->
+<g id="node1" class="node">
+<title>empty</title>
+<ellipse fill="none" stroke="black" cx="199.92" cy="-18" rx="68.45" ry="18"/>
+<text text-anchor="middle" x="199.92" y="-13.8" font-family="Times,serif" font-size="14.00">Bottom/Empty</text>
+</g>
+<!-- list -->
+<g id="node2" class="node">
+<title>list</title>
+<ellipse fill="none" stroke="black" cx="279.92" cy="-90" rx="27" ry="18"/>
+<text text-anchor="middle" x="279.92" y="-85.8" font-family="Times,serif" font-size="14.00">List</text>
+</g>
+<!-- empty&#45;&gt;list -->
+<g id="edge1" class="edge">
+<title>empty-&gt;list</title>
+<path fill="none" stroke="black" d="M218.88,-35.59C229.85,-45.19 243.78,-57.37 255.56,-67.68"/>
+<polygon fill="black" stroke="black" points="253.09,-70.17 262.92,-74.13 257.7,-64.91 253.09,-70.17"/>
+</g>
+<!-- str -->
+<g id="node3" class="node">
+<title>str</title>
+<ellipse fill="none" stroke="black" cx="199.92" cy="-90" rx="34.65" ry="18"/>
+<text text-anchor="middle" x="199.92" y="-85.8" font-family="Times,serif" font-size="14.00">String</text>
+</g>
+<!-- empty&#45;&gt;str -->
+<g id="edge2" class="edge">
+<title>empty-&gt;str</title>
+<path fill="none" stroke="black" d="M199.92,-36.3C199.92,-43.59 199.92,-52.27 199.92,-60.46"/>
+<polygon fill="black" stroke="black" points="196.42,-60.38 199.92,-70.38 203.42,-60.38 196.42,-60.38"/>
+</g>
+<!-- int -->
+<g id="node4" class="node">
+<title>int</title>
+<ellipse fill="none" stroke="black" cx="108.92" cy="-90" rx="38.38" ry="18"/>
+<text text-anchor="middle" x="108.92" y="-85.8" font-family="Times,serif" font-size="14.00">Int</text>
+</g>
+<!-- empty&#45;&gt;int -->
+<g id="edge3" class="edge">
+<title>empty-&gt;int</title>
+<path fill="none" stroke="black" d="M178.82,-35.24C166.45,-44.75 150.66,-56.9 137.22,-67.23"/>
+<polygon fill="black" stroke="black" points="135.35,-64.25 129.56,-73.12 139.62,-69.8 135.35,-64.25"/>
+</g>
+<!-- int_list -->
+<g id="node6" class="node">
+<title>int_list</title>
+<ellipse fill="none" stroke="black" cx="200.92" cy="-162" rx="55.34" ry="18"/>
+<text text-anchor="middle" x="200.92" y="-157.8" font-family="Times,serif" font-size="14.00">Int|List</text>
+</g>
+<!-- list&#45;&gt;int_list -->
+<g id="edge8" class="edge">
+<title>list-&gt;int_list</title>
+<path fill="none" stroke="black" d="M264.32,-104.83C253.89,-114.06 239.92,-126.45 227.74,-137.24"/>
+<polygon fill="black" stroke="black" points="225.57,-134.49 220.4,-143.74 230.21,-139.73 225.57,-134.49"/>
+</g>
+<!-- str_list -->
+<g id="node7" class="node">
+<title>str_list</title>
+<ellipse fill="none" stroke="black" cx="325.92" cy="-162" rx="51.6" ry="18"/>
+<text text-anchor="middle" x="325.92" y="-157.8" font-family="Times,serif" font-size="14.00">String|List</text>
+</g>
+<!-- list&#45;&gt;str_list -->
+<g id="edge9" class="edge">
+<title>list-&gt;str_list</title>
+<path fill="none" stroke="black" d="M290.36,-106.88C295.79,-115.15 302.57,-125.46 308.75,-134.86"/>
+<polygon fill="black" stroke="black" points="305.64,-136.5 314.05,-142.94 311.49,-132.66 305.64,-136.5"/>
+</g>
+<!-- int_str -->
+<g id="node5" class="node">
+<title>int_str</title>
+<ellipse fill="none" stroke="black" cx="63.92" cy="-162" rx="63.92" ry="18"/>
+<text text-anchor="middle" x="63.92" y="-157.8" font-family="Times,serif" font-size="14.00">Int|String</text>
+</g>
+<!-- str&#45;&gt;int_str -->
+<g id="edge6" class="edge">
+<title>str-&gt;int_str</title>
+<path fill="none" stroke="black" d="M175.92,-103.35C155.86,-113.68 126.85,-128.61 103.38,-140.69"/>
+<polygon fill="black" stroke="black" points="102,-137.46 94.71,-145.15 105.21,-143.69 102,-137.46"/>
+</g>
+<!-- str&#45;&gt;str_list -->
+<g id="edge7" class="edge">
+<title>str-&gt;str_list</title>
+<path fill="none" stroke="black" d="M223.03,-103.84C241.59,-114.15 268,-128.82 289.42,-140.72"/>
+<polygon fill="black" stroke="black" points="287.71,-143.77 298.15,-145.57 291.11,-137.65 287.71,-143.77"/>
+</g>
+<!-- int&#45;&gt;int_str -->
+<g id="edge4" class="edge">
+<title>int-&gt;int_str</title>
+<path fill="none" stroke="black" d="M98.26,-107.59C93.07,-115.66 86.7,-125.57 80.87,-134.65"/>
+<polygon fill="black" stroke="black" points="78.11,-132.47 75.64,-142.77 83.99,-136.25 78.11,-132.47"/>
+</g>
+<!-- int&#45;&gt;int_list -->
+<g id="edge5" class="edge">
+<title>int-&gt;int_list</title>
+<path fill="none" stroke="black" d="M128.43,-105.85C140.81,-115.26 157.06,-127.63 171.04,-138.27"/>
+<polygon fill="black" stroke="black" points="168.56,-140.77 178.63,-144.04 172.79,-135.2 168.56,-140.77"/>
+</g>
+<!-- any -->
+<g id="node8" class="node">
+<title>any</title>
+<ellipse fill="none" stroke="black" cx="200.92" cy="-234" rx="74.33" ry="18"/>
+<text text-anchor="middle" x="200.92" y="-229.8" font-family="Times,serif" font-size="14.00">Object/Top/Any</text>
+</g>
+<!-- int_str&#45;&gt;any -->
+<g id="edge10" class="edge">
+<title>int_str-&gt;any</title>
+<path fill="none" stroke="black" d="M93.99,-178.36C113.35,-188.25 138.76,-201.24 159.96,-212.07"/>
+<polygon fill="black" stroke="black" points="158.13,-215.07 168.63,-216.5 161.32,-208.83 158.13,-215.07"/>
+</g>
+<!-- int_list&#45;&gt;any -->
+<g id="edge11" class="edge">
+<title>int_list-&gt;any</title>
+<path fill="none" stroke="black" d="M200.92,-180.3C200.92,-187.59 200.92,-196.27 200.92,-204.46"/>
+<polygon fill="black" stroke="black" points="197.42,-204.38 200.92,-214.38 204.42,-204.38 197.42,-204.38"/>
+</g>
+<!-- str_list&#45;&gt;any -->
+<g id="edge12" class="edge">
+<title>str_list-&gt;any</title>
+<path fill="none" stroke="black" d="M299.41,-177.85C281.96,-187.62 258.83,-200.57 239.36,-211.47"/>
+<polygon fill="black" stroke="black" points="237.91,-208.28 230.89,-216.22 241.33,-214.39 237.91,-208.28"/>
+</g>
+</g>
+</svg>
+</figure>
+
+See how we have a new layer! We can address the set of all ints and all strings
+with `Int|String`, which is ordered above each of the invidual int and string
+sets.
+
+As I alluded to earlier, we can conveniently represent a bottom element in our
+bitset type:
+
+```c
+enum Type {
+    Bottom = 0,       // 0b000
+    Int    = 1 << 0,  // 0b001
+    List   = 1 << 1,  // 0b010
+    String = 1 << 2,  // 0b100
+    Top    = 7,       // 0b111
+};
+
+
+enum Type join(enum Type left, enum Type right) {
+    return left | right;
+}
+```
+
+Now that we have an explicit bottom element, let's talk about some issues that
+you might run into using this representation for type analysis.
 
 ## Bottom API
 
@@ -201,7 +500,7 @@ The core constraints are:
 * We want full unions, not the discriminated unions given to us by `enum`s
 * We want types to be very quick to allocate and free, since the compiler will
   create them with abandon
-* We want a union/meet operation (all set operations, really) to be fast, since
+* We want a union/join operation (all set operations, really) to be fast, since
   they will be used a lot during optimization
 
 I'll be using some Cinder-specific notation for the duration of the blog post,
@@ -213,10 +512,10 @@ but it should be easy enough to get used to. The notation looks like this:
   instances of subclasses of that type)
 * `AType` is the union of `ATypeExact` and `ATypeUser`
 * `AType[something]` means a *specific* instance of that type
-* `AType|AnotherType` means either `AType` or `AnotherType` (the union/meet of
+* `AType|AnotherType` means either `AType` or `AnotherType` (the union/join of
   the two sets)
 
-In fact, we want to be able to union/meet any two types together. That sounds like
+In fact, we want to be able to union/join any two types together. That sounds like
 the perfect use case for a bitset. Assign the "leaf types" in the hierarchy
 one bit each and then unions are sets of 1 bits. It's really fast, too! Bitwise
 `&` and `|` are one hardware instruction each and can quickly compute the
@@ -293,7 +592,7 @@ Let's start off with a bitset. That solves our type lattice problem.
 class Type {
 public:
     Type(uint64_t bits) : bits(bits) {}
-    Type meet(Type other) { return Type(bits | other.bits); }
+    Type join(Type other) { return Type(bits | other.bits); }
     Type intersect(Type other) { return Type(bits & other.bits); }
 
 private:
@@ -334,7 +633,7 @@ private:
 };
 ```
 
-That's cool and all but our `meet` and `intersect` functions no longer make as
+That's cool and all but our `union` and `intersect` functions no longer make as
 much sense---we ignore the specialization, and we shouldn't. We could choose to
 always set it to `Top`, but that leaves some optimizations on the table.
 Consider the following Python situation:
@@ -363,9 +662,9 @@ exact type specialization of `C`. This lets us end up with `ObjectUser[C]`,
 which could still let us optimize some stuff.
 
 It's a bit tricky to reason about, but that's the main idea. Check out the
-[Cinder implementation][type-meet].
+[Cinder implementation][type-union].
 
-[type-meet]: https://github.com/facebookincubator/cinderx/blob/9197ff2a80517304e194ea36b71f973b7daa1bd9/Jit/hir/type.cpp#L491
+[type-union]: https://github.com/facebookincubator/cinderx/blob/9197ff2a80517304e194ea36b71f973b7daa1bd9/Jit/hir/type.cpp#L491
 
 Now, these type bits are a pain to write down by hand. Instead, it would be
 nice to generate them automatically given a class hierarchy. That's what Cinder
