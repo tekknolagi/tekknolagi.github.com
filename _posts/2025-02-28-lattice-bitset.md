@@ -423,8 +423,11 @@ enum Type join(enum Type left, enum Type right) {
 }
 ```
 
-Now that we have an explicit bottom element, let's talk about some issues that
-you might run into using this representation for type analysis.
+This type representation is neat, but we can go further. Sometimes, you know
+more than just the *type* of an object: you know exactly what object it is.
+We'll introduce what Cinder calls *specialization*.
+
+## Specialization
 
 ## Bottom API
 
@@ -485,8 +488,6 @@ might use an API like `t.admitsSingleValue(TLongExact)`. That will correctly
 exclude `Bottom`, which represents zero values, but it will also correctly
 exclude a type that means "an `int` that is less than 0", which is a strict
 subtype of `TLongExact` but doesn't represent a single value.
-
-## Specialization
 
 ## Generating the lattice
 
