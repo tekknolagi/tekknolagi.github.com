@@ -775,6 +775,7 @@ to implement:
 * Integer ranges
 * Known bits / tristate numbers
 * Function pointers
+* Non-builtin class unions (as a bitset of class IDs or otherwise)
 
 ## In other compilers
 
@@ -786,6 +787,7 @@ to implement:
 * V8's Turbofan compiler has [something similar][turbofan-type]
 * Simple (the Sea of Nodes compiler)'s [Type.java][simple-type]
 * Cliff Click's aa language [Type.java][aa-type]
+* HotSpot's C2's [type.hpp][c2-type]
 
 [hhvm-type]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type.h
 [hhvm-type-spec]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type-specialization-inl.h
@@ -793,6 +795,7 @@ to implement:
 [turbofan-type]: https://github.com/v8/v8/blob/30be5d03036d6934e847c733315d527915207e85/src/compiler/turbofan-types.h
 [simple-type]: https://github.com/SeaOfNodes/Simple/blob/2370fb29d4538479af9eb94fc666a5ce09fcb492/chapter20/src/main/java/com/seaofnodes/simple/type/Type.java
 [aa-type]: https://github.com/cliffclick/aa/blob/e50e4a5881f9a15c1c7f063417eaa7b43c23f1bd/src/main/java/com/cliffc/aa/type/Type.java
+[c2-type]: https://github.com/openjdk/jdk/blob/857c53718957283766f6566e5519ab5911cf9f3c/src/hotspot/share/opto/type.hpp
 
 ## Acknowledgements
 
