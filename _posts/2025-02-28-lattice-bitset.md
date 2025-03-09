@@ -11,10 +11,23 @@ I'm going to share it with you here. The core of it is thinking about types as
 We'll start from first principles and build our way up to roughly what Cinder
 has (and we could go further from there).
 
+## Types as sets
+
+Types, as a concept, name sets of objects---sets of instances. Some types (say,
+`int8`) have finite members. There are only ever 256 potential values for an
+8-bit integer. Some times, (say, `list`) are infinite. Given enough storage,
+one could keep generating bigger and bigger instances. Since it's not possible
+to store all elements of a set, we refer to types by a name.
+
+This reduces precision. Maybe there is some bizarre case where you know that
+an object could be one of a thousand different possible `list`s, so giving up
+and saying "it's a `list`" loses information. But it also saves a bunch of
+space and analysis time, because now we're dealing with very small labels.
+Let's start off by giving a couple built-in types names and calling it a day.
+
 ## Starting simple
 
-Say you want to represent types in your compiler. A reasonable first way to do
-that is with an enum:
+A reasonable first way to give types names is with an enum:
 
 ```c
 enum {
@@ -27,7 +40,8 @@ enum {
 
 Not bad. We can represent some built-in types and we have a catch-all case to
 use when we don't know what type something is or the type doesn't fit neatly
-into our enum (`Object`).
+into our enum (`Object`), which captures the `object` type and all of its
+subclasses.
 
 Using this enum, we can assign types to variables (for the purposes of this
 post, SSA values) and use those types to optimize. For example, we might see
@@ -80,10 +94,10 @@ Here's the enum from earlier, remade as a bitset:
 
 ```c
 enum {
-    Int    = 1 << 0,
-    List   = 1 << 1,
-    String = 1 << 2,
-    Object = 7,  // 0b111; catch-all
+    Int    = 1 << 0,  // 0b001
+    List   = 1 << 1,  // 0b010
+    String = 1 << 2,  // 0b100
+    Object = 7,       // 0b111; catch-all
 };
 ```
 
@@ -102,9 +116,12 @@ We have also set our unknown/catch-all/`Object` type as the value with *all*
 bits set, so that if we *or* together all of our known types
 (`Int|List|String`), the unknown-ness falls out naturally.
 
-## Types as sets
+...but what does the unnamed 0 value represent? If we are thinking in terms of
+sets still (which we should be), then 0 means no bits set, which means it
+represents 0 elements, which means it's the empty set!
 
-...but what does the 0 value represent? Let's talk a bit about lattices.
+We're starting to approach a very useful mathematical structure called a
+*lattice*.
 
 ## Lattices
 
