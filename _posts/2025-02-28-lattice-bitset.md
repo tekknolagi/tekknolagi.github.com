@@ -101,6 +101,19 @@ We have also set our unknown/catch-all/`Object` type as the value with *all*
 bits set, so that if we *or* together all of our known types
 (`Int|List|String`), the unknown-ness falls out naturally.
 
+## Types as sets
+
+...but what does the 0 value represent? Let's talk a bit about lattices.
+
+## Lattices
+
+Top/Any, Bottom/Empty
+
+## Bottom API
+
+## Specialization
+
+## Generating the lattice
 
 ---
 
