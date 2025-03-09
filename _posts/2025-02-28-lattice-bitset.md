@@ -421,6 +421,11 @@ enum Type {
 enum Type join(enum Type left, enum Type right) {
     return left | right;
 }
+
+// Ask if `left` is a subtype of `right`
+bool is_subtype(enum Type left, enum Type right) {
+    return (left & right) == left;
+}
 ```
 
 This type representation is neat, but we can go further. Sometimes, you know
@@ -442,7 +447,7 @@ struct Spec {
         SpecTop,
         SpecInt,
         SpecBottom,
-    } spec;
+    } spec_type;
     int value;
 };
 ```
@@ -507,6 +512,95 @@ digraph G {
 </g>
 </svg>
 </figure>
+
+Where *N* represents some integer stored in the `value` field.
+
+This complicates things a bit. Let's put both the type bits and the
+specialization together in one structure and admire:
+
+```c
+struct Type {
+    enum TypeBits {
+        Bottom = 0,       // 0b000
+        Int    = 1 << 0,  // 0b001
+        List   = 1 << 1,  // 0b010
+        String = 1 << 2,  // 0b100
+        Top    = 7,       // 0b111
+    } type;
+    struct Spec {
+        enum {
+            SpecTop,
+            SpecInt,
+            SpecBottom,
+        } spec_type;
+        int value;
+    } spec;
+};
+```
+
+That's very nice and more precise, but now our `join` and `is_subtype`
+operators don't make a whole lot of sense. We can't just use bitwise operations
+any more. We have to also do the lattice operations on the `Spec` field:
+
+```c
+struct Type join(struct Type left, struct Type right) {
+    struct Type result;
+    result.type = left.type | right.type;
+    result.spec = spec_join(left.spec, right.spec);
+    return result;
+}
+
+// Ask if `left` is a subtype of `right`
+bool is_subtype(struct Type left, struct Type right) {
+    return (left & right) == left && spec_is_subtype(left.spec, right.spec);
+}
+```
+
+If we decompose the problem that way, we can write some lattice operations for
+`Spec`. Let's start with `is_subtype`:
+
+```c
+// Ask if `left` is a subtype of `right`
+bool spec_is_subtype(struct Spec left, struct Spec right) {
+    if (right.spec_type == SpecTop || left.spec_type == SpecBottom) {
+        // Top is a supertype of everything and Bottom is a subtype of
+        // everything
+        return true;
+    }
+    // left is now either SpecInt or SpecTop
+    // right is now either SpecInt or SpecBottom
+    // The only way left could be a subtype of right is if they are both
+    // SpecInt and the value is the same
+    if (left.spec_type == SpecInt &&
+        right.spec_type == SpecInt &&
+        left.value == right.value) {
+        return true;
+    }
+    return false;
+}
+```
+
+That takes a bit of time to internalize, so please read over it a couple of
+times and work out the cases by hand. It's really useful for implementing
+`spec_join`:
+
+```c
+struct Spec spec_join(struct Spec left, struct Spec right) {
+    if (spec_is_subtype(left, right)) { return right; }
+    if (spec_is_subtype(right, left)) { return left; }
+    // We know that neither left nor right is either Top or Bottom because that
+    // would have been covered in one of the subtype cases, so we're join-ing
+    // two SpecInts. That's Top.
+    struct Spec result;
+    result.spec_type = SpecTop;
+    return result;
+}
+```
+
+It's a couple more instructions than a single bitwise operation and a compare,
+but it's still compact and fast.
+
+Let's talk about some problems you might run into while using this API.
 
 ## Bottom API
 
