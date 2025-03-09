@@ -429,6 +429,85 @@ We'll introduce what Cinder calls *specialization*.
 
 ## Specialization
 
+In addition to our existing type lattice, Cinder keeps a second lattice called
+a specialization. Its job is to keep track of what specific object an SSA value
+is. For example, if we know that `a = 5`, its type would be `Int` and its
+specialization would be `5`.
+
+The specialization lattice is much simpler:
+
+```c
+struct Spec {
+    enum {
+        SpecTop,
+        SpecInt,
+        SpecBottom,
+    } spec;
+    int value;
+};
+```
+
+There's an internal enum that says what we know about the specialization and an
+optional value. There are a couple of cases:
+
+* if we have `SpecTop`, we don't have any information about the specialization
+* if we have `SpecInt`, we know exactly the integer value, and the `value`
+  field is valid (initialized, readable)
+* if we have `SpecBottom`, we know that the spec contains no elements (and
+  therefore also must have a type of `Bottom`)
+
+Here's what the diagram looks like:
+
+<!--
+digraph G {
+    rankdir="BT";
+    bottom -> int_spec;
+    int_spec -> top;
+    bottom [label="Bottom"];
+    int_spec [label="Int[N]"];
+    top [label="Top"];
+}
+-->
+
+<figure>
+<svg width="88pt" height="188pt" viewBox="0.00 0.00 88.02 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-184 84.02,-184 84.02,4 -4,4"/>
+<!-- bottom -->
+<g id="node1" class="node">
+<title>bottom</title>
+<ellipse fill="none" stroke="black" cx="40.01" cy="-18" rx="40.01" ry="18"/>
+<text text-anchor="middle" x="40.01" y="-13.8" font-family="Times,serif" font-size="14.00">Bottom</text>
+</g>
+<!-- int_spec -->
+<g id="node2" class="node">
+<title>int_spec</title>
+<ellipse fill="none" stroke="black" cx="40.01" cy="-90" rx="35.17" ry="18"/>
+<text text-anchor="middle" x="40.01" y="-85.8" font-family="Times,serif" font-size="14.00">Int[N]</text>
+</g>
+<!-- bottom&#45;&gt;int_spec -->
+<g id="edge1" class="edge">
+<title>bottom-&gt;int_spec</title>
+<path fill="none" stroke="black" d="M40.01,-36.3C40.01,-43.59 40.01,-52.27 40.01,-60.46"/>
+<polygon fill="black" stroke="black" points="36.51,-60.38 40.01,-70.38 43.51,-60.38 36.51,-60.38"/>
+</g>
+<!-- top -->
+<g id="node3" class="node">
+<title>top</title>
+<ellipse fill="none" stroke="black" cx="40.01" cy="-162" rx="27" ry="18"/>
+<text text-anchor="middle" x="40.01" y="-157.8" font-family="Times,serif" font-size="14.00">Top</text>
+</g>
+<!-- int_spec&#45;&gt;top -->
+<g id="edge2" class="edge">
+<title>int_spec-&gt;top</title>
+<path fill="none" stroke="black" d="M40.01,-108.3C40.01,-115.59 40.01,-124.27 40.01,-132.46"/>
+<polygon fill="black" stroke="black" points="36.51,-132.38 40.01,-142.38 43.51,-132.38 36.51,-132.38"/>
+</g>
+</g>
+</svg>
+</figure>
+
 ## Bottom API
 
 A common mistake when handling `Bottom` is treating it as an error, or assuming
