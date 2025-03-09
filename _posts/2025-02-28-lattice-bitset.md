@@ -541,6 +541,10 @@ struct Type TTop = (struct Type) {
     .type = Top,
     .spec = (struct Spec) { .spec_kind = SpecTop },
 };
+struct Type TInt = (struct Type) {
+    .type = Int,
+    .spec = (struct Spec) { .spec_kind = SpecTop },
+};
 // Invariant: .type == Bottom if and only if .spec_kind == SpecBottom.
 struct Type TBottom = (struct Type) {
     .type = Bottom,
