@@ -588,9 +588,9 @@ times and work out the cases by hand. It's really useful for implementing
 struct Spec spec_join(struct Spec left, struct Spec right) {
     if (spec_is_subtype(left, right)) { return right; }
     if (spec_is_subtype(right, left)) { return left; }
-    // We know that neither left nor right is either Top or Bottom because that
-    // would have been covered in one of the subtype cases, so we're join-ing
-    // two SpecInts. That's Top.
+    // We know that neither left nor right is either SpecTop or SpecBottom
+    // because that would have been covered in one of the subtype cases, so
+    // we're join-ing two SpecInts. That's SpecTop.
     struct Spec result;
     result.spec_type = SpecTop;
     return result;
