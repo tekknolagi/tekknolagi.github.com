@@ -408,7 +408,7 @@ sets.
 As I alluded to earlier, we can conveniently represent a bottom element in our
 bitset type:
 
-```c
+```c++
 enum Type {
     Bottom = 0,       // 0b000
     Int    = 1 << 0,  // 0b001
@@ -518,7 +518,7 @@ Where *N* represents some integer stored in the `value` field.
 This complicates things a bit. Let's put both the type bits and the
 specialization together in one structure and admire:
 
-```c
+```c++
 struct Type {
     enum TypeBits {
         Bottom = 0,       // 0b000
@@ -542,7 +542,7 @@ That's very nice and more precise, but now our `join` and `is_subtype`
 operators don't make a whole lot of sense. We can't just use bitwise operations
 any more. We have to also do the lattice operations on the `Spec` field:
 
-```c
+```c++
 struct Type join(struct Type left, struct Type right) {
     struct Type result;
     result.type = left.type | right.type;
@@ -559,7 +559,7 @@ bool is_subtype(struct Type left, struct Type right) {
 If we decompose the problem that way, we can write some lattice operations for
 `Spec`. Let's start with `is_subtype`:
 
-```c
+```c++
 // Ask if `left` is a subtype of `right`
 bool spec_is_subtype(struct Spec left, struct Spec right) {
     if (right.spec_type == SpecTop || left.spec_type == SpecBottom) {
