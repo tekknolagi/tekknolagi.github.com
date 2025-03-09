@@ -788,3 +788,7 @@ to implement:
 [hhvm-type-spec]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type-specialization-inl.h
 [iv-type]: https://github.com/Constellation/iv/blob/64c3a9c7c517063f29d90d449180ea8f6f4d946f/iv/lv5/breaker/type.h
 [turbofan-type]: https://github.com/v8/v8/blob/30be5d03036d6934e847c733315d527915207e85/src/compiler/turbofan-types.h
+
+## Acknowledgements
+
+Thanks to Cliff Click and Kai Williams for feedback on this post.
