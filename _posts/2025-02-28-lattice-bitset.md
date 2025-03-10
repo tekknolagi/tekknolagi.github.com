@@ -155,6 +155,7 @@ digraph G {
 }
 -->
 
+<figure>
 <svg width="222pt" height="116pt" viewBox="0.00 0.00 222.00 116.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
 <title>G</title>
@@ -203,6 +204,7 @@ digraph G {
 </g>
 </g>
 </svg>
+</figure>
 
 The arrows indicate that applying a *join* will only ever move us upward along
 an arrow.  For example, `join(Int, String)` is `Top` (we don't have any
