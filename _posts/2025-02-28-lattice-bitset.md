@@ -799,4 +799,5 @@ to implement:
 
 ## Acknowledgements
 
-Thanks to Cliff Click and Kai Williams for feedback on this post.
+Thanks to CF Bolz-Tereick, Cliff Click, and Kai Williams for feedback on this
+post.
