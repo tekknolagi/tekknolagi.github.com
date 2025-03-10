@@ -401,6 +401,9 @@ bool is_subtype(enum Type left, enum Type right) {
 }
 ```
 
+<!-- TODO(max): Maybe talk about intersection from `if isinstance` refinement,
+GuardType refinement, or could_be -->
+
 This type representation is neat, but we can go further. Sometimes, you know
 more than just the *type* of an object: you know exactly what object it is.
 We'll introduce what Cinder calls *specialization*.
