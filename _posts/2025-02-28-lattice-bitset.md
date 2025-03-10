@@ -126,9 +126,13 @@ We're starting to approach a very useful mathematical structure called a
 
 ## Semilattices
 
-I'm not going to quote you any formal definitions because I'm not very mathy,
-but a semilattice is a partial (not total) order of a set with a *join*
-(*union*) operation. It has a top element and a bottom element.
+I'm not going to quote you any formal definitions because I'm not very mathy.
+I'll give you a one sentence abstract sounding definition and then make it
+concrete very soon after.
+
+A *semilattice* is a partial (not total) order of a set with a *join*
+operation. The latice also has a top element and a bottom element. Ok, let's
+talk about what that means for us.
 
 For our limited type data structure, our partial order is determined by set
 membership and our *join* is set union. Top represents "all possible objects"
@@ -428,6 +432,16 @@ struct Spec {
 };
 ```
 
+In Rust syntax---to make the validity of the `value` field clearer---that's:
+
+```rust
+enum SpecKind {
+  SpecTop,
+  SpecInt(int),
+  SpecBottom,
+}
+```
+
 There's an internal enum that says what we know about the specialization and an
 optional value. There are a couple of cases:
 
@@ -524,7 +538,7 @@ struct Type TInt = (struct Type) {
     .spec = (struct Spec) { .spec_kind = SpecTop },
 };
 // Invariant: .type == Bottom if and only if .spec_kind == SpecBottom.
-struct Type TBottom = (struct Type) {
+struct Type Bottom = (struct Type) {
     .type = Bottom,
     .spec = (struct Spec) { .spec_kind = SpecBottom },
 };
@@ -616,26 +630,28 @@ elimination pass. Otherwise, though, `Bottom` is just another type, and your
 type predicates will generally be cleaner if you design them to correctly
 handle `Bottom` without explicitly testing for it.
 
-Most of the time, `Bottom` support happens out naturally:
+Most of the time, `Bottom` support happens out naturally. Cinder, for
+example, calls the exact integer type `LongExact`. We can check if a type is
+an exact integer with:
 
 ```c++
-if (t <= TLongExact) {
+if (t.is_subtype(LongExact)) {
     // generate int-specific code
 }
 ```
 
-In this example, `t == TBottom` will be fine: any code that is generated (if
+In this example, `t == Bottom` will be fine: any code that is generated (if
 your compiler doesn't eliminate unreachable code) will never run, so it's
 perfectly fine to call a helper function that expects an `int`, or to load a
 field of `PyLongObject`, etc.
 
 Sometimes, however, we want to get a concrete value out of a type at
 compile-time for an optimization such as constant folding. It may be tempting
-to assume that if your type `t` is a strict subtype of `LongExact`, it
-represents a specific `int` object:
+to assume that if your type `t` is a strict subtype of (can't be equal to)
+`LongExact`, it represents a specific `int` object:
 
 ```c++
-if (t < TLongExact) {
+if (t.is_strict_subtype(LongExact)) {
     PyLongObject* a_long = t.asPyObject();
     // ... optimize based on a_long
 }
@@ -644,15 +660,14 @@ if (t < TLongExact) {
 This code is broken for plenty of cases other than `Bottom` (e.g.,
 range-constrained `int` types), but in many compilers, `Bottom` will usually be
 the first type that causes a crash or failed assertion here. Rather than
-excluding `Bottom` by name, with code like `if (t != TBottom && t <
-TLongExact)`, you can handle `Bottom` (and all other types!) correctly by
+excluding `Bottom` by name, with code like `if (t != Bottom && t.is_strict_subtype(LongExact))`, you can handle `Bottom` (and all other types!) correctly by
 refining your type predicate to what you *really* mean.
 
 In this case, you want to know if `t` represents exactly one value, so you
-might use an API like `t.admitsSingleValue(TLongExact)`. That will correctly
+might use an API like `t.admitsSingleValue(LongExact)`. That will correctly
 exclude `Bottom`, which represents zero values, but it will also correctly
 exclude a type that means "an `int` that is less than 0", which is a strict
-subtype of `TLongExact` but doesn't represent a single value.
+subtype of `LongExact` but doesn't represent a single value.
 
 Now, these type bits are a pain to write down by hand. Instead, it would be
 nice to generate them automatically given a class hierarchy. That's what Cinder
