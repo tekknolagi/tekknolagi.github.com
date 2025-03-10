@@ -16,7 +16,7 @@ WORKDIR cosmo
 RUN unzip ../$COSMO bin/ape.elf bin/assimilate bin/zip bin/redbean
 RUN bin/ape.elf bin/assimilate bin/redbean
 
-FROM ghcr.io/tekknolagi/bernsteinbear-build-env:latest as build_site
+FROM build_env as build_site
 COPY . /site
 RUN bundle exec jekyll build --future
 
