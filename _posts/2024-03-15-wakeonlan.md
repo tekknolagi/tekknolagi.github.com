@@ -1,4 +1,5 @@
 ---
+layout: post
 title: Waking my computer from afar
 description: "I write a small web application on a small device to remotely wake up my desktop computer."
 ---

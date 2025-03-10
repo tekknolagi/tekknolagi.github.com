@@ -1,4 +1,5 @@
 ---
+layout: page
 title: Stickers
 no_index: true
 ---

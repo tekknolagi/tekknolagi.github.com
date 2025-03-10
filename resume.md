@@ -1,4 +1,5 @@
 ---
+layout: page
 title: Resume
 no_index: true
 ---

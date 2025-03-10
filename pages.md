@@ -1,4 +1,5 @@
 ---
+layout: page
 title: All pages
 no_index: true
 ---

@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "microui+fenster=small gui"
 date: 2024-09-07
 ---

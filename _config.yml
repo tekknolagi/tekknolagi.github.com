@@ -26,7 +26,7 @@ repo:
   repository_url: https://github.com/tekknolagi/tekknolagi.github.com
   branch: main
 
-permalink: '/blog/:title/'
+permalink: '/blog/:slug/'
 post_dirs: false
 
 # Build settings
