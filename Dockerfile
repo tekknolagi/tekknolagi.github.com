@@ -1,6 +1,5 @@
-FROM ruby:3-alpine as build_env
-RUN apk add --no-cache build-base
-RUN apk add --no-cache python3
+FROM alpine:latest as build_env
+RUN apk add --no-cache build-base python3 "ruby=~3.4"
 RUN mkdir /site
 COPY Gemfile /site
 COPY Gemfile.lock /site
