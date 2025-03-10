@@ -8,6 +8,7 @@ jobs:
     permissions:
       packages: write
     steps:
+      - uses: actions/checkout@v4
       - name: build
         run: docker build --target build_env .
       - name: push
