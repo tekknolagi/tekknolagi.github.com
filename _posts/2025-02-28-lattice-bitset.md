@@ -789,8 +789,8 @@ to implement:
 * Cliff Click's aa language [Type.java][aa-type]
 * HotSpot's C2's [type.hpp][c2-type]
 * PyPy's RPython generates [heap effect metadata][pypy-effect] for functions
-  that can't be inlined so that the JIT knows what they do and do not write to.
-  It does not use a bitset (yet?) but is a lattice.
+  that can't be inlined so that the JIT knows what heap addresses they do and
+  do not write to. It does not use a bitset (yet?) but is a lattice.
 
 [hhvm-type]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type.h
 [hhvm-type-spec]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type-specialization-inl.h
