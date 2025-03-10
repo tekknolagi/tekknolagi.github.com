@@ -788,6 +788,9 @@ to implement:
 * Simple (the Sea of Nodes compiler)'s [Type.java][simple-type]
 * Cliff Click's aa language [Type.java][aa-type]
 * HotSpot's C2's [type.hpp][c2-type]
+* PyPy's RPython generates [heap effect metadata][pypy-effect] for functions
+  that can't be inlined so that the JIT knows what they do and do not write to.
+  It does not use a bitset (yet?) but is a lattice.
 
 [hhvm-type]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type.h
 [hhvm-type-spec]: https://github.com/facebook/hhvm/blob/11b663fdfde613d477f38af04db15f7ec1ee9bf3/hphp/runtime/vm/jit/type-specialization-inl.h
@@ -796,6 +799,7 @@ to implement:
 [simple-type]: https://github.com/SeaOfNodes/Simple/blob/2370fb29d4538479af9eb94fc666a5ce09fcb492/chapter20/src/main/java/com/seaofnodes/simple/type/Type.java
 [aa-type]: https://github.com/cliffclick/aa/blob/e50e4a5881f9a15c1c7f063417eaa7b43c23f1bd/src/main/java/com/cliffc/aa/type/Type.java
 [c2-type]: https://github.com/openjdk/jdk/blob/857c53718957283766f6566e5519ab5911cf9f3c/src/hotspot/share/opto/type.hpp
+[pypy-effect]: https://github.com/pypy/pypy/blob/c2324b8ac30693d049214bf6a0447d52ebbfc352/rpython/translator/backendopt/writeanalyze.py
 
 ## Acknowledgements
 
