@@ -725,6 +725,21 @@ types such as `DictExact` and `BytesUser` and assigns each a bit. Then, it goes
 through all of the unions and bitwise `or`s their component bits together. Last
 (not pictured), it prints out a `uint64_t` for each of these.
 
+The output is an X-macro that looks something like this:
+
+```c
+// For all types, call X(name, bits)
+#define HIR_TYPES(X) \
+  X(Array,                         0x00000000001UL)    \
+  X(BaseException,                 0x00000801000UL)    \
+  X(BaseExceptionExact,            0x00000001000UL)    \
+  X(BaseExceptionUser,             0x00000800000UL)    \
+  X(Bool,                          0x00000000002UL)    \
+  /* ... */                                            \
+  X(User,                          0x000ffe00000UL)    \
+  X(WaitHandle,                    0x00000000200UL)
+```
+
 Check out the [Cinder implementation][generate-type].
 
 [generate-type]: https://github.com/facebookincubator/cinderx/blob/9197ff2a80517304e194ea36b71f973b7daa1bd9/Jit/hir/generate_jit_type_h.py
