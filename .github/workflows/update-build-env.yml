@@ -10,6 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: build
-        run: docker build --target build_env .
+        run: docker build --target build_env --tag ghcr.io/tekknolagi/bernsteinbear-build-env .
       - name: push
         run: docker push ghcr.io/tekknolagi/bernsteinbear-build-env
