@@ -797,5 +797,5 @@ to implement:
 
 ## Acknowledgements
 
-Thanks to CF Bolz-Tereick, Cliff Click, and Kai Williams, and Thomas Gardner
-for feedback on this post.
+Thanks to CF Bolz-Tereick, Cliff Click, Kai Williams, and Thomas Gardner for
+feedback on this post.
