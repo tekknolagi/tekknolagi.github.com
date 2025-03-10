@@ -738,6 +738,8 @@ The output is an X-macro that looks something like this:
   /* ... */                                            \
   X(User,                          0x000ffe00000UL)    \
   X(WaitHandle,                    0x00000000200UL)
+
+const size_t kNumTypeBits = 44;
 ```
 
 Check out the [Cinder implementation][generate-type].
