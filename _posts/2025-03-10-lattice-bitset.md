@@ -132,7 +132,7 @@ I'll give you a one sentence abstract sounding definition and then make it
 concrete very soon after.
 
 A *semilattice* is a partial (not total) order of a set with a *join*
-operation. The latice also has a top element and a bottom element. Ok, let's
+operation. The lattice also has a top element and a bottom element. Ok, let's
 talk about what that means for us.
 
 For our limited type data structure, our partial order is determined by set
