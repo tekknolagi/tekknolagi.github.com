@@ -65,29 +65,15 @@ much-condensed version of it as a multi-day workshop at Tufts.
 I also worked at the Center for Education Research at Stanford (CERAS) in 2014
 and taught robotics at a summer camp some time between 2013 and 2018.
 
-## Sometimes I contribute to open source projects.
+## I enjoy working on open source projects.
 
-* [PyPy](https://www.pypy.org/)
-  ([!848](https://foss.heptapod.net/pypy/pypy/-/merge_requests/848),
-  [!858](https://foss.heptapod.net/pypy/pypy/-/merge_requests/858))
-* [Cinder](https://github.com/facebookincubator/cinder)
-* [Skybison](https://github.com/tekknolagi/skybison)
-  (fork of [original](https://github.com/facebookexperimental/skybison))
-* [YJIT](https://github.com/Shopify/ruby)
-  ([#58](https://github.com/Shopify/ruby/pull/58),
-   [#59](https://github.com/Shopify/ruby/pull/59)),
-  which now lives in [upstream Ruby](https://github.com/ruby/ruby)
-* [CPython](https://www.python.org/)
-  ([bpo-36929](https://github.com/python/cpython/pull/13392),
-  [bpo-38648](https://github.com/python/cpython/pull/17002),
-  [bpo-42065](https://github.com/python/cpython/pull/19940),
-  [bpo-42199](https://github.com/python/cpython/pull/23031),
-  [faster-cpython #546](https://github.com/faster-cpython/ideas/issues/546))
-* [Pyre](https://pyre-check.org/)
-  ([Refactor protocol inference](https://github.com/facebook/pyre-check/commit/f14577db5940c0b4087fffe209786cd4075f37df))
-* [Clang](https://clang.llvm.org/)
-  ([rC345558](https://reviews.llvm.org/rC345558))
+Most of my personal software is open source. My work projects include:
+
 * [Reason](https://github.com/facebook/reason)
+* [Skybison](https://github.com/tekknolagi/skybison)
+* [Cinder](https://github.com/facebookincubator/cinder)
+* [PyPy](https://github.com/pypy/pypy)
+* [YJIT](https://github.com/ruby/ruby)
 
 Fun fact: I have now contributed to five different Python runtimes (Skybison,
 Cinder, CPython, PyPy, and Pyjion).
