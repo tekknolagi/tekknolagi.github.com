@@ -51430,6 +51430,97 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114141677212894119": {
+      "id": "114141677212894119",
+      "created_at": "2025-03-11T03:29:35.830Z",
+      "in_reply_to_id": "114140991020027177",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114141677212894119",
+      "url": "https://mastodon.social/@tekknolagi/114141677212894119",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>It&#39;s this post: <a href=\"https://bernsteinbear.com/blog/lattice-bitset/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bernsteinbear.com/blog/lattice</span><span class=\"invisible\">-bitset/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://bernsteinbear.com/blog/lattice-bitset/",
+        "title": "Representing type lattices compactly",
+        "description": "The Cinder JIT compiler does some cool stuff with how they represent types so I\u2019m going to share it with you here. The core of it is thinking about types as sets (lattices, even), and picking a compact representation. Compilers will create and manipulate types with abandon, so all operations have to be fast.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Max Bernstein",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": "2025-03-10T00:00:00.000Z",
+        "authors": [
+          {
+            "name": "",
+            "url": "",
+            "account": {
+              "id": "1300106",
+              "username": "tekknolagi",
+              "acct": "tekknolagi",
+              "display_name": "Max B",
+              "locked": false,
+              "bot": false,
+              "discoverable": true,
+              "indexable": true,
+              "group": false,
+              "created_at": "2020-10-20T00:00:00.000Z",
+              "note": "<p>Let&#39;s chat about compilers</p>",
+              "url": "https://mastodon.social/@tekknolagi",
+              "uri": "https://mastodon.social/users/tekknolagi",
+              "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "header": "https://mastodon.social/headers/original/missing.png",
+              "header_static": "https://mastodon.social/headers/original/missing.png",
+              "followers_count": 429,
+              "following_count": 263,
+              "statuses_count": 1093,
+              "last_status_at": "2025-03-11",
+              "hide_collections": false,
+              "noindex": false,
+              "emojis": [],
+              "roles": [],
+              "fields": [
+                {
+                  "name": "website",
+                  "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2022-12-07T01:44:28.737+00:00"
+                },
+                {
+                  "name": "github",
+                  "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2023-07-26T16:28:07.403+00:00"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "poll": null
     }
   }
 }
