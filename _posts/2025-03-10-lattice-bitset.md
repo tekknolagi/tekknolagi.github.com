@@ -13,6 +13,10 @@ We'll start from first principles, assuming we're analyzing a language like
 Python, and build our way up to roughly what Cinder has (and we could go
 further from there).
 
+Note that this post is about a *compiler internal* view of SSA value types and
+nothing to do with surface level type annotations. We'll use Python code
+snippets (as if they were IR) to sketch ideas, though.
+
 ## Types as sets
 
 Types, as a concept, name sets of objects---sets of instances. Some types (say,
