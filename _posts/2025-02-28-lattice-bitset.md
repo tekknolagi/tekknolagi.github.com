@@ -812,5 +812,5 @@ to implement:
 
 ## Acknowledgements
 
-Thanks to CF Bolz-Tereick, Cliff Click, Kai Williams, and Thomas Gardner for
+Thanks to CF Bolz-Tereick, Cliff Click, Tom Hebb, Kai Williams, and Thomas Gardner for
 feedback on this post.
