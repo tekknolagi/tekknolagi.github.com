@@ -9,8 +9,9 @@ I'm going to share it with you here. The core of it is thinking about types as
 *sets* (lattices, even), and picking a compact representation. Compilers will
 create and manipulate types with abandon, so all operations have to be fast.
 
-We'll start from first principles and build our way up to roughly what Cinder
-has (and we could go further from there).
+We'll start from first principles, assuming we're analyzing a language like
+Python, and build our way up to roughly what Cinder has (and we could go
+further from there).
 
 ## Types as sets
 
