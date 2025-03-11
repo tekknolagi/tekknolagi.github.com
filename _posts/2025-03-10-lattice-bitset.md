@@ -529,16 +529,20 @@ struct Type {
     } spec;
 };
 
-struct Type TTop = (struct Type) {
+const struct Type TTop = (struct Type) {
     .type = Top,
     .spec = (struct Spec) { .spec_kind = SpecTop },
 };
-struct Type TInt = (struct Type) {
+const struct Type TInt = (struct Type) {
     .type = Int,
     .spec = (struct Spec) { .spec_kind = SpecTop },
 };
+const struct Type TThree = (struct Type) {
+    .type = Int,
+    .spec = (struct Spec) { .spec_kind = SpecInt, .value = 3 },
+};
 // Invariant: .type == Bottom if and only if .spec_kind == SpecBottom.
-struct Type Bottom = (struct Type) {
+const struct Type Bottom = (struct Type) {
     .type = Bottom,
     .spec = (struct Spec) { .spec_kind = SpecBottom },
 };
