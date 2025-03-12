@@ -103,7 +103,8 @@ enum {
     Int    = 1 << 0,  // 0b001
     List   = 1 << 1,  // 0b010
     String = 1 << 2,  // 0b100
-    Object = 7,       // 0b111; catch-all
+    Object = (1 << 3) - 1,  // 0b111; catch-all
+    // Also, Object = Int|List|String, wow
 };
 ```
 
