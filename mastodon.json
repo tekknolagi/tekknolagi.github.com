@@ -51886,6 +51886,41 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114157504381656251": {
+      "id": "114157504381656251",
+      "created_at": "2025-03-13T22:34:39.264Z",
+      "in_reply_to_id": "114156949933615600",
+      "in_reply_to_account_id": "113156858670720602",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114157504381656251",
+      "url": "https://mastodon.social/@tekknolagi/114157504381656251",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://f.duriansoftware.com/@joe\" class=\"u-url mention\">@<span>joe</span></a></span> A friend is currently doing this with an OLPC from eBay. Excited</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "113156858670720602",
+          "username": "joe",
+          "url": "https://f.duriansoftware.com/@joe",
+          "acct": "joe@f.duriansoftware.com"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
