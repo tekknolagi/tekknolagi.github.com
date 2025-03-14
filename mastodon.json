@@ -51921,6 +51921,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114160974940482479": {
+      "id": "114160974940482479",
+      "created_at": "2025-03-14T13:17:15.788Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114160974940482479",
+      "url": "https://mastodon.social/@tekknolagi/114160974940482479",
+      "replies_count": 0,
+      "reblogs_count": 1,
+      "favourites_count": 5,
+      "edited_at": null,
+      "content": "<p>I&#39;m not asking you to become a compiler person. I&#39;m just saying, when the time is right, you will look in the text editor and already be a compiler person.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
