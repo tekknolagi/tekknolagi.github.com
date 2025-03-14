@@ -51949,6 +51949,181 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114162248170060416": {
+      "id": "114162248170060416",
+      "created_at": "2025-03-14T18:41:03.730Z",
+      "in_reply_to_id": "114162235994784995",
+      "in_reply_to_account_id": "109337913296719557",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114162248170060416",
+      "url": "https://mastodon.social/@tekknolagi/114162248170060416",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://fediscience.org/@MatthieuLemerre\" class=\"u-url mention\">@<span>MatthieuLemerre</span></a></span> Maybe I am finally understanding a little bit of your paper then!</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109337913296719557",
+          "username": "MatthieuLemerre",
+          "url": "https://fediscience.org/@MatthieuLemerre",
+          "acct": "MatthieuLemerre@fediscience.org"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114162196349360894": {
+      "id": "114162196349360894",
+      "created_at": "2025-03-14T18:27:53.014Z",
+      "in_reply_to_id": "114162186731423435",
+      "in_reply_to_account_id": "109306393408330356",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114162196349360894",
+      "url": "https://mastodon.social/@tekknolagi/114162196349360894",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@adrian\" class=\"u-url mention\">@<span>adrian</span></a></span> ooh maybe! here is mine for discussions sake: <a href=\"https://gist.github.com/tekknolagi/00499907a2d299336265bf0eba3f0129\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">gist.github.com/tekknolagi/004</span><span class=\"invisible\">99907a2d299336265bf0eba3f0129</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109306393408330356",
+          "username": "adrian",
+          "url": "https://discuss.systems/@adrian",
+          "acct": "adrian@discuss.systems"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://gist.github.com/tekknolagi/00499907a2d299336265bf0eba3f0129",
+        "title": "unbox_locals.rs",
+        "description": "GitHub Gist: instantly share code, notes, and snippets.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Gist",
+        "provider_url": "",
+        "html": "",
+        "width": 678,
+        "height": 339,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/137/197/666/original/ad39011366df2daf.png",
+        "image_description": "GitHub Gist: instantly share code, notes, and snippets.",
+        "embed_url": "",
+        "blurhash": "U56RP[_3IUD%00Dixu%MofayWBWB_4-;RjM{",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
+    },
+    "114162146091692909": {
+      "id": "114162146091692909",
+      "created_at": "2025-03-14T18:15:06.131Z",
+      "in_reply_to_id": "114162140325546584",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114162146091692909",
+      "url": "https://mastodon.social/@tekknolagi/114162146091692909",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [
+        {
+          "id": "114162144074006444",
+          "type": "image",
+          "url": "https://files.mastodon.social/media_attachments/files/114/162/144/074/006/444/original/31268b8abb802b71.png",
+          "preview_url": "https://files.mastodon.social/media_attachments/files/114/162/144/074/006/444/small/31268b8abb802b71.png",
+          "remote_url": null,
+          "preview_remote_url": null,
+          "text_url": null,
+          "meta": {
+            "original": {
+              "width": 424,
+              "height": 228,
+              "size": "424x228",
+              "aspect": 1.8596491228070176
+            },
+            "small": {
+              "width": 424,
+              "height": 228,
+              "size": "424x228",
+              "aspect": 1.8596491228070176
+            },
+            "focus": {
+              "x": 0.0,
+              "y": 0.0
+            }
+          },
+          "description": "              bb0 {\n                v0 = PushFrame\n                v1 = Const(Int(1))\n                v2 = WriteLocal(Offset(0)) v0, v1\n                v3 = Const(Int(2))\n                v4 = WriteLocal(Offset(1)) v0, v3\n                v5 = ReadLocal(Offset(1)) v0\n                v6 = Print v5\n                v7 = Const(Nil)\n                v8 = Return v7\n              }\n",
+          "blurhash": "U05#hI^|094x?Xj@Rmj@09xr?UodWGxqt4Rm"
+        }
+      ],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114162140325546584": {
+      "id": "114162140325546584",
+      "created_at": "2025-03-14T18:13:38.159Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114162140325546584",
+      "url": "https://mastodon.social/@tekknolagi/114162140325546584",
+      "replies_count": 3,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "edited_at": null,
+      "content": "<p>I generate SSA by writing everything to locals and then doing load/store forwarding in an abstract interpretation pass later. If a read could be two SSA values or more, I make a Phi.</p><p>Does any other paper or compiler do this? Seems like LLVM has mem2reg, but it needs a domtree.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
