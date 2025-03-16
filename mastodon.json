@@ -52165,6 +52165,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114172867965833266": {
+      "id": "114172867965833266",
+      "created_at": "2025-03-16T15:41:48.954Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114172867965833266",
+      "url": "https://mastodon.social/@tekknolagi/114172867965833266",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "edited_at": null,
+      "content": "<p>mopping as i follow the roomba around. feels like reverse curling</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
