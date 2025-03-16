@@ -52193,6 +52193,82 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114173451790507566": {
+      "id": "114173451790507566",
+      "created_at": "2025-03-16T18:10:17.413Z",
+      "in_reply_to_id": "114173442221473575",
+      "in_reply_to_account_id": "113873613817118677",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114173451790507566",
+      "url": "https://mastodon.social/@tekknolagi/114173451790507566",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@xjix\" class=\"u-url mention\">@<span>xjix</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@akkartik\" class=\"u-url mention\">@<span>akkartik</span></a></span> there&#39;s also w2c2 which targets C89</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "113873613817118677",
+          "username": "xjix",
+          "url": "https://merveilles.town/@xjix",
+          "acct": "xjix@merveilles.town"
+        },
+        {
+          "id": "1306813",
+          "username": "akkartik",
+          "url": "https://merveilles.town/@akkartik",
+          "acct": "akkartik@merveilles.town"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114173124453640022": {
+      "id": "114173124453640022",
+      "created_at": "2025-03-16T16:47:02.648Z",
+      "in_reply_to_id": "114173119514555454",
+      "in_reply_to_account_id": "111250459755377079",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114173124453640022",
+      "url": "https://mastodon.social/@tekknolagi/114173124453640022",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@sbrunthaler\" class=\"u-url mention\">@<span>sbrunthaler</span></a></span> When we got this, the mop combo machines were pretty new on the market. Wasn&#39;t sure if they would be any good. Will investigate at some point probably</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "111250459755377079",
+          "username": "sbrunthaler",
+          "url": "https://mastodon.social/@sbrunthaler",
+          "acct": "sbrunthaler"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
