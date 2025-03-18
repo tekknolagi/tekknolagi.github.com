@@ -52269,6 +52269,53 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114180752470444058": {
+      "id": "114180752470444058",
+      "created_at": "2025-03-18T01:06:56.947Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114180752470444058",
+      "url": "https://mastodon.social/@tekknolagi/114180752470444058",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>Going to stream a little bit of compiler dev this evening in 15 mins. No plans, just vibes.</p><p><a href=\"https://youtube.com/live/nCks1WIiuvo?feature=share\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">youtube.com/live/nCks1WIiuvo?f</span><span class=\"invisible\">eature=share</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://youtube.com/live/nCks1WIiuvo?feature=share",
+        "title": "Before you continue to YouTube",
+        "description": "",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
