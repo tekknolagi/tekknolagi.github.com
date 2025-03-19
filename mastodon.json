@@ -52386,6 +52386,95 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114190153816342201": {
+      "id": "114190153816342201",
+      "created_at": "2025-03-19T16:57:50.099Z",
+      "in_reply_to_id": "114190140624551477",
+      "in_reply_to_account_id": "109795728449267880",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114190153816342201",
+      "url": "https://mastodon.social/@tekknolagi/114190153816342201",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://pubsub.leastfixedpoint.com/@tonyg\" class=\"u-url mention\">@<span>tonyg</span></a></span> oh, John Leuner maybe</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109795728449267880",
+          "username": "tonyg",
+          "url": "https://pubsub.leastfixedpoint.com/@tonyg",
+          "acct": "tonyg@leastfixedpoint.com"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114190140624551477": {
+      "id": "114190140624551477",
+      "created_at": "2025-03-19T16:54:28.809Z",
+      "in_reply_to_id": "114184057065509556",
+      "in_reply_to_account_id": "109795728449267880",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114190140624551477",
+      "url": "https://mastodon.social/@tekknolagi/114190140624551477",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://pubsub.leastfixedpoint.com/@tonyg\" class=\"u-url mention\">@<span>tonyg</span></a></span> Website is available on archive.org but not clear who it is: <a href=\"https://web.archive.org/web/20120201082323/http://subvert-the-dominant-paradigm.net/blog/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">web.archive.org/web/2012020108</span><span class=\"invisible\">2323/http://subvert-the-dominant-paradigm.net/blog/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109795728449267880",
+          "username": "tonyg",
+          "url": "https://pubsub.leastfixedpoint.com/@tonyg",
+          "acct": "tonyg@leastfixedpoint.com"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://web.archive.org/web/20120201082323/http://subvert-the-dominant-paradigm.net/blog/",
+        "title": "Subvert the dominant paradigm",
+        "description": "",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
