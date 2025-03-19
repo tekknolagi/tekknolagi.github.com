@@ -52475,6 +52475,101 @@
         "authors": []
       },
       "poll": null
+    },
+    "114190378670697851": {
+      "id": "114190378670697851",
+      "created_at": "2025-03-19T17:55:01.106Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114190378670697851/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114190378670697851/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114190353195519614",
+        "created_at": "2025-03-19T17:48:23.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://digipres.club/users/misty/statuses/114190352645015060",
+        "url": "https://digipres.club/@misty/114190352645015060",
+        "replies_count": 2,
+        "reblogs_count": 22,
+        "favourites_count": 2,
+        "edited_at": null,
+        "content": "<p>I really can't get over how irresponsible it is for MS to tell people to throw away or recycle perfectly working computers. There are so many machines people *could* keep using for much longer if not for Windows 11.<br><a href=\"https://mastodon.social/@dosnostalgic/114184937238415364\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">mastodon.social/@dosnostalgic/</span><span class=\"invisible\">114184937238415364</span></a></p>",
+        "reblog": null,
+        "account": {
+          "id": "278617",
+          "username": "misty",
+          "acct": "misty@digipres.club",
+          "display_name": "Misty",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2018-01-17T00:00:00.000Z",
+          "note": "<p>Runs digipres.club. Software + digipres. Currently, engineering at the Internet Archive. Prev. devtools at Axo, eengineering at Artefactual, etc.</p>",
+          "url": "https://digipres.club/@misty",
+          "uri": "https://digipres.club/users/misty",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/000/278/617/original/32820ba1ab860417.jpeg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/000/278/617/original/32820ba1ab860417.jpeg",
+          "header": "https://files.mastodon.social/cache/accounts/headers/000/278/617/original/3c5cd3319ce7bce7.png",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/000/278/617/original/3c5cd3319ce7bce7.png",
+          "followers_count": 4827,
+          "following_count": 781,
+          "statuses_count": 10936,
+          "last_status_at": "2025-03-19",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Pronouns",
+              "value": "she/her",
+              "verified_at": null
+            },
+            {
+              "name": "Multimedia software blog",
+              "value": "<a href=\"https://cdrom.ca\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">cdrom.ca</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2025-03-19T02:55:41.160+00:00"
+            },
+            {
+              "name": "Multimedia software aesthetics blog",
+              "value": "<a href=\"https://mas.to/@compactdiscinteractive\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">mas.to/@compactdiscinteractive</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "Website",
+              "value": "<a href=\"https://www.mistys-internet.website\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">mistys-internet.website</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2025-03-19T02:55:41.712+00:00"
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
