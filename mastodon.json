@@ -52763,6 +52763,62 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114195909299084140": {
+      "id": "114195909299084140",
+      "created_at": "2025-03-20T17:21:31.794Z",
+      "in_reply_to_id": "114195897690021153",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114195909299084140",
+      "url": "https://mastodon.social/@tekknolagi/114195909299084140",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>This would be funnier if I was a physicist</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114195897690021153": {
+      "id": "114195897690021153",
+      "created_at": "2025-03-20T17:18:34.656Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114195897690021153",
+      "url": "https://mastodon.social/@tekknolagi/114195897690021153",
+      "replies_count": 2,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>Having a very spherical lunch. Big couscous and peas</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
