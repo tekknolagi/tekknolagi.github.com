@@ -170,10 +170,13 @@ a.footnote:before {
 a.footnote:after {
     content: "]";
 }
-figure object.svg, figure svg {
+figure object.svg, figure svg, figure img {
   max-width: 100%;
   display: block;
   margin: auto;
+}
+figure figcaption {
+  margin-top: 10px;
 }
 figcaption::before {
     counter-increment: figures;
