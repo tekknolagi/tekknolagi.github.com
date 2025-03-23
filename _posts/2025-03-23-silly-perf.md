@@ -69,9 +69,9 @@ for c in s:
     c  # we already have the character from str.__iter__, which is fast
 ```
 
-Our C++ code to index into a string looked something like this. The core bit is
-that `str.__getitem__` calls `offsetByCodePoints` to turn the index (in
-codepoint-space) to an offset (in byte-space). This in turn calls `offset`
+Our C++ code to index into a string looked something like the following. The
+core bit is that `str.__getitem__` calls `offsetByCodePoints` to turn the index
+(in codepoint-space) to an offset (in byte-space). This in turn calls `offset`
 which has to loop through the encoded string, jumping `numChars` bytes
 (depending on how wide each codepoint is):
 
