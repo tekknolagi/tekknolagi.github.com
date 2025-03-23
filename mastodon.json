@@ -53176,6 +53176,97 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114212352899289648": {
+      "id": "114212352899289648",
+      "created_at": "2025-03-23T15:03:21.225Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114212352899289648",
+      "url": "https://mastodon.social/@tekknolagi/114212352899289648",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Enjoy how UTF-8 string indexing is O(N)? Well, you might enjoy a little anecdote about some of the worst code I&#39;ve ever written</p><p><a href=\"https://bernsteinbear.com/blog/silly-perf/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bernsteinbear.com/blog/silly-p</span><span class=\"invisible\">erf/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://bernsteinbear.com/blog/silly-perf/",
+        "title": "Optimizing Django by not being silly",
+        "description": "I just saw this post and it reminded me of a time when we had a similar situation, but with string operations in our VM. The project is now defunct but the code is open. Let\u2019s go back in time.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Max Bernstein",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": "2025-03-23T00:00:00.000Z",
+        "authors": [
+          {
+            "name": "",
+            "url": "",
+            "account": {
+              "id": "1300106",
+              "username": "tekknolagi",
+              "acct": "tekknolagi",
+              "display_name": "Max B",
+              "locked": false,
+              "bot": false,
+              "discoverable": true,
+              "indexable": true,
+              "group": false,
+              "created_at": "2020-10-20T00:00:00.000Z",
+              "note": "<p>Let&#39;s chat about compilers</p>",
+              "url": "https://mastodon.social/@tekknolagi",
+              "uri": "https://mastodon.social/users/tekknolagi",
+              "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "header": "https://mastodon.social/headers/original/missing.png",
+              "header_static": "https://mastodon.social/headers/original/missing.png",
+              "followers_count": 431,
+              "following_count": 264,
+              "statuses_count": 1132,
+              "last_status_at": "2025-03-23",
+              "hide_collections": false,
+              "noindex": false,
+              "emojis": [],
+              "roles": [],
+              "fields": [
+                {
+                  "name": "website",
+                  "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2022-12-07T01:44:28.737+00:00"
+                },
+                {
+                  "name": "github",
+                  "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2023-07-26T16:28:07.403+00:00"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "poll": null
     }
   }
 }
