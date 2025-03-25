@@ -1,5 +1,6 @@
 ---
 title: A catalog of side effects
+layout: post
 ---
 
 Compilers like to keep track of each IR instruction's *effects*. This effect
