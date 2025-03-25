@@ -53777,6 +53777,146 @@
         "authors": []
       },
       "poll": null
+    },
+    "114225483467704379": {
+      "id": "114225483467704379",
+      "created_at": "2025-03-25T22:42:37.799Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114225483467704379/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114225483467704379/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114225457027538551",
+        "created_at": "2025-03-25T22:35:46.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://federate.social/users/mattblaze/statuses/114225456482915473",
+        "url": "https://federate.social/@mattblaze/114225456482915473",
+        "replies_count": 7,
+        "reblogs_count": 30,
+        "favourites_count": 4,
+        "edited_at": null,
+        "content": "<p>To be clear, Trump does not have the authority to do this. The constitution explicitly states that \"The Times, Places and Manner of holding Elections for Senators and Representatives, shall be prescribed in each State by the Legislature thereof; but the Congress may at any time by Law make or alter such Regulations, except as to the Places of chusing Senators\"</p><p>That is, federal elections are governed by the states and by congress, not the president.</p><p><a href=\"https://apnews.com/article/voting-elections-trump-executive-order-4e9edb53f47e61e241a43ceef8164022\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">apnews.com/article/voting-elec</span><span class=\"invisible\">tions-trump-executive-order-4e9edb53f47e61e241a43ceef8164022</span></a></p>",
+        "reblog": null,
+        "account": {
+          "id": "109289656284922423",
+          "username": "mattblaze",
+          "acct": "mattblaze@federate.social",
+          "display_name": "Matt Blaze",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2022-11-05T00:00:00.000Z",
+          "note": "<p>Scientist, safecracker, etc. McDevitt Professor of Computer Science and Law at Georgetown. Formerly UPenn, Bell Labs. So-called expert on election security and stuff. <a href=\"https://twitter.com/mattblaze\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">twitter.com/mattblaze</span><span class=\"invisible\"></span></a> on the Twitter. Slow photographer. Radio nerd. Blogs occasionally at <a href=\"https://www.mattblaze.org/blog\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"\">mattblaze.org/blog</span><span class=\"invisible\"></span></a> . I probably won't see your DM; use something else. He/Him. Uses this wrong.</p>",
+          "url": "https://federate.social/@mattblaze",
+          "uri": "https://federate.social/users/mattblaze",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/109/289/656/284/922/423/original/1f448769b43c4834.jpeg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/289/656/284/922/423/original/1f448769b43c4834.jpeg",
+          "header": "https://files.mastodon.social/cache/accounts/headers/109/289/656/284/922/423/original/fae84cf6a73c675a.jpg",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/109/289/656/284/922/423/original/fae84cf6a73c675a.jpg",
+          "followers_count": 32588,
+          "following_count": 354,
+          "statuses_count": 15745,
+          "last_status_at": "2025-03-25",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Web",
+              "value": "<a href=\"https://www.mattblaze.org\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">mattblaze.org</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2025-03-25T17:44:06.246+00:00"
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "card": {
+          "url": "https://apnews.com/article/voting-elections-trump-executive-order-4e9edb53f47e61e241a43ceef8164022",
+          "title": "Trump signs sweeping executive action overhauling US elections, including citizenship requirement",
+          "description": "President Donald Trump has signed a sweeping executive action to overhaul federal elections in the U.S. Tuesday's order demands documentary proof of citizenship be added as a requirement for federal voter registration. It also requires that all ballots be received by Election Day throughout the country. The move is consistent with Trump's long history of railing against election processes. He often claims elections are being rigged, even before the results are known, and has waged battles against certain voting methods since he lost the 2020 election to Democrat Joe Biden and falsely blamed it on widespread fraud. Trump said after signing that more election actions would be taken in coming weeks.",
+          "language": "en",
+          "type": "link",
+          "author_name": "Ali Swenson",
+          "author_url": "https://apnews.com/author/ali-swenson",
+          "provider_name": "AP News",
+          "provider_url": "",
+          "html": "",
+          "width": 640,
+          "height": 360,
+          "image": "https://files.mastodon.social/cache/preview_cards/images/138/950/144/original/2d2880bde90b2b16.png",
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": "U4K_B[~W?b9Z?bx]ofMyX-9tD%^k^+IAM{-;",
+          "published_at": "2025-03-25T21:15:23.000Z",
+          "authors": [
+            {
+              "name": "Ali Swenson",
+              "url": "https://apnews.com/author/ali-swenson",
+              "account": null
+            }
+          ]
+        },
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114225377562140528": {
+      "id": "114225377562140528",
+      "created_at": "2025-03-25T22:15:41.808Z",
+      "in_reply_to_id": "114224633585597779",
+      "in_reply_to_account_id": "30108",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114225377562140528",
+      "url": "https://mastodon.social/@tekknolagi/114225377562140528",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@wingo\" class=\"u-url mention\">@<span>wingo</span></a></span> hell yeah added it to my list. thank you</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "30108",
+          "username": "wingo",
+          "url": "https://mastodon.social/@wingo",
+          "acct": "wingo"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
