@@ -53591,6 +53591,34 @@
         "authors": []
       },
       "poll": null
+    },
+    "114221084047988359": {
+      "id": "114221084047988359",
+      "created_at": "2025-03-25T04:03:47.977Z",
+      "in_reply_to_id": "114220745142437837",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114221084047988359",
+      "url": "https://mastodon.social/@tekknolagi/114221084047988359",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Bleh. Might need to wrap a C library in Rust and then make Rust use object handles everywhere for precise rooting or something</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
