@@ -2,6 +2,38 @@
 title: A catalog of side effects
 ---
 
+Compilers like to keep track of each IR instruction's *effects*. This effect
+tracking is similar to the programming language notion of algebraic effects in
+type systems, but internally, compilers keep track of way more fine-grained
+effects. Thes effects indicate what instructions can be re-ordered, duplicated,
+or removed entirely.
+
+For example, consider the following pseodocode for some made-up language that
+stands in for a snippet of compiler IR:
+
+```python
+# ...
+a = l[0]
+l[0] = 5
+# ...
+```
+
+The goal of effects is to communicate to the compiler that these two IR
+instructions *cannot be re-ordered*. The second instruction writes to a
+location that the first one reads.
+
+Different compilers keep track of this information differently. The null
+effect analysis gives up and says "we can't re-order or delete any
+instructions". That's probably fine for a first stab at a compiler, where you
+will get a big speed up purely based on strength reductions.
+
+But at some point you start wanting to do dead code elimination (DCE), or move
+instructions around, and you start wondering how to represent effects. That's
+where I am right now. So here's a catalog of different compilers I have looked
+at recently.
+
+## Let's look at some compilers
+
 Cinder
 https://github.com/facebookincubator/cinderx/blob/b1be7e9c33a0023a0dee1f3a23e35a8810e00ae9/Jit/hir/instr_effects.h
 
