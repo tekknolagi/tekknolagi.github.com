@@ -53654,6 +53654,47 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114223173220202395": {
+      "id": "114223173220202395",
+      "created_at": "2025-03-25T12:55:06.220Z",
+      "in_reply_to_id": "114221860051393567",
+      "in_reply_to_account_id": "110894036049625455",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114223173220202395",
+      "url": "https://mastodon.social/@tekknolagi/114223173220202395",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.acm.org/@smarr\" class=\"u-url mention\">@<span>smarr</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> thank you. Unfortunately I think too big for this project. Trying to keep the footprint very small</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110894036049625455",
+          "username": "smarr",
+          "url": "https://mastodon.acm.org/@smarr",
+          "acct": "smarr@mastodon.acm.org"
+        },
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
