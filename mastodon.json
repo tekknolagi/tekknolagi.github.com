@@ -53481,6 +53481,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114220172493404982": {
+      "id": "114220172493404982",
+      "created_at": "2025-03-25T00:11:58.762Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114220172493404982",
+      "url": "https://mastodon.social/@tekknolagi/114220172493404982",
+      "replies_count": 0,
+      "reblogs_count": 1,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>I am using cbindgen. I have some constants like</p><p>    pub const A: usize = 8;<br />    pub const B: usize = 8;<br />    pub const C: usize = A * V;</p><p>How do I either get these to not use C macros or insert type casts in the macros? Getting overflows due to types of int literals.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
