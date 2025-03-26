@@ -47,6 +47,15 @@ https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963
 LLVM
 https://llvm.org/docs/LangRef.html#tbaa-metadata
 
+LLVM MemorySSA
+https://llvm.org/docs/MemorySSA.html
+
+MEMOIR
+https://conf.researchr.org/details/cgo-2024/cgo-2024-main-conference/31/Representing-Data-Collections-in-an-SSA-Form
+
+Scala LMS graph IR
+https://2023.splashcon.org/details/splash-2023-oopsla/46/Graph-IRs-for-Impure-Higher-Order-Languages-Making-Aggressive-Optimizations-Affordab
+
 HHVM
 https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/memory-effects.h
 
