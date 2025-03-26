@@ -73,3 +73,13 @@ https://github.com/dotnet/runtime/blob/a0878687d02b42034f4ea433ddd7a72b741510b8/
 
 Simple
 https://github.com/SeaOfNodes/Simple/tree/main/chapter10
+
+MIR and borrow checker
+https://rustc-dev-guide.rust-lang.org/part-3-intro.html#source-code-representation
+
+> "Fabrice Rastello, Florent Bouchez Tichadou (2022) SSA-based Compiler Design"--most (all?) chapters in Part III, Extensions, are pretty much motivated by doing alias analysis in some way
+
+Intermediate Representations in Imperative Compilers: A Survey
+http://kameken.clique.jp/Lectures/Lectures2013/Compiler2013/a26-stanier.pdf
+
+Partitioned Lattice per Variable (PLV) -- that's in Chapter 13 on SSI
