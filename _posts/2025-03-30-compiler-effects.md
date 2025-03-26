@@ -61,3 +61,6 @@ https://wingolog.org/archives/2014/05/18/effects-analysis-in-guile
 
 Dotnet/CoreCLR
 https://github.com/dotnet/runtime/blob/a0878687d02b42034f4ea433ddd7a72b741510b8/src/coreclr/jit/sideeffects.h#L169
+
+Simple
+https://github.com/SeaOfNodes/Simple/tree/main/chapter10
