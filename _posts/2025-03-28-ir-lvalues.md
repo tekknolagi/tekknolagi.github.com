@@ -143,7 +143,8 @@ problem because it implies two things:
 
 1. Recursively building up expressions without committing them immediately to a
    buffer of IR
-1. Leaving names unresolved, as strings
+1. Leaving names unresolved, as strings (imagine a `Name "foo"` AST node or
+   something)
 
 In IR land, we're trying to eagerly emit IR *and* resolve names to offsets at
 the same time.
