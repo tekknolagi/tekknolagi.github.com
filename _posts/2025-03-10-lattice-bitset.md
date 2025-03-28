@@ -632,8 +632,8 @@ lattice are:
    control-flow instructions that define values).
 2. A value of type `Bottom` can never be *used*, so an instruction with an
    input of type `Bottom` is unreachable. This follows from the previous item
-   (since you obviously can't use a value you can't define), but is worth
-   calling out separately.
+   (since you can't use a value that you can't define), but is worth calling
+   out separately.
 
 These two properties make checking for `Bottom` useful in an unreachable code
 elimination pass. Otherwise, though, `Bottom` is just another type, and your
