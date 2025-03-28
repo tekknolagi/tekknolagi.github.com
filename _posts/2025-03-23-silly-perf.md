@@ -155,3 +155,20 @@ I don't have benchmark numbers for you because this was six years ago and the
 project was still secret back then. All I remember was that `strIndex`
 completely disappeared from the profiles. You can trace some of the other fun
 performance work by paging through the commits around this time.
+
+## Conclusion
+
+A potentially subtle conclusion for this article is that performance profiles
+might only tell you part of the story. If we looked only at the C++ profiles
+for our Python runtime, we would see that a runtime function, `strIndex`, was
+hot. The inference in this case should *not* be that we need to make `strIndex`
+faster.
+
+Instead, the inference should be that `strIndex` is being called too frequently
+by some other function. While I knew it because I was the performance culprit,
+this is often much harder to reason about in bigger and older systems. A
+multi-language profiler might shed light on the fact that `str.rpartition` was
+called N times and in nested call frames `str.__getitem__` was called `N*1000`
+times (for example), and `strIndex` calls were indirectly coming from there.
+Then we might conclude that `str.rpartition`'s implementation left something to
+be desired.
