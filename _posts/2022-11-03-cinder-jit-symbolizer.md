@@ -177,7 +177,7 @@ In this blob of constructor code, we:
 Through a bunch of trial and error and reading too much half-working code on
 the internet and too many manual pages, I got the symbolizer working! I managed
 to make it symbolize function names from our executable and fall back to
-`dladdr` for symbols shared objects.
+`dladdr` for symbols in shared objects.
 
 ```c++
 std::optional<std::string_view> Symbolizer::symbolize(const void* func) {
