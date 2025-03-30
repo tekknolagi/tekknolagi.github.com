@@ -54273,6 +54273,47 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114252109490729791": {
+      "id": "114252109490729791",
+      "created_at": "2025-03-30T15:33:58.672Z",
+      "in_reply_to_id": "114250778693557786",
+      "in_reply_to_account_id": "110894036049625455",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114252109490729791",
+      "url": "https://mastodon.social/@tekknolagi/114252109490729791",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.acm.org/@smarr\" class=\"u-url mention\">@<span>smarr</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@regehr\" class=\"u-url mention\">@<span>regehr</span></a></span> two left shoes stolen</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110894036049625455",
+          "username": "smarr",
+          "url": "https://mastodon.acm.org/@smarr",
+          "acct": "smarr@mastodon.acm.org"
+        },
+        {
+          "id": "147970",
+          "username": "regehr",
+          "url": "https://mastodon.social/@regehr",
+          "acct": "regehr"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
