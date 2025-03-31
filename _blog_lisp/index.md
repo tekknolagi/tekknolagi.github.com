@@ -1,7 +1,7 @@
 ---
 title: Lisp implementations
 permalink: /blog/lisp/
-index: true
+blog_index: true
 layout: page
 ---
 
