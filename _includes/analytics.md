@@ -19,6 +19,13 @@ if (location.hostname === "bernsteinbear.com") {
 } else {
   alert("Please remove all mentions of me (socials, Google Analytics, GoatCounter, ...) from your fork of my website. Thanks!");
 }
+document.querySelectorAll("a").forEach(a => {
+    let url = new URL(a.href);
+    if (url.hostname === "bernsteinbear.com") {
+        url.searchParams.append("utm_campaign", "april_fools_2025");
+        a.href = url.toString();
+    }
+});
 </script>
 <script async src="/assets/js/count.js"></script>
 {% endif %}
