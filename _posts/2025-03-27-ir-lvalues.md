@@ -190,7 +190,7 @@ value immediately.
 The `Name` case represents an *un-evaluated name* for use in either loads or
 stores.
 
-The `Attr` case represents an *un-evaluated attrbute lookup* for use in either
+The `Attr` case represents an *un-evaluated attribute lookup* for use in either
 loads or stores. The left hand side (the receiver, if you will) has already
 been evaluated---it's an `InsnId`, and therefore also committed to the IR
 buffer---but the right hand side has not.
