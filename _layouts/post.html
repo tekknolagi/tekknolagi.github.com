@@ -7,95 +7,29 @@
     {% include seo.md %}
     {% include css.md %}
     <link rel="alternate" type="application/rss+xml" title="Blog" href="{{ site.url }}/feed.xml" />
-  </head>
+   </head>
   <body>
-    <div id="page">
-      <div id="header">
-        <div id="headerimg">
-          <h1><a href="/">Max Bernstein's Blog</a></h1>
-          <div class="description">Writing about compilers on my WordPress blog.</div>
-        </div>
-      </div>
-      <hr />
-      <div id="content" class="widecolumn">
-        <div class="post">
-          <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
-          <div class="post-co-authors">
-            {% if page.co_authors %}
+    <div class="pagecontents">
+        {% include navbar.md %}
+        <h1 class="post-title">{{ page.title }}</h1>
+        {% if page.index != true %}
+        <div class="post-inline-date"><i>{{ page.date | date: '%B %-d, %Y' }}</i></div>
+        {% endif %}
+        <div class="post-co-authors">
+        {% if page.co_authors %}
             {% assign author_list = page.co_authors | split: ", " %}
             {% assign num_authors = author_list | size %}
             {% if num_authors > 1 %}
-            With co-authors <i>{{ author_list | join: ", "}}</i>!
+                With co-authors <i>{{ author_list | join: ", "}}</i>!
             {% else %}
-            With co-author <i>{{ author_list | join: ", "}}</i>!
+                With co-author <i>{{ author_list | join: ", "}}</i>!
             {% endif %}
-            {% endif %}
-          </div>
-          <div class="entry">
-            {{ content }}
-            <p class="postmetadata alt">
-            <small>
-              This entry was posted
-              on {{ page.date | date: "%s" | minus: 631139040 | date: '%A, %B %e, %Y at %l:%M %P' }}
-              and is filed under <a href="#" rel="category">Uncategorized</a>.
-              You can follow any responses to this entry through the
-              <a href="/feed.xml">RSS 2.0</a> feed.
-              Both comments and pings are currently closed.
-            </small>
-            </p>
-          </div>
-          {% include icons.md %}
-        </div>
-        {% if page.comments %}
-        <h3 id="comments">{{ page.comments | size }} Responses to “{{ page.title }}!”</h3>
-        <ol class="commentlist">
-          {% for comment in page.comments %}
-          {% assign is_alt = forloop.index | modulo: 2 %}
-          <li {% if is_alt == 1 %} class="alt" {% endif %} id="comment-{{ forloop.index }}">
-            <cite><a href="{{ comment.url }}" class="comment-author-link url" rel="ugc external nofollow" target="_blank">{{ comment.author }}</a></cite>
-            Says:<br>
-            <small class="commentmetadata"><a href="#comment-{{ forloop.index }}" title="">{{ comment.date | date: '%A, %B %e, %Y at %l:%M %P' }}</a></small>
-            <p>{{ comment.body }}</p>
-          </li>
-          {% endfor %}
-        </ol>
-        {% else %}
-        <p class="nocomments">Comments are closed.</p>
         {% endif %}
-      </div>
-      {% include footer.md %}
+        </div>
+        <div class="container">
+            {{ content }}
+        </div>
+        {% include footer.md %}
     </div>
-    <script>
-      // Thanks to tomxor: https://news.ycombinator.com/item?id=30666999
-      for (const u of document.querySelectorAll('.comment-author-link')) {
-          const p=4;
-          // seed state
-          let s=u.innerText, r=1;
-          for (let i=s.length; i--;) {
-              // xorshift32
-              r^=r<<13, r^=r>>>17, r^=r<<5;
-              // seed
-              r+=s.charCodeAt(i);
-          }
-          // init canvas
-          const c=document.createElement('canvas');
-              c.setAttribute("class", "avatar avatar-32 photo");
-              c.width=p*8, c.height=p*8;
-              u.parentElement.prepend(c);
-          const x=c.getContext('2d');
-              x.fillStyle='#'+(r>>8&0xFFFFFF)
-              .toString(16).padStart(0, 6)
-          // draw pixels
-          for (let i=28; i--;) {
-              // xorshift32
-              r^=r<<13, r^=r>>>17, r^=r<<5;
-              // pixels
-              const X=i&3, Y=i>>2;
-              if (r>>>29 > X*X/3+Y/2)
-                  x.fillRect(p*3.5+p*X, p*0.5+p*Y, p, p),
-                  x.fillRect(p*3.5-p*X, p*0.5+p*Y, p, p);
-          }
-      }
-    </script>
   </body>
 </html>
