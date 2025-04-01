@@ -2,7 +2,7 @@
 <style type="text/css" media="screen">
 	#page { background: url("/assets/img/kubrickbgwide.jpg") repeat-y top; border: none; }
 </style>
-<link rel='stylesheet' id='wp-block-library-css' href='https://wp-themes.com/wp-content/plugins/gutenberg/build/block-library/style.css?ver=16.8.1' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-block-library-css' href='/assets/css/wp-blocks.css?ver=16.8.1' type='text/css' media='all' />
 <style id='classic-theme-styles-inline-css' type='text/css'>
 /*! This file is auto-generated */
 .wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
