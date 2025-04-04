@@ -82,10 +82,11 @@ Cinder, CPython, PyPy, and Pyjion).
 
 I have a blog and now I also have some academic papers!
 
-* *Partial Evaluation, Whole-Program Compilation* (preprint; do not distribute) \
+* *Partial Evaluation, Whole-Program Compilation* \
   Chris Fallin, **Maxwell Bernstein** \
+  in PLDI 2025 \
   [[PDF](/assets/img/wasm-partial-eval.pdf)] [[ARX](https://arxiv.org/abs/2411.10559)]
-* *Dr Wenowdis: Specializing dynamic language C extensions using type information* (2024) \
+* *Dr Wenowdis: Specializing dynamic language C extensions using type information* \
   **Maxwell Bernstein**, CF Bolz-Tereick \
   in PLDI SOAP 2024 \
   [[PDF](/assets/img/dr-wenowdis.pdf)] [[DOI](https://doi.org/10.1145/3652588.3663316)] [[ARX](https://arxiv.org/abs/2403.02420)]
