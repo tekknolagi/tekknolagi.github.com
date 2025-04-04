@@ -5,7 +5,7 @@ layout: page
 
 <a rel="me" style="display:none;" href="{{ site.mastodon.url }}">Mastodon</a>
 
-## I'm Max Bernstein.
+# I'm Max Bernstein.
 
 I am a human and [programmer](https://github.com/tekknolagi). I like to read
 books, take photos, and ride bikes in the hills near my house. I [tweet
