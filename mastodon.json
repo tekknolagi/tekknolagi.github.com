@@ -55006,6 +55006,34 @@
         "authors": []
       },
       "poll": null
+    },
+    "114286728555371440": {
+      "id": "114286728555371440",
+      "created_at": "2025-04-05T18:18:03.671Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114286728555371440",
+      "url": "https://mastodon.social/@tekknolagi/114286728555371440",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Tried out both ChatGPT and Claude for receipt parsing from a photo and both (of course, as expected) had very subtle numerical parsing problems that led to the numbers not adding up</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
