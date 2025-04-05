@@ -54870,6 +54870,142 @@
         "authors": []
       },
       "poll": null
+    },
+    "114284074255411556": {
+      "id": "114284074255411556",
+      "created_at": "2025-04-05T07:03:02.275Z",
+      "in_reply_to_id": "114284010665375263",
+      "in_reply_to_account_id": "99997",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114284074255411556",
+      "url": "https://mastodon.social/@tekknolagi/114284074255411556",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://toot.cat/@jamey\" class=\"u-url mention\">@<span>jamey</span></a></span> haha, got it. still not sure why hashlib is returning something different than nix-hash but it was a lowercasing issue.</p><p>see <a href=\"https://github.com/tekknolagi/manual-nix\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">github.com/tekknolagi/manual-n</span><span class=\"invisible\">ix</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "99997",
+          "username": "jamey",
+          "url": "https://toot.cat/@jamey",
+          "acct": "jamey@toot.cat"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://github.com/tekknolagi/manual-nix",
+        "title": "GitHub - tekknolagi/manual-nix",
+        "description": "Contribute to tekknolagi/manual-nix development by creating an account on GitHub.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "GitHub",
+        "provider_url": "",
+        "html": "",
+        "width": 678,
+        "height": 339,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/140/661/346/original/4ac7be8317f31105.png",
+        "image_description": "Contribute to tekknolagi/manual-nix development by creating an account on GitHub.",
+        "embed_url": "",
+        "blurhash": "UXRpB^%MRit7xZt7WBj[IVRjt7j[~pRjt7js",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
+    },
+    "114284001480780161": {
+      "id": "114284001480780161",
+      "created_at": "2025-04-05T06:44:31.816Z",
+      "in_reply_to_id": "114283913418713975",
+      "in_reply_to_account_id": "99997",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114284001480780161",
+      "url": "https://mastodon.social/@tekknolagi/114284001480780161",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://toot.cat/@jamey\" class=\"u-url mention\">@<span>jamey</span></a></span> I think I am doing something wrong because the hashes are all wonky -.- I shall come back to this more rested</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "99997",
+          "username": "jamey",
+          "url": "https://toot.cat/@jamey",
+          "acct": "jamey@toot.cat"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114283888188933104": {
+      "id": "114283888188933104",
+      "created_at": "2025-04-05T06:15:43.115Z",
+      "in_reply_to_id": "114283509570428717",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114283888188933104",
+      "url": "https://mastodon.social/@tekknolagi/114283888188933104",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Well this feels disgusting but <a href=\"https://gist.github.com/tekknolagi/9c75b50f47598a3da7242251efce96d7\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">gist.github.com/tekknolagi/9c7</span><span class=\"invisible\">5b50f47598a3da7242251efce96d7</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://gist.github.com/tekknolagi/9c75b50f47598a3da7242251efce96d7",
+        "title": "pix.py",
+        "description": "GitHub Gist: instantly share code, notes, and snippets.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Gist",
+        "provider_url": "",
+        "html": "",
+        "width": 678,
+        "height": 339,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/140/657/275/original/430b038d6c8acdd4.png",
+        "image_description": "GitHub Gist: instantly share code, notes, and snippets.",
+        "embed_url": "",
+        "blurhash": "U56RP[_3IUD%00Dixu%MofayWBWB_4-;RjM{",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
