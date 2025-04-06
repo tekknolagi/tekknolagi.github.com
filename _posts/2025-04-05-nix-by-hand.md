@@ -191,6 +191,9 @@ heavy:
 Okay, not so bad:
 
 ```python
+import hashlib
+import base64
+
 with open(inner_fingerprint, "rb") as f:
     inner_fingerprint_hash = hashlib.file_digest(f, "sha256").digest()
 inner_digest = (
