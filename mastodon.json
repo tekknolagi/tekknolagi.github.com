@@ -55284,6 +55284,53 @@
         "authors": []
       },
       "poll": null
+    },
+    "114287928010115401": {
+      "id": "114287928010115401",
+      "created_at": "2025-04-05T23:23:05.901Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114287928010115401",
+      "url": "https://mastodon.social/@tekknolagi/114287928010115401",
+      "replies_count": 0,
+      "reblogs_count": 2,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>Really enjoying this blog post about build systems: <a href=\"https://jade.fyi/blog/the-postmodern-build-system/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">jade.fyi/blog/the-postmodern-b</span><span class=\"invisible\">uild-system/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://jade.fyi/blog/the-postmodern-build-system/",
+        "title": "The postmodern build system",
+        "description": "computers i guess",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 256,
+        "height": 256,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/082/685/505/original/49ddeabe34bbba6a.png",
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": "U48x7Ao36Fo3o3fQa{fQ6Fa{E[a_o3fQa_fQ",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
