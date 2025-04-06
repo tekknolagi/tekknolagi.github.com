@@ -229,8 +229,10 @@ Second of all, the store-path docs are outright lying when they say "the first
 this weird XOR thing on the hash, folding it back onto itself kinda. Oh, and
 the hash *is backwards*."
 
-I only got that second bit by digging through the Nix C++ codebase. So instead,
-what we really want is this:
+I only got that second bit by digging through [the Nix C++
+codebase][nix-compresshash]. So instead, what we really want is this:
+
+[nix-compresshash]: https://github.com/NixOS/nix/blob/cf5e59911bb47e4d64a57270429a70f380076c1c/src/libutil/hash.cc#L387
 
 ```python
 def to_nix_base32(bytes_data):
