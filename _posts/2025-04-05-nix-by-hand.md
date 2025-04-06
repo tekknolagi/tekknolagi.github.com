@@ -309,3 +309,7 @@ $
 
 I'm calling that success. We build a derivation by hand without any
 guess-and-check!
+
+Check out [my Python code][pix] if you like.
+
+[pix]: https://github.com/tekknolagi/manual-nix/tree/815b670eee196447ad52a6bce25068575ff2bd65
