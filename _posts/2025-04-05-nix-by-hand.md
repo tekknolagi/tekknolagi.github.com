@@ -79,7 +79,8 @@ like `$${var}`):
 
 ```make
 /nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple:
-	export out=/nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple; echo 'hello world' > $${out}
+	export out=/nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple; \
+    echo 'hello world' > $${out}
 ```
 
 But where does that huge path come from?
