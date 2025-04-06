@@ -222,12 +222,12 @@ fingerprint_digest = hashlib.b32encode(fingerprint_hash[:20])
 chase.
 
 First of all, Nix does *not* use normal base32. They use a different character
-set. I didn't figure that out until *tombl* chimed in on Twitter.
+set. Also, they base32 *in reverse*. I didn't figure either of these things out
+until *tombl* chimed in on Twitter.
 
 Second of all, the store-path docs are outright lying when they say "the first
 160 bits [20 bytes] of a SHA-256 hash". Instead, what they *should say* is "do
-this weird XOR thing on the hash, folding it back onto itself kinda. Oh, and
-the hash *is backwards*."
+this weird XOR thing on the hash, folding it back onto itself kinda."
 
 I only got that second bit by digging through [the Nix C++
 codebase][nix-compresshash]. So instead, what we really want is this:
