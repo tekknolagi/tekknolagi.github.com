@@ -171,7 +171,7 @@ Derive([("out","","","")],[],[],"x86_64-linux","/bin/sh",["-c","echo 'hello worl
 ```
 
 You can see they are making sure to remove all whitespace, even the trailing
-newline (hence the `$` at the end).
+newline (hence the `$` at the end, which is my shell prompt).
 
 Okay, so we have an ATerm form of the derivation and it has no output path. I
 guess we hash it? I got a little lost at this point until Jamey Sharp chimed in
