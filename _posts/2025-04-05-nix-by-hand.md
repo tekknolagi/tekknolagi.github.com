@@ -185,7 +185,7 @@ heavy:
 
 1. Call the ATerm derivation sans output path the `inner-fingerprint` because
    we're not doing anything with `text` or `source` types or NARs or something
-1. We have to SHA256-hash the `inner-fingerprint` and then base16-encode it.
+1. Make a SHA256-hash of the `inner-fingerprint` and then base16-encode it.
    That's called the `inner-digest`
 
 Okay, not so bad:
@@ -200,8 +200,8 @@ inner_digest = (
 
 Then, once we have that, we do some more stuff to it:
 
-1. Combine that with some other fields like the derivation's `name` and call
-   that the `fingerprint`
+1. Combine the `inner-digest` with some other fields like the derivation's
+   `name` and call that the `fingerprint`
 1. Hash that, take the first 20 bits, and take the base32 representation of
    that
 
