@@ -245,7 +245,7 @@ def compress_hash(h, newlen):
     result = bytearray(b"\0" * newlen)
     for i in range(len(h)):
         result[i % newlen] ^= h[i]
-    return bytes(result[:newlen])
+    return bytes(result)
 
 fingerprint = (
     f"output:{output}:sha256:{inner_digest}:{STORE_DIR}:{name}"
