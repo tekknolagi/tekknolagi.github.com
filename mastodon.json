@@ -55457,6 +55457,41 @@
         ]
       },
       "poll": null
+    },
+    "114291010422873533": {
+      "id": "114291010422873533",
+      "created_at": "2025-04-06T12:26:59.785Z",
+      "in_reply_to_id": "114289262707580258",
+      "in_reply_to_account_id": "111250459755377079",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114291010422873533",
+      "url": "https://mastodon.social/@tekknolagi/114291010422873533",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@sbrunthaler\" class=\"u-url mention\">@<span>sbrunthaler</span></a></span> I had no idea how anything worked</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "111250459755377079",
+          "username": "sbrunthaler",
+          "url": "https://mastodon.social/@sbrunthaler",
+          "acct": "sbrunthaler"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
