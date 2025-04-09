@@ -265,6 +265,7 @@ class ParseTests(unittest.TestCase):
 
     def test_const_paren(self) -> None:
         self.assertEqual(parse(["(", 3, ")"]), 3)
+        self.assertEqual(parse(["(", "(", "(", 3, ")", ")", ")"]), 3)
 
     def test_const_paren_missing(self) -> None:
         with self.assert_parse_error("Expected closing parenthesis"):
