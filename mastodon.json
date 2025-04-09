@@ -56040,6 +56040,34 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114309955564745799": {
+      "id": "114309955564745799",
+      "created_at": "2025-04-09T20:44:59.709Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114309955564745799",
+      "url": "https://mastodon.social/@tekknolagi/114309955564745799",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>I give Firefox a lot of shit for crashing randomly but in fairness I do have 1711 tabs open over 50 windows</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
