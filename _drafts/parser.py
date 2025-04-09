@@ -137,7 +137,6 @@ def parse_(tokens: list, min_prec: int):
     lhs = atom()
     # The main precedence climbing loop.
     while tokens and (token := tokens[0]) in OPERATOR_NAMES:
-        op_assoc = OPERATOR_ASSOC[token]
         op_prec = OPERATOR_PREC[token]
         if op_prec < min_prec:
             # Drop a precedence level by returning.
@@ -154,7 +153,7 @@ def parse_(tokens: list, min_prec: int):
         # For left-associative operators such as `-` and `/`, bump up the
         # minimum precedence by one. Don't bump for any-associative operators
         # such as `+` or right-associative operators such as `^`.
-        next_prec = op_prec + 1 if op_assoc == "left" else op_prec
+        next_prec = op_prec + 1 if OPERATOR_ASSOC[token] == "left" else op_prec
         rhs = parse_(tokens, next_prec)
         # This is where you could build an AST node instead of making a list.
         lhs = [token, lhs, rhs]
