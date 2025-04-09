@@ -331,6 +331,9 @@ class EndToEndTests(unittest.TestCase):
         self.assertEqual(self.parse("1+f(2)*3"), ["+", 1, ["*", ["f", 2], 3]])
         self.assertEqual(self.parse("1*f(2)+3"), ["+", ["*", 1, ["f", 2]], 3])
 
+    def test_call_call(self):
+        self.assertEqual(self.parse("f(1)(2)"), [["f", 1], 2])
+
     def test_call0(self):
         self.assertEqual(self.parse("f()"), ["f"])
 
