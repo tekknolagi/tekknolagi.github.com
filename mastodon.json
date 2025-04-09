@@ -55669,6 +55669,142 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114308748392295571": {
+      "id": "114308748392295571",
+      "created_at": "2025-04-09T15:37:59.721Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114308748392295571",
+      "url": "https://mastodon.social/@tekknolagi/114308748392295571",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "edited_at": null,
+      "content": "<p>New <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span>  optimizer just dropped \ud83d\udc40 </p><p><a href=\"https://pypy.org/posts/2025/04/prospero-in-rpython.html\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">pypy.org/posts/2025/04/prosper</span><span class=\"invisible\">o-in-rpython.html</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://pypy.org/posts/2025/04/prospero-in-rpython.html",
+        "title": "Doing the Prospero-Challenge in RPython",
+        "description": "Recently I had a lot of fun playing with the Prospero\nChallenge by Matt\nKeeter. The challenge is to render a 1024x1024 image of\na quote from The Tempest by Shakespeare. The input is a mathematical for",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "PyPy",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": "2025-04-09T15:07:09.000Z",
+        "authors": []
+      },
+      "poll": null
+    },
+    "114308740470343438": {
+      "id": "114308740470343438",
+      "created_at": "2025-04-09T15:35:58.840Z",
+      "in_reply_to_id": "114308725539457199",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114308740470343438",
+      "url": "https://mastodon.social/@tekknolagi/114308740470343438",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Thanks to <span class=\"h-card\" translate=\"no\"><a href=\"https://hachyderm.io/@dubroy\" class=\"u-url mention\">@<span>dubroy</span></a></span> for the wobsite</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109524046100377179",
+          "username": "dubroy",
+          "url": "https://hachyderm.io/@dubroy",
+          "acct": "dubroy@hachyderm.io"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114308725539457199": {
+      "id": "114308725539457199",
+      "created_at": "2025-04-09T15:32:11.011Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114308725539457199",
+      "url": "https://mastodon.social/@tekknolagi/114308725539457199",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>I put a little precedence climbing expression parser out!</p><p><a href=\"https://pdubroy.github.io/200andchange/precedence-climbing/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">pdubroy.github.io/200andchange</span><span class=\"invisible\">/precedence-climbing/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://pdubroy.github.io/200andchange/precedence-climbing/",
+        "title": "A precedence climbing parser in Python",
+        "description": "",
+        "language": null,
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
