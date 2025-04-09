@@ -290,5 +290,16 @@ class ParseTests(unittest.TestCase):
         self.assertEqual(parse([1, "*", 2, "+", 3]), ["+", ["*", 1, 2], 3])
 
 
+class EndToEndTests(unittest.TestCase):
+    def parse(self, source: str) -> list:
+        return parse(tokenize(source))
+
+    def test_int(self):
+        self.assertEqual(self.parse("123"), 123)
+
+    def test_add(self):
+        self.assertEqual(self.parse("3+4"), ["+", 3, 4])
+
+
 if __name__ == "__main__":
     unittest.main()
