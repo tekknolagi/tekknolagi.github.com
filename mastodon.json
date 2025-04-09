@@ -55910,6 +55910,136 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114309495169966081": {
+      "id": "114309495169966081",
+      "created_at": "2025-04-09T18:47:54.640Z",
+      "in_reply_to_id": "114309032346338293",
+      "in_reply_to_account_id": "110124515951523471",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114309495169966081",
+      "url": "https://mastodon.social/@tekknolagi/114309495169966081",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://hachyderm.io/@cliffc\" class=\"u-url mention\">@<span>cliffc</span></a></span> I feel like you should get coffee. It wouldn&#39;t be a spectacle but you might be able to have some fun and come to an understanding. Bring one of your famous pies</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110124515951523471",
+          "username": "cliffc",
+          "url": "https://hachyderm.io/@cliffc",
+          "acct": "cliffc@hachyderm.io"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114309486810945825": {
+      "id": "114309486810945825",
+      "created_at": "2025-04-09T18:45:47.095Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114309486810945825/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114309486810945825/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114292660456317609",
+        "created_at": "2025-04-06T19:26:28.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://f.duriansoftware.com/users/joe/statuses/114292659866091920",
+        "url": "https://f.duriansoftware.com/@joe/114292659866091920",
+        "replies_count": 8,
+        "reblogs_count": 103,
+        "favourites_count": 44,
+        "edited_at": null,
+        "content": "<p>\u201cI get no respect\u201d \u2014Rodney Dangerfield<br>\u201cI get no respect or division operator\u201d \u2014Rodney Dangerring<br>\u201cI get no respect, division, or multiplication\u201d \u2014Rodney Dangergroup</p>",
+        "reblog": null,
+        "account": {
+          "id": "113156858670720602",
+          "username": "joe",
+          "acct": "joe@f.duriansoftware.com",
+          "display_name": "Joe Groff",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": false,
+          "group": false,
+          "created_at": "2024-09-18T00:00:00.000Z",
+          "note": "<p>Doing my best to be a good boy</p>",
+          "url": "https://f.duriansoftware.com/@joe",
+          "uri": "https://f.duriansoftware.com/users/joe",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/113/156/858/670/720/602/original/1186ebed6f3ffddc.png",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/113/156/858/670/720/602/original/1186ebed6f3ffddc.png",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "followers_count": 1413,
+          "following_count": 839,
+          "statuses_count": 2376,
+          "last_status_at": "2025-04-09",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "pronouns",
+              "value": "he/him",
+              "verified_at": null
+            },
+            {
+              "name": "webzone",
+              "value": "<a href=\"https://duriansoftware.com/joe\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">duriansoftware.com/joe</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "rss",
+              "value": "<a href=\"https://duriansoftware.com/joe/index.rss\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">duriansoftware.com/joe/index.r</span><span class=\"invisible\">ss</span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "dei",
+              "value": "white male privilege",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
