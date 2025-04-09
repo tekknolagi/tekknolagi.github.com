@@ -8,6 +8,7 @@
 # entry within a group has the same precedence (+ and -, etc) and that each
 # group is lower precedence than the next.
 OPERATORS = [
+    [("<=", "left"), ("<", "left")],
     [("+", "any"), ("-", "left")],
     [("*", "any"), ("/", "left")],
     [("^", "right")],
@@ -53,6 +54,11 @@ def tokenize(source: str) -> list:
         # Skip all whitespace between tokens
         if c.isspace():
             continue
+        # Skip line comments
+        if c == "#":
+            while not at_end() and advance() != "\n":
+                pass
+            continue
         # Read a number and append it as an int
         if c.isdigit():
             num = int(c)
@@ -60,7 +66,16 @@ def tokenize(source: str) -> list:
                 num = num * 10 + int(advance())
             result.append(num)
             continue
-        # Read an operator and append it as a string
+        # For operators that share a prefix, we have to disambiguate by looking
+        # ahead.
+        if c == "<":
+            if not at_end() and peek() == "=":
+                advance()
+                result.append("<=")
+            else:
+                result.append("<")
+            continue
+        # Read a single-character operator and append it as a string
         if c in OPERATOR_NAMES or c in "(),":
             result.append(c)
             continue
@@ -205,6 +220,21 @@ class TokenizerTests(unittest.TestCase):
 
     def test_comma(self):
         self.assertEqual(tokenize(","), [","])
+
+    def test_less(self):
+        self.assertEqual(tokenize("<"), ["<"])
+
+    def test_less_than_one(self):
+        self.assertEqual(tokenize("<1"), ["<", 1])
+
+    def test_less_equal_one(self):
+        self.assertEqual(tokenize("<=1"), ["<=", 1])
+
+    def test_skip_whitespace(self):
+        self.assertEqual(tokenize("1         2"), [1, 2])
+
+    def test_skip_line_comment(self):
+        self.assertEqual(tokenize("1#         2\n3"), [1, 3])
 
     def test_unrecognized_operator(self):
         with self.assertRaises(ParseError):
