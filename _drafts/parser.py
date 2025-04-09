@@ -61,7 +61,7 @@ def tokenize(source: str) -> list:
             result.append(num)
             continue
         # Read an operator and append it as a string
-        if c in OPERATOR_NAMES or c in "()":
+        if c in OPERATOR_NAMES or c in "(),":
             result.append(c)
             continue
         # Read a variable name and append it as a string
@@ -120,6 +120,20 @@ def parse_(tokens: list, min_prec: int):
             return token
         raise ParseError(f"Unexpected token: {token}")
 
+    def comma_separated():
+        if not tokens:
+            raise ParseError("Expected closing parenthesis in function call")
+        if tokens[0] == ")":
+            # Empty argument list
+            return []
+        # At least one argument
+        result = [parse_(tokens, 0)]
+        # If there are more, each argument starts with a comma
+        while tokens and tokens[0] == ",":
+            tokens.pop(0)
+            result.append(parse_(tokens, 0))
+        return result
+
     lhs = atom()
     # The main precedence climbing loop.
     while tokens and (token := tokens[0]) in OPERATOR_NAMES:
@@ -129,16 +143,13 @@ def parse_(tokens: list, min_prec: int):
             # Drop a precedence level by returning.
             return lhs
         tokens.pop(0)
-        # Special-case function application: the function argument can re-start
+        # Special-case function application: the function arguments can re-start
         # the precedence climbing at precedence `0`.
         if token == "(":
-            # You could optionally include an auxiliary function to parse a
-            # list of comma-separated arguments, but this simple parser expects
-            # exactly one argument.
-            arg = parse_(tokens, 0)
+            args = comma_separated()
             if not tokens or tokens.pop(0) != ")":
                 raise ParseError("Expected closing parenthesis in function call")
-            lhs = [lhs, arg]
+            lhs = [lhs, *args]
             continue
         # For left-associative operators such as `-` and `/`, bump up the
         # minimum precedence by one. Don't bump for any-associative operators
@@ -193,6 +204,9 @@ class TokenizerTests(unittest.TestCase):
     def test_pow(self):
         self.assertEqual(tokenize("^"), ["^"])
 
+    def test_comma(self):
+        self.assertEqual(tokenize(","), [","])
+
     def test_unrecognized_operator(self):
         with self.assertRaises(ParseError):
             tokenize("%")
@@ -234,12 +248,25 @@ class ParseTests(unittest.TestCase):
         self.assertEqual(parse(["f", "(", "x", ")"]), ["f", "x"])
 
     def test_call_fun_no_arguments(self) -> None:
-        with self.assert_parse_error("Unexpected token: )"):
-            parse(["f", "(", ")"])
+        self.assertEqual(parse(["f", "(", ")"]), ["f"])
 
-    def test_call_fun_more_than_one_argument(self) -> None:
+    def test_call_fun_missing_closing_paren(self) -> None:
+        with self.assert_parse_error("Expected closing parenthesis in function call"):
+            parse(["f", "("])
+
+        with self.assert_parse_error("Expected closing parenthesis in function call"):
+            parse(["f", "(", "x"])
+
+    def test_call_fun_need_comma(self) -> None:
         with self.assert_parse_error("Expected closing parenthesis in function call"):
             parse(["f", "(", "x", "y", ")"])
+
+    def test_call_fun_double_comma(self) -> None:
+        with self.assert_parse_error("Unexpected token: ,"):
+            parse(["f", "(", "x", ",", ",", "y", ")"])
+
+    def test_call_fun_more_than_one_argument(self) -> None:
+        self.assertEqual(parse(["f", "(", "x", ",", "y", ")"]), ["f", "x", "y"])
 
     def test_negate_const(self) -> None:
         with self.assert_parse_error("Unexpected end of input"):
@@ -299,6 +326,28 @@ class EndToEndTests(unittest.TestCase):
 
     def test_add(self):
         self.assertEqual(self.parse("3+4"), ["+", 3, 4])
+
+    def test_add_call(self):
+        self.assertEqual(self.parse("1+f(2)*3"), ["+", 1, ["*", ["f", 2], 3]])
+        self.assertEqual(self.parse("1*f(2)+3"), ["+", ["*", 1, ["f", 2]], 3])
+
+    def test_call0(self):
+        self.assertEqual(self.parse("f()"), ["f"])
+
+    def test_call1(self):
+        self.assertEqual(self.parse("f(x)"), ["f", "x"])
+
+    def test_call2(self):
+        self.assertEqual(self.parse("f(x, y)"), ["f", "x", "y"])
+
+    def test_call3(self):
+        self.assertEqual(self.parse("f(x, y, z)"), ["f", "x", "y", "z"])
+
+    def test_call_expression_argument(self):
+        self.assertEqual(self.parse("f(1+2, 3*4)"), ["f", ["+", 1, 2], ["*", 3, 4]])
+
+    def test_call_nested(self):
+        self.assertEqual(self.parse("f(g(x), h(y))"), ["f", ["g", "x"], ["h", "y"]])
 
 
 if __name__ == "__main__":
