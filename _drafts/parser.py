@@ -202,33 +202,38 @@ class TokenizerTests(unittest.TestCase):
 
     def test_add(self):
         self.assertEqual(tokenize("+"), ["+"])
+        self.assertEqual(tokenize("1+2"), [1, "+", 2])
 
     def test_sub(self):
         self.assertEqual(tokenize("-"), ["-"])
-
-    def test_sub(self):
-        self.assertEqual(tokenize("-"), ["-"])
+        self.assertEqual(tokenize("1-2"), [1, "-", 2])
 
     def test_mul(self):
         self.assertEqual(tokenize("*"), ["*"])
+        self.assertEqual(tokenize("1*2"), [1, "*", 2])
 
     def test_div(self):
         self.assertEqual(tokenize("/"), ["/"])
+        self.assertEqual(tokenize("1/2"), [1, "/", 2])
 
     def test_pow(self):
         self.assertEqual(tokenize("^"), ["^"])
+        self.assertEqual(tokenize("1^2"), [1, "^", 2])
 
     def test_comma(self):
         self.assertEqual(tokenize(","), [","])
+        self.assertEqual(tokenize("1,2"), [1, ",", 2])
 
     def test_less(self):
         self.assertEqual(tokenize("<"), ["<"])
+        self.assertEqual(tokenize("1<2"), [1, "<", 2])
 
     def test_less_than_one(self):
         self.assertEqual(tokenize("<1"), ["<", 1])
 
     def test_less_equal_one(self):
         self.assertEqual(tokenize("<=1"), ["<=", 1])
+        self.assertEqual(tokenize("1<=2"), [1, "<=", 2])
 
     def test_skip_whitespace(self):
         self.assertEqual(tokenize("1         2"), [1, 2])
