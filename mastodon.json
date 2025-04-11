@@ -56328,6 +56328,108 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114318758587543657": {
+      "id": "114318758587543657",
+      "created_at": "2025-04-11T10:03:43.182Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114318758587543657/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114318758587543657/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114315365651324239",
+        "created_at": "2025-04-10T19:40:49.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.world/users/cfallin/statuses/114315365565624682",
+        "url": "https://mastodon.world/@cfallin/114315365565624682",
+        "replies_count": 0,
+        "reblogs_count": 11,
+        "favourites_count": 3,
+        "edited_at": null,
+        "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@tekknolagi\" class=\"u-url mention\" rel=\"nofollow noopener\" target=\"_blank\">@<span>tekknolagi</span></a></span> and I have put together our camera-ready version of our PLDI 2025 paper, \"Partial Evaluation, Whole-Program Compilation\": <a href=\"https://cfallin.org/pubs/pldi2025_weval.pdf\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">cfallin.org/pubs/pldi2025_weva</span><span class=\"invisible\">l.pdf</span></a></p><p>This paper is on weval, which I worked on for two years and previously wrote up on my blog (<a href=\"https://cfallin.org/blog/2024/08/28/weval/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">cfallin.org/blog/2024/08/28/we</span><span class=\"invisible\">val/</span></a>). In brief, it's a way to get a compiler from an interpreter \"for free\". Unlike past Futamura-like systems we're aware of, this one works on existing industrial interpreters (SpiderMonkey).</p><p>Enjoy! Looking forward to Seoul...</p>",
+        "reblog": null,
+        "account": {
+          "id": "109576349872070104",
+          "username": "cfallin",
+          "acct": "cfallin@mastodon.world",
+          "display_name": "Chris Fallin",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": true,
+          "group": false,
+          "created_at": "2022-12-20T00:00:00.000Z",
+          "note": "<p>Nerd-of-all-trades, happiest when hacking deep innards of a compiler or runtime.</p>",
+          "url": "https://mastodon.world/@cfallin",
+          "uri": "https://mastodon.world/users/cfallin",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/109/576/349/872/070/104/original/180a8e79d6f52cf7.jpg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/576/349/872/070/104/original/180a8e79d6f52cf7.jpg",
+          "header": "https://files.mastodon.social/cache/accounts/headers/109/576/349/872/070/104/original/6c821a8da219ab8c.jpeg",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/109/576/349/872/070/104/original/6c821a8da219ab8c.jpeg",
+          "followers_count": 465,
+          "following_count": 290,
+          "statuses_count": 458,
+          "last_status_at": "2025-04-10",
+          "hide_collections": true,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "www",
+              "value": "<a href=\"https://cfallin.org/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">cfallin.org/</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2025-04-10T20:15:30.329+00:00"
+            },
+            {
+              "name": "whereabouts",
+              "value": "sunnyvale, california (SF bay area)",
+              "verified_at": null
+            },
+            {
+              "name": "pronouns",
+              "value": "he/him",
+              "verified_at": null
+            },
+            {
+              "name": "affiliation",
+              "value": "currently software engineer @ F5; previously Fastly, Mozilla, PhD @ CMU ECE, Google, Intel",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [
+          {
+            "id": "1300106",
+            "username": "tekknolagi",
+            "url": "https://mastodon.social/@tekknolagi",
+            "acct": "tekknolagi"
+          }
+        ],
+        "tags": [],
+        "emojis": [],
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
