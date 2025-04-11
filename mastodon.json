@@ -56287,6 +56287,47 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114318323719641290": {
+      "id": "114318323719641290",
+      "created_at": "2025-04-11T08:13:07.620Z",
+      "in_reply_to_id": "114316486079181328",
+      "in_reply_to_account_id": "1306813",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114318323719641290",
+      "url": "https://mastodon.social/@tekknolagi/114318323719641290",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@akkartik\" class=\"u-url mention\">@<span>akkartik</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@jryans\" class=\"u-url mention\">@<span>jryans</span></a></span> I&#39;m nowhere near this organized and some of it is &quot;welp, bankruptcy, spin up a new window&quot;</p><p>Most tabs though are not duplicates (according to Tab Stats)</p><p>I suspect crashes are due to backgrounds updates</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "1306813",
+          "username": "akkartik",
+          "url": "https://merveilles.town/@akkartik",
+          "acct": "akkartik@merveilles.town"
+        },
+        {
+          "id": "107730756099688644",
+          "username": "jryans",
+          "url": "https://merveilles.town/@jryans",
+          "acct": "jryans@merveilles.town"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
