@@ -56430,6 +56430,41 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114321993773958439": {
+      "id": "114321993773958439",
+      "created_at": "2025-04-11T23:46:28.205Z",
+      "in_reply_to_id": "114321635057873183",
+      "in_reply_to_account_id": "110147406665714826",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114321993773958439",
+      "url": "https://mastodon.social/@tekknolagi/114321993773958439",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@munificent\" class=\"u-url mention\">@<span>munificent</span></a></span> for this reason I used to knit with chopsticks as a child. Plane passengers thought this was hilarious</p><p>Turns out plastic ones are allowed but I only had metal</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110147406665714826",
+          "username": "munificent",
+          "url": "https://mastodon.social/@munificent",
+          "acct": "munificent"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
