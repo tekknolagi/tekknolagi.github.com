@@ -56465,6 +56465,59 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114361440410327242": {
+      "id": "114361440410327242",
+      "created_at": "2025-04-18T22:58:16.106Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114361440410327242",
+      "url": "https://mastodon.social/@tekknolagi/114361440410327242",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>We&#39;ve upstreamed our experimental JIT to CRuby \ud83d\udc40</p><p><a href=\"https://github.com/ruby/ruby/pull/13131\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/ruby/ruby/pull/13131</span><span class=\"invisible\"></span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": {
+        "url": "https://github.com/ruby/ruby/pull/13131",
+        "title": "ZJIT by k0kubun \u00b7 Pull Request #13131 \u00b7 ruby/ruby",
+        "description": "This PR upstreams ZJIT to CRuby. [Feature #21221]\nAs the ticket clarifies, ZJIT is not yet ready for evaluation; it doesn't implement side exits or invalidations, so most benchmarks crash.\nFor ...",
+        "language": "en",
+        "type": "link",
+        "author_name": "k0kubun",
+        "author_url": "",
+        "provider_name": "GitHub",
+        "provider_url": "",
+        "html": "",
+        "width": 678,
+        "height": 339,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/142/873/087/original/48858bcc8bf1a8ab.png",
+        "image_description": "This PR upstreams ZJIT to CRuby. [Feature #21221]\nAs the ticket clarifies, ZJIT is not yet ready for evaluation; it doesn&#39;t implement side exits or invalidations, so most benchmarks crash.\nFor ...",
+        "embed_url": "",
+        "blurhash": "UQSPU:t7Rjxu.8t7RjofIAayWBa}~qbFkCae",
+        "published_at": null,
+        "authors": [
+          {
+            "name": "k0kubun",
+            "url": "",
+            "account": null
+          }
+        ]
+      },
+      "poll": null
     }
   }
 }
