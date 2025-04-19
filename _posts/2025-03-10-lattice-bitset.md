@@ -685,6 +685,12 @@ does.
 
 ## Generating the lattice from a type hierarchy
 
+NEW: ZJIT [generates its type lattice][zjit-lattice-gen] by creating a DAG of
+types, assigning bits to the leaves, and then creating most type unions
+automatically.
+
+[zjit-lattice-gen]: https://github.com/ruby/ruby/blob/0f25886facd0b5f8e0998ec78ce3147d62c61bef/zjit/src/hir_type/gen_hir_type.rb
+
 Here is an abridged sketch of the Cinder script to generate it, since the
 Cinder version has a couple more quirks that are not crucial to understanding
 the core of this post:
