@@ -23,6 +23,8 @@ happy to talk about education, programming languages, cycling, and more.
 
 That's probably an understatement. Here are some of my favorite projects:
 
+* [ZJIT](https://github.com/ruby/ruby/tree/master/zjit), Ruby's new method JIT
+  compiler
 * The [National Malware Association](https://nationalmalware.org/), an
   organization focused on security and education
 * [scrapscript.py](https://github.com/tekknolagi/scrapscript), an
@@ -73,7 +75,7 @@ Most of my personal software is open source. My work projects include:
 * [Skybison](https://github.com/tekknolagi/skybison)
 * [Cinder](https://github.com/facebookincubator/cinder)
 * [PyPy](https://github.com/pypy/pypy)
-* [YJIT](https://github.com/ruby/ruby)
+* [YJIT/ZJIT](https://github.com/ruby/ruby)
 
 Fun fact: I have now contributed to five different Python runtimes (Skybison,
 Cinder, CPython, PyPy, and Pyjion).
