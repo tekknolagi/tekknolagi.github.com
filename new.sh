@@ -2,7 +2,7 @@
 set -eu
 
 title="$1"
-slug="$(echo "$title"| tr '[:upper:]' '[:lower:]' | sed -e 's/ /-/g' -e 's/[^a-zA-Z-]//g')"
+slug="$2" || "$(echo "$title"| tr '[:upper:]' '[:lower:]' | sed -e 's/ /-/g' -e 's/[^a-zA-Z-]//g')"
 date="$(date +"%Y-%m-%d")"
 root="$(git rev-parse --show-toplevel)"
 filename="$root/_posts/$date-$slug.md"
