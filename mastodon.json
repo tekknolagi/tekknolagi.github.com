@@ -56907,6 +56907,69 @@
         ]
       },
       "poll": null
+    },
+    "114398705480319493": {
+      "id": "114398705480319493",
+      "created_at": "2025-04-25T12:55:15.949Z",
+      "in_reply_to_id": "114398702148526089",
+      "in_reply_to_account_id": "108075528946813809",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114398705480319493",
+      "url": "https://mastodon.social/@tekknolagi/114398705480319493",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@dotstdy\" class=\"u-url mention\">@<span>dotstdy</span></a></span> what is a tree trunk if not the OG branch from the ground?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108075528946813809",
+          "username": "dotstdy",
+          "url": "https://mastodon.social/@dotstdy",
+          "acct": "dotstdy"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
+    },
+    "114398697644822533": {
+      "id": "114398697644822533",
+      "created_at": "2025-04-25T12:53:16.390Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114398697644822533",
+      "url": "https://mastodon.social/@tekknolagi/114398697644822533",
+      "replies_count": 2,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>Something I earnestly still do not understand is why people switched to &quot;main&quot;. Why not &quot;trunk&quot;? It&#39;s historical, right there, and makes the term &quot;branches&quot; make sense.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "card": null,
+      "poll": null
     }
   }
 }
