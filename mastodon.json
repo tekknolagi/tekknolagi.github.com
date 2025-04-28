@@ -57122,6 +57122,143 @@
       "emojis": [],
       "card": null,
       "poll": null
+    },
+    "114417392566246604": {
+      "id": "114417392566246604",
+      "created_at": "2025-04-28T20:07:38.256Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114417392566246604/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114417392566246604/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114416430329276012",
+        "created_at": "2025-04-28T16:02:55.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://post.lurk.org/users/river/statuses/114416430314488914",
+        "url": "https://post.lurk.org/@river/114416430314488914",
+        "replies_count": 2,
+        "reblogs_count": 23,
+        "favourites_count": 3,
+        "edited_at": null,
+        "content": "<p><a href=\"https://post.lurk.org/tags/introduction\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>introduction</span></a></p><p>Hello! I'm River. I'm interested in, among other things:<br>+ programming languages and compilers<br>+ proof assistants, automatic theorem proving and program synthesis<br>+ independent video games<br>+ computer music</p><p>Right now, I'm working on a live audio programming environment inspired by Orca [1]. Here's a video. More soon!</p><p>[1] <a href=\"https://100r.co/site/orca.html\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">100r.co/site/orca.html</span><span class=\"invisible\"></span></a></p>",
+        "reblog": null,
+        "account": {
+          "id": "114416471668641954",
+          "username": "river",
+          "acct": "river@post.lurk.org",
+          "display_name": "River Dillon",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": false,
+          "group": false,
+          "created_at": "2025-04-28T00:00:00.000Z",
+          "note": "<p>interests include compilers, computer music, independent games</p>",
+          "url": "https://post.lurk.org/@river",
+          "uri": "https://post.lurk.org/users/river",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/114/416/471/668/641/954/original/e11d8d169a14f6c5.jpg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/114/416/471/668/641/954/original/e11d8d169a14f6c5.jpg",
+          "header": "https://files.mastodon.social/cache/accounts/headers/114/416/471/668/641/954/original/7506659f719012de.png",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/114/416/471/668/641/954/original/7506659f719012de.png",
+          "followers_count": 15,
+          "following_count": 11,
+          "statuses_count": 3,
+          "last_status_at": "2025-04-28",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "homepage",
+              "value": "<a href=\"https://k-monk.org/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">k-monk.org/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [
+          {
+            "id": "114416471725372702",
+            "type": "video",
+            "url": "https://files.mastodon.social/cache/media_attachments/files/114/416/471/725/372/702/original/be2da55d9198d1e1.mp4",
+            "preview_url": "https://files.mastodon.social/cache/media_attachments/files/114/416/471/725/372/702/small/be2da55d9198d1e1.png",
+            "remote_url": "https://post.lurk.org/system/media_attachments/files/114/416/424/087/740/697/original/af9abbac5518b5df.mp4",
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "focus": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "original": {
+                "width": 1920,
+                "height": 1080,
+                "frame_rate": "56904000/948397",
+                "duration": 118.549625,
+                "bitrate": 600951
+              },
+              "small": {
+                "width": 640,
+                "height": 360,
+                "size": "640x360",
+                "aspect": 1.7777777777777777
+              }
+            },
+            "description": "recording of myself programming some sine wave patterns",
+            "blurhash": "U01M4k4n?bIUIU%MM{xuxuWBt7WBt7Rjt7ay"
+          }
+        ],
+        "mentions": [],
+        "tags": [
+          {
+            "name": "introduction",
+            "url": "https://mastodon.social/tags/introduction"
+          }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": {
+          "url": "https://100r.co/site/orca.html",
+          "title": "100R \u2014 orca",
+          "description": "",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "",
+          "provider_url": "",
+          "html": "",
+          "width": 0,
+          "height": 0,
+          "image": null,
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": "UOBDWpj[00ayj[fQayfQ00ay?bj[ayfQj[fQ",
+          "published_at": null,
+          "authors": []
+        },
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
