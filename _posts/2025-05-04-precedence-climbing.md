@@ -13,10 +13,19 @@ look pretty.
 My implementation is a tokenizer and parser for simple math expressions and
 function calls in under 200 SLOC. It builds an "AST" in the form of nested
 Python lists that kind of look like S-expressions (but you could also make
-classes for AST nodes if you like). It also comes with tests. It works
-standalone or can be used as the "simple expression parser" component of a
-larger recursive descent parser (that handles function definitions, variable
-binding, etc).
+classes for AST nodes if you like).
+
+```console?lang=python
+>>> tokenize("1+2*3")
+[1, '+', 2, '*', 3]
+>>> parse(_)
+['+', 1, ['*', 2, 3]]
+>>>
+```
+
+It also comes with tests. It works standalone or can be used as the "simple
+expression parser" component of a larger recursive descent parser (that handles
+function definitions, variable binding, etc).
 
 See also [Parsing to IR and lvalues](/blog/ir-lvalues/) which takes this
 approach but builds an SSA based IR instead of an AST.
