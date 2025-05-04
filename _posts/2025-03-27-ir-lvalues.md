@@ -14,8 +14,8 @@ share the implementation. Maybe it's a normal strategy, maybe it's not.
 I've always been a little nervous around parsers so I decided to lean into it
 and get familiar with precedence climbing. I'd already written [something
 similar][diff-py] for a little math AST (**update:** see also [this
-one](https://bernsteinbear.com/blog/precedence-climbing/)) so I figured I would
-be able to reasonably easily port that to my new project.
+one](/blog/precedence-climbing/)) so I figured I would be able to reasonably
+easily port that to my new project.
 
 [diff-py]: https://gist.github.com/tekknolagi/b587de40ea55dc9d65b70282fb58e262#file-diff-py-L531
 
