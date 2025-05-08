@@ -57762,6 +57762,35 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114473050923666341": {
+      "id": "114473050923666341",
+      "created_at": "2025-05-08T16:02:17.386Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114473050923666341",
+      "url": "https://mastodon.social/@tekknolagi/114473050923666341",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>What different representations are there for speculative type information in a JIT? Say you have profiles from the interpreter. Are there ergonomic ways to expose that to the JIT so any pass can convert that speculation into a guard? Probably not ideal to eagerly use everything</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
