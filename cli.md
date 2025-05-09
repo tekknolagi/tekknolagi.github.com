@@ -82,6 +82,16 @@ dependencies.
 
 [turnt-upstream]: https://github.com/cucapra/turnt
 
+## cog
+
+I [forked][cog-fork] Ned Batchelder's [cog][cog-upstream], which is meant to be
+a meta-program generation tool. In my fork I added (slightly easier) support
+for GraphViz and amalgamated it into a single file.
+
+[cog-fork]: https://github.com/tekknolagi/cogdown
+
+[cog-upstream]: https://github.com/nedbat/cog
+
 ## Ninja generator and small Ninja
 
 It's pretty easy to generate Ninja files and BYOB[^byob] and I wrote a [blog
