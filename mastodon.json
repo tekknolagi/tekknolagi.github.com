@@ -57791,6 +57791,64 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114476399157914851": {
+      "id": "114476399157914851",
+      "created_at": "2025-05-09T06:13:47.385Z",
+      "in_reply_to_id": "114476398599645654",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114476399157914851",
+      "url": "https://mastodon.social/@tekknolagi/114476399157914851",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Nothing. I need to sleep</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "114476398599645654": {
+      "id": "114476398599645654",
+      "created_at": "2025-05-09T06:13:38.866Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114476398599645654",
+      "url": "https://mastodon.social/@tekknolagi/114476398599645654",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>What forgetting about my sheets in the washer and putting them in the dryer last minute before going to bed at 2am taught me about just-in-time compilers, a thread \ud83e\uddf5</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
