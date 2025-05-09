@@ -72,6 +72,16 @@ own test case checker (maybe even using run.py).
 
 [omegastar]: https://github.com/tekknolagi/omegastar
 
+## turnt
+
+I [forked][turnt-fork] Adrian Sampson's [turnt][turnt-upstream], which is a
+small snapshot testing tool, to fit it into a single file with no external
+dependencies.
+
+[turnt-fork]: https://github.com/tekknolagi/turnt-1/tree/mb-shrink/turnt
+
+[turnt-upstream]: https://github.com/cucapra/turnt
+
 ## Ninja generator and small Ninja
 
 It's pretty easy to generate Ninja files and BYOB[^byob] and I wrote a [blog
