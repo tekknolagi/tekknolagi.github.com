@@ -64,6 +64,14 @@ timeouts][timeouts], and a PTY option.
 
 I copy this into projects frequently.
 
+## omegastar
+
+For bisecting using delta debugging, you can drop in
+[`omegastar.py`][omegastar], which offers a straightforward way to bring your
+own test case checker (maybe even using run.py).
+
+[omegastar]: https://github.com/tekknolagi/omegastar
+
 ## Ninja generator and small Ninja
 
 It's pretty easy to generate Ninja files and BYOB[^byob] and I wrote a [blog
