@@ -64,7 +64,7 @@ timeouts][timeouts], and a PTY option.
 
 I copy this into projects frequently.
 
-## omegastar
+## omegastar.py
 
 For bisecting using delta debugging, you can drop in
 [`omegastar.py`][omegastar], which offers a straightforward way to bring your
@@ -72,7 +72,7 @@ own test case checker (maybe even using run.py).
 
 [omegastar]: https://github.com/tekknolagi/omegastar
 
-## turnt
+## turnt.py
 
 I [forked][turnt-fork] Adrian Sampson's [turnt][turnt-upstream], which is a
 small snapshot testing tool, to fit it into a single file with no external
@@ -82,7 +82,7 @@ dependencies.
 
 [turnt-upstream]: https://github.com/cucapra/turnt
 
-## cog
+## cog.py
 
 I [forked][cog-fork] Ned Batchelder's [cog][cog-upstream], which is a
 meta-program generation tool. In my fork I added (slightly easier) support for
