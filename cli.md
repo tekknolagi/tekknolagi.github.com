@@ -112,3 +112,17 @@ post](/blog/python-parallel-output/) about it.
 [linespy]: https://gist.github.com/tekknolagi/4bee494a6e4483e4d849559ba53d067b
 
 <script async id="asciicast-6xC2Q720qD5xpjNiVRhApzVRx" src="https://asciinema.org/a/6xC2Q720qD5xpjNiVRhApzVRx.js"></script>
+
+## Printing comma-separated strings
+
+No `", ".join(things)`? No problem.
+
+```c
+const char *prefix = "";
+for (int i = 0; i < nthings; i++) {
+        printf("%s%s", prefix, things[i]);
+        prefix = ", ";
+}
+```
+
+Originally from [Tufts CS 40](https://www.cs.tufts.edu/cs/40/docs/idioms.html).
