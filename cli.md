@@ -84,9 +84,9 @@ dependencies.
 
 ## cog
 
-I [forked][cog-fork] Ned Batchelder's [cog][cog-upstream], which is meant to be
-a meta-program generation tool. In my fork I added (slightly easier) support
-for GraphViz and amalgamated it into a single file.
+I [forked][cog-fork] Ned Batchelder's [cog][cog-upstream], which is a
+meta-program generation tool. In my fork I added (slightly easier) support for
+GraphViz and amalgamated it into a single file.
 
 [cog-fork]: https://github.com/tekknolagi/cogdown
 
