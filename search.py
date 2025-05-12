@@ -88,6 +88,8 @@ def process_site_main(args):
     post_embeddings = {pathname: embed_words(word2vec, words) for pathname, words in posts.items()}
     with open("post_embeddings.pkl", "wb") as f:
         pickle.dump(post_embeddings, f)
+    with open("post_embeddings.json", "w") as f:
+        json.dump(post_embeddings, f, indent=None, separators=(",", ":"))
 
 def build_index_main(args):
     word2vec = load_data("word2vec_normal.pkl")
