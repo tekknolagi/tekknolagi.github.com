@@ -81,7 +81,7 @@ def load_posts():
                 posts[pathname] = load_post(pathname)
     return posts
 
-def build_index_main(args):
+def process_site_main(args):
     word2vec = load_data("word2vec_normal.pkl")
     posts = load_posts()
     post_embeddings = {pathname: embed_words(word2vec, words) for pathname, words in posts.items()}
@@ -96,8 +96,8 @@ def main():
     repl = subparsers.add_parser("repl")
     repl.set_defaults(func=repl_main)
 
-    build_index = subparsers.add_parser("build_index")
-    build_index.set_defaults(func=build_index_main)
+    process_site = subparsers.add_parser("process_site")
+    process_site.set_defaults(func=process_site_main)
 
     args = parser.parse_args()
     args.func(args)
