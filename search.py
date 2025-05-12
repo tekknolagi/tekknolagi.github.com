@@ -4,6 +4,7 @@ import json
 import math
 import os
 import pickle
+import random
 import re
 import readline
 import sys
@@ -40,15 +41,14 @@ def embed_words(word2vec, words):
 def normalize_text(text):
     return re.sub(r"[^a-zA-Z]", r" ", text).lower()
 
-class SearchRepl(code.InteractiveConsole):
+class DB:
     def __init__(self, word2vec, post_embeddings):
-        super().__init__()
         self.word2vec = word2vec
         self.post_embeddings = post_embeddings
 
-    def runsource(self, source, filename="<input>", symbol="single"):
+    def search(self, query_text, n=5):
         # Embed query
-        words = normalize_text(source).split()
+        words = normalize_text(query_text).split()
         try:
             query_embedding = embed_words(self.word2vec, words)
         except SyntaxError as e:
@@ -58,9 +58,16 @@ class SearchRepl(code.InteractiveConsole):
         post_ranks = {pathname: vec_cosine_similarity(query_embedding,
                                                       embedding) for pathname,
                       embedding in self.post_embeddings.items()}
-        results = sorted(post_ranks.items(), reverse=True, key=lambda entry: entry[1])[:5]
-        for path, _ in results:
-            print(path)
+        return [path for path, _ in sorted(post_ranks.items(), reverse=True, key=lambda entry: entry[1])[:n]]
+
+class SearchRepl(code.InteractiveConsole):
+    def __init__(self, db):
+        super().__init__()
+        self.db = db
+
+    def runsource(self, source, filename="<input>", symbol="single"):
+        for result in self.db.search(source):
+            print(result)
 
 sys.ps1 = "QUERY. "
 sys.ps2 = "...... "
@@ -68,7 +75,8 @@ sys.ps2 = "...... "
 def repl_main(args):
     word2vec = load_data("word2vec_normal.pkl")
     post_embeddings = load_data("post_embeddings.pkl")
-    repl = SearchRepl(word2vec, post_embeddings)
+    db = DB(word2vec, post_embeddings)
+    repl = SearchRepl(db)
     repl.interact(banner="", exitmsg="")
 
 def load_post(pathname):
@@ -107,6 +115,56 @@ def build_index_main(args):
     with open("index.json", "w") as f:
         json.dump(index, f, indent=None, separators=(",", ":"))
 
+eval_set = \
+{
+"_posts/2024-10-27-on-the-universal-relation.md": "database relation universal tuple function",
+"_posts/2024-10-15-type-inference.md": "type infer inference union static",
+"_posts/2024-08-25-precedence-printing.md": "operator precedence pretty print parenthesis",
+"_posts/2023-11-04-ninja-is-enough.md": "build system compile graph dependency",
+"_posts/2024-01-13-typed-c-extensions.md": "foreign function interface type extension",
+"_posts/2020-10-07-compiling-a-lisp-8.md": "condition if branch jump label",
+"_posts/2024-05-19-weval.md": "projection compile interpret code meta",
+"_posts/2019-03-11-understanding-the-100-prisoners-problem.md": "probability strategy game visualization simulation",
+"_posts/2018-05-29-how-to-mess-with-your-roommate.md": "prank graphics error frustration roommate",
+"_posts/2022-03-26-discovering-basic-blocks.md": "basic block python graph jump",
+"_posts/2024-10-22-row-poly.md": "row type system static infer",
+"_posts/2024-07-10-scrapscript-tricks.md": "trick compile fast small encode",
+}
+
+def eval_main(args) -> None:
+    word2vec = load_data("word2vec_normal.pkl")
+    post_embeddings = load_data("post_embeddings.pkl")
+    db = DB(word2vec, post_embeddings)
+
+    top_k = 10
+    n_keywords = 3
+
+    random_seed = 42
+    random.seed(random_seed)
+
+    # Map from video ID to the number of keywords sampled to the index of the video ID in the results
+    results: dict[str, int] = {}
+    for path, keywords_str in eval_set.items():
+        keywords = keywords_str.split(" ")
+
+        # Construct a search query by sampling keywords
+        sampled_keywords = keywords[:n_keywords]
+        query = " ".join(sampled_keywords)
+
+        # Determine the index of the target video in the search results
+        ids = db.search(query, n=top_k)
+        try:
+            rank = ids.index(path)
+        except ValueError:
+            rank = -1
+
+        results[path] = rank
+
+    print("Results:")
+    print("Path\tRank")
+    for path, rank in results.items():
+        print(f"{path}\t{rank}")
+
 def main():
     parser = argparse.ArgumentParser()
     parser.set_defaults(func=repl_main)
@@ -120,6 +178,9 @@ def main():
 
     build_index = subparsers.add_parser("build_index")
     build_index.set_defaults(func=build_index_main)
+
+    eval = subparsers.add_parser("eval")
+    eval.set_defaults(func=eval_main)
 
     args = parser.parse_args()
     args.func(args)
