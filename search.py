@@ -4,6 +4,7 @@ import json
 import math
 import os
 import pickle
+import re
 import readline
 import sys
 
@@ -36,6 +37,9 @@ def embed_words(word2vec, words):
         raise SyntaxError(f"What are you smoking? I can't understand any of {words}")
     return result
 
+def normalize_text(text):
+    return re.sub(r"[^a-zA-Z]", r" ", text).lower()
+
 class SearchRepl(code.InteractiveConsole):
     def __init__(self, word2vec, post_embeddings):
         super().__init__()
@@ -44,13 +48,13 @@ class SearchRepl(code.InteractiveConsole):
 
     def runsource(self, source, filename="<input>", symbol="single"):
         # Embed query
-        words = source.split()
+        words = normalize_text(source).split()
         try:
             query_embedding = embed_words(self.word2vec, words)
         except SyntaxError as e:
             print(e)
             return
-        # Cosine similarity with
+        # Cosine similarity
         post_ranks = {pathname: vec_cosine_similarity(query_embedding,
                                                       embedding) for pathname,
                       embedding in self.post_embeddings.items()}
@@ -70,7 +74,7 @@ def repl_main(args):
 def load_post(pathname):
     with open(pathname, "r") as f:
         contents = f.read()
-    return contents.split()
+    return normalize_text(contents).split()
 
 def load_posts():
     # Walk _posts looking for *.md files
