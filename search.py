@@ -160,10 +160,17 @@ def eval_main(args) -> None:
 
         results[path] = rank
 
+    top_k_threshold = 3
     print("Results:")
     print("Path\tRank")
+    n_lt_k = 0
     for path, rank in results.items():
         print(f"{path}\t{rank}")
+        if 0 <= rank < top_k_threshold:
+            n_lt_k += 1
+
+    top_k_accuracy = n_lt_k / len(results)
+    print(f"Top-{top_k_threshold} accuracy: {top_k_accuracy:.2%}")
 
 def main():
     parser = argparse.ArgumentParser()
