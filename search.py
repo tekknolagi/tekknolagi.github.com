@@ -1,6 +1,8 @@
+import argparse
 import code
-import pickle
 import math
+import os
+import pickle
 import readline
 import sys
 
@@ -58,11 +60,47 @@ class SearchRepl(code.InteractiveConsole):
 sys.ps1 = "QUERY. "
 sys.ps2 = "...... "
 
-def main():
+def repl_main(args):
     word2vec = load_data("word2vec_normal.pkl")
     post_embeddings = load_data("post_embeddings.pkl")
     repl = SearchRepl(word2vec, post_embeddings)
     repl.interact(banner="", exitmsg="")
+
+def load_post(pathname):
+    with open(pathname, "r") as f:
+        contents = f.read()
+    return contents.split()
+
+def load_posts():
+    # Walk _posts looking for *.md files
+    posts = {}
+    for root, dirs, files in os.walk("_posts"):
+        for file in files:
+            if file.endswith(".md"):
+                pathname = os.path.join(root, file)
+                posts[pathname] = load_post(pathname)
+    return posts
+
+def build_index_main(args):
+    word2vec = load_data("word2vec_normal.pkl")
+    posts = load_posts()
+    post_embeddings = {pathname: embed_words(word2vec, words) for pathname, words in posts.items()}
+    with open("post_embeddings.pkl", "wb") as f:
+        pickle.dump(post_embeddings, f)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.set_defaults(func=repl_main)
+    subparsers = parser.add_subparsers()
+
+    repl = subparsers.add_parser("repl")
+    repl.set_defaults(func=repl_main)
+
+    build_index = subparsers.add_parser("build_index")
+    build_index.set_defaults(func=build_index_main)
+
+    args = parser.parse_args()
+    args.func(args)
 
 if __name__ == "__main__":
     main()
