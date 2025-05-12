@@ -34,7 +34,7 @@ def embed_words(word2vec, words):
             result = vec_add(result, embedding)
             num_known += 1
     if not num_known:
-        raise SyntaxError(f"What are you smoking? I can't understand any of {words}")
+        raise SyntaxError(f"I can't understand any of {words}")
     return result
 
 def normalize_text(text):
