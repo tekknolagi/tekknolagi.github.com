@@ -1,5 +1,6 @@
 import argparse
 import code
+import json
 import math
 import os
 import pickle
@@ -88,6 +89,18 @@ def process_site_main(args):
     with open("post_embeddings.pkl", "wb") as f:
         pickle.dump(post_embeddings, f)
 
+def build_index_main(args):
+    word2vec = load_data("word2vec_normal.pkl")
+    index = {}
+    with open("vecs.jsonl", "w") as f:
+        for word, embedding in word2vec.items():
+            start = f.tell()
+            json.dump(embedding, f, indent=None, separators=(",", ":"))
+            end = f.tell()
+            index[word] = [start, end-start]
+    with open("index.json", "w") as f:
+        json.dump(index, f, indent=None, separators=(",", ":"))
+
 def main():
     parser = argparse.ArgumentParser()
     parser.set_defaults(func=repl_main)
@@ -98,6 +111,9 @@ def main():
 
     process_site = subparsers.add_parser("process_site")
     process_site.set_defaults(func=process_site_main)
+
+    build_index = subparsers.add_parser("build_index")
+    build_index.set_defaults(func=build_index_main)
 
     args = parser.parse_args()
     args.func(args)
