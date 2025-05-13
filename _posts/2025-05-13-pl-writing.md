@@ -92,6 +92,13 @@ Here are some of those posts in no particular order:
   explores acyclic egraphs in the small. This one was a slow burn: I read it
   when it came out, didn't really get it, and then months later it clicked
   more. I'm sure that in a few months it'll click again.
+* [This Reddit comment][munificent-reddit] by Bob Nystrom and [Flattening
+  ASTs][flattening-asts] by Adrian Sampson are a double whammy that led to two
+  things: 1) AST storage can be really compact, almost like bytecode 2) a
+  really interesting discussion on Mastodon about massively-parallel lock-free
+  abstract interpretation if IRs were stored like this. This (and some off-hand
+  comments by Cliff Click about bump-allocation only taking "a few clocks")
+  changed how I think about allocating and referring to IR nodes.
 
 [semispace]: https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector
 [toy-optimizer]: https://pypy.org/posts/2022/07/toy-optimizer.html
@@ -110,6 +117,8 @@ Here are some of those posts in no particular order:
 [egg]: https://dl.acm.org/doi/10.1145/3434304
 [cranelift-aegraph]: https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md
 [phil-aegraph]: https://www.philipzucker.com/smart_constructor_aegraph/
+[munificent-reddit]: https://old.reddit.com/r/ProgrammingLanguages/comments/mrifdr/treewalking_interpreters_and_cachelocality/gumsi2v/
+[flattening-asts]: https://www.cs.cornell.edu/~asampson/blog/flattening.html
 
 [^gc-bug]: There's just one small bug in that post: `is_forwarded` should check
     if the bit is 0, not 1. The correct version is:
