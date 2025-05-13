@@ -88,6 +88,10 @@ Here are some of those posts in no particular order:
   Optimizations][cranelift-aegraph] by Chris Fallin showed that e-graphs are
   workable and remarkably effective in a production compiler, even if you don't
   do the "full shebang".
+* [Acyclic Egraphs and Smart Constructors][phil-aegraph] by Phil Zucker further
+  explores acyclic egraphs in the small. This one was a slow burn: I read it
+  when it came out, didn't really get it, and then months later it clicked
+  more. I'm sure that in a few months it'll click again.
 
 [semispace]: https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector
 [toy-optimizer]: https://pypy.org/posts/2022/07/toy-optimizer.html
@@ -105,6 +109,7 @@ Here are some of those posts in no particular order:
 [lessons-compiler]: https://borretti.me/article/lessons-writing-compiler
 [egg]: https://dl.acm.org/doi/10.1145/3434304
 [cranelift-aegraph]: https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md
+[phil-aegraph]: https://www.philipzucker.com/smart_constructor_aegraph/
 
 [^gc-bug]: There's just one small bug in that post: `is_forwarded` should check
     if the bit is 0, not 1. The correct version is:
