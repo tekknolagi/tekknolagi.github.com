@@ -237,7 +237,6 @@ _posts/2021-01-14-inline-caching.md
 QUERY.
 ```
 
-This is a sample query from a very small dataset (my blog). It's a really
-pretty good search result, but it's probably not representative of the overall
-search quality. Chris says that I should cherry-pick "because everyone in AI
-does".
+This is a sample query from a very small dataset (my blog). It's a pretty good
+search result, but it's probably not representative of the overall search
+quality. Chris says that I should cherry-pick "because everyone in AI does".
