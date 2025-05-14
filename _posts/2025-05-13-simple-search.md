@@ -30,7 +30,7 @@ vector. We'll walk through it all in detail.
 page.</figcaption>
 </figure>
 
-This is just one metric for query/page similarity. Other metrics include
+Cosine distance is probably the simplest method for comparing a query embedding to document embeddings to rank documents. Another intuitive choice might be euclidean distance, which would measure how far apart two vectors are in space (rather than the angle between them). We prefer cosine distance because it preserves our intuition that two vectors have similar meanings if they have the same proportion of each embedding dimension. If you have two vectors that point in the same direction, but one is very long and one very short, these should be considered the same meaning. (If two documents are about cats, but one says the word cat much more, they're still just both about cats).
 [tf-idf](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) or just plain substring
 search. We chose this one because TODO.
 
