@@ -377,6 +377,11 @@ page](https://bernsteinbear.com/websearch/). In particular, open up the network
 requests tab of your browser's console. Marvel as it only downloads a couple
 4KB chunks of embeddings.
 
+So how well does our search technology work? Let's try to build an
+objective-ish evaluation.
+
+## Evaluation
+
 ## Future ideas
 
 We can get fancier than simple cosine similarity. Let's imagine that all of our
