@@ -191,7 +191,9 @@ class SearchRepl(code.InteractiveConsole):
         post_ranks = {pathname: vec_cosine_similarity(query_embedding,
                                                       embedding) for pathname,
                       embedding in self.post_embeddings.items()}
-        posts_by_rank = sorted(post_ranks.items(), reverse=True, key=lambda entry: entry[1])
+        posts_by_rank = sorted(post_ranks.items(),
+                               reverse=True,
+                               key=lambda entry: entry[1])
         top_n_posts_by_rank = posts_by_rank[:n]
         return [path for path, _ in top_n_posts_by_rank]
 ```
