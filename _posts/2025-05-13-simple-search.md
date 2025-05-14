@@ -224,3 +224,18 @@ repl.interact(banner="", exitmsg="")
 ```
 
 This is what interacting with it looks like:
+
+```console?prompt=QUERY.
+QUERY. type inference
+_posts/2024-10-15-type-inference.md
+_posts/2025-03-10-lattice-bitset.md
+_posts/2025-02-24-sctp.md
+_posts/2022-11-07-inline-caches-in-skybison.md
+_posts/2021-01-14-inline-caching.md
+QUERY.
+```
+
+This is a sample query from a very small dataset (my blog). It's a really
+pretty good search result, but it's probably not representative of the overall
+search quality. Chris says that I should cherry-pick "because everyone in AI
+does".
