@@ -153,3 +153,74 @@ We'll do the same thing for each query, too. Speaking of, we should test this
 out. Let's make a little search REPL.
 
 ## A little search REPL
+
+We'll start off by using some Python's built-in REPL creator library, `code`.
+We can make a subclass that defines a `runsource` method. All it really needs
+to do is process the `source` input and return a falsy value (otherwise it
+waits for more input).
+
+```python
+import code
+
+class SearchRepl(code.InteractiveConsole):
+    def __init__(self, word2vec, post_embeddings):
+        super().__init__()
+        self.word2vec = word2vec
+        self.post_embeddings = post_embeddings
+
+    def runsource(self, source, filename="<input>", symbol="single"):
+        for result in self.search(source):
+            print(result)
+```
+
+Then we can define a `search` function that pulls together our existing
+functions. Just like that, we have a search:
+
+```python
+class SearchRepl(code.InteractiveConsole):
+    # ...
+    def search(self, query_text, n=5):
+        # Embed query
+        words = normalize_text(query_text).split()
+        try:
+            query_embedding = embed_words(self.word2vec, words)
+        except SyntaxError as e:
+            print(e)
+            return
+        # Cosine similarity
+        post_ranks = {pathname: vec_cosine_similarity(query_embedding,
+                                                      embedding) for pathname,
+                      embedding in self.post_embeddings.items()}
+        posts_by_rank = sorted(post_ranks.items(), reverse=True, key=lambda entry: entry[1])
+        top_n_posts_by_rank = posts_by_rank[:n]
+        return [path for path, _ in top_n_posts_by_rank]
+```
+
+Yes, we have to do a cosine similarity. Thankfully, the Wikipedia math snippet
+translates almost 1:1 to Python code:
+
+```python
+import math
+
+def vec_norm(v):
+    return math.sqrt(sum([x*x for x in v]))
+
+def vec_cosine_similarity(a, b):
+    assert len(a) == len(b)
+    a_norm = vec_norm(a)
+    b_norm = vec_norm(b)
+    dot_product = sum([ax*bx for ax, bx in zip(a, b)])
+    return dot_product/(a_norm*b_norm)
+```
+
+Finally, we can create and run the REPL.
+
+```python
+sys.ps1 = "QUERY. "
+sys.ps2 = "...... "
+
+repl = SearchRepl(word2vec, post_embeddings)
+repl.interact(banner="", exitmsg="")
+```
+
+This is what interacting with it looks like:
