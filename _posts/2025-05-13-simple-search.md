@@ -260,7 +260,8 @@ details how the author:
 * compiled SQLite to Wasm so it could run on the client,
 * built a virtual filesystem so it could read database files from the web,
 * did some smart page fetching using the existing SQLite indexes,
-* built additional software to fetch nicely using HTTP Range requests
+* built additional software to fetch only small chunks of the database using
+  HTTP Range requests
 
 [sqlite-vfs]: https://phiresky.github.io/blog/2021/hosting-sqlite-databases-on-github-pages/
 
