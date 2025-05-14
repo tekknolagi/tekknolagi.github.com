@@ -390,6 +390,8 @@ We can get fancier than simple cosine similarity. Let's imagine that all of our
 documents talk about computers, but only one of them talks about compilers
 (wouldn't that be sad). If one of our search terms is "computer" that doesn't
 really help narrow down the search and is noise in our embeddings. To reduce
-noise we can employ a technique called TF-IDF (term frequency inverse document
-frequency) where we factor out common words across documents and pay closer
-attention to words that are more unique to each document.
+noise we can employ a technique called [TF-IDF][tf-idf] (term frequency inverse
+document frequency) where we factor out common words across documents and pay
+closer attention to words that are more unique to each document.
+
+[tf-idf]: https://en.wikipedia.org/wiki/Tf%E2%80%93idf
