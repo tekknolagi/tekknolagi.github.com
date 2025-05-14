@@ -53,7 +53,7 @@ class DB:
             query_embedding = embed_words(self.word2vec, words)
         except SyntaxError as e:
             print(e)
-            return
+            return []
         # Cosine similarity
         post_ranks = {pathname: vec_cosine_similarity(query_embedding,
                                                       embedding) for pathname,
