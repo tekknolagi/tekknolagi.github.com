@@ -4,6 +4,8 @@ layout: post
 canonical_url: "https://railsatscale.com/2025-05-14-merge-zjit/"
 ---
 
+*Originally published on [Rails At Scale]({{ page.canonical_url }}).*
+
 Following [Maxime's presentation at RubyKaigi 2025][rubykaigi], the Ruby
 developers meeting, and [Matz-san's approval][zjit-redmine], ZJIT has been
 merged into Ruby. Hurray! In this post, we will give a high-level overview of
