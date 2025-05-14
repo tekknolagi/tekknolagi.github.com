@@ -53,7 +53,6 @@ banana [0.01, 0.80, ..., 0.20]
 ...
 ```
 
-
 Chris sent it to me over the internet. If you unpickle it, it's actually a
 NumPy data structure: a dictionary mapping strings to `numpy.float32` arrays. I
 wrote a script to transform this pickle file into plain old Python floats and
@@ -278,6 +277,18 @@ this project. We want to build things from scratch. Fortunately, we can emulate
 the main ideas.
 
 If we give the word2vec dict a stable order
+
+```json
+# vecs.jsonl
+[0.23, 0.05, ..., 0.10]
+[0.01, 0.80, ..., 0.20]
+...
+```
+
+```json
+# index.json
+{"couch": [0, 20], "banana": [20, 30], ...}
+```
 
 ## Future ideas
 
