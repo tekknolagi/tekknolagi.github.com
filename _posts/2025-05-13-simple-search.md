@@ -240,3 +240,10 @@ QUERY.
 This is a sample query from a very small dataset (my blog). It's a pretty good
 search result, but it's probably not representative of the overall search
 quality. Chris says that I should cherry-pick "because everyone in AI does".
+
+Okay, that's really neat. But most people who want to look for something on
+my website do not run for their terminals. Though my site is expressly designed
+to work well in terminal browsers such as Lynx, most people are already in a
+graphical web browser. So let's make a search front-end.
+
+## A little web search
