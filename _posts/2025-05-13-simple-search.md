@@ -247,3 +247,23 @@ to work well in terminal browsers such as Lynx, most people are already in a
 graphical web browser. So let's make a search front-end.
 
 ## A little web search
+
+So far we've been running from my local machine where I don't mind having a
+12MB file of weights sitting around. Now that we're moving to web, I would
+rather not burden casual browsers with an unexpected big download. So we need
+to get clever.
+
+Fortunately, Chris and I had both seen [this really cool blog post][sqlite-vfs]
+that talks about hosting a SQLite database on GitHub Pages. The blog post
+details how the author:
+
+* compiled SQLite to Wasm so it could run on the client,
+* built a virtual filesystem so it could read database files from the web,
+* did some smart page fetching using the existing SQLite indexes,
+* built additional software to fetch nicely using HTTP Range requests
+
+[sqlite-vfs]: https://phiresky.github.io/blog/2021/hosting-sqlite-databases-on-github-pages/
+
+That's super cool, but again: SQLite, though small, is comparatively big for
+this project. We want to build things from scratch. Fortunately, we can emulate
+the main ideas.
