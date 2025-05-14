@@ -364,6 +364,8 @@ omitted:
       // Decreasing
       return b[1]-a[1];
     });
+    // Fun fact: HTML elements with an `id` attribute are accessible as JS
+    // globals by that same name.
     search_results.innerHTML = "";
     for (let i = 0; i < 5; i++) {
       search_results.innerHTML += `<li>${sorted_ranks[i][0]}</li>`;
