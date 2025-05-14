@@ -1,6 +1,7 @@
 ---
 title: "A simple search engine from scratch*"
 layout: post
+co_authors: Chris Gregory
 ---
 
 \*if you include word2vec.
