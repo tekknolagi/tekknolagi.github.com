@@ -383,7 +383,29 @@ So how well does our search technology work? Let's try to build an
 objective-ish evaluation.
 
 ## Evaluation
+We'll design a metric that roughly tells us when our search engine is better or worse than a naive approach without word embeddings.
 
+We start by collecting an evaluation dataset of `(document, query)` pairs. Right from the start we're going to bias this evaluation by collecting this dataset ourselves, but hopefully it'll still help us get an intuition about the quality of the search. A query in this case is just a few search terms that we think should retrieve a document successfully.
+
+> TODO: insert visual here of document names and a few sample queries
+
+Now that we've collected our dataset, let's implement a top-k accuracy metric. This metric measures the percentage of the time a document appears in the top k search results given its corresponding query.
+
+> TODO: Insert sample code here for top-k (use Chris's new cumsum implementation after un-numpy-ing it)
+
+Let's start by evaluating a baseline search engine. This implementation doesn't use word embeddings at all. We just normalize the text, and count the number of times each query word occur in the document, then rank the documents by number of query word occurrences. Plotting top-k accuracy for various values of k gives us the following chart. Note that we get higher accuracy as we increase k -- in the limit, as k approaches our number of documents we approach 100% accuracy.
+
+> TODO: Show chart of accuracy against values of k
+
+We can also vary the number of keywords in our query to simulate users entering more or less detailed queries. Accuracy goes up as number of keywords increases, but it plateaus around (TODO) keywords.
+
+> TODO: Insert chart here of multiple lines
+
+Now for the part we've all been waiting for, do these megabytes of word embeddings actually do anything to improve our search?
+
+> TODO: Include chart here of comparison between baseline and word embeddings, across multiple numbers of keywords, across multiple values of k. Use colors to denote different models, line types to denote different values of n keywords.
+
+Turns out word embeddings give us (TODO)% accuracy boost over our naïve baseline!
 ## Future ideas
 
 We can get fancier than simple cosine similarity. Let's imagine that all of our
