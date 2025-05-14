@@ -58154,6 +58154,54 @@
         ]
       },
       "poll": null
+    },
+    "114506175113840499": {
+      "id": "114506175113840499",
+      "created_at": "2025-05-14T12:26:12.417Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114506175113840499",
+      "url": "https://mastodon.social/@tekknolagi/114506175113840499",
+      "replies_count": 0,
+      "reblogs_count": 1,
+      "favourites_count": 3,
+      "edited_at": null,
+      "content": "<p>What the fine folks on the YJIT team have been working on this year: new compiler!</p><p><a href=\"https://railsatscale.com/2025-05-14-merge-zjit/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">railsatscale.com/2025-05-14-me</span><span class=\"invisible\">rge-zjit/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://railsatscale.com/2025-05-14-merge-zjit/",
+        "title": "ZJIT has been merged into Ruby",
+        "description": "ZJIT has been merged into upstream Ruby. Learn about its architecture!",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Rails at Scale",
+        "provider_url": "",
+        "html": "",
+        "width": 640,
+        "height": 360,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/147/059/063/original/0a24849d10b14987.png",
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": "U~H.Qbj[ofj[~qj[oej[-;ayofayt7j[j[j[",
+        "published_at": "2025-05-14T00:00:00.000Z",
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
