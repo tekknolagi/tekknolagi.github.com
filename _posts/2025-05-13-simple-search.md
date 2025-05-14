@@ -276,7 +276,10 @@ That's super cool, but again: SQLite, though small, is comparatively big for
 this project. We want to build things from scratch. Fortunately, we can emulate
 the main ideas.
 
-If we give the word2vec dict a stable order
+We can give the word2vec dict a stable order and split it into two files. One
+file can just have the embeddings, no names. Another file, the index, can map
+every word to the byte start and byte length of the weights for that word (we
+figure start&amp;length is probably smaller on the wire than start&amp;end).
 
 ```json
 # vecs.jsonl
@@ -289,6 +292,89 @@ If we give the word2vec dict a stable order
 # index.json
 {"couch": [0, 20], "banana": [20, 30], ...}
 ```
+
+The cool thing about this is that `index.json` is *dramatically* smaller than
+the word2vec blob, weighing in at 244KB. Since that won't change very often
+(how often does word2vec change?), I don't feel so bad about users eagerly
+downloading the entire index.  Similarly, the `post_embeddings.json` is only
+388KB. They're even cacheable. And automagically (de)compressed by the server
+and browser (to 84KB and 140KB, respectively). Both would be smaller if we
+chose a binary format, but we're punting on that for the purposes of this post.
+
+Then we can make HTTP Range requests to the server and only download the parts
+of the weights that we need. It's even possible to bundle all of the ranges
+into one request (it's called multipart range). Unfortunately, GitHub Pages
+does not appear to support multipart, so instead we download each word's range
+in a separate request.
+
+Here's the pertinent JS code, with (short, very familiar) vector functions
+omitted:
+
+```javascript
+(async function() {
+  // Download stuff
+  async function get_index() {
+    const req = await fetch("index.json");
+    return req.json();
+  }
+  async function get_post_embeddings() {
+    const req = await fetch("post_embeddings.json");
+    return req.json();
+  }
+  const index = new Map(Object.entries(await get_index()));
+  const post_embeddings = new Map(Object.entries(await get_post_embeddings()));
+  // Add search handler
+  search.addEventListener("input", debounce(async function(value) {
+    const query = search.value;
+    // TODO(max): Normalize query
+    const words = query.split(/\s+/);
+    if (words.length === 0) {
+      // No words
+      return;
+    }
+    const requests = words.reduce((acc, word) => {
+      const entry = index.get(word);
+      if (entry === undefined) {
+        // Word is not valid; skip it
+        return acc;
+      }
+      const [start, length] = entry;
+      const end = start+length-1;
+      acc.push(fetch("vecs.jsonl", {
+        headers: new Headers({
+          "Range": `bytes=${start}-${end}`,
+        }),
+      }));
+      return acc;
+    }, []);
+    if (requests.length === 0) {
+      // None are valid words :(
+      search_results.innerHTML = "No results :(";
+      return;
+    }
+    const responses = await Promise.all(requests);
+    const embeddings = await Promise.all(responses.map(r => r.json()));
+    const query_embedding = embeddings.reduce((acc, e) => vec_add(acc, e));
+    const post_ranks = {};
+    for (const [path, embedding] of post_embeddings) {
+      post_ranks[path] = vec_cosine_similarity(embedding, query_embedding);
+    }
+    const sorted_ranks = Object.entries(post_ranks).sort(function(a, b) {
+      // Decreasing
+      return b[1]-a[1];
+    });
+    search_results.innerHTML = "";
+    for (let i = 0; i < 5; i++) {
+      search_results.innerHTML += `<li>${sorted_ranks[i][0]}</li>`;
+    }
+  }));
+})();
+```
+
+You can take a look at the live [search
+page](https://bernsteinbear.com/websearch/). In particular, open up the network
+requests tab of your browser's console. Marvel as it only downloads a couple
+4KB chunks of embeddings.
 
 ## Future ideas
 
