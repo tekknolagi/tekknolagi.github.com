@@ -389,9 +389,10 @@ We start by collecting an evaluation dataset of `(document, query)` pairs. Right
 
 ```python
 sample_documents = {
-    "_posts/2024-10-27-on-the-universal-relation.md": "database relation universal tuple function",
-    "_posts/2024-08-25-precedence-printing.md": "operator precedence pretty print parenthesis",
-    "_posts/2019-03-11-understanding-the-100-prisoners-problem.md": "probability strategy game visualization simulation",
+  "_posts/2024-10-27-on-the-universal-relation.md": "database relation universal tuple function",
+  "_posts/2024-08-25-precedence-printing.md": "operator precedence pretty print parenthesis",
+  "_posts/2019-03-11-understanding-the-100-prisoners-problem.md": "probability strategy game visualization simulation",
+  # ...
 }
 ```
 
