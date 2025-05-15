@@ -387,7 +387,13 @@ We'll design a metric that roughly tells us when our search engine is better or 
 
 We start by collecting an evaluation dataset of `(document, query)` pairs. Right from the start we're going to bias this evaluation by collecting this dataset ourselves, but hopefully it'll still help us get an intuition about the quality of the search. A query in this case is just a few search terms that we think should retrieve a document successfully.
 
-> TODO: insert visual here of document names and a few sample queries
+```python
+sample_documents = {
+    "_posts/2024-10-27-on-the-universal-relation.md": "database relation universal tuple function",
+    "_posts/2024-08-25-precedence-printing.md": "operator precedence pretty print parenthesis",
+    "_posts/2019-03-11-understanding-the-100-prisoners-problem.md": "probability strategy game visualization simulation",
+}
+```
 
 Now that we've collected our dataset, let's implement a top-k accuracy metric. This metric measures the percentage of the time a document appears in the top k search results given its corresponding query.
 
