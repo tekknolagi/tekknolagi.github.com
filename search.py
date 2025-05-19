@@ -6,8 +6,10 @@ import os
 import pickle
 import random
 import re
-import readline
 import sys
+from typing import Optional
+
+from matplotlib import pyplot as plt
 
 def load_data(path):
     with open(path, "rb") as f:
@@ -136,41 +138,100 @@ def eval_main(args) -> None:
     post_embeddings = load_data("post_embeddings.pkl")
     db = DB(word2vec, post_embeddings)
 
-    top_k = 10
-    n_keywords = 3
+    random.seed(42)
 
-    random_seed = 42
-    random.seed(random_seed)
+    max_n_keywords = 4
+    max_top_k = 11
+    n_query_samples = 30
 
-    # Map from video ID to the number of keywords sampled to the index of the video ID in the results
-    results: dict[str, int] = {}
-    for path, keywords_str in eval_set.items():
-        keywords = keywords_str.split(" ")
+    accuracies = compute_top_k_accuracy(
+        db,
+        eval_set,
+        max_n_keywords,
+        max_top_k,
+        n_query_samples,
+    )
+    plot_top_k_accuracy(accuracies, max_n_keywords, max_top_k)
 
-        # Construct a search query by sampling keywords
-        sampled_keywords = keywords[:n_keywords]
-        query = " ".join(sampled_keywords)
 
-        # Determine the index of the target video in the search results
-        ids = db.search(query, n=top_k)
-        try:
-            rank = ids.index(path)
-        except ValueError:
-            rank = -1
+def plot_top_k_accuracy(
+    accuracies: list[list[float]],
+    max_n_keywords: int,
+    max_top_k: int,
+) -> None:
+    plt.figure(figsize=(10, 6))
+    plt.title("Top K Accuracy")
+    plt.xlabel("Top K")
+    plt.ylabel("Accuracy")
 
-        results[path] = rank
+    for n_keywords in range(1, max_n_keywords + 1):
+        xs = []
+        ys = []
+        for top_k in range(1, max_top_k + 1):
+            accuracy = accuracies[n_keywords - 1][top_k - 1]
+            xs.append(top_k)
+            ys.append(accuracy)
 
-    top_k_threshold = 3
-    print("Results:")
-    print("Path\tRank")
-    n_lt_k = 0
-    for path, rank in results.items():
-        print(f"{path}\t{rank}")
-        if 0 <= rank < top_k_threshold:
-            n_lt_k += 1
+        label = f"{n_keywords} keywords" if n_keywords > 1 else "1 keyword"
+        color_map = plt.get_cmap("viridis")
+        color = color_map(n_keywords / max_n_keywords)
+        plt.plot(xs, ys, label=label, marker="h", color=color)
 
-    top_k_accuracy = n_lt_k / len(results)
-    print(f"Top-{top_k_threshold} accuracy: {top_k_accuracy:.2%}")
+    plt.xticks(range(1, max_top_k + 1))
+    percentage_formatter = plt.FuncFormatter(lambda x, _: f"{x:.0%}")
+    plt.gca().yaxis.set_major_formatter(percentage_formatter)
+    plt.gca().set_ylim(0, 1)
+
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+
+def safe_index[T](xs: list[T], x: T) -> Optional[int]:
+    try:
+        return xs.index(x)
+    except ValueError:
+        return None
+
+
+def compute_top_k_accuracy(
+    db: DB,
+    eval_set: dict[str, str],
+    max_n_keywords: int,
+    max_top_k: int,
+    n_query_samples: int,
+) -> list[list[float]]:
+    counts = [[0] * max_top_k for _ in range(max_n_keywords)]
+    for n_keywords in range(1, max_n_keywords + 1):
+        for post_id, keywords_str in eval_set.items():
+            for _ in range(n_query_samples):
+                # Construct a search query by sampling keywords
+                keywords = keywords_str.split(" ")
+                sampled_keywords = random.choices(keywords, k=n_keywords)
+                query = " ".join(sampled_keywords)
+
+                # Determine the rank of the target post in the search results
+                ids = db.search(query, n=max_top_k)
+                rank = safe_index(ids, post_id)
+
+                # Increment the count of the rank
+                if rank is not None and rank < max_top_k:
+                    counts[n_keywords - 1][rank] += 1
+
+    accuracies = [[0.0] * max_top_k for _ in range(max_n_keywords)]
+    for i in range(max_n_keywords):
+        for j in range(max_top_k):
+            # Divide by the number of samples to get the average across samples and
+            # divide by the size of the eval set to get accuracy over all posts.
+            accuracies[i][j] = counts[i][j] / n_query_samples / len(eval_set)
+
+            # Accumulate accuracies because if a post is retrieved at rank i,
+            # it was also successfully retrieved at all ranks j > i.
+            if j > 0:
+                accuracies[i][j] += accuracies[i][j - 1]
+
+    return accuracies
+
 
 def main():
     parser = argparse.ArgumentParser()
