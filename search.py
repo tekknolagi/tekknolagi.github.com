@@ -151,7 +151,8 @@ def eval_main(args) -> None:
         max_top_k,
         n_query_samples,
     )
-    plot_top_k_accuracy(accuracies, max_n_keywords, max_top_k)
+    with plt.xkcd():
+        plot_top_k_accuracy(accuracies, max_n_keywords, max_top_k)
 
 
 def plot_top_k_accuracy(
@@ -160,9 +161,9 @@ def plot_top_k_accuracy(
     max_top_k: int,
 ) -> None:
     plt.figure(figsize=(10, 6))
-    plt.title("Top K Accuracy")
-    plt.xlabel("Top K")
-    plt.ylabel("Accuracy")
+    plt.title("TOP K ACCURACY")
+    plt.xlabel("TOP K")
+    plt.ylabel("ACCURACY")
 
     for n_keywords in range(1, max_n_keywords + 1):
         xs = []
@@ -172,10 +173,8 @@ def plot_top_k_accuracy(
             xs.append(top_k)
             ys.append(accuracy)
 
-        label = f"{n_keywords} keywords" if n_keywords > 1 else "1 keyword"
-        color_map = plt.get_cmap("viridis")
-        color = color_map(n_keywords / max_n_keywords)
-        plt.plot(xs, ys, label=label, marker="h", color=color)
+        label = f"{n_keywords} KEYWORDS" if n_keywords > 1 else "1 KEYWORD"
+        plt.plot(xs, ys, label=label, marker="o")
 
     plt.xticks(range(1, max_top_k + 1))
     percentage_formatter = plt.FuncFormatter(lambda x, _: f"{x:.0%}")
