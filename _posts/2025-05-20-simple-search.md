@@ -46,6 +46,8 @@ very long and one very short, these should be considered the same meaning. (If
 two documents are about cats, but one says the word cat much more, they're
 still just both about cats).
 
+Let's open up word2vec and embed our first words.
+
 ## Embedding
 
 We take for granted this database of the top 10,000 most popular word
