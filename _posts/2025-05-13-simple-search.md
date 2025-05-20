@@ -398,23 +398,58 @@ sample_documents = {
 
 Now that we've collected our dataset, let's implement a top-k accuracy metric. This metric measures the percentage of the time a document appears in the top k search results given its corresponding query.
 
-> TODO: Insert sample code here for top-k (use Chris's new cumsum implementation after un-numpy-ing it)
+```python
+def compute_top_k_accuracy(
+    db: DB,
+    # Mapping of post to sample search query (already normalized)
+    # See sample_documents above
+    eval_set: dict[str, str],
+    max_n_keywords: int,
+    max_top_k: int,
+    n_query_samples: int,
+) -> list[list[float]]:
+    counts = [[0] * max_top_k for _ in range(max_n_keywords)]
+    for n_keywords in range(1, max_n_keywords + 1):
+        for post_id, keywords_str in eval_set.items():
+            for _ in range(n_query_samples):
+                # Construct a search query by sampling keywords
+                keywords = keywords_str.split(" ")
+                sampled_keywords = random.choices(keywords, k=n_keywords)
+                query = " ".join(sampled_keywords)
+
+                # Determine the rank of the target post in the search results
+                ids = db.search(query, n=max_top_k)
+                rank = safe_index(ids, post_id)
+
+                # Increment the count of the rank
+                if rank is not None and rank < max_top_k:
+                    counts[n_keywords - 1][rank] += 1
+
+    accuracies = [[0.0] * max_top_k for _ in range(max_n_keywords)]
+    for i in range(max_n_keywords):
+        for j in range(max_top_k):
+            # Divide by the number of samples to get the average across samples and
+            # divide by the size of the eval set to get accuracy over all posts.
+            accuracies[i][j] = counts[i][j] / n_query_samples / len(eval_set)
+
+            # Accumulate accuracies because if a post is retrieved at rank i,
+            # it was also successfully retrieved at all ranks j > i.
+            if j > 0:
+                accuracies[i][j] += accuracies[i][j - 1]
+
+    return accuracies
+```
 
 Let's start by evaluating a baseline search engine. This implementation doesn't use word embeddings at all. We just normalize the text, and count the number of times each query word occur in the document, then rank the documents by number of query word occurrences. Plotting top-k accuracy for various values of k gives us the following chart. Note that we get higher accuracy as we increase k -- in the limit, as k approaches our number of documents we approach 100% accuracy.
+
+You also might notice that the accuracy increases as we increase the number of keywords. We can see also the lines getting closer together as the number of keywords increases, which indicates there are diminishing marginal returns for each new keyword.
 
 <figure>
   <img src="/assets/img/search-top-k.png" />
 </figure>
 
-We can also vary the number of keywords in our query to simulate users entering more or less detailed queries. Accuracy goes up as number of keywords increases, but it plateaus around (TODO) keywords.
+Do these megabytes of word embeddings actually do anything to improve our search? We would have to compare to a baseline. Maybe that baseline is adding up the counts of all keywords in each document to rank them. We leave this as an exercise to the reader because we ran out of time :)
 
-> TODO: Insert chart here of multiple lines
-
-Now for the part we've all been waiting for, do these megabytes of word embeddings actually do anything to improve our search?
-
-> TODO: Include chart here of comparison between baseline and word embeddings, across multiple numbers of keywords, across multiple values of k. Use colors to denote different models, line types to denote different values of n keywords.
-
-Turns out word embeddings give us (TODO)% accuracy boost over our naïve baseline!
 ## Future ideas
 
 We can get fancier than simple cosine similarity. Let's imagine that all of our
