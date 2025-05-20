@@ -460,6 +460,13 @@ sampling for top-k, there is a lot of error output (`I can't understand any of
 word2vec (more than 10,000 words) might contain these less-common words and
 therefore search better.
 
+## Wrapping up
+
+You can build a small search engine from "scratch" with only a hundred or so
+lines of code. See [the full
+search.py](https://github.com/tekknolagi/tekknolagi.github.com/blob/25d0f5bbe04db7a907409dd5a48648dc8bbd3307/search.py),
+which includes some of the extras for evaluation and plotting.
+
 ## Future ideas
 
 We can get fancier than simple cosine similarity. Let's imagine that all of our
