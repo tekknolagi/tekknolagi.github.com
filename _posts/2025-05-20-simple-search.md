@@ -400,7 +400,6 @@ Now that we've collected our dataset, let's implement a top-k accuracy metric. T
 
 ```python
 def compute_top_k_accuracy(
-    db: DB,
     # Mapping of post to sample search query (already normalized)
     # See sample_documents above
     eval_set: dict[str, str],
@@ -418,7 +417,7 @@ def compute_top_k_accuracy(
                 query = " ".join(sampled_keywords)
 
                 # Determine the rank of the target post in the search results
-                ids = db.search(query, n=max_top_k)
+                ids = search(query, n=max_top_k)
                 rank = safe_index(ids, post_id)
 
                 # Increment the count of the rank
