@@ -115,7 +115,7 @@ sub {
   code.highlighter-rouge {
     color: #fe8019;
   }
-  svg, object.svg, img.svg {
+  svg, object.svg, img.svg, img[src$=".svg"] {
     filter: invert(100%);
   }
   table tr {
