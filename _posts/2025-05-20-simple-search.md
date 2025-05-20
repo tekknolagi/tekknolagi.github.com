@@ -13,6 +13,9 @@ through it because I only vaguely knew what word2vec was before this experiment.
 The search engine we made is built on *word embeddings*. This refers to some
 function that takes a word and maps it onto N-dimensional space (in this case,
 N=300) where each dimension vaguely corresponds to some axis of meaning.
+[Word2vec from Scratch](https://jaketae.github.io/study/word2vec/) is a nice
+blog post that shows how to train your own mini word2vec and explains the
+internals.
 
 The idea behind the search engine is to embed each of my posts into this domain
 by adding up the embeddings for the words in the post. For a given
