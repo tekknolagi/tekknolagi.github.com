@@ -449,6 +449,12 @@ You also might notice that the accuracy increases as we increase the number of k
 
 Do these megabytes of word embeddings actually do anything to improve our search? We would have to compare to a baseline. Maybe that baseline is adding up the counts of all keywords in each document to rank them. We leave this as an exercise to the reader because we ran out of time :)
 
+It would also be interesting to see how a bigger word2vec helps accuracy. While
+sampling for top-k, there is a lot of error output (`I can't understand any of
+['prank', ...]`). These unknown words get dropped from the search. A bigger
+word2vec (more than 10,000 words) might contain these less-common words and
+therefore search better.
+
 ## Future ideas
 
 We can get fancier than simple cosine similarity. Let's imagine that all of our
