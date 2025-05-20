@@ -402,7 +402,9 @@ Now that we've collected our dataset, let's implement a top-k accuracy metric. T
 
 Let's start by evaluating a baseline search engine. This implementation doesn't use word embeddings at all. We just normalize the text, and count the number of times each query word occur in the document, then rank the documents by number of query word occurrences. Plotting top-k accuracy for various values of k gives us the following chart. Note that we get higher accuracy as we increase k -- in the limit, as k approaches our number of documents we approach 100% accuracy.
 
-> TODO: Show chart of accuracy against values of k
+<figure>
+  <img src="/assets/img/search-top-k.png" />
+</figure>
 
 We can also vary the number of keywords in our query to simulate users entering more or less detailed queries. Accuracy goes up as number of keywords increases, but it plateaus around (TODO) keywords.
 
