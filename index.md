@@ -32,8 +32,7 @@ That's probably an understatement. Here are some of my favorite projects:
   [posts](/blog/scrapscript-baseline/) (and [three](/blog/scrapscript-tricks/),
   [four](/blog/type-inference/), [five](/blog/row-poly/), [six](/blog/scrapscript-ir/)) too
 * [Cinder](https://github.com/facebookincubator/cinder), Instagram's
-  performance-oriented fork of CPython---try it out on
-  [trycinder.com](https://trycinder.com) (which I built!)
+  performance-oriented fork of CPython
 * [Skybison](https://github.com/tekknolagi/skybison) (fork of
   [original](https://github.com/facebookexperimental/skybison)), Instagram's
   performance-oriented greenfield implementation of Python
