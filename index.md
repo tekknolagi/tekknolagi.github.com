@@ -70,11 +70,11 @@ and taught robotics at a summer camp some time between 2013 and 2018.
 
 Most of my personal software is open source. My work projects include:
 
-* [Reason](https://github.com/facebook/reason)
-* [Skybison](https://github.com/tekknolagi/skybison)
-* [Cinder](https://github.com/facebookincubator/cinder)
-* [PyPy](https://github.com/pypy/pypy)
 * [YJIT/ZJIT](https://github.com/ruby/ruby)
+* [PyPy](https://github.com/pypy/pypy)
+* [Cinder](https://github.com/facebookincubator/cinder)
+* [Skybison](https://github.com/tekknolagi/skybison)
+* [Reason](https://github.com/facebook/reason)
 
 Fun fact: I have now contributed to five different Python runtimes (Skybison,
 Cinder, CPython, PyPy, and Pyjion).
