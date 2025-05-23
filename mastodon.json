@@ -58438,6 +58438,64 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114558797141445794": {
+      "id": "114558797141445794",
+      "created_at": "2025-05-23T19:28:40.834Z",
+      "in_reply_to_id": "114558796322769796",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114558797141445794",
+      "url": "https://mastodon.social/@tekknolagi/114558797141445794",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Listen to Sofi Tukker. End thread.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "114558796322769796": {
+      "id": "114558796322769796",
+      "created_at": "2025-05-23T19:28:28.348Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114558796322769796",
+      "url": "https://mastodon.social/@tekknolagi/114558796322769796",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>I&#39;m normally opposed to these kinds of things but here goes:</p><p>How to instantly improve your developer productivity by at least 30%, a \ud83e\uddf5</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
