@@ -96,3 +96,6 @@ that uses a similar technique! For sampling profiling, they put their check
 heap).
 
 [pypy]: https://pypy.org/posts/2025/02/pypy-gc-sampling.html
+
+Maybe next time I will write about guard pages, which I recently added to
+RBS...
