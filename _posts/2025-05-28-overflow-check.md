@@ -62,9 +62,9 @@ V8 does [something very similar in Maglev][maglev].
 
 [maglev]: https://github.com/v8/v8/blob/3840a5c40c5ea1f44a8d9d534147e1d864e0bcf7/src/maglev/maglev-ir.cc#L1125
 
-Since CPython also [checks for interrupts on loop back edges][cpython],
-Skybison does the same. And PyPy does too. This means that even if you have a
-hot loop with no function calls, you can still trigger an interrupt.
+CPython also [checks for interrupts on loop back edges][cpython]. PyPy does
+too. This means that even if you have a hot loop with no function calls, you
+can still trigger an interrupt.
 
 ```c
 PyObject *eval(...) {
