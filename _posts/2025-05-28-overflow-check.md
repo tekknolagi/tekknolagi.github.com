@@ -62,6 +62,32 @@ V8 does [something very similar in Maglev][maglev].
 
 [maglev]: https://github.com/v8/v8/blob/3840a5c40c5ea1f44a8d9d534147e1d864e0bcf7/src/maglev/maglev-ir.cc#L1125
 
+Since CPython also [checks for interrupts on loop back edges][cpython],
+Skybison does the same. And PyPy does too. This means that even if you have a
+hot loop with no function calls, you can still trigger an interrupt.
+
+```c
+PyObject *eval(...) {
+    // ...
+    while (1) {
+        // ...
+        switch (opcode) {
+        // ...
+            case TARGET(JUMP_ABSOLUTE): {
+                PREDICTED(JUMP_ABSOLUTE);
+                JUMPTO(oparg);
+                CHECK_EVAL_BREAKER();
+                DISPATCH();
+            }
+        // ...
+        }
+    }
+    // ...
+}
+```
+
+[cpython]: https://github.com/python/cpython/blob/6322edd260e8cad4b09636e05ddfb794a96a0451/Python/ceval.c#L3846
+
 I'm writing this post because PyPy [published a post][pypy] about a new feature
 that uses a similar technique! For sampling profiling, they put their check
 (whether or not to sample) behind a check for exhaustion of the nursery (small
