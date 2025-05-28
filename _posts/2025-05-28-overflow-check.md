@@ -94,3 +94,5 @@ heap).
 
 Maybe next time I will write about guard pages, which I recently added to
 RBS...
+
+Thank you to [CF Bolz-Tereick](https://cfbolz.de/) for feedback on this post!
