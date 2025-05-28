@@ -58525,6 +58525,127 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114585664791496636": {
+      "id": "114585664791496636",
+      "created_at": "2025-05-28T13:21:28.670Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114585664791496636/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114585664791496636/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114585477337788505",
+        "created_at": "2025-05-28T12:33:45.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://discuss.systems/users/adrian/statuses/114585477176930915",
+        "url": "https://discuss.systems/@adrian/114585477176930915",
+        "replies_count": 0,
+        "reblogs_count": 2,
+        "favourites_count": 5,
+        "edited_at": null,
+        "content": "<p>The final-project blog posts for my grad compilers course, <a href=\"https://discuss.systems/tags/cs6120\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>cs6120</span></a>, are trickling out, and some of them are pretty fun! A couple of examples:</p><p>Simon Bertron turned quantifier elimination into a source-to-source optimization for Python programs with `any` and `all`: <a href=\"https://www.cs.cornell.edu/courses/cs6120/2025sp/blog/imperative-quantifier-elimination/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"ellipsis\">cs.cornell.edu/courses/cs6120/</span><span class=\"invisible\">2025sp/blog/imperative-quantifier-elimination/</span></a></p><p>Ethan Uppal &amp; Zihan Li got some speedups by parallelizing a dataflow solver: <a href=\"https://www.cs.cornell.edu/courses/cs6120/2025sp/blog/zihan-ethan-project/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"ellipsis\">cs.cornell.edu/courses/cs6120/</span><span class=\"invisible\">2025sp/blog/zihan-ethan-project/</span></a></p>",
+        "reblog": null,
+        "account": {
+          "id": "109306393408330356",
+          "username": "adrian",
+          "acct": "adrian@discuss.systems",
+          "display_name": "Adrian Sampson",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2022-11-08T00:00:00.000Z",
+          "note": "<p>Carly Rae Jepsen fan account.</p>",
+          "url": "https://discuss.systems/@adrian",
+          "uri": "https://discuss.systems/users/adrian",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/109/306/393/408/330/356/original/4ebf5b0fbec751dc.jpeg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/306/393/408/330/356/original/4ebf5b0fbec751dc.jpeg",
+          "header": "https://files.mastodon.social/cache/accounts/headers/109/306/393/408/330/356/original/fdf66ab2acae4568.jpeg",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/109/306/393/408/330/356/original/fdf66ab2acae4568.jpeg",
+          "followers_count": 1232,
+          "following_count": 408,
+          "statuses_count": 1669,
+          "last_status_at": "2025-05-28",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "pronouns",
+              "value": "he/him",
+              "verified_at": null
+            },
+            {
+              "name": "affiliation",
+              "value": "Cornell",
+              "verified_at": null
+            },
+            {
+              "name": "home",
+              "value": "<a href=\"https://www.cs.cornell.edu/~asampson\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">cs.cornell.edu/~asampson</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2025-05-28T01:43:38.443+00:00"
+            },
+            {
+              "name": "Carly Rae",
+              "value": "Jepsen",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+          {
+            "name": "cs6120",
+            "url": "https://mastodon.social/tags/cs6120"
+          }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": {
+          "url": "https://www.cs.cornell.edu/courses/cs6120/2025sp/blog/imperative-quantifier-elimination/",
+          "title": "Quantifier Elimination For Imperative Programs",
+          "description": "The Background\nWhen people want to write mathematical statments formally, they make use of the quantifier symbols $\\exists$ and $\\forall$. Of course, many formally distinct mathematical statements are actually logically equivalent. For example, the following two logical formulas are equivalent (if $x$ is a real number):\n$$\n\\exists x: a x^2 + b x + c = 0\n$$\n$$\nb^2 - 4ac \\geq 0\n$$\nIt is worth noting briefly that the two formulas are only equivalent when $x$ is restricted to be a real number. If we allowed $x$ to be any complex number (or further restricted $x$ to be an integer!) the two formulas would no longer be equivalent. We say that the formulas are equivalent in the theory of real numbers. For our purposes, a theory is a formal language together with some axioms defining which formulas constructed from that language are true.\nWhen a formula can be written with and without quantifiers, the quantifier-free version has some advantages from a computational perspective. The main advantage in the context of formal mathematical statements is that in most theories we care about, it is possible to describe an algorithm that decides the truth of any quantifier-free formula in that theory. This is not generally true of quantifier-ful formulas. If we squint and pretend our two formulas are computer programs, the quantifier-free version looks like a few arithmetic operations while the quantifier-ful version looks an awful lot like a loop that might never halt!\nThis suggests an algorithm for deciding the truth of a formula. First convert the formula to a quantifier-free form, then apply the universal-quantifier-free-deciding algorithm to the result. This is possible in some theories which have known procedures for removing quantifiers from any formula in that theory and, in fact, the Z3 SMT solver has a quantifier elimination tactic which attempts to apply such procedures.\nOf course, quantifier elimination is not performing any decidability magic. Theories which admit quantifier elimination are fully decidable even by algorithms that do not perform quantifier elimination. So one reason Z3 has a quantifier elimination tactic (and not some other deciding algorithm) is because it can make the deciding cheaper. Even if our \u201cloopy\u201d pseudo-program above eventually terminates, it might take a long time. It would be easier to do the arithmetic instead.\nThe Project\nThis brings us to the task at hand. If quantifier elimination can speed up SMT solving, maybe it can speed up regular old computer programs.\nAs we saw above, true quantifiers generally translate to loops that may never terminate. In most programming circles, writing loops that you know ahead of time might never terminate is generally frowned upon, so we will need more limited substitutes. We will use the commonly available any and all functions as our restricted quantifiers. any returns true if and only if any of its inputs is true while all returns true if and only if all of its inputs are true (get it?). This makes any an existential quantifier ($\\exists$) and all a universal quantifier ($\\forall$).\nWe will also restrict ourselves to a single theory: Presburger Integer Arithmetic. Formulas in Presburger Arithmetic are built from the following language: $[ \\neg, \\wedge, \\vee, \\exists, \\forall ] \\cup \\mathbb{N} \\cup [ +,-,<,= ]$. Where the first three symbols are the standard first order predicate logic not, and, and or.\nWe will operate on Python programs because Python has a few nice properties:",
+          "language": null,
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "",
+          "provider_url": "",
+          "html": "",
+          "width": 0,
+          "height": 0,
+          "image": null,
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": null,
+          "published_at": null,
+          "authors": []
+        },
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
