@@ -58,13 +58,15 @@ NEVER_INLINE Frame* Thread::handleInterruptPushNativeFrame(word locals_offset) {
 }
 ```
 
-V8 does [something very similar in Maglev][maglev].
+V8 does [something very similar in Maglev][maglev] on function entry.
 
 [maglev]: https://github.com/v8/v8/blob/3840a5c40c5ea1f44a8d9d534147e1d864e0bcf7/src/maglev/maglev-ir.cc#L1125
 
-CPython also [checks for interrupts on loop back edges][cpython]. PyPy does
-too. This means that even if you have a hot loop with no function calls, you
-can still trigger an interrupt.
+But not all applications involve regular function calls. Sometimes it's
+possible to have a hot loop in which no frames are pushed to the call stack. In
+this case, it might make sense to check for interrupts (or do other thread
+synchronization checks) in loop back-edges. CPython [does this][cpython]. PyPy
+does too.
 
 ```c
 PyObject *eval(...) {
