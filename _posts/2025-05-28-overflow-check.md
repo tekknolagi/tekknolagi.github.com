@@ -66,25 +66,20 @@ But not all applications involve regular function calls. Sometimes it's
 possible to have a hot loop in which no frames are pushed to the call stack. In
 this case, it might make sense to check for interrupts (or do other thread
 synchronization checks) in loop back-edges. CPython [does this][cpython]. PyPy
-does too.
+does too. Ruby's YARV does this too.
 
 ```c
-PyObject *eval(...) {
-    // ...
-    while (1) {
-        // ...
-        switch (opcode) {
-        // ...
-            case TARGET(JUMP_ABSOLUTE): {
-                PREDICTED(JUMP_ABSOLUTE);
-                JUMPTO(oparg);
-                CHECK_EVAL_BREAKER();
-                DISPATCH();
-            }
-        // ...
-        }
-    }
-    // ...
+/* set PC to (PC + dst). */
+DEFINE_INSN
+jump
+(OFFSET dst)
+()
+()
+/* Same discussion as leave. */
+// attr bool leaf = leafness_of_check_ints; /* has rb_threadptr_execute_interrupts() */
+{
+    RUBY_VM_CHECK_INTS(ec);
+    JUMP(dst);
 }
 ```
 
