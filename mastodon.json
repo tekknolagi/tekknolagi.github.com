@@ -58738,6 +58738,42 @@
         ]
       },
       "poll": null
+    },
+    "114588844863107985": {
+      "id": "114588844863107985",
+      "created_at": "2025-05-29T02:50:12.683Z",
+      "in_reply_to_id": "114588009935319766",
+      "in_reply_to_account_id": "523512",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114588844863107985",
+      "url": "https://mastodon.social/@tekknolagi/114588844863107985",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> I want to do the guard pages impl at some point. But I&#39;m not sure if the branch is so expensive? I&#39;d be interested in a benchmark</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
