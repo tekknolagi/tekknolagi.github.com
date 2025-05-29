@@ -96,3 +96,10 @@ Maybe next time I will write about guard pages, which I recently added to
 RBS...
 
 Thank you to [CF Bolz-Tereick](https://cfbolz.de/) for feedback on this post!
+
+## See also
+
+[Stop and Go][stop-and-go] (PDF), which benchmarks conditional checks, loads,
+and stores for polling yieldpoints. Thanks to Per Vognsen for sending me this.
+
+[stop-and-go]: https://www.steveblackburn.org/pubs/papers/yieldpoint-ismm-2015.pdf
