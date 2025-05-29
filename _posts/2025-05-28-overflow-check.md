@@ -13,8 +13,8 @@ runtime-internal state in sync:
 * other bookkeeping
 
 Instead of locking these components so that only one thread can use those
-shared resources at a time, runtime implementors tend to instead shard them:
-each thread gets its own slice to work with privately.
+shared resources at a time, runtime implementors tend to shard them: each
+thread gets its own slice to work with privately.
 
 This means that each thread might have a separate mini-heap that it can use
 privately until exhaustion, and only then request a stop-the-world event. But
