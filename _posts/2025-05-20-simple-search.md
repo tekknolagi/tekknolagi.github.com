@@ -388,7 +388,8 @@ So how well does our search technology work? Let's try to build an
 objective-ish evaluation.
 
 ## Evaluation
-We'll design a metric that roughly tells us when our search engine is better or worse than a naive approach without word embeddings.
+
+Let's evaluate our search engine and measure how often it returns posts in the top few results when we query with hand-crafted search keywords.
 
 We start by collecting an evaluation dataset of `(document, query)` pairs. Right from the start we're going to bias this evaluation by collecting this dataset ourselves, but hopefully it'll still help us get an intuition about the quality of the search. A query in this case is just a few search terms that we think should retrieve a document successfully.
 
@@ -444,9 +445,7 @@ def compute_top_k_accuracy(
     return accuracies
 ```
 
-Let's start by evaluating a baseline search engine. This implementation doesn't use word embeddings at all. We just normalize the text, and count the number of times each query word occur in the document, then rank the documents by number of query word occurrences. Plotting top-k accuracy for various values of k gives us the following chart. Note that we get higher accuracy as we increase k -- in the limit, as k approaches our number of documents we approach 100% accuracy.
-
-You also might notice that the accuracy increases as we increase the number of keywords. We can see also the lines getting closer together as the number of keywords increases, which indicates there are diminishing marginal returns for each new keyword.
+Plotting top-k accuracy for various values of k gives us the following chart. Note that we get higher accuracy as we increase k -- in the limit, as k approaches our number of documents we approach 100% accuracy. Also, accuracy increases as we increase the number of keywords. Finally, we can see the lines getting closer together as the number of keywords increases, which indicates there are diminishing marginal returns for each new keyword.
 
 <figure>
   <img src="/assets/img/search-top-k.png" />
