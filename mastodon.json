@@ -59274,6 +59274,103 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114610456570863790": {
+      "id": "114610456570863790",
+      "created_at": "2025-06-01T22:26:21.175Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114610456570863790/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114610456570863790/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114609452107955460",
+        "created_at": "2025-06-01T18:10:53.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.world/users/exchgr/statuses/114609452064387997",
+        "url": "https://mastodon.world/@exchgr/114609452064387997",
+        "replies_count": 22,
+        "reblogs_count": 451,
+        "favourites_count": 740,
+        "edited_at": null,
+        "content": "<p>who called it crispr and not gene hackman</p>",
+        "reblog": null,
+        "account": {
+          "id": "109326479774378594",
+          "username": "exchgr",
+          "acct": "exchgr@mastodon.world",
+          "display_name": "elle mundy",
+          "locked": true,
+          "bot": false,
+          "discoverable": true,
+          "indexable": false,
+          "group": false,
+          "created_at": "2022-11-11T00:00:00.000Z",
+          "note": "<p>[follow requests welcome, but please have a bio &amp; posts]</p><p>move slow &amp; fix things</p><p>music \u2022 photography \u2022 poetry \u2022 code</p><p>\ud83c\udfb8 since 1998<br>\ud83d\udc69\ud83c\udffb\u200d\ud83d\udcbb since 2006 (pro since 2012)</p><p>aka inkjetski \u2022 new single \u201cautumn sunset\u201d out now on bandcamp</p><p>lead guitarist in the fricatives, adam lagreca</p><p>sr. swe @ headway<br>building: uncut systems<br>prev: sotheby\u2019s, twitter, spotify, meetup, etc</p><p>full stack/platform/infra/sre</p>",
+          "url": "https://mastodon.world/@exchgr",
+          "uri": "https://mastodon.world/users/exchgr",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/109/326/479/774/378/594/original/2812fae73a10486f.png",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/326/479/774/378/594/original/2812fae73a10486f.png",
+          "header": "https://files.mastodon.social/cache/accounts/headers/109/326/479/774/378/594/original/8cc464c87c1bebb0.jpeg",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/109/326/479/774/378/594/original/8cc464c87c1bebb0.jpeg",
+          "followers_count": 1446,
+          "following_count": 1303,
+          "statuses_count": 26443,
+          "last_status_at": "2025-06-01",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "website",
+              "value": "<a href=\"https://exch.gr\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">exch.gr</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2025-06-01T06:32:32.239+00:00"
+            },
+            {
+              "name": "bandcamp",
+              "value": "<a href=\"https://inkjetski.bandcamp.com\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">inkjetski.bandcamp.com</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "apple music",
+              "value": "<a href=\"https://music.apple.com/us/artist/inkjetski/1628719170\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">music.apple.com/us/artist/inkj</span><span class=\"invisible\">etski/1628719170</span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "spotify",
+              "value": "<a href=\"https://open.spotify.com/artist/5LFoocRYaSWDdYbX1wIj6w\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">open.spotify.com/artist/5LFooc</span><span class=\"invisible\">RYaSWDdYbX1wIj6w</span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
