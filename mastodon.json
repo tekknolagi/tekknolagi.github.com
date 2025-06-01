@@ -59158,6 +59158,64 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114608949138886762": {
+      "id": "114608949138886762",
+      "created_at": "2025-06-01T16:02:59.588Z",
+      "in_reply_to_id": "114608936928496884",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114608949138886762",
+      "url": "https://mastodon.social/@tekknolagi/114608949138886762",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>gzips nicely to 18M. Still waiting on brotli to finish.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "114608936928496884": {
+      "id": "114608936928496884",
+      "created_at": "2025-06-01T15:59:53.272Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114608936928496884",
+      "url": "https://mastodon.social/@tekknolagi/114608936928496884",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>So there&#39;s gojekyll. And Go can compile to wasm+wasi. And w2c2 can compile that to C. So here I am wondering if I should bundle the 212M gojekyll.c with my blog,</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
