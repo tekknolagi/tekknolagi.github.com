@@ -59245,6 +59245,35 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114609953788956155": {
+      "id": "114609953788956155",
+      "created_at": "2025-06-01T20:18:29.326Z",
+      "in_reply_to_id": "114608936928496884",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114609953788956155",
+      "url": "https://mastodon.social/@tekknolagi/114609953788956155",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>I think probably the 38M wasm blob with a small wasm interpreter is better. ICFP2006 rise up</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
