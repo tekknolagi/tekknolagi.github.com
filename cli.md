@@ -1,6 +1,7 @@
 ---
 title: CLI
 layout: page
+permalink: /cli/
 ---
 
 Here are some shell scripts and niceties I use to make my life easier. They are

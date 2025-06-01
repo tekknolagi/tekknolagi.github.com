@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Programming languages resources
+permalink: /pl-resources/
 ---
 
 This page is a collection of my favorite resources for people getting started

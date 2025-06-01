@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Some computing notes
+permalink: /opfn/
 ---
 
 WebAssembly (Wasm)

@@ -1,6 +1,7 @@
 ---
 title: Watching now
 layout: page
+permalink: /watching/
 ---
 
 Here are some projects that are occupying some brain space and that I am keeping an eye on, in no particular order (to demonstrate that, I shuffled before publishing). Some are because they do a lot with a small amount of code/people, some are because they feel like they are poking at something very new and cool, and some are excellent learning resources.

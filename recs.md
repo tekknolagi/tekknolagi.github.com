@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Recommendations
+permalink: /recs/
 ---
 
 <style>

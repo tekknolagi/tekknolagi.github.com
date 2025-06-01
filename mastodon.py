@@ -10,6 +10,7 @@ from urllib.request import urlopen, urlretrieve
 API = "https://mastodon.social/api/v1"
 DB = "mastodon.json"
 PAGE = "microblog.html"
+PERMALINK = "/microblog/"
 USER = "tekknolagi"
 MASTODON_MEDIA = "assets/mastodon"
 
@@ -130,6 +131,7 @@ def render(db):
     return f"""---
 title: Microblog
 layout: page
+permalink: {PERMALINK}
 ---
 <style>
 blockquote.post {{

@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Projects
+permalink: /projects/
 ---
 
 Projects page has been removed (and some projects moved to the home page), but

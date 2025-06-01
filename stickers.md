@@ -2,6 +2,7 @@
 layout: page
 title: Stickers
 no_index: true
+permalink: /stickers/
 ---
 
 Stickers page has been removed because StickerMule no longer has custom sticker

@@ -1,6 +1,7 @@
 ---
 title: Older projects
 layout: page
+permalink: /older-projects/
 ---
 
 (continued from [the homepage](/))

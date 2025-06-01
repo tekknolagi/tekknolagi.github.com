@@ -2,7 +2,7 @@
 title: Blog
 layout: page
 blog_index: true
-permalink: blog/
+permalink: /blog/
 ---
 
 <ul>

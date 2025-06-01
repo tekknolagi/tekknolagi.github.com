@@ -1,6 +1,7 @@
 ---
 title: Git
 layout: page
+permalink: /git/
 ---
 
 There are some aliases and Git addons that I use to make my life easier.

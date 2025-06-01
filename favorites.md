@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Favorite Things
+permalink: /favorites/
 ---
 
 I found this website called [LibraryThing](https://www.librarything.com/home)
