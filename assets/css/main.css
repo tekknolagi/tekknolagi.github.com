@@ -183,3 +183,8 @@ figcaption::before {
     content: "Fig. " counter(figures) " - ";
     font-weight: bold;
 }
+
+/* gojekyll includes an <hr> in footnotes that we don't want */
+div.footnotes hr {
+  display: none;
+}
