@@ -59407,6 +59407,153 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114616189307953844": {
+      "id": "114616189307953844",
+      "created_at": "2025-06-02T22:44:15.800Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114616189307953844/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114616189307953844/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114614420141781776",
+        "created_at": "2025-06-02T15:14:20.474Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.social/users/cfbolz/statuses/114614420141781776",
+        "url": "https://mastodon.social/@cfbolz/114614420141781776",
+        "replies_count": 4,
+        "reblogs_count": 22,
+        "favourites_count": 38,
+        "edited_at": null,
+        "content": "<p>Just saw the coolest demo Boris Shingarov, Jan Vran\u00fd on the MPLR stream: a instruction-stepping debugger of a RISC-V core, but it was integrated with the Sail specification so you could step *into* the RISC-V instruction to see what the specification says the instruction should do.</p><p><a href=\"https://2025.programming-conference.org/details/MoreVMs-2025-papers/5/Debugging-a-Smalltalk-VM-assisted-by-large-automated-reasoning\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">2025.programming-conference.or</span><span class=\"invisible\">g/details/MoreVMs-2025-papers/5/Debugging-a-Smalltalk-VM-assisted-by-large-automated-reasoning</span></a></p>",
+        "reblog": null,
+        "application": {
+          "name": "Pinafore",
+          "website": "https://pinafore.social"
+        },
+        "account": {
+          "id": "64048",
+          "username": "cfbolz",
+          "acct": "cfbolz",
+          "display_name": "CF Bolz-Tereick",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2017-04-08T00:00:00.000Z",
+          "note": "<p>PyPy/RPython contributor. Half time teaching at Uni D\u00fcsseldorf. Works on dynamic language implementations. Vegan. Love street art and art in public spaces, hiking, reading.<br />they/them</p>",
+          "url": "https://mastodon.social/@cfbolz",
+          "uri": "https://mastodon.social/users/cfbolz",
+          "avatar": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "header": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "header_static": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "followers_count": 1013,
+          "following_count": 1167,
+          "statuses_count": 2558,
+          "last_status_at": "2025-06-02",
+          "hide_collections": false,
+          "noindex": false,
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "website",
+              "value": "<a href=\"https://www.cfbolz.de\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">cfbolz.de</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2022-12-26T10:32:06.422+00:00"
+            }
+          ]
+        },
+        "media_attachments": [
+          {
+            "id": "114614411326560699",
+            "type": "image",
+            "url": "https://files.mastodon.social/media_attachments/files/114/614/411/326/560/699/original/496370bdbf08dfe7.png",
+            "preview_url": "https://files.mastodon.social/media_attachments/files/114/614/411/326/560/699/small/496370bdbf08dfe7.png",
+            "remote_url": null,
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "original": {
+                "width": 2835,
+                "height": 1362,
+                "size": "2835x1362",
+                "aspect": 2.0814977973568283
+              },
+              "small": {
+                "width": 693,
+                "height": 333,
+                "size": "693x333",
+                "aspect": 2.081081081081081
+              },
+              "focus": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            },
+            "description": "screenshot of a smalltalk-built risc-v debugger, showing disassembled risc-v instructions and register values. the debugger has \"over instruction\" and \"into instruction\" buttons.",
+            "blurhash": "U35hoj%hRij[tnWBR.oeX=o~t5t7yFW?ozoz"
+          },
+          {
+            "id": "114614415705617837",
+            "type": "image",
+            "url": "https://files.mastodon.social/media_attachments/files/114/614/415/705/617/837/original/c157fa2046b32230.png",
+            "preview_url": "https://files.mastodon.social/media_attachments/files/114/614/415/705/617/837/small/c157fa2046b32230.png",
+            "remote_url": null,
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "original": {
+                "width": 1927,
+                "height": 1162,
+                "size": "1927x1162",
+                "aspect": 1.6583476764199656
+              },
+              "small": {
+                "width": 618,
+                "height": 373,
+                "size": "618x373",
+                "aspect": 1.6568364611260054
+              },
+              "focus": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            },
+            "description": "screenshot of Sail source code after clicking \"into instruction\" button",
+            "blurhash": "UWC6@-a$R.j[Rpayj[j[0Doet3WD--ayazj["
+          }
+        ],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
