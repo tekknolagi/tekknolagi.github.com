@@ -3,9 +3,11 @@ name: Deploy preview on fly.io
 on:
   pull_request:
     branches: [ main ]
+    types: [opened, reopened, edited, synchronize, closed]
 
 jobs:
   staging_app:
+    if: ${{ github.event.action != 'closed' }}
     runs-on: ubuntu-latest
 
     # Only run one deployment at a time per PR.
