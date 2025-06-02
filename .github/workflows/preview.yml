@@ -41,6 +41,6 @@ jobs:
       - name: Install flyctl
         run: curl -L https://fly.io/install.sh | sh
       - name: Clean up app
-        run: flyctl app destroy --yes bernsteinbear-com-pr-${{ github.event.number }}
+        run: ~/.fly/bin/flyctl app destroy --yes bernsteinbear-com-pr-${{ github.event.number }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
