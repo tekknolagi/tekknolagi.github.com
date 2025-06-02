@@ -34,6 +34,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Clean up app
+        run: flyctl app destroy --yes bernsteinbear-com-pr-${{ github.event.number }}
         if: ${{ github.event.action == 'closed' }}
         with:
           name: bernsteinbear-com-pr-${{ github.event.number }}
@@ -41,4 +42,3 @@ jobs:
           org: personal
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        run: flyctl app destroy --yes bernsteinbear-com-pr-${{ github.event.number }}
