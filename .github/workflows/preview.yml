@@ -34,6 +34,7 @@ jobs:
 
   clean_up_app:
     if: ${{ github.event.action == 'closed' }}
+    runs-on: ubuntu-latest
     steps:
       - name: Install flyctl
         run: curl -L https://fly.io/install.sh | sh
