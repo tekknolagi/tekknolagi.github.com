@@ -31,3 +31,14 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  clean_up_app:
+    if: ${{ github.event.action == 'closed' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install flyctl
+        run: curl -L https://fly.io/install.sh | sh
+      - name: Clean up app
+        run: flyctl app destroy --yes bernsteinbear-com-pr-${{ github.event.number }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
