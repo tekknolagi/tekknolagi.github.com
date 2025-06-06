@@ -59554,6 +59554,84 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114634637747126573": {
+      "id": "114634637747126573",
+      "created_at": "2025-06-06T04:55:56.670Z",
+      "in_reply_to_id": "114634511019910245",
+      "in_reply_to_account_id": "523512",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114634637747126573",
+      "url": "https://mastodon.social/@tekknolagi/114634637747126573",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> happy to give a walkthrough/pair on it after PLDI!</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "114634485231976058": {
+      "id": "114634485231976058",
+      "created_at": "2025-06-06T04:17:09.447Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114634485231976058",
+      "url": "https://mastodon.social/@tekknolagi/114634485231976058",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 8,
+      "edited_at": null,
+      "content": "<p>I am now a Ruby committer! Thank you to <span class=\"h-card\" translate=\"no\"><a href=\"https://ruby.social/@k0kubun\" class=\"u-url mention\">@<span>k0kubun</span></a></span>  for proposing, <span class=\"h-card\" translate=\"no\"><a href=\"https://ruby.social/@matz\" class=\"u-url mention\">@<span>matz</span></a></span> for accepting, and the Ruby community for being so welcoming. I&#39;m looking forward to working more with all of you!</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109289247182164803",
+          "username": "k0kubun",
+          "url": "https://ruby.social/@k0kubun",
+          "acct": "k0kubun@ruby.social"
+        },
+        {
+          "id": "109286023853139777",
+          "username": "matz",
+          "url": "https://ruby.social/@matz",
+          "acct": "matz@ruby.social"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
