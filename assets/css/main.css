@@ -170,7 +170,7 @@ a.footnote:before {
 a.footnote:after {
     content: "]";
 }
-figure object.svg, figure svg, figure img {
+figure object, figure svg, figure img {
   max-width: 100%;
   display: block;
   margin: auto;
