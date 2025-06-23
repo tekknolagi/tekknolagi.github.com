@@ -44,7 +44,8 @@ village at night, where there are restaurants and shops in a reconstructed
 stone-and-timber village.
 
 As I departed for the train, I also wandered into the night market on
-Donhwamun-ro 11-gil, which was packed and also looked excellent. Pity I had
+Donhwamun-ro 11-gil, which was packed and also looked excellent. It had tables
+and seating, giving it a very different feel than Myeong-dong. Pity I had
 already eaten... this looked like *the* place to be.
 
 Until next time, South Korea!
