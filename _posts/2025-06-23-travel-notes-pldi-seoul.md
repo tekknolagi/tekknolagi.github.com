@@ -30,8 +30,9 @@ Not many people online suggest the city wall walk---in fact, I did not see it
 mentioned on any website I looked at---but I stumbled across it coming out of
 the Cheonggyecheon walk and in search of a 7-Eleven. It's a nice 15 mile
 circular tour of old Seoul. I didn't do the whole thing because it was already
-so late in the day but I will next time. Bring a cold beverage (corn silk tea
-is nice). It's hilly.
+so late in the day but I will next time. It's a lovely way to escape the huge
+buildings and constant traffic and see the small homes where people actually
+live. Bring a cold beverage (corn silk tea is nice). It's hilly.
 
 On the city wall walk by Naksan there is a cute cafe called *cogito, ergo sum*.
 I had ice cream there and looked out over the city. It's a lovely place to sit
