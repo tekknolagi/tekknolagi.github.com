@@ -119,6 +119,7 @@ are due to having other fields, or alignment, or something.
 
 ## Extensions
 
+* ae-graphs (phil zucker and chris fallin)
 * e-graphs (see [my e-graph post](/blog/whats-in-an-egraph/))
 * annotating edges (groupoids, lesbre/lemerre paper)
 * persistence (undo)
