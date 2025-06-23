@@ -48,4 +48,10 @@ Donhwamun-ro 11-gil, which was packed and also looked excellent. It had tables
 and seating, giving it a very different feel than Myeong-dong. Pity I had
 already eaten... this looked like *the* place to be.
 
+Getting to and from the airport (ICN) is irritating. You can do one straight
+shot from ICN to Seoul Station on the AREX train (which I recommend if it's in
+budget for you and/or your employer; the slower train is fine too), but you if
+you need to transfer anywhere, it's up, down, and around in circles in the
+train station. There is *a lot* of transfer friction.
+
 Until next time, South Korea!
