@@ -31,6 +31,9 @@ def union(x, y):  # Join two sets
         uf[x] = y
 ```
 
+This makes it so easy to drop this into any existing or new project. No
+library, just 10 lines of code.
+
 This implementation does not do path compression or union-by-rank, the features
 that get peak performance, but adding those features in can be done
 incrementally and without changing the API.
@@ -58,6 +61,11 @@ def find(x):
 ```
 
 ## Inline vs out-of-line
+
+For this demonstration of union-find embedded into your existing data
+structures, we will use a barebones imaginary compiler IR. This may look
+familiar; it is a mashup of Phil Zucker's above union-find and CF
+Bolz-Tereick's Toy Optimizer union-find.
 
 ```python
 class Node:
@@ -107,11 +115,11 @@ class Add(Node):
 
 This also works without classes; set `opcode` field or something. Just requires
 all rewritable nodes be at least as big as `Identity` node, but they probably
-are due to having other fields
+are due to having other fields, or alignment, or something.
 
 ## Extensions
 
+* e-graphs (see [my e-graph post](/blog/whats-in-an-egraph/))
 * annotating edges (groupoids, lesbre/lemerre paper)
 * persistence (undo)
-* parallelism
-* e-graphs (see [my e-graph post](/blog/whats-in-an-egraph/))
+* parallelism (win wang)
