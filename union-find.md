@@ -7,9 +7,10 @@ permalink: /union-find/
 Union-find, sometimes called disjoint-set union, is a data structure that
 stores equivalence classes quickly and compactly. It has a bunch of uses:
 
-* compiler rewriting
+* compiler optimizer rewriting
 * type inference
 * pointer analysis
+* into-SSA (Bebenita's algorithm)
 * probably more
 
 It's *especially* interesting to me because the core of the simple
@@ -43,6 +44,17 @@ and `y`, the elements, are. They may be integers, the usual type, but they
 could also be any other type that can be hashed and compared. I think most
 people end up using a dense representation---an array---with indices, though.
 Or maybe the embedded pointers approach (see below).
+
+## Tricky bits
+
+You should always refer to the set representative when using union-find. This
+means you have to treat `find` kind of like a read barrier in a garbage
+collector: using a stale pointer in an operation may be undefined behavior.
+The pointer doesn't go bad, exactly---holding onto it is fine---you just need
+to call `find` before doing things to it.
+
+This allows other pieces of your infrastructure---say, a type inference
+pass---to only store information for and only update the set representative.
 
 ## Path compression
 

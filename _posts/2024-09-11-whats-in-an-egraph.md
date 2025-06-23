@@ -654,7 +654,7 @@ In a [Zulip thread][zulip], Chris writes:
 
 [zulip]: https://egraphs.zulipchat.com/#narrow/stream/375765-egg.2Fegglog/topic/incrementally.20.22discovering.22.20e-graphs.20from.20union-find
 
-PyPy has "union find" in its optimizer but it's smarter than normal union-find.
+PyPy has "union-find" in its optimizer but it's smarter than normal union-find.
 It also has smart constructors and some other features that make its optimizer
 more e-graph like than union-find like. Perhaps CF will write a blog post about
 this some day.
