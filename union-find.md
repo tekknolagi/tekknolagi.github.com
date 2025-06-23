@@ -28,7 +28,7 @@ def find(x):  # Find the set representative
 def union(x, y):  # Join two sets
     x = find(x)
     y = find(y)
-    if x != y:
+    if x is not y:
         uf[x] = y
 ```
 
