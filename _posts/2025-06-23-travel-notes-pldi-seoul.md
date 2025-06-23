@@ -34,7 +34,7 @@ so late in the day but I will next time. It's a lovely way to escape the huge
 buildings and constant traffic and see the small homes where people actually
 live. Bring a cold beverage (corn silk tea is nice). It's hilly.
 
-On the city wall walk by Naksan there is a cute cafe called *cogito, ergo sum*.
+On the city wall walk by Naksan there is a cute cafe called *cafe cogito*.
 I had ice cream there and looked out over the city. It's a lovely place to sit
 and cool off. The neighbors have a cat that goes adventuring around.
 
