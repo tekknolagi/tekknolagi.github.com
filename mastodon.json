@@ -59986,6 +59986,120 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114731170041714892": {
+      "id": "114731170041714892",
+      "created_at": "2025-06-23T06:05:22.566Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114731170041714892/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114731170041714892/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114730747599105405",
+        "created_at": "2025-06-23T04:17:56.601Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.social/users/cfbolz/statuses/114730747599105405",
+        "url": "https://mastodon.social/@cfbolz/114730747599105405",
+        "replies_count": 1,
+        "reblogs_count": 5,
+        "favourites_count": 8,
+        "edited_at": null,
+        "content": "<p>Preprint by Christoph Jung and me is now online: &#39;Low Overhead Allocation Sampling in a Garbage Collected Virtual Machine&#39;<br /><a href=\"https://arxiv.org/abs/2506.16883\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">arxiv.org/abs/2506.16883</span><span class=\"invisible\"></span></a></p>",
+        "reblog": null,
+        "application": {
+          "name": "Megalodon",
+          "website": "https://sk22.github.io/megalodon"
+        },
+        "account": {
+          "id": "64048",
+          "username": "cfbolz",
+          "acct": "cfbolz",
+          "display_name": "CF Bolz-Tereick",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2017-04-08T00:00:00.000Z",
+          "note": "<p>PyPy/RPython contributor. Half time teaching at Uni D\u00fcsseldorf. Works on dynamic language implementations. Vegan. Love street art and art in public spaces, hiking, reading.<br />they/them</p>",
+          "url": "https://mastodon.social/@cfbolz",
+          "uri": "https://mastodon.social/users/cfbolz",
+          "avatar": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "header": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "header_static": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "followers_count": 1028,
+          "following_count": 1179,
+          "statuses_count": 2597,
+          "last_status_at": "2025-06-23",
+          "hide_collections": false,
+          "noindex": false,
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "website",
+              "value": "<a href=\"https://www.cfbolz.de\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">cfbolz.de</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2022-12-26T10:32:06.422+00:00"
+            }
+          ]
+        },
+        "media_attachments": [
+          {
+            "id": "114730740587835223",
+            "type": "image",
+            "url": "https://files.mastodon.social/media_attachments/files/114/730/740/587/835/223/original/b32035cc8f6632e3.jpg",
+            "preview_url": "https://files.mastodon.social/media_attachments/files/114/730/740/587/835/223/small/b32035cc8f6632e3.jpg",
+            "remote_url": null,
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "original": {
+                "width": 1080,
+                "height": 831,
+                "size": "1080x831",
+                "aspect": 1.2996389891696751
+              },
+              "small": {
+                "width": 547,
+                "height": 421,
+                "size": "547x421",
+                "aspect": 1.299287410926366
+              }
+            },
+            "description": "Screenshot of the first page of the paper",
+            "blurhash": "UDRC[6xu-;M{~qWBofxu-;ofRjWB%MWBRjkB"
+          }
+        ],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
