@@ -43,7 +43,7 @@ Another neat thing is that this implementation does not specify what types `x`
 and `y`, the elements, are. They may be integers, the usual type, but they
 could also be any other type that can be hashed and compared. I think most
 people end up using a dense representation---an array---with indices, though.
-Or maybe the embedded pointers approach (see below).
+Or maybe the inline embedded pointers approach (see below).
 
 ## Tricky bits
 
