@@ -72,6 +72,10 @@ def find(x):
     return result
 ```
 
+## Union by rank
+
+...todo
+
 ## Inline vs out-of-line
 
 For this demonstration of union-find embedded into your existing data
