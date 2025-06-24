@@ -49,7 +49,7 @@ could also be any other type that can be hashed and compared. I think most
 people end up using a dense representation---an array---with indices, though.
 Or maybe the inline embedded pointers approach (see below).
 
-## Tricky bits
+### Tricky bits
 
 You should always refer to the set representative when using union-find. This
 means you have to treat `find` kind of like a read barrier in a garbage
@@ -59,6 +59,10 @@ to call `find` before doing things to it.
 
 This allows other pieces of your infrastructure---say, a type inference
 pass---to only store information for and only update the set representative.
+
+### Sentinels and fixpoints
+
+...todo about setting representative to self
 
 ## Path compression
 
@@ -76,7 +80,19 @@ def find(x):
     return result
 ```
 
+## Path splitting
+
+...todo
+
+## Path halving
+
+...todo
+
 ## Union by rank
+
+...todo
+
+## Union by index
 
 ...todo
 
