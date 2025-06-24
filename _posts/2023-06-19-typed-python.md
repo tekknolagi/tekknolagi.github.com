@@ -503,7 +503,7 @@ struct MyPair:
 
 It even looks like the `@value` decorator gives you value semantics.
 
-Per the Mojo [docs](https://docs.modular.com/mojo/programming-manual.html#struct-types),
+Per the Mojo [docs](https://docs.modular.com/mojo/manual/structs/#structs-compared-to-classes),
 
 > Mojo structs are static: they are bound at compile-time (you cannot add
 > methods at runtime). Structs allow you to trade flexibility for performance
