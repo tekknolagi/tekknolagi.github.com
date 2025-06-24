@@ -60,6 +60,8 @@ to call `find` before doing things to it.
 This allows other pieces of your infrastructure---say, a type inference
 pass---to only store information for and only update the set representative.
 
+<!-- http://users.eecs.northwestern.edu/~mpatwary/SEA2010.pdf -->
+
 ### Sentinels and fixpoints
 
 ...todo about setting representative to self
