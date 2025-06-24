@@ -76,6 +76,14 @@ sequence of m ≥ n find and n – 1 union operations in O(m α(m, n)) time.
 
 ...todo about setting representative to self
 
+## Path splitting
+
+...todo
+
+## Path halving
+
+...todo
+
 ## Path compression
 
 ```python
@@ -91,14 +99,6 @@ def find(x):
         x = current
     return result
 ```
-
-## Path splitting
-
-...todo
-
-## Path halving
-
-...todo
 
 ## Union by rank
 
