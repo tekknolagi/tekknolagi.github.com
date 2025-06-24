@@ -9,11 +9,11 @@ co_authors: Zach Kirsch
 
 This past year, I had the honor and pleasure to work on the JumboSmash app with
 
-* [Winnona DeSombre](https://winnona.github.io/)
+* [Winnona DeSombre](https://www.winnonadesombre.com/)
 * Shanshan Duan
-* [Chris Gregory](http://chrisgregory.me/)
-* [Zach Kirsch](http://zachkirsch.com/)
-* [Emily Lin](http://emilyjlin.com/)
+* [Chris Gregory](https://chrisgregory.me/)
+* [Zach Kirsch](https://zachkirsch.com/)
+* Emily Lin
 * [Yuki Zaninovich](https://yzan424.github.io/).
 
 For those who were not in and around[^trivia] Tufts while the app was active,

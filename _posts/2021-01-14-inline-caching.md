@@ -21,7 +21,7 @@ blog post. The caching strategy in this demo is a technique similar to the
 ideas from [Inline Caching meets Quickening [PDF]][ic-quickening] in that it
 caches function pointers instead of making use of a JIT compiler.
 
-[ic-quickening]: http://www.complang.tuwien.ac.at/kps09/pdfs/brunthaler.pdf
+[ic-quickening]: /assets/img/ic-meets-quickening.pdf
 
 In order to make the most of this post, I recommend having some background on
 building bytecode virtual machines. It is by no means necessary, but will make

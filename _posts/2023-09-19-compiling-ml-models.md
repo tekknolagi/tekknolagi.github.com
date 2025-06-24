@@ -689,7 +689,7 @@ pass, too. And we have to do several epochs of all 60,000 images. That is going
 to take way too long!
 
 Well, let's do what everyone always suggests: try with
-[PyPy](https://www.pypy.org/). Oh neat, a couple images per second.
+[PyPy](https://pypy.org/). Oh neat, a couple images per second.
 Unfortunately, that is still not fast enough.
 
 > By the way, our old project

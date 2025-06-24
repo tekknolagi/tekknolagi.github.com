@@ -32,7 +32,7 @@ To do that we're going to use the union-find/disjoint-set data structure,
 which, if you don't think about it too hard, is really simple (proving it fast
 is a different matter entirely). If you are a programming languages person and
 haven't used it much, I recommend taking a look at CF's [Implementing a Toy
-Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html). That was
+Optimizer](https://pypy.org/posts/2022/07/toy-optimizer.html). That was
 what a) made it stick, b) made it simple, and c) got me hooked. I also
 recommend [this visualization
 tool](https://www.cs.usfca.edu/~galles/visualization/DisjointSets.html) by

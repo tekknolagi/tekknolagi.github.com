@@ -17,14 +17,17 @@ from the programmer.
 It seems to have been discovered independently multiple times over the years,
 but the most famous papers are the [original][original-milner] (PDF) by Milner
 and the [follow-on][damas-milner] (PDF) by Damas and Milner. Damas continued on
-to write his [thesis][damas-thesis] (PDF) about it. (If you have a link to the
-appropriate Hindley paper, please let me know.)
+to write his [thesis][damas-thesis] (PDF) about it. ~~(If you have a link to the
+appropriate Hindley paper, please let me know.)~~ Someone also sent me a link
+to the [Hindley paper][hindley-paper] (PDF).
 
 [original-milner]: /assets/img/milner-theory-type-polymorphism.pdf
 
 [damas-milner]: /assets/img/damas-milner-original.pdf
 
 [damas-thesis]: /assets/img/damas-thesis.pdf
+
+[hindley-paper]: /assets/img/hindley-principal-type-scheme.pdf
 
 The type system is limited, but by virtue of being limited, it confers these
 advantages:

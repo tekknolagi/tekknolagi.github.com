@@ -243,7 +243,7 @@ fine. Just-in-time compilers have been doing this for years. What's the deal?"
 Just-in-time compilers can be so effective because they can speculate on things
 that are not compile-time constants. Then, if the assumption is no longer true,
 they can fall back on a (slower) interpreter. This is how
-[PyPy](https://www.pypy.org/), the successor of
+[PyPy](https://pypy.org/), the successor of
 [Psyco](https://psyco.sourceforge.net/), does its amazing work specializing
 data structures; the JIT does not have to handle every case. This interpreter
 deoptimization is part of what makes JITs hard to understand and does not much
@@ -294,7 +294,7 @@ This is also true of many other type-driven compiler projects that optimize
 * [Mojo](https://www.modular.com/mojo)
 * [Mypyc](https://github.com/mypyc/mypyc)
 * [Shed Skin](https://github.com/shedskin/shedskin)
-* [Starkiller](http://michael.salib.com/writings/thesis/thesis.pdf) (PDF)
+* [Starkiller](/assets/img/salib-thesis.pdf) (PDF)
 * [Static Python](https://github.com/facebookincubator/cinder/#static-python)
 * [Typed Python](https://github.com/APrioriInvestments/typed_python/blob/dev/docs/introduction.md)
 
@@ -304,7 +304,7 @@ and in particular to optimize numerics:
 * [Numba](https://github.com/numba/numba)
 * [LPython](https://github.com/lcompilers/lpython)
   (more info in [blog post](https://lpython.org/blog/2023/07/lpython-novel-fast-retargetable-python-compiler/))
-* [Pyccel](https://github.com/pyccel/pyccel/blob/devel/tutorial/quickstart.md)
+* [Pyccel](https://github.com/pyccel/pyccel/blob/devel/docs/quickstart.md)
 * [Pythran](https://pythran.readthedocs.io/en/latest/)
 * [Taichi](https://github.com/taichi-dev/taichi)
 * [TensorFlow JIT/XLA](https://www.tensorflow.org/xla)

@@ -60,7 +60,7 @@ sequenceDiagram
 
 That's a lot of overhead. (And there's more, too. See Antonio Cuni's [excellent
 blog
-post](https://www.pypy.org/posts/2018/09/inside-cpyext-why-emulating-cpython-c-8083064623681286567.html).)
+post](https://pypy.org/posts/2018/09/inside-cpyext-why-emulating-cpython-c-8083064623681286567.html).)
 And it's a hard problem that has bitten multiple alternative Python
 runtimes[^capi-problem].
 

@@ -573,13 +573,13 @@ Take a look at [runtime/ic.h][ic.h] and [runtime/ic.cpp][ic.cpp] for a deep dive
 ## Other things to go explore
 
 We have our layout system in [`runtime/layout.h`][layout_h] and
-[`runtime/layout.cpp`][layout_cpp]. This showcases the thin veneer on top of
+[`runtime/runtime.cpp`][runtime_cpp]. This showcases the thin veneer on top of
 type objects that we use to track where attributes are on different types of
 objects. In Skybison this is called "layouts" but in other systems it is called
 "hidden classes", "object shapes", and probably some other names.
 
 [layout_h]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/layout.h
-[layout_cpp]: https://github.com/tekknolagi/skybison/blob/9253d1e0e42c756dfa37e709918266e09e1d15dc/runtime/layout.cpp
+[runtime_cpp]: https://github.com/tekknolagi/skybison/blob/df9b2db456141f4df03136f1c55a8c1cc698d6d9/runtime/runtime.cpp#L3341
 
 We have our assembly interpreter (interpreter written in assembly; called
 "template interpreter" by the JVM folks) and template JIT compiler in

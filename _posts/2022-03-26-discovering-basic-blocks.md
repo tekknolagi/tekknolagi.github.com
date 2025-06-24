@@ -596,7 +596,7 @@ be easier to do so on an infinite register based IR. Perhaps in [static single
 assignment (SSA)][ssa] form. If I have time, I will write about those soon. If I
 don't, well, you have the rest of the internet to consult.
 
-[ssa]: https://pp.info.uni-karlsruhe.de/uploads/publikationen/braun13cc.pdf
+[ssa]: /assets/img/braun13cc.pdf
 
 ## Addendum
 

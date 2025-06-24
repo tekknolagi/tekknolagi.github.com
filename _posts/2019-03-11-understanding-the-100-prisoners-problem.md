@@ -6,7 +6,7 @@ co_authors: Chris Gregory, Yuki Zaninovich
 og_image: /assets/img/prisoners.png
 ---
 
-I visited my friends [Chris](http://chrisgregory.me) and Yuki in Seattle. 
+I visited my friends [Chris](https://chrisgregory.me) and Yuki in Seattle. 
 After lunch, Chris threw us a brainteaser: the 100 prisoners problem. For 
 those not familiar, Minute Physics has a [great YouTube video][minutephysics] 
 about it.
