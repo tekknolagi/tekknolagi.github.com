@@ -8,9 +8,9 @@ Union-find, sometimes called disjoint-set union, is a data structure that
 stores equivalence classes quickly and compactly. It has a bunch of uses:
 
 * compiler optimizer rewriting
-* type inference
-* pointer analysis
-* into-SSA (Bebenita's algorithm)
+* [type inference](/blog/type-inference/)
+* pointer analysis (see Steensgaard's algorithm)
+* into-SSA ([Bebenita's algorithm](/assets/img/bebenita-ssa.pdf) (PDF))
 * probably more
 
 I think about it mostly in from a compilers perspective because that's all I do
