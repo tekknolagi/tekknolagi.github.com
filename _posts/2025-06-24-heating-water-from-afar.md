@@ -7,8 +7,8 @@ layout: post
 <i>especially</i> not this post) as engineering advice.</b>
 
 My parents' house has an on-demand water heater for energy efficiency reasons.
-This has a small drawback: you have to press a button to turn prime the water
-heater and then wait 2-5 minutes before showering.
+This has a small drawback: you have to press a button to prime the water heater
+and then wait 2-5 minutes before showering.
 
 This turns into a somewhat bigger drawback for the one room for which it's just
 Not Possible to wire up a button. The water heater company hypothetically sells
