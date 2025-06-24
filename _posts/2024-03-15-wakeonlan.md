@@ -197,6 +197,11 @@ packet. It does this by waiting for the same magic packet but to the *reversed*
 MAC address. I set that up as an unprivileged user service on the big desktop
 and now the "Sleep" button actually works.
 
+**Update on June 24, 2025:** A long time ago, someone (unfortunately I don't
+remember who) told me that I can do wakeonlan [from
+Python](https://github.com/remcohaszing/pywakeonlan/blob/main/wakeonlan/__init__.py)
+and skip the subprocess. An even lower code solution. Amazing.
+
 ## All the code
 
 To see all of the code and configuration in its brief glory, check out [the
