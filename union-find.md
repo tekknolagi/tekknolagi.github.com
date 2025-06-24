@@ -13,6 +13,9 @@ stores equivalence classes quickly and compactly. It has a bunch of uses:
 * into-SSA (Bebenita's algorithm)
 * probably more
 
+I think about it mostly in from a compilers perspective because that's all I do
+all day, every day: rewrite those graphs.
+
 It's *especially* interesting to me because the core of the simple
 implementation is so small:
 
@@ -33,7 +36,8 @@ def union(x, y):  # Join two sets
 ```
 
 This makes it so easy to drop this into any existing or new project. No
-library, just 10 lines of code.
+library, just 10 lines of code. Instant find-and-replace when optimizing your
+compiler IR.
 
 This implementation does not do path compression or union-by-rank, the features
 that get peak performance, but adding those features in can be done
