@@ -66,6 +66,7 @@ Not quite code but presenting very cool ideas:
 * (To-be-written) Using Z3 to prove your static analyzer correct
   * [More Stupid Z3Py Tricks: Simple Proofs](http://www.philipzucker.com/more-stupid-z3py-tricks-simple-proofs/) is a good jumping-off point, as is [Compiling with Constraints](https://www.philipzucker.com/compile_constraints/)
 * (To-be-written) From union-find to egraphs; exploring the tradeoffs
+  * UPDATE: [I wrote it!](https://bernsteinbear.com/blog/whats-in-an-egraph/)
 * [a simple semi-space collector](https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector) explains how semi-space GCs work in ~100 lines of C
   * Note: the zero-length array member `payload` is non-standard and probably not needed
   * Note: `is_forwarded` should actually check if if the masked tag is `== 0`
