@@ -62,6 +62,16 @@ pass---to only store information for and only update the set representative.
 
 <!-- http://users.eecs.northwestern.edu/~mpatwary/SEA2010.pdf -->
 
+<!--
+
+https://www.cs.princeton.edu/courses/archive/spring13/cos423/lectures/UnionFind.pdf
+
+Theorem. [Tarjan-van Leeuwen 1984] Link-by- { size, rank } combined with
+{ path compression, path splitting, path halving } performs any intermixed
+sequence of m ≥ n find and n – 1 union operations in O(m α(m, n)) time.
+
+-->
+
 ### Sentinels and fixpoints
 
 ...todo about setting representative to self
