@@ -42,7 +42,7 @@ ago in robotics and I don't want to start any fires, I reach out to the usual
 suspects: Tom and Logan. They inform me that the thing I am looking for is
 called a relay and that companies sell pre-built relay hats for the Pi. Super.
 
-I end up buying:
+I ended up buying:
 
 * A Pi Zero 2W and accoutrements
 * A relay hat with headers and stabilization posts
