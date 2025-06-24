@@ -22,7 +22,8 @@ heater? I investigated a couple of different approaches:
 
 * analyze and replicate the water heater company's proprietary Bluetooth
   protocol
-* install a physical button presser
+* install a physical button presser, inspired by the [Recurse
+  Center]({{site.rc_scout}})'s elevator-related shenanigans
 
 but after a couple of discussions with my dad and a support tech from the
 company, we determined that we should instead *emulate* a button press. To find
