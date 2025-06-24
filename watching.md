@@ -62,7 +62,7 @@ Not quite code but presenting very cool ideas:
   * Related: [Deegen](https://arxiv.org/abs/2411.11469), which gives you an
     interpreter and a JIT with caching and other goodies
 * [Egg](https://egraphs-good.github.io/), and more broadly egraphs, for program IRs
-* [Implementing a Toy Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html) and union-find in general
+* [Implementing a Toy Optimizer](https://www.pypy.org/posts/2022/07/toy-optimizer.html) and [union-find](/union-find/) in general
 * (To-be-written) Using Z3 to prove your static analyzer correct
   * [More Stupid Z3Py Tricks: Simple Proofs](http://www.philipzucker.com/more-stupid-z3py-tricks-simple-proofs/) is a good jumping-off point, as is [Compiling with Constraints](https://www.philipzucker.com/compile_constraints/)
 * (To-be-written) From union-find to egraphs; exploring the tradeoffs
