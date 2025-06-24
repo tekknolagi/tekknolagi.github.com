@@ -112,5 +112,7 @@ boring stuff: httpd, systemd. Hopefully nothing goes wrong. But if it does and
 I need to administer this device from afar, I also set up Tailscale (no, this
 is not an ad; just happy).
 
-The total bill for this came to ~$40 or so, which isn't half bad. That's all
-for now. Thanks for reading!
+The total bill for this came to ~$40 or so, which isn't half bad. It could
+probably be done for 35 cents using an old microcontroller and a paperclip or
+something but I wanted an exceptionally boring (to me) approach. That's all for
+now. Thanks for reading!
