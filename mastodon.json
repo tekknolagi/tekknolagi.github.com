@@ -60284,6 +60284,71 @@
         ]
       },
       "poll": null
+    },
+    "114756830483390504": {
+      "id": "114756830483390504",
+      "created_at": "2025-06-27T18:51:09.829Z",
+      "in_reply_to_id": "114756806741101395",
+      "in_reply_to_account_id": "110182438756240431",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114756830483390504",
+      "url": "https://mastodon.social/@tekknolagi/114756830483390504",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://cosocial.ca/@avi\" class=\"u-url mention\">@<span>avi</span></a></span> it&#39;s just trees,</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110182438756240431",
+          "username": "avi",
+          "url": "https://cosocial.ca/@avi",
+          "acct": "avi@cosocial.ca"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "114756761358416604": {
+      "id": "114756761358416604",
+      "created_at": "2025-06-27T18:33:35.066Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114756761358416604",
+      "url": "https://mastodon.social/@tekknolagi/114756761358416604",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "edited_at": null,
+      "content": "<p>I feel like if I&#39;m not careful I might get into XSLT</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
