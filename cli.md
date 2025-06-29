@@ -75,11 +75,9 @@ own test case checker (maybe even using run.py).
 
 ## turnt.py
 
-I [forked][turnt-fork] Adrian Sampson's [turnt][turnt-upstream], which is a
-small snapshot testing tool, to fit it into a single file with no external
-dependencies.
-
-[turnt-fork]: https://github.com/tekknolagi/turnt-1/tree/mb-shrink/turnt
+I modified Adrian Sampson's [turnt][turnt-upstream], which is a small snapshot
+testing tool, to fit it into a single file with no external dependencies. My
+patches are now upstream!
 
 [turnt-upstream]: https://github.com/cucapra/turnt
 
@@ -93,7 +91,14 @@ GraphViz and amalgamated it into a single file.
 
 [cog-upstream]: https://github.com/nedbat/cog
 
-## Ninja generator and small Ninja
+## markdown2.py
+
+Trent Mick has an [excellent implementation of
+Markdown](https://github.com/trentm/python-markdown2) in a [single Python
+file](https://github.com/trentm/python-markdown2/blob/master/lib/markdown2.py)
+with no deps.
+
+## Ninja generator and small Ninja (ninja.py)
 
 It's pretty easy to generate Ninja files and BYOB[^byob] and I wrote a [blog
 post](/blog/ninja-is-enough/) about that. Then I discovered someone's very
