@@ -472,7 +472,9 @@ values for the entire method.
 
 Boissinot
 
-## Other notes
+## 9. Conclusions
+
+## Other notes on the paper and algorithm
 
 Is this different for basic block arguments? IIRC basic block arguments handle
 at least one case that phi cannot, which is block B1 jumping to B2 twice with
@@ -502,3 +504,9 @@ C1 Linear scan phases:
    been split)
 7. assign register numbers back to LIR
 8. verify (check that all intervals have a correct register and that no registers are overwritten)
+
+## Pulling at loose threads
+
+Seems like `orderAndInsertMoves` might be Algorithm 1 from
+https://inria.hal.science/inria-00349925v1/document  which is implemented
+https://github.com/pfalcon/parcopy/blob/master/parcopy1.py
