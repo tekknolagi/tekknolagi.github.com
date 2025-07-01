@@ -25,7 +25,9 @@ bytecode rewriting](/blog/inline-caching-quickening/). Your generic opcodes
 monomorphic when they first observe a hidden class HC, rewrite themselves to
 polymorphic when they observe the next hidden class HC', and may again rewrite
 themselves to megamorphic (the sad case) when they see the K+1th hidden class.
-Pure interpreters take this approach because they want to optimize as they go.
+Pure interpreters take this approach because they want to optimize as they go
+and the unit of optimization is [normally](https://arxiv.org/pdf/2109.02958)
+(PDF) one opcode at a time.
 
 In an optimizing JIT world that cares a little less about interpreter/baseline
 compiler performance, the monomorphic/polymorphic split may look a little
