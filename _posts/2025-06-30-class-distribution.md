@@ -68,3 +68,5 @@ But we want more information than that: we want to know if the access patterns
 are skewed in some way.
 
 ## ClassDistribution
+
+## ClassDistributionSummary
