@@ -9,6 +9,8 @@ commit. I had heard nothing of its development even though I was working on
 [Cinder](https://github.com/facebookincubator/cinder) at the time and generally
 heard about new JIT efforts. I started poking at it.
 
+## Hidden classes
+
 The README has some excellent structural explanation of how they optimize
 Python, including a nice introduction to hidden classes (also called shapes,
 layouts, and maps elsewhere). Hidden classes are core to making dynamic
@@ -46,4 +48,21 @@ beginning. If you're wrong, though, and the that ends up being a polymorphic
 site in the code, you lose on performance: it will be constantly jumping into
 the interpreter.
 
+If you go for polymorphic but the code is mostly monomorphic
 
+But "polymorphic" and "megamorphic" are very coarse summaries of the access
+patterns at that site. Yes, side exits are slow, but if a call site S is
+specialized only for hidden class HC and *mostly sees HC* but sometimes sees
+HC', that's probably fine! We can take a few occasional side exits if the
+primary case is fast.
+
+Let's think about the information our caches give us right now:
+
+* how many hidden classes seen (1, 2 to K, or &gt;K)
+* which hidden classes seen (as long as &lt;= K)
+* in what order the hidden classes were seen
+
+But we want more information than that: we want to know if the access patterns
+are skewed in some way.
+
+## Enter ClassDistribution
