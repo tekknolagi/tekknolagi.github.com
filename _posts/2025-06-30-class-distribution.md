@@ -9,8 +9,6 @@ commit. I had heard nothing of its development even though I was working on
 [Cinder](https://github.com/facebookincubator/cinder) at the time and generally
 heard about new JIT efforts. I started poking at it.
 
-## Hidden classes
-
 The README has some excellent structural explanation of how they optimize
 Python, including a nice introduction to hidden classes (also called shapes,
 layouts, and maps elsewhere). Hidden classes are core to making dynamic
@@ -22,6 +20,8 @@ Bolz-Tereick on how to build a hidden class based object model.)
 Hidden classes give you the ability to more quickly read from objects, but you,
 the runtime implementor, have to decide what kind of cache you want to use.
 Should you have a monomorphic cache? Or a polymorphic cache?
+
+## Inline caching and specialization
 
 In an interpreter, a common approach is to do some kind of [state-machine-based
 bytecode rewriting](/blog/inline-caching-quickening/). Your generic opcodes
@@ -67,4 +67,4 @@ Let's think about the information our caches give us right now:
 But we want more information than that: we want to know if the access patterns
 are skewed in some way.
 
-## Enter ClassDistribution
+## ClassDistribution
