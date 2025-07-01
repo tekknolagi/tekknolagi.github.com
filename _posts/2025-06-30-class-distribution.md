@@ -15,7 +15,9 @@ The README has some excellent structural explanation of how they optimize
 Python, including a nice introduction to hidden classes (also called shapes,
 layouts, and maps elsewhere). Hidden classes are core to making dynamic
 language runtimes fast: they allow for what is normally a hashtable lookup to
-become an integer comparison and a memory load.
+become an integer comparison and a memory load. (See a [great
+tutorial](https://aosabook.org/en/500L/a-simple-object-model.html) by CF
+Bolz-Tereick on how to build a hidden class based object model.)
 
 Hidden classes give you the ability to more quickly read from objects, but you,
 the runtime implementor, have to decide what kind of cache you want to use.
@@ -30,8 +32,6 @@ themselves to megamorphic (the sad case) when they see the K+1th hidden class.
 Pure interpreters take this approach because they want to optimize as they go
 and the unit of optimization is [normally](https://arxiv.org/pdf/2109.02958)
 (PDF) one opcode at a time.
-
-TODO link to https://aosabook.org/en/500L/a-simple-object-model.html
 
 In an optimizing JIT world that cares a little less about interpreter/baseline
 compiler performance, the monomorphic/polymorphic split may look a little
