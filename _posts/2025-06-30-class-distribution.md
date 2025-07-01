@@ -31,6 +31,8 @@ Pure interpreters take this approach because they want to optimize as they go
 and the unit of optimization is [normally](https://arxiv.org/pdf/2109.02958)
 (PDF) one opcode at a time.
 
+TODO link to https://aosabook.org/en/500L/a-simple-object-model.html
+
 In an optimizing JIT world that cares a little less about interpreter/baseline
 compiler performance, the monomorphic/polymorphic split may look a little
 different:
