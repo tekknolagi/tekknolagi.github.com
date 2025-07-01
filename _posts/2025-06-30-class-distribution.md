@@ -13,9 +13,16 @@ The README has some excellent structural explanation of how they optimize
 Python, including a nice introduction to hidden classes (also called shapes,
 layouts, and maps elsewhere). Hidden classes are core to making dynamic
 language runtimes fast: they allow for what is normally a hashtable lookup to
-become an integer comparison and a memory load. (See a [great
-tutorial](https://aosabook.org/en/500L/a-simple-object-model.html) by CF
-Bolz-Tereick on how to build a hidden class based object model.)
+become an integer comparison and a memory load. They rely on [the
+assumption][smalltalk] that even in a dynamic language, programmers are not
+very creative, and therefore for a given location in the code (PC), the number
+of types seen will be 1 or small.
+
+[smalltalk]: https://dl.acm.org/doi/pdf/10.1145/800017.800542
+
+> See a [great
+> tutorial](https://aosabook.org/en/500L/a-simple-object-model.html) by CF
+> Bolz-Tereick on how to build a hidden class based object model.
 
 Hidden classes give you the ability to more quickly read from objects, but you,
 the runtime implementor, have to decide what kind of cache you want to use.
@@ -67,6 +74,22 @@ Let's think about the information our caches give us right now:
 But we want more information than that: we want to know if the access patterns
 are skewed in some way.
 
+What if at some PC the interpreter sees 100x hidden class A and only 2x hidden
+class B? This would unfortunately look like a boring polymorphic `[A, B]`
+cache.
+
+Or, maybe more interesting, what if we have a megamorphic site *but* one class
+more or less dominates? This would unfortunately look like a total bummer case
+even though it might be salvageable.
+
+If only we had a nice data structure for this...
+
 ## ClassDistribution
 
 ## ClassDistributionSummary
+
+## See also
+
+FeedbackVector
+
+What if we had more context? Info from caller
