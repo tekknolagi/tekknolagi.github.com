@@ -69,7 +69,7 @@ Let's think about the information our caches give us right now:
 
 * how many hidden classes seen (1, 2 to K, or &gt;K)
 * which hidden classes seen (as long as &lt;= K)
-* in what order the hidden classes were seen
+* if polymorphic, in what order the hidden classes were seen
 
 But we want more information than that: we want to know if the access patterns
 are skewed in some way.
@@ -85,6 +85,36 @@ even though it might be salvageable.
 If only we had a nice data structure for this...
 
 ## ClassDistribution
+
+S6 has this [small C++ class][ClassDistribution-h] called `ClassDistribution`
+that the interpreter uses to register what hidden classes it sees during
+execution profiling. It dispenses with the implicit seen order that a polymorphic
+cache keeps in its cmp-jcc chain and instead uses two fixed-size (they chose
+K=4) parallel arrays: `bucket_class_ids_` and `bucket_counts_`.
+
+[ClassDistribution-h]: https://github.com/google-deepmind/s6/blob/69cac9c981fbd3217ed117c3898382cfe094efc0/src/type_feedback.h#L34
+
+Every time the interpreter captures a profile, it calls
+[`ClassDistribution::Add`][ClassDistribution::Add], which increments the
+corresponding count associated with that ID. There are a couple of interesting
+things that this function does:
+
+[ClassDistribution::Add]: https://github.com/google-deepmind/s6/blob/69cac9c981fbd3217ed117c3898382cfe094efc0/src/type_feedback.cc#L28
+
+1. Bubble the most frequently occurring hidden class's bucket to slot 0. It's
+   not a full sort, but they say it helps optimize `Add` and makes
+   summarization easier (more on that later)
+1. If there are more than K classes observed, increment another field called
+   `other_count_` to track more information about how megamorphic the call-site
+   is
+1. Keep a running tally of the difference between the sum total of the K
+   buckets and the `other_count_` using a field called `count_disparity_`. If
+   this gets too high, it indicates that the execution patterns have shifted
+   over time and that it might be time to reset the stats
+1. If they reset the stats, they keep track of the total count of events that
+   happened before the reset in a field called `pre_reset_event_count_`. This
+   can be used to determine if the current epoch has seen a statistically
+   sigificant number of events to the pre-reset epoch
 
 ## ClassDistributionSummary
 
