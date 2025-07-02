@@ -184,4 +184,11 @@ which continues to be a fantastic resource for fast runtime development. In it,
 Fil argues that the cost of speculating wrong is so high that you better be
 darn sure that `cond` is true in `if (!cond) { side_exit(); }`
 
+See a [blog post by Jan de Mooij](https://jandemooij.nl/blog/cacheir/) and a
+[blog post by Matthew
+Gaudet](https://www.mgaudet.ca/technical/2023/10/16/cacheir-the-benefits-of-a-structured-representation-for-inline-caches)
+on CacheIR in SpiderMonkey (and [paper!](/assets/img/cacheir.pdf) (PDF))
+
+Tracing is just different
+
 What if we had more context? Info from caller
