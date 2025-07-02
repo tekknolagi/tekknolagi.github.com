@@ -191,4 +191,6 @@ on CacheIR in SpiderMonkey (and [paper!](/assets/img/cacheir.pdf) (PDF))
 
 Tracing is just different
 
+Basic block versioning
+
 What if we had more context? Info from caller
