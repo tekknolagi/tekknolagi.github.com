@@ -16,13 +16,11 @@ language runtimes fast: they allow for what is normally a hashtable lookup to
 become an integer comparison and a memory load. They rely on [the
 assumption][smalltalk] that even in a dynamic language, programmers are not
 very creative, and therefore for a given location in the code (PC), the number
-of types seen will be 1 or small.
+of types seen will be 1 or small. See a [great tutorial][aosabook] by CF
+Bolz-Tereick on how to build a hidden class based object model.
 
 [smalltalk]: https://dl.acm.org/doi/pdf/10.1145/800017.800542
-
-> See a [great
-> tutorial](https://aosabook.org/en/500L/a-simple-object-model.html) by CF
-> Bolz-Tereick on how to build a hidden class based object model.
+[aosabook]: https://aosabook.org/en/500L/a-simple-object-model.html
 
 Hidden classes give you the ability to more quickly read from objects, but you,
 the runtime implementor, have to decide what kind of cache you want to use.
