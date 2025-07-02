@@ -189,7 +189,7 @@ See a [blog post by Jan de Mooij](https://jandemooij.nl/blog/cacheir/) and a
 Gaudet](https://www.mgaudet.ca/technical/2023/10/16/cacheir-the-benefits-of-a-structured-representation-for-inline-caches)
 on CacheIR in SpiderMonkey (and [paper!](/assets/img/cacheir.pdf) (PDF))
 
-&rarr; trial inlining? https://hacks.mozilla.org/2020/11/warp-improved-js-performance-in-firefox-83/
+&rarr; helpful for trial inlining? See [warp improvement blog post](https://hacks.mozilla.org/2020/11/warp-improved-js-performance-in-firefox-83/)
 
 Tracing is just different
 
