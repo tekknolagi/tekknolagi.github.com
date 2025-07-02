@@ -1,5 +1,5 @@
 ---
-title: "ClassDistribution is really neat"
+title: "ClassDistribution from S6 JIT is really neat"
 layout: post
 ---
 
