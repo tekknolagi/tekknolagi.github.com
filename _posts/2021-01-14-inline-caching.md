@@ -13,7 +13,7 @@ today's dynamic language implementations. Runtimes like the Hotspot JVM, V8,
 and SpiderMonkey use it to improve the performance of code written for those
 virtual machines.
 
-[smalltalk]: http://web.cs.ucla.edu/~palsberg/course/cs232/papers/DeutschSchiffman-popl84.pdf
+[smalltalk]: https://dl.acm.org/doi/pdf/10.1145/800017.800542
 
 In this blog post, I will attempt to distill the essence of inline caching
 using a small and relatively useless bytecode interpreter built solely for this
