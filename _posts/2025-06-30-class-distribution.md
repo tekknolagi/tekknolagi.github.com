@@ -171,7 +171,19 @@ Also, sadly, they did not get to implemented SkewedMegamorphic before the
 project shut down, so they only handle monomorphic and polymorphic cases all
 across the optimizer. Ah well.
 
+## Wrapping up
+
+Some of the time-shift profiling that you can do with a ClassDistribution seems
+really cool and I had not seen it before. It feels like it could help with the
+issues brought up in [Why Aren't More Users More Happy With Our
+VMs?](https://tratt.net/laurie/blog/2018/why_arent_more_users_more_happy_with_our_vms_part_1.html).
+Maybe. Understanding the behavior of a program through a tiny lens over a small
+snapshot of time is challenging.
+
 ## See also
+
+(Kind of a "bits and bobbles" section a la [Phil
+Zucker](https://www.philipzucker.com/). I'm trying it out.)
 
 FeedbackVector in V8. See [blog post by Benedikt
 Meurer](https://benediktmeurer.de/2017/12/13/an-introduction-to-speculative-optimization-in-v8/),
