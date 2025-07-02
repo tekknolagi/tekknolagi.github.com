@@ -3,7 +3,7 @@ title: "ClassDistribution from S6 JIT is really neat"
 layout: post
 ---
 
-One unassuming week of September 2022, Google Deepmind dropped a fully-fledged
+One unassuming week of September 2022, Google DeepMind dropped a fully-fledged
 [CPython JIT called S6](https://github.com/google-deepmind/s6) squashed to one
 commit. I had heard nothing of its development even though I was working on
 [Cinder](https://github.com/facebookincubator/cinder) at the time and generally
