@@ -175,4 +175,10 @@ across the optimizer. Ah well.
 
 FeedbackVector. See [blog post by Benedikt Meurer](https://benediktmeurer.de/2017/12/13/an-introduction-to-speculative-optimization-in-v8/)
 
+[Speculation in
+JavaScriptCore](https://webkit.org/blog/10308/speculation-in-javascriptcore/),
+which continues to be a fantastic resource for fast runtime development. In it,
+Fil argues that the cost of speculating wrong is so high that you better be
+darn sure that `cond` is true in `if (!cond) { side_exit(); }`
+
 What if we had more context? Info from caller
