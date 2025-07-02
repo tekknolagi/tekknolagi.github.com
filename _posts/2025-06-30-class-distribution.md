@@ -40,6 +40,12 @@ Pure interpreters take this approach because they want to optimize as they go
 and the unit of optimization is [normally](https://arxiv.org/pdf/2109.02958)
 (PDF) one opcode at a time.
 
+> One interesting observation here is that while the bytecoder rewriting is
+> used to help interpreter performance, you can reuse this specialized bytecode
+> and its cache contents as a source of profiling information when the JIT
+> kicks in. It's a double use, which is a win for storage and run-time
+> overhead.
+
 In an optimizing JIT world that cares a little less about interpreter/baseline
 compiler performance, the monomorphic/polymorphic split may look a little
 different:
@@ -47,8 +53,9 @@ different:
 1. monomorphic: generating code with a fixed hidden class ID to compare against
    and a fixed field offset to load from, and jumping into the interpreter if
    that very specific assumption is false
-2. polymorphic: a self-modifying chain of such compare+load sequences, usually
-   ending after some fixed number K entries with a jump into the interpreter
+2. polymorphic: a self-modifying chain of such compare+conditional jump+load
+   sequences, usually ending after some fixed number K entries with a jump into
+   the interpreter
 
 If you go for monomorphic and that code never sees any other hidden class,
 you've won big: the generated code is small and generally you can use these
@@ -57,7 +64,7 @@ beginning. If you're wrong, though, and the that ends up being a polymorphic
 site in the code, you lose on performance: it will be constantly jumping into
 the interpreter.
 
-If you go for polymorphic but the code is mostly monomorphic
+If you go for polymorphic but the code is mostly monomorphic TODO
 
 But "polymorphic" and "megamorphic" are very coarse summaries of the access
 patterns at that site. Yes, side exits are slow, but if a call site S is
@@ -116,10 +123,56 @@ things that this function does:
    can be used to determine if the current epoch has seen a statistically
    sigificant number of events to the pre-reset epoch
 
+That is not much more additional space and it gets you a totally different
+slice of the picture than a "normal" IC and bytecode rewriting. I find the
+bubbling up, the other count, and the running difference especially fun.
+
+After a while, some bit of policy code decides that it's time to switch
+execution modes for a given function and compile. The compiler would like to
+make use of this profile information. Sure, it can fiddle around with it in its
+raw state, but the S6 devs found a better API that random compiler passes can
+consume: the `ClassDistributionSummary`.
+
 ## ClassDistributionSummary
+
+The [`ClassDistributionSummary`][ClassDistributionSummary-h] is another very
+small C++ class. It has only three fields: the class IDs from the
+`ClassDistribution` (but *not* their counts), a `kind_` field, and a `stable_`
+field.
+
+[ClassDistributionSummary-h]: https://github.com/google-deepmind/s6/blob/69cac9c981fbd3217ed117c3898382cfe094efc0/src/type_feedback.h#L128
+
+We don't need their counts because that's not really the question the optimizer
+should be asking. The thing the optimizer *actually* wants to know is "how
+should I speculate at this PC?" and it can outsource the mechanism for that to
+the `ClassDistributionSummary`'s *kind* (and the information implicit in the
+ordering of the class IDs, where the hottest class ID is in index 0).
+
+The *kind* can be one of five options: *Empty*, *Monomorphic*, *Polymorphic*,
+*SkewedMegamorphic*, and *Megamorphic*, each of which imply different things
+about how to speculate. Empty, monomorphic and polymorphic are reasonably
+straightforward (did we see 0, 1, or <= K class IDs?) but SkewedMegamorphic is
+where it gets interesting.
+
+Their heuristic for if a megamorphic PC is skewed is if the class ID in bucket
+0---the most popular class ID---is over 75% of the total recorded events. This
+means that the optimizer still has a shot at doing something interesting at the
+given PC.
+
+I wonder why they didn't also have SkewedPolymorphic. I think that's because
+for polymorphic PCs, they inline the entire compare-jump chain eagerly, which
+puts the check for the most popular ID in the first position. Still, I think
+there is potentially room to decide to monomorphize a polymorphic call site.
+There's some ad-hoc checking for this kind of thing in `optimize_calls.cc`, for
+example to specialize `a[b]` where `a` is historically either a `list` or a
+`tuple`.
+
+Also, sadly, they did not get to implemented SkewedMegamorphic before the
+project shut down, so they only handle monomorphic and polymorphic cases all
+across the optimizer. Ah well.
 
 ## See also
 
-FeedbackVector
+FeedbackVector. See [blog post by Benedikt Meurer](https://benediktmeurer.de/2017/12/13/an-introduction-to-speculative-optimization-in-v8/)
 
 What if we had more context? Info from caller
