@@ -173,7 +173,10 @@ across the optimizer. Ah well.
 
 ## See also
 
-FeedbackVector. See [blog post by Benedikt Meurer](https://benediktmeurer.de/2017/12/13/an-introduction-to-speculative-optimization-in-v8/)
+FeedbackVector. See [blog post by Benedikt
+Meurer](https://benediktmeurer.de/2017/12/13/an-introduction-to-speculative-optimization-in-v8/),
+which explains how they profile generic instruction operands using a feedback
+lattice.
 
 [Speculation in
 JavaScriptCore](https://webkit.org/blog/10308/speculation-in-javascriptcore/),
