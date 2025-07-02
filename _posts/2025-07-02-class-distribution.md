@@ -64,7 +64,11 @@ beginning. If you're wrong, though, and the that ends up being a polymorphic
 site in the code, you lose on performance: it will be constantly jumping into
 the interpreter.
 
-If you go for polymorphic but the code is mostly monomorphic TODO
+If you go for polymorphic but the code is mostly monomorphic, then you mostly
+just lose on peak performance. Your code may need to walk the cmp+jcc chain in
+the JIT and the operation's inferred type in your IR will not be as
+fine-grained as the monomorphic case. But you might side-exit less into the
+interpreter, which is nice.
 
 But "polymorphic" and "megamorphic" are very coarse summaries of the access
 patterns at that site. Yes, side exits are slow, but if a call site S is
