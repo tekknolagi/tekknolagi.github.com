@@ -60609,6 +60609,35 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114784003791756615": {
+      "id": "114784003791756615",
+      "created_at": "2025-07-02T14:01:41.613Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114784003791756615",
+      "url": "https://mastodon.social/@tekknolagi/114784003791756615",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>Little known fact: the SpiderMonkey JavaScript engine gets its name from the scene in Twilight (2008) where Edward (Robert Pattinson) says to Bella (Kristen Stewart) &quot;hold on tight, spider monkey&quot;</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
