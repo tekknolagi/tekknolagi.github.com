@@ -60858,6 +60858,71 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114814955729770175": {
+      "id": "114814955729770175",
+      "created_at": "2025-07-08T01:13:10.705Z",
+      "in_reply_to_id": "114814953647422554",
+      "in_reply_to_account_id": "523512",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114814955729770175",
+      "url": "https://mastodon.social/@tekknolagi/114814955729770175",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> but I have so many register allocation papers to try to understand</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "114814867768017044": {
+      "id": "114814867768017044",
+      "created_at": "2025-07-08T00:50:48.527Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114814867768017044",
+      "url": "https://mastodon.social/@tekknolagi/114814867768017044",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "edited_at": null,
+      "content": "<p>It has gotten to the point where I wince if I accidentally click a link because it opens up all of my 1699 Firefox tabs across, uh, many windows, and I have to watch them all pop up</p><p>I should do some house cleaning</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
