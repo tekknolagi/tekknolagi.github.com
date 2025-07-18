@@ -80,6 +80,7 @@ Not quite code but presenting very cool ideas:
     * Cheney on the MTA
 * Escape analysis and dead code elimination as compile-time GC
 * PGO for DCE: [tweet one](https://x.com/rui314/status/1788079197141049825) and [tweet two](https://x.com/rui314/status/1788099027889979782)
+  * [github issue](https://github.com/rui314/mold/issues/958)
 * Nostr, but without all the blockchain stuff
 
 What I am working on:
