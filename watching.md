@@ -54,6 +54,8 @@ Here are some projects that are occupying some brain space and that I am keeping
 * [pocketpy](https://github.com/pocketpy/pocketpy), a little Python implementation that can be bundled into one C file
 * [gate](https://github.com/gate-computer/gate), content-addressable Wasm RPC/RCE
 * [cjit](https://github.com/dyne/cjit), a JIT for C
+* [wuffs](https://github.com/google/wuffs), a safe and hermetic programming language for dealing with file formats
+  * this is one of the coolest projects I have seen in a while
 
 Not quite code but presenting very cool ideas:
 
