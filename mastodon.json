@@ -61085,6 +61085,132 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114886513861694077": {
+      "id": "114886513861694077",
+      "created_at": "2025-07-20T16:31:21.148Z",
+      "in_reply_to_id": "114886511492900426",
+      "in_reply_to_account_id": "108130879189516112",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114886513861694077",
+      "url": "https://mastodon.social/@tekknolagi/114886513861694077",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@dabeaz\" class=\"u-url mention\">@<span>dabeaz</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@shriramk\" class=\"u-url mention\">@<span>shriramk</span></a></span> (also &quot;sucked at math&quot; in high school)</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108130879189516112",
+          "username": "dabeaz",
+          "url": "https://mastodon.social/@dabeaz",
+          "acct": "dabeaz"
+        },
+        {
+          "id": "108262011720829669",
+          "username": "shriramk",
+          "url": "https://mastodon.social/@shriramk",
+          "acct": "shriramk"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "114886511492900426": {
+      "id": "114886511492900426",
+      "created_at": "2025-07-20T16:30:45.004Z",
+      "in_reply_to_id": "114886507188490570",
+      "in_reply_to_account_id": "108130879189516112",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114886511492900426",
+      "url": "https://mastodon.social/@tekknolagi/114886511492900426",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@dabeaz\" class=\"u-url mention\">@<span>dabeaz</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@shriramk\" class=\"u-url mention\">@<span>shriramk</span></a></span> the math requirements at Tufts for CS were minimal (it sort of came with its own math) but the one requirement I took was through the math department and I think it was indeed better than the CS version</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108130879189516112",
+          "username": "dabeaz",
+          "url": "https://mastodon.social/@dabeaz",
+          "acct": "dabeaz"
+        },
+        {
+          "id": "108262011720829669",
+          "username": "shriramk",
+          "url": "https://mastodon.social/@shriramk",
+          "acct": "shriramk"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "114886463861581503": {
+      "id": "114886463861581503",
+      "created_at": "2025-07-20T16:18:38.203Z",
+      "in_reply_to_id": "114885589919234942",
+      "in_reply_to_account_id": "108130879189516112",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114886463861581503",
+      "url": "https://mastodon.social/@tekknolagi/114886463861581503",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@dabeaz\" class=\"u-url mention\">@<span>dabeaz</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@shriramk\" class=\"u-url mention\">@<span>shriramk</span></a></span> this is interesting because almost all of the CS majors I knew at Tufts started as something else, took the intro class to get out of math, and then switched into CS. Sometimes even as late as junior year</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108130879189516112",
+          "username": "dabeaz",
+          "url": "https://mastodon.social/@dabeaz",
+          "acct": "dabeaz"
+        },
+        {
+          "id": "108262011720829669",
+          "username": "shriramk",
+          "url": "https://mastodon.social/@shriramk",
+          "acct": "shriramk"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
