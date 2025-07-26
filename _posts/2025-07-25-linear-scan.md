@@ -68,6 +68,29 @@ R11 = ...
 38: ret R16
 ```
 
+Or, in block parameter form:
+
+```
+label Bentry:
+R10 = ...
+R11 = ...
+    jmp B2(1, R11)
+     # vvvvvvvvvv #
+20: label B2(R12, R13)
+22: cmp R13, 1
+24: branch lessThan B4()
+
+26: label B3()
+28: mul R12, R13 -> R14
+30: sub R13, 1 -> R15
+32: jump B2(R14, R15)
+
+34: label B4()
+     # ^^^^^^^^^^ #
+36: add R10, R12 -> R16
+38: ret R16
+```
+
 TODO insert a diagram
 
 ```ruby
