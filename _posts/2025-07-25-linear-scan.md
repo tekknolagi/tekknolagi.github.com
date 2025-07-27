@@ -46,6 +46,13 @@ blocks need which virtual registers to be alive on entry. This is a
 *graph-land* notion: it operates on your control-flow graph which has not yet
 been assigned an order.
 
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/wimmer-lsra-cfg.svg"></object>
+<figcaption>
+blah
+</figcaption>
+</figure>
+
 ```
 label Bentry:
 R10 = ...
