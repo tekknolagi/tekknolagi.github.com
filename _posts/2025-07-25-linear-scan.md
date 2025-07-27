@@ -46,6 +46,35 @@ blocks need which virtual registers to be alive on entry. This is a
 *graph-land* notion: it operates on your control-flow graph which has not yet
 been assigned an order.
 
+<!--
+digraph G {
+node [shape=plaintext]
+B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="gray">B1(V10, V11)&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">jump →B2($1, V11)&nbsp;</TD></TR>
+</TABLE>>];
+B1:0 -> B2:params;
+B2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="gray">B2(V12, V13)&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">cmp V13, $1&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">blt →B4, →B3&nbsp;</TD></TR>
+</TABLE>>];
+B2:1 -> B4:params;
+B2:1 -> B3:params;
+B3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="gray">B3()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">V14 = mul V12, V13&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">V15 = sub V13, $1&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="2">jump →B2(V14, V15)&nbsp;</TD></TR>
+</TABLE>>];
+B3:2 -> B2:params;
+B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="gray">B4()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">V16 = add V10, V12&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">ret V16&nbsp;</TD></TR>
+</TABLE>>];
+}
+-->
 <figure>
 <object class="svg" type="image/svg+xml" data="/assets/img/wimmer-lsra-cfg.svg"></object>
 <figcaption>
