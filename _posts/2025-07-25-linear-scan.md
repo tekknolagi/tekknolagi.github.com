@@ -41,7 +41,7 @@ seems to be a bit of a rehash of the previous two papers.
 
 Linear scan starts at the point in your compiler process where you already know
 how long each virtual register needs to live---that you have already done some
-kind of *liveness analysis* . The liveness analysis tells you which basic
+kind of *liveness analysis*. The liveness analysis tells you which basic
 blocks need which virtual registers to be alive on entry. This is a
 *graph-land* notion: it operates on your control-flow graph which has not yet
 been assigned an order.
