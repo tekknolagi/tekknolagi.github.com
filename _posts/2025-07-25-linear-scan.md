@@ -46,6 +46,57 @@ blocks need which virtual registers to be alive on entry. This is a
 *graph-land* notion: it operates on your control-flow graph which has not yet
 been assigned an order.
 
+Consider the following assembly-like language snippet with virtual registers
+(defined by `... -> destination`):
+
+```
+B0:
+... -> R12
+... -> R13
+jmp B1
+
+B1:
+mul R12, R13 -> R14
+sub R13, 1 -> R15
+jmp B2
+
+B2:
+add R14, R15 -> R16
+ret R16
+```
+
+It looks scheduled, but really B1 and B2 could be swapped (for example) and the
+code would work just fine. No instruction has *actually* been assigned an
+address yet.
+
+We compute liveness by working backwards: a variable is *live* from the moment
+it is backwardly-first used until its definition.
+
+In this case, at the end of B2, nothing is live. If we step backwards to the
+`ret`, we see a use: R16 becomes live. If we step once more, we see its
+definition---R16 no longer live---but now we see a use of R14 and R15, which
+become live. This leaves us with R14 and R15 being *live-in* to B2.
+
+This live-in set becomes B1's *live-out* set. We continue in B1. We could
+continue backwards linearly through the blocks. In fact, I encourage you to do
+it as an exercise.
+
+It gets more interesting, though, when we have branches: what does it mean when
+two blocks' live-in results merge into their shared predecessor?
+
+Consider the following sketchy annotation of live ranges in a made-up
+assembly-like language with virtual registers:
+
+```
+                       R12 R13 R14 R15 R16
+R12 = ...              |
+R13 = ...              |   |
+mul R12, R13 -> R14    v   |   |
+sub R13, 1 -> R15          |   |   |
+add R14, R15 -> R16        v   v   v   |
+print R16                              v
+```
+
 <!--
 digraph G {
 node [shape=plaintext]
