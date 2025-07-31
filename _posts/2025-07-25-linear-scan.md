@@ -528,6 +528,10 @@ end
 
 ## Linear scan
 
+Because we have faithfully kept 1 interval == 1 range, we can re-use the linear
+scan algorithm from PolettoSarkar1999 (which looks, at a glance, to be the same
+as 1997).
+
 ```ruby
 class Function
   def ye_olde_linear_scan intervals, num_registers
