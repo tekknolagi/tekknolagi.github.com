@@ -12,7 +12,7 @@
 <!-- B1 -->
 <g id="node1" class="node">
 <title>B1</title>
-<polygon fill="gray" stroke="none" points="209.12,-287.73 209.12,-310.98 363.62,-310.98 363.62,-287.73 209.12,-287.73"/>
+<polygon fill="lightgray" stroke="none" points="209.12,-287.73 209.12,-310.98 363.62,-310.98 363.62,-287.73 209.12,-287.73"/>
 <polygon fill="none" stroke="black" points="209.12,-287.73 209.12,-310.98 363.62,-310.98 363.62,-287.73 209.12,-287.73"/>
 <text xml:space="preserve" text-anchor="start" x="232.75" y="-294.68" font-family="Monospace" font-size="14.00">B1(V10, V11) </text>
 <polygon fill="none" stroke="black" points="209.12,-264.48 209.12,-287.73 363.62,-287.73 363.62,-264.48 209.12,-264.48"/>
@@ -21,7 +21,7 @@
 <!-- B2 -->
 <g id="node2" class="node">
 <title>B2</title>
-<polygon fill="gray" stroke="none" points="229.75,-197.23 229.75,-220.48 343,-220.48 343,-197.23 229.75,-197.23"/>
+<polygon fill="lightgray" stroke="none" points="229.75,-197.23 229.75,-220.48 343,-220.48 343,-197.23 229.75,-197.23"/>
 <polygon fill="none" stroke="black" points="229.75,-197.23 229.75,-220.48 343,-220.48 343,-197.23 229.75,-197.23"/>
 <text xml:space="preserve" text-anchor="start" x="232.75" y="-204.18" font-family="Monospace" font-size="14.00">B2(V12, V13) </text>
 <polygon fill="none" stroke="black" points="229.75,-173.98 229.75,-197.23 343,-197.23 343,-173.98 229.75,-173.98"/>
@@ -38,7 +38,7 @@
 <!-- B4 -->
 <g id="node3" class="node">
 <title>B4</title>
-<polygon fill="gray" stroke="none" points="8,-71.85 8,-95.1 170.75,-95.1 170.75,-71.85 8,-71.85"/>
+<polygon fill="lightgray" stroke="none" points="8,-71.85 8,-95.1 170.75,-95.1 170.75,-71.85 8,-71.85"/>
 <polygon fill="none" stroke="black" points="8,-71.85 8,-95.1 170.75,-95.1 170.75,-71.85 8,-71.85"/>
 <text xml:space="preserve" text-anchor="start" x="68.75" y="-78.8" font-family="Monospace" font-size="14.00">B4() </text>
 <polygon fill="none" stroke="black" points="8,-48.6 8,-71.85 170.75,-71.85 170.75,-48.6 8,-48.6"/>
@@ -55,7 +55,7 @@
 <!-- B3 -->
 <g id="node4" class="node">
 <title>B3</title>
-<polygon fill="gray" stroke="none" points="205,-83.48 205,-106.73 367.75,-106.73 367.75,-83.48 205,-83.48"/>
+<polygon fill="lightgray" stroke="none" points="205,-83.48 205,-106.73 367.75,-106.73 367.75,-83.48 205,-83.48"/>
 <polygon fill="none" stroke="black" points="205,-83.48 205,-106.73 367.75,-106.73 367.75,-83.48 205,-83.48"/>
 <text xml:space="preserve" text-anchor="start" x="265.75" y="-90.43" font-family="Monospace" font-size="14.00">B3() </text>
 <polygon fill="none" stroke="black" points="205,-60.23 205,-83.48 367.75,-83.48 367.75,-60.23 205,-60.23"/>

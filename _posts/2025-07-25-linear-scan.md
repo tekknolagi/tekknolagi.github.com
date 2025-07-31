@@ -8,7 +8,7 @@ How do JIT compilers do register allocation? Well, "everyone knows" that
 because I've worked on a couple of JITs and still didn't understand the backend
 bits.
 
-I started reading [](/assets/img/wimmer-linear-scan-ssa.pdf) (PDF, 2010) after
+I started reading [](/assets/img/wimmer-linear-scan-ssa.pdf) (PDF, 2010) by Wimmer and Franz after
 writing [A catalog of ways to generate SSA](/blog/ssa/). Reading alone didn't
 make a ton of sense---I ended up with a lot of very frustrated margin notes. I
 started trying to implement it alongside the paper. As it turns out, though,
@@ -33,7 +33,75 @@ separate register-allocator-in-a-box than manually managing variable lifetimes
 while also considering all of your different target architectures.
 
 There are a couple different approaches to register allocation, but in this
-post we'll focus on *linear scan*.
+post we'll focus on *linear scan of SSA*. Throughout this post, we'll use an
+example SSA code snippet from Wimmer 2010, adapted from phi-SSA to
+block-argument-SSA. Wimmer's code snippet is between the arrows and we add some
+filler (as alluded to in the paper):
+
+```
+label B1(R10, R11):
+jmp B2(1, R11)
+ # vvvvvvvvvv #
+label B2(R12, R13)
+cmp R13, 1
+branch lessThan B4()
+
+label B3()
+mul R12, R13 -> R14
+sub R13, 1 -> R15
+jump B2(R14, R15)
+
+label B4()
+ # ^^^^^^^^^^ #
+add R10, R12 -> R16
+ret R16
+```
+
+Because it takes a moment to untangle the unfamiliar syntax and draw the
+control-flow graph by hand, I've also provided the same code in graphical form.
+Block names (and block parameters) are shaded with grey.
+
+<!--
+digraph G {
+node [shape=plaintext]
+B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B1(V10, V11)&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">jump →B2($1, V11)&nbsp;</TD></TR>
+</TABLE>>];
+B1:0 -> B2:params;
+B2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B2(V12, V13)&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">cmp V13, $1&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">blt →B4, →B3&nbsp;</TD></TR>
+</TABLE>>];
+B2:1 -> B4:params;
+B2:1 -> B3:params;
+B3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B3()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">V14 = mul V12, V13&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">V15 = sub V13, $1&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="2">jump →B2(V14, V15)&nbsp;</TD></TR>
+</TABLE>>];
+B3:2 -> B2:params;
+B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B4()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">V16 = add V10, V12&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">ret V16&nbsp;</TD></TR>
+</TABLE>>];
+}
+-->
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/wimmer-lsra-cfg.svg"></object>
+<figcaption>
+blah
+</figcaption>
+</figure>
+
+Our goal for the post is to analyze this CFG, assign physical locations
+(registers or stack slots) to each virtual register, and then rewrite the code
+appropriately.
+
+For now, let's rewind the clock and look at how linear scan came about.
 
 ## In the beginning
 
@@ -102,8 +170,8 @@ have decided that allocating directly on SSA gives more information to the
 register allocator.
 
 Linear scan starts at the point in your compiler process where you already know
-how these live ranges---that you have already done some kind of analysis to
-build a mapping.
+these live ranges---that you have already done some kind of analysis to build a
+mapping.
 
 Part of this analysis is called *liveness analysis*.
 
@@ -266,6 +334,9 @@ class Function
 end
 ```
 
+
+
+
 ## Scheduling
 
 ## Live ranges
@@ -347,63 +418,6 @@ mul R12, R13 -> R14    v   |   |
 sub R13, 1 -> R15          |   |   |
 add R14, R15 -> R16        v   v   v   |
 print R16                              v
-```
-
-<!--
-digraph G {
-node [shape=plaintext]
-B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-<TR><TD PORT="params" BGCOLOR="gray">B1(V10, V11)&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">jump →B2($1, V11)&nbsp;</TD></TR>
-</TABLE>>];
-B1:0 -> B2:params;
-B2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-<TR><TD PORT="params" BGCOLOR="gray">B2(V12, V13)&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">cmp V13, $1&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="1">blt →B4, →B3&nbsp;</TD></TR>
-</TABLE>>];
-B2:1 -> B4:params;
-B2:1 -> B3:params;
-B3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-<TR><TD PORT="params" BGCOLOR="gray">B3()&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">V14 = mul V12, V13&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="1">V15 = sub V13, $1&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="2">jump →B2(V14, V15)&nbsp;</TD></TR>
-</TABLE>>];
-B3:2 -> B2:params;
-B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-<TR><TD PORT="params" BGCOLOR="gray">B4()&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">V16 = add V10, V12&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="1">ret V16&nbsp;</TD></TR>
-</TABLE>>];
-}
--->
-<figure>
-<object class="svg" type="image/svg+xml" data="/assets/img/wimmer-lsra-cfg.svg"></object>
-<figcaption>
-blah
-</figcaption>
-</figure>
-
-```
-label Bentry:
-R10 = ...
-R11 = ...
-    jmp B2(1, R11)
-     # vvvvvvvvvv #
-20: label B2(R12, R13)
-22: cmp R13, 1
-24: branch lessThan B4()
-
-26: label B3()
-28: mul R12, R13 -> R14
-30: sub R13, 1 -> R15
-32: jump B2(R14, R15)
-
-34: label B4()
-     # ^^^^^^^^^^ #
-36: add R10, R12 -> R16
-38: ret R16
 ```
 
 TODO insert a diagram
