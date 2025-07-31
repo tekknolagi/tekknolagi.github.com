@@ -57,6 +57,9 @@ add R10, R12 -> R16
 ret R16
 ```
 
+Virtual registers start with R and are defined either with an arrow or by a
+block parameter.
+
 Because it takes a moment to untangle the unfamiliar syntax and draw the
 control-flow graph by hand, I've also provided the same code in graphical form.
 Block names (and block parameters) are shaded with grey.
@@ -134,28 +137,26 @@ registers. A live range is a pair of [start, end) (end is exclusive) that
 begins when the register is defined and ends when it is last used. In
 non-SSA-land, these live ranges are different from the virtual registers: they
 represent some kind of lifetimes of each *version* of a virtual register. For
-an example, consider the following assembly-like language snippet with virtual
-registers (defined by `... -> destination`):
-
+an example, consider the following code snippet:
 
 ```
-... -> a
-1 + a -> b
-1 + b -> c
-1 + c -> a
-1 + a -> d
+...      -> a
+add 1, a -> b
+add 1, b -> c
+add 1, c -> a
+add 1, a -> d
 ```
 
 There are two definitions of `a` and they each live for different amounts of
 time:
 
 ```
-               a  b  c  a  d
-...   -> a     |
-1 + a -> b     v  |
-1 + b -> c        v  |
-1 + c -> a           v  |
-1 + a -> d              v  |
+                  a  b  c  a  d
+...      -> a     |                <- the first a
+add 1, a -> b     v  |
+add 1, b -> c        v  |
+add 1, c -> a           v  |       <- the second a
+add 1, a -> d              v  |
 ```
 
 In fact, the intervals are completely disjoint. It wouldn't make sense for the
@@ -384,8 +385,7 @@ blocks need which virtual registers to be alive on entry. This is a
 *graph-land* notion: it operates on your control-flow graph which has not yet
 been assigned an order.
 
-Consider the following assembly-like language snippet with virtual registers
-(defined by `... -> destination`):
+Consider the following code snippet:
 
 ```
 B0:
