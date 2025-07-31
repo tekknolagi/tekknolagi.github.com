@@ -528,6 +528,68 @@ end
 
 ## Linear scan
 
+```ruby
+class Function
+  def ye_olde_linear_scan intervals, num_registers
+    if num_registers <= 0
+      raise ArgumentError, "Number of registers must be positive"
+    end
+    free_registers = Set.new 0...num_registers
+    active = []  # Active intervals, sorted by increasing end point
+    assignment = {}  # Map from Interval to PReg|StackSlot
+    num_stack_slots = 0
+    # Iterate through intervals in order of increasing start point
+    sorted_intervals = intervals.sort_by { |_, interval| interval.range.begin }
+    sorted_intervals.each do |_vreg, interval|
+      # expire_old_intervals(interval)
+      active.select! do |active_interval|
+        if active_interval.range.end >= interval.range.begin
+          true
+        else
+          operand = assignment.fetch(active_interval)
+          raise "Should be assigned a register" unless operand.is_a?(PReg)
+          free_registers.add(operand.name)
+          false
+        end
+      end
+      if active.length == num_registers
+        # spill_at_interval(interval)
+        # Pick an interval to spill. Picking the longest-lived active one is
+        # a heuristic from the original linear scan paper.
+        spill = active.last
+        # In either case, we need to allocate a slot on the stack.
+        slot = StackSlot.new(num_stack_slots)
+        num_stack_slots += 1
+        if spill.range.end > interval.range.end
+          # The last active interval ends further away than the current interval; spill it.
+          assignment[interval] = assignment[spill]
+          if !assignment[interval].is_a?(PReg)
+            raise "Should be assigned a register"
+          end
+          assignment[spill] = slot
+          active.pop  # We know spill is the last one
+          # Insert interval into already-sorted active
+          insert_idx = active.bsearch_index { |i| i.range.end >= interval.range.end } || active.length
+          active.insert(insert_idx, interval)
+        else
+          # The current interval ends further away than the last active
+          # interval; spill it.
+          assignment[interval] = slot
+        end
+      else
+        reg = free_registers.min
+        free_registers.delete(reg)
+        assignment[interval] = PReg.new(reg)
+        # Insert interval into already-sorted active
+        insert_idx = active.bsearch_index { |i| i.range.end >= interval.range.end } || active.length
+        active.insert(insert_idx, interval)
+      end
+    end
+    [assignment, num_stack_slots]
+  end
+end
+```
+
 ## Resolving SSA
 
 ## Instruction selection
