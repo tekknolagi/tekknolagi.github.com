@@ -35,8 +35,8 @@ while also considering all of your different target architectures.
 
 There are a couple different approaches to register allocation, but in this
 post we'll focus on *linear scan of SSA*. Throughout this post, we'll use an
-example SSA code snippet from Wimmer 2010, adapted from phi-SSA to
-block-argument-SSA. Wimmer's code snippet is between the arrows and we add some
+example SSA code snippet from Wimmer2010, adapted from phi-SSA to
+block-argument-SSA. Wimmer2010's code snippet is between the arrows and we add some
 filler (as alluded to in the paper):
 
 ```
@@ -341,7 +341,7 @@ end
 We could also use a worklist here, and it would be faster, but eh. Repeatedly
 iterating over all blocks is fine for now.
 
-The Wimmer paper skips this liveness analysis entirely by assuming some
+The Wimmer2010 paper skips this liveness analysis entirely by assuming some
 computed information about your CFG: where loops start and end. It also
 requires all loop blocks be contiguous. Then it makes variables defined before
 a loop and used at any point inside the loop live *for the whole loop*. By
@@ -366,7 +366,7 @@ linear sequence. You can think of this as flattening or projecting the graph:
 class Function
   def number_instructions!
     @block_order = rpo
-    number = 16  # just so we match the Wimmer paper
+    number = 16  # just so we match the Wimmer2010 paper
     @block_order.each do |blk|
       blk.number = number
       number += 2
@@ -385,13 +385,13 @@ A couple interesting things to note:
 * We number blocks because we use block starts as the start index for all of
   that block's parameters
 * We start numbering at 16 just so we can eyeball things and make sure they
-  line up with the Wimmer paper
+  line up with the Wimmer2010 paper
 * We only give out even numbers because... why? TODO
   * Also note that some implementations online seem to do like 1.1 and 2.1
   (floats???)
 
-The output of this function is. Even though we have extra instructions, it
-looks very similar to the example in the Wimmer paper.
+Even though we have extra instructions, it looks very similar to the example in
+the Wimmer2010 paper.
 
 ```
 16: label B1(R10, R11):
@@ -420,8 +420,15 @@ Finally, we have all that we need to compute live ranges.
 
 ## Live ranges
 
+We'll more or less copy the algorithm to compute live ranges from the
+Wimmer2010 paper. We'll have two main differences:
+
+* We're going to compute live ranges, not live intervals (as they do in the
+  paper)
+* We're going to use our dataflow liveness analysis, not the loop header thing
+
 I know I said we were going to be computing live ranges. So why am I presenting
-you with a class called `Interval`? That's because somewhere (TODO where?) in
+you with a function called `build_intervals`? That's because somewhere (TODO where?) in
 the history of linear scan, people moved from having a single range for a
 particular virtual register to having *multiple* disjoint ranges. This
 collection of multiple ranges is called an *interval* and it exists to free up
@@ -432,50 +439,15 @@ parameter, used in B3, and then not used again until some indetermine point in
 B4. (Our example uses it immediately in an add instruction to keep things
 short, but pretend the second use is some time away.)
 
-The Wimmer paper creates a *lifetime hole* between 28 and 34, meaning that the
+The Wimmer2010 paper creates a *lifetime hole* between 28 and 34, meaning that the
 interval for R12 (called i12) is `[[20, 28), [34, ...)]`. Interval holes are
 not strictly necessary---they exist to generate better code. So for this post,
 we're going to start simple and assume 1 interval == 1 range. We may come back
 later and add additional ranges, but that will require some fixes to our later
 implementation. We'll note where we think those fixes should happen.
 
-```ruby
-class Interval
-  attr_reader :range
-
-  def add_range(from, to)
-    if to <= from
-      raise ArgumentError, "Invalid range: #{from} to #{to}"
-    end
-    if !@range
-      @range = Range.new(from, to)
-      return
-    end
-    @range = Range.new([@range.begin, from].min, [@range.end, to].max)
-  end
-
-  def set_from(from)
-    @range = if @range
-      Range.new(from, @range.end)
-    else
-      # This happens when we don't have a use of the vreg
-      Range.new(from, from)
-    end
-  end
-
-  def inspect
-    if @range
-      "Range(#{@range.begin}, #{@range.end})"
-    else
-      "Range(nil, nil)"
-    end
-  end
-
-  def ==(other)
-    other.is_a?(Interval) && @range == other.range
-  end
-end
-```
+Anyay, here is the mostly-copied annotated implementation of BuildIntervals
+from the Wimmer2010 paper:
 
 ```ruby
 class Function
@@ -483,6 +455,8 @@ class Function
     intervals = Hash.new { |hash, key| hash[key] = Interval.new }
     @block_order.each do |block|
       # live = union of successor.liveIn for each successor of b
+      # this is the *live out* of the current block since we're going to be
+      # iterating backwards over instructions
       live = block.successors.map { |succ| live_in[succ] }.reduce(0, :|)
       # for each phi function phi of successors of b do
       #   live.add(phi.inputOf(b))
@@ -507,6 +481,47 @@ class Function
     end
     intervals.default_proc = nil
     intervals.freeze
+  end
+end
+```
+
+Another difference is that since we're using block parameters, we don't really
+have this `phi.inputOf` thing. That's just the block argument.
+
+The last difference is that since we're skipping the loop liveness hack, we
+don't modify a block's `live` set as we iterate through instructions.
+
+I know we said we're building live ranges, so our `Interval` class only has
+one `Range` on it. This is Ruby's built-in range, but it's really just being
+used as a tuple of integers here.
+
+```ruby
+class Interval
+  attr_reader :range
+
+  def add_range(from, to)
+    if to <= from
+      raise ArgumentError, "Invalid range: #{from} to #{to}"
+    end
+    if !@range
+      @range = Range.new(from, to)
+      return
+    end
+    @range = Range.new([@range.begin, from].min, [@range.end, to].max)
+  end
+
+  def set_from(from)
+    @range = if @range
+      Range.new(from, @range.end)
+    else
+      # This happens when we don't have a use of the vreg
+      # If we don't have a use, the live range is very short
+      Range.new(from, from)
+    end
+  end
+
+  def ==(other)
+    other.is_a?(Interval) && @range == other.range
   end
 end
 ```
