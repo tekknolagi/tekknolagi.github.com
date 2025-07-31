@@ -59,7 +59,9 @@ registers. A live range is a pair of [start, end) (end is exclusive) that
 begins when the register is defined and ends when it is last used. In
 non-SSA-land, these live ranges are different from the virtual registers: they
 represent some kind of lifetimes of each *version* of a virtual register. For
-example:
+an example, consider the following assembly-like language snippet with virtual
+registers (defined by `... -> destination`):
+
 
 ```
 ... -> a
@@ -96,6 +98,105 @@ Linear scan starts at the point in your compiler process where you already know
 how these live ranges---that you have already done some kind of analysis to
 build a mapping.
 
+Part of this analysis is called *liveness analysis*. The result of liveness
+analysis is a mapping of `BasicBlock -> Set[Instruction]` that tells you which
+virtual registers (remember, since we're in SSA, instruction==vreg) are alive
+(used later) at the beginning of the basic block. This is called a *live-in*
+set. For example:
+
+```
+B0:
+... -> R12
+... -> R13
+jmp B1
+
+B1:
+mul R12, R13 -> R14
+sub R13, 1 -> R15
+jmp B2
+
+B2:
+add R14, R15 -> R16
+ret R16
+```
+
+We compute liveness by working backwards: a variable is *live* from the moment
+it is backwardly-first used until its definition.
+
+In this case, at the end of B2, nothing is live. If we step backwards to the
+`ret`, we see a use: R16 becomes live. If we step once more, we see its
+definition---R16 no longer live---but now we see a use of R14 and R15, which
+become live. This leaves us with R14 and R15 being *live-in* to B2.
+
+This live-in set becomes B1's *live-out* set. We continue in B1. We could
+continue backwards linearly through the blocks. In fact, I encourage you to do
+it as an exercise.
+
+It gets more interesting, though, when we have branches: what does it mean when
+two blocks' live-in results merge into their shared predecessor? If we have two
+blocks A and B that are successors of a block C, the live-in sets get
+*unioned* together.
+
+<!--
+digraph G {
+  node [shape=square];
+  C -> A;
+  C -> B;
+}
+-->
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="98pt" height="116pt" viewBox="0.00 0.00 98.00 116.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-112 94,-112 94,4 -4,4"/>
+<!-- C -->
+<g id="node1" class="node">
+<title>C</title>
+<polygon fill="none" stroke="black" points="63,-108 27,-108 27,-72 63,-72 63,-108"/>
+<text text-anchor="middle" x="45" y="-85.8" font-family="Times,serif" font-size="14.00">C</text>
+</g>
+<!-- A -->
+<g id="node2" class="node">
+<title>A</title>
+<polygon fill="none" stroke="black" points="36,-36 0,-36 0,0 36,0 36,-36"/>
+<text text-anchor="middle" x="18" y="-13.8" font-family="Times,serif" font-size="14.00">A</text>
+</g>
+<!-- C&#45;&gt;A -->
+<g id="edge1" class="edge">
+<title>C-&gt;A</title>
+<path fill="none" stroke="black" d="M38.33,-71.7C35.42,-64.15 31.93,-55.12 28.68,-46.68"/>
+<polygon fill="black" stroke="black" points="32.01,-45.59 25.14,-37.52 25.48,-48.11 32.01,-45.59"/>
+</g>
+<!-- B -->
+<g id="node3" class="node">
+<title>B</title>
+<polygon fill="none" stroke="black" points="90,-36 54,-36 54,0 90,0 90,-36"/>
+<text text-anchor="middle" x="72" y="-13.8" font-family="Times,serif" font-size="14.00">B</text>
+</g>
+<!-- C&#45;&gt;B -->
+<g id="edge2" class="edge">
+<title>C-&gt;B</title>
+<path fill="none" stroke="black" d="M51.67,-71.7C54.58,-64.15 58.07,-55.12 61.32,-46.68"/>
+<polygon fill="black" stroke="black" points="64.52,-48.11 64.86,-37.52 57.99,-45.59 64.52,-48.11"/>
+</g>
+</g>
+</svg>
+<figcaption>Working backwards from each of A and B,</figcaption>
+</figure>
+
+That is, if there were some register R0 live-in to B and some register R1
+live-in to A, both R0 and R1 would be live-out of C. They may also be live-in
+to C, but that entirely depends on the contents of C.
+
+
+
+
+
+
+
+
+
+
 In order to build live ranges, you have to have some kind of numbering system
 for your instructions, otherwise a live range's start and end are meaningless.
 We can write a function that fixes a particular block order (in this case,
@@ -109,10 +210,8 @@ class Function
     number = 16
     @block_order.each do |blk|
       blk.number = number
-      @instructions[number] = blk
       number += 2
       blk.instructions.each do |insn|
-        @instructions[number] = insn
         insn.number = number
         number += 2
       end
@@ -155,21 +254,6 @@ ret R16
 It looks scheduled, but really B1 and B2 could be swapped (for example) and the
 code would work just fine. No instruction has *actually* been assigned an
 address yet.
-
-We compute liveness by working backwards: a variable is *live* from the moment
-it is backwardly-first used until its definition.
-
-In this case, at the end of B2, nothing is live. If we step backwards to the
-`ret`, we see a use: R16 becomes live. If we step once more, we see its
-definition---R16 no longer live---but now we see a use of R14 and R15, which
-become live. This leaves us with R14 and R15 being *live-in* to B2.
-
-This live-in set becomes B1's *live-out* set. We continue in B1. We could
-continue backwards linearly through the blocks. In fact, I encourage you to do
-it as an exercise.
-
-It gets more interesting, though, when we have branches: what does it mean when
-two blocks' live-in results merge into their shared predecessor?
 
 Consider the following sketchy annotation of live ranges in a made-up
 assembly-like language with virtual registers:
