@@ -266,12 +266,17 @@ class Function
 end
 ```
 
+## Scheduling
 
+## Live ranges
 
+## Linear scan
 
+## Resolving SSA
 
+## Instruction selection
 
-
+## ............
 
 In order to build live ranges, you have to have some kind of numbering system
 for your instructions, otherwise a live range's start and end are meaningless.
