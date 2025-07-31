@@ -8,12 +8,13 @@ How do JIT compilers do register allocation? Well, "everyone knows" that
 because I've worked on a couple of JITs and still didn't understand the backend
 bits.
 
-I started reading [](/assets/img/wimmer-linear-scan-ssa.pdf) (PDF, 2010) by Wimmer and Franz after
-writing [A catalog of ways to generate SSA](/blog/ssa/). Reading alone didn't
-make a ton of sense---I ended up with a lot of very frustrated margin notes. I
-started trying to implement it alongside the paper. As it turns out, though,
-there is a rich history of papers in this area that it leans on really heavily.
-I needed to follow the chain of references!
+I started reading [Linear Scan Register Allocation on SSA
+Form](/assets/img/wimmer-linear-scan-ssa.pdf) (PDF, 2010) by Wimmer and Franz
+after writing [A catalog of ways to generate SSA](/blog/ssa/). Reading alone
+didn't make a ton of sense---I ended up with a lot of very frustrated margin
+notes. I started trying to implement it alongside the paper. As it turns out,
+though, there is a rich history of papers in this area that it leans on really
+heavily. I needed to follow the chain of references!
 
 I didn't realize that there were more than one or two papers on linear scan. So
 this post will serve as a bit of a survey or a history of linear scan---as best
@@ -96,7 +97,7 @@ B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <figure>
 <object class="svg" type="image/svg+xml" data="/assets/img/wimmer-lsra-cfg.svg"></object>
 <figcaption>
-blah
+blah TODO
 </figcaption>
 </figure>
 
@@ -159,7 +160,7 @@ add 1, c -> a           v  |       <- the second a
 add 1, a -> d              v  |
 ```
 
-In fact, the intervals are completely disjoint. It wouldn't make sense for the
+In fact, the ranges are completely disjoint. It wouldn't make sense for the
 register allocator to consider variables, because there's no reason the two
 `a`s should necessarily live in the same physical register.
 
@@ -261,7 +262,7 @@ digraph G {
 </g>
 </g>
 </svg>
-<figcaption>Working backwards from each of A and B,</figcaption>
+<figcaption>Working backwards from each of A and B, TODO</figcaption>
 </figure>
 
 That is, if there were some register R0 live-in to B and some register R1
@@ -340,6 +341,19 @@ end
 We could also use a worklist here, and it would be faster, but eh. Repeatedly
 iterating over all blocks is fine for now.
 
+The Wimmer paper skips this liveness analysis entirely by assuming some
+computed information about your CFG: where loops start and end. It also
+requires all loop blocks be contiguous. Then it makes variables defined before
+a loop and used at any point inside the loop live *for the whole loop*. By
+having this information available, it folds the liveness analysis into the live
+range building, which we'll do in a moment.
+
+That sounded complicated and finicky. Maybe it is, maybe it isn't. So I went
+with a dataflow liveness analysis instead. If it turns out to be the slow part,
+maybe it will matter enough to learn about this loop tagging method.
+
+For now, we will pick a *schedule* for the control-flow graph.
+
 ## Scheduling
 
 In order to build live ranges, you have to have some kind of numbering system
@@ -405,6 +419,97 @@ through the blocks in `@block_order`.
 Finally, we have all that we need to compute live ranges.
 
 ## Live ranges
+
+I know I said we were going to be computing live ranges. So why am I presenting
+you with a class called `Interval`? That's because somewhere (TODO where?) in
+the history of linear scan, people moved from having a single range for a
+particular virtual register to having *multiple* disjoint ranges. This
+collection of multiple ranges is called an *interval* and it exists to free up
+registers in the context of branches.
+
+For example, in the our IR snippet (above), R12 is defined in B2 as a block
+parameter, used in B3, and then not used again until some indetermine point in
+B4. (Our example uses it immediately in an add instruction to keep things
+short, but pretend the second use is some time away.)
+
+The Wimmer paper creates a *lifetime hole* between 28 and 34, meaning that the
+interval for R12 (called i12) is `[[20, 28), [34, ...)]`. Interval holes are
+not strictly necessary---they exist to generate better code. So for this post,
+we're going to start simple and assume 1 interval == 1 range. We may come back
+later and add additional ranges, but that will require some fixes to our later
+implementation. We'll note where we think those fixes should happen.
+
+```ruby
+class Interval
+  attr_reader :range
+
+  def add_range(from, to)
+    if to <= from
+      raise ArgumentError, "Invalid range: #{from} to #{to}"
+    end
+    if !@range
+      @range = Range.new(from, to)
+      return
+    end
+    @range = Range.new([@range.begin, from].min, [@range.end, to].max)
+  end
+
+  def set_from(from)
+    @range = if @range
+      Range.new(from, @range.end)
+    else
+      # This happens when we don't have a use of the vreg
+      Range.new(from, from)
+    end
+  end
+
+  def inspect
+    if @range
+      "Range(#{@range.begin}, #{@range.end})"
+    else
+      "Range(nil, nil)"
+    end
+  end
+
+  def ==(other)
+    other.is_a?(Interval) && @range == other.range
+  end
+end
+```
+
+```ruby
+class Function
+  def build_intervals live_in
+    intervals = Hash.new { |hash, key| hash[key] = Interval.new }
+    @block_order.each do |block|
+      # live = union of successor.liveIn for each successor of b
+      live = block.successors.map { |succ| live_in[succ] }.reduce(0, :|)
+      # for each phi function phi of successors of b do
+      #   live.add(phi.inputOf(b))
+      live |= block.out_vregs.map { |vreg| 1 << vreg.num }.reduce(0, :|)
+      each_bit(live) do |idx|
+        opd = vreg idx
+        intervals[opd].add_range(block.from, block.to)
+      end
+      block.instructions.reverse.each do |insn|
+        out = insn.out&.as_vreg
+        if out
+          # for each output operand opd of op do
+          #   intervals[opd].setFrom(op.id)
+          intervals[out].set_from(insn.number)
+        end
+        # for each input operand opd of op do
+        #   intervals[opd].addRange(b.from, op.id)
+        insn.vreg_ins.each do |opd|
+          intervals[opd].add_range(block.from, insn.number)
+        end
+      end
+    end
+    intervals.default_proc = nil
+    intervals.freeze
+  end
+end
+```
 
 ## Linear scan
 
