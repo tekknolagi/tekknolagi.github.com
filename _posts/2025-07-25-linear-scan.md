@@ -105,11 +105,14 @@ Linear scan starts at the point in your compiler process where you already know
 how these live ranges---that you have already done some kind of analysis to
 build a mapping.
 
-Part of this analysis is called *liveness analysis*. The result of liveness
-analysis is a mapping of `BasicBlock -> Set[Instruction]` that tells you which
-virtual registers (remember, since we're in SSA, instruction==vreg) are alive
-(used later) at the beginning of the basic block. This is called a *live-in*
-set. For example:
+Part of this analysis is called *liveness analysis*.
+
+## Liveness analysis
+
+The result of liveness analysis is a mapping of `BasicBlock ->
+Set[Instruction]` that tells you which virtual registers (remember, since we're
+in SSA, instruction==vreg) are alive (used later) at the beginning of the basic
+block. This is called a *live-in* set. For example:
 
 ```
 B0:
@@ -137,7 +140,8 @@ become live. This leaves us with R14 and R15 being *live-in* to B2.
 
 This live-in set becomes B1's *live-out* set. We continue in B1. We could
 continue backwards linearly through the blocks. In fact, I encourage you to do
-it as an exercise.
+it as an exercise. You should have a (potentially emtpy) set of registers per
+basic block.
 
 It gets more interesting, though, when we have branches: what does it mean when
 two blocks' live-in results merge into their shared predecessor? If we have two
@@ -195,7 +199,72 @@ That is, if there were some register R0 live-in to B and some register R1
 live-in to A, both R0 and R1 would be live-out of C. They may also be live-in
 to C, but that entirely depends on the contents of C.
 
+Since the total number of virtual registers is nonnegative and is finite for a
+given program, it seems like a good lattice for an *abstract interpreter*.
+That's right, we're doing AI.
 
+In this liveness analysis, we'll:
+
+1. compute a summary of what virtual registers each basic block needs to be
+   alive (gen set) and what variables it defines (kill set)
+1. initialize all live-in sets to 0
+1. do an iterative dataflow analysis over the blocks until the live-in sets
+   converge
+
+We store gen, kill, and live-in sets as bitsets, using some APIs conveniently
+available on Ruby's Integer class.
+
+Like most abstract interpretations, it doesn't matter what order we iterate
+over the collection of basic blocks for correctness, but it *does* matter for
+performance. In this case, iterating backwards (`post_order`) converges much
+faster than forwards (`reverse_post_order`):
+
+```ruby
+class Function
+  def compute_initial_liveness_sets order
+    # Map of Block -> what variables it alone needs to be live-in
+    gen = Hash.new 0
+    # Map of Block -> what variables it alone defines
+    kill = Hash.new 0
+    order.each do |block|
+      block.instructions.reverse_each do |insn|
+        out = insn.out&.as_vreg
+        if out
+          kill[block] |= (1 << out.num)
+        end
+        insn.vreg_ins.each do |vreg|
+          gen[block] |= (1 << vreg.num)
+        end
+      end
+      block.parameters.each do |param|
+        kill[block] |= (1 << param.num)
+      end
+    end
+    [gen, kill]
+  end
+
+  def analyze_liveness
+    order = post_order
+    gen, kill = compute_initial_liveness_sets(order)
+    # Map from Block -> what variables are live-in
+    live_in = Hash.new 0
+    changed = true
+    while changed
+      changed = false
+      for block in order
+        block_live = block.successors.map { |succ| live_in[succ] }.reduce(0, :|)
+        block_live |= gen[block]
+        block_live &= ~kill[block]
+        if live_in[block] != block_live
+          changed = true
+          live_in[block] = block_live
+        end
+      end
+    end
+    live_in
+  end
+end
+```
 
 
 
@@ -333,51 +402,6 @@ R11 = ...
 ```
 
 TODO insert a diagram
-
-```ruby
-class Function
-  def compute_initial_liveness_sets order
-    gen = Hash.new 0
-    kill = Hash.new 0
-    order.each do |block|
-      block.instructions.reverse_each do |insn|
-        out = insn.out&.as_vreg
-        if out
-          kill[block] |= (1 << out.num)
-        end
-        insn.vreg_ins.each do |vreg|
-          gen[block] |= (1 << vreg.num)
-        end
-      end
-      block.parameters.each do |param|
-        kill[block] |= (1 << param.num)
-      end
-    end
-    [gen, kill]
-  end
-
-  def analyze_liveness
-    # Map from Block to bitset of VRegs live at entry
-    order = post_order
-    gen, kill = compute_initial_liveness_sets(order)
-    live_in = Hash.new 0
-    changed = true
-    while changed
-      changed = false
-      for block in order
-        block_live = block.successors.map { |succ| live_in[succ] }.reduce(0, :|)
-        block_live |= gen[block]
-        block_live &= ~kill[block]
-        if live_in[block] != block_live
-          changed = true
-          live_in[block] = block_live
-        end
-      end
-    end
-    live_in
-  end
-end
-```
 
 The interval construction tells you where a virtual register is first defined
 and where it is last used.
