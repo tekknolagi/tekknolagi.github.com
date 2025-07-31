@@ -133,7 +133,7 @@ allocation, especially motivated by just-in-time compilers. In retrospect, it
 seems to be a bit of a rehash of the previous two papers.
 
 Linear scan (1997, 1999) operates on *live ranges* instead of virtual
-registers. A live range is a pair of [start, end) (end is exclusive) that
+registers. A live range is a pair of integers [start, end) (end is exclusive) that
 begins when the register is defined and ends when it is last used. In
 non-SSA-land, these live ranges are different from the virtual registers: they
 represent some kind of lifetimes of each *version* of a virtual register. For
@@ -340,16 +340,6 @@ end
 
 ## Scheduling
 
-## Live ranges
-
-## Linear scan
-
-## Resolving SSA
-
-## Instruction selection
-
-## ............
-
 In order to build live ranges, you have to have some kind of numbering system
 for your instructions, otherwise a live range's start and end are meaningless.
 We can write a function that fixes a particular block order (in this case,
@@ -360,7 +350,7 @@ linear sequence. You can think of this as flattening or projecting the graph:
 class Function
   def number_instructions!
     @block_order = rpo
-    number = 16
+    number = 16  # just so we match the Wimmer paper
     @block_order.each do |blk|
       blk.number = number
       number += 2
@@ -373,6 +363,54 @@ class Function
   end
 end
 ```
+
+A couple interesting things to note:
+
+* We number blocks because we use block starts as the start index for all of
+  that block's parameters
+* We start numbering at 16 just so we can eyeball things and make sure they
+  line up with the Wimmer paper
+* We only give out even numbers because... why? TODO
+  * Also note that some implementations online seem to do like 1.1 and 2.1
+  (floats???)
+
+The output of this function is. Even though we have extra instructions, it
+looks very similar to the example in the Wimmer paper.
+
+```
+16: label B1(R10, R11):
+18: jmp B2(1, R11)
+     # vvvvvvvvvv #
+20: label B2(R12, R13)
+22: cmp R13, 1
+24: branch lessThan B4()
+
+26: label B3()
+28: mul R12, R13 -> R14
+30: sub R13, 1 -> R15
+32: jump B2(R14, R15)
+
+34: label B4()
+     # ^^^^^^^^^^ #
+36: add R10, R12 -> R16
+38: ret R16
+```
+
+Since we're not going to be messing with the order of the instructions within a
+block anymore, all we have to do going forward is make sure that we iterate
+through the blocks in `@block_order`.
+
+Finally, we have all that we need to compute live ranges.
+
+## Live ranges
+
+## Linear scan
+
+## Resolving SSA
+
+## Instruction selection
+
+## ............
 
 
 
