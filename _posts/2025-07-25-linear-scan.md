@@ -321,6 +321,8 @@ class Function
     while changed
       changed = false
       for block in order
+        # Union-ing all the successors' live-in sets gives us this block's
+        # live-out, which is a good starting point for computing the live-in
         block_live = block.successors.map { |succ| live_in[succ] }.reduce(0, :|)
         block_live |= gen[block]
         block_live &= ~kill[block]
@@ -335,8 +337,8 @@ class Function
 end
 ```
 
-
-
+We could also use a worklist here, and it would be faster, but eh. Repeatedly
+iterating over all blocks is fine for now.
 
 ## Scheduling
 
