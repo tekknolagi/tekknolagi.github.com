@@ -8,10 +8,17 @@ How do JIT compilers do register allocation? Well, "everyone knows" that
 because I've worked on a couple of JITs and still didn't understand the backend
 bits.
 
-I also didn't realize that there were more than one or two papers on linear
-scan. So this post will serve as a bit of a survey or a history of linear
-scan---as best as I can figure it out, anyway. If you were in or near the room
-where it happened, please feel free to reach out and correct some parts.
+I started reading [](/assets/img/wimmer-linear-scan-ssa.pdf) (PDF, 2010) after
+writing [A catalog of ways to generate SSA](/blog/ssa/). Reading alone didn't
+make a ton of sense---I ended up with a lot of very frustrated margin notes. I
+started trying to implement it alongside the paper. As it turns out, though,
+there is a rich history of papers in this area that it leans on really heavily.
+I needed to follow the chain of references!
+
+I didn't realize that there were more than one or two papers on linear scan. So
+this post will serve as a bit of a survey or a history of linear scan---as best
+as I can figure it out, anyway. If you were in or near the room where it
+happened, please feel free to reach out and correct some parts.
 
 ## Register allocation
 
