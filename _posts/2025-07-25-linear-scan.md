@@ -13,6 +13,21 @@ scan. So this post will serve as a bit of a survey or a history of linear
 scan---as best as I can figure it out, anyway. If you were in or near the room
 where it happened, please feel free to reach out and correct some parts.
 
+## Register allocation
+
+The fundamental problem in register allocation is to take an IR that uses a
+virtual registers (as many as you like) and rewrite it to use a finite amount
+of physical registers and stack space.
+
+People use register allocators like they use garbage collectors: it's an
+abstraction that can manage your resources for you, maybe with some cost. When
+writing the back-end of a compiler, it's probably much easier to have a
+separate register-allocator-in-a-box than manually managing variable lifetimes
+while also considering all of your different target architectures.
+
+There are a couple different approaches to register allocation, but in this
+post we'll focus on *linear scan*.
+
 ## In the beginning
 
 Linear scan register allocation (LSRA) has been around for awhile. It's neat
@@ -29,8 +44,8 @@ noticed it.) In this paper, they mostly describe a staged variant of C called
 
 Then came a paper called [Quality and Speed in Linear-scan Register
 Allocation](/assets/img/quality-speed-linear-scan-ra.pdf) (PDF, 1998) by Traub,
-Holloway, and Smith. It adds some optimizations to the algorithm presented in
-the tcc paper.
+Holloway, and Smith. It adds some optimizations (lifetime holes, binpacking) to
+the algorithm presented in the 1997 paper.
 
 The first paper I read, and I think the paper everyone refers to when they talk
 about linear scan, is [Linear Scan Register
@@ -39,9 +54,81 @@ In this paper, they give a fast alternative to graph coloring register
 allocation, especially motivated by just-in-time compilers. In retrospect, it
 seems to be a bit of a rehash of the previous two papers.
 
+Linear scan (1997, 1999) operates on *live ranges* instead of virtual
+registers. A live range is a pair of [start, end) (end is exclusive) that
+begins when the register is defined and ends when it is last used. In
+non-SSA-land, these live ranges are different from the virtual registers: they
+represent some kind of lifetimes of each *version* of a virtual register. For
+example:
+
+```
+... -> a
+1 + a -> b
+1 + b -> c
+1 + c -> a
+1 + a -> d
+```
+
+There are two definitions of `a` and they each live for different amounts of
+time:
+
+```
+               a  b  c  a  d
+...   -> a     |
+1 + a -> b     v  |
+1 + b -> c        v  |
+1 + c -> a           v  |
+1 + a -> d              v  |
+```
+
+In fact, the intervals are completely disjoint. It wouldn't make sense for the
+register allocator to consider variables, because there's no reason the two
+`a`s should necessarily live in the same physical register.
+
+In SSA land, it's a little different: since each virtual registers only has one
+definition (by, uh, definition), live ranges are an exact 1:1 mapping with
+virtual registers. **We'll focus on SSA for the remainder of the post because
+this is what I am currently interested in.** The research community seems to
+have decided that allocating directly on SSA gives more information to the
+register allocator.
+
 Linear scan starts at the point in your compiler process where you already know
-how long each virtual register needs to live---that you have already done some
-kind of *liveness analysis*. The liveness analysis tells you which basic
+how these live ranges---that you have already done some kind of analysis to
+build a mapping.
+
+In order to build live ranges, you have to have some kind of numbering system
+for your instructions, otherwise a live range's start and end are meaningless.
+We can write a function that fixes a particular block order (in this case,
+reverse post-order) and then assigns each block and instruction a number in a
+linear sequence. You can think of this as flattening or projecting the graph:
+
+```ruby
+class Function
+  def number_instructions!
+    @block_order = rpo
+    number = 16
+    @block_order.each do |blk|
+      blk.number = number
+      @instructions[number] = blk
+      number += 2
+      blk.instructions.each do |insn|
+        @instructions[number] = insn
+        insn.number = number
+        number += 2
+      end
+      blk.to = number
+    end
+  end
+end
+```
+
+
+
+
+
+
+
+The liveness analysis tells you which basic
 blocks need which virtual registers to be alive on entry. This is a
 *graph-land* notion: it operates on your control-flow graph which has not yet
 been assigned an order.
