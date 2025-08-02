@@ -61370,6 +61370,135 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114960109604344902": {
+      "id": "114960109604344902",
+      "created_at": "2025-08-02T16:27:43.058Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114960109604344902/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114960109604344902/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114948620346324404",
+        "created_at": "2025-07-31T15:45:48.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.gamedev.place/users/eniko/statuses/114948620199475263",
+        "url": "https://mastodon.gamedev.place/@eniko/114948620199475263",
+        "replies_count": 4,
+        "reblogs_count": 27,
+        "favourites_count": 47,
+        "edited_at": null,
+        "content": "<p>New Bismuth VM blog post, detailing the life cycle of a hello world program for Bismuth from high level Bronze code to text-based IR, transpiled C, binary IR, and finally bytecode: <a href=\"https://enikofox.com/posts/hello-world-in-bismuth/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">enikofox.com/posts/hello-world</span><span class=\"invisible\">-in-bismuth/</span></a></p><p>(Quiet) public/unlisted replies to this post will be shown on the blog as comments on the post</p><p><a href=\"https://mastodon.gamedev.place/tags/BismuthVM\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>BismuthVM</span></a> <a href=\"https://mastodon.gamedev.place/tags/Bismuth\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>Bismuth</span></a> <a href=\"https://mastodon.gamedev.place/tags/PLDev\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>PLDev</span></a></p>",
+        "reblog": null,
+        "account": {
+          "id": "114488868963757256",
+          "username": "eniko",
+          "acct": "eniko@mastodon.gamedev.place",
+          "display_name": "Eniko Fox",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2025-05-10T00:00:00.000Z",
+          "note": "<p>Founded queer gamedev studio <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@kitsunegames\" class=\"u-url mention\" rel=\"nofollow noopener\" target=\"_blank\">@<span>kitsunegames</span></a></span> with <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.gamedev.place/@Njord\" class=\"u-url mention\" rel=\"nofollow noopener\" target=\"_blank\">@<span>Njord</span></a></span>. Kitsune Tails, Super Bernie World, MidBoss, Ultra Hat Dimension, Lore Finder. Also: Coding History on YouTube. She/her. Dutch, former US greencard holder, now living in Cyprus. Mask wearer</p><p>You can buy me a coffee at <a href=\"https://ko-fi.com/sharkhugseniko\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">ko-fi.com/sharkhugseniko</span><span class=\"invisible\"></span></a></p>",
+          "url": "https://mastodon.gamedev.place/@eniko",
+          "uri": "https://mastodon.gamedev.place/users/eniko",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/114/488/868/963/757/256/original/5032610867b4d4d8.png",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/114/488/868/963/757/256/original/5032610867b4d4d8.png",
+          "header": "https://files.mastodon.social/cache/accounts/headers/114/488/868/963/757/256/original/6b7c5e25eace9c7c.png",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/114/488/868/963/757/256/original/6b7c5e25eace9c7c.png",
+          "followers_count": 10165,
+          "following_count": 685,
+          "statuses_count": 2759,
+          "last_status_at": "2025-08-02",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Games",
+              "value": "<a href=\"https://kitsunegames.com/games\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">kitsunegames.com/games</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "Blog",
+              "value": "<a href=\"https://enikofox.com/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">enikofox.com/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "YouTube",
+              "value": "<a href=\"https://youtube.com/@EnikoFox\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">youtube.com/@EnikoFox</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "Patreon",
+              "value": "<a href=\"https://www.patreon.com/sharkhugseniko\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"\">patreon.com/sharkhugseniko</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+          {
+            "name": "bismuthvm",
+            "url": "https://mastodon.social/tags/bismuthvm"
+          },
+          {
+            "name": "bismuth",
+            "url": "https://mastodon.social/tags/bismuth"
+          },
+          {
+            "name": "PLdev",
+            "url": "https://mastodon.social/tags/PLdev"
+          }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": {
+          "url": "https://enikofox.com/posts/hello-world-in-bismuth/",
+          "title": "'Hello world' in Bismuth",
+          "description": "This is the third in a series of posts about a virtual machine I\u2019m developing as a hobby project called Bismuth. I\u2019ve talked a lot about Bismuth, mostly on social media, but I don\u2019t think I\u2019ve done a good job at communicating how you go from some code to a program in this VM. In this post I aim to rectify that by walking you through the entire life cycle of a hello world Bismuth program, from the highest level to the lowest.let hello = data_utf8(\"Hello world!\\n\");func main() i32 {    // system call 0x10 is the PrintStr system call    sys(0x10, hello, 0, sizeof(hello));    return 0;}This code will be converted to the VM\u2019s intermediate representation, which can then be transpiled to C, or compiled to a binary version of the IR, which the VM ingests and turns into bytecode and runs.",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "Eniko does bad things to code",
+          "provider_url": "",
+          "html": "",
+          "width": 757,
+          "height": 304,
+          "image": "https://files.mastodon.social/cache/preview_cards/images/157/180/610/original/e411723e4a2579a7.png",
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": "UMP6~-IUt7t707WUayj[4yofWBj[9PofofWB",
+          "published_at": null,
+          "authors": []
+        },
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
