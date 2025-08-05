@@ -61528,6 +61528,35 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114974472032473281": {
+      "id": "114974472032473281",
+      "created_at": "2025-08-05T05:20:16.315Z",
+      "in_reply_to_id": "114974436098341200",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114974472032473281",
+      "url": "https://mastodon.social/@tekknolagi/114974472032473281",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Maybe I&#39;m barking up the wrong tree here but I&#39;m kind of looking for the CPS version of a CPU or low level bytecode. All store, no names/env</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
