@@ -61557,6 +61557,255 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "114976232511096414": {
+      "id": "114976232511096414",
+      "created_at": "2025-08-05T12:47:59.100Z",
+      "in_reply_to_id": "114976225261657476",
+      "in_reply_to_account_id": "111982713188031012",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114976232511096414",
+      "url": "https://mastodon.social/@tekknolagi/114976232511096414",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@bojidar_bg\" class=\"u-url mention\">@<span>bojidar_bg</span></a></span> I was thinking about something similar (unrelated to my current question) at <a href=\"https://bernsteinbear.com/opfn\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com/opfn</span><span class=\"invisible\"></span></a> - orthogonally persistent wasm using in memory filesystems</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "111982713188031012",
+          "username": "bojidar_bg",
+          "url": "https://mastodon.social/@bojidar_bg",
+          "acct": "bojidar_bg"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://bernsteinbear.com/opfn",
+        "title": "Some computing notes",
+        "description": "",
+        "language": "en",
+        "type": "link",
+        "author_name": "Max Bernstein",
+        "author_url": "",
+        "provider_name": "Max Bernstein",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": null,
+        "authors": [
+          {
+            "name": "Max Bernstein",
+            "url": "",
+            "account": {
+              "id": "1300106",
+              "username": "tekknolagi",
+              "acct": "tekknolagi",
+              "display_name": "Max B",
+              "locked": false,
+              "bot": false,
+              "discoverable": true,
+              "indexable": true,
+              "group": false,
+              "created_at": "2020-10-20T00:00:00.000Z",
+              "note": "<p>Let&#39;s chat about compilers</p>",
+              "url": "https://mastodon.social/@tekknolagi",
+              "uri": "https://mastodon.social/users/tekknolagi",
+              "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "header": "https://mastodon.social/headers/original/missing.png",
+              "header_static": "https://mastodon.social/headers/original/missing.png",
+              "followers_count": 515,
+              "following_count": 279,
+              "statuses_count": 1291,
+              "last_status_at": "2025-08-05",
+              "hide_collections": false,
+              "noindex": false,
+              "emojis": [],
+              "roles": [],
+              "fields": [
+                {
+                  "name": "website",
+                  "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2022-12-07T01:44:28.737+00:00"
+                },
+                {
+                  "name": "github",
+                  "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2023-07-26T16:28:07.403+00:00"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "poll": null
+    },
+    "114976225261657476": {
+      "id": "114976225261657476",
+      "created_at": "2025-08-05T12:46:08.475Z",
+      "in_reply_to_id": "114974578038676080",
+      "in_reply_to_account_id": "111982713188031012",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114976225261657476",
+      "url": "https://mastodon.social/@tekknolagi/114976225261657476",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@bojidar_bg\" class=\"u-url mention\">@<span>bojidar_bg</span></a></span> this is so dope</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "111982713188031012",
+          "username": "bojidar_bg",
+          "url": "https://mastodon.social/@bojidar_bg",
+          "acct": "bojidar_bg"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "114976224633491370": {
+      "id": "114976224633491370",
+      "created_at": "2025-08-05T12:45:58.891Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/114976224633491370/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/114976224633491370/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114974578038676080",
+        "created_at": "2025-08-05T05:47:13.845Z",
+        "in_reply_to_id": "114974472032473281",
+        "in_reply_to_account_id": "1300106",
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "unlisted",
+        "language": "en",
+        "uri": "https://mastodon.social/users/bojidar_bg/statuses/114974578038676080",
+        "url": "https://mastodon.social/@bojidar_bg/114974578038676080",
+        "replies_count": 2,
+        "reblogs_count": 1,
+        "favourites_count": 1,
+        "edited_at": "2025-08-05T06:13:35.257Z",
+        "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@tekknolagi\" class=\"u-url mention\">@<span>tekknolagi</span></a></span> Not super familiar with the abbreviations you mentioned, but in case it maches: I&#39;m tinkering with a continuation-based language that includes it&#39;s own VM and has no variable names within the VM! (it even didn&#39;t have any variables at first, requiring you to weave context manually through closures, but that ended up far too hard to use)<br />You can find my current draft of it at <a href=\"https://codeberg.org/bojidar-bg/project-world\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">codeberg.org/bojidar-bg/projec</span><span class=\"invisible\">t-world</span></a></p>",
+        "reblog": null,
+        "application": {
+          "name": "Mastodon for Android",
+          "website": "https://app.joinmastodon.org/android"
+        },
+        "account": {
+          "id": "111982713188031012",
+          "username": "bojidar_bg",
+          "acct": "bojidar_bg",
+          "display_name": "Bojidar Marinov",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2024-02-23T00:00:00.000Z",
+          "note": "<p>FOSS developer, writer, human. \ud83c\udde7\ud83c\uddec</p><p>Ask-me-anything. I tend to reply to most comments I receive.</p><p>Christian (Calvinist), libertarian (minarchist?); \ud83c\udfb9, \u2702\ufe0f\ud83d\udcc4, \ud83c\udf4e</p><p>Followed hashtags: <a href=\"https://mastodon.social/tags/libremonday\" class=\"mention hashtag\" rel=\"tag\">#<span>libremonday</span></a> <a href=\"https://mastodon.social/tags/tilingtuesday\" class=\"mention hashtag\" rel=\"tag\">#<span>tilingtuesday</span></a> <a href=\"https://mastodon.social/tags/askfedi\" class=\"mention hashtag\" rel=\"tag\">#<span>askfedi</span></a> <a href=\"https://mastodon.social/tags/opensource\" class=\"mention hashtag\" rel=\"tag\">#<span>opensource</span></a> <a href=\"https://mastodon.social/tags/hedgehog\" class=\"mention hashtag\" rel=\"tag\">#<span>hedgehog</span></a> <a href=\"https://mastodon.social/tags/bubbletea\" class=\"mention hashtag\" rel=\"tag\">#<span>bubbletea</span></a></p><p>Profile picture is a white B on a greenish background; header image is a panorama shot of a boulevard going into the distance, surrounded by some socialist-era buildings.</p>",
+          "url": "https://mastodon.social/@bojidar_bg",
+          "uri": "https://mastodon.social/users/bojidar_bg",
+          "avatar": "https://files.mastodon.social/accounts/avatars/111/982/713/188/031/012/original/12f350c329442e36.jpg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/111/982/713/188/031/012/original/12f350c329442e36.jpg",
+          "header": "https://files.mastodon.social/accounts/headers/111/982/713/188/031/012/original/95ae3022d00a1fdd.jpg",
+          "header_static": "https://files.mastodon.social/accounts/headers/111/982/713/188/031/012/original/95ae3022d00a1fdd.jpg",
+          "followers_count": 100,
+          "following_count": 107,
+          "statuses_count": 667,
+          "last_status_at": "2025-08-05",
+          "hide_collections": false,
+          "noindex": false,
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "website",
+              "value": "<a href=\"https://bojidar-bg.dev\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bojidar-bg.dev</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2024-02-23T21:17:22.446+00:00"
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [
+          {
+            "id": "1300106",
+            "username": "tekknolagi",
+            "url": "https://mastodon.social/@tekknolagi",
+            "acct": "tekknolagi"
+          }
+        ],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": {
+          "url": "https://codeberg.org/bojidar-bg/project-world",
+          "title": "project-world",
+          "description": "project-world",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "Codeberg.org",
+          "provider_url": "",
+          "html": "",
+          "width": 678,
+          "height": 339,
+          "image": "https://files.mastodon.social/cache/preview_cards/images/152/279/508/original/a4b8785117fc72e2.png",
+          "image_description": "Summary card of repository bojidar-bg/project-world",
+          "embed_url": "",
+          "blurhash": "UXR{od%MM{%3yEt7WBofQ,M{t7WB?wIUt7ay",
+          "published_at": null,
+          "authors": []
+        },
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
