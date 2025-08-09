@@ -764,9 +764,249 @@ for each control flow edge from predecessor to successor do
   mapping.orderAndInsertMoves()
 ```
 
-Because we have a 1:1 mapping of virtual registers to live ranges, we know that either
+Because we have a 1:1 mapping of virtual registers to live ranges, we know that
+every interval live at the beginning of a block is either:
+
+* live across an edge between two blocks and therefore has already been placed
+  in a location by assignment/spill code
+* beginning its life at the beginning of the block as a block parameter and
+  therefore needs to be moved from its source location
+
+For this reason, we only handle the second case in our SSA resolution. If we
+added lifetime holes, we would have to go back to the full Wimmer SSA
+resolution.
+
+This means that we're going to iterate over every outbound edge from every
+block. For each edge, we're going to insert some parallel moves.
+
+<!-- TODO(max): Figure out if `assignments` needs to have a notion of time in
+case of a vreg getting moved from a physical register to the stack -->
+
+```ruby
+class Function
+  def resolve_ssa intervals, assignments
+    # ...
+    @block_order.each do |predecessor|
+      outgoing_edges = predecessor.edges
+      num_successors = outgoing_edges.length
+      outgoing_edges.each do |edge|
+        mapping = []
+        successor = edge.block
+        edge.args.zip(successor.parameters).each do |moveFrom, moveTo|
+          if moveFrom != moveTo
+            mapping << [moveFrom, moveTo]
+          end
+        end
+        # predecessor.order_and_insert_moves(mapping)
+        # TODO: order_and_insert_moves
+      end
+    end
+    # Remove all block parameters and arguments; we have resolved SSA
+    @block_order.each do |block|
+      block.parameters.clear
+      block.edges.each do |edge|
+        edge.args.clear
+      end
+    end
+  end
+end
+```
+
+This already looks very similar to the RESOLVE function from Wimmer2010.
+Unfortunately, Wimmer2010 basically off `orderAndInsertMoves` with an *eh, it's
+already in the literature* comment.
+
+### A brief and frustrating parallel moves detour
+
+What's not made clear, though, is that this particular subroutine has been the
+source of a significant amount of bugs in the literature. Only recently did
+some folks roll through and suggest (proven!) fixes:
+
+* [Battling windmills with Coq: formal verification of a compilation algorithm
+  for parallel moves](/assets/img/parallel-move-leroy.pdf) (PDF, 2007) by
+  Rideau, Serpette, and Leroy
+* [Revisiting Out-of-SSA Translation for Correctness, Code Quality, and
+  Efficiency](/assets/img/boissinot-out-ssa.pdf) (PDF, 2009) by Boissinot,
+  Darte, Rastello, Dupont de Dinechin, and Guillon.
+  * and again in [Boissinot's thesis](/assets/img/boissinot-thesis.pdf) (PDF,
+    2010)
+
+This sent us on a deep rabbit hole of trying to understand what bugs occur,
+when, and how to fix them. We implemented both the Leroy and the Boissinot
+algorithms. We found differences between Boissinot2009, Boissinot2010, and the
+SSA book implementation following those algorithms. We found Paul Sokolovsky's
+[implementation with bugfixes](https://github.com/pfalcon/parcopy/). We found
+Dmitry Stogov's [unmerged pull
+request](https://github.com/pfalcon/parcopy/pull/1) to the same repository to
+fix another bug.
+
+We looked at Benoit Boissinot's thesis again and emailed him some questions. He
+responded! And then he even put up an [amended version of his
+algorithm](https://github.com/bboissin/thesis_bboissin) in Rust with tests and
+fuzzing.
+
+All this is to say that this is still causing people grief and, though I
+understand page limits, I wish parallel moves were not handwaved away.
+
+We ended up with this implementation which passes all of the tests from
+Sokolovsky's repository as well as the example from Boissinot's thesis (though,
+as we discussed in the email, the example solution in the thesis is incorrect).
+
+```ruby
+# copies contains an array of [src, dst] arrays
+def sequentialize copies
+  ready = []  # Contains only destination regs ("available")
+  to_do = []  # Contains only destination regs
+  pred = {}  # Map of destination reg -> what reg is written to it (its source)
+  loc = {}  # Map of reg -> the current location where the initial value of reg is available ("resource")
+  result = []
+
+  emit_copy = -> (src, dst) {
+    # We add an arrow here just for clarity in reading this algorithm because
+    # different people do [src, dst] and [dst, src] depending on if they prefer
+    # Intel or AT&T
+    result << [src, "->", dst]
+  }
+
+  # In Ruby, loc[x] is nil if x not in loc, so this loop could be omitted
+  copies.each do |(src, dst)|
+    loc[dst] = nil
+  end
+
+  copies.each do |(src, dst)|
+    loc[src] = src
+    if pred.key? dst  # Alternatively, to_do.include? dst
+      raise "Conflicting assignments to destination #{dst}, latest: #{[dst, src]}"
+    end
+    pred[dst] = src
+    to_do << dst
+  end
+
+  copies.each do |(src, dst)|
+    if !loc[dst]
+      # All destinations that are not also sources can be written to immediately (tree leaves)
+      ready << dst
+    end
+  end
+
+  while !to_do.empty?
+    while b = ready.pop
+      a = loc[pred[b]] # a in the paper
+      emit_copy.(a, b)
+      # pred[b] is now living at b
+      loc[pred[b]] = b
+      if to_do.include?(a)
+        to_do.delete a
+      end
+      if pred[b] == a && pred.include?(a)
+        ready << a
+      end
+    end
+
+    if to_do.empty?
+      break
+    end
+
+    dst = to_do.pop
+    if dst != loc[pred[dst]]
+      emit_copy.(dst, "tmp")
+      loc[dst] = "tmp"
+      ready << dst
+    end
+  end
+  result
+end
+```
+
+Leroy's algorithm, which is shorter, passes almost all the tests---in one test
+case, it uses one more temporary variable than Boissinot's does. We haven't
+spent much time looking at why.
+
+```ruby
+def move_one i, src, dst, status, result
+  return if src[i] == dst[i]
+  status[i] = :being_moved
+  for j in 0...(src.length) do
+    if src[j] == dst[i]
+      case status[j]
+      when :to_move
+        move_one j, src, dst, status, result
+      when :being_moved
+        result << [src[j], "->", "tmp"]
+        src[j] = "tmp"
+      end
+    end
+  end
+  result << [src[i], "->", dst[i]]
+  status[i] = :moved
+end
+
+def leroy_sequentialize copies
+  src = copies.map { it[0] }
+  dst = copies.map { it[1] }
+  status = [:to_move] * src.length
+  result = []
+  status.each_with_index do |item, i|
+    if item == :to_move
+      move_one i, src, dst, status, result
+    end
+  end
+  result
+end
+```
+
+### Back to SSA resolution
+
+```ruby
+class Function
+  def resolve_ssa intervals, assignments
+    # ...
+        # predecessor.order_and_insert_moves(mapping)
+        sequence = sequentialize(mapping).map do |(src, _, dst)|
+          Insn.new(:mov, dst, [src])
+        end
+        # TODO: insert the moves!
+    # ...
+  end
+end
+```
+
+```ruby
+class Function
+  def resolve_ssa intervals, assignments
+    num_predecessors = Hash.new 0
+    @block_order.each do |block|
+      block.edges.each do |edge|
+        num_predecessors[edge.block] += 1
+      end
+    end
+    # ...
+        # predecessor.order_and_insert_moves(mapping)
+        sequence = ...
+        # If we don't have any moves to insert, we don't have any block to
+        # insert
+        next if sequence.empty?
+        if num_predecessors[successor] > 1 && num_successors > 1
+          # Make a new interstitial block
+          b = new_block
+          b.insert_moves_at_start sequence
+          b.instructions << Insn.new(:jump, nil, [Edge.new(successor, [])])
+          edge.block = b
+        elsif num_successors > 1
+          # Insert into the beginning of the block
+          successor.insert_moves_at_start sequence
+        else
+          # Insert into the end of the block... before the terminator
+          predecessor.insert_moves_at_end sequence
+        end
+    # ...
+  end
+end
+```
 
 ## Instruction selection
+
+## Validation by abstract interpretation
 
 ## ............
 
