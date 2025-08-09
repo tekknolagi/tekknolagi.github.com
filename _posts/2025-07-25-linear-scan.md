@@ -619,7 +619,7 @@ class Function
     sorted_intervals.each do |_vreg, interval|
       # expire_old_intervals(interval)
       active.select! do |active_interval|
-        if active_interval.range.end >= interval.range.begin
+        if active_interval.range.end > interval.range.begin
           true
         else
           operand = assignment.fetch(active_interval)
@@ -665,6 +665,12 @@ class Function
   end
 end
 ```
+
+Internalizing this took us a bit. It is mostly a three-state machine:
+
+* have not been allocated
+* have been allocated a register
+* have been allocated a stack slot
 
 ## Resolving SSA
 
