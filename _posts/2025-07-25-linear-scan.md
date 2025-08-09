@@ -52,6 +52,32 @@ notes. I started trying to implement it alongside the paper. As it turns out,
 though, there is a rich history of papers in this area that it leans on really
 heavily. I needed to follow the chain of references!
 
+> For example, here is a lovely explanation of the process, start to finish,
+> from Christian Wimmer's [Master's
+> thesis](/assets/img/wimmer-masters-thesis.pdf) (PDF,
+> 2004).
+>
+> ```
+> LINEAR_SCAN
+>   // order blocks and operations (including loop detection)
+>   COMPUTE_BLOCK_ORDER
+>   NUMBER_OPERATIONS
+>   // create intervals with live ranges
+>   COMPUTE_LOCAL_LIVE_SETS
+>   COMPUTE_GLOBAL_LIVE_SETS
+>   BUILD_INTERVALS
+>   // allocate registers
+>   WALK_INTERVALS
+>   RESOLVE_DATA_FLOW
+>   // replace virtual registers with physical registers
+>   ASSIGN_REG_NUM
+>   // special handling for the Intel FPU stack
+>   ALLOCATE_FPU_STACK
+> ```
+>
+> There it is, all laid out at once. It's very refreshing when compared to all
+> of the compact research papers.
+
 I didn't realize that there were more than one or two papers on linear scan. So
 this post will also incidentally serve as a bit of a survey or a history of
 linear scan---as best as I can figure it out, anyway. If you were in or near
