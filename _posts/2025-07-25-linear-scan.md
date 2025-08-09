@@ -631,6 +631,35 @@ as 1997).
 I recommend looking at the PDF side by side with the code. We have tried to
 keep the structure very similar.
 
+```
+LinearScanRegisterAllocation
+active ← {}
+foreach live interval i, in order of increasing start point
+  ExpireOldIntervals(i)
+  if length(active) = R then
+    SpillAtInterval(i)
+  else
+    register[i] ← a register removed from pool of free registers
+    add i to active, sorted by increasing end point
+
+ExpireOldIntervals(i)
+foreach interval j in active, in order of increasing end point
+  if endpoint[j] ≥ startpoint[i] then
+    return
+  remove j from active
+  add register[j] to pool of free registers
+
+SpillAtInterval(i)
+spill ← last interval in active
+if endpoint[spill] > endpoint[i] then
+  register[i] ← register[spill]
+  location[spill] ← new stack location
+  remove spill from active
+  add i to active, sorted by increasing end point
+else
+  location[i] ← new stack location
+```
+
 ```ruby
 class Function
   def ye_olde_linear_scan intervals, num_registers
@@ -705,11 +734,16 @@ lifetime holes to intervals.
 
 ## Resolving SSA
 
-At this point we have register *assignments*: we have a hash table mapping an
-interval
+At this point we have register *assignments*: we have a hash table mapping
+intervals to physical locations. That's great but we're still in SSA form:
+labelled code regions don't have block arguments in hardware. We need to write
+some code to take us out of SSA and into the real world.
 
 <!-- TODO(max): Figure out if `assignments` needs to have a notion of time in
 case of a vreg getting moved from a physical register to the stack -->
+
+We can use a modified Wimmer2010 as a great start point here. It handles more
+than we need to right now---lifetime holes---but we can simplify.
 
 ```
 RESOLVE
@@ -729,6 +763,8 @@ for each control flow edge from predecessor to successor do
       mapping.add(moveFrom, moveTo)
   mapping.orderAndInsertMoves()
 ```
+
+Because we have a 1:1 mapping of virtual registers to live ranges, we know that either
 
 ## Instruction selection
 
