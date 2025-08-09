@@ -705,6 +705,12 @@ lifetime holes to intervals.
 
 ## Resolving SSA
 
+At this point we have register *assignments*: we have a hash table mapping an
+interval
+
+<!-- TODO(max): Figure out if `assignments` needs to have a notion of time in
+case of a vreg getting moved from a physical register to the stack -->
+
 ```
 RESOLVE
 for each control flow edge from predecessor to successor do
