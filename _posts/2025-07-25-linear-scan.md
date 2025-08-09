@@ -3,6 +3,9 @@ title: "Linear scan register allocation on SSA"
 layout: post
 ---
 
+(Much of the code and education that resulted in this post happened with [Aaron
+Patterson](https://tenderlovemaking.com/).)
+
 The fundamental problem in register allocation is to take an IR that uses a
 virtual registers (as many as you like) and rewrite it to use a finite amount
 of physical registers and stack space.
@@ -575,6 +578,22 @@ up with `[1, 10)`. There's no gap in the middle.
 
 And if we have `[1, 7)` and someone calls `set_from(3)`, we end up with `[3,
 7)`.
+
+After figuring out from scratch some of these assumptions about what the interval/range API
+should and should not do, Aaron and I realized that there was some actual code
+for `add_range` in a different, earlier paper: [Linear Scan Register Allocation
+in the Context of SSA Form and Register
+Constraints](/assets/img/linear-scan-ra-context-ssa.pdf) (PDF, 2002) by
+Mössenböck and Pfeiffer.
+
+```
+ADDRANGE(i: Instruction; b: Block; end: integer)
+  if b.first.n ≤ i.n ≤ b.last.n then range ← [i.n, end[ else range ← [b.first.n, end[
+  add range to interval[i.n] // merging adjacent ranges
+```
+
+Unfortunately, many other versions of this PDF look absolutely horrible and I
+had to do some digging to find the version linked above.
 
 Finally we can start thinking about doing some actual register assignment.
 Let's return to the 90s.
