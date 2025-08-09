@@ -642,8 +642,8 @@ ADDRANGE(i: Instruction; b: Block; end: integer)
   add range to interval[i.n] // merging adjacent ranges
 ```
 
-Unfortunately, many other versions of this PDF look absolutely horrible and I
-had to do some digging to find the version linked above.
+Unfortunately, many other versions of this PDF look absolutely horrible (like
+bad OCR) and I had to do some digging to find the version linked above.
 
 Finally we can start thinking about doing some actual register assignment.
 Let's return to the 90s.
