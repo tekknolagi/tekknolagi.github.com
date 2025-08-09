@@ -676,6 +676,9 @@ Internalizing this took us a bit. It is mostly a three-state machine:
 * have been allocated a register
 * have been allocated a stack slot
 
+We would like to come back to this and incrementally modify it as we add
+lifetime holes to intervals.
+
 ## Resolving SSA
 
 ## Instruction selection
