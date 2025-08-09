@@ -418,24 +418,26 @@ A couple interesting things to note:
   that block's parameters
 * We start numbering at 16 just so we can eyeball things and make sure they
   line up with the Wimmer2010 paper
-* We only give out even numbers because... why? TODO
+* We only give out even numbers because
+  * Later we'll insert spills at odd-numbered instructions
+  * Something else I forgot TODO
   * Also note that some implementations online seem to do like 1.1 and 2.1
-  (floats???)
+    (floats???)
 
 Even though we have extra instructions, it looks very similar to the example in
 the Wimmer2010 paper.
 
 ```
 16: label B1(R10, R11):
-18: jmp B2(1, R11)
+18: jmp B2($1, R11)
      # vvvvvvvvvv #
 20: label B2(R12, R13)
-22: cmp R13, 1
+22: cmp R13, $1
 24: branch lessThan B4()
 
 26: label B3()
 28: mul R12, R13 -> R14
-30: sub R13, 1 -> R15
+30: sub R13, $1 -> R15
 32: jump B2(R14, R15)
 
 34: label B4()
