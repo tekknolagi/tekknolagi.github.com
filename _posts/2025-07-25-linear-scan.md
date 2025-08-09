@@ -546,6 +546,9 @@ class Interval
 
   def set_from(from)
     @range = if @range
+      if @range.end <= from
+        raise ArgumentError, "Invalid range: #{from} to #{@range.end}"
+      end
       Range.new(from, @range.end)
     else
       # This happens when we don't have a use of the vreg
@@ -559,6 +562,22 @@ class Interval
   end
 end
 ```
+
+Note that there's some implicit behavior happening here:
+
+* If we haven't initialized a range yet, we build one automatically
+* If we have a range, `add_range` builds the smallest range that overlaps with
+  the existing range and incoming information
+* If we have a range, `set_from` may shrink it
+
+For example, if we have `[1, 5)` and someone calls `add_range(7, 10)`, we end
+up with `[1, 10)`. There's no gap in the middle.
+
+And if we have `[1, 7)` and someone calls `set_from(3)`, we end up with `[3,
+7)`.
+
+Finally we can start thinking about doing some actual register assignment.
+Let's return to the 90s.
 
 ## Linear scan
 
