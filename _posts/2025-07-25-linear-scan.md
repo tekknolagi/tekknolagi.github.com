@@ -1061,6 +1061,40 @@ Not so fast...
 
 ## Validation by abstract interpretation
 
+We have just built an enormously complex machine. Even out the gate, with the
+original linear scan, there is a lot of machinery. It's possible to write tests
+that spot check sample programs of all shapes and sizes but it's *very*
+difficult to anticipate every possible edge case that will appear in the real
+world.
+
+Even if the original algorithm you're using has been proven correct, your
+implementation may have subtle bugs due to (for example) having slightly
+different invariants or even transcription errors.
+
+We have all these proof tools at our disposal: we can write an abstract
+interpreter that verifies properties of *one* graph, but it's very hard
+(impossible?) to scale that to sets of graphs.
+
+Maybe that's enough, though. In one of my favorite blog posts, Chris Fallin
+[writes about](https://cfallin.org/blog/2021/03/15/cranelift-isel-3/) writing a
+register allocation verifier based on abstract interpretation. It can verify
+one concrete LIR function at a time. It's fast enough that it can be left on in
+debug builds. This means that a decent chunk of the time (tests, CI, maybe a
+production cluster) we can get a very clear signal that every register
+assignment that passes through the verifier satisfies some invariants.
+
+Furthermore, we are not limited to Real World Code. With the advent of fuzzing,
+one can imagine an always-on fuzzer that tries to break the register allocator.
+A verifier can then catch bugs that come from exploring this huge search space.
+
+Some time after finding Chris's blog post, I also stumbled across [the very same
+thing in
+V8](https://github.com/v8/v8/blob/cac6de03372c25987c6cbea49b4b39d9da437978/src/compiler/backend/register-allocator-verifier.h)!
+
+I find this stuff so cool. I'll also mention Boissinot's [Rust
+code](https://github.com/bboissin/thesis_bboissin) again because it does
+something similar for parallel moves.
+
 ## ............
 
 
