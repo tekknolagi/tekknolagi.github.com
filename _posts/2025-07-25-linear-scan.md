@@ -1044,6 +1044,9 @@ class Function
 end
 ```
 
+TODO split critical edges before numbering so we don't need to recalculate
+block order
+
 And that's it, folks. We have gone from virtual registers in SSA form to
 physical locations. Everything's all hunky-dory. We can just turn these LIR
 instructions into their very similar looking machine equivalents, right?
