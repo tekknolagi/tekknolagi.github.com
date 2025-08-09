@@ -957,6 +957,9 @@ end
 
 ### Back to SSA resolution
 
+Whatever algorithm you choose, you now have a way to parallel move some
+registers to some other registers. You have avoided the "swap problem".
+
 ```ruby
 class Function
   def resolve_ssa intervals, assignments
@@ -970,6 +973,43 @@ class Function
   end
 end
 ```
+
+That's great. You can generate an ordered list of instructions from a tangled
+graph. But where do you put them? What about the "lost copy" problem?
+
+As it turns out, we still need to handle critical edge splitting. Let's
+consider what it means to insert moves at an edge between blocks `A -> B` when
+the surrounding CFG looks a couple of different ways.
+
+* Case 1: `A -> B`
+* Case 2: `A -> B` and `A -> C`
+* Case 3: `A -> B` and `D -> B`
+* Case 4: `A -> B` and `A -> C` and `D -> B`
+
+These are the four (really, three) cases we may come across.
+
+In Case 1, if we only have two neighboring blocks A and B, we can
+insert the moves into either block. It doesn't matter: at the end of A or at
+the beginning of B are both fine.
+
+In Case 2, if A has two successors, then we should insert the moves at the
+beginning of B. That way we won't be mucking things up for the edge `A -> C`.
+
+In Case 3, if B has two predecessors, then we should insert the moves at the
+end of A. That way we won't be mucking things up for the edge `D -> B`.
+
+Case 4 is the most complicated. There is no extant place in the graph we can
+insert moves. If we insert in A, we mess things up for `A -> C`. If we insert
+in `B`, we mess things up for `D -> B`. Inserting in `C` or `D` doesn't make
+any sense. What is there to do?
+
+As it turns out, Case 4 is called a *critical edge*. And we have to split it.
+
+We can insert a new block E along the edge `A -> B` and put the moves in E!
+That way they still happen along the edge without affecting any other blocks.
+Neat.
+
+In Ruby code, that looks like:
 
 ```ruby
 class Function
