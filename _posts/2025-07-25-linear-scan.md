@@ -22,8 +22,8 @@ And here is the same example after it has been passed through a register
 allocator:
 
 ```
-add [RSP-12], RAX -> RBX
-add [RSP-12], RBX -> RAX
+add [RSP-16], RAX -> RBX
+add [RSP-16], RBX -> RAX
 ret
 ```
 
