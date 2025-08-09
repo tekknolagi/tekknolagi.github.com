@@ -732,6 +732,24 @@ Internalizing this took us a bit. It is mostly a three-state machine:
 We would like to come back to this and incrementally modify it as we add
 lifetime holes to intervals.
 
+I finally understood, very late in the game, that linear scan assigns one
+location per virtual register. *Ever*. It's not that every virtual register
+gets a shot in a register and then gets moved to a stack slot---that would be
+interval splitting and hopefully we get to that later---if a register gets
+spilled, it's in a stack slot from beginning to end.
+
+I only found this out accidentally after trying to figure out a bug (that
+wasn't a bug) due to a lovely sentence in [Optimized Interval Splitting in a
+Linear Scan Register
+Allocator](/assets/img/optimized-interval-splitting-linear-scan-ra.pdf) (PDF,
+2005) by Wimmer and Mössenböck):
+
+> However, it cannot deal with lifetime holes and does not split intervals, so
+> an interval has either a register assigned for the whole lifetime, or it is
+> spilled completely.
+
+Marvelous.
+
 ## Resolving SSA
 
 At this point we have register *assignments*: we have a hash table mapping
