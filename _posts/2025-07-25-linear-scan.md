@@ -148,19 +148,24 @@ Allocation](/assets/img/quality-speed-linear-scan-ra.pdf) (PDF, 1998) by Traub,
 Holloway, and Smith. It adds some optimizations (lifetime holes, binpacking) to
 the algorithm presented in the 1997 paper.
 
-The first paper I read, and I think the paper everyone refers to when they talk
-about linear scan, is [Linear Scan Register
+Then came the first paper I read, and I think the paper everyone refers to when
+they talk about linear scan: [Linear Scan Register
 Allocation](/assets/img/linearscan-ra.pdf) (PDF, 1999) by Poletto and Sarkar.
 In this paper, they give a fast alternative to graph coloring register
 allocation, especially motivated by just-in-time compilers. In retrospect, it
 seems to be a bit of a rehash of the previous two papers.
 
 Linear scan (1997, 1999) operates on *live ranges* instead of virtual
-registers. A live range is a pair of integers [start, end) (end is exclusive) that
-begins when the register is defined and ends when it is last used. In
-non-SSA-land, these live ranges are different from the virtual registers: they
-represent some kind of lifetimes of each *version* of a virtual register. For
-an example, consider the following code snippet:
+registers. A live range is a pair of integers [start, end) (end is exclusive)
+that begins when the register is defined and ends when it is last used. This
+means that there is an assumption that the order for instructions in your
+program has already been fixed into a single linear sequence! It also means
+that you have given each instruction a number that represents its position in
+that order.
+
+In non-SSA-land, these live ranges are different from the virtual registers:
+they represent some kind of lifetimes of each *version* of a virtual register.
+For an example, consider the following code snippet:
 
 ```
 ...      -> a
@@ -197,6 +202,10 @@ Linear scan starts at the point in your compiler process where you already know
 these live ranges---that you have already done some kind of analysis to build a
 mapping.
 
+In this blog post, we're going to back up to the point where we've just built
+our SSA low-level IR and have yet to do any work on it. We'll do all of the
+analysis from scratch.
+
 Part of this analysis is called *liveness analysis*.
 
 ## Liveness analysis
@@ -230,10 +239,10 @@ In this case, at the end of B2, nothing is live. If we step backwards to the
 definition---R16 no longer live---but now we see a use of R14 and R15, which
 become live. This leaves us with R14 and R15 being *live-in* to B2.
 
-This live-in set becomes B1's *live-out* set. We continue in B1. We could
-continue backwards linearly through the blocks. In fact, I encourage you to do
-it as an exercise. You should have a (potentially emtpy) set of registers per
-basic block.
+This live-in set becomes B1's *live-out* set because B1 is B2's predecessor. We
+continue in B1. We could continue backwards linearly through the blocks. In
+fact, I encourage you to do it as an exercise. You should have a (potentially
+emtpy) set of registers per basic block.
 
 It gets more interesting, though, when we have branches: what does it mean when
 two blocks' live-in results merge into their shared predecessor? If we have two
@@ -368,11 +377,12 @@ computed information about your CFG: where loops start and end. It also
 requires all loop blocks be contiguous. Then it makes variables defined before
 a loop and used at any point inside the loop live *for the whole loop*. By
 having this information available, it folds the liveness analysis into the live
-range building, which we'll do in a moment.
+range building, which we'll instead do separately in a moment.
 
-That sounded complicated and finicky. Maybe it is, maybe it isn't. So I went
-with a dataflow liveness analysis instead. If it turns out to be the slow part,
-maybe it will matter enough to learn about this loop tagging method.
+The Wimmer approach sounded complicated and finicky. Maybe it is, maybe it
+isn't. So I went with a dataflow liveness analysis instead. If it turns out to
+be the slow part, maybe it will matter enough to learn about this loop tagging
+method.
 
 For now, we will pick a *schedule* for the control-flow graph.
 
