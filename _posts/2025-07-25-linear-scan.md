@@ -483,6 +483,30 @@ we're going to start simple and assume 1 interval == 1 range. We may come back
 later and add additional ranges, but that will require some fixes to our later
 implementation. We'll note where we think those fixes should happen.
 
+```
+BUILDINTERVALS
+for each block b in reverse order do
+  live = union of successor.liveIn for each successor of b
+  for each phi function phi of successors of b do
+    live.add(phi.inputOf(b))
+  for each opd in live do
+    intervals[opd].addRange(b.from, b.to)
+  for each operation op of b in reverse order do
+    for each output operand opd of op do
+      intervals[opd].setFrom(op.id)
+      live.remove(opd)
+    for each input operand opd of op do
+      intervals[opd].addRange(b.from, op.id)
+      live.add(opd)
+  for each phi function phi of b do
+    live.remove(phi.output)
+  if b is loop header then
+    loopEnd = last block of the loop starting at b
+    for each opd in live do
+      intervals[opd].addRange(b.from, loopEnd.to)
+  b.liveIn = live
+```
+
 Anyay, here is the mostly-copied annotated implementation of BuildIntervals
 from the Wimmer2010 paper:
 
@@ -680,6 +704,25 @@ We would like to come back to this and incrementally modify it as we add
 lifetime holes to intervals.
 
 ## Resolving SSA
+
+```
+RESOLVE
+for each control flow edge from predecessor to successor do
+  for each interval it live at begin of successor do
+    if it starts at begin of successor then
+      phi = phi function defining it
+      opd = phi.inputOf(predecessor)
+      if opd is a constant then
+        moveFrom = opd
+      else
+        moveFrom = location of intervals[opd] at end of predecessor
+    else
+      moveFrom = location of it at end of predecessor
+    moveTo = location of it at begin of successor
+    if moveFrom ≠ moveTo then
+      mapping.add(moveFrom, moveTo)
+  mapping.orderAndInsertMoves()
+```
 
 ## Instruction selection
 
