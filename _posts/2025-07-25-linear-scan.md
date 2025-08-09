@@ -604,6 +604,9 @@ Because we have faithfully kept 1 interval == 1 range, we can re-use the linear
 scan algorithm from PolettoSarkar1999 (which looks, at a glance, to be the same
 as 1997).
 
+I recommend looking at the PDF side by side with the code. We have tried to
+keep the structure very similar.
+
 ```ruby
 class Function
   def ye_olde_linear_scan intervals, num_registers
@@ -637,11 +640,11 @@ class Function
         slot = StackSlot.new(num_stack_slots)
         num_stack_slots += 1
         if spill.range.end > interval.range.end
-          # The last active interval ends further away than the current interval; spill it.
+          # The last active interval ends further away than the current
+          # interval; spill the last active interval.
           assignment[interval] = assignment[spill]
-          if !assignment[interval].is_a?(PReg)
-            raise "Should be assigned a register"
-          end
+          raise "Should be assigned a register" unless assignment[interval].is_a?(PReg)
+          # TODO(max): Insert a spill instruction at an odd index
           assignment[spill] = slot
           active.pop  # We know spill is the last one
           # Insert interval into already-sorted active
@@ -649,7 +652,8 @@ class Function
           active.insert(insert_idx, interval)
         else
           # The current interval ends further away than the last active
-          # interval; spill it.
+          # interval; spill the current interval.
+          # TODO(max): Insert a spill instruction at an odd index
           assignment[interval] = slot
         end
       else
