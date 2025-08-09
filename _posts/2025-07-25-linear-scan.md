@@ -1044,7 +1044,17 @@ class Function
 end
 ```
 
-## Instruction selection
+And that's it, folks. We have gone from virtual registers in SSA form to
+physical locations. Everything's all hunky-dory. We can just turn these LIR
+instructions into their very similar looking machine equivalents, right?
+
+Not so fast...
+
+## Calls
+
+## Register hints
+
+## Instruction selection and splitting
 
 ## Validation by abstract interpretation
 
