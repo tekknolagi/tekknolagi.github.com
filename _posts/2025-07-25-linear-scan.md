@@ -3,10 +3,43 @@ title: "Linear scan register allocation on SSA"
 layout: post
 ---
 
+The fundamental problem in register allocation is to take an IR that uses a
+virtual registers (as many as you like) and rewrite it to use a finite amount
+of physical registers and stack space.
+
+This is an example of a code snippet using virtual registers:
+
+```
+add R1, R2 -> R3
+add R1, R3 -> R4
+ret R4
+```
+
+And here is the same example after it has been passed through a register
+allocator:
+
+```
+add [RSP-12], RAX -> RBX
+add [RSP-12], RBX -> RAX
+ret
+```
+
+Each virtual register was assigned a physical place: R1 to the stack, R2 to
+RAX, R3 to RBX, and R4 *also* to RAX (since we weren't using R2 anymore).
+
+People use register allocators like they use garbage collectors: it's an
+abstraction that can manage your resources for you, maybe with some cost. When
+writing the back-end of a compiler, it's probably much easier to have a
+separate register-allocator-in-a-box than manually managing variable lifetimes
+while also considering all of your different target architectures.
+
 How do JIT compilers do register allocation? Well, "everyone knows" that
 "every JIT does its own variant of linear scan". This bothered me for some time
 because I've worked on a couple of JITs and still didn't understand the backend
 bits.
+
+There are a couple different approaches to register allocation, but in this
+post we'll focus on *linear scan of SSA*.
 
 I started reading [Linear Scan Register Allocation on SSA
 Form](/assets/img/wimmer-linear-scan-ssa.pdf) (PDF, 2010) by Wimmer and Franz
@@ -17,39 +50,28 @@ though, there is a rich history of papers in this area that it leans on really
 heavily. I needed to follow the chain of references!
 
 I didn't realize that there were more than one or two papers on linear scan. So
-this post will serve as a bit of a survey or a history of linear scan---as best
-as I can figure it out, anyway. If you were in or near the room where it
-happened, please feel free to reach out and correct some parts.
+this post will also incidentally serve as a bit of a survey or a history of
+linear scan---as best as I can figure it out, anyway. If you were in or near
+the room where it happened, please feel free to reach out and correct some
+parts.
 
-## Register allocation
+## Some example code
 
-The fundamental problem in register allocation is to take an IR that uses a
-virtual registers (as many as you like) and rewrite it to use a finite amount
-of physical registers and stack space.
-
-People use register allocators like they use garbage collectors: it's an
-abstraction that can manage your resources for you, maybe with some cost. When
-writing the back-end of a compiler, it's probably much easier to have a
-separate register-allocator-in-a-box than manually managing variable lifetimes
-while also considering all of your different target architectures.
-
-There are a couple different approaches to register allocation, but in this
-post we'll focus on *linear scan of SSA*. Throughout this post, we'll use an
-example SSA code snippet from Wimmer2010, adapted from phi-SSA to
-block-argument-SSA. Wimmer2010's code snippet is between the arrows and we add some
-filler (as alluded to in the paper):
+Throughout this post, we'll use an example SSA code snippet from Wimmer2010,
+adapted from phi-SSA to block-argument-SSA. Wimmer2010's code snippet is
+between the arrows and we add some filler (as alluded to in the paper):
 
 ```
 label B1(R10, R11):
-jmp B2(1, R11)
+jmp B2($1, R11)
  # vvvvvvvvvv #
 label B2(R12, R13)
-cmp R13, 1
+cmp R13, $1
 branch lessThan B4()
 
 label B3()
 mul R12, R13 -> R14
-sub R13, 1 -> R15
+sub R13, $1 -> R15
 jump B2(R14, R15)
 
 label B4()
@@ -69,28 +91,28 @@ Block names (and block parameters) are shaded with grey.
 digraph G {
 node [shape=plaintext]
 B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-<TR><TD PORT="params" BGCOLOR="lightgray">B1(V10, V11)&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">jump →B2($1, V11)&nbsp;</TD></TR>
+<TR><TD PORT="params" BGCOLOR="lightgray">B1(R10, R11)&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">jump →B2($1, R11)&nbsp;</TD></TR>
 </TABLE>>];
 B1:0 -> B2:params;
 B2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-<TR><TD PORT="params" BGCOLOR="lightgray">B2(V12, V13)&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">cmp V13, $1&nbsp;</TD></TR>
+<TR><TD PORT="params" BGCOLOR="lightgray">B2(R12, R13)&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">cmp R13, $1&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="1">blt →B4, →B3&nbsp;</TD></TR>
 </TABLE>>];
 B2:1 -> B4:params;
 B2:1 -> B3:params;
 B3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B3()&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">V14 = mul V12, V13&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="1">V15 = sub V13, $1&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="2">jump →B2(V14, V15)&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">R14 = mul R12, R13&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">R15 = sub R13, $1&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="2">jump →B2(R14, R15)&nbsp;</TD></TR>
 </TABLE>>];
 B3:2 -> B2:params;
 B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B4()&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">V16 = add V10, V12&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="1">ret V16&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">R16 = add R10, R12&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">ret R16&nbsp;</TD></TR>
 </TABLE>>];
 }
 -->

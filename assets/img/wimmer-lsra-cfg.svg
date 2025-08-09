@@ -14,18 +14,18 @@
 <title>B1</title>
 <polygon fill="lightgray" stroke="none" points="209.12,-287.73 209.12,-310.98 363.62,-310.98 363.62,-287.73 209.12,-287.73"/>
 <polygon fill="none" stroke="black" points="209.12,-287.73 209.12,-310.98 363.62,-310.98 363.62,-287.73 209.12,-287.73"/>
-<text xml:space="preserve" text-anchor="start" x="232.75" y="-294.68" font-family="Monospace" font-size="14.00">B1(V10, V11) </text>
+<text xml:space="preserve" text-anchor="start" x="232.75" y="-294.68" font-family="Monospace" font-size="14.00">B1(R10, R11) </text>
 <polygon fill="none" stroke="black" points="209.12,-264.48 209.12,-287.73 363.62,-287.73 363.62,-264.48 209.12,-264.48"/>
-<text xml:space="preserve" text-anchor="start" x="212.12" y="-271.43" font-family="Monospace" font-size="14.00">jump →B2($1, V11) </text>
+<text xml:space="preserve" text-anchor="start" x="212.12" y="-271.43" font-family="Monospace" font-size="14.00">jump →B2($1, R11) </text>
 </g>
 <!-- B2 -->
 <g id="node2" class="node">
 <title>B2</title>
 <polygon fill="lightgray" stroke="none" points="229.75,-197.23 229.75,-220.48 343,-220.48 343,-197.23 229.75,-197.23"/>
 <polygon fill="none" stroke="black" points="229.75,-197.23 229.75,-220.48 343,-220.48 343,-197.23 229.75,-197.23"/>
-<text xml:space="preserve" text-anchor="start" x="232.75" y="-204.18" font-family="Monospace" font-size="14.00">B2(V12, V13) </text>
+<text xml:space="preserve" text-anchor="start" x="232.75" y="-204.18" font-family="Monospace" font-size="14.00">B2(R12, R13) </text>
 <polygon fill="none" stroke="black" points="229.75,-173.98 229.75,-197.23 343,-197.23 343,-173.98 229.75,-173.98"/>
-<text xml:space="preserve" text-anchor="start" x="232.75" y="-180.93" font-family="Monospace" font-size="14.00">cmp V13, $1 </text>
+<text xml:space="preserve" text-anchor="start" x="232.75" y="-180.93" font-family="Monospace" font-size="14.00">cmp R13, $1 </text>
 <polygon fill="none" stroke="black" points="229.75,-150.73 229.75,-173.98 343,-173.98 343,-150.73 229.75,-150.73"/>
 <text xml:space="preserve" text-anchor="start" x="232.75" y="-157.68" font-family="Monospace" font-size="14.00">blt →B4, →B3 </text>
 </g>
@@ -42,9 +42,9 @@
 <polygon fill="none" stroke="black" points="8,-71.85 8,-95.1 170.75,-95.1 170.75,-71.85 8,-71.85"/>
 <text xml:space="preserve" text-anchor="start" x="68.75" y="-78.8" font-family="Monospace" font-size="14.00">B4() </text>
 <polygon fill="none" stroke="black" points="8,-48.6 8,-71.85 170.75,-71.85 170.75,-48.6 8,-48.6"/>
-<text xml:space="preserve" text-anchor="start" x="11" y="-55.55" font-family="Monospace" font-size="14.00">V16 = add V10, V12 </text>
+<text xml:space="preserve" text-anchor="start" x="11" y="-55.55" font-family="Monospace" font-size="14.00">R16 = add R10, R12 </text>
 <polygon fill="none" stroke="black" points="8,-25.35 8,-48.6 170.75,-48.6 170.75,-25.35 8,-25.35"/>
-<text xml:space="preserve" text-anchor="start" x="11" y="-32.3" font-family="Monospace" font-size="14.00">ret V16 </text>
+<text xml:space="preserve" text-anchor="start" x="11" y="-32.3" font-family="Monospace" font-size="14.00">ret R16 </text>
 </g>
 <!-- B2&#45;&gt;B4 -->
 <g id="edge2" class="edge">
@@ -59,11 +59,11 @@
 <polygon fill="none" stroke="black" points="205,-83.48 205,-106.73 367.75,-106.73 367.75,-83.48 205,-83.48"/>
 <text xml:space="preserve" text-anchor="start" x="265.75" y="-90.43" font-family="Monospace" font-size="14.00">B3() </text>
 <polygon fill="none" stroke="black" points="205,-60.23 205,-83.48 367.75,-83.48 367.75,-60.23 205,-60.23"/>
-<text xml:space="preserve" text-anchor="start" x="208" y="-67.18" font-family="Monospace" font-size="14.00">V14 = mul V12, V13 </text>
+<text xml:space="preserve" text-anchor="start" x="208" y="-67.18" font-family="Monospace" font-size="14.00">R14 = mul R12, R13 </text>
 <polygon fill="none" stroke="black" points="205,-36.98 205,-60.23 367.75,-60.23 367.75,-36.98 205,-36.98"/>
-<text xml:space="preserve" text-anchor="start" x="208" y="-43.93" font-family="Monospace" font-size="14.00">V15 = sub V13, $1 </text>
+<text xml:space="preserve" text-anchor="start" x="208" y="-43.93" font-family="Monospace" font-size="14.00">R15 = sub R13, $1 </text>
 <polygon fill="none" stroke="black" points="205,-13.73 205,-36.98 367.75,-36.98 367.75,-13.73 205,-13.73"/>
-<text xml:space="preserve" text-anchor="start" x="208" y="-20.68" font-family="Monospace" font-size="14.00">jump →B2(V14, V15) </text>
+<text xml:space="preserve" text-anchor="start" x="208" y="-20.68" font-family="Monospace" font-size="14.00">jump →B2(R14, R15) </text>
 </g>
 <!-- B2&#45;&gt;B3 -->
 <g id="edge3" class="edge">
