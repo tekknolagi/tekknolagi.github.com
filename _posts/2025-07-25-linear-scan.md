@@ -774,7 +774,49 @@ Allocator](/assets/img/optimized-interval-splitting-linear-scan-ra.pdf) (PDF,
 > an interval has either a register assigned for the whole lifetime, or it is
 > spilled completely.
 
+Also,
+
+> In particular, it is not possible to implement the algorithm without
+> reserving a scratch register: When a spilled interval is used by an
+> instruction requiring the operand in a register, the interval must be
+> temporarily reloaded to the scratch register
+
+Also,
+
+> Additionally, register constraints for method calls and instructions
+> requiring fixed registers must be handled separately
+
 Marvelous.
+
+Let's take a look at the code snippet again. Here it is before register
+allocation, using virtual registers:
+
+```
+16: label B1(R10, R11):
+18: jmp B2($1, R11)
+     # vvvvvvvvvv #
+20: label B2(R12, R13)
+22: cmp R13, $1
+24: branch lessThan B4()
+
+26: label B3()
+28: mul R12, R13 -> R14
+30: sub R13, $1 -> R15
+32: jump B2(R14, R15)
+
+34: label B4()
+     # ^^^^^^^^^^ #
+36: add R10, R12 -> R16
+38: ret R16
+```
+
+Let's run it through register allocation with incrementally decreasing numbers
+of physical registers available. We get the following assignments:
+
+* 4 registers `{R10: P0, R11: P1, R12: P1, R13: P2, R14: P3, R15: P2, R16: P0}`
+* 3 registers `{R10: Stack[0], R11: P1, R12: P1, R13: P2, R14: P0, R15: P2, R16: P0}`
+* 2 registers `{R10: Stack[0], R11: P1, R12: Stack[1], R13: P0, R14: P1, R15: P0, R16: P0}`
+* 1 register `{R10: Stack[0], R11: P0, R12: Stack[1], R13: P0, R14: Stack[2], R15: P0, R16: P0}`
 
 ## Resolving SSA
 
