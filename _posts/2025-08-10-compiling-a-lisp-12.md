@@ -618,3 +618,10 @@ add rsp, 8
 mov rdi, [rsp-16]
 ret
 ```
+
+## Wrapping up
+
+I think that's all there is for today, folks. We got closures, free variable
+analysis, and indirect function calls. That's pretty good.
+
+Happy hacking!
