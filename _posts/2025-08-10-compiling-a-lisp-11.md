@@ -251,7 +251,9 @@ class LambdaConverter:
 ```
 
 This is finicky! I think my first couple of versions were subtly wrong for
-different reasons. Tests help a lot here.
+different reasons. Tests help a lot here. For every place in the code where I
+mess with `bound` or `free` in a recursive call, I tried to have a test that
+would fail if I got it wrong.
 
 ```python
 class LambdaTests(unittest.TestCase):
