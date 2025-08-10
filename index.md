@@ -94,6 +94,7 @@ I have a blog and now I also have some academic papers!
 
 ## I will happily talk in front of people.
 
+* *Dynamic Language Runtimes in the Large (and small)* for [Low Resource Computing](https://lrc.cs.dartmouth.edu/), August 2025
 * Invited guest lecture for Dartmouth [CS 59](https://cosc59.gitlab.io/) on dynamic language runtimes at scale, November 2024
 * [*Dr Wenowdis: Specializing dynamic language C extensions using type information*](/assets/img/dr-wenowdis-slides.pdf) (PDF) at PLDI SOAP 2024
 * [*Compiling ML models*](/assets/img/compiling-ml-models.pdf) (PDF) at NEU Software Day 2023
