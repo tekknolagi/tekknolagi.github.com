@@ -31,6 +31,8 @@ We have two forms that can bind variables: `let` and `lambda`. This means that
 we need to recognize the names in those special expressions and modify the
 environment. What environment, you ask?
 
+## The lifter
+
 Well, I have this little `LambdaConverter` class.
 
 ```python
@@ -42,6 +44,12 @@ class LambdaConverter:
         match expr:
             case _:
                 raise NotImplementedError(expr)
+
+def lift_lambdas(expr):
+    conv = LambdaConverter()
+    expr = conv.convert(expr, set(), set())
+    labels = [[name, code] for name, code in conv.labels.items()]
+    return ["labels", labels, expr]
 ```
 
 We keep the same `labels` dict for the entire recursive traversal of the
@@ -57,6 +65,18 @@ class LambdaConverter:
         match expr:
             case int(_) | Char():  # bool(_) is implied by int(_)
                 return expr
+            # ...
+
+class LambdaTests(unittest.TestCase):
+    def test_int(self):
+        self.assertEqual(lift_lambdas(3), ["labels", [], 3])
+
+    def test_bool(self):
+        self.assertEqual(lift_lambdas(True), ["labels", [], True])
+        self.assertEqual(lift_lambdas(False), ["labels", [], False])
+
+    def test_char(self):
+        self.assertEqual(lift_lambdas(Char("a")), ["labels", [], Char("a")])
 ```
 
 Well, okay, sure, we don't actually need to think about variable names when we
@@ -69,11 +89,18 @@ class LambdaConverter:
     # ...
     def convert(self, expr, bound, free):
         match expr:
+            # ...
             case str(_) if expr in bound:
                 return expr
             case str(_):
                 free.add(expr)
                 return expr
+            # ...
+
+class LambdaTests(unittest.TestCase):
+    # ...
+    def test_freevar(self):
+        self.assertEqual(lift_lambdas("x"), ["labels", [], "x"])
 ```
 
 We don't want to actually transform the variable uses, just add some metadata
@@ -95,8 +122,15 @@ class LambdaConverter:
     # ...
     def convert(self, expr, bound, free):
         match expr:
+            # ...
             case str(_) if expr in BUILTINS:
                 return expr
+            # ...
+
+class LambdaTests(unittest.TestCase):
+    # ...
+    def test_plus(self):
+        self.assertEqual(lift_lambdas("+"), ["labels", [], "+"])
 ```
 
 Armed with this knowledge, we can do our first recursive traversal: `if`
@@ -108,9 +142,74 @@ class LambdaConverter:
     # ...
     def convert(self, expr, bound, free):
         match expr:
+            # ...
             case ["if", test, conseq, alt]:
                 return ["if",
                         self.convert(test, bound, free),
                         self.convert(conseq, bound, free),
                         self.convert(alt, bound, free)]
+            # ...
+
+class LambdaTests(unittest.TestCase):
+    # ...
+    def test_if(self):
+        self.assertEqual(lift_lambdas(["if", 1, 2, 3]),
+                         ["labels", [], ["if", 1, 2, 3]])
+```
+
+This test doesn't tell us much yet (other than adding an empty `labels` and not
+raising an exception). But it will soon.
+
+## Lambda
+
+Let's think about what `lambda` does. It's a bunch of features in a trench
+coat:
+
+* bind names
+* allocate code
+* capture outside environment
+
+To handle the lifting, we have to reason about all three.
+
+## Let
+
+Let's think about what `let` does by examining a confusing let expression:
+
+```common-lisp
+(let ((wolf 5)
+      (x wolf))
+  wolf)
+```
+
+In this expression, there are two `wolf`s. One of them is bound inside the let,
+but the other is free inside the let! This is because `let` evaluates all of
+its bindings without access to the bindings as they are being built up (for
+that, we would need `let*`).
+
+```common-lisp
+(let ((wolf 5)   ; new binding  <-------------+
+      (x wolf))  ; some other variable; free! |
+  wolf)          ; bound to ------------------+
+```
+
+So this must mean that:
+
+* we need to convert all of the bindings using the original `bound` and `free`,
+  then
+* only for the let body, add the new bindings
+
+```python
+class LambdaConverter:
+    # ...
+    def convert(self, expr, bound, free):
+        match expr:
+            # ...
+            case ["let", bindings, body]:
+                new_bindings = []
+                names = {name for name, _ in bindings}
+                for name, val_expr in bindings:
+                    new_bindings.append([name, self.convert(val_expr, bound, free)])
+                new_body = self.convert(body, bound | names, free)
+                return ["let", new_bindings, new_body]
+            # ...
 ```
