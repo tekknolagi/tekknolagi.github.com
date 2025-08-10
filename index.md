@@ -86,7 +86,7 @@ I have a blog and now I also have some academic papers!
 * *Partial Evaluation, Whole-Program Compilation* \
   Chris Fallin, **Maxwell Bernstein** \
   in PLDI 2025 \
-  [[PDF](/assets/img/wasm-partial-eval.pdf)] [[ARX](https://arxiv.org/abs/2411.10559)]
+  [[PDF](/assets/img/wasm-partial-eval.pdf)] [[DOI](https://dl.acm.org/doi/10.1145/3729259)] [[ARX](https://arxiv.org/abs/2411.10559)]
 * *Dr Wenowdis: Specializing dynamic language C extensions using type information* \
   **Maxwell Bernstein**, CF Bolz-Tereick \
   in PLDI SOAP 2024 \
