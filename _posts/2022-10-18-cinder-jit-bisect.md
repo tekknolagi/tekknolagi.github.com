@@ -178,23 +178,4 @@ programs.
 
 ## See also
 
-* I factored the non-JIT parts of the code into a tiny drop-in [snippet of
-  Python code](https://github.com/tekknolagi/omegastar).
-* Andrew Chambers wrote [a
-  small implementation](https://github.com/andrewchambers/ddmin-python) that
-  also includes a nice CLI
-* [Hash-Based Bisect Debugging in Compilers and
-  Runtimes](https://research.swtch.com/bisect) by Russ Cox
-
-Other implementations of/similar to C-Reduce:
-
-* [delta](https://github.com/dsw/delta) assists you in minimizing "interesting"
-  files subject to a test of their interestingness
-* [cvise](https://github.com/marxin/cvise), a super-parallel Python port of C-Reduce
-* [Shrink Ray](https://github.com/DRMacIver/shrinkray), a modern multi-format test-case reducer
-* [treereduce](https://langston-barrett.github.io/treereduce/), a fast,
-  parallel, syntax-aware test case reducer based on tree-sitter grammars
-
-I saw somewhere (but can no longer find the link to) someone's implementation
-of delta debugging on commit logs (more advanced than `git bisect`). If you
-find this, please send it my way.
+(moved to [Delta debugging](/delta/) page)
