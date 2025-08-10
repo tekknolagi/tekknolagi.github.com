@@ -61871,6 +61871,54 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "115005413229077078": {
+      "id": "115005413229077078",
+      "created_at": "2025-08-10T16:29:01.520Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115005413229077078",
+      "url": "https://mastodon.social/@tekknolagi/115005413229077078",
+      "replies_count": 0,
+      "reblogs_count": 1,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>&quot;Will I ever use this in the real world?&quot;</p><p><a href=\"https://blog.waleedkhan.name/will-i-ever-use-this/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">blog.waleedkhan.name/will-i-ev</span><span class=\"invisible\">er-use-this/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://blog.waleedkhan.name/will-i-ever-use-this/",
+        "title": "\"Will I ever use this in the real world?\"",
+        "description": "Sometimes people argue on the internet about whether a formal CS education isnecessary to be an effective software engineer. I won\u2019t say that it isnecessary,...",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
