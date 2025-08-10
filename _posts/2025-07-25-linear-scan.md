@@ -1181,6 +1181,11 @@ I find this stuff so cool. I'll also mention Boissinot's [Rust
 code](https://github.com/bboissin/thesis_bboissin) again because it does
 something similar for parallel moves.
 
+## calendaring
+
+TODO mention "2016: Facebook engineer Dave legendarily uses linear-scan
+register allocation to book meeting rooms"
+
 ## ............
 
 
