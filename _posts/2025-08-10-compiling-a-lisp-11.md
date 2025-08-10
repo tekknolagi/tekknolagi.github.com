@@ -171,6 +171,110 @@ coat:
 
 To handle the lifting, we have to reason about all three.
 
+First, the lambda binds its parameters as new names. In fact, those are the
+*only* bound variables in a lambda. Consider:
+
+```common-lisp
+(lambda () x)
+```
+
+`x` is a free variable in that lambda! We'll want to transform that lambda
+into:
+
+```common-lisp
+;                  +-parameters
+;                  |  +-freevars
+;                  v  v
+(labels ((f0 (code () (x) x)))
+  (closure f0 x))
+```
+
+Even if `x` were bound by some `let` outside the lambda, it would be free in
+the lambda:
+
+```common-lisp
+(let ((x 5))
+  (lambda () x))
+```
+
+That means we don't thread through the `bound` parameter to the lambda body; we
+don't care what names are bound *outside* the lambda.
+
+We also want to keep track of the set of variables that are free inside the
+lambda: we'll need them to create a `code` form. Therefore, we also pass in a
+new set for the lambda body's `free` set.
+
+So far, all of this environment wrangling gives us:
+
+```python
+class LambdaConverter:
+    # ...
+    def convert(self, expr, bound, free):
+        match expr:
+            # ...
+            case ["lambda", params, body]:
+                body_free = set()
+                body = self.convert(body, set(params), body_free)
+                free.update(body_free - bound)
+                # ...
+                return # ???
+            # ...
+```
+
+There's also `free.update(body_free - bound)` in there because any variable
+free in a lambda expression is also free in the current expression---well,
+except for the variables that are currently bound.
+
+Last, we'll make a `code` form and a `closure` form. The `code` gets appended
+to the global list with a new label and the label gets threaded through to the
+`closure`.
+
+```python
+class LambdaConverter:
+    def push_label(self, params, freevars, body):
+        result = f"f{len(self.labels)}"
+        self.labels[result] = ["code", params, freevars, body]
+        return result
+
+    def convert(self, expr, bound, free):
+        match expr:
+            # ...
+            case ["lambda", params, body]:
+                body_free = set()
+                body = self.convert(body, set(params), body_free)
+                free.update(body_free - bound)
+                # vvvv new below this line vvvv
+                body_free = sorted(body_free)
+                label = self.push_label(params, body_free, body)
+                return ["closure", label, *body_free]
+            # ...
+```
+
+This is finicky! I think my first couple of versions were subtly wrong for
+different reasons. Tests help a lot here.
+
+```python
+class LambdaTests(unittest.TestCase):
+    # ...
+    def test_lambda_no_params_no_freevars(self):
+        self.assertEqual(lift_lambdas(["lambda", [], 3]),
+                         ["labels", [
+                             ["f0", ["code", [], [], 3]],
+                         ], ["closure", "f0"]])
+
+    def test_nested_lambda(self):
+        self.assertEqual(lift_lambdas(["lambda", ["x"],
+                                       ["lambda", ["y"],
+                                        ["+", "x", "y"]]]),
+                         ["labels",
+                          [["f0", ["code", ["y"], ["x"], ["+", "x", "y"]]],
+                           ["f1", ["code", ["x"], [], ["closure", "f0", "x"]]]],
+                          ["closure", "f1"]])
+    # ... and many more, especially interacting with `let`
+```
+
+Now let's talk about the other binder.
+
 ## Let
 
 Let's think about what `let` does by examining a confusing let expression:
