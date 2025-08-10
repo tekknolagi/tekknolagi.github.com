@@ -36,7 +36,7 @@ We have two forms that can bind variables: `let` and `lambda`. This means that
 we need to recognize the names in those special expressions and modify the
 environment. What environment, you ask?
 
-## The lifter
+### The lifter
 
 Well, I have this little `LambdaConverter` class.
 
@@ -165,7 +165,7 @@ class LambdaTests(unittest.TestCase):
 This test doesn't tell us much yet (other than adding an empty `labels` and not
 raising an exception). But it will soon.
 
-## Lambda
+### Lambda
 
 Let's think about what `lambda` does. It's a bunch of features in a trench
 coat:
@@ -282,7 +282,7 @@ class LambdaTests(unittest.TestCase):
 
 Now let's talk about the other binder.
 
-## Let
+### Let
 
 Let's think about what `let` does by examining a confusing let expression:
 
@@ -365,7 +365,7 @@ class LambdaTests(unittest.TestCase):
     # ... and many more, especially interacting with `lambda`
 ```
 
-## Function calls
+### Function calls
 
 Last, and somewhat boringly, we have function calls. The only thing to call out
 is again handling these always-bound primitive operators like `+`, which we
@@ -393,7 +393,7 @@ class LambdaTests(unittest.TestCase):
 Now that we have these new `funcall`, and `closure` forms we have to compile
 them into assembly.
 
-## Compiling `closure`
+### Compiling `closure`
 
 Compiling closure forms is very similar to allocating a string or a vector. In
 the first cell, we want to put a pointer to the code that backs the closure
@@ -512,7 +512,7 @@ def compile_lexpr(lexpr, code):
 
 Now let's call some closures...!
 
-## Compiling `funcall`
+### Compiling `funcall`
 
 I'll start by showing the code for `labelcall` because it's a good stepping
 stone toward `funcall` (nice job, Dr Ghuloum!).
@@ -623,9 +623,11 @@ ret
 
 Not bad for a 300 line compiler!
 
-## Wrapping up
+### Wrapping up
 
 I think that's all there is for today, folks. We got closures, free variable
 analysis, and indirect function calls. That's pretty good.
 
 Happy hacking!
+
+{% include compiling_a_lisp_toc.md %}
