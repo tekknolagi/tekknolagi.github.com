@@ -9,13 +9,15 @@ series: compiling-a-lisp
 *[first](/blog/compiling-a-lisp-0/)* -- *[previous](/blog/compiling-a-lisp-11/)*
 </span>
 
-I didn't think this day would come, but I picked up the Ghuloum tutorial again
-and I got a little bit further. There's just one caveat: I have rewritten the
-implementation in Python. It's available in the [same
-repo](https://github.com/tekknolagi/ghuloum) in
+I didn't think this day would come, but I picked up the [Ghuloum
+tutorial][tutorial] (PDF) again and I got a little bit further. There's just
+one caveat: I have rewritten the implementation in Python. It's available in
+the [same repo](https://github.com/tekknolagi/ghuloum) in
 [compiler.py](https://github.com/tekknolagi/ghuloum/blob/trunk/compiler.py).
 It's brief, coming in at a little over 300 LOC + tests (compared to the C
 version's 1200 LOC + tests).
+
+[tutorial]: https://bernsteinbear.com/assets/img/11-ghuloum.pdf
 
 I guess there's another caveat, too, which is that the Python version has no
 S-expression reader. But that's fine: consider it an exercise for you, dear
