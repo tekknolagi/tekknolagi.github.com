@@ -17,7 +17,7 @@ the [same repo](https://github.com/tekknolagi/ghuloum) in
 It's brief, coming in at a little over 300 LOC + tests (compared to the C
 version's 1200 LOC + tests).
 
-[tutorial]: https://bernsteinbear.com/assets/img/11-ghuloum.pdf
+[tutorial]: /assets/img/11-ghuloum.pdf
 
 I guess there's another caveat, too, which is that the Python version has no
 S-expression reader. But that's fine: consider it an exercise for you, dear
