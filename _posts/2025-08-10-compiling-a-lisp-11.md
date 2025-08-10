@@ -85,3 +85,32 @@ expression, we can leave it alone. Otherwise, we need to mark it.
   (+ x        ; bound
      y))      ; free
 ```
+
+There's one irritating special case here which is that we don't want to
+consider `+` (for example) as a free variable: it is a special language
+primitive. So we consider `+` and the others as always bound.
+
+```python
+class LambdaConverter:
+    # ...
+    def convert(self, expr, bound, free):
+        match expr:
+            case str(_) if expr in BUILTINS:
+                return expr
+```
+
+Armed with this knowledge, we can do our first recursive traversal: `if`
+expressions. Since they have recursive parts and don't bind any variables, they
+are the second-simplest form for this lifter.
+
+```python
+class LambdaConverter:
+    # ...
+    def convert(self, expr, bound, free):
+        match expr:
+            case ["if", test, conseq, alt]:
+                return ["if",
+                        self.convert(test, bound, free),
+                        self.convert(conseq, bound, free),
+                        self.convert(alt, bound, free)]
+```
