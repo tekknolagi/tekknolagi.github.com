@@ -21,7 +21,10 @@ I guess there's another caveat, too, which is that the Python version has no
 S-expression reader. But that's fine: consider it an exercise for you, dear
 reader. That's hardly the most interesting part of the tutorial.
 
-Lifting the lambdas as required in the paper requires three things:
+Oh, and I also dropped the instruction encoding. I'm doing text assembly now.
+Womp womp.
+
+Anyway, lifting the lambdas as required in the paper requires three things:
 
 * Keeping track of which variables are bound
 * Keeping track of which variables are free in a given lambda
@@ -302,7 +305,9 @@ So this must mean that:
 
 * we need to convert all of the bindings using the original `bound` and `free`,
   then
-* only for the let body, add the new bindings
+* only for the let body, add the new bindings (and use the original `free`)
+
+Which gives us, in code:
 
 ```python
 class LambdaConverter:
@@ -312,10 +317,124 @@ class LambdaConverter:
             # ...
             case ["let", bindings, body]:
                 new_bindings = []
-                names = {name for name, _ in bindings}
                 for name, val_expr in bindings:
                     new_bindings.append([name, self.convert(val_expr, bound, free)])
+                names = {name for name, _ in bindings}
                 new_body = self.convert(body, bound | names, free)
                 return ["let", new_bindings, new_body]
             # ...
+
+class LambdaTests(unittest.TestCase):
+    # ...
+    def test_let(self):
+        self.assertEqual(lift_lambdas(["let", [["x", 5]], "x"]),
+                         ["labels", [], ["let", [["x", 5]], "x"]])
+
+    def test_let_lambda(self):
+        self.assertEqual(lift_lambdas(["let", [["x", 5]],
+                                       ["lambda", ["y"],
+                                        ["+", "x", "y"]]]),
+                         ["labels",
+                          [["f0", ["code", ["y"], ["x"], ["+", "x", "y"]]]],
+                          ["let", [["x", 5]], ["closure", "f0", "x"]]])
+
+    def test_let_inside_lambda(self):
+        self.assertEqual(lift_lambdas(["lambda", ["x"],
+                                       ["let", [["y", 6]],
+                                        ["+", "x", "y"]]]),
+                         ["labels",
+                          [["f0", ["code", ["x"], [],
+                                   ["let", [["y", 6]],
+                                    ["+", "x", "y"]]]]],
+                          ["closure", "f0"]])
+
+    def test_paper_example(self):
+        self.assertEqual(lift_lambdas(["let", [["x", 5]],
+                                         ["lambda", ["y"],
+                                          ["lambda", [],
+                                           ["+", "x", "y"]]]]),
+                         ["labels", [
+                             ["f0", ["code", [],
+                               ["x", "y"], ["+", "x", "y"]]],
+                             ["f1", ["code", ["y"], ["x"],
+                               ["closure", "f0", "x", "y"]]],
+                           ],
+                          ["let", [["x", 5]], ["closure", "f1", "x"]]])
+    # ... and many more, especially interacting with `lambda`
 ```
+
+## Function calls
+
+Last, and somewhat boringly, we have function calls. The only thing to call out
+is again handling these always-bound primitive operators like `+`, which we
+don't want to have a `funcall`:
+
+```python
+class LambdaConverter:
+    # ...
+    def convert(self, expr, bound, free):
+        match expr:
+            # ...
+            case [func, *args]:
+                result = [] if isinstance(func, str) and func in BUILTINS else ["funcall"]
+                for e in expr:
+                    result.append(self.convert(e, bound, free))
+                return result
+            # ...
+
+class LambdaTests(unittest.TestCase):
+    # ...
+    def test_call(self):
+        self.assertEqual(lift_lambdas(["f", 3, 4]), ["labels", [], ["funcall", "f", 3, 4]])
+```
+
+Now that we have these new `funcall`, and `closure` forms we have to compile
+them into assembly.
+
+## Compiling `closure`
+
+Compiling closure forms is very similar to allocating a string or a vector. In
+the first cell, we want to put a pointer to the code that backs the closure
+(this will be some label like `f12`). We can get a reference to that using
+`lea`, since it will be a label in the assembly. Then we write it to the heap.
+
+Then for each free variable, we go find out where it's defined. Since we know
+by construction that these are all strings, we don't need to worry about having
+weird recursion issues around keeping track of a moving heap pointer. Instead,
+we know it's always going to be an indirect from the stack or from the current
+closure. Then we write that to the heap.
+
+Then, since a closure is an object, we need to give it a tag. So we tag it with
+`lea` because I felt cute. You could also use `or` or `add`. We store the
+result in `rax` because that's our compiler contract.
+
+Last, we bump the heap pointer by the size of the closure.
+
+```python
+def compile_expr(expr, code, si, env):
+    match expr:
+        # ...
+        case ["closure", str(lvar), *args]:
+            comment("Get a pointer to the label")
+            emit(f"lea rax, {lvar}")
+            emit(f"mov {heap_at(0)}, rax")
+            for idx, arg in enumerate(args):
+                assert isinstance(arg, str)
+                comment(f"Load closure cell #{idx}")
+                # Just a variable lookup; guaranteed not to allocate
+                compile_expr(arg, code, si, env)
+                emit(f"mov {heap_at((idx+1)*WORD_SIZE)}, rax")
+            comment("Tag a closure pointer")
+            emit(f"lea rax, {heap_at(CLOSURE_TAG)}")
+            comment("Bump the heap pointer")
+            size = align(WORD_SIZE + len(args)*WORD_SIZE)
+            emit(f"add {HEAP_BASE}, {size}")
+        # ...
+```
+
+One nicety of emitting text assembly is that I can add inline comments very
+easily. That's what my `comment` function is for: it just prefixes a `#`.
+
+Let's call some closures...!
+
+## Compiling `funcall`
