@@ -432,9 +432,189 @@ def compile_expr(expr, code, si, env):
         # ...
 ```
 
+So `(lambda (x) x)` compiles to:
+
+```nasm
+.intel_syntax
+.global scheme_entry
+
+f0:
+mov rax, [rsp-8]
+ret
+
+scheme_entry:
+# Get a pointer to the label
+lea rax, f0
+mov [rsi+0], rax
+# Tag a closure pointer
+lea rax, [rsi+6]
+# Bump the heap pointer
+add rsi, 16
+ret
+```
+
+and if we had a closure variable, for example `(let ((y 5)) (lambda () y))`:
+
+```nasm
+.intel_syntax
+.global scheme_entry
+
+f0:
+mov rax, [rdi+2]
+ret
+
+scheme_entry:
+# Code for y
+mov rax, 20
+# Store y on the stack
+mov [rsp-8], rax
+# Get a pointer to the label
+lea rax, f0
+mov [rsi+0], rax
+# Load closure cell #0
+mov rax, [rsp-8]
+mov [rsi+8], rax
+# Tag a closure pointer
+lea rax, [rsi+6]
+# Bump the heap pointer
+add rsi, 16
+ret
+```
+
 One nicety of emitting text assembly is that I can add inline comments very
 easily. That's what my `comment` function is for: it just prefixes a `#`.
 
-Let's call some closures...!
+...wait, hold on, why are we reading from `rdi+2` for a closure variable? That
+doesn't make any sense, right?
+
+That's because while we are reading off the closure, we are reading from a
+tagged pointer. Since we know the index into the closure and also the tag at
+compile-time, we can fold them into one neat indirect.
+
+```python
+def compile_lexpr(lexpr, code):
+    match lexpr:
+        case ["code", params, freevars, body]:
+            env = {}
+            for idx, param in enumerate(params):
+                env[param] = stack_at(-(idx+1)*WORD_SIZE)
+            # vvvv New for closures vvvv
+            for idx, fvar in enumerate(freevars):
+                env[fvar] = indirect(CLOSURE_BASE, (idx+1)*WORD_SIZE - CLOSURE_TAG)
+            # ^^^^ New for closures ^^^^
+            compile_expr(body, code, si=-(len(env)+1)*WORD_SIZE, env=env)
+            code.append("ret")
+        case _:
+            raise NotImplementedError(lexpr)
+```
+
+Now let's call some closures...!
 
 ## Compiling `funcall`
+
+I'll start by showing the code for `labelcall` because it's a good stepping
+stone toward `funcall` (nice job, Dr Ghuloum!).
+
+The main parts are:
+
+* save space on the stack for the return address
+* compile the args onto the stack
+* adjusting the stack pointer above the locals
+* call
+* bringing the stack pointer back
+
+I think in my last version (the C version) I did this recursively because
+looping felt challenging to do neatly in C with the data structures I had
+built but since this is Python and the wild west, we're looping.
+
+```python
+def compile_expr(expr, code, si, env):
+    match expr:
+        # ...
+        case ["labelcall", str(label), *args]:
+            new_si = si - WORD_SIZE  # Save a word for the return address
+            for arg in args:
+                compile_expr(arg, code, new_si, env)
+                emit(f"mov {stack_at(new_si)}, rax")
+                new_si -= WORD_SIZE
+            # Align to one word before the return address
+            si_adjust = abs(si+WORD_SIZE)
+            emit(f"sub rsp, {si_adjust}")
+            emit(f"call {label}")
+            emit(f"add rsp, {si_adjust}")
+        # ...
+```
+
+A lot of this carries over exactly to `funcall`, with a couple differences:
+
+* save space on the stack for the return address *and the closure pointer*
+* compile the function expression, which can be arbitrarily complex and results
+  in a closure pointer
+* save the current closure pointer
+* set up the new closure pointer
+* call through the new closure pointer
+* restore the old closure pointer
+
+I think the stack adjustment math was by and away the most irritating thing to
+get right here. Oh, and also remembering to untag the closure when trying to
+call it.
+
+```python
+def compile_expr(expr, code, si, env):
+    match expr:
+        # ...
+        case ["funcall", func, *args]:
+            # Save a word for the return address and the closure pointer
+            clo_si = si - WORD_SIZE
+            retaddr_si = clo_si - WORD_SIZE
+            new_si = retaddr_si
+            # Evaluate arguments
+            for arg in args:
+                compile_expr(arg, code, new_si, env)
+                emit(f"mov {stack_at(new_si)}, rax")
+                new_si -= WORD_SIZE
+            compile_expr(func, code, new_si, env)
+            # Save the current closure pointer
+            emit(f"mov {stack_at(clo_si)}, {CLOSURE_BASE}")
+            emit(f"mov {CLOSURE_BASE}, rax")
+            # Align to one word before the return address
+            si_adjust = abs(si)
+            emit(f"sub rsp, {si_adjust}")
+            emit(f"call {indirect(CLOSURE_BASE, -CLOSURE_TAG)}")
+            emit(f"add rsp, {si_adjust}")
+            emit(f"mov {CLOSURE_BASE}, {stack_at(clo_si)}")
+        # ...
+```
+
+So `((lambda (x) x) 3)` compiles to:
+
+```nasm
+.intel_syntax
+.global scheme_entry
+
+f0:
+mov rax, [rsp-8]
+ret
+
+scheme_entry:
+# Evaluate arguments
+mov rax, 12
+mov [rsp-24], rax
+# Get a pointer to the label
+lea rax, f0
+mov [rsi+0], rax
+# Tag a closure pointer
+lea rax, [rsi+6]
+# Bump the heap pointer
+add rsi, 16
+# Save the current closure pointer
+mov [rsp-16], rdi
+mov rdi, rax
+# Align to one word before the return address
+sub rsp, 8
+call [rdi-6]
+# Restore stack and closure
+add rsp, 8
+mov rdi, [rsp-16]
+ret
+```
