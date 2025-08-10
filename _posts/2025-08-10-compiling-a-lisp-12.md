@@ -619,6 +619,8 @@ mov rdi, [rsp-16]
 ret
 ```
 
+Not bad for a 300 line compiler!
+
 ## Wrapping up
 
 I think that's all there is for today, folks. We got closures, free variable
