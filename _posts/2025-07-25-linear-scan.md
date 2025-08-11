@@ -1140,6 +1140,10 @@ end
 TODO split critical edges before numbering so we don't need to recalculate
 block order
 
+(See also [Nick's post on critical edge
+splitting](https://nickdesaulniers.github.io/blog/2023/01/27/critical-edge-splitting/),
+which also links to Faddegon's thesis, which I should at least skim.)
+
 And that's it, folks. We have gone from virtual registers in SSA form to
 physical locations. Everything's all hunky-dory. We can just turn these LIR
 instructions into their very similar looking machine equivalents, right?
