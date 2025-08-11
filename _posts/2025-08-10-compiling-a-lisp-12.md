@@ -1,5 +1,5 @@
 ---
-title: "Compiling a Lisp: Lambda lifting"
+title: "Compiling a Lisp: Closure conversion"
 layout: post
 og_image: /assets/img/compiling-a-lisp-og-image.png
 series: compiling-a-lisp
@@ -8,6 +8,10 @@ series: compiling-a-lisp
 <span data-nosnippet>
 *[first](/blog/compiling-a-lisp-0/)* -- *[previous](/blog/compiling-a-lisp-11/)*
 </span>
+
+*EDIT: /u/thunderseethe correctly points out that this is closure conversion,
+not lambda lifting, so I have adjusted the post title from "lambda lifting" to
+"closure conversion" accordingly. Thanks!*
 
 I didn't think this day would come, but I picked up the [Ghuloum
 tutorial][tutorial] (PDF) again and I got a little bit further. There's just
@@ -26,7 +30,7 @@ reader. That's hardly the most interesting part of the tutorial.
 Oh, and I also dropped the instruction encoding. I'm doing text assembly now.
 Womp womp.
 
-Anyway, lifting the lambdas as required in the paper requires three things:
+Anyway, converting the lambdas as required in the paper requires three things:
 
 * Keeping track of which variables are bound
 * Keeping track of which variables are free in a given lambda
@@ -36,7 +40,7 @@ We have two forms that can bind variables: `let` and `lambda`. This means that
 we need to recognize the names in those special expressions and modify the
 environment. What environment, you ask?
 
-### The lifter
+### The closure converter
 
 Well, I have this little `LambdaConverter` class.
 
@@ -50,7 +54,7 @@ class LambdaConverter:
             case _:
                 raise NotImplementedError(expr)
 
-def lift_lambdas(expr):
+def convert_lambdas(expr):
     conv = LambdaConverter()
     expr = conv.convert(expr, set(), set())
     labels = [[name, code] for name, code in conv.labels.items()]
@@ -74,14 +78,14 @@ class LambdaConverter:
 
 class LambdaTests(unittest.TestCase):
     def test_int(self):
-        self.assertEqual(lift_lambdas(3), ["labels", [], 3])
+        self.assertEqual(convert_lambdas(3), ["labels", [], 3])
 
     def test_bool(self):
-        self.assertEqual(lift_lambdas(True), ["labels", [], True])
-        self.assertEqual(lift_lambdas(False), ["labels", [], False])
+        self.assertEqual(convert_lambdas(True), ["labels", [], True])
+        self.assertEqual(convert_lambdas(False), ["labels", [], False])
 
     def test_char(self):
-        self.assertEqual(lift_lambdas(Char("a")), ["labels", [], Char("a")])
+        self.assertEqual(convert_lambdas(Char("a")), ["labels", [], Char("a")])
 ```
 
 Well, okay, sure, we don't actually need to think about variable names when we
@@ -105,7 +109,7 @@ class LambdaConverter:
 class LambdaTests(unittest.TestCase):
     # ...
     def test_freevar(self):
-        self.assertEqual(lift_lambdas("x"), ["labels", [], "x"])
+        self.assertEqual(convert_lambdas("x"), ["labels", [], "x"])
 ```
 
 We don't want to actually transform the variable uses, just add some metadata
@@ -135,12 +139,12 @@ class LambdaConverter:
 class LambdaTests(unittest.TestCase):
     # ...
     def test_plus(self):
-        self.assertEqual(lift_lambdas("+"), ["labels", [], "+"])
+        self.assertEqual(convert_lambdas("+"), ["labels", [], "+"])
 ```
 
 Armed with this knowledge, we can do our first recursive traversal: `if`
 expressions. Since they have recursive parts and don't bind any variables, they
-are the second-simplest form for this lifter.
+are the second-simplest form for this converter.
 
 ```python
 class LambdaConverter:
@@ -158,7 +162,7 @@ class LambdaConverter:
 class LambdaTests(unittest.TestCase):
     # ...
     def test_if(self):
-        self.assertEqual(lift_lambdas(["if", 1, 2, 3]),
+        self.assertEqual(convert_lambdas(["if", 1, 2, 3]),
                          ["labels", [], ["if", 1, 2, 3]])
 ```
 
@@ -174,7 +178,7 @@ coat:
 * allocate code
 * capture outside environment
 
-To handle the lifting, we have to reason about all three.
+To handle the closure conversion, we have to reason about all three.
 
 First, the lambda binds its parameters as new names. In fact, those are the
 *only* bound variables in a lambda. Consider:
@@ -264,13 +268,13 @@ would fail if I got it wrong.
 class LambdaTests(unittest.TestCase):
     # ...
     def test_lambda_no_params_no_freevars(self):
-        self.assertEqual(lift_lambdas(["lambda", [], 3]),
+        self.assertEqual(convert_lambdas(["lambda", [], 3]),
                          ["labels", [
                              ["f0", ["code", [], [], 3]],
                          ], ["closure", "f0"]])
 
     def test_nested_lambda(self):
-        self.assertEqual(lift_lambdas(["lambda", ["x"],
+        self.assertEqual(convert_lambdas(["lambda", ["x"],
                                        ["lambda", ["y"],
                                         ["+", "x", "y"]]]),
                          ["labels",
@@ -329,11 +333,11 @@ class LambdaConverter:
 class LambdaTests(unittest.TestCase):
     # ...
     def test_let(self):
-        self.assertEqual(lift_lambdas(["let", [["x", 5]], "x"]),
+        self.assertEqual(convert_lambdas(["let", [["x", 5]], "x"]),
                          ["labels", [], ["let", [["x", 5]], "x"]])
 
     def test_let_lambda(self):
-        self.assertEqual(lift_lambdas(["let", [["x", 5]],
+        self.assertEqual(convert_lambdas(["let", [["x", 5]],
                                        ["lambda", ["y"],
                                         ["+", "x", "y"]]]),
                          ["labels",
@@ -341,7 +345,7 @@ class LambdaTests(unittest.TestCase):
                           ["let", [["x", 5]], ["closure", "f0", "x"]]])
 
     def test_let_inside_lambda(self):
-        self.assertEqual(lift_lambdas(["lambda", ["x"],
+        self.assertEqual(convert_lambdas(["lambda", ["x"],
                                        ["let", [["y", 6]],
                                         ["+", "x", "y"]]]),
                          ["labels",
@@ -351,7 +355,7 @@ class LambdaTests(unittest.TestCase):
                           ["closure", "f0"]])
 
     def test_paper_example(self):
-        self.assertEqual(lift_lambdas(["let", [["x", 5]],
+        self.assertEqual(convert_lambdas(["let", [["x", 5]],
                                          ["lambda", ["y"],
                                           ["lambda", [],
                                            ["+", "x", "y"]]]]),
@@ -387,7 +391,7 @@ class LambdaConverter:
 class LambdaTests(unittest.TestCase):
     # ...
     def test_call(self):
-        self.assertEqual(lift_lambdas(["f", 3, 4]), ["labels", [], ["funcall", "f", 3, 4]])
+        self.assertEqual(convert_lambdas(["f", 3, 4]), ["labels", [], ["funcall", "f", 3, 4]])
 ```
 
 Now that we have these new `funcall`, and `closure` forms we have to compile
