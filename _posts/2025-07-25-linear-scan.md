@@ -1185,7 +1185,9 @@ class Function
     @block_order.each do |block|
       x = block.instructions.flat_map do |insn|
         if insn.name == :call
-          survivors = intervals.select { |x, r| r.survives?(insn.number) }.map(&:first).select { |vreg|
+          survivors = intervals.select { |_vreg, interval|
+            interval.survives?(insn.number)
+          }.map(&:first).select { |vreg|
             assignments[intervals[vreg]].is_a?(PReg)
           }
           mov_input = insn.out
@@ -1196,7 +1198,8 @@ class Function
 
           insn.ins.replace(insn.ins.first(1))
 
-          sequence = sequentialize(ins.zip(param_regs).to_h).map do |(src, _, dst)|
+          mapping = ins.zip(param_regs).to_h
+          sequence = sequentialize(mapping).map do |(src, _, dst)|
             Insn.new(:mov, dst, [src])
           end
 
