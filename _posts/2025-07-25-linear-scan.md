@@ -1217,6 +1217,10 @@ class Function
 end
 ```
 
+(Unfortunately, this sidesteps handling the less-fun bit of calls in ABIs where
+after the 6th parameter, they are expected on the stack. It also completely
+ignores ABI size constraints.)
+
 Now, you may have noticed that we don't do anything special for the incoming
 params of the function we're compiling! That's another thing we have to handle.
 Thankfully, we can handle it with yet another parallel move (wow!) at the end
