@@ -179,7 +179,7 @@ noticed it.) In this paper, they mostly describe a staged variant of C called
 Then came a paper called [Quality and Speed in Linear-scan Register
 Allocation](/assets/img/quality-speed-linear-scan-ra.pdf) (PDF, 1998) by Traub,
 Holloway, and Smith. It adds some optimizations (lifetime holes, binpacking) to
-the algorithm presented PolettoSarkar1997.
+the algorithm presented in PolettoSarkar1997.
 
 Then came the first paper I read, and I think the paper everyone refers to when
 they talk about linear scan: [Linear Scan Register
