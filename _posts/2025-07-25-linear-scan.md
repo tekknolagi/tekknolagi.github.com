@@ -179,7 +179,7 @@ noticed it.) In this paper, they mostly describe a staged variant of C called
 Then came a paper called [Quality and Speed in Linear-scan Register
 Allocation](/assets/img/quality-speed-linear-scan-ra.pdf) (PDF, 1998) by Traub,
 Holloway, and Smith. It adds some optimizations (lifetime holes, binpacking) to
-the algorithm presented in the 1997 paper.
+the algorithm presented PolettoSarkar1997.
 
 Then came the first paper I read, and I think the paper everyone refers to when
 they talk about linear scan: [Linear Scan Register
@@ -1299,6 +1299,11 @@ V8](https://github.com/v8/v8/blob/cac6de03372c25987c6cbea49b4b39d9da437978/src/c
 I find this stuff so cool. I'll also mention Boissinot's [Rust
 code](https://github.com/bboissin/thesis_bboissin) again because it does
 something similar for parallel moves.
+
+## Wrapping up
+
+We built a register allocator that works on SSA. Hopefully next time we will
+add features such as lifetime holes, interval splitting, and register hints.
 
 ## Thanks
 
