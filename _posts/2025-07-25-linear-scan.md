@@ -8,7 +8,11 @@ Patterson](https://tenderlovemaking.com/).)
 
 The fundamental problem in register allocation is to take an IR that uses a
 virtual registers (as many as you like) and rewrite it to use a finite amount
-of physical registers and stack space.
+of physical registers and stack space[^calendaring].
+
+[^calendaring]: It's not just about registers, either. In 2016, Facebook
+    engineer Dave [legendarily used linear-scan register allocation to book
+    meeting rooms](https://blog.waleedkhan.name/will-i-ever-use-this/).
 
 This is an example of a code snippet using virtual registers:
 
@@ -1247,11 +1251,16 @@ end
 Again, this is yet another kind of thing where some of the later papers have
 much better ergonomics and also much better generated code.
 
+But this is really cool! If you have arrived at this point with me, we have
+successfully made it to 1997 and that is nothing to sneeze at.
+
+<!--
 ## Instruction selection and instruction splitting
 
 ## Lifetime holes and interval splitting
 
 ## Register hints
+-->
 
 ## Validation by abstract interpretation
 
@@ -1288,11 +1297,6 @@ V8](https://github.com/v8/v8/blob/cac6de03372c25987c6cbea49b4b39d9da437978/src/c
 I find this stuff so cool. I'll also mention Boissinot's [Rust
 code](https://github.com/bboissin/thesis_bboissin) again because it does
 something similar for parallel moves.
-
-## calendaring
-
-TODO mention "2016: Facebook engineer Dave legendarily uses linear-scan
-register allocation to book meeting rooms"
 
 ## Thanks
 
