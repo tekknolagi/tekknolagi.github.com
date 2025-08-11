@@ -1161,6 +1161,62 @@ Fun. We will start off by handling calls and method parameters separately, we
 will note that it's not amazing code, and then we will eventually implement the
 later papers, which handle register constraints more naturally.
 
+We'll call this new function `handle_caller_saved_regs` after register
+allocation but before SSA resolution (TODO: why?)
+
+Its goal is to do a couple of things:
+
+* Insert special `push` and `pop` instructions around `call` instructions to
+  preserve virtual registers that are used on the other side of the `call`. We
+  only care about preserving virtual registers that are stored in physical
+  registers, though; no need to preserve anything that already lives on the
+  stack.
+* Do a parallel move of the call arguments into the ABI-specified parameter
+  registers. We need to do a parallel move in case any of the arguments happen
+  to already be living in parameter registers. (We're really getting good
+  mileage out of this function.)
+* Make sure that the value returned by the call in the ABI-specified return
+  register ends up in in the location allocated to the output of the `call`
+  instruction.
+
+We'll also remove the `call` operands since we're placing them in special
+registers explicitly now.
+
+```ruby
+class Function
+  def handle_caller_saved_regs intervals, assignments, return_reg, param_regs
+    @block_order.each do |block|
+      x = block.instructions.flat_map do |insn|
+        if insn.name == :call
+          survivors = intervals.select { |x, r| r.survives?(insn.number) }.map(&:first).select { |vreg|
+            assignments[intervals[vreg]].is_a?(PReg)
+          }
+          mov_input = insn.out
+          insn.out = return_reg
+
+          ins = insn.ins.drop(1)
+          raise if ins.length > param_regs.length
+
+          insn.ins.replace(insn.ins.first(1))
+
+          sequence = sequentialize(ins.zip(param_regs).to_h).map do |(src, _, dst)|
+            Insn.new(:mov, dst, [src])
+          end
+
+          survivors.map { |s| Insn.new(:push, nil, [s]) } +
+            sequence +
+            [insn, Insn.new(:mov, mov_input, [return_reg])] +
+            survivors.map { |s| Insn.new(:pop, nil, [s]) }.reverse
+        else
+          insn
+        end
+      end
+      block.instructions.replace(x)
+    end
+  end
+end
+```
+
 ## Register hints
 
 ## Instruction selection and splitting
