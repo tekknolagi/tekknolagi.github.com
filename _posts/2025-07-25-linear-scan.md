@@ -3,8 +3,8 @@ title: "Linear scan register allocation on SSA"
 layout: post
 ---
 
-(Much of the code and education that resulted in this post happened with [Aaron
-Patterson](https://tenderlovemaking.com/).)
+*Much of the code and education that resulted in this post happened with [Aaron
+Patterson](https://tenderlovemaking.com/).*
 
 The fundamental problem in register allocation is to take an IR that uses a
 virtual registers (as many as you like) and rewrite it to use a finite amount
