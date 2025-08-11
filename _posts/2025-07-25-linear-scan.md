@@ -1252,7 +1252,9 @@ Again, this is yet another kind of thing where some of the later papers have
 much better ergonomics and also much better generated code.
 
 But this is really cool! If you have arrived at this point with me, we have
-successfully made it to 1997 and that is nothing to sneeze at.
+successfully made it to 1997 and that is nothing to sneeze at. We have even
+adapted research from 1997 to work with SSA, avoiding several significant
+classes of bugs along the way.
 
 <!--
 ## Instruction selection and instruction splitting
