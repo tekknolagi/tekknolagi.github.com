@@ -62095,6 +62095,65 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "115010417439409402": {
+      "id": "115010417439409402",
+      "created_at": "2025-08-11T13:41:39.700Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115010417439409402",
+      "url": "https://mastodon.social/@tekknolagi/115010417439409402",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 3,
+      "edited_at": null,
+      "content": "<p>Oops, I accidentally became a benchmark in Kagi&#39;s RSS feed parser library</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [
+        {
+          "id": "115010416256621516",
+          "type": "image",
+          "url": "https://files.mastodon.social/media_attachments/files/115/010/416/256/621/516/original/396c9897cb91e323.png",
+          "preview_url": "https://files.mastodon.social/media_attachments/files/115/010/416/256/621/516/small/396c9897cb91e323.png",
+          "remote_url": null,
+          "preview_remote_url": null,
+          "text_url": null,
+          "meta": {
+            "original": {
+              "width": 1316,
+              "height": 1326,
+              "size": "1316x1326",
+              "aspect": 0.9924585218702866
+            },
+            "small": {
+              "width": 478,
+              "height": 482,
+              "size": "478x482",
+              "aspect": 0.991701244813278
+            },
+            "focus": {
+              "x": 0.0,
+              "y": 0.0
+            }
+          },
+          "description": "Screenshot of Kagi's fastfeedparser README benchmarking section, in which they are parsing four blogs with fastfeedparser and comparing to feedparser. Mine is the slowest on feedparser and gets a 50x speedup in fastfeedparser.",
+          "blurhash": "UCQ,OCMx-:?b~VWCM{WB?GWBM{WBxFRQafof"
+        }
+      ],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
