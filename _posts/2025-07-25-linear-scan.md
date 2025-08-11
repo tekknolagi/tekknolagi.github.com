@@ -192,6 +192,12 @@ program has already been fixed into a single linear sequence! It also means
 that you have given each instruction a number that represents its position in
 that order.
 
+> This may or not be a surprising requirement depending on your compilers
+> background. It was surprising to me because I often live in control flow
+> graph fantasy land where blocks are unordered and instructions sometimes
+> float around. But if you live in a land of basic blocks that are already in
+> reverse post order, then it may be less surprising.
+
 In non-SSA-land, these live ranges are different from the virtual registers:
 they represent some kind of lifetimes of each *version* of a virtual register.
 For an example, consider the following code snippet:
@@ -1185,6 +1191,11 @@ something similar for parallel moves.
 
 TODO mention "2016: Facebook engineer Dave legendarily uses linear-scan
 register allocation to book meeting rooms"
+
+## Thanks
+
+Thanks to [Waleed Khan](https://waleedkhan.name/) for giving feedback on this
+post.
 
 ## ............
 
