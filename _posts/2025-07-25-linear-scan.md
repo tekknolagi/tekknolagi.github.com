@@ -1228,7 +1228,8 @@ class Function
     # regs mapping to nil. We filter those away by selecting for tuples
     # that have a truthy second value
     # [[x, y], [z, nil]].select(&:last) (reject the second tuple)
-    sequence = sequentialize(param_regs.zip(entry_block.parameters).select(&:last).to_h).map do |(src, _, dst)|
+    mapping = param_regs.zip(entry_block.parameters).select(&:last).to_h
+    sequence = sequentialize(mapping).map do |(src, _, dst)|
       Insn.new(:mov, dst, [src])
     end
     entry_block.insert_moves_at_start(sequence)
