@@ -1217,9 +1217,36 @@ class Function
 end
 ```
 
-## Register hints
+Now, you may have noticed that we don't do anything special for the incoming
+params of the function we're compiling! That's another thing we have to handle.
+Thankfully, we can handle it with yet another parallel move (wow!) at the end
+of `resolve_ssa`.
 
-## Instruction selection and splitting
+```ruby
+class Function
+  def resolve_ssa intervals, assignments
+    # ...
+    # We're typically going to have more param regs than block parameters
+    # When we zip the param regs with block params, we'll end up with param
+    # regs mapping to nil. We filter those away by selecting for tuples
+    # that have a truthy second value
+    # [[x, y], [z, nil]].select(&:last) (reject the second tuple)
+    sequence = sequentialize(param_regs.zip(entry_block.parameters).select(&:last).to_h).map do |(src, _, dst)|
+      Insn.new(:mov, dst, [src])
+    end
+    entry_block.insert_moves_at_start(sequence)
+  end
+end
+```
+
+Again, this is yet another kind of thing where some of the later papers have
+much better ergonomics and also much better generated code.
+
+## Instruction selection and instruction splitting
+
+## Lifetime holes and interval splitting
+
+## Register hints
 
 ## Validation by abstract interpretation
 
@@ -1266,62 +1293,3 @@ register allocation to book meeting rooms"
 
 Thanks to [Waleed Khan](https://waleedkhan.name/) for giving feedback on this
 post.
-
-## ............
-
-
-
-
-
-
-
-The liveness analysis tells you which basic
-blocks need which virtual registers to be alive on entry. This is a
-*graph-land* notion: it operates on your control-flow graph which has not yet
-been assigned an order.
-
-Consider the following code snippet:
-
-```
-B0:
-... -> R12
-... -> R13
-jmp B1
-
-B1:
-mul R12, R13 -> R14
-sub R13, 1 -> R15
-jmp B2
-
-B2:
-add R14, R15 -> R16
-ret R16
-```
-
-It looks scheduled, but really B1 and B2 could be swapped (for example) and the
-code would work just fine. No instruction has *actually* been assigned an
-address yet.
-
-Consider the following sketchy annotation of live ranges in a made-up
-assembly-like language with virtual registers:
-
-```
-                       R12 R13 R14 R15 R16
-R12 = ...              |
-R13 = ...              |   |
-mul R12, R13 -> R14    v   |   |
-sub R13, 1 -> R15          |   |   |
-add R14, R15 -> R16        v   v   v   |
-print R16                              v
-```
-
-TODO insert a diagram
-
-The interval construction tells you where a virtual register is first defined
-and where it is last used.
-
-
-After liveness analysis, you need to build intervals.
-
-Implicit here is that you have already *scheduled* your instructions. So you
-need to do that too.
