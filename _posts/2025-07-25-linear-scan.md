@@ -1147,6 +1147,20 @@ Not so fast...
 
 ## Calls
 
+You may have noticed that the original linear scan paper does not mention calls
+or other register constraints. I didn't really think about it until I wanted to
+make a function call. The authors of later linear scan papers definitely
+noticed, though; Wimmer2005 writes the following about PolettoSarkar1999:
+
+> When a spilled interval is used by an instruction requiring the operand in a
+> register, the interval must be temporarily reloaded to the scratch register.
+> Additionally, register constraints for method calls and instructions
+> requiring fixed registers must be handled separately.
+
+Fun. We will start off by handling calls and method parameters separately, we
+will note that it's not amazing code, and then we will eventually implement the
+later papers, which handle register constraints more naturally.
+
 ## Register hints
 
 ## Instruction selection and splitting
