@@ -871,9 +871,6 @@ resolution.
 This means that we're going to iterate over every outbound edge from every
 block. For each edge, we're going to insert some parallel moves.
 
-<!-- TODO(max): Figure out if `assignments` needs to have a notion of time in
-case of a vreg getting moved from a physical register to the stack -->
-
 ```ruby
 class Function
   def resolve_ssa intervals, assignments
