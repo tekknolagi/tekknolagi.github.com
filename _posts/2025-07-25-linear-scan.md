@@ -1226,7 +1226,9 @@ will note that it's not amazing code, and then we will eventually implement the
 later papers, which handle register constraints more naturally.
 
 We'll call this new function `handle_caller_saved_regs` after register
-allocation but before SSA resolution (TODO: why?)
+allocation but before SSA resolution. We do it after register allocation so we
+know where each virtual register goes but before resolution so we can still
+inspect the virtual register operands.
 
 Its goal is to do a couple of things:
 
