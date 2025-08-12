@@ -108,6 +108,10 @@ backend bits.
 
     * PHP uses [linear scan](https://github.com/php/php-src/blob/77dace78c324ef731e60fa98b4b8008cd7df1657/ext/opcache/jit/ir/ir_ra.c#L3479)
 
+    Lua:
+
+    * LuaJIT uses [reverse linear scan][luajit-lsra]
+
 There are a couple different approaches to register allocation, but in this
 post we'll focus on *linear scan of SSA*.
 
@@ -1445,13 +1449,13 @@ something similar for parallel moves.
 It's possible to do linear scan allocation in reverse, at least on traces
 without control-flow. See for example [The Solid-State Register
 Allocator](https://www.mattkeeter.com/blog/2022-10-04-ssra/), the [LuaJIT
-register
-allocator](https://github.com/LuaJIT/LuaJIT/blob/5e3c45c43bb0e0f1f2917d432e9d2dba12c42a6e/src/lj_asm.c#L198),
-and [Reverse Linear Scan Allocation is probably a good
-idea](https://brrt-to-the-future.blogspot.com/2019/03/reverse-linear-scan-allocation-is.html).
+register allocator][luajit-lsra], and [Reverse Linear Scan Allocation is
+probably a good idea](https://brrt-to-the-future.blogspot.com/2019/03/reverse-linear-scan-allocation-is.html).
 By doing linear scan this way, it is also possible to avoid computing liveness
 and intervals. I am not sure if this works on programs with control-flow,
 though.
+
+[luajit-lsra]: https://github.com/LuaJIT/LuaJIT/blob/5e3c45c43bb0e0f1f2917d432e9d2dba12c42a6e/src/lj_asm.c#L198
 
 ## Wrapping up
 
