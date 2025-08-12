@@ -893,9 +893,6 @@ intervals to physical locations. That's great but we're still in SSA form:
 labelled code regions don't have block arguments in hardware. We need to write
 some code to take us out of SSA and into the real world.
 
-<!-- TODO(max): Figure out if `assignments` needs to have a notion of time in
-case of a vreg getting moved from a physical register to the stack -->
-
 We can use a modified Wimmer2010 as a great start point here. It handles more
 than we need to right now---lifetime holes---but we can simplify.
 
