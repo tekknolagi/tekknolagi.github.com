@@ -107,6 +107,7 @@ backend bits.
     PHP:
 
     * PHP uses [linear scan](https://github.com/php/php-src/blob/77dace78c324ef731e60fa98b4b8008cd7df1657/ext/opcache/jit/ir/ir_ra.c#L3479)
+    * HHVM uses [extended linear scan](https://github.com/facebook/hhvm/blob/e7bca518648e16bdb7c08e91d02f8c158d8e6c6f/hphp/runtime/vm/jit/vasm-xls.cpp#L1448)
 
     Lua:
 
