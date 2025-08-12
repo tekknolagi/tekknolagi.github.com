@@ -66,10 +66,47 @@ writing the back-end of a compiler, it's probably much easier to have a
 separate register-allocator-in-a-box than manually managing variable lifetimes
 while also considering all of your different target architectures.
 
-How do JIT compilers do register allocation? Well, "everyone knows" that
-"every JIT does its own variant of linear scan". This bothered me for some time
-because I've worked on a couple of JITs and still didn't understand the backend
-bits.
+How do JIT compilers do register allocation? Well, "everyone knows" that "every
+JIT does its own variant of linear scan"[^everyone]. This bothered me for some
+time because I've worked on a couple of JITs and still didn't understand the
+backend bits.
+
+[^everyone]: Well. As I said on one of the social media sites earlier this
+    year, "All AOT compilers are alike; each JIT compiler is fucked up in its
+    own way."
+
+    JavaScript:
+
+    <!-- * V8's Maglev uses -->
+    * V8's TurboFan uses [linear scan](https://github.com/v8/v8/blob/12fa27f2f4d999320c524776ed29810c8694bafc/src/compiler/backend/register-allocator.h#L1545)
+    * SpiderMonkey uses a [backtracking allocator](https://searchfox.org/mozilla-central/rev/c85c168374483a3c37aab49d7f587ea74a516492/js/src/jit/BacktrackingAllocator.h#28-31)
+      based on [LLVM's](https://blog.llvm.org/2011/09/greedy-register-allocation-in-llvm-30.html)
+    * JavaScriptCore uses [linear scan "for
+      optLevel<2"](https://github.com/WebKit/WebKit/blob/f5a9393bdeff7c89685de21aa9f2df392139cc07/Source/JavaScriptCore/b3/air/AirAllocateRegistersAndStackByLinearScan.h#L37)
+      and [graph coloring otherwise](https://github.com/WebKit/WebKit/blob/f5a9393bdeff7c89685de21aa9f2df392139cc07/Source/JavaScriptCore/b3/air/AirAllocateRegistersByGraphColoring.h)
+      * There's also a "cssjit" with its own register allocator...
+
+    Java:
+
+    * HotSpot C1 uses (naturally) [Wimmer2010 linear scan](https://github.com/openjdk/jdk/blob/87d734012e3130501bfd37b23cee7f5e0a3a476f/src/hotspot/share/c1/c1_LinearScan.hpp)
+    * HotSpot C2 uses [Chaitin-Briggs-Click graph coloring](https://github.com/openjdk/jdk/blob/87d734012e3130501bfd37b23cee7f5e0a3a476f/src/hotspot/share/opto/regalloc.hpp)
+    <!-- * GraalVM uses -->
+
+    Python:
+
+    <!-- * PyPy uses -->
+    * Cinder uses [Wimmer2010 linear scan](https://github.com/facebookincubator/cinderx/blob/5cf14ad8a68b6f04c1ca1cb99947da7d8d09c28b/cinderx/Jit/lir/regalloc.h)
+    * S6 uses a [trace register allocator](https://github.com/google-deepmind/s6/blob/69cac9c981fbd3217ed117c3898382cfe094efc0/src/code_generation/trace_register_allocator.h)
+      * This is a different thing than a tracing JIT; see [Josef Eisl's thesis](/assets/img/trace-ra.pdf) (PDF, 2018)
+
+    Ruby:
+
+    * YJIT uses [linear scan](https://github.com/ruby/ruby/blob/231407c251d82573f578caf569a934c0ebb344e5/yjit/src/backend/ir.rs#L1388)
+    * ZJIT uses more or less the same backend, so also linear scan
+
+    PHP:
+
+    * PHP uses [linear scan](https://github.com/php/php-src/blob/77dace78c324ef731e60fa98b4b8008cd7df1657/ext/opcache/jit/ir/ir_ra.c#L3479)
 
 There are a couple different approaches to register allocation, but in this
 post we'll focus on *linear scan of SSA*.
@@ -1423,5 +1460,5 @@ add features such as lifetime holes, interval splitting, and register hints.
 
 ## Thanks
 
-Thanks to [Waleed Khan](https://waleedkhan.name/) for giving feedback on this
-post.
+Thanks to [Waleed Khan](https://waleedkhan.name/) and [Iain
+Ireland](https://mstdn.ca/@iainireland) for giving feedback on this post.
