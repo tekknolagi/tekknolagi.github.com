@@ -52,13 +52,13 @@ And here is the same example after it has been passed through a register
 allocator:
 
 ```
-add [RSP-16], RAX -> RBX
-add [RSP-16], RBX -> RAX
+add Stack[0], P0 -> P1
+add Stack[0], P1 -> P0
 ret
 ```
 
-Each virtual register was assigned a physical place: R1 to the stack, R2 to
-RAX, R3 to RBX, and R4 *also* to RAX (since we weren't using R2 anymore).
+Each virtual register was assigned a physical place: R1 to the stack, R2 to P0,
+R3 to P1, and R4 *also* to P0 (since we weren't using R2 anymore).
 
 People use register allocators like they use garbage collectors: it's an
 abstraction that can manage your resources for you, maybe with some cost. When
