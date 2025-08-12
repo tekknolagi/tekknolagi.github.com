@@ -494,11 +494,8 @@ A couple interesting things to note:
   that block's parameters
 * We start numbering at 16 just so we can eyeball things and make sure they
   line up with the Wimmer2010 paper
-* We only give out even numbers because
-  * Later we'll insert spills at odd-numbered instructions
-  * Something else I forgot TODO
-  * Also note that some implementations online seem to do like 1.1 and 2.1
-    (floats???)
+* We only give out even numbers because later we'll insert loads and stores at
+  odd-numbered instructions
 
 Even though we have extra instructions, it looks very similar to the example in
 the Wimmer2010 paper.
@@ -769,7 +766,6 @@ class Function
           # interval; spill the last active interval.
           assignment[interval] = assignment[spill]
           raise "Should be assigned a register" unless assignment[interval].is_a?(PReg)
-          # TODO(max): Insert a spill instruction at an odd index
           assignment[spill] = slot
           active.pop  # We know spill is the last one
           # Insert interval into already-sorted active
@@ -778,7 +774,6 @@ class Function
         else
           # The current interval ends further away than the last active
           # interval; spill the current interval.
-          # TODO(max): Insert a spill instruction at an odd index
           assignment[interval] = slot
         end
       else
