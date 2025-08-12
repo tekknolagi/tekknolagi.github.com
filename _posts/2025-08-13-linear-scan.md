@@ -6,6 +6,14 @@ layout: post
 *Much of the code and education that resulted in this post happened with [Aaron
 Patterson](https://tenderlovemaking.com/).*
 
+[tcc-lsra]: /assets/img/tcc-linearscan-ra.pdf
+
+[quality-lsra]: /assets/img/quality-speed-linear-scan-ra-clean.pdf
+
+[lsra]: /assets/img/linearscan-ra.pdf
+
+[lsra-ssa]: /assets/img/wimmer-linear-scan-ssa.pdf
+
 [lsra-context-ssa]: /assets/img/linear-scan-ra-context-ssa.pdf
 
 [ra-programs-ssa]: /assets/img/ra-programs-ssa.pdf
@@ -13,6 +21,16 @@ Patterson](https://tenderlovemaking.com/).*
 [ssa-elim-after-ra]: /assets/img/ssa-elimination-after-ra.pdf
 
 [register-spilling-range-splitting-ssa]: /assets/img/register-spilling-range-splitting-ssa.pdf
+
+[wimmer-masters-thesis]: /assets/img/wimmer-masters-thesis.pdf
+
+[optimized-interval-splitting]: /assets/img/optimized-interval-splitting-linear-scan-ra.pdf
+
+[parallel-move-leroy]: /assets/img/parallel-move-leroy.pdf
+
+[boissinot-out-ssa]: /assets/img/boissinot-out-ssa.pdf
+
+[boissinot-thesis]: /assets/img/boissinot-thesis.pdf
 
 The fundamental problem in register allocation is to take an IR that uses a
 virtual registers (as many as you like) and rewrite it to use a finite amount
@@ -56,18 +74,16 @@ bits.
 There are a couple different approaches to register allocation, but in this
 post we'll focus on *linear scan of SSA*.
 
-I started reading [Linear Scan Register Allocation on SSA
-Form](/assets/img/wimmer-linear-scan-ssa.pdf) (PDF, 2010) by Wimmer and Franz
-after writing [A catalog of ways to generate SSA](/blog/ssa/). Reading alone
-didn't make a ton of sense---I ended up with a lot of very frustrated margin
-notes. I started trying to implement it alongside the paper. As it turns out,
-though, there is a rich history of papers in this area that it leans on really
-heavily. I needed to follow the chain of references!
+I started reading [Linear Scan Register Allocation on SSA Form][lsra-ssa] (PDF,
+2010) by Wimmer and Franz after writing [A catalog of ways to generate
+SSA](/blog/ssa/). Reading alone didn't make a ton of sense---I ended up with a
+lot of very frustrated margin notes. I started trying to implement it alongside
+the paper. As it turns out, though, there is a rich history of papers in this
+area that it leans on really heavily. I needed to follow the chain of
+references!
 
 > For example, here is a lovely explanation of the process, start to finish,
-> from Christian Wimmer's [Master's
-> thesis](/assets/img/wimmer-masters-thesis.pdf) (PDF,
-> 2004).
+> from Christian Wimmer's [Master's thesis][wimmer-masters-thesis] (PDF, 2004).
 >
 > ```
 > LINEAR_SCAN
@@ -186,23 +202,23 @@ one pass over your low-level IR. (We'll talk more about what that means in a
 minute.)
 
 It first appeared in the literature in [tcc: A System for Fast, Flexible, and
-High-level Dynamic Code Generation](/assets/img/tcc-linearscan-ra.pdf) (PDF,
-1997) by Poletto, Engler, and Kaashoek. (Until writing this post, I had never
-seen this paper. It was only on a re-read of the 1999 paper (below) that I
-noticed it.) In this paper, they mostly describe a staged variant of C called
-'C (TickC), for which a fast register allocator is quite useful.
+High-level Dynamic Code Generation][tcc-lsra] (PDF, 1997) by Poletto, Engler,
+and Kaashoek. (Until writing this post, I had never seen this paper. It was
+only on a re-read of the 1999 paper (below) that I noticed it.) In this paper,
+they mostly describe a staged variant of C called 'C (TickC), for which a fast
+register allocator is quite useful.
 
 Then came a paper called [Quality and Speed in Linear-scan Register
-Allocation](/assets/img/quality-speed-linear-scan-ra-clean.pdf) (PDF, 1998) by
-Traub, Holloway, and Smith. It adds some optimizations (lifetime holes,
-binpacking) to the algorithm presented in Poletto1997.
+Allocation][quality-lsra] (PDF, 1998) by Traub, Holloway, and Smith. It adds
+some optimizations (lifetime holes, binpacking) to the algorithm presented in
+Poletto1997.
 
 Then came the first paper I read, and I think the paper everyone refers to when
-they talk about linear scan: [Linear Scan Register
-Allocation](/assets/img/linearscan-ra.pdf) (PDF, 1999) by Poletto and Sarkar.
-In this paper, they give a fast alternative to graph coloring register
-allocation, especially motivated by just-in-time compilers. In retrospect, it
-seems to be a bit of a rehash of the previous two papers.
+they talk about linear scan: [Linear Scan Register Allocation][lsra] (PDF,
+1999) by Poletto and Sarkar. In this paper, they give a fast alternative to
+graph coloring register allocation, especially motivated by just-in-time
+compilers. In retrospect, it seems to be a bit of a rehash of the previous two
+papers.
 
 Linear scan (1997, 1999) operates on *live ranges* instead of virtual
 registers. A live range is a pair of integers [start, end) (end is exclusive)
@@ -807,9 +823,8 @@ spilled, it's in a stack slot from beginning to end.
 
 I only found this out accidentally after trying to figure out a bug (that
 wasn't a bug) due to a lovely sentence in [Optimized Interval Splitting in a
-Linear Scan Register
-Allocator](/assets/img/optimized-interval-splitting-linear-scan-ra.pdf) (PDF,
-2005) by Wimmer and Mössenböck):
+Linear Scan Register Allocator][optimized-interval-splitting] (PDF, 2005) by
+Wimmer and Mössenböck):
 
 > However, it cannot deal with lifetime holes and does not split intervals, so
 > an interval has either a register assigned for the whole lifetime, or it is
@@ -966,13 +981,12 @@ source of a significant amount of bugs in the literature. Only recently did
 some folks roll through and suggest (proven!) fixes:
 
 * [Battling windmills with Coq: formal verification of a compilation algorithm
-  for parallel moves](/assets/img/parallel-move-leroy.pdf) (PDF, 2007) by
-  Rideau, Serpette, and Leroy
+  for parallel moves][parallel-move-leroy] (PDF, 2007) by Rideau, Serpette, and
+  Leroy
 * [Revisiting Out-of-SSA Translation for Correctness, Code Quality, and
-  Efficiency](/assets/img/boissinot-out-ssa.pdf) (PDF, 2009) by Boissinot,
-  Darte, Rastello, Dupont de Dinechin, and Guillon.
-  * and again in [Boissinot's thesis](/assets/img/boissinot-thesis.pdf) (PDF,
-    2010)
+  Efficiency][boissinot-out-ssa] (PDF, 2009) by Boissinot, Darte, Rastello,
+  Dupont de Dinechin, and Guillon.
+  * and again in [Boissinot's thesis][boissinot-thesis] (PDF, 2010)
 
 This sent us on a deep rabbit hole of trying to understand what bugs occur,
 when, and how to fix them. We implemented both the Leroy and the Boissinot
