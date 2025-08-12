@@ -159,8 +159,16 @@ B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 -->
 <figure>
 <object class="svg" type="image/svg+xml" data="/assets/img/wimmer-lsra-cfg.svg"></object>
-<figcaption>
-blah TODO
+<figcaption markdown=1>
+We have one entry block, `B1`, that is implied in
+Wimmer2010. Its only job is to define `R10` and `R11` for the rest of the CFG.
+
+Then we have a loop between `B2` and `B3` with an implicit fallthrough. Instead
+of doing that, we instead generate a conditional branch with explicit jump
+targets. This makes it possible to re-order blocks as much as we like.
+
+The contents of `B4` are also just to fill in the blanks from Wimmer2010 and
+add some variable uses.
 </figcaption>
 </figure>
 
@@ -185,9 +193,9 @@ noticed it.) In this paper, they mostly describe a staged variant of C called
 'C (TickC), for which a fast register allocator is quite useful.
 
 Then came a paper called [Quality and Speed in Linear-scan Register
-Allocation](/assets/img/quality-speed-linear-scan-ra.pdf) (PDF, 1998) by Traub,
-Holloway, and Smith. It adds some optimizations (lifetime holes, binpacking) to
-the algorithm presented in Poletto1997.
+Allocation](/assets/img/quality-speed-linear-scan-ra-clean.pdf) (PDF, 1998) by
+Traub, Holloway, and Smith. It adds some optimizations (lifetime holes,
+binpacking) to the algorithm presented in Poletto1997.
 
 Then came the first paper I read, and I think the paper everyone refers to when
 they talk about linear scan: [Linear Scan Register
@@ -362,7 +370,6 @@ digraph G {
 </g>
 </g>
 </svg>
-<figcaption>Working backwards from each of A and B, TODO</figcaption>
 </figure>
 
 That is, if there were some register R0 live-in to B and some register R1
@@ -531,8 +538,8 @@ Wimmer2010 paper. We'll have two main differences:
 * We're going to use our dataflow liveness analysis, not the loop header thing
 
 I know I said we were going to be computing live ranges. So why am I presenting
-you with a function called `build_intervals`? That's because somewhere (TODO where?) in
-the history of linear scan, people moved from having a single range for a
+you with a function called `build_intervals`? That's because early in
+the history of linear scan (Traub1998!), people moved from having a single range for a
 particular virtual register to having *multiple* disjoint ranges. This
 collection of multiple ranges is called an *interval* and it exists to free up
 registers in the context of branches.
