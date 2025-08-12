@@ -6,6 +6,10 @@ layout: post
 *Much of the code and education that resulted in this post happened with [Aaron
 Patterson](https://tenderlovemaking.com/).*
 
+[lsra-context-ssa]: /assets/img/linear-scan-ra-context-ssa.pdf
+
+[ra-programs-ssa]: /assets/img/ra-programs-ssa.pdf
+
 The fundamental problem in register allocation is to take an IR that uses a
 virtual registers (as many as you like) and rewrite it to use a finite amount
 of physical registers and stack space[^calendaring].
@@ -235,7 +239,20 @@ definition (by, uh, definition), live ranges are an exact 1:1 mapping with
 virtual registers. **We'll focus on SSA for the remainder of the post because
 this is what I am currently interested in.** The research community seems to
 have decided that allocating directly on SSA gives more information to the
-register allocator.
+register allocator[^allocate-on-ssa].
+
+[^allocate-on-ssa]: [Linear Scan Register Allocation in the Context of SSA Form
+    and Register Constraints][lsra-context-ssa] (PDF, 2002) by Mössenböck and
+    Pfeiffer notes:
+
+    > Our allocator relies on static single assignment form, which simplifies
+    > data flow analysis and tends to produce short live intervals.
+
+    [Register allocation for programs in SSA-form][ra-programs-ssa] (PDF, 2006)
+    by Hack, Grund, and Goos notes that interference graphs for SSA programs
+    are chordal and can be optimally colored in quadratic time.
+
+    TODO add more
 
 Linear scan starts at the point in your compiler process where you already know
 these live ranges---that you have already done some kind of analysis to build a
@@ -639,12 +656,11 @@ up with `[1, 10)`. There's no gap in the middle.
 And if we have `[1, 7)` and someone calls `set_from(3)`, we end up with `[3,
 7)`.
 
-After figuring out from scratch some of these assumptions about what the interval/range API
-should and should not do, Aaron and I realized that there was some actual code
-for `add_range` in a different, earlier paper: [Linear Scan Register Allocation
-in the Context of SSA Form and Register
-Constraints](/assets/img/linear-scan-ra-context-ssa.pdf) (PDF, 2002) by
-Mössenböck and Pfeiffer.
+After figuring out from scratch some of these assumptions about what the
+interval/range API should and should not do, Aaron and I realized that there
+was some actual code for `add_range` in a different, earlier paper: [Linear
+Scan Register Allocation in the Context of SSA Form and Register
+Constraints][lsra-context-ssa] (PDF, 2002) by Mössenböck and Pfeiffer.
 
 ```
 ADDRANGE(i: Instruction; b: Block; end: integer)
