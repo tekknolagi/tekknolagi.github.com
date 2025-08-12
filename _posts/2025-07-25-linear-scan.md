@@ -1192,8 +1192,12 @@ class Function
 end
 ```
 
-TODO split critical edges before numbering so we don't need to recalculate
-block order
+Adding a new block invalidates the cached `@block_order`, so we also need to
+recompute that.
+
+> We could also avoid that by splitting critical edges earlier, before
+> numbering. Then, when we arrive in `resolve_ssa`, we can clean up branches to
+> empty blocks!
 
 (See also [Nick's post on critical edge
 splitting](https://nickdesaulniers.github.io/blog/2023/01/27/critical-edge-splitting/),
