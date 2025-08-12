@@ -862,6 +862,9 @@ Some other things to note:
 * If you have a register free, choosing which register to allocate is a
   heuristic! It is tunable. There is probably some research out there that
   explores the space.
+
+  In fact, you might even consider *not* allocating a register greedily. What
+  might that look like? I have no idea.
 * Spilling the interval with the furthest endpoint is a heuristic! You can
   pick any active interval you want. In [Register Spilling and Live-Range
   Splitting for SSA-Form Programs][register-spilling-range-splitting-ssa] (PDF,
