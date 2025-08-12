@@ -593,7 +593,7 @@ for each block b in reverse order do
   b.liveIn = live
 ```
 
-Anyay, here is the mostly-copied annotated implementation of BuildIntervals
+Anyway, here is the mostly-copied annotated implementation of BuildIntervals
 from the Wimmer2010 paper:
 
 ```ruby
