@@ -90,7 +90,7 @@ backend bits.
 
     * HotSpot C1 uses (naturally) [Wimmer2010 linear scan](https://github.com/openjdk/jdk/blob/87d734012e3130501bfd37b23cee7f5e0a3a476f/src/hotspot/share/c1/c1_LinearScan.hpp)
     * HotSpot C2 uses [Chaitin-Briggs-Click graph coloring](https://github.com/openjdk/jdk/blob/87d734012e3130501bfd37b23cee7f5e0a3a476f/src/hotspot/share/opto/regalloc.hpp)
-    <!-- * GraalVM uses -->
+    * GraalVM uses [linear scan](https://github.com/oracle/graal/blob/e482f988939235ce94ee4a756c6bcc1d3df2bab2/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/lir/alloc/lsra/LinearScan.java)
 
     Python:
 
