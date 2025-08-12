@@ -10,6 +10,8 @@ Patterson](https://tenderlovemaking.com/).*
 
 [ra-programs-ssa]: /assets/img/ra-programs-ssa.pdf
 
+[ssa-elim-after-ra]: /assets/img/ssa-elimination-after-ra.pdf
+
 The fundamental problem in register allocation is to take an IR that uses a
 virtual registers (as many as you like) and rewrite it to use a finite amount
 of physical registers and stack space[^calendaring].
@@ -252,7 +254,16 @@ register allocator[^allocate-on-ssa].
     by Hack, Grund, and Goos notes that interference graphs for SSA programs
     are chordal and can be optimally colored in quadratic time.
 
-    TODO add more
+    [SSA Elimination after Register Allocation][ssa-elim-after-ra] (PDF, 2008)
+    by Pereira and Palsberg notes:
+
+    > One of the main advantages of SSA based register allocation is the
+    > separation of phases between spilling and register assignment.
+
+    Cliff Click (private communication, 2025) notes:
+
+    > It's easier. Got it already, why lose it [...] spilling always uses
+    > use/def and def/use edges.
 
 Linear scan starts at the point in your compiler process where you already know
 these live ranges---that you have already done some kind of analysis to build a
