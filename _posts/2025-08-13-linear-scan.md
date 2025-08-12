@@ -49,7 +49,7 @@ ret R4
 ```
 
 And here is the same example after it has been passed through a register
-allocator:
+allocator (note that Rs changed to Ps):
 
 ```
 add Stack[0], P0 -> P1
