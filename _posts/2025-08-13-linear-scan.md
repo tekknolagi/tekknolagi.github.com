@@ -1007,7 +1007,32 @@ understand page limits, I wish parallel moves were not handwaved away.
 
 We ended up with this implementation which passes all of the tests from
 Sokolovsky's repository as well as the example from Boissinot's thesis (though,
-as we discussed in the email, the example solution in the thesis is incorrect).
+as we discussed in the email, the example solution in the thesis is
+incorrect[^thesis-correction]).
+
+[^thesis-correction]: The example in the thesis is to sequentialize the
+    following parallel copy:
+
+    * a &rarr; b
+    * b &rarr; c
+    * c &rarr; a
+    * c &rarr; d
+
+    The solution in the thesis is:
+
+    1. c &rarr; d (c now lives in d)
+    2. a &rarr; c (a now lives in c)
+    3. b &rarr; a (b now lives in a)
+    4. d &rarr; b (why are we copying c to b?)
+
+    but we think this is incorrect. Solving manually, Aaron and I got:
+
+    1. c &rarr; d (because d is not read from anywhere)
+    2. b &rarr; c (because c is "freed up"; now in d)
+    3. a &rarr; b (because b is "freed up"; now in c)
+    4. d &rarr; a (because c is now in d, so d &rarr; a is equivalent to old\_c &rarr; a)
+
+    which is what the code gives us, too.
 
 ```ruby
 # copies contains an array of [src, dst] arrays
