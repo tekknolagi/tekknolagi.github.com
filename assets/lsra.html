@@ -10,8 +10,17 @@
 body {
   font-family: monospace;
 }
-iframe {
-  max-width: 100%;
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #dfdfdf;
+    background: #101010;
+  }
+  a[href] {
+    color: #9e9eff;
+  }
+  a[href]:visited {
+    color: #bebedf;
+  }
 }
     </style>
     <script>
