@@ -1,6 +1,7 @@
 ---
 title: "Linear scan register allocation on SSA"
 layout: post
+description: "A linear scan through the history of... linear scan register allocation."
 ---
 
 *Much of the code and education that resulted in this post happened with [Aaron
