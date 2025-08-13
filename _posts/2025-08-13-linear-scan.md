@@ -1021,7 +1021,7 @@ end
 ```
 
 This already looks very similar to the RESOLVE function from Wimmer2010.
-Unfortunately, Wimmer2010 basically off `orderAndInsertMoves` with an *eh, it's
+Unfortunately, Wimmer2010 basically shrugs off `orderAndInsertMoves` with an *eh, it's
 already in the literature* comment.
 
 ### A brief and frustrating parallel moves detour
