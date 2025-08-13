@@ -860,7 +860,7 @@ Internalizing this took us a bit. It is mostly a three-state machine:
 We would like to come back to this and incrementally modify it as we add
 lifetime holes to intervals.
 
-I finally understood, very late in the game, that linear scan assigns one
+I finally understood, very late in the game, that Poletto1999 linear scan assigns one
 location per virtual register. *Ever*. It's not that every virtual register
 gets a shot in a register and then gets moved to a stack slot---that would be
 interval splitting and hopefully we get to that later---if a register gets
