@@ -62444,6 +62444,132 @@
         ]
       },
       "poll": null
+    },
+    "115019617537257738": {
+      "id": "115019617537257738",
+      "created_at": "2025-08-13T04:41:22.053Z",
+      "in_reply_to_id": "115019610209078827",
+      "in_reply_to_account_id": "264482",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115019617537257738",
+      "url": "https://mastodon.social/@tekknolagi/115019617537257738",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.gamedev.place/@TomF\" class=\"u-url mention\">@<span>TomF</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@tenderlove\" class=\"u-url mention\">@<span>tenderlove</span></a></span></p><p>shru.gg</p><p>I am not stressed</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "264482",
+          "username": "TomF",
+          "url": "https://mastodon.gamedev.place/@TomF",
+          "acct": "TomF@mastodon.gamedev.place"
+        },
+        {
+          "id": "35493",
+          "username": "tenderlove",
+          "url": "https://mastodon.social/@tenderlove",
+          "acct": "tenderlove"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "115019577530365163": {
+      "id": "115019577530365163",
+      "created_at": "2025-08-13T04:31:11.598Z",
+      "in_reply_to_id": "115019574202533509",
+      "in_reply_to_account_id": "264482",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115019577530365163",
+      "url": "https://mastodon.social/@tekknolagi/115019577530365163",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.gamedev.place/@TomF\" class=\"u-url mention\">@<span>TomF</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@tenderlove\" class=\"u-url mention\">@<span>tenderlove</span></a></span> can a guy not learn things?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "264482",
+          "username": "TomF",
+          "url": "https://mastodon.gamedev.place/@TomF",
+          "acct": "TomF@mastodon.gamedev.place"
+        },
+        {
+          "id": "35493",
+          "username": "tenderlove",
+          "url": "https://mastodon.social/@tenderlove",
+          "acct": "tenderlove"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "115019567126896549": {
+      "id": "115019567126896549",
+      "created_at": "2025-08-13T04:28:32.852Z",
+      "in_reply_to_id": "115019550092075374",
+      "in_reply_to_account_id": "264482",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115019567126896549",
+      "url": "https://mastodon.social/@tekknolagi/115019567126896549",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": "2025-08-13T04:28:57.523Z",
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.gamedev.place/@TomF\" class=\"u-url mention\">@<span>TomF</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@tenderlove\" class=\"u-url mention\">@<span>tenderlove</span></a></span> I mean look someone&#39;s gotta take the IR from fantasy land to real registers (and quickly, too)</p><p>It&#39;s not a thing I am concerned about optimizing to extreme ends; regalloc is very much not the long pole in the performance tent in a new dynamic language compiler</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "264482",
+          "username": "TomF",
+          "url": "https://mastodon.gamedev.place/@TomF",
+          "acct": "TomF@mastodon.gamedev.place"
+        },
+        {
+          "id": "35493",
+          "username": "tenderlove",
+          "url": "https://mastodon.social/@tenderlove",
+          "acct": "tenderlove"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
