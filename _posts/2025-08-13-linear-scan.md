@@ -1476,6 +1476,8 @@ though.
 We built a register allocator that works on SSA. Hopefully next time we will
 add features such as lifetime holes, interval splitting, and register hints.
 
+The full Ruby code listing is not (yet?) public.
+
 ## Thanks
 
 Thanks to [Waleed Khan](https://waleedkhan.name/) and [Iain
