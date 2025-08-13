@@ -1477,7 +1477,8 @@ though.
 We built a register allocator that works on SSA. Hopefully next time we will
 add features such as lifetime holes, interval splitting, and register hints.
 
-The full Ruby code listing is not (yet?) public.
+The full Ruby code listing is ~~not (yet?) public~~ [available under the Apache
+2 license](https://github.com/tenderworks/regalloc).
 
 ## Thanks
 
