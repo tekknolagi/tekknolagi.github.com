@@ -556,6 +556,7 @@ A couple interesting things to note:
   line up with the Wimmer2010 paper
 * We only give out even numbers because later we'll insert loads and stores at
   odd-numbered instructions
+  * Cinder does this to [separately identify instruction input and instruction output](https://github.com/facebookincubator/cinderx/blob/2b8774f077d6ef441207067411d157bb4f94a40b/cinderx/Jit/lir/regalloc.cpp#L243)
 
 Even though we have extra instructions, it looks very similar to the example in
 the Wimmer2010 paper.
