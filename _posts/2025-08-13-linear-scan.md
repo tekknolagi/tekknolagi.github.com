@@ -1410,6 +1410,16 @@ classes of bugs along the way.
 ## Lifetime holes and interval splitting
 
 ## Register hints
+
+What is this iterated linear scan thing? Appears in JSC
+
+while (true) {
+  linearscan();
+  if (!would_spill) { break; }
+  interval = pick_an_interval_to_spill();
+  spill(interval);
+  remove_interval(interval);
+}
 -->
 
 ## Validation by abstract interpretation
