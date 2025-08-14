@@ -284,6 +284,76 @@ fn main() {
 }
 ```
 
-Using your own datatypes (not `i32`) TODO
+Notice how we don't have an `input` or `output` annotation like we did in
+Datalog. That's because this is designed to be embedded in an existing program,
+which probably doesn't to deal with the disk (or at least wants to read/write
+in its own format).
+
+Ascent lets us give it some vectors of data and then at the end lets us read
+some vectors of data too.
+
+```rust
+// ...
+fn main() {
+    let mut prog = AscentProgram::default();
+    let b1 = BlockId(1);
+    let b2 = BlockId(2);
+    let b3 = BlockId(3);
+    let b4 = BlockId(4);
+    let r10 = VarId(10);
+    let r11 = VarId(11);
+    let r12 = VarId(12);
+    let r13 = VarId(13);
+    let r14 = VarId(14);
+    let r15 = VarId(15);
+    let r16 = VarId(16);
+    prog.block_def = vec![
+        (b1, r10),
+        (b1, r11),
+        (b2, r12),
+        (b2, r13),
+        (b3, r14),
+        (b3, r15),
+        (b4, r16),
+    ];
+    prog.block_succ = vec![
+        (b2, b1),
+        (b3, b2),
+        (b2, b3),
+        (b4, b2),
+    ];
+    prog.block_use = vec![
+        (b1, r11),
+        (b2, r13),
+        (b3, r12),
+        (b3, r13),
+        (b3, r14),
+        (b3, r15),
+        (b4, r10),
+        (b4, r12),
+        (b4, r16),
+    ];
+    prog.run();
+    println!("live out: {:?}", prog.live_out);
+    println!("live out: {:?}", prog.live_in);
+}
+```
+
+Then we need only run `cargo run`---which worked with zero issues when I did
+it---and see the results.
+
+```console
+$ cargo run
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/liveness`
+live out: [(B2, R12), (B2, R13), (B2, R10), (B1, R10), (B3, R10)]
+live out: [(B3, R12), (B3, R13), (B4, R10), (B4, R12), (B2, R10), (B3, R10)]
+$
+```
+
+It's not a fancy looking table, but it's very close to my program, which is
+neat.
 
 ## More?
+
+Can we model all of linear scan this way? Maybe. I'm new to all this stuff.
