@@ -371,6 +371,10 @@ neat.
 > difference, though, is the Souffle process has two steps. It's a slight build
 > system complication. But this isn't meant to be a Datalog comparison post!
 
+TODO
+
 ## More?
 
 Can we model all of linear scan this way? Maybe. I'm new to all this stuff.
+
+Lattices
