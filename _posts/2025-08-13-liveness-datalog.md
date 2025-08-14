@@ -339,8 +339,8 @@ fn main() {
 }
 ```
 
-Then we need only run `cargo run`---which worked with zero issues when I did
-it---and see the results.
+Then we need only run `cargo add ascent` and `cargo run`---both of which worked
+with zero issues---and see the results.
 
 ```console
 $ cargo run
