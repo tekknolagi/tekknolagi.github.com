@@ -217,8 +217,55 @@ $
 ```
 
 That's neat. We got nicely formatted tables and it only took us two lines of
-code! This is because we have separated the iteration-to-fixpoint bit from the
-main bit of the dataflow analysis: the equation. If we let Datalog do the data
+code! Let's compare to our Ruby code from the previous post to underscore the
+point:
+
+```ruby
+class Function
+  def compute_initial_liveness_sets order
+    gen = Hash.new 0
+    kill = Hash.new 0
+    order.each do |block|
+      block.instructions.reverse_each do |insn|
+        out = insn.out&.as_vreg
+        if out
+          kill[block] |= (1 << out.num)
+        end
+        insn.vreg_ins.each do |vreg|
+          gen[block] |= (1 << vreg.num)
+        end
+      end
+      block.parameters.each do |param|
+        kill[block] |= (1 << param.num)
+      end
+    end
+    [gen, kill]
+  end
+
+  def analyze_liveness
+    order = post_order
+    gen, kill = compute_initial_liveness_sets(order)
+    live_in = Hash.new 0
+    changed = true
+    while changed
+      changed = false
+      for block in order
+        block_live = block.successors.map { |succ| live_in[succ] }.reduce(0, :|)
+        block_live |= gen[block]
+        block_live &= ~kill[block]
+        if live_in[block] != block_live
+          changed = true
+          live_in[block] = block_live
+        end
+      end
+    end
+    live_in
+  end
+end
+```
+
+This is because we have separated the iteration-to-fixpoint bit from the main
+bit of the dataflow analysis: the equation. If we let Datalog do the data
 movement for us, we can work on defining the rules---and only the rules.
 
 > This is probably why, in the fullness of time, many static analysis and
