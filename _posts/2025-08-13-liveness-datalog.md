@@ -403,7 +403,7 @@ fn main() {
     ];
     prog.run();
     println!("live out: {:?}", prog.live_out);
-    println!("live out: {:?}", prog.live_in);
+    println!("live in: {:?}", prog.live_in);
 }
 ```
 
@@ -415,7 +415,7 @@ $ cargo run
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
      Running `target/debug/liveness`
 live out: [(B2, R12), (B2, R13), (B2, R10), (B1, R10), (B3, R10)]
-live out: [(B3, R12), (B3, R13), (B4, R10), (B4, R12), (B2, R10), (B3, R10)]
+live in: [(B3, R12), (B3, R13), (B4, R10), (B4, R12), (B2, R10), (B3, R10)]
 $
 ```
 
