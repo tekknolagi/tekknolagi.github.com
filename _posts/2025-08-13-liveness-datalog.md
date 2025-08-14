@@ -150,10 +150,14 @@ side in terms of the right side. The comma between `block_succ` and `live_in`
 means it's a conjunction---*and*.
 
 Where's the union? Well, remember what I said about array programming? We're
-not thinking in terms of sets. We're thinking one variable at a time TODO
+not thinking in terms of sets. We're thinking one program variable at a time.
+As Souffle executes our relations, `live_out` will incrementally build up a
+table.
 
-It's a little weird to program in this style because `s` wasn't textually
-defined anywhere like a parameter or a variable. TODO
+It's also a little weird to program in this style because `s` wasn't textually
+defined anywhere like a parameter or a variable. You kind of have to think of
+`s` as connector, a binder, a foreign key---what have you. It's a placeholder.
+(I don't know how to explain this well. Sorry.)
 
 Then we can define live-in. This on the surface looks more complicated but I
 think that is only because of Souffle's choice of syntax.
@@ -168,7 +172,11 @@ It reads as "a variable `v` is live-in to `b` if it is either live-out of `b`
 or used in `b`, and *not* defined in `b`. The semicolons are
 disjunctions---*or*---and the exclamation points negations---*not*.
 
-These functions look endlessly mutually recursive but our data is finite TODO
+These functions look endlessly mutually recursive but you have to keep in mind
+that we're not running functions on data, exactly. We're declaratively
+expressing definitions of rules---relations. `block_use(b, v)` in the body of
+`live_in` is not calling a function but instead making a query---is the row
+`(b, v)` in the table `block_use`? Datalog builds the tables until saturation.
 
 Now we can run Souffle! We tell it to dump to standard output with `-D-` but
 you could just as easily have it dump each output relation in its own separate
@@ -209,8 +217,13 @@ movement for us, we can work on the rules---and only the rules.
 > compiler tools end up growing some kind of embedded (partial) Datalog engine.
 > Call it Scholz's tenth rule.
 
-TODO integration with existing domain and main program......... compile to C++
-and C++ embedding
+Souffle also has the ability to compile to C++, which gives you two nice
+things:
+
+1. you can probably get faster execution
+1. you can use it from an existing C++ program
+
+I don't have any experience with this API.
 
 This is when Waleed mentioned offhandedly that he had heard about some embedded
 Rust datalog called [Ascent](https://s-arash.github.io/ascent/).
