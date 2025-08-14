@@ -153,3 +153,5 @@ live_in(b, v) :- (live_out(b, v); block_use(b, v)), !block_def(b, v).
 It reads as "a variable `v` is live-in to `b` if it is either live-out of `b`
 or used in `b`, and *not* defined in `b`. The semicolons are
 disjunctions---*or*---and the exclamation points negations---*not*.
+
+THese functions look endlessly mutually recursive but our data is finite TODO
