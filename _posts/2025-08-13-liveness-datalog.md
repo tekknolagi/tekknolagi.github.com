@@ -392,6 +392,10 @@ Rust. We had to build our own iterate-to-fixpoint engine, which was
 non-trivial. I wonder how it would look to build something similar on top of
 Ascent.
 
+I kind of want to check out [Frank
+McSherry](https://github.com/frankmcsherry/)'s
+[datatoad](https://github.com/frankmcsherry/blog/blob/master/posts/2025-06-03.md).
+
 ## Wrapping up
 
 That's all for now, folks. Just a couple Datalog snippets. Happy hacking.
