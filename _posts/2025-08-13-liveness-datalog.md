@@ -58,3 +58,95 @@ other blocks:
 .decl block_def(block:symbol, var:symbol)
 .decl block_succ(succ:symbol, pred:symbol)
 ```
+
+We can then embed some facts inline. For example, this says "B1 defines R10 and
+R11 and uses R11":
+
+```
+// liveness.dl
+// ...
+block_def("B1", "R10").
+block_def("B1", "R11").
+block_use("B1", "R11").
+```
+
+You can also provide facts as a TSV but this file format is so irritating to
+construct manually and has given me silently wrong answers in Souffle before so
+I am not doing that for this example.
+
+You can, for your edification, manually encode all the use/def/successor facts
+from the previous post into Souffle, or you can copy this chunk into your file:
+
+```
+// liveness.dl
+// ...
+block_def("B1", "R10").
+block_def("B1", "R11").
+block_use("B1", "R11").
+
+block_def("B2", "R12").
+block_def("B2", "R13").
+block_use("B2", "R13").
+
+block_def("B3", "R14").
+block_def("B3", "R15").
+block_use("B3", "R12").
+block_use("B3", "R13").
+block_use("B3", "R14").
+block_use("B3", "R15").
+
+block_def("B4", "R16").
+block_use("B4", "R16").
+block_use("B4", "R10").
+block_use("B4", "R12").
+
+block_succ("B2", "B1").
+block_succ("B3", "B2").
+block_succ("B2", "B3").
+block_succ("B4", "B2").
+```
+
+We can declare our live-in and live-out relations similarly to our use/def/succ
+relations. We mark them as being `.output` so that Souffle presents us with the
+results.
+
+```
+// liveness.dl
+// ...
+.decl live_out(block:symbol, var:symbol)
+.output live_out
+.decl live_in(block:symbol, var:symbol)
+.output live_in
+```
+
+Now it's time to define our relations. You may notice that the Souffle definitions look
+very similar to our earlier definitions. This is no mistake; Datalog was
+defined for dataflow and graph problems.
+
+We'll start with live-out:
+
+```
+// liveness.dl
+// ...
+live_out(b, v) :- block_succ(s, b), live_in(s, v).
+```
+
+We read this left to right as "a variable `v` is live-out of block `b` if block
+`s` is a successor of `b` and `v` is live-in to `s`". The commas are
+conjunctions---*and*.
+
+It's a little weird to program in this style because `s` wasn't textually
+defined anywhere like a parameter or a variable. TODO
+
+Then we can define live-in. This on the surface looks more complicated but I
+think that is only because of Souffle's choice of syntax.
+
+```
+// liveness.dl
+// ...
+live_in(b, v) :- (live_out(b, v); block_use(b, v)), !block_def(b, v).
+```
+
+It reads as "a variable `v` is live-in to `b` if it is either live-out of `b`
+or used in `b`, and *not* defined in `b`. The semicolons are
+disjunctions---*or*---and the exclamation points negations---*not*.
