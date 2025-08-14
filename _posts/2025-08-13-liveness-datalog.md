@@ -42,17 +42,24 @@ variables:
 * *defined(b)* is the set of variables defined by instructions in a block
 
 We ended up computing the live-in sets for blocks in the register allocator
-post but then using the live-out sets instead. So today let's compute some
-live-out sets with Datalog!
+post but then using the live-out sets instead. So today let's compute both
+live-in and live-out sets with Datalog!
 
 ## Datalog
+
+Datalog is a logic programming language. It probably looks and feels different
+from every other programming language you have used... except for maybe SQL. It
+might feel similar to SQL, except SQL has a certain order to it that Datalog
+does not.
 
 We'll be using Souffle here because Waleed mentioned it and also I learned a
 bit about it in my databases class.
 
-The thing you do first is define your relations. In this case, if we want to
-compute liveness information, we have to know information about what a block
-uses, defines, and what successors it has.
+The thing you do first is define your relations, which is what Datalog calls a
+table.
+
+In this case, if we want to compute liveness information, we have to know
+information about what a block uses, defines, and what successors it has.
 
 First, the thing you have to know about Datalog, is that it's kind of like
 the opposite of array programming. We're going to express things about sets by
@@ -173,7 +180,7 @@ It reads as "a variable `v` is live-in to `b` if it is either live-out of `b`
 or used in `b`, and *not* defined in `b`. The semicolons are
 disjunctions---*or*---and the exclamation points negations---*not*.
 
-These functions look endlessly mutually recursive but you have to keep in mind
+These relations look endlessly mutually recursive but you have to keep in mind
 that we're not running functions on data, exactly. We're declaratively
 expressing definitions of rules---relations. `block_use(b, v)` in the body of
 `live_in` is not calling a function but instead making a query---is the row
@@ -212,7 +219,7 @@ $
 That's neat. We got nicely formatted tables and it only took us two lines of
 code! This is because we have separated the iteration-to-fixpoint bit from the
 main bit of the dataflow analysis: the equation. If we let Datalog do the data
-movement for us, we can work on the rules---and only the rules.
+movement for us, we can work on defining the rules---and only the rules.
 
 > This is probably why, in the fullness of time, many static analysis and
 > compiler tools end up growing some kind of embedded (partial) Datalog engine.
