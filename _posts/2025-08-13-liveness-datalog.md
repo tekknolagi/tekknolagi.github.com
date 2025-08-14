@@ -135,6 +135,9 @@ We read this left to right as "a variable `v` is live-out of block `b` if block
 `s` is a successor of `b` and `v` is live-in to `s`". The commas are
 conjunctions---*and*.
 
+Where's the union? Well, remember what I said about array programming? We're
+not thinking in terms of sets. We're thinking one variable at a time TODO
+
 It's a little weird to program in this style because `s` wasn't textually
 defined anywhere like a parameter or a variable. TODO
 
