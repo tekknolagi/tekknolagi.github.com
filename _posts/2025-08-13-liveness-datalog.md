@@ -33,6 +33,8 @@ We ended up computing the live-in sets for blocks in the register allocator
 post but then using the live-out sets instead. So today let's compute some
 live-out sets with Datalog!
 
+## Datalog
+
 We'll be using Souffle here because Waleed mentioned it and also I learned a
 bit about it in my databases class.
 
@@ -155,4 +157,8 @@ It reads as "a variable `v` is live-in to `b` if it is either live-out of `b`
 or used in `b`, and *not* defined in `b`. The semicolons are
 disjunctions---*or*---and the exclamation points negations---*not*.
 
-THese functions look endlessly mutually recursive but our data is finite TODO
+These functions look endlessly mutually recursive but our data is finite TODO
+
+## Rust
+
+## More?
