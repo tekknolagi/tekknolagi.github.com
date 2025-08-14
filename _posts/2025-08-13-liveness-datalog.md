@@ -26,7 +26,8 @@ Then we tried to formulate liveness as a Datalog relation.
 
 Liveness is normally (at least for me) defined in terms of two relations:
 live-in and live-out. Live-out is "what is needed" from all of the successors
-of a block and live-in is the "what is needed" summary for a block. So:
+of a block and live-in is the "what is needed" summary for a block. So, in
+fake math notation:
 
 ```
 live-out(b) = union(live-in(s) for each successor s of b)
