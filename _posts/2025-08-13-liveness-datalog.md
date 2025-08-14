@@ -5,7 +5,7 @@ co_authors: Waleed Khan
 ---
 
 After publishing [Linear scan register allocation on SSA](/blog/linear-scan), I
-had a nice call with [Waleet Khan](https://waleedkhan.name) where he showed me
+had a nice call with [Waleed Khan](https://waleedkhan.name) where he showed me
 how to Datalog. He thought it might be useful to try implementing liveness
 analysis as a Datalog problem.
 
