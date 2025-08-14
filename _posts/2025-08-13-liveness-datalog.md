@@ -119,9 +119,9 @@ results.
 .output live_in
 ```
 
-Now it's time to define our relations. You may notice that the Souffle definitions look
-very similar to our earlier definitions. This is no mistake; Datalog was
-defined for dataflow and graph problems.
+Now it's time to define our relations. You may notice that the Souffle
+definitions look very similar to our earlier definitions. This is no mistake;
+Datalog was created for dataflow and graph problems.
 
 We'll start with live-out:
 
@@ -132,8 +132,9 @@ live_out(b, v) :- block_succ(s, b), live_in(s, v).
 ```
 
 We read this left to right as "a variable `v` is live-out of block `b` if block
-`s` is a successor of `b` and `v` is live-in to `s`". The commas are
-conjunctions---*and*.
+`s` is a successor of `b` and `v` is live-in to `s`". The `:-` defines the left
+side in terms of the right side. The comma between `block_succ` and `live_in`
+means it's a conjunction---*and*.
 
 Where's the union? Well, remember what I said about array programming? We're
 not thinking in terms of sets. We're thinking one variable at a time TODO
