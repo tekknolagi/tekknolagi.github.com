@@ -11,11 +11,22 @@ analysis as a Datalog problem.
 
 We started off with the Wimmer2010 CFG example from that post sketching out
 manually which variables were live out of each block: R10 out of B1, R12 out of
-B2, etc. Then we tried to formulate liveness as a Datalog relation.
+B2, etc.
+
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/wimmer-lsra-cfg.svg"></object>
+<figcaption markdown=1>
+The graph from Wimmer2010 has come back! Remember, we're using block arguments
+instead of phis, so `B1(R10, R11)` defines R10 and R11 before the first
+instruction in B1.
+</figcaption>
+</figure>
+
+Then we tried to formulate liveness as a Datalog relation.
 
 Liveness is normally (at least for me) defined in terms of two relations:
-live-in and live-out. Live-out is what is needed from the successors of a block
-and live-in is the "what is needed" summary for a block. So:
+live-in and live-out. Live-out is "what is needed" from all of the successors
+of a block and live-in is the "what is needed" summary for a block. So:
 
 ```
 live-out(b) = union(live-in(s) for each successor s of b)
@@ -61,15 +72,13 @@ other blocks:
 .decl block_succ(succ:symbol, pred:symbol)
 ```
 
-We can then embed some facts inline. For example, this says "B1 defines R10 and
-R11 and uses R11":
+We can then embed some facts inline. For example, this says "A defines R0 and
+R1 and uses R0":
 
 ```
-// liveness.dl
-// ...
-block_def("B1", "R10").
-block_def("B1", "R11").
-block_use("B1", "R11").
+block_def("A", "R0").
+block_def("A", "R1").
+block_use("A", "R0").
 ```
 
 You can also provide facts as a TSV but this file format is so irritating to
@@ -77,7 +86,7 @@ construct manually and has given me silently wrong answers in Souffle before so
 I am not doing that for this example.
 
 You can, for your edification, manually encode all the use/def/successor facts
-from the previous post into Souffle, or you can copy this chunk into your file:
+from the previous post into Souffle---or you can copy this chunk into your file:
 
 ```
 // liveness.dl
@@ -158,6 +167,50 @@ or used in `b`, and *not* defined in `b`. The semicolons are
 disjunctions---*or*---and the exclamation points negations---*not*.
 
 These functions look endlessly mutually recursive but our data is finite TODO
+
+Now we can run Souffle! We tell it to dump to standard output with `-D-` but
+you could just as easily have it dump each output relation in its own separate
+file in the current directory by specifying `-D.`.
+
+```console
+$ souffle -D- liveness.dl
+---------------
+live_in
+block   var
+===============
+B2      R10
+B3      R10
+B3      R12
+B3      R13
+B4      R10
+B4      R12
+===============
+---------------
+live_out
+block   var
+===============
+B1      R10
+B2      R10
+B2      R12
+B2      R13
+B3      R10
+===============
+$
+```
+
+That's neat. We got nicely formatted tables and it only took us two lines of
+code! This is because we have separated the iteration-to-fixpoint bit from the
+main bit of the dataflow analysis: the equation. If we let Datalog do the data
+movement for us, we can work on the rules---and only the rules.
+
+> This is probably why, in the fullness of time, many static analysis and
+> compiler tools end up growing some kind of embedded (partial) Datalog engine.
+> Call it Scholz's tenth rule.
+
+TODO integration with existing domain and main program
+
+This is when Waleed mentioned offhandedly that he had heard about some embedded
+Rust datalog called [Ascent](https://s-arash.github.io/ascent/).
 
 ## Rust
 
