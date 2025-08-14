@@ -367,14 +367,23 @@ $
 It's not a fancy looking table, but it's very close to my program, which is
 neat.
 
-> This is similar to embedding Souffle in C++ and then calling the C++. One
-> difference, though, is the Souffle process has two steps. It's a slight build
-> system complication. But this isn't meant to be a Datalog comparison post!
-
-TODO
+This is similar to embedding Souffle in C++ and then calling the C++. One
+difference, though, is the Souffle process has two steps. It's a slight build
+system complication. But this isn't meant to be a Datalog comparison post!
 
 ## More?
 
 Can we model all of linear scan this way? Maybe. I'm new to all this stuff.
 
-Lattices
+Ascent also seems to support lattices, which means we can use it to do abstract
+interpretation on some cool domains.
+
+[Maxime Chevalier-Boisvert](https://pointersgonewild.com/) and I prototyped
+[loupe](https://github.com/shopify/loupe), an interprocedural type analysis in
+Rust. We had to build our own iterate-to-fixpoint engine, which was
+non-trivial. I wonder how it would look to build something similar on top of
+Ascent.
+
+## Wrapping up
+
+That's all for now, folks. Just a couple Datalog snippets. Happy hacking.
