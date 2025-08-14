@@ -9,7 +9,7 @@ had a nice call with [Waleed Khan](https://waleedkhan.name) where he showed me
 how to Datalog. He thought it might be useful to try implementing liveness
 analysis as a Datalog problem.
 
-We started off with the Wimmer2010 CFG example from that post sketching out
+We started off with the Wimmer2010 CFG example from that post, sketching out
 manually which variables were live out of each block: R10 out of B1, R12 out of
 B2, etc.
 
