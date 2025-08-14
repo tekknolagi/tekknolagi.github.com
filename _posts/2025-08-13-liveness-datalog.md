@@ -72,6 +72,8 @@ other blocks:
 .decl block_succ(succ:symbol, pred:symbol)
 ```
 
+Where `symbol` here means string.
+
 We can then embed some facts inline. For example, this says "A defines R0 and
 R1 and uses R0":
 
@@ -207,11 +209,81 @@ movement for us, we can work on the rules---and only the rules.
 > compiler tools end up growing some kind of embedded (partial) Datalog engine.
 > Call it Scholz's tenth rule.
 
-TODO integration with existing domain and main program
+TODO integration with existing domain and main program......... compile to C++
+and C++ embedding
 
 This is when Waleed mentioned offhandedly that he had heard about some embedded
 Rust datalog called [Ascent](https://s-arash.github.io/ascent/).
 
 ## Rust
+
+The front page of the Ascent website is a really great sell if you show up
+thinking "gee, I wish I had Datalog to use in my Rust program". Right out the
+gate, you get reasonable-enough Datalog syntax via a proc macro.
+
+For example, here is the canonical path example for Souffle:
+
+```
+.decl edge(x:number, y:number)
+.decl path(x:number, y:number)
+
+path(x, y) :- edge(x, y).
+path(x, y) :- path(x, z), edge(z, y).
+```
+
+and in Ascent:
+
+```rust
+ascent! {
+   relation edge(i32, i32);
+   relation path(i32, i32);
+
+   path(x, y) <-- edge(x, y);
+   path(x, z) <-- edge(x, y), path(y, z);
+}
+```
+
+Super.
+
+We weren't sure if the Souffle liveness would port cleanly to Rust, but it sure
+did! It even lets you use your own datatypes instead of just `i32` (which the
+front-page example uses).
+
+```rust
+use ascent::ascent;
+
+#[derive(Clone, PartialEq, Eq, Hash, Copy)]
+struct BlockId(i32);
+
+impl std::fmt::Debug for BlockId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "B{}", self.0)
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, Hash, Copy)]
+struct VarId(i32);
+
+impl std::fmt::Debug for VarId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "R{}", self.0)
+    }
+}
+
+ascent! {
+    relation block_use(BlockId, VarId);
+    relation block_def(BlockId, VarId);
+    relation block_succ(BlockId, BlockId);  // (succ, pred)
+    relation live_out(BlockId, VarId);
+    relation live_in(BlockId, VarId);
+    live_out(b, v) <-- block_succ(s, b), live_in(s, v);
+    live_in(b, v) <-- (live_out(b, v) | block_use(b, v)), !block_def(b, v);
+}
+fn main() {
+    // ...
+}
+```
+
+Using your own datatypes (not `i32`) TODO
 
 ## More?
