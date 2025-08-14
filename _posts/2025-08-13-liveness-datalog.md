@@ -46,10 +46,15 @@ expressing facts about individual items in a set.
 
 For example, we're not going to say "this block B4 uses [R10, R12, R16]". We're
 going to say three separate facts: "B4 uses R10", "B4 uses R12", "B4 uses R16".
+You can think about it like each relation being a database table where each
+parameter is a column name.
+
+Here are the relations for block uses, block defs, and which blocks follow
+other blocks:
 
 ```
 // liveness.dl
 .decl block_use(block:symbol, var:symbol)
 .decl block_def(block:symbol, var:symbol)
-.decl block_succ(succ:symbol, succ:symbol)
+.decl block_succ(succ:symbol, pred:symbol)
 ```
