@@ -173,7 +173,7 @@ think that is only because of Souffle's choice of syntax.
 ```
 // liveness.dl
 // ...
-live_in(b, v) :- (live_out(b, v); block_use(b, v)), !block_def(b, v).
+live_in(b, v) :- (live_out(b, v) ; block_use(b, v)), !block_def(b, v).
 ```
 
 It reads as "a variable `v` is live-in to `b` if it is either live-out of `b`
