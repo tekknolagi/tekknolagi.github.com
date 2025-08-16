@@ -645,7 +645,7 @@ from the Wimmer2010 paper:
 class Function
   def build_intervals live_in
     intervals = Hash.new { |hash, key| hash[key] = Interval.new }
-    @block_order.each do |block|
+    @block_order.reverse_each do |block|
       # live = union of successor.liveIn for each successor of b
       # this is the *live out* of the current block since we're going to be
       # iterating backwards over instructions
