@@ -8,6 +8,8 @@ if (location.hostname === "bernsteinbear.com") {
   gtag('js', new Date());
 
   gtag('config', 'G-MNTD6DM8MP');
+} else {
+  alert("Please remove all mentions of me (socials, Google Analytics, GoatCounter, ...) from your fork of my website. Thanks!");
 }
 </script>
 <script>
