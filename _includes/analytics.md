@@ -1,4 +1,4 @@
-{% if jekyll.environment == 'production' %}
+{% if jekyll.environment == 'production' && page.xslt != true %}
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-MNTD6DM8MP"></script>
 <script>
