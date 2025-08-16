@@ -13,7 +13,7 @@ title: RSS feed
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
         <style type="text/css">
           /* TODO(max): Figure out another way to get nice inline-block */
-          .navbar a:before {
+          .xsltspace:before {
             content: " ";
           }
         </style>
