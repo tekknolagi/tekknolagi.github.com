@@ -10,6 +10,8 @@ scheduling, building intervals, and the actual linear scan algorithm.
 
 This time, we're going to retrofit *lifetime holes*.
 
+TODO address Traub1998?
+
 ## Lifetime holes
 
 According to Wimmer2010:
@@ -358,6 +360,11 @@ else
   cur.location ← new stack location 
 ```
 
+Note that this begins to depart from strictly linear linear scan: the
+`inactive` set is bounded not by the number of physical registers but instead
+by the number of virtual registers. Mössenböck2002 notes that the size of the
+set is generally very small, though, so "linear in practice".
+
 I left out the parts about register weights that are heuristics to improve
 register allocation. They are not core to supporting lifetime holes. You can
 add them back in if you like.
@@ -439,3 +446,14 @@ an interval begins, we don't need to think about moving its contents.
 
 So I was actually overly conservative in the previous post, which I have
 amended!
+
+## Fixed intervals and register constraints?
+
+## Wrapping up
+
+We added lifetime holes to our register allocator without too much effort. This
+should get us some better allocation for short-lived virtual registers.
+
+Maybe next time we will add *interval splitting*, which will help us a) address
+ABI constraints more cleanly in function calls and b) remove the dependence on
+reserving a scratch register.

@@ -1415,7 +1415,7 @@ classes of bugs along the way.
 <!--
 ## Instruction selection and instruction splitting
 
-## Lifetime holes and interval splitting
+## Interval splitting
 
 ## Register hints
 
