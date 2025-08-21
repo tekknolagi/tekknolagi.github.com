@@ -790,6 +790,11 @@ else
   location[i] ← new stack location
 ```
 
+Note that unlike in many programming languages these days, `{}` in the
+algorithm description represents a *set*, not a (hash-)map.
+
+In our Ruby code, we represent `active` as an array:
+
 ```ruby
 class Function
   def ye_olde_linear_scan intervals, num_registers
