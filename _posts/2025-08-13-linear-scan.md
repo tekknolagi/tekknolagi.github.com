@@ -197,21 +197,21 @@ B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B1(R10, R11)&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="0">jump →B2($1, R11)&nbsp;</TD></TR>
 </TABLE>>];
-B1:0 -> B2:params;
+B1:s -> B2:params:n;
 B2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B2(R12, R13)&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="0">cmp R13, $1&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="1">blt →B4, →B3&nbsp;</TD></TR>
 </TABLE>>];
-B2:1 -> B4:params;
-B2:1 -> B3:params;
+B2:s -> B4:params:n;
+B2:s -> B3:params:n;
 B3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B3()&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="0">R14 = mul R12, R13&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="1">R15 = sub R13, $1&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="2">jump →B2(R14, R15)&nbsp;</TD></TR>
 </TABLE>>];
-B3:2 -> B2:params;
+B3:s -> B2:params:n;
 B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B4()&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="0">R16 = add R10, R12&nbsp;</TD></TR>
