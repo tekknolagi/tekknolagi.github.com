@@ -59,7 +59,8 @@ which have short lifetimes that completely fit into the hole.
 
 Another example is a control-flow diamond. In this example, B1 jumps to either
 B3 or B2, which then merge at B4. Virtual register R0 is defined in B1 and only
-used in one of the branches, B3.
+used in one of the branches, B3. It's also not used in B4---if it were used in
+B4, it would be live in both B2 and B3!
 
 <!--
 # dot IN.dot -Tsvg -Nfontname=Monospace -Efontname=Monospace > OUT.svg
