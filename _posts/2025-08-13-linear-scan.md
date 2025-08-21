@@ -548,6 +548,15 @@ class Function
 end
 ```
 
+<!--
+I think using RPO is just a heuristic; other block orders may shrink live
+ranges, reduce parallel moves, etc. I could be way off base here but I don't
+think we even have to order the blocks in dominance order because we're doing a
+full dataflow-based liveness analysis; the ordering and positioning
+requirements from Wimmer2010 come from the quick liveness with loop headers
+thing.
+-->
+
 A couple interesting things to note:
 
 * We number blocks because we use block starts as the start index for all of
