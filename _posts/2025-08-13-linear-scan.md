@@ -567,7 +567,7 @@ the Wimmer2010 paper.
      # vvvvvvvvvv #
 20: label B2(R12, R13)
 22: cmp R13, $1
-24: branch lessThan B4()
+24: branch lessThan B4() else B3()
 
 26: label B3()
 28: mul R12, R13 -> R14
@@ -645,7 +645,7 @@ from the Wimmer2010 paper:
 class Function
   def build_intervals live_in
     intervals = Hash.new { |hash, key| hash[key] = Interval.new }
-    @block_order.each do |block|
+    @block_order.reverse_each do |block|
       # live = union of successor.liveIn for each successor of b
       # this is the *live out* of the current block since we're going to be
       # iterating backwards over instructions
@@ -801,6 +801,8 @@ class Function
     assignment = {}  # Map from Interval to PReg|StackSlot
     num_stack_slots = 0
     # Iterate through intervals in order of increasing start point
+    # TODO(max): Build a deque for intervals, pushing to the front, so we
+    # automatically get this in sorted order
     sorted_intervals = intervals.sort_by { |_, interval| interval.range.begin }
     sorted_intervals.each do |_vreg, interval|
       # expire_old_intervals(interval)

@@ -1,0 +1,383 @@
+---
+title: "Linear scan with lifetime holes"
+layout: post
+---
+
+In my [last post](/blog/lienar-scan/), I explained a bit about how to retrofit
+SSA onto the original linear scan algorithm. I went over all of the details for
+how to go from low-level IR to register assignments---liveness analysis,
+scheduling, building intervals, and the actual linear scan algorithm.
+
+This time, we're going to retrofit *lifetime holes*.
+
+## Lifetime holes
+
+According to Wimmer2010:
+
+> The lifetime interval of a virtual register must cover all parts where this
+> register is needed, with lifetime holes in between. Lifetime holes occur
+> because the control flow graph is reduced to a list of blocks before register
+> allocation. If a register flows into an `else`-block, but not into the
+> corresponding `if`-block, the lifetime interval has a hole for the `if`-block.
+
+Let's take a look at the sample IR snippet from Wimmer2010 to illustrate:
+
+```
+16: label B1(R10, R11):
+18: jmp B2($1, R11)
+     # vvvvvvvvvv #
+20: label B2(R12, R13)
+22: cmp R13, $1
+24: branch lessThan B4() else B3()
+
+26: label B3()
+28: mul R12, R13 -> R14
+30: sub R13, $1 -> R15
+32: jump B2(R14, R15)
+
+34: label B4()
+     # ^^^^^^^^^^ #
+36: add R10, R12 -> R16
+38: ret R16
+```
+
+The interval `i12` (named so because it is associated with virtual register
+R12) is not used between position 28 and 34. For this reason, Wimmer's interval
+building algorithm assigns it the interval `[[20, 28), [34, ...)]`. Note how
+the interval has two disjoint ranges with space in the middle.
+
+Our simplified interval building algorithm from last time gave us---in the same
+notation---the interval `[[20, ...)]` (well, `[[20, 36)]` in our modified
+snippet). This simplified interval only supports one range with no lifetime
+holes. To get lifetime holes, we have to modify our interval data structure a
+bit.
+
+## Finding lifetime holes
+
+Our interval currently only supports a single range:
+
+```ruby
+class Interval
+  attr_reader :range
+  def initialize = raise
+  def add_range(from, to) = raise
+  def set_from(from) = raise
+end
+```
+
+We can change this to support multiple ranges by changing *just one character*!!!
+
+```ruby
+class Interval
+  attr_reader :ranges
+  def initialize = raise
+  def add_range(from, to) = raise
+  def set_from(from) = raise
+end
+```
+
+Har har. Okay, so we now have an array of `Range` instead of just a single
+`Range`. But now we have to implement the methods differently.
+
+We'll start with `initialize`. The start state of an interval is an empty array
+of ranges:
+
+```ruby
+class Interval
+  def initialize
+    @ranges = []
+  end
+end
+```
+
+Because we're iterating backwards through the blocks and backwards through
+instructions in each block, we'll be starting with instruction 38 and working
+our way linearly backwards until 16.
+
+This means that we'll see later uses before earlier uses, and uses before defs.
+In order to keep the `@ranges` array in sorted order, we need to add each new
+range to the front. This is O(n) in an array, so use a deque or linked list.
+(Alternatively, push to the end and then reverse them afterwards.)
+
+<!-- TODO why keep them disjoint? -->
+
+We keep the ranges in sorted order because it makes keeping them disjoint
+easier, as we'll see in `add_range` and `set_from`. Let's start with `set_from`
+since it's very similar to the previous version:
+
+```ruby
+class Interval
+  def set_from(from)
+    if @ranges.empty?
+      # @ranges is empty when we don't have a use of the vreg
+      @ranges << Range.new(from, from)
+    else
+      @ranges[0] = Range.new(from, @ranges[0].end)
+    end
+    assert_sorted_and_disjoint
+  end
+end
+```
+
+`add_range` has a couple more cases, but we'll go through them step by step.
+First, a quick check that the range is the right way 'round:
+
+```ruby
+class Interval
+  def add_range(from, to)
+    if to <= from
+      raise ArgumentError, "Invalid range: #{from} to #{to}"
+    end
+    # ...
+  end
+end
+```
+
+Then we have a straightforward case: if we don't have any ranges yet, add a
+brand new one:
+
+```ruby
+class Interval
+  def add_range(from, to)
+    # ...
+    if @ranges.empty?
+      @ranges << Range.new(from, to)
+      return
+    end
+    # ...
+  end
+end
+```
+
+But if we do have ranges, this new range might be totally subsumed by the
+existing first range. This happens if a virtual register is live for the
+entirety of a block and also used inside that block. The uses that cause an
+`add_range` don't add any new information:
+
+```ruby
+class Interval
+  def add_range(from, to)
+    # ...
+    if @ranges.first.cover?(from..to)
+      assert_sorted_and_disjoint
+      return
+    end
+    # ...
+  end
+end
+```
+
+Another case is that the new range has a partial overlap with the existing
+first range. This happens when we're adding ranges for all of the live-out
+virtual registers; the range for the predecessor block (say `[4, 8]`) will abut
+the range for the successor block (say `[8, 12]`). We merge these ranges into
+one big range (say, `[4, 12]`):
+
+```ruby
+class Interval
+  def add_range(from, to)
+    # ...
+    if @ranges.first.cover?(to)
+      @ranges[0] = Range.new(from, @ranges.first.end)
+      assert_sorted_and_disjoint
+      return
+    end
+    # ...
+  end
+end
+```
+
+The last case is the case that gives us lifetime holes and happens when the new
+range is already completely disjoint from the existing first range. That is
+also a straightforward case: put the new range in at the start of the list.
+
+```ruby
+class Interval
+  def add_range(from, to)
+    # ...
+    # TODO(max): Use a linked list or deque or something to avoid O(n) insertions
+    @ranges.insert(0, Range.new(from, to))
+    assert_sorted_and_disjoint
+    # ...
+  end
+end
+```
+
+This is all fine and good. I added this to the register allocator to test out
+the lifetime hole finding but kept the rest of the same (changed the APIs
+slightly so the interval could pretend it was still one big range). The tests
+passed. Neat!
+
+But ideally we would like to use this new information in the register
+allocator.
+
+## Modified linear scan
+
+It took a little bit of untangling, but the required modifications to support
+lifetime holes in the register assignment phase are not too invasive. To get an
+idea of the difference, I took the original Poletto1999 algorithm and rewrote
+it in the style of the Mössenböck2002 algorithm.
+
+For example, here is Poletto1999:
+
+```
+LinearScanRegisterAllocation
+active ← {}
+foreach live interval i, in order of increasing start point
+  ExpireOldIntervals(i)
+  if length(active) = R then
+    SpillAtInterval(i)
+  else
+    register[i] ← a register removed from pool of free registers
+    add i to active, sorted by increasing end point
+
+ExpireOldIntervals(i)
+foreach interval j in active, in order of increasing end point
+  if endpoint[j] ≥ startpoint[i] then
+    return
+  remove j from active
+  add register[j] to pool of free registers
+
+SpillAtInterval(i)
+spill ← last interval in active
+if endpoint[spill] > endpoint[i] then
+  register[i] ← register[spill]
+  location[spill] ← new stack location
+  remove spill from active
+  add i to active, sorted by increasing end point
+else
+  location[i] ← new stack location
+```
+
+And here it is again, reformatted a bit. The implicit `unhandled` and `handled`
+sets that don't get names in Poletto1999 now get names. `ExpireOldIntervals` is
+inlined and `SpillAtInterval` gets a new name:
+
+```
+LINEARSCAN()
+unhandled ← all intervals in increasing order of their start points
+active ← {}; handled ← {}
+free ← set of available registers
+while unhandled ≠ {} do
+  cur ← pick and remove the first interval from unhandled
+  //----- check for active intervals that expired
+  for each interval i in active do
+    if i ends before cur.beg then
+      move i to handled and add i.reg to free
+
+  //----- collect available registers in f
+  f ← free
+
+  //----- select a register from f
+  if f = {} then
+    ASSIGNMEMLOC(cur) // see below
+  else
+    cur.reg ← any register in f
+    free ← free – {cur.reg}
+    move cur to active
+
+ASSIGNMEMLOC(cur: Interval)
+spill ← last interval in active
+if spill.end > cur.end then
+  cur.reg ← spill.reg
+  spill.location ← new stack location 
+  move spill from active to handled
+  move cur to active
+else
+  cur.location ← new stack location 
+```
+
+Now with lifetime holes:
+
+```
+LINEARSCAN()
+unhandled ← all intervals in increasing order of their start points
+active ← {}; handled ← {}
+inactive ← {}
+free ← set of available registers
+while unhandled ≠ {} do
+  cur ← pick and remove the first interval from unhandled
+  //----- check for active intervals that expired
+  for each interval i in active do
+    if i ends before cur.beg then
+      move i to handled and add i.reg to free
+    else if i does not overlap cur.beg then
+      move i to inactive and add i.reg to free
+  //----- check for inactive intervals that expired or become reactivated
+  for each interval i in inactive do
+    if i ends before cur.beg then
+      move i to handled
+    else if i overlaps cur.beg then
+      move i to active and remove i.reg from free
+
+  //----- collect available registers in f
+  f ← free
+  for each interval i in inactive that overlaps cur do f ← f – {i.reg}
+
+  //----- select a register from f
+  if f = {} then
+    ASSIGNMEMLOC(cur) // see below
+  else
+    cur.reg ← any register in f
+    free ← free – {cur.reg}
+    move cur to active
+
+ASSIGNMEMLOC(cur: Interval)
+spill ← last interval in active
+if spill.end > cur.end then
+  r = spill.reg
+  move all active or inactive intervals to which r was assigned to handled
+  assign memory locations to them
+  cur.reg ← r
+  move cur to active
+else
+  cur.location ← new stack location 
+```
+
+```diff
+diff --git a/tmp/lsra b/tmp/lsra-holes
+index e9de35b..de79a63 100644
+--- a/tmp/lsra
++++ b/tmp/lsra-holes
+@@ -1,6 +1,7 @@
+ LINEARSCAN()
+ unhandled ← all intervals in increasing order of their start points
+ active ← {}; handled ← {}
++inactive ← {}
+ free ← set of available registers
+ while unhandled ≠ {} do
+   cur ← pick and remove the first interval from unhandled
+@@ -8,9 +9,18 @@ while unhandled ≠ {} do
+   for each interval i in active do
+     if i ends before cur.beg then
+       move i to handled and add i.reg to free
++    else if i does not overlap cur.beg then
++      move i to inactive and add i.reg to free
++  //----- check for inactive intervals that expired or become reactivated
++  for each interval i in inactive do
++    if i ends before cur.beg then
++      move i to handled
++    else if i overlaps cur.beg then
++      move i to active and remove i.reg from free
+
+   //----- collect available registers in f
+   f ← free
++  for each interval i in inactive that overlaps cur do f ← f – {i.reg}
+
+   //----- select a register from f
+   if f = {} then
+@@ -23,10 +33,10 @@ while unhandled ≠ {} do
+ ASSIGNMEMLOC(cur: Interval)
+ spill ← last interval in active
+ if spill.end > cur.end then
+-  cur.reg ← spill.reg
+-  spill.location ← new stack location
+-  move spill from active to handled
++  r = spill.reg
++  move all active or inactive intervals to which r was assigned to handled
++  assign memory locations to them
++  cur.reg ← r
+   move cur to active
+ else
+   cur.location ← new stack location
+```
