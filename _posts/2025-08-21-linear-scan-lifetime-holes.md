@@ -49,8 +49,12 @@ the interval has two disjoint ranges with space in the middle.
 Our simplified interval building algorithm from last time gave us---in the same
 notation---the interval `[[20, ...)]` (well, `[[20, 36)]` in our modified
 snippet). This simplified interval only supports one range with no lifetime
-holes. To get lifetime holes, we have to modify our interval data structure a
-bit.
+holes.
+
+Ideally we would be able to use the physical register assigned to R12 for
+another virtual register in this empty slot! For example, maybe R14 or R15,
+which have short lifetimes that completely fit into the hole. To get lifetime
+holes, we have to modify our interval data structure a bit.
 
 ## Finding lifetime holes
 
