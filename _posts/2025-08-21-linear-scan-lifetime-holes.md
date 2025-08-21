@@ -219,8 +219,12 @@ the lifetime hole finding but kept the rest of the same (changed the APIs
 slightly so the interval could pretend it was still one big range). The tests
 passed. Neat!
 
-But ideally we would like to use this new information in the register
-allocator.
+I also verified that the lifetime holes were what we expected. This means our
+`build_intervals` function works unmodified with the new `Interval`
+implementation. That makes sense, given that we copied the implementation off
+of Wimmer2010, which can deal with lifetime holes.
+
+Now we would like to use this new information in the register allocator.
 
 ## Modified linear scan
 
