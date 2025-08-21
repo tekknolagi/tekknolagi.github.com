@@ -57,6 +57,64 @@ Ideally we would be able to use the physical register assigned to R12 for
 another virtual register in this empty slot! For example, maybe R14 or R15,
 which have short lifetimes that completely fit into the hole.
 
+Another example is a control-flow diamond. In this example, B1 jumps to either
+B3 or B2, which then merge at B4. Virtual register R0 is defined in B1 and only
+used in one of the branches, B3.
+
+<!--
+digraph G {
+node [shape=plaintext]
+B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B1()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">V0 = loadi $123&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">blt →B3, →B2&nbsp;</TD></TR>
+</TABLE>>];
+B1:s -> B3:params:n;
+B1:s -> B2:params:n;
+B2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B2()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">V1 = loadi $456&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">V2 = add V1, $1&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="2">jump →B4&nbsp;</TD></TR>
+</TABLE>>];
+B2:s -> B4:params:n;
+B3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B3()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">V3 = mul V0, $2&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">jump →B4&nbsp;</TD></TR>
+</TABLE>>];
+B3:s -> B4:params:n;
+B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B4()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">ret $5&nbsp;</TD></TR>
+</TABLE>>];
+}
+-->
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/lsra-diamond-cfg.svg"></object>
+</figure>
+
+Once we schedule it, the need for lifetime holes becomes more apparent:
+
+```
+0: label B1:
+2: R0 = loadi $123
+4: blt iftrue: →B3, iffalse: →B2
+6: label B2:
+8: R1 = loadi $456
+10: R2 = add R1, $1
+12: jump →B4
+14: label B3:
+16: R3 = mul R0, $2
+18: jump →B4
+20: label B4:
+22: ret $5
+```
+
+Since B2 gets scheduled before B3, there's a gap where V0---which is completely
+unused in B2---would otherwise take up space in our simplified interval form.
+Let's fix that by adding some lifetime holes.
+
 **Even though** we are adding some gaps between ranges, each interval still
 gets assigned *one location for its entire life*. It's just that in the gaps,
 we get to put other smaller intervals, like lichen growing between bricks.
