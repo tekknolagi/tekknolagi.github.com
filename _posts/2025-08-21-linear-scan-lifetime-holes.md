@@ -66,21 +66,21 @@ digraph G {
 node [shape=plaintext]
 B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B1()&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">V0 = loadi $123&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">R0 = loadi $123&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="1">blt →B3, →B2&nbsp;</TD></TR>
 </TABLE>>];
 B1:s -> B3:params:n;
 B1:s -> B2:params:n;
 B2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B2()&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">V1 = loadi $456&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="1">V2 = add V1, $1&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">R1 = loadi $456&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">R2 = add R1, $1&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="2">jump →B4&nbsp;</TD></TR>
 </TABLE>>];
 B2:s -> B4:params:n;
 B3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B3()&nbsp;</TD></TR>
-<TR><TD ALIGN="left" PORT="0">V3 = mul V0, $2&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">R3 = mul R0, $2&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="1">jump →B4&nbsp;</TD></TR>
 </TABLE>>];
 B3:s -> B4:params:n;
@@ -111,7 +111,7 @@ Once we schedule it, the need for lifetime holes becomes more apparent:
 22: ret $5
 ```
 
-Since B2 gets scheduled before B3, there's a gap where V0---which is completely
+Since B2 gets scheduled before B3, there's a gap where R0---which is completely
 unused in B2---would otherwise take up space in our simplified interval form.
 Let's fix that by adding some lifetime holes.
 
