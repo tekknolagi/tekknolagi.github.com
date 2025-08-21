@@ -472,7 +472,8 @@ index e9de35b..de79a63 100644
    if f = {} then
 @@ -23,10 +33,10 @@ while unhandled ≠ {} do
  ASSIGNMEMLOC(cur: Interval)
- spill ← last interval in active
+-spill ← last interval in active
++spill ← heuristic: pick some interval from active or inactive
  if spill.end > cur.end then
 -  cur.reg ← spill.reg
 -  spill.location ← new stack location
