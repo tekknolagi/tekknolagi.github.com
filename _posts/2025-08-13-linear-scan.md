@@ -189,6 +189,8 @@ control-flow graph by hand, I've also provided the same code in graphical form.
 Block names (and block parameters) are shaded with grey.
 
 <!--
+# dot IN.dot -Tsvg -Nfontname=Monospace -Efontname=Monospace > OUT.svg
+
 digraph G {
 node [shape=plaintext]
 B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">

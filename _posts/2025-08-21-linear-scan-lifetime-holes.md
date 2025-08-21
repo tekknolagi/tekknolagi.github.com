@@ -62,6 +62,8 @@ B3 or B2, which then merge at B4. Virtual register R0 is defined in B1 and only
 used in one of the branches, B3.
 
 <!--
+# dot IN.dot -Tsvg -Nfontname=Monospace -Efontname=Monospace > OUT.svg
+
 digraph G {
 node [shape=plaintext]
 B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
