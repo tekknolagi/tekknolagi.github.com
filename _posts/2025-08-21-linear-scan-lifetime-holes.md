@@ -102,13 +102,16 @@ Once we schedule it, the need for lifetime holes becomes more apparent:
 0: label B1:
 2: R0 = loadi $123
 4: blt iftrue: →B3, iffalse: →B2
+
 6: label B2:
 8: R1 = loadi $456
 10: R2 = add R1, $1
 12: jump →B4
+
 14: label B3:
 16: R3 = mul R0, $2
 18: jump →B4
+
 20: label B4:
 22: ret $5
 ```
