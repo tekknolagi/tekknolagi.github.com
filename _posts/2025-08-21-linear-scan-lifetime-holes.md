@@ -53,8 +53,13 @@ holes.
 
 Ideally we would be able to use the physical register assigned to R12 for
 another virtual register in this empty slot! For example, maybe R14 or R15,
-which have short lifetimes that completely fit into the hole. To get lifetime
-holes, we have to modify our interval data structure a bit.
+which have short lifetimes that completely fit into the hole.
+
+**Even though** we are adding some gaps between ranges, each interval still
+gets assigned *one location for its entire life*. It's just that in the gaps,
+we get to put other smaller intervals, like lichen growing between bricks.
+
+To get lifetime holes, we have to modify our interval data structure a bit.
 
 ## Finding lifetime holes
 
@@ -291,7 +296,22 @@ else
   cur.location ← new stack location 
 ```
 
-Now with lifetime holes:
+Now we can pick out all of the bits of Mössenböck2002 that look like they are
+responsible for dealing with lifetime holes.
+
+For example, the algorithm now has a fourth set, `inactive`. This set holds
+intervals that have holes that contain the current interval's start position.
+These intervals are assigned registers that are potential candidates for the
+current interval to live (more on this in a sec).
+
+I say potential candidates because in order for them to be a home for the
+current interval, an inactive interval has to be completely disjoint from the
+current interval. If they overlap at all---in any of their ranges---then we
+would be trying to put two virtual registers into one physical register at the
+same program point. That's a bad compile.
+
+This means we have to do a little extra bookkeeping in `ASSIGNMEMLOC` if we
+want to spill TODO
 
 ```
 LINEARSCAN()
@@ -327,7 +347,7 @@ while unhandled ≠ {} do
     move cur to active
 
 ASSIGNMEMLOC(cur: Interval)
-spill ← last interval in active
+spill ← heuristic: pick some interval from active or inactive
 if spill.end > cur.end then
   r = spill.reg
   move all active or inactive intervals to which r was assigned to handled
@@ -337,6 +357,12 @@ if spill.end > cur.end then
 else
   cur.location ← new stack location 
 ```
+
+I left out the parts about register weights that are heuristics to improve
+register allocation. They are not core to supporting lifetime holes. You can
+add them back in if you like.
+
+Here is a text diff to make it clear what changed:
 
 ```diff
 diff --git a/tmp/lsra b/tmp/lsra-holes
@@ -385,3 +411,31 @@ index e9de35b..de79a63 100644
  else
    cur.location ← new stack location
 ```
+
+This reformatting and diffing made it much easier for me to reason about what
+specifically had to be changed.
+
+There's just one thing left after register assignment: resolution and SSA
+deconstruction.
+
+## Resolution and SSA destruction
+
+I'm pretty sure we can actually just keep the resolution the same. In our
+`resolve` function, we are only making sure that the block arguments get
+parallel-moved into the block parameters. That hasn't changed.
+
+Wimmer2010 says:
+
+> Linear scan register allocation with splitting of lifetime intervals requires
+> a resolution phase after the actual allocation. Because the control flow
+> graph is reduced to a list of blocks, control flow is possible between blocks
+> that are not adjacent in the list. When the location of an interval is
+> different at the end of the predecessor and at the start of the successor, a
+> move instruction must be inserted to resolve the conflict.
+
+That's great news for us: we don't do splitting. An interval, though it has
+lifetime holes, still only ever has one location for its entire life. So once
+an interval begins, we don't need to think about moving its contents.
+
+So I was actually overly conservative in the previous post, which I have
+amended!

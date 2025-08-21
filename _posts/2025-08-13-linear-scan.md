@@ -961,7 +961,7 @@ labelled code regions don't have block arguments in hardware. We need to write
 some code to take us out of SSA and into the real world.
 
 We can use a modified Wimmer2010 as a great start point here. It handles more
-than we need to right now---lifetime holes---but we can simplify.
+than we need to right now---interval splitting---but we can simplify.
 
 ```
 RESOLVE
@@ -982,8 +982,8 @@ for each control flow edge from predecessor to successor do
   mapping.orderAndInsertMoves()
 ```
 
-Because we have a 1:1 mapping of virtual registers to live ranges, we know that
-every interval live at the beginning of a block is either:
+Because we don't split intervals, we know that every interval live at the
+beginning of a block is either:
 
 * live across an edge between two blocks and therefore has already been placed
   in a location by assignment/spill code
@@ -991,8 +991,8 @@ every interval live at the beginning of a block is either:
   therefore needs to be moved from its source location
 
 For this reason, we only handle the second case in our SSA resolution. If we
-added lifetime holes, we would have to go back to the full Wimmer SSA
-resolution.
+added ~~lifetime holes~~ interval splitting, we would have to go back to the
+full Wimmer SSA resolution.
 
 This means that we're going to iterate over every outbound edge from every
 block. For each edge, we're going to insert some parallel moves.
