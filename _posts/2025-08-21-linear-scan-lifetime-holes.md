@@ -517,6 +517,13 @@ amended!
 
 ## Fixed intervals and register constraints?
 
+Mössenböck2002 also tackles register constraints with this notion of "fixed
+intervals"---intervals that have been pre-allocated physical registers.
+
+Since I eventually want to use "register hinting" from Wimmer2005 and
+Wimmer2010, I'm going to ignore the fixed interval part of Mössenböck2002 for
+now. It seems like they work nicely together.
+
 ## Wrapping up
 
 We added lifetime holes to our register allocator without too much effort. This
