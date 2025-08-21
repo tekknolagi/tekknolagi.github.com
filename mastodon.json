@@ -63456,6 +63456,188 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "115067833502972555": {
+      "id": "115067833502972555",
+      "created_at": "2025-08-21T17:03:19.333Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115067833502972555/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/115067833502972555/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "115065960702143146",
+        "created_at": "2025-08-21T09:06:56.097Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "unlisted",
+        "language": "en",
+        "uri": "https://a.bloodyno.se/objects/855e809b-f546-470f-ab7b-e3c80a32e91d",
+        "url": "https://a.bloodyno.se/objects/855e809b-f546-470f-ab7b-e3c80a32e91d",
+        "replies_count": 3,
+        "reblogs_count": 8,
+        "favourites_count": 1,
+        "edited_at": null,
+        "content": "you CAN bring a compiler to the afterlife. make sure to write a compiler before you die. it is the most important thing",
+        "reblog": null,
+        "account": {
+          "id": "113209149255044442",
+          "username": "lynn",
+          "acct": "lynn@a.bloodyno.se",
+          "display_name": "lynn | \u6797\u6069",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": false,
+          "group": false,
+          "created_at": "2024-09-27T00:00:00.000Z",
+          "note": "30s technowitch. somehow a professional software engineer.<br>i would rather be building a 6502 dream machine than be in this meeting. <br>fan of writing parsers, emulators, and interpreters. <br>not a fan of finishing projects. <br>technically an admin of an akkoma instance.<br>banner image is a die-shot of a MOS 6502 chip.<br>happily married to <span class=\"h-card\"><a class=\"u-url mention\" href=\"https://a.bloodyno.se/users/owl\" rel=\"nofollow noopener\" target=\"_blank\">@<span>owl</span></a></span> <br><br>immigrant living in germany.<br><br>c, typescript, rust, zig, floss, gnu, scheme, emacs, guix.<br>risc architecture is gonna change everything.<br><br>\u2028macht kaputt was euch kaputt macht.<br><br>:spinny_cat_aroace: :spinny_cat_lesbian:<br><br>FE30 E8F6 522D 0615 35E0  E449 55E7 97F6 31DD A03C<br>",
+          "url": "https://a.bloodyno.se/users/lynn",
+          "uri": "https://a.bloodyno.se/users/lynn",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/113/209/149/255/044/442/original/35fea0b2dafc1da5.jpg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/113/209/149/255/044/442/original/35fea0b2dafc1da5.jpg",
+          "header": "https://files.mastodon.social/cache/accounts/headers/113/209/149/255/044/442/original/50af7616c9d7e622.png",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/113/209/149/255/044/442/original/50af7616c9d7e622.png",
+          "followers_count": 397,
+          "following_count": 147,
+          "statuses_count": 23143,
+          "last_status_at": "2025-08-21",
+          "hide_collections": false,
+          "emojis": [
+            {
+              "shortcode": "spinny_cat_aroace",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/001/009/673/original/aacb4e02239d23d6.gif",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/001/009/673/static/aacb4e02239d23d6.png",
+              "visible_in_picker": true
+            },
+            {
+              "shortcode": "spinny_cat_lesbian",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/001/009/674/original/aaf4d52be500dd40.gif",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/001/009/674/static/aaf4d52be500dd40.png",
+              "visible_in_picker": true
+            }
+          ],
+          "fields": [
+            {
+              "name": "matrix",
+              "value": "@lynn:transistor.house",
+              "verified_at": null
+            },
+            {
+              "name": "git",
+              "value": "<a href=\"https://git.transistor.house/lynn\" rel=\"nofollow noopener\" target=\"_blank\">https://git.transistor.house/lynn</a>",
+              "verified_at": null
+            },
+            {
+              "name": "blog",
+              "value": "<a href=\"https://lynn.sh\" rel=\"nofollow noopener\" target=\"_blank\">https://lynn.sh</a>",
+              "verified_at": null
+            },
+            {
+              "name": "pronouns",
+              "value": "she/her/sie/ihr",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "115067832729829961": {
+      "id": "115067832729829961",
+      "created_at": "2025-08-21T17:03:07.505Z",
+      "in_reply_to_id": "115067826959877925",
+      "in_reply_to_account_id": "109474455905562305",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115067832729829961",
+      "url": "https://mastodon.social/@tekknolagi/115067832729829961",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://inuh.net/@evmar\" class=\"u-url mention\">@<span>evmar</span></a></span> there was something very freeing about being middle of my class GPA wise. Which I wasn&#39;t supposed to know -- Paly is not supposed to have class ranks -- but due to an oopsie on my advisor&#39;s part, I found out</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109474455905562305",
+          "username": "evmar",
+          "url": "https://inuh.net/@evmar",
+          "acct": "evmar@inuh.net"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "115067826959877925": {
+      "id": "115067826959877925",
+      "created_at": "2025-08-21T17:01:39.465Z",
+      "in_reply_to_id": "115065288271587452",
+      "in_reply_to_account_id": "109474455905562305",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115067826959877925",
+      "url": "https://mastodon.social/@tekknolagi/115067826959877925",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://inuh.net/@evmar\" class=\"u-url mention\">@<span>evmar</span></a></span> it was certainly an interesting place to grow up</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109474455905562305",
+          "username": "evmar",
+          "url": "https://inuh.net/@evmar",
+          "acct": "evmar@inuh.net"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
