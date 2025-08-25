@@ -11,7 +11,7 @@ layout: post
 
 [lsra-context-ssa]: /assets/img/linear-scan-ra-context-ssa.pdf
 
-In my [last post](/blog/lienar-scan/), I explained a bit about how to retrofit
+In my [last post](/blog/linear-scan/), I explained a bit about how to retrofit
 SSA onto the original linear scan algorithm. I went over all of the details for
 how to go from low-level IR to register assignments---liveness analysis,
 scheduling, building intervals, and the actual linear scan algorithm.
