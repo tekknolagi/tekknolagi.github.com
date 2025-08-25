@@ -69,8 +69,7 @@ lifetime holes form:
 38: ret R16
 ```
 
-The interval `i12` (named so because it is associated with virtual register
-R12) is not used between position 28 and 34. For this reason, Wimmer's interval
+R12 is not used between position 28 and 34. For this reason, Wimmer's interval
 building algorithm assigns it the interval `[[20, 28), [34, ...)]`. Note how
 the interval has two disjoint ranges with space in the middle.
 
