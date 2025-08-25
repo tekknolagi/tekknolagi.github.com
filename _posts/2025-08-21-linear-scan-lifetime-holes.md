@@ -402,30 +402,8 @@ same program point. That's a bad compile.
 We have to do a little extra bookkeeping in `ASSIGNMEMLOC` because now one
 physical register can be assigned to more than one interval that is still in
 the middle of being processed (active and inactive sets). If we choose to
-spill, we have to make sure that all conflicting uses of the register get
-reassigned locations.
-
-I think this very aggressive approach---spilling *all* active/inactive
-intervals assigned register `r`---is a compile-time optimization that avoids
-checking interval overlaps. Maybe that is considered slow? I am not sure.
-
-For example, if `a` and `b` intervals are assigned the same physical register
-in this fake diagram, and we decide to spill `b` to make space for `c`, we have
-no need to also spill `a`:
-
-```
-    a  b  c
- 0: |
- 2: |
- 4:    |
- 6:    |  |  <- spill
- 8:    |  |
-10: |
-```
-
-If anyone knows
-
-<!-- TODO check reasoning -->
+spill, we have to make sure that all conflicting uses of the register
+(intervals that overlap with the current interval) get reassigned locations.
 
 ```
 LINEARSCAN()
@@ -464,15 +442,15 @@ ASSIGNMEMLOC(cur: Interval)
 spill ← heuristic: pick some interval from active or inactive
 if spill.end > cur.end then
   r = spill.reg
-  move all active or inactive intervals to which r was assigned to handled
+  conflicting = set of active or inactive intervals with register r that
+    overlap with cur
+  move all intervals in conflicting to handled
   assign memory locations to them
   cur.reg ← r
   move cur to active
 else
   cur.location ← new stack location 
 ```
-
-<!-- TODO come up with an example of spilling multiple intervals at once -->
 
 Note that this begins to depart from strictly linear linear scan: the
 `inactive` set is bounded not by the number of physical registers but instead
@@ -526,7 +504,9 @@ index e9de35b..de79a63 100644
 -  spill.location ← new stack location
 -  move spill from active to handled
 +  r = spill.reg
-+  move all active or inactive intervals to which r was assigned to handled
++  conflicting = set of active or inactive intervals with register r that
++    overlap with cur
++  move all intervals in conflicting to handled
 +  assign memory locations to them
 +  cur.reg ← r
    move cur to active
