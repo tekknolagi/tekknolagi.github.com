@@ -63730,6 +63730,258 @@
         ]
       },
       "poll": null
+    },
+    "115089711868015827": {
+      "id": "115089711868015827",
+      "created_at": "2025-08-25T13:47:16.660Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115089711868015827/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/115089711868015827/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "115089182704854552",
+        "created_at": "2025-08-25T11:32:39.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "de",
+        "uri": "https://chaos.social/users/geheimorga/statuses/115089182548834607",
+        "url": "https://chaos.social/@geheimorga/115089182548834607",
+        "replies_count": 11,
+        "reblogs_count": 126,
+        "favourites_count": 310,
+        "edited_at": null,
+        "content": "<p>nature is healing</p>",
+        "reblog": null,
+        "account": {
+          "id": "453608",
+          "username": "geheimorga",
+          "acct": "geheimorga@chaos.social",
+          "display_name": "Geheimorganisation",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2018-08-17T00:00:00.000Z",
+          "note": "<p>Wir sind eine spitzb\u00fcbisch feixende Mischpoke von abgefeimten Frechdachsen, die haneb\u00fcchene Fisimatenten und Verhohnepiepelungen anstellen. :rainbow_heart: :trans_flag:</p>",
+          "url": "https://chaos.social/@geheimorga",
+          "uri": "https://chaos.social/users/geheimorga",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/000/453/608/original/490c1350f7bbe471.png",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/000/453/608/original/490c1350f7bbe471.png",
+          "header": "https://files.mastodon.social/cache/accounts/headers/000/453/608/original/f74f77eef5848c15.png",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/000/453/608/original/f74f77eef5848c15.png",
+          "followers_count": 3906,
+          "following_count": 463,
+          "statuses_count": 3088,
+          "last_status_at": "2025-08-25",
+          "hide_collections": false,
+          "emojis": [
+            {
+              "shortcode": "rainbow_heart",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/000/240/902/original/96ceaee54a091376.png",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/000/240/902/static/96ceaee54a091376.png",
+              "visible_in_picker": true
+            },
+            {
+              "shortcode": "trans_flag",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/000/017/177/original/1594776eea0b1b89.png",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/000/017/177/static/1594776eea0b1b89.png",
+              "visible_in_picker": true
+            }
+          ],
+          "fields": [
+            {
+              "name": "Webseite",
+              "value": "<a href=\"https://geheimorganisation.org/?utm_medium=EureDatenSindSicher\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">geheimorganisation.org/?utm_me</span><span class=\"invisible\">dium=EureDatenSindSicher</span></a>",
+              "verified_at": "2025-08-24T19:49:04.515+00:00"
+            },
+            {
+              "name": "E-Mail",
+              "value": "bnd@",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [
+          {
+            "id": "115089182678203758",
+            "type": "image",
+            "url": "https://files.mastodon.social/cache/media_attachments/files/115/089/182/678/203/758/original/d2d18b3a0bab9a1b.jpeg",
+            "preview_url": "https://files.mastodon.social/cache/media_attachments/files/115/089/182/678/203/758/small/d2d18b3a0bab9a1b.jpeg",
+            "remote_url": "https://assets.chaos.social/media_attachments/files/115/089/178/338/705/784/original/78a1254cc11f5b76.jpeg",
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "focus": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "original": {
+                "width": 1290,
+                "height": 364,
+                "size": "1290x364",
+                "aspect": 3.543956043956044
+              },
+              "small": {
+                "width": 904,
+                "height": 255,
+                "size": "904x255",
+                "aspect": 3.545098039215686
+              }
+            },
+            "description": "Reddit-Post: \"Told people at a party I work in Al... instantly became\nthe villain\"\n\n\"Went to a party last night. Everything was going great until someone\nasked the inevitable: \"So, what do you do?\" I smiled and said, \u201cI work in\nAl\" Big mistake. The mood flipped faster than a GPU overheating. Sud...\"",
+            "blurhash": "UHR3WeWAIVt6_Nt6D%xtWYxuNGxt~qkBRjof"
+          }
+        ],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "115089679535402545": {
+      "id": "115089679535402545",
+      "created_at": "2025-08-25T13:39:03.306Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115089679535402545/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/115089679535402545/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "115089527699665659",
+        "created_at": "2025-08-25T13:00:26.479Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.social/users/antocuni/statuses/115089527699665659",
+        "url": "https://mastodon.social/@antocuni/115089527699665659",
+        "replies_count": 0,
+        "reblogs_count": 1,
+        "favourites_count": 5,
+        "edited_at": null,
+        "content": "<p>Accessing `obj.x` in Python might look trivial \u2014 but under the hood lies a surprisingly intricate chain of logic.</p><p>I wrote an annotated walkthrough of the CPython source code that makes it all happen:</p><p><a href=\"https://antocuni.eu/2025/08/25/inside-cpythons-attribute-lookup/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">antocuni.eu/2025/08/25/inside-</span><span class=\"invisible\">cpythons-attribute-lookup/</span></a></p>",
+        "reblog": null,
+        "application": {
+          "name": "Web",
+          "website": null
+        },
+        "account": {
+          "id": "110775046400387708",
+          "username": "antocuni",
+          "acct": "antocuni",
+          "display_name": "Antonio Cuni",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": false,
+          "group": false,
+          "created_at": "2023-07-25T00:00:00.000Z",
+          "note": "<p>HPy founder, PyPy core dev, PyScript core dev, doing Python and WASM stuff at <a href=\"https://mastodon.social/tags/Anaconda\" class=\"mention hashtag\" rel=\"tag\">#<span>Anaconda</span></a></p>",
+          "url": "https://mastodon.social/@antocuni",
+          "uri": "https://mastodon.social/users/antocuni",
+          "avatar": "https://files.mastodon.social/accounts/avatars/110/775/046/400/387/708/original/db18af08f3a886e6.jpeg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/110/775/046/400/387/708/original/db18af08f3a886e6.jpeg",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "followers_count": 232,
+          "following_count": 117,
+          "statuses_count": 39,
+          "last_status_at": "2025-08-25",
+          "hide_collections": false,
+          "noindex": false,
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "github",
+              "value": "<a href=\"https://github.com/antocuni\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/antocuni</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2023-07-26T13:04:09.984+00:00"
+            },
+            {
+              "name": "twitter",
+              "value": "<a href=\"https://twitter.com/antocuni\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">twitter.com/antocuni</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "website",
+              "value": "<a href=\"http://antocuni.eu/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">http://</span><span class=\"\">antocuni.eu/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "linkedin",
+              "value": "<a href=\"https://www.linkedin.com/in/antocuni/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">linkedin.com/in/antocuni/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": {
+          "url": "https://antocuni.eu/2025/08/25/inside-cpythons-attribute-lookup/",
+          "title": "Inside CPython's attribute lookup - Antonio Cuni's blog",
+          "description": "",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "",
+          "provider_url": "",
+          "html": "",
+          "width": 0,
+          "height": 0,
+          "image": null,
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": null,
+          "published_at": null,
+          "authors": []
+        },
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
