@@ -385,11 +385,11 @@ ASSIGNMEMLOC(cur: Interval)
 spill ← last interval in active
 if spill.end > cur.end then
   cur.reg ← spill.reg
-  spill.location ← new stack location 
+  spill.location ← new stack location
   move spill from active to handled
   move cur to active
 else
-  cur.location ← new stack location 
+  cur.location ← new stack location
 ```
 
 Now we can pick out all of the bits of Mössenböck2002 that look like they are
@@ -456,7 +456,7 @@ if spill.end > cur.end then
   cur.reg ← r
   move cur to active
 else
-  cur.location ← new stack location 
+  cur.location ← new stack location
 ```
 
 Note that this begins to depart from strictly linear (time) linear scan: the
