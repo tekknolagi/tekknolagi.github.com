@@ -3,18 +3,36 @@ title: "Linear scan with lifetime holes"
 layout: post
 ---
 
+[quality-lsra]: /assets/img/quality-speed-linear-scan-ra-clean.pdf
+
+[lsra-ssa]: /assets/img/wimmer-linear-scan-ssa.pdf
+
+[lsra]: /assets/img/linearscan-ra.pdf
+
+[lsra-context-ssa]: /assets/img/linear-scan-ra-context-ssa.pdf
+
 In my [last post](/blog/lienar-scan/), I explained a bit about how to retrofit
 SSA onto the original linear scan algorithm. I went over all of the details for
 how to go from low-level IR to register assignments---liveness analysis,
 scheduling, building intervals, and the actual linear scan algorithm.
 
-This time, we're going to retrofit *lifetime holes*.
+Basically, we made it to 1997 linear scan, with small adaptations for
+allocating directly on SSA.
 
-TODO address Traub1998?
+This time, we're going to retrofit *lifetime holes*.
 
 ## Lifetime holes
 
-According to Wimmer2010:
+Lifetime holes come from [Quality and Speed in Linear-scan Register
+Allocation][quality-lsra] (PDF, 1998) by Traub, Holloway, and Smith. Figure 1,
+though not in SSA form, is a nice diagram for understanding how lifetime holes
+may occur. Unfortunately, the paper contains a rather sparse plaintext
+description of their algorithm that I did not understand how to apply to my
+concrete allocator.
+
+Thankfully, other papers continued this line of research. For example,
+according to [Linear Scan Register Allocation on SSA Form][lsra-ssa] (PDF,
+2010):
 
 > The lifetime interval of a virtual register must cover all parts where this
 > register is needed, with lifetime holes in between. Lifetime holes occur
@@ -117,9 +135,9 @@ Once we schedule it, the need for lifetime holes becomes more apparent:
 22: ret $5
 ```
 
-Since B2 gets scheduled before B3, there's a gap where R0---which is completely
-unused in B2---would otherwise take up space in our simplified interval form.
-Let's fix that by adding some lifetime holes.
+Since B2 gets scheduled (in this case, arbitrarily) before B3, there's a gap
+where R0---which is completely unused in B2---would otherwise take up space in
+our simplified interval form. Let's fix that by adding some lifetime holes.
 
 **Even though** we are adding some gaps between ranges, each interval still
 gets assigned *one location for its entire life*. It's just that in the gaps,
@@ -294,8 +312,9 @@ Now we would like to use this new information in the register allocator.
 
 It took a little bit of untangling, but the required modifications to support
 lifetime holes in the register assignment phase are not too invasive. To get an
-idea of the difference, I took the original Poletto1999 algorithm and rewrote
-it in the style of the Mössenböck2002 algorithm.
+idea of the difference, I took the original [Poletto1999][lsra] (PDF) algorithm
+and rewrote it in the style of the [Mössenböck2002][lsra-context-ssa] (PDF)
+algorithm.
 
 For example, here is Poletto1999:
 
@@ -380,8 +399,33 @@ current interval. If they overlap at all---in any of their ranges---then we
 would be trying to put two virtual registers into one physical register at the
 same program point. That's a bad compile.
 
-This means we have to do a little extra bookkeeping in `ASSIGNMEMLOC` if we
-want to spill TODO
+We have to do a little extra bookkeeping in `ASSIGNMEMLOC` because now one
+physical register can be assigned to more than one interval that is still in
+the middle of being processed (active and inactive sets). If we choose to
+spill, we have to make sure that all conflicting uses of the register get
+reassigned locations.
+
+I think this very aggressive approach---spilling *all* active/inactive
+intervals assigned register `r`---is a compile-time optimization that avoids
+checking interval overlaps. Maybe that is considered slow? I am not sure.
+
+For example, if `a` and `b` intervals are assigned the same physical register
+in this fake diagram, and we decide to spill `b` to make space for `c`, we have
+no need to also spill `a`:
+
+```
+    a  b  c
+ 0: |
+ 2: |
+ 4:    |
+ 6:    |  |  <- spill
+ 8:    |  |
+10: |
+```
+
+If anyone knows
+
+<!-- TODO check reasoning -->
 
 ```
 LINEARSCAN()
@@ -427,6 +471,8 @@ if spill.end > cur.end then
 else
   cur.location ← new stack location 
 ```
+
+<!-- TODO come up with an example of spilling multiple intervals at once -->
 
 Note that this begins to depart from strictly linear linear scan: the
 `inactive` set is bounded not by the number of physical registers but instead
