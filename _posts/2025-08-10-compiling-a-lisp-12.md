@@ -296,7 +296,7 @@ Let's think about what `let` does by examining a confusing let expression:
   wolf)
 ```
 
-In this expression, there are two `wolf`s. One of them is bound inside the let,
+Inside this expression, there are two `wolf`s. One of them is bound inside the let,
 but the other is free inside the let! This is because `let` evaluates all of
 its bindings without access to the bindings as they are being built up (for
 that, we would need `let*`).
