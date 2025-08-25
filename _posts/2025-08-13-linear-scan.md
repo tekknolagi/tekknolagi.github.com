@@ -189,27 +189,29 @@ control-flow graph by hand, I've also provided the same code in graphical form.
 Block names (and block parameters) are shaded with grey.
 
 <!--
+# dot IN.dot -Tsvg -Nfontname=Monospace -Efontname=Monospace > OUT.svg
+
 digraph G {
 node [shape=plaintext]
 B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B1(R10, R11)&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="0">jump →B2($1, R11)&nbsp;</TD></TR>
 </TABLE>>];
-B1:0 -> B2:params;
+B1:s -> B2:params:n;
 B2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B2(R12, R13)&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="0">cmp R13, $1&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="1">blt →B4, →B3&nbsp;</TD></TR>
 </TABLE>>];
-B2:1 -> B4:params;
-B2:1 -> B3:params;
+B2:s -> B4:params:n;
+B2:s -> B3:params:n;
 B3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B3()&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="0">R14 = mul R12, R13&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="1">R15 = sub R13, $1&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="2">jump →B2(R14, R15)&nbsp;</TD></TR>
 </TABLE>>];
-B3:2 -> B2:params;
+B3:s -> B2:params:n;
 B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 <TR><TD PORT="params" BGCOLOR="lightgray">B4()&nbsp;</TD></TR>
 <TR><TD ALIGN="left" PORT="0">R16 = add R10, R12&nbsp;</TD></TR>
@@ -548,6 +550,15 @@ class Function
 end
 ```
 
+<!--
+I think using RPO is just a heuristic; other block orders may shrink live
+ranges, reduce parallel moves, etc. I could be way off base here but I don't
+think we even have to order the blocks in dominance order because we're doing a
+full dataflow-based liveness analysis; the ordering and positioning
+requirements from Wimmer2010 come from the quick liveness with loop headers
+thing.
+-->
+
 A couple interesting things to note:
 
 * We number blocks because we use block starts as the start index for all of
@@ -567,7 +578,7 @@ the Wimmer2010 paper.
      # vvvvvvvvvv #
 20: label B2(R12, R13)
 22: cmp R13, $1
-24: branch lessThan B4()
+24: branch lessThan B4() else B3()
 
 26: label B3()
 28: mul R12, R13 -> R14
@@ -790,6 +801,11 @@ else
   location[i] ← new stack location
 ```
 
+Note that unlike in many programming languages these days, `{}` in the
+algorithm description represents a *set*, not a (hash-)map.
+
+In our Ruby code, we represent `active` as an array:
+
 ```ruby
 class Function
   def ye_olde_linear_scan intervals, num_registers
@@ -801,6 +817,8 @@ class Function
     assignment = {}  # Map from Interval to PReg|StackSlot
     num_stack_slots = 0
     # Iterate through intervals in order of increasing start point
+    # TODO(max): Build a deque for intervals, pushing to the front, so we
+    # automatically get this in sorted order
     sorted_intervals = intervals.sort_by { |_, interval| interval.range.begin }
     sorted_intervals.each do |_vreg, interval|
       # expire_old_intervals(interval)
@@ -954,7 +972,7 @@ labelled code regions don't have block arguments in hardware. We need to write
 some code to take us out of SSA and into the real world.
 
 We can use a modified Wimmer2010 as a great start point here. It handles more
-than we need to right now---lifetime holes---but we can simplify.
+than we need to right now---interval splitting---but we can simplify.
 
 ```
 RESOLVE
@@ -975,8 +993,8 @@ for each control flow edge from predecessor to successor do
   mapping.orderAndInsertMoves()
 ```
 
-Because we have a 1:1 mapping of virtual registers to live ranges, we know that
-every interval live at the beginning of a block is either:
+Because we don't split intervals, we know that every interval live at the
+beginning of a block is either:
 
 * live across an edge between two blocks and therefore has already been placed
   in a location by assignment/spill code
@@ -984,8 +1002,8 @@ every interval live at the beginning of a block is either:
   therefore needs to be moved from its source location
 
 For this reason, we only handle the second case in our SSA resolution. If we
-added lifetime holes, we would have to go back to the full Wimmer SSA
-resolution.
+added ~~lifetime holes~~ interval splitting, we would have to go back to the
+full Wimmer SSA resolution.
 
 This means that we're going to iterate over every outbound edge from every
 block. For each edge, we're going to insert some parallel moves.
@@ -1408,7 +1426,7 @@ classes of bugs along the way.
 <!--
 ## Instruction selection and instruction splitting
 
-## Lifetime holes and interval splitting
+## Interval splitting
 
 ## Register hints
 
@@ -1479,6 +1497,8 @@ add features such as lifetime holes, interval splitting, and register hints.
 
 The full Ruby code listing is ~~not (yet?) public~~ [available under the Apache
 2 license](https://github.com/tenderworks/regalloc).
+
+UPDATE: See the post on [lifetime holes](/blog/linear-scan-lifetime-holes/).
 
 ## Thanks
 
