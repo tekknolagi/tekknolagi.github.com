@@ -23,15 +23,11 @@ This time, we're going to retrofit *lifetime holes*.
 
 ## Lifetime holes
 
-Lifetime holes come from [Quality and Speed in Linear-scan Register
-Allocation][quality-lsra] (PDF, 1998) by Traub, Holloway, and Smith. Figure 1,
-though not in SSA form, is a nice diagram for understanding how lifetime holes
-may occur. Unfortunately, the paper contains a rather sparse plaintext
-description of their algorithm that I did not understand how to apply to my
-concrete allocator.
+Lifetime holes come into play because a linearized sequence of instructions is
+not a great proxy for storing or using metadata about a program originally
+stored as a graph.
 
-Thankfully, other papers continued this line of research. For example,
-according to [Linear Scan Register Allocation on SSA Form][lsra-ssa] (PDF,
+According to [Linear Scan Register Allocation on SSA Form][lsra-ssa] (PDF,
 2010):
 
 > The lifetime interval of a virtual register must cover all parts where this
@@ -40,7 +36,19 @@ according to [Linear Scan Register Allocation on SSA Form][lsra-ssa] (PDF,
 > allocation. If a register flows into an `else`-block, but not into the
 > corresponding `if`-block, the lifetime interval has a hole for the `if`-block.
 
-Let's take a look at the sample IR snippet from Wimmer2010 to illustrate:
+Lifetime holes come from [Quality and Speed in Linear-scan Register
+Allocation][quality-lsra] (PDF, 1998) by Traub, Holloway, and Smith. Figure 1,
+though not in SSA form, is a nice diagram for understanding how lifetime holes
+may occur. Unfortunately, the paper contains a rather sparse plaintext
+description of their algorithm that I did not understand how to apply to my
+concrete allocator.
+
+Thankfully, other papers continued this line of research in (at least) 2002,
+2005, and 2010. We will piece snippets from those papers together to understand
+what's going on.
+
+Let's take a look at the sample IR snippet from Wimmer2010 to illustrate how
+lifetime holes form:
 
 ```
 16: label B1(R10, R11):
