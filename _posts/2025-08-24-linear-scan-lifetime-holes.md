@@ -69,9 +69,9 @@ lifetime holes form:
 38: ret R16
 ```
 
-R12 is not used between position 28 and 34. For this reason, Wimmer's interval
-building algorithm assigns it the interval `[[20, 28), [34, ...)]`. Note how
-the interval has two disjoint ranges with space in the middle.
+Virtual register R12 is not used between position 28 and 34. For this reason,
+Wimmer's interval building algorithm assigns it the interval `[[20, 28), [34,
+...)]`. Note how the interval has two disjoint ranges with space in the middle.
 
 Our simplified interval building algorithm from last time gave us---in the same
 notation---the interval `[[20, ...)]` (well, `[[20, 36)]` in our modified
