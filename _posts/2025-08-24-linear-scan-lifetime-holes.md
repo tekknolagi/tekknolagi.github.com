@@ -561,7 +561,9 @@ now. It seems like they work nicely together.
 ## Wrapping up
 
 We added lifetime holes to our register allocator without too much effort. This
-should get us some better allocation for short-lived virtual registers.
+better maps the graph-like nature of the IR onto the linear sequence of
+instructions and should get us some better allocation for short-lived virtual
+registers.
 
 Maybe next time we will add *interval splitting*, which will help us a) address
 ABI constraints more cleanly in function calls and b) remove the dependence on
