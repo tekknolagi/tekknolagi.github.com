@@ -459,10 +459,10 @@ else
   cur.location ← new stack location 
 ```
 
-Note that this begins to depart from strictly linear linear scan: the
+Note that this begins to depart from strictly linear (time) linear scan: the
 `inactive` set is bounded not by the number of physical registers but instead
 by the number of virtual registers. Mössenböck2002 notes that the size of the
-set is generally very small, though, so "linear in practice".
+`inactive` set is generally very small, though, so "linear in practice".
 
 I left out the parts about register weights that are heuristics to improve
 register allocation. They are not core to supporting lifetime holes. You can
