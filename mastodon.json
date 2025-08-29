@@ -64138,6 +64138,269 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "115114271352696214": {
+      "id": "115114271352696214",
+      "created_at": "2025-08-29T21:53:04.669Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115114271352696214/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/115114271352696214/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "115093737448842397",
+        "created_at": "2025-08-26T06:51:00.000Z",
+        "in_reply_to_id": "115093732768664289",
+        "in_reply_to_account_id": "111567759872601366",
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://wetdry.world/users/soop/statuses/115093737345853842",
+        "url": "https://wetdry.world/@soop/115093737345853842",
+        "replies_count": 23,
+        "reblogs_count": 456,
+        "favourites_count": 587,
+        "edited_at": null,
+        "content": "<p>\"sideloading\" is digital \"jaywalking\". you're still just crossing the street but the corpos have made up a word to make you look bad for it</p>",
+        "reblog": null,
+        "account": {
+          "id": "111567759872601366",
+          "username": "soop",
+          "acct": "soop@wetdry.world",
+          "display_name": ":spinny_cat_trans: HyperSoop :spinny_fox_trans:",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2023-12-12T00:00:00.000Z",
+          "note": "<p>&lt;- fedizen,,, :neocat_floof:<br>neurodivergent femby :neocat_rainbow: :neocat_flag_trans: :neocat_flag_nb:<br>arch user btw &amp; destroyer of software. a boring computer's no fun<br>i reject the state for i live in spite of it, and i'll live to tell the tale of its end.<br>i don't tolerate tankies and corposhills</p>",
+          "url": "https://wetdry.world/@soop",
+          "uri": "https://wetdry.world/users/soop",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/111/567/759/872/601/366/original/6b0fd800d04b8246.gif",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/111/567/759/872/601/366/static/6b0fd800d04b8246.png",
+          "header": "https://files.mastodon.social/cache/accounts/headers/111/567/759/872/601/366/original/9f5aec7b3db6c3de.webp",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/111/567/759/872/601/366/original/9f5aec7b3db6c3de.webp",
+          "followers_count": 364,
+          "following_count": 155,
+          "statuses_count": 4924,
+          "last_status_at": "2025-08-29",
+          "hide_collections": false,
+          "emojis": [
+            {
+              "shortcode": "neocat_floof",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/000/735/482/original/3bd5d97ea8070439.png",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/000/735/482/static/3bd5d97ea8070439.png",
+              "visible_in_picker": true
+            },
+            {
+              "shortcode": "neocat_rainbow",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/000/804/765/original/3b1f1d3f16147b9a.png",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/000/804/765/static/3b1f1d3f16147b9a.png",
+              "visible_in_picker": true
+            },
+            {
+              "shortcode": "neocat_flag_trans",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/000/803/824/original/b943738eb5b54f44.png",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/000/803/824/static/b943738eb5b54f44.png",
+              "visible_in_picker": true
+            },
+            {
+              "shortcode": "neocat_flag_nb",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/000/803/065/original/142e2ddbaea53dd6.png",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/000/803/065/static/142e2ddbaea53dd6.png",
+              "visible_in_picker": true
+            },
+            {
+              "shortcode": "spinny_cat_trans",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/000/761/317/original/14ae6df77fa0b774.gif",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/000/761/317/static/14ae6df77fa0b774.png",
+              "visible_in_picker": true
+            },
+            {
+              "shortcode": "spinny_fox_trans",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/000/818/356/original/9815736eea43c5cc.gif",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/000/818/356/static/9815736eea43c5cc.png",
+              "visible_in_picker": true
+            }
+          ],
+          "fields": [
+            {
+              "name": "joined fedi",
+              "value": "Nov 22, 2022",
+              "verified_at": null
+            },
+            {
+              "name": "pronouns",
+              "value": "shi/hir | xe/x[yr|ir]",
+              "verified_at": null
+            },
+            {
+              "name": "mdni dni",
+              "value": "mdni dni",
+              "verified_at": null
+            },
+            {
+              "name": "webbed page",
+              "value": "<a href=\"https://hypersoop.codeberg.page\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">hypersoop.codeberg.page</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "115114132214089608": {
+      "id": "115114132214089608",
+      "created_at": "2025-08-29T21:17:41.570Z",
+      "in_reply_to_id": "114974472032473281",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115114132214089608",
+      "url": "https://mastodon.social/@tekknolagi/115114132214089608",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "<p>Maybe cc <span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@burakemir\" class=\"u-url mention\">@<span>burakemir</span></a></span> (this post and previous)?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110851079201492064",
+          "username": "burakemir",
+          "url": "https://discuss.systems/@burakemir",
+          "acct": "burakemir@discuss.systems"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
+    },
+    "115114130367741898": {
+      "id": "115114130367741898",
+      "created_at": "2025-08-29T21:17:13.398Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115114130367741898/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/115114130367741898/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "114974436098341200",
+        "created_at": "2025-08-05T05:11:08.011Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.social/users/tekknolagi/statuses/114974436098341200",
+        "url": "https://mastodon.social/@tekknolagi/114974436098341200",
+        "replies_count": 2,
+        "reblogs_count": 3,
+        "favourites_count": 2,
+        "edited_at": null,
+        "content": "<p>So there&#39;s SECD and CEK and CESK and I see one passing mention of CS machines but no more. Why not use CS machines? </p><p>(Please note I&#39;m very unfamiliar with all of this)</p>",
+        "reblog": null,
+        "application": {
+          "name": "Mastodon for Android",
+          "website": "https://app.joinmastodon.org/android"
+        },
+        "account": {
+          "id": "1300106",
+          "username": "tekknolagi",
+          "acct": "tekknolagi",
+          "display_name": "Max B",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2020-10-20T00:00:00.000Z",
+          "note": "<p>Let&#39;s chat about compilers</p>",
+          "url": "https://mastodon.social/@tekknolagi",
+          "uri": "https://mastodon.social/users/tekknolagi",
+          "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "followers_count": 540,
+          "following_count": 280,
+          "statuses_count": 1325,
+          "last_status_at": "2025-08-29",
+          "hide_collections": false,
+          "noindex": false,
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "website",
+              "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2022-12-07T01:44:28.737+00:00"
+            },
+            {
+              "name": "github",
+              "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2023-07-26T16:28:07.403+00:00"
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
