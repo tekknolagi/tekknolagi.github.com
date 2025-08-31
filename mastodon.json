@@ -64401,6 +64401,42 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "115121491032788444": {
+      "id": "115121491032788444",
+      "created_at": "2025-08-31T04:29:08.233Z",
+      "in_reply_to_id": "115121452559203993",
+      "in_reply_to_account_id": "523512",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115121491032788444",
+      "url": "https://mastodon.social/@tekknolagi/115121491032788444",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> mechanical sympathy</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
