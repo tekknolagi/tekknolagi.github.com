@@ -64466,6 +64466,42 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "115130372672166389": {
+      "id": "115130372672166389",
+      "created_at": "2025-09-01T18:07:51.294Z",
+      "in_reply_to_id": "115130368808012254",
+      "in_reply_to_account_id": "113861886941205776",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115130372672166389",
+      "url": "https://mastodon.social/@tekknolagi/115130372672166389",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mean.engineer/@indutny\" class=\"u-url mention\">@<span>indutny</span></a></span> yep. Time to opt out of fifteen other new surprise government photo checks</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "113861886941205776",
+          "username": "indutny",
+          "url": "https://mean.engineer/@indutny",
+          "acct": "indutny@mean.engineer"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
