@@ -64437,6 +64437,35 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "115130356636794335": {
+      "id": "115130356636794335",
+      "created_at": "2025-09-01T18:03:46.614Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115130356636794335",
+      "url": "https://mastodon.social/@tekknolagi/115130356636794335",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "edited_at": null,
+      "content": "<p>Newark has every single person go through a mandatory automated face scan before going to security. I asked how to get through without it and an employee told me &quot;cover the camera with your hand I guess?&quot; Horrifying.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null
     }
   }
 }
