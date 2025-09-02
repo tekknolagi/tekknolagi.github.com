@@ -464,6 +464,31 @@ Note that this begins to depart from strictly linear (time) linear scan: the
 by the number of virtual registers. Mössenböck2002 notes that the size of the
 `inactive` set is generally very small, though, so "linear in practice".
 
+> EDIT: After re-reading Wimmer2010, I noticed that they say:
+>
+> > [...] introduced non-linear parts. Two of them are highlighted in Figure 6
+> > where the set of inactive intervals is iterated. The set can contain an
+> > arbitrary number of intervals since it is not bound by the number of
+> > physical registers. Testing the current interval for intersection with all
+> > of them can therefore be expensive.
+> >
+> > When the lifetime intervals are created from code in SSA form, this test is
+> > not necessary anymore: All intervals in inactive start before the current
+> > interval, so they do not intersect with the current interval at their
+> > definition. They are inactive and thus have a lifetime hole at the current
+> > position, so they do not intersect with the current interval at its
+> > definition. SSA form therefore guarantees that they never intersect [7],
+> > making the entire loop that tests for intersection unnecessary.
+> >
+> > Unfortunately, splitting of intervals leads to intervals that no longer
+> > adhere to the SSA form properties because it destroys SSA form. Therefore,
+> > the intersection test cannot be omitted completely; it must be performed if
+> > the current interval has been split off from another interval.
+>
+> Which indicates to me that we may actually be able to leave off that loop
+> over the inactive intervals after all? Unclear. I'll have to come back and
+> mess with this later.
+
 I left out the parts about register weights that are heuristics to improve
 register allocation. They are not core to supporting lifetime holes. You can
 add them back in if you like.
