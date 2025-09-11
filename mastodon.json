@@ -64502,6 +64502,55 @@
       "quote": null,
       "card": null,
       "poll": null
+    },
+    "115186625643650143": {
+      "id": "115186625643650143",
+      "created_at": "2025-09-11T16:33:43.521Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115186625643650143",
+      "url": "https://mastodon.social/@tekknolagi/115186625643650143",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Always be walking around the compiler </p><p><a href=\"https://vickiboykis.com/2025/09/09/walking-around-the-app/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">vickiboykis.com/2025/09/09/wal</span><span class=\"invisible\">king-around-the-app/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://vickiboykis.com/2025/09/09/walking-around-the-app/",
+        "title": "Walking around the app",
+        "description": "You gotta check stuff out",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "\u2605\u2764\u2730 Vicki Boykis \u2605\u2764\u2730 ",
+        "provider_url": "",
+        "html": "",
+        "width": 463,
+        "height": 498,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/162/207/584/original/34d3a4b1e2060f68.png",
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": "UVPZx_%M~Xxu%foLxbM{-;WBInoLw~WBNYxt",
+        "published_at": "2025-09-09T00:00:00.000Z",
+        "authors": []
+      },
+      "poll": null
     }
   }
 }
