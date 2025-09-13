@@ -20,3 +20,5 @@ project. It got me thinking about how I walk around the compiler.
 There's a certain class of software project that transforms data---compression
 libraries, compilers, search engines---for which there's another layer of
 "walking around" you can do.
+
+## What does your output look like
