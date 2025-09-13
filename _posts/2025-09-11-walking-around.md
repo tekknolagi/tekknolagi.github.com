@@ -15,7 +15,7 @@ about walking around other parts of the *implementation* of the application,
 fixing inconsistencies, complex machinery, and broken builds.
 
 That's awesome and universally good advice for pretty much every software
-project. Her post got me thinking about how I walk around the compiler.
+project. It got me thinking about how I walk around the compiler.
 
 There's a certain class of software project that transforms data---compression
 libraries, compilers, search engines---for which there's another layer of
