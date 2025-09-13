@@ -22,3 +22,5 @@ libraries, compilers, search engines---for which there's another layer of
 "walking around" you can do.
 
 ## What does your output look like
+
+## Mechanical sympathy and the compiler explorer
