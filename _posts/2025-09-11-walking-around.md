@@ -45,4 +45,14 @@ occurred to you while you were scrolling through the optimizer.
 
 <!-- TODO maybe pick another example -->
 
+If checking (and, later, testing) your assumptions is tricky, this may be a
+sign that your library does not expose enough of its internal state to
+developers.
+
+<!-- TODO link to Kate -->
+
+Even if it does provide a flag like `--zjit-dump-hir` to print to the console,
+maybe this is hard to run from a phone or a friend's computer. For that, you
+may want *more advanced tools*.
+
 ## Mechanical sympathy and the compiler explorer
