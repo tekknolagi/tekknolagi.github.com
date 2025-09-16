@@ -56,3 +56,9 @@ maybe this is hard to run from a phone or a friend's computer. For that, you
 may want *more advanced tools*.
 
 ## Mechanical sympathy and the compiler explorer
+
+## Every function is special
+
+Scroll through every function's optimized IR. If too many, top N function IR.
+See what can be improved. Even if it can't be improved in May, that could shift
+by August because of compiler advancements or something.
