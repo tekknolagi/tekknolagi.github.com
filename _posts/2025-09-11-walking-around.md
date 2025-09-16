@@ -47,15 +47,31 @@ occurred to you while you were scrolling through the optimizer.
 
 If checking (and, later, testing) your assumptions is tricky, this may be a
 sign that your library does not expose enough of its internal state to
-developers.
+developers. This may present a usability impediment that prevents you from
+immediately checking your assumptions or suspicions.
 
 <!-- TODO link to Kate -->
 
 Even if it does provide a flag like `--zjit-dump-hir` to print to the console,
 maybe this is hard to run from a phone or a friend's computer. For that, you
-may want *more advanced tools*.
+may want *friendlier tools*.
 
 ## Mechanical sympathy and the compiler explorer
+
+Matthew Godbolt built the first friendly compiler explorer tool I used, the
+Compiler Explorer ("Godbolt"). It allows inputting programs in many different
+languages and seeing the compiled result. It will even execute your programs,
+within reason.
+
+This is a powerful tool for several reasons:
+
+1. The feedback is near-instant and live updates on key-up.
+1. There is no fussing with the command line and file watching.
+1. Where possible, it highlights slices of source and compiled result to
+   indicate what regions produced what output.
+1. It's open source and you can add your own compiler.
+
+This combination lowers the barrier to check *tremendously*.
 
 ## Every function is special
 
