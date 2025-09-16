@@ -73,8 +73,19 @@ This is a powerful tool for several reasons:
 
 This combination lowers the barrier to check *tremendously*.
 
+Now, sometimes you want the reverse: a Compiler Explorer -like thing in your
+terminal or editor so you don't have to break flow. I unfortunately have not
+found a comparable tool.
+
 ## Every function is special
 
 Scroll through every function's optimized IR. If too many, top N function IR.
-See what can be improved. Even if it can't be improved in May, that could shift
-by August because of compiler advancements or something.
+See what can be improved. Maybe you will see some unexpected patterns. Even if
+it can't be improved in May, that could shift by August because of compiler
+advancements or something.
+
+One time I found a bizarre reference counting bug that was causing
+copy-on-write and potential memory issues by noticing that some objects that
+should have been marked "immortal" in the IR were being refcounted. The bug was
+not in the compiler, but far away in application setup code---and yet it was
+visible in the IR.
