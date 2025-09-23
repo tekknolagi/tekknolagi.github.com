@@ -58,12 +58,14 @@ may want *friendlier tools*.
 
 ## Mechanical sympathy and the compiler explorer
 
-Matthew Godbolt built the first friendly compiler explorer tool I used, the
-Compiler Explorer ("Godbolt"). It allows inputting programs in many different
-languages and seeing the compiled result. It will even execute your programs,
-within reason.
+The right kind of tool invites exploration.
 
-This is a powerful tool for several reasons:
+Matthew Godbolt built the first friendly compiler explorer tool I used, the
+Compiler Explorer ("Godbolt"). It allows inputting programs into your web
+browser in many different languages and immediately seeing the compiled result.
+It will even execute your programs, within reason.
+
+This is a powerful tool:
 
 1. The feedback is near-instant and live updates on key-up.
 1. There is no fussing with the command line and file watching.
@@ -71,7 +73,7 @@ This is a powerful tool for several reasons:
    indicate what regions produced what output.
 1. It's open source and you can add your own compiler.
 
-This combination lowers the barrier to check *tremendously*.
+This combination lowers the barrier to check things *tremendously*.
 
 Now, sometimes you want the reverse: a Compiler Explorer -like thing in your
 terminal or editor so you don't have to break flow. I unfortunately have not
