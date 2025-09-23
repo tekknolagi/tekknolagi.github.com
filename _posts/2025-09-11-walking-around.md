@@ -53,8 +53,10 @@ immediately checking your assumptions or suspicions.
 <!-- TODO link to Kate -->
 
 Even if it does provide a flag like `--zjit-dump-hir` to print to the console,
-maybe this is hard to run from a phone or a friend's computer. For that, you
-may want *friendlier tools*.
+maybe this is hard to run from a phone[^log-off] or a friend's computer. For
+that, you may want *friendlier tools*.
+
+[^log-off]: Just make sure to log off and touch grass.
 
 ## Mechanical sympathy and the compiler explorer
 
@@ -79,15 +81,34 @@ Now, sometimes you want the reverse: a Compiler Explorer -like thing in your
 terminal or editor so you don't have to break flow. I unfortunately have not
 found a comparable tool.
 
+In addition to the immediate effects of being able to spot-check certain inputs
+and outputs, continued use of these tools builds long-term intuition about the
+behavior of the compiler. It builds *mechanical sympathy*.
+
+I haven't written a lot about mechanical sympathy other than my grad school
+[statement of purpose](/assets/img/statement-of-purpose.pdf) (PDF) and a few
+brief internet posts, so I will leave you with that for now.
+
 ## Every function is special
 
-Scroll through every function's optimized IR. If too many, top N function IR.
-See what can be improved. Maybe you will see some unexpected patterns. Even if
-it can't be improved in May, that could shift by August because of compiler
-advancements or something.
+Your compiler likely compiles some applications and you can likely get access
+to the IR for the functions in that application.
+
+Scroll through every function's optimized IR. If there are too many, maybe the
+top N functions' IRs. See what can be improved. Maybe you will see some
+unexpected patterns. Even if you don't notice anything in May, that could shift
+by August because of compiler advancements or a cool paper that you read in the
+intervening months.
 
 One time I found a bizarre reference counting bug that was causing
 copy-on-write and potential memory issues by noticing that some objects that
-should have been marked "immortal" in the IR were being refcounted. The bug was
-not in the compiler, but far away in application setup code---and yet it was
-visible in the IR.
+should have been marked "immortal" in the IR were actually being refcounted.
+The bug was not in the compiler, but far away in application setup code---and
+yet it was visible in the IR.
+
+## Love your tools
+
+My conclusion is similar to Vicki's.
+
+Put some love into your tools. Your colleagues will notice. Your users will
+notice. It might even improve your mood.
