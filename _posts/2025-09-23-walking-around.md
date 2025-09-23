@@ -161,3 +161,7 @@ My conclusion is similar to Vicki's.
 
 Put some love into your tools. Your colleagues will notice. Your users will
 notice. It might even improve your mood.
+
+## Acknowledgements
+
+Thank you to [CF](https://cfbolz.de/) for feedback on the post.
