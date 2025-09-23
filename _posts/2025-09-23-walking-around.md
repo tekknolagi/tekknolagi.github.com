@@ -43,7 +43,55 @@ Does it do the jump threading you expect it to? Maybe you're sitting there idly
 wondering while you eat a cookie, but maybe that thought would only have
 occurred to you while you were scrolling through the optimizer.
 
-<!-- TODO maybe pick another example -->
+### An example
+
+Say you are [CF Bolz-Tereick](https://cfbolz.de/) and you are paging through
+[PyPy](https://pypy.org/) IR. You notice some IR that looks like:
+
+```
+v0 = ...
+v1 = float_abs v0
+...
+v2 = float_abs v1
+...
+v3 = float_abs v2
+```
+
+"Huh", you say to yourself, "surely the optimizer can reason that the
+`float_abs` operation produces a positive number!"
+
+But some quirk in your optimizer means that it does not. Maybe it used to work,
+or maybe it never did. But this little stroll revealed a bug with a one-line
+fix:
+
+```diff
+ def return_type(op):
+     match op:
+       case float_abs(_):
+-          return float
++          return float.with_range(low=0, high=None)
+```
+
+Now, thankfully, your IR looks much better:
+
+```
+v0 = ...
+v1 = float_abs v0
+...
+...
+```
+
+and you can check this in as a tidy test case.
+
+Fun fact: this was my first exposure to the PyPy project. CF walked me through
+fixing this bug[^actual-fix] live at ECOOP 2022! I had a great time.
+
+[^actual-fix]: The actual fix is a little more complicated since PyPy does not
+    do float range tracking. Instead, the [actual
+        fix](https://github.com/pypy/pypy/commit/a31689c0b5977f8a73cca87c216dc8884aa34a76) checks for
+    `float_abs(float_abs(x))` and rewrites to `float_abs(x)`.
+
+### Internal state
 
 If checking (and, later, testing) your assumptions is tricky, this may be a
 sign that your library does not expose enough of its internal state to
