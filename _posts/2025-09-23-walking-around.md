@@ -98,7 +98,8 @@ sign that your library does not expose enough of its internal state to
 developers. This may present a usability impediment that prevents you from
 immediately checking your assumptions or suspicions.
 
-<!-- TODO link to Kate -->
+For an excellent source of inspiration, see [Kate's tweets about program
+internals](https://x.com/thingskatedid/status/1386077306381242371).
 
 Even if it does provide a flag like `--zjit-dump-hir` to print to the console,
 maybe this is hard to run from a phone[^log-off] or a friend's computer. For
