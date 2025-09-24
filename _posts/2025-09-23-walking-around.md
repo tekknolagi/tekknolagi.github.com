@@ -112,9 +112,9 @@ that, you may want *friendlier tools*.
 The right kind of tool invites exploration.
 
 Matthew Godbolt built the first friendly compiler explorer tool I used, the
-Compiler Explorer ("Godbolt"). It allows inputting programs into your web
-browser in many different languages and immediately seeing the compiled result.
-It will even execute your programs, within reason.
+[Compiler Explorer](https://godbolt.org/) ("Godbolt"). It allows inputting
+programs into your web browser in many different languages and immediately
+seeing the compiled result. It will even execute your programs, within reason.
 
 This is a powerful tool:
 
