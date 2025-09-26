@@ -65189,6 +65189,43 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115272684736640803": {
+      "id": "115272684736640803",
+      "created_at": "2025-09-26T21:19:41.062Z",
+      "in_reply_to_id": "115130356636794335",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115272684736640803",
+      "url": "https://mastodon.social/@tekknolagi/115272684736640803",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>The bullshit continues. Was told I couldn&#39;t opt out of facial scan when boarding *while the screen above the gate agent was saying otherwise*. After a short argument I ended up being rushed through sans photo but it was embarrassing. Holy moly.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
