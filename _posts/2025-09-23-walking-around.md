@@ -57,19 +57,21 @@ v2 = float_abs v1
 v3 = float_abs v2
 ```
 
-"Huh", you say to yourself, "surely the optimizer can reason that the
-`float_abs` operation produces a positive number!"
+"Huh", you say to yourself, "surely the optimizer can reason that running
+`float_abs` on the result of `float_abs` is redundant!"
 
 But some quirk in your optimizer means that it does not. Maybe it used to work,
-or maybe it never did. But this little stroll revealed a bug with a one-line
-fix:
+or maybe it never did. But this little stroll revealed a bug with a quick fix
+(adding a new peephole optimization function):
 
-```diff
- def return_type(op):
-     match op:
-       case float_abs(_):
--          return float
-+          return float.with_range(low=0, high=None)
+```python
+def optimize_FLOAT_ABS(self, op):
+    v = get_box_replacement(op.getarg(0))
+    arg_op = self.optimizer.as_operation(v)
+    if arg_op is not None and arg_op.getopnum() == rop.FLOAT_ABS:
+        self.make_equal_to(op, v)
+    else:
+        return self.emit(op)
 ```
 
 Now, thankfully, your IR looks much better:
@@ -81,15 +83,31 @@ v1 = float_abs v0
 ...
 ```
 
-and you can check this in as a tidy test case.
+and you can check this in as a tidy test case:
+
+```python
+def test_abs_abs_no(self):
+    ops = """
+    [f1]
+    f2 = float_abs(f1)
+    f3 = float_abs(f2)
+    escape_f(f3)
+    """
+    expected = """
+    [f1]
+    f2 = float_abs(f1)
+    escape_f(f2)
+    """
+    self.optimize_loop(ops, expected)
+```
 
 Fun fact: this was my first exposure to the PyPy project. CF walked me through
 fixing this bug[^actual-fix] live at ECOOP 2022! I had a great time.
 
-[^actual-fix]: The actual fix is a little more complicated since PyPy does not
-    do float range tracking. Instead, the [actual
-        fix](https://github.com/pypy/pypy/commit/a31689c0b5977f8a73cca87c216dc8884aa34a76) checks for
-    `float_abs(float_abs(x))` and rewrites to `float_abs(x)`.
+[^actual-fix]: The [actual
+    fix](https://github.com/pypy/pypy/commit/a31689c0b5977f8a73cca87c216dc8884aa34a76)
+    that checks for `float_abs(float_abs(x))` and rewrites to
+    `float_abs(x)`.
 
 ### Internal state
 
