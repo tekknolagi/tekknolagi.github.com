@@ -65339,6 +65339,43 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115321580360021999": {
+      "id": "115321580360021999",
+      "created_at": "2025-10-05T12:34:29.067Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115321580360021999",
+      "url": "https://mastodon.social/@tekknolagi/115321580360021999",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>The worst trend in journalism is sucking up to Trump. The second worst trend is &quot;scrollytelling&quot;, where you scroll for three days before finding the lede</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
