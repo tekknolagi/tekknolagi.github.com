@@ -65376,6 +65376,138 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115326619962938852": {
+      "id": "115326619962938852",
+      "created_at": "2025-10-06T09:56:07.324Z",
+      "in_reply_to_id": "115118617228286831",
+      "in_reply_to_account_id": "110851079201492064",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115326619962938852",
+      "url": "https://mastodon.social/@tekknolagi/115326619962938852",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@burakemir\" class=\"u-url mention\">@<span>burakemir</span></a></span> oof, sorry for never responding to this. It may clear it up a bit that I want to use this as an actual machine, not for proofs. Imagine a (physical) machine with very small compute capabilities but attached to massive amounts of storage. Can we do a transformation to a CS machine, basically a crappy VM, that takes advantage of this setup?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110851079201492064",
+          "username": "burakemir",
+          "url": "https://discuss.systems/@burakemir",
+          "acct": "burakemir@discuss.systems"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115326584013441103": {
+      "id": "115326584013441103",
+      "created_at": "2025-10-06T09:46:58.766Z",
+      "in_reply_to_id": "115326581519999542",
+      "in_reply_to_account_id": "114488868963757256",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115326584013441103",
+      "url": "https://mastodon.social/@tekknolagi/115326584013441103",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.gamedev.place/@eniko\" class=\"u-url mention\">@<span>eniko</span></a></span> yeah I do store media too</p><p>Fair point!</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "114488868963757256",
+          "username": "eniko",
+          "url": "https://mastodon.gamedev.place/@eniko",
+          "acct": "eniko@mastodon.gamedev.place"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115326567024014379": {
+      "id": "115326567024014379",
+      "created_at": "2025-10-06T09:42:39.525Z",
+      "in_reply_to_id": "115321122845223256",
+      "in_reply_to_account_id": "114488868963757256",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115326567024014379",
+      "url": "https://mastodon.social/@tekknolagi/115326567024014379",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.gamedev.place/@eniko\" class=\"u-url mention\">@<span>eniko</span></a></span> I ended up doing this the silliest way possible, which is having a cron job download json posts, write them to disk, render to html, write to disk, and then commit to my website&#39;s git repo. So it&#39;s a bit delayed but lives in the repo at the cost of extremely frequent commits. I may have to pivot</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "114488868963757256",
+          "username": "eniko",
+          "url": "https://mastodon.gamedev.place/@eniko",
+          "acct": "eniko@mastodon.gamedev.place"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
