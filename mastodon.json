@@ -65508,6 +65508,50 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115329268762856837": {
+      "id": "115329268762856837",
+      "created_at": "2025-10-06T21:09:44.790Z",
+      "in_reply_to_id": "115329258104361660",
+      "in_reply_to_account_id": "110851079201492064",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115329268762856837",
+      "url": "https://mastodon.social/@tekknolagi/115329268762856837",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@burakemir\" class=\"u-url mention\">@<span>burakemir</span></a></span> oh hmm I didn&#39;t really internalize that CS still used substitutions. I&#39;ll think about this more. Thank you</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110851079201492064",
+          "username": "burakemir",
+          "url": "https://discuss.systems/@burakemir",
+          "acct": "burakemir@discuss.systems"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
