@@ -347,9 +347,9 @@ write about:
     * [Lua JIT post](https://sillycross.github.io/2023/05/12/2023-05-12/)
     * [Deegen talk](https://aha.stanford.edu/sites/g/files/sbiybj20066/files/media/file/aha_071923_xu_deegen_0.pdf) (PDF)
 * Precise native stack roots
-  * [Accurate Garbage Collection in an Uncooperative Environment](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.87.3769&rep=rep1&type=pdf) (2002, PDF)
-  * [Accurate Garbage Collection in Uncooperative Environments Revisited](http://www.filpizlo.com/papers/baker-ccpe09-accurate.pdf) (2006, PDF)
-  * [Accurate Garbage Collection in Uncooperative Environments with Lazy Pointer Stacks](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.88.9375&rep=rep1&type=pdf) (2007, PDF)
+  * [Accurate Garbage Collection in an Uncooperative Environment](/assets/img/gc-uncooperative.pdf) (2002, PDF)
+  * [Accurate Garbage Collection in Uncooperative Environments Revisited](/assets/img/gc-uncooperative-revisited.pdf) (2006, PDF)
+  * [Accurate Garbage Collection in Uncooperative Environments with Lazy Pointer Stacks](/assets/img/gc-lazy-stack.pdf) (2007, PDF)
     * poster: [Accurate Garbage Collection in Uncooperative Environments with Lazy Pointer Stacks](http://filpizlo.com/lazy-ptr-stacks-poster.pdf) (PDF)
   * [Precise Garbage Collection for C](https://www.cs.utah.edu/plt/publications/ismm09-rwrf.pdf) (PDF)
   * Skybison/V8/... handles and handle scopes
