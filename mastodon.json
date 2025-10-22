@@ -65731,6 +65731,69 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115418470402376005": {
+      "id": "115418470402376005",
+      "created_at": "2025-10-22T15:14:53.793Z",
+      "in_reply_to_id": "115417459358049941",
+      "in_reply_to_account_id": "64048",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115418470402376005",
+      "url": "https://mastodon.social/@tekknolagi/115418470402376005",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> you might enjoy <a href=\"https://gist.github.com/tekknolagi/e435e35e50a9425f0d3ebf8b7318eae4\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">gist.github.com/tekknolagi/e43</span><span class=\"invisible\">5e35e50a9425f0d3ebf8b7318eae4</span></a></p><p>As described on <a href=\"https://bernsteinbear.com/cli/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com/cli/</span><span class=\"invisible\"></span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://gist.github.com/tekknolagi/e435e35e50a9425f0d3ebf8b7318eae4",
+        "title": "hist.sh",
+        "description": "GitHub Gist: instantly share code, notes, and snippets.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Gist",
+        "provider_url": "",
+        "html": "",
+        "width": 678,
+        "height": 339,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/167/602/326/original/422b9a5d2b75e9ce.png",
+        "image_description": "GitHub Gist: instantly share code, notes, and snippets.",
+        "embed_url": "",
+        "blurhash": "U56RP[_3IUD%00D$xu%MofayWBWB_3-;RjM{",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
