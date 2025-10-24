@@ -65890,6 +65890,127 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115431024294903925": {
+      "id": "115431024294903925",
+      "created_at": "2025-10-24T20:27:30.987Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115431024294903925/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/115431024294903925/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "115429061449688876",
+        "created_at": "2025-10-24T12:08:20.341Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.social/users/cfbolz/statuses/115429061449688876",
+        "url": "https://mastodon.social/@cfbolz/115429061449688876",
+        "replies_count": 2,
+        "reblogs_count": 16,
+        "favourites_count": 34,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>The article about Clang&#39;s bytecode interpreter (for constexpr evaluation etc) is super interesting, but I&#39;m still incredibly amused by C++ compiler authors having to care about interpreter performance</p><p><a href=\"https://developers.redhat.com/articles/2025/10/15/clang-bytecode-interpreter-update\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">developers.redhat.com/articles</span><span class=\"invisible\">/2025/10/15/clang-bytecode-interpreter-update</span></a></p><p>Anyway, this just is another fun example interpreters and compilers being intermingled in silly ways. We put a (bytecode) compiler into your compiler so you can compile (and then interpret) while you compile</p>",
+        "reblog": null,
+        "application": {
+          "name": "Pinafore",
+          "website": "https://pinafore.social"
+        },
+        "account": {
+          "id": "64048",
+          "username": "cfbolz",
+          "acct": "cfbolz",
+          "display_name": "CF Bolz-Tereick",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2017-04-08T00:00:00.000Z",
+          "note": "<p>PyPy/RPython contributor. Half time teaching at Uni D\u00fcsseldorf. Works on dynamic language implementations. Vegan. Love street art and art in public spaces, hiking, reading.<br />they/them</p>",
+          "url": "https://mastodon.social/@cfbolz",
+          "uri": "https://mastodon.social/users/cfbolz",
+          "avatar": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "header": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "header_static": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "followers_count": 1082,
+          "following_count": 1255,
+          "statuses_count": 2877,
+          "last_status_at": "2025-10-24",
+          "hide_collections": false,
+          "noindex": false,
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "website",
+              "value": "<a href=\"https://www.cfbolz.de\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">cfbolz.de</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2022-12-26T10:32:06.422+00:00"
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": {
+          "url": "https://developers.redhat.com/articles/2025/10/15/clang-bytecode-interpreter-update",
+          "title": "Clang bytecode interpreter update | Red Hat Developer",
+          "description": "Learn about recent improvements made to the Clang bytecode interpreter, including performance optimizations, libc++ testing, and the #embed benchmark",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "Red Hat Developer",
+          "provider_url": "",
+          "html": "",
+          "width": 664,
+          "height": 347,
+          "image": "https://files.mastodon.social/cache/preview_cards/images/167/329/986/original/2c14a15daae6dbc5.png",
+          "image_description": "Featured image for: SCTP over UDP in the Linux kernel.",
+          "embed_url": "",
+          "blurhash": "UF8yxPs:0|WVOXayr?j[1HWB=eoL;NofK4ay",
+          "published_at": "2025-10-15T07:16:20.000Z",
+          "authors": []
+        },
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
