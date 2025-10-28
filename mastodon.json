@@ -66206,6 +66206,126 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115452399123893718": {
+      "id": "115452399123893718",
+      "created_at": "2025-10-28T15:03:25.062Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115452399123893718/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/115452399123893718/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "115451769636172851",
+        "created_at": "2025-10-28T12:23:11.931Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://bsky.brid.gy/convert/ap/at://did:plc:lazqnecgajfhxm56raix2sg6/app.bsky.feed.post/3m4awe7dfa22q",
+        "url": "https://fed.brid.gy/r/https://bsky.app/profile/did:plc:lazqnecgajfhxm56raix2sg6/post/3m4awe7dfa22q",
+        "replies_count": 0,
+        "reblogs_count": 70,
+        "favourites_count": 16,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>43 years ago today, readers the world over opened their newspapers and gazed upon cow tools for the first time. happy birthday cow tools. you look great.</p>",
+        "reblog": null,
+        "account": {
+          "id": "115006504337414466",
+          "username": "cowtoolsdaily.bsky.social",
+          "acct": "cowtoolsdaily.bsky.social@bsky.brid.gy",
+          "display_name": "cow tools daily",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2024-11-08T00:00:00.000Z",
+          "note": "posting a new cow tools every day unless i don't<br><br>\ud83c\udf09 <a href=\"https://fed.brid.gy/bsky/cowtoolsdaily.bsky.social\" rel=\"nofollow noopener\" target=\"_blank\">bridged</a> from \ud83e\udd8b <a href=\"https://bsky.app/profile/cowtoolsdaily.bsky.social\" rel=\"nofollow noopener\" target=\"_blank\">cowtoolsdaily.bsky.social</a>, follow <a class=\"h-card u-author mention\" rel=\"nofollow noopener\" href=\"https://bsky.brid.gy/bsky.brid.gy\" target=\"_blank\">@bsky.brid.gy</a> to interact",
+          "url": "https://bsky.brid.gy/r/https://bsky.app/profile/cowtoolsdaily.bsky.social",
+          "uri": "https://bsky.brid.gy/ap/did:plc:lazqnecgajfhxm56raix2sg6",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/115/006/504/337/414/466/original/ef4bbeda9c379e5b.jpeg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/115/006/504/337/414/466/original/ef4bbeda9c379e5b.jpeg",
+          "header": "https://files.mastodon.social/cache/accounts/headers/115/006/504/337/414/466/original/53304eecafca8694.jpeg",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/115/006/504/337/414/466/original/53304eecafca8694.jpeg",
+          "followers_count": 61,
+          "following_count": 1,
+          "statuses_count": 2,
+          "last_status_at": "2025-10-28",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Web site",
+              "value": "<a rel=\"nofollow noopener\" href=\"https://bsky.app/profile/cowtoolsdaily.bsky.social\" target=\"_blank\"><span class=\"invisible\">https://</span>bsky.app/profile/cowtoolsdaily.bsky.social</a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [
+          {
+            "id": "115451769553741995",
+            "type": "image",
+            "url": "https://files.mastodon.social/cache/media_attachments/files/115/451/769/553/741/995/original/5f03168ee5f3b12d.jpeg",
+            "preview_url": "https://files.mastodon.social/cache/media_attachments/files/115/451/769/553/741/995/small/5f03168ee5f3b12d.jpeg",
+            "remote_url": "https://panthercap.us-east.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:lazqnecgajfhxm56raix2sg6&cid=bafkreifxtdrhr5qh7d5xizh5dogni4rpohhf4owlehax5xkfwvweoeljxi",
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "original": {
+                "width": 950,
+                "height": 1160,
+                "size": "950x1160",
+                "aspect": 0.8189655172413793
+              },
+              "small": {
+                "width": 434,
+                "height": 530,
+                "size": "434x530",
+                "aspect": 0.8188679245283019
+              }
+            },
+            "description": "The original Far Side Cow Tools Cartoon by Gary Larson. A cow stands on its hind legs behind a table, staring blankly at the viewer from behind its heavy brow ridge. On the table are four crudely made tools: a lump, a lump with an offset crooked handle, a long stick with hooked prongs at the end, and a crude handsaw with irregular teeth. In the background a barn sits on a hill. Caption reads, \"Cow tools.\"",
+            "blurhash": "UHQvwR%MM{of~qt7IURj9Foft7j[?bRjj[t7"
+          }
+        ],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
