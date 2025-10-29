@@ -14,7 +14,7 @@ things](https://mastodon.social/@tekknolagi)) about bread, legumes, and
 compilers. Right now, I am a software engineer working on compilers at Shopify
 and a Hacker in Residence at the Dartmouth College computer science department.
 I did a half-batch of [Recurse Center]({{site.rc_scout}}) (Fall 2 2024) and
-really enjoyed it.
+really enjoyed it. I am a [Ruby committer](https://bugs.ruby-lang.org/projects/ruby-master).
 
 You can [email me](mailto:contact@bernsteinbear.com) if you so desire. I'm
 happy to talk about education, programming languages, cycling, and more.
