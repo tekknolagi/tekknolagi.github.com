@@ -52,6 +52,8 @@ https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/S
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGClobberize.h
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGStructureAbstractValue.cpp
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGStructureAbstractValue.h
+https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGClobberSet.h
+https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGStructureAbstractValue.h
 
 Fil Pizlo SSA doc (inspired by TBAA)
 https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963
