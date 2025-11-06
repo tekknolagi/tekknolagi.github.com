@@ -13,6 +13,6 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-go@v5
     - name: Install gojekyll
-      run: go install github.com/osteele/gojekyll@28d8f8724f86edd71a3142eeeb6b2b1059650560
+      run: go install github.com/osteele/gojekyll@e7cc036194b7113640cb95c2c217925b37d99851
     - name: Build site
       run: gojekyll build
