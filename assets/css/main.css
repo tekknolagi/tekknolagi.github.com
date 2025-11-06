@@ -56,7 +56,7 @@ footer hr {
     margin-top: 40px;
 }
 /* Inline code */
-code.highlighter-rouge {
+code:not(div.highlighter-rouge .highlight pre code) {
     color: green;
 }
 table {
