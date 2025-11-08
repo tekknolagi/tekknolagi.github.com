@@ -239,8 +239,6 @@ type-based alias analysis (TBAA) either.
 It didn't make any sense until I actually went spelunking in JavaScriptCore and
 found one of several implementations.
 
-<!--
-
 B3 from JSC
 https://github.com/WebKit/WebKit/blob/main/Source/JavaScriptCore/b3/B3Effects.h
 https://github.com/WebKit/WebKit/blob/5811a5ad27100acab51f1d5ba4518eed86bbf00b/Source/JavaScriptCore/b3/B3AbstractHeapRepository.h
@@ -258,6 +256,8 @@ https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/S
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGStructureAbstractValue.h
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGClobberSet.h
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGStructureAbstractValue.h
+
+<!--
 
 LLVM
 https://llvm.org/docs/LangRef.html#tbaa-metadata
