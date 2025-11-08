@@ -92,6 +92,8 @@ Note that each bit implicitly represents a set: `ListItem` does not refer to a
 global variable.
 
 Like other bitset lattices, it's possible to union the sets by or-ing the bits.
+It's possible to query for overlap by and-ing the bits.
+
 If this sounds familiar, it's because (as the repo notes) it's a similar idea
 to Cinder's [type lattice representation](/blog/lattice-bitset/).
 
