@@ -181,15 +181,33 @@ other small optimization passes they call "reducers".
 [turboshaft-operations-h]: https://github.com/v8/v8/blob/e817fdf31a2947b2105bd665067d92282e4b4d59/src/compiler/turboshaft/operations.h#L577
 [turboshaft-value-numbering-reducer-h]: https://github.com/v8/v8/blob/42f5ff65d12f0ef9294fa7d3875feba938a81904/src/compiler/turboshaft/value-numbering-reducer.h#L164
 
-Until recently, V8 also used Sea of Nodes as its IR representation, which also
-tracks side effects more explicitly in the structure of the IR itself.
-
 Maglev also has this thing called `NodeT::kProperties` in [their IR
 nodes][maglev-ir-h] that also looks like a bitset and is used in their various
 reducers. It has effect query methods on it such as `can_eager_deopt` and
 `can_write`.
 
 [maglev-ir-h]: https://github.com/v8/v8/blob/42f5ff65d12f0ef9294fa7d3875feba938a81904/src/maglev/maglev-ir.h
+
+Until recently, V8 also used Sea of Nodes as its IR representation, which also
+tracks side effects more explicitly in the structure of the IR itself.
+
+## Simple
+
+Speaking of Sea of Nodes (SoN), [Simple](https://github.com/seaofnodes/simple)
+is Cliff Click's pet SoN project to try and showcase the idea to the
+world---outside of a HotSpot C2 context.
+
+This one is a little harder for me to understand but it looks like each
+translation unit has a [`StartNode`][simple-startnode-java] that doles out
+different classes of memory nodes for each alias class. Each IR node then takes
+data dependencies on whatever effect nodes it might uses.
+
+[simple-startnode-java]: https://github.com/SeaOfNodes/Simple/blob/1426384fc7d0e9947e38ad6d523a5e53c324d710/chapter10/src/main/java/com/seaofnodes/simple/node/StartNode.java#L33
+
+The project is structured into sequential implementation stages and alias
+classes come into the picture in [Chapter 10][simple-chapter-10].
+
+[simple-chapter-10]: https://github.com/SeaOfNodes/Simple/tree/main/chapter10
 
 ## JavaScriptCore
 
