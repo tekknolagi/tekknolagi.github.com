@@ -208,7 +208,7 @@ Alias classes are split up based on the paper [Type-Based Alias Analysis][tbaa]
 (PDF): "Our approach is a form of TBAA similar to the 'FieldTypeDecl' algorithm
 described in the paper."
 
-[tbaa]: https://dl.acm.org/doi/pdf/10.1145/277652.277670
+[tbaa]: /assets/img/tbaa.pdf
 
 The Simple project is structured into sequential implementation stages and
 alias classes come into the picture in [Chapter 10][simple-chapter-10].
