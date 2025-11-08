@@ -169,6 +169,14 @@ and more.
 [art-write-barrier-elimination-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/write_barrier_elimination.cc#L45
 [art-scheduler-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/scheduler.cc#L55
 
+## .NET/CoreCLR
+
+CoreCLR mostly [uses a bitset][clr-sideeffects-h] for its `SideEffectSet`
+class. This one is interesting though because it also splits out effects
+specifically to include sets of local variables (`LclVarSet`).
+
+[clr-sideeffects-h]: https://github.com/dotnet/runtime/blob/a0878687d02b42034f4ea433ddd7a72b741510b8/src/coreclr/jit/sideeffects.h#L169
+
 ## V8
 
 V8 is about six completely different compilers in a trenchcoat.{{ site.citation_needed }}
@@ -265,12 +273,6 @@ https://2023.splashcon.org/details/splash-2023-oopsla/46/Graph-IRs-for-Impure-Hi
 
 Guile Scheme
 https://wingolog.org/archives/2014/05/18/effects-analysis-in-guile
-
-Dotnet/CoreCLR
-https://github.com/dotnet/runtime/blob/a0878687d02b42034f4ea433ddd7a72b741510b8/src/coreclr/jit/sideeffects.h#L169
-
-Simple
-https://github.com/SeaOfNodes/Simple/tree/main/chapter10
 
 MIR and borrow checker
 https://rustc-dev-guide.rust-lang.org/part-3-intro.html#source-code-representation
