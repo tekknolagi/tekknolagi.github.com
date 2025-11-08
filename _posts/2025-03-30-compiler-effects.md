@@ -169,6 +169,28 @@ and more.
 [art-write-barrier-elimination-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/write_barrier_elimination.cc#L45
 [art-scheduler-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/scheduler.cc#L55
 
+## V8
+
+V8 has about six compilers within it (citation needed).
+
+Turboshaft uses a struct in [operations.h][turboshaft-operations-h] called
+`OpEffects` which is two bitsets for reads/writes of effects. This is used in
+[value numbering][turboshaft-value-numbering-reducer-h] as well a bunch of
+other small optimization passes they call "reducers".
+
+[turboshaft-operations-h]: https://github.com/v8/v8/blob/e817fdf31a2947b2105bd665067d92282e4b4d59/src/compiler/turboshaft/operations.h#L577
+[turboshaft-value-numbering-reducer-h]: https://github.com/v8/v8/blob/42f5ff65d12f0ef9294fa7d3875feba938a81904/src/compiler/turboshaft/value-numbering-reducer.h#L164
+
+Until recently, V8 also used Sea of Nodes as its IR representation, which also
+tracks side effects more explicitly in the structure of the IR itself.
+
+Maglev also has this thing called `NodeT::kProperties` in [their IR
+nodes][maglev-ir-h] that also looks like a bitset and is used in their various
+reducers. It has effect query methods on it such as `can_eager_deopt` and
+`can_write`.
+
+[maglev-ir-h]: https://github.com/v8/v8/blob/42f5ff65d12f0ef9294fa7d3875feba938a81904/src/maglev/maglev-ir.h
+
 ## JavaScriptCore
 
 I keep coming back to [How I implement SSA form][pizlo-ssa] by [Fil
@@ -220,9 +242,6 @@ https://conf.researchr.org/details/cgo-2024/cgo-2024-main-conference/31/Represen
 
 Scala LMS graph IR
 https://2023.splashcon.org/details/splash-2023-oopsla/46/Graph-IRs-for-Impure-Higher-Order-Languages-Making-Aggressive-Optimizations-Affordab
-
-V8 Turboshaft
-https://github.com/v8/v8/blob/e817fdf31a2947b2105bd665067d92282e4b4d59/src/compiler/turboshaft/operations.h#L618
 
 Guile Scheme
 https://wingolog.org/archives/2014/05/18/effects-analysis-in-guile
