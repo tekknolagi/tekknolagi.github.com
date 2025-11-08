@@ -171,7 +171,7 @@ and more.
 
 ## V8
 
-V8 has about six compilers within it.{{ site.citation_needed }}
+V8 is about six completely different compilers in a trenchcoat.{{ site.citation_needed }}
 
 Turboshaft uses a struct in [operations.h][turboshaft-operations-h] called
 `OpEffects` which is two bitsets for reads/writes of effects. This is used in
