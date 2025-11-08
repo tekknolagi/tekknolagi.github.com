@@ -206,9 +206,7 @@ represent nested heap effects just did not click.
 It didn't really make sense until I actually went spelunking in JavaScriptCore
 and found one of several implementations.
 
-
-
-## Let's look at some compilers
+<!--
 
 B3 from JSC
 https://github.com/WebKit/WebKit/blob/main/Source/JavaScriptCore/b3/B3Effects.h
@@ -261,3 +259,5 @@ Intermediate Representations in Imperative Compilers: A Survey
 http://kameken.clique.jp/Lectures/Lectures2013/Compiler2013/a26-stanier.pdf
 
 Partitioned Lattice per Variable (PLV) -- that's in Chapter 13 on SSI
+
+-->
