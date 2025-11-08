@@ -197,14 +197,15 @@ I keep coming back to [How I implement SSA form][pizlo-ssa] by [Fil
 Pizlo][pizlo]. In particular, I keep coming back to the [Uniform Effect
 Representation][pizlo-effect] section. This notion of "abstract heaps" felt
 very... well, abstract. The pre-order and post-order integer pair as a way to
-represent nested heap effects just did not click.
+represent nested heap effects just did not click. I had never heard of
+type-based alias analysis (TBAA) either.
 
 [pizlo]: http://www.filpizlo.com/
 [pizlo-ssa]: https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963
 [pizlo-effect]: https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963#uniform-effect-representation
 
-It didn't really make sense until I actually went spelunking in JavaScriptCore
-and found one of several implementations.
+It didn't make any sense until I actually went spelunking in JavaScriptCore and
+found one of several implementations.
 
 <!--
 
@@ -225,9 +226,6 @@ https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/S
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGStructureAbstractValue.h
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGClobberSet.h
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGStructureAbstractValue.h
-
-Fil Pizlo SSA doc (inspired by TBAA)
-https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963
 
 LLVM
 https://llvm.org/docs/LangRef.html#tbaa-metadata
