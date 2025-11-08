@@ -3,11 +3,21 @@ title: A catalog of side effects
 layout: post
 ---
 
-Compilers like to keep track of each IR instruction's *effects*. This effect
-tracking is similar to the programming language notion of algebraic effects in
-type systems, but internally, compilers keep track of way more fine-grained
-effects. Thes effects indicate what instructions can be re-ordered, duplicated,
-or removed entirely.
+Compilers like to keep track of each IR instruction's *effects*. An
+instruction's effects vary wildly from having no effects at all, to writing a
+specific variable, to completely unknown (writing all state).
+
+Different compilers represent and track these effects differently. I've been
+thinking about how to represent these effects all year, so I have been doing
+some reading. In this post I will give some summaries of the landscape of
+approaches. Please feel free to suggest more.
+
+## Some background
+
+Internal IR effect tracking is similar to the programming language notion of
+algebraic effects in type systems, but internally, compilers keep track of
+finer-grained effects. These effects indicate what instructions can be
+re-ordered, duplicated, or removed entirely.
 
 For example, consider the following pseodocode for some made-up language that
 stands in for a snippet of compiler IR:
@@ -28,10 +38,29 @@ effect analysis gives up and says "we can't re-order or delete any
 instructions". That's probably fine for a first stab at a compiler, where you
 will get a big speed up purely based on strength reductions.
 
-But at some point you start wanting to do dead code elimination (DCE), or move
-instructions around, and you start wondering how to represent effects. That's
-where I am right now. So here's a catalog of different compilers I have looked
-at recently.
+But at some point you start wanting to do dead code elimination (DCE), or
+common subexpression elimination (CSE), or move instructions around, and you
+start wondering how to represent effects. That's where I am right now. So
+here's a catalog of different compilers I have looked at recently.
+
+## Cinder
+
+## JavaScriptCore
+
+I keep coming back to [How I implement SSA form][pizlo-ssa] by [Fil
+Pizlo][pizlo]. In particular, I keep coming back to the [Uniform Effect
+Representation][pizlo-effect] section. This notion of "abstract heaps" felt
+very... well, abstract. The pre-order and post-order integer pair as a way to
+represent nested heap effects just did not click.
+
+[pizlo]: http://www.filpizlo.com/
+[pizlo-ssa]: https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963
+[pizlo-effect]: https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963#uniform-effect-representation
+
+It didn't really make sense until I actually went spelunking in JavaScriptCore
+and found one of several implementations.
+
+
 
 ## Let's look at some compilers
 
