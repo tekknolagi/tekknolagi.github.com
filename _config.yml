@@ -56,3 +56,4 @@ collections:
 default_og_image: "/favicon.ico"
 
 rc_scout: "https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb"
+citation_needed: "<sup>[<a href=\"https://en.wikipedia.org/wiki/Wikipedia:Citation_needed\"><i>citation needed</i></a>]</sup>"

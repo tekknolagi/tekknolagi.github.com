@@ -372,8 +372,8 @@ the two cases in the code, we add some extra low bits to every pointer.
 ## Inside the runtime: tagged pointers
 
 In Scrapscript, numbers are arbitrary-size integers. Fortunately, most numbers
-are small [citation needed], and fortunately, 63 bits can represent a lot of
-them.
+are small{{ site.citation_needed }}, and fortunately, 63 bits can represent a
+lot of them.
 
 Yes, 63, not 64. One of the pointer tagging tricks we do is bias heap-allocated
 objects by 1. Since all heap allocations are multiples of 8 bytes (at least;

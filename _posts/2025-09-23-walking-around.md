@@ -3,7 +3,7 @@ title: "Walking around the compiler"
 layout: post
 ---
 
-Walking around outside is good for you.<sup>[<a href="https://en.wikipedia.org/wiki/Wikipedia:Citation_needed"><i>citation needed</i></a>]</sup>
+Walking around outside is good for you.{{ site.citation_needed }}
 A nice amble through the trees can quiet inner turbulence and make complex
 engineering problems disappear.
 
