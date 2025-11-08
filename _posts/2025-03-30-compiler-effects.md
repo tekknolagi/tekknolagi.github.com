@@ -45,6 +45,130 @@ here's a catalog of different compilers I have looked at recently.
 
 ## Cinder
 
+We'll start with [Cinder][cinder], a Python JIT, because that's what I used to
+work on. Cinder tracks heap effects for its high-level IR (HIR) in
+[instr_effects.h][cinder-instr-effects-h]. Pretty much everything happens in
+the `memoryEffects(const Instr& instr)` function, which is expected to know
+everything about what effects the given instruction might have.
+
+[cinder]: https://github.com/facebookincubator/cinder
+[cinder-instr-effects-h]: https://github.com/facebookincubator/cinderx/blob/8bf5af94e2792d3fd386ab25b1aeedae27276d50/cinderx/Jit/hir/instr_effects.h
+
+The data representation is a bitset representation of a lattice called an
+`AliasClass` and that is defined in [alias_class.h][cinder-alias-class-h]. Each
+bit in the bitset represents a distinct location in the heap: reads from and
+writes to each of these locations are guaranteed not to affect any of the other
+locations.
+
+[cinder-alias-class-h]: https://github.com/facebookincubator/cinderx/blob/8bf5af94e2792d3fd386ab25b1aeedae27276d50/cinderx/Jit/hir/alias_class.h
+
+Here is the X-macro that defines it:
+
+```c
+#define HIR_BASIC_ACLS(X) \
+  X(ArrayItem)            \
+  X(CellItem)             \
+  X(DictItem)             \
+  X(FuncArgs)             \
+  X(FuncAttr)             \
+  X(Global)               \
+  X(InObjectAttr)         \
+  X(ListItem)             \
+  X(Other)                \
+  X(TupleItem)            \
+  X(TypeAttrCache)        \
+  X(TypeMethodCache)
+
+enum BitIndexes {
+#define ACLS(name) k##name##Bit,
+    HIR_BASIC_ACLS(ACLS)
+#undef ACLS
+};
+```
+
+Note that each bit implicitly represents a set: `ListItem` does not refer to a
+*specific* list index, but the infinite set of all possible list indices. It's
+*any* list item. Still, every list item is completely disjoint from, say, every
+global variable.
+
+Like other bitset lattices, it's possible to union the sets by or-ing the bits.
+If this sounds familiar, it's because (as the repo notes) it's a similar idea
+to Cinder's [type lattice representation](/blog/lattice-bitset/).
+
+And, like other lattices, there is both a bottom element (no effects) and a
+top element (all possible effects):
+
+```c
+#define HIR_OR_BITS(name) | k##name
+
+#define HIR_UNION_ACLS(X)                           \
+  /* Bottom union */                                \
+  X(Empty, 0)                                       \
+  /* Top union */                                   \
+  X(Any, 0 HIR_BASIC_ACLS(HIR_OR_BITS))             \
+  /* Memory locations accessible by managed code */ \
+  X(ManagedHeapAny, kAny & ~kFuncArgs)
+```
+
+All of this together lets the optimizer ask and answer questions such as:
+
+* where might this instruction write?
+* where does this instruction borrow its input from?
+* do these two instructions write destinations overlap?
+
+and more.
+
+These memory effects could in the future be used for instruction re-ordering,
+but they are mostly used in two places in Cinder: the refcount insertion pass
+and DCE.
+
+## HHVM
+
+[HHVM](https://github.com/facebook/hhvm), a JIT for the
+[Hack](https://hacklang.org/) language, also uses a bitset for its memory
+effects. See for example: [alias-class.h][hhvm-alias-class-h] and
+[memory-effects.h][hhvm-memory-effects-h].
+
+[hhvm-alias-class-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/alias-class.h
+[hhvm-memory-effects-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/memory-effects.h
+
+HHVM has a couple places that uses this information, such as [a
+definition-sinking pass][hhvm-def-sink-cpp], [alias
+analysis][hhvm-alias-analysis-h], [DCE][hhvm-dce-cpp], [store
+elimination][hhvm-store-elim-cpp], and more.
+
+[hhvm-def-sink-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/def-sink.cpp
+[hhvm-alias-analysis-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/alias-analysis.h
+[hhvm-dce-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/dce.cpp
+[hhvm-store-elim-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/store-elim.cpp
+
+If you are wondering why the HHVM representation looks similar to the Cinder
+representation, it's because some former HHVM engineers such as Brett Simmers
+also worked on Cinder!
+
+## Android ART
+
+(note that I am linking an ART fork on GitHub as a reference, but the upstream
+code is [hosted on googlesource][googlesource-art])
+
+[googlesource-art]: https://android.googlesource.com/platform/art/+/refs/heads/main/compiler/optimizing/nodes.h
+
+Android's [ART Java runtime](https://source.android.com/docs/core/runtime) also
+uses a bitset for its effect representation. It's a very compact class called
+`SideEffects` in [nodes.h][art-nodes-h].
+
+[art-nodes-h]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/nodes.h#L1602
+
+The side effects are used in [loop-invariant code motion][art-licm-cc], [global
+value numbering][art-gvn-cc], [write barrier
+elimination][art-write-barrier-elimination-cc], [scheduling][art-scheduler-cc],
+and more.
+
+[art-licm-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/licm.cc#L104
+[art-gvn-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/gvn.cc#L204
+[art-write-barrier-elimination-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/write_barrier_elimination.cc#L45
+[art-scheduler-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/scheduler.cc#L55
+
 ## JavaScriptCore
 
 I keep coming back to [How I implement SSA form][pizlo-ssa] by [Fil
@@ -64,11 +188,9 @@ and found one of several implementations.
 
 ## Let's look at some compilers
 
-Cinder
-https://github.com/facebookincubator/cinderx/blob/b1be7e9c33a0023a0dee1f3a23e35a8810e00ae9/Jit/hir/instr_effects.h
-
 B3 from JSC
 https://github.com/WebKit/WebKit/blob/main/Source/JavaScriptCore/b3/B3Effects.h
+https://github.com/WebKit/WebKit/blob/5811a5ad27100acab51f1d5ba4518eed86bbf00b/Source/JavaScriptCore/b3/B3AbstractHeapRepository.h
 
 DOMJIT from JSC
 https://github.com/WebKit/WebKit/blob/main/Source/WebCore/domjit/generate-abstract-heap.rb
@@ -98,12 +220,6 @@ https://conf.researchr.org/details/cgo-2024/cgo-2024-main-conference/31/Represen
 
 Scala LMS graph IR
 https://2023.splashcon.org/details/splash-2023-oopsla/46/Graph-IRs-for-Impure-Higher-Order-Languages-Making-Aggressive-Optimizations-Affordab
-
-HHVM
-https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/memory-effects.h
-
-Android ART
-https://github.com/LineageOS/android_art/blob/0abc6e9ecd0bdf2414966af6f9e850a05f88413f/compiler/optimizing/nodes.h#L1850
 
 V8 Turboshaft
 https://github.com/v8/v8/blob/e817fdf31a2947b2105bd665067d92282e4b4d59/src/compiler/turboshaft/operations.h#L618
