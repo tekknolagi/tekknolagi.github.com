@@ -204,8 +204,14 @@ data dependencies on whatever effect nodes it might uses.
 
 [simple-startnode-java]: https://github.com/SeaOfNodes/Simple/blob/1426384fc7d0e9947e38ad6d523a5e53c324d710/chapter10/src/main/java/com/seaofnodes/simple/node/StartNode.java#L33
 
-The project is structured into sequential implementation stages and alias
-classes come into the picture in [Chapter 10][simple-chapter-10].
+Alias classes are split up based on the paper [Type-Based Alias Analysis][tbaa]
+(PDF): "Our approach is a form of TBAA similar to the 'FieldTypeDecl' algorithm
+described in the paper."
+
+[tbaa]: https://dl.acm.org/doi/pdf/10.1145/277652.277670
+
+The Simple project is structured into sequential implementation stages and
+alias classes come into the picture in [Chapter 10][simple-chapter-10].
 
 [simple-chapter-10]: https://github.com/SeaOfNodes/Simple/tree/main/chapter10
 
