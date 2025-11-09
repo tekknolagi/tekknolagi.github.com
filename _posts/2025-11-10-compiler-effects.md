@@ -278,6 +278,7 @@ HotSpot C2
 
 PyPy
 https://github.com/pypy/pypy/blob/main/rpython/jit/codewriter/effectinfo.py
+https://github.com/pypy/pypy/blob/main/rpython/jit/metainterp/optimizeopt/heap.py#L59
 
 LLVM
 https://llvm.org/docs/LangRef.html#tbaa-metadata
