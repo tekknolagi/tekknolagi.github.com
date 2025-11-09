@@ -127,6 +127,8 @@ These memory effects could in the future be used for instruction re-ordering,
 but they are mostly used in two places in Cinder: the refcount insertion pass
 and DCE.
 
+<!-- TODO tie it back to the original example -->
+
 ## HHVM
 
 [HHVM](https://github.com/facebook/hhvm), a JIT for the
@@ -244,6 +246,8 @@ represent nested heap effects just did not click.
 
 It didn't make any sense until I actually went spelunking in JavaScriptCore and
 found one of several implementations.
+
+<!-- TODO tie it back to the original example -->
 
 B3 from JSC
 https://github.com/WebKit/WebKit/blob/main/Source/JavaScriptCore/b3/B3Effects.h
