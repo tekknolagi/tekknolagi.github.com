@@ -277,6 +277,9 @@ https://llvm.org/docs/LangRef.html#tbaa-metadata
 LLVM MemorySSA
 https://llvm.org/docs/MemorySSA.html
 
+MLIR
+https://mlir.llvm.org/docs/Rationale/SideEffectsAndSpeculation/
+
 MEMOIR
 https://conf.researchr.org/details/cgo-2024/cgo-2024-main-conference/31/Representing-Data-Collections-in-an-SSA-Form
 
