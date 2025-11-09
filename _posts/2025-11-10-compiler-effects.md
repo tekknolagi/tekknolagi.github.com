@@ -355,6 +355,18 @@ mod bits {
 
 It already comes with a little diagram, which is super helpful for readability.
 
+So how do we compute subtyping relationships with `HeapRange`s? We check range
+overlap!
+
+<!-- TODO insert range overlap code -->
+
+The empty range(s) represent empty heap effects: if the start and end are the
+same number, there are no effects.
+
+Maybe this was obvious to you, dear reader, but this pre-order/post-order thing
+is *just* about nested ranges! Seeing the output of the generator laid out
+clearly like this made it make a lot more sense for me.
+
 <!--
 We can tweak it slightly to use the symbolic names and it looks maybe slightly
 easier to read:
