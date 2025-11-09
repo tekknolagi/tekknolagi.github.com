@@ -66326,6 +66326,62 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115517447626595617": {
+      "id": "115517447626595617",
+      "created_at": "2025-11-09T02:46:06.369Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115517447626595617",
+      "url": "https://mastodon.social/@tekknolagi/115517447626595617",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Come join us playing geoguessr!</p><p><a href=\"https://www.geoguessr.com/join/ZS5KE?s=Url\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">geoguessr.com/join/ZS5KE?s=Url</span><span class=\"invisible\"></span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://www.geoguessr.com/join/ZS5KE?s=Url",
+        "title": "GeoGuessr - Let's explore the world!",
+        "description": "GeoGuessr is a geography game which takes you on a journey around the world and challenges your ability to recognize your surroundings.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 662,
+        "height": 348,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/169/940/548/original/03aec311c6cb7fb9.webp",
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": "UB8pvHT10~WB-rXUNya#0zbc^jj[EMfR$*j[",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
