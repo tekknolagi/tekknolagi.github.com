@@ -236,8 +236,7 @@ Speaking of TBAA, I keep coming back to [How I implement SSA form][pizlo-ssa]
 by [Fil Pizlo][pizlo]. In particular, I keep coming back to the [Uniform Effect
 Representation][pizlo-effect] section. This notion of "abstract heaps" felt
 very... well, abstract. The pre-order and post-order integer pair as a way to
-represent nested heap effects just did not click. I had never heard of
-type-based alias analysis (TBAA) either.
+represent nested heap effects just did not click.
 
 [pizlo]: http://www.filpizlo.com/
 [pizlo-ssa]: https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963
