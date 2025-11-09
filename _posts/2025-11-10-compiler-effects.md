@@ -223,6 +223,8 @@ described in the paper."
 
 [tbaa]: /assets/img/tbaa.pdf
 
+<!-- TODO: insert Cliff Click messages -->
+
 The Simple project is structured into sequential implementation stages and
 alias classes come into the picture in [Chapter 10][simple-chapter-10].
 
