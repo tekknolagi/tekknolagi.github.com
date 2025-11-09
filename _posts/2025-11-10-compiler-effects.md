@@ -123,11 +123,29 @@ All of this together lets the optimizer ask and answer questions such as:
 
 and more.
 
+Let's take a look at an (imaginary) IR version of the code snippet in the intro
+and see what analyzing it might look like in the optimizer. Here is the fake
+IR:
+
+```
+v0: Tuple = ...
+v1: List = ...
+v2: Int[5] = ...
+# v = some_var[0]
+v3: Object = LoadTupleItem v0, 0
+# another_var[0] = 5
+StoreListItem v1, 0, v2
+```
+
+You can imagine that `LoadTupleItem` declares that it reads from the
+`TupleItem` heap and `StoreListItem` declares that it writes to the `ListItem`
+heap. Because tuples and lists cannot be converted into one another, these are
+disjoint heaps in our bitset. Therefore these memory operations can never
+interfere! They can be re-ordered arbitrarily.
+
 These memory effects could in the future be used for instruction re-ordering,
 but they are mostly used in two places in Cinder: the refcount insertion pass
 and DCE.
-
-<!-- TODO tie it back to the original example -->
 
 ## HHVM
 
