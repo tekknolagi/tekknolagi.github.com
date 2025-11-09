@@ -319,8 +319,9 @@ mod bits {
 
 It's not a fancy X-macro, but it's a short and flexible Ruby script.
 
-Then I took the DOMJIT abstract heap generator, modified the output format
-slightly, and had it generate its int pairs:
+Then I took the DOMJIT abstract heap generator---also funnily enough a short
+Ruby script---modified the output format slightly, and had it generate its int
+pairs:
 
 ```rust
 mod bits {
