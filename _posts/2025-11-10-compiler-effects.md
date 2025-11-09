@@ -367,6 +367,12 @@ Maybe this was obvious to you, dear reader, but this pre-order/post-order thing
 is *just* about nested ranges! Seeing the output of the generator laid out
 clearly like this made it make a lot more sense for me.
 
+Now that we understand the representation, let's take a look at how the DFG
+(for example) uses these heap ranges in analysis. The DFG is structured in such
+a way that it can make use of the DOMJIT heap ranges directly, which is neat.
+
+<!-- TODO insert functors -->
+
 <!--
 We can tweak it slightly to use the symbolic names and it looks maybe slightly
 easier to read:
