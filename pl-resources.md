@@ -285,7 +285,7 @@ that can help with that.
   from the wasm micro runtime (C++)
 * [zasm](https://github.com/zyantific/zasm) (C++)
 * [monoasm](https://github.com/sisshiki1969/monoasm) (Rust)
-* [cj](https://blog.veitheller.de/cj:_Making_a_minimal,_complete_JIT.html) (C)
+* [cj](https://github.com/hellerve-pl-experiments/cj) and [blog](https://blog.veitheller.de/cj:_Making_a_minimal,_complete_JIT.html) (C)
 
 For more inspiration, check out some of the assemblers in runtimes I mention in
 my [Compiling a Lisp](/blog/compiling-a-lisp-8/#assembler-libraries) post.
