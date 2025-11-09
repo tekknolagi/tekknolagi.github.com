@@ -34,10 +34,12 @@ instructions can be re-ordered. The second instruction *might* write to a
 location that the first one reads. But it also might not! And if they look at
 disjoint locations, there need not be any explicit order enforced.
 
-Different compilers keep track of this information differently. The null
-effect analysis gives up and says "we can't re-order or delete any
-instructions". That's probably fine for a first stab at a compiler, where you
-will get a big speed up purely based on strength reductions.
+Different compilers keep track of this information differently. The null effect
+analysis gives up and says "every instruction is maximally effectful" and
+therefore "we can't re-order or delete any instructions". That's probably fine
+for a first stab at a compiler, where you will get a big speed up purely based
+on strength reductions. Over-approximations of effects should always be
+valid.
 
 But at some point you start wanting to do dead code elimination (DCE), or
 common subexpression elimination (CSE), or move instructions around, and you
