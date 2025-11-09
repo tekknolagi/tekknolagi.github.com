@@ -272,6 +272,9 @@ HotSpot C1
 
 HotSpot C2
 
+PyPy
+https://github.com/pypy/pypy/blob/main/rpython/jit/codewriter/effectinfo.py
+
 LLVM
 https://llvm.org/docs/LangRef.html#tbaa-metadata
 
