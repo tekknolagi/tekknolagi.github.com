@@ -264,7 +264,12 @@ represent nested heap effects just did not click.
 [pizlo-effect]: https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963#uniform-effect-representation
 
 It didn't make any sense until I actually went spelunking in JavaScriptCore and
-found one of several implementations.
+found one of several implementations---because, you know, JSC is also six
+compilers in a trenchcoat.
+
+DFG, B3, DOMJIT, and probably others all have their own abstract heap
+implementations. We'll look at DOMJIT mostly because it's a smaller example and
+also illustrates something else that's interesting: builtins.
 
 <!-- TODO tie it back to the original example -->
 
