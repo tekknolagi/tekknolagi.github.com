@@ -359,6 +359,13 @@ It already comes with a little diagram, which is super helpful for readability.
 So how do we compute subtyping relationships with `HeapRange`s? We check range
 overlap!
 
+TODO mention union vs multiple ranges query
+
+I asked Fil if both bitsets and int ranges answer the same question, why use
+int ranges? He said that it's more flexible long-term: bitsets get expensive as
+soon as you need over 128 bits (you might need to heap allocate them!) whereas
+ranges have no such ceiling.
+
 <!-- TODO insert range overlap code -->
 
 The empty range(s) represent empty heap effects: if the start and end are the
