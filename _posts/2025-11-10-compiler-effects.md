@@ -270,8 +270,113 @@ compilers in a trenchcoat.
 
 DFG, B3, DOMJIT, and probably others all have their own abstract heap
 implementations. We'll look at DOMJIT mostly because it's a smaller example and
-also illustrates something else that's interesting: builtins.
+also illustrates something else that's interesting: builtins. We'll come back
+to builtins in a minute.
 
+Let's take a lookat how DOMJIT structures its abstract heaps: a YAML file.
+
+```yaml
+DOM:
+    Tree:
+        Node:
+            - Node_firstChild
+            - Node_lastChild
+            - Node_parentNode
+            - Node_nextSibling
+            - Node_previousSibling
+            - Node_ownerDocument
+        Document:
+            - Document_documentElement
+            - Document_body
+```
+
+It's a hierarchy. `Node_firstChild` is a subheap of `Node` is a subheap of...
+and so on. Sibling heaps are unrelated: `Node_firstChild` and `Node_lastChild`,
+for example, are disjoint.
+
+To get a feel for this, I wired up a simplified version of ZJIT's bitset
+generator (for *types!*) to read a YAML document and generate a bitset. It
+generated the following Rust code:
+
+```rust
+mod bits {
+  pub const Empty: u64 = 0u64;
+  pub const Document_body: u64 = 1u64 << 0;
+  pub const Document_documentElement: u64 = 1u64 << 1;
+  pub const Document: u64 = Document_body | Document_documentElement;
+  pub const Node_firstChild: u64 = 1u64 << 2;
+  pub const Node_lastChild: u64 = 1u64 << 3;
+  pub const Node_nextSibling: u64 = 1u64 << 4;
+  pub const Node_ownerDocument: u64 = 1u64 << 5;
+  pub const Node_parentNode: u64 = 1u64 << 6;
+  pub const Node_previousSibling: u64 = 1u64 << 7;
+  pub const Node: u64 = Node_firstChild | Node_lastChild | Node_nextSibling | Node_ownerDocument | Node_parentNode | Node_previousSibling;
+  pub const DOM: u64 = Tree;
+  pub const Tree: u64 = Document | Node;
+  pub const NumTypeBits: u64 = 8;
+}
+```
+
+It's not a fancy X-macro, but it's a short and flexible Ruby script.
+
+Then I took the DOMJIT abstract heap generator, modified the output format
+slightly, and had it generate its int pairs:
+
+```rust
+mod bits {
+  /* DOMJIT Abstract Heap Tree.
+  DOM<0,8>:
+      Tree<0,8>:
+          Node<0,6>:
+              Node_firstChild<0,1>
+              Node_lastChild<1,2>
+              Node_parentNode<2,3>
+              Node_nextSibling<3,4>
+              Node_previousSibling<4,5>
+              Node_ownerDocument<5,6>
+          Document<6,8>:
+              Document_documentElement<6,7>
+              Document_body<7,8>
+  */
+  pub const DOM: HeapRange = HeapRange { start: 0, end: 8 };
+  pub const Tree: HeapRange = HeapRange { start: 0, end: 8 };
+  pub const Node: HeapRange = HeapRange { start: 0, end: 6 };
+  pub const Node_firstChild: HeapRange = HeapRange { start: 0, end: 1 };
+  pub const Node_lastChild: HeapRange = HeapRange { start: 1, end: 2 };
+  pub const Node_parentNode: HeapRange = HeapRange { start: 2, end: 3 };
+  pub const Node_nextSibling: HeapRange = HeapRange { start: 3, end: 4 };
+  pub const Node_previousSibling: HeapRange = HeapRange { start: 4, end: 5 };
+  pub const Node_ownerDocument: HeapRange = HeapRange { start: 5, end: 6 };
+  pub const Document: HeapRange = HeapRange { start: 6, end: 8 };
+  pub const Document_documentElement: HeapRange = HeapRange { start: 6, end: 7 };
+  pub const Document_body: HeapRange = HeapRange { start: 7, end: 8 };
+}
+```
+
+It already comes with a little diagram, which is super helpful for readability.
+
+<!--
+We can tweak it slightly to use the symbolic names and it looks maybe slightly
+easier to read:
+
+```rust
+mod bits {
+  /* ... */
+  pub const DOM: HeapRange = HeapRange { start: Tree.start, end: Tree.end };
+  pub const Tree: HeapRange = HeapRange { start: Node.start, end: Document.end };
+  pub const Node: HeapRange = HeapRange { start: Node_firstChild.start, end: Node_ownerDocument.end };
+  pub const Node_firstChild: HeapRange = HeapRange { start: 0, end: 1 };
+  pub const Node_lastChild: HeapRange = HeapRange { start: 1, end: 2 };
+  pub const Node_parentNode: HeapRange = HeapRange { start: 2, end: 3 };
+  pub const Node_nextSibling: HeapRange = HeapRange { start: 3, end: 4 };
+  pub const Node_previousSibling: HeapRange = HeapRange { start: 4, end: 5 };
+  pub const Node_ownerDocument: HeapRange = HeapRange { start: 5, end: 6 };
+  pub const Document: HeapRange = HeapRange { start: Document_documentElement.start, end: Document_body.end };
+  pub const Document_documentElement: HeapRange = HeapRange { start: 6, end: 7 };
+  pub const Document_body: HeapRange = HeapRange { start: 7, end: 8 };
+}
+```
+-->
 
 <!-- TODO tie it back to the original example -->
 
