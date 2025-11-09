@@ -24,14 +24,14 @@ stands in for a snippet of compiler IR:
 
 ```python
 # ...
-a = l[0]
-l[0] = 5
+v = some_var[0]
+another_var[0] = 5
 # ...
 ```
 
-The goal of effects is to communicate to the compiler that these two IR
-instructions *cannot be re-ordered*. The second instruction writes to a
-location that the first one reads.
+The goal of effects is to communicate to the compiler if these two IR
+instructions can be re-ordered. The second instruction *might* write to a
+location that the first one reads. But it also might not!
 
 Different compilers keep track of this information differently. The null
 effect analysis gives up and says "we can't re-order or delete any
