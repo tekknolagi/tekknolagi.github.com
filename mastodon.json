@@ -66382,6 +66382,43 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115517642795047400": {
+      "id": "115517642795047400",
+      "created_at": "2025-11-09T03:35:44.405Z",
+      "in_reply_to_id": "115517447626595617",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115517642795047400",
+      "url": "https://mastodon.social/@tekknolagi/115517642795047400",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>i am getting roasted in the chat</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
