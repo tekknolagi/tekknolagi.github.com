@@ -31,7 +31,8 @@ another_var[0] = 5
 
 The goal of effects is to communicate to the compiler if these two IR
 instructions can be re-ordered. The second instruction *might* write to a
-location that the first one reads. But it also might not!
+location that the first one reads. But it also might not! And if they look at
+disjoint locations, there need not be any explicit order enforced.
 
 Different compilers keep track of this information differently. The null
 effect analysis gives up and says "we can't re-order or delete any
