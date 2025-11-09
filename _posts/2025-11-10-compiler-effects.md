@@ -230,8 +230,8 @@ alias classes come into the picture in [Chapter 10][simple-chapter-10].
 
 ## JavaScriptCore
 
-I keep coming back to [How I implement SSA form][pizlo-ssa] by [Fil
-Pizlo][pizlo]. In particular, I keep coming back to the [Uniform Effect
+Speaking of TBAA, I keep coming back to [How I implement SSA form][pizlo-ssa]
+by [Fil Pizlo][pizlo]. In particular, I keep coming back to the [Uniform Effect
 Representation][pizlo-effect] section. This notion of "abstract heaps" felt
 very... well, abstract. The pre-order and post-order integer pair as a way to
 represent nested heap effects just did not click. I had never heard of
