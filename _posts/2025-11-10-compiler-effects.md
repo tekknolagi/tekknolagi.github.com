@@ -7,6 +7,10 @@ Compilers like to keep track of each IR instruction's *effects*. An
 instruction's effects vary wildly from having no effects at all, to writing a
 specific variable, to completely unknown (writing all state).
 
+TODO directly explain what compilers care about: make things more efficient. to
+do that, there are techniques such as DCE, strength reduction, re-ordering,
+SSAPRE, etc
+
 Different compilers represent and track these effects differently. I've been
 thinking about how to represent these effects all year, so I have been doing
 some reading. In this post I will give some summaries of the landscape of
