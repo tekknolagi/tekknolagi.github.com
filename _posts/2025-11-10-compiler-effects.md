@@ -272,9 +272,12 @@ mod bits {
 
 It's not a fancy X-macro, but it's a short and flexible Ruby script.
 
-Then I took the DOMJIT abstract heap generator---also funnily enough a short
-Ruby script---modified the output format slightly, and had it generate its int
+Then I took the [DOMJIT abstract heap
+generator][domjit-abstract-heap-gen]---also funnily enough a short Ruby
+script---modified the output format slightly, and had it generate its int
 pairs:
+
+[domjit-abstract-heap-gen]: https://github.com/WebKit/WebKit/blob/989c9f9cd5b1f0c9606820e219ee51da32a34c6b/Source/WebCore/domjit/generate-abstract-heap.rb
 
 ```rust
 mod bits {
