@@ -30,7 +30,7 @@ another_var[0] = 5
 # ...
 ```
 
-The goal of effects is to communicate to the compiler if these two IR
+The goal of effects is to communicate to the compiler if, for example, these two IR
 instructions can be re-ordered. The second instruction *might* write to a
 location that the first one reads. But it also might not! And if they look at
 disjoint locations, there need not be any explicit order enforced.
