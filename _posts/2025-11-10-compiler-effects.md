@@ -47,10 +47,11 @@ location that the first one reads. But it also might not! This is about knowing
 if `some_var` and `another_var` *alias*---if they are different names that
 refer to the same object.
 
-We can sometimes answer that question directly, but often it's cheaper to compute an
-approximate answer: *could* they even alias? It's possible that `some_var` and
-`another_var` have different types, meaning that they (as long as you have
-strict aliasing) by definition represent different locations. And if they look
+We can sometimes answer that question directly, but often it's cheaper to
+compute an approximate answer: *could* they even alias? It's possible that
+`some_var` and `another_var` have different types, meaning that (as long as you
+have strict aliasing) the `Load` and `Store` operations that implement these
+reads and writes by definition touch different locations. And if they look
 at disjoint locations, there need not be any explicit order enforced.
 
 Different compilers keep track of this information differently. The null effect
@@ -120,7 +121,7 @@ enum BitIndexes {
 Note that each bit implicitly represents a set: `ListItem` does not refer to a
 *specific* list index, but the infinite set of all possible list indices. It's
 *any* list item. Still, every list item is completely disjoint from, say, every
-global variable.
+entry in a global variable table.
 
 Like other bitset lattices, it's possible to union the sets by or-ing the bits.
 It's possible to query for overlap by and-ing the bits.
