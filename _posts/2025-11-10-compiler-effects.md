@@ -157,6 +157,8 @@ and DCE.
 TODO push all other bitset impls to the bottom and go straight to JSC so
 there's a comparison
 
+TODO add transition
+
 ## HHVM
 
 [HHVM](https://github.com/facebook/hhvm), a JIT for the
