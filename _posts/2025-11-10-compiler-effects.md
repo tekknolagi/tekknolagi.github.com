@@ -239,9 +239,13 @@ It's a hierarchy. `Node_firstChild` is a subheap of `Node` is a subheap of...
 and so on. Sibling heaps are unrelated: `Node_firstChild` and `Node_lastChild`,
 for example, are disjoint.
 
-To get a feel for this, I wired up a simplified version of ZJIT's bitset
-generator (for *types!*) to read a YAML document and generate a bitset. It
-generated the following Rust code:
+To get a feel for this, I wired up a [simplified version][zjit-bitset] of
+ZJIT's bitset generator (for *types!*) to read a YAML document and generate a
+bitset. It generated the following Rust code:
+
+[zjit-bitset]: {{ site.repo.repository_url }}/tree/{{ site.repo.branch }}/assets/code/gen_bitset.rb
+
+[jsc-heap-range]: {{ site.repo.repository_url }}/tree/{{ site.repo.branch }}/assets/code/gen_int_pairs.rb
 
 ```rust
 mod bits {

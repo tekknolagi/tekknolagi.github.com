@@ -1,7 +1,3 @@
-# Generate hir_type.inc.rs. To do this, we build up a DAG that
-# represents a slice of the Ruby type hierarchy that we care about optimizing.
-# This also includes cvalue values such as C booleans, int32, and so on.
-
 require 'set'
 require 'yaml'
 
