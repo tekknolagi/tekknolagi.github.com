@@ -197,8 +197,9 @@ TODO add transition
 
 ## JavaScriptCore
 
-Speaking of TBAA, I keep coming back to [How I implement SSA form][pizlo-ssa]
-by [Fil Pizlo][pizlo]. In particular, I keep coming back to the [Uniform Effect
+I keep coming back to [How I implement SSA form][pizlo-ssa] by [Fil
+Pizlo][pizlo], one of the significant contributors to JavaScriptCore (JSC). In
+particular, I keep coming back to the [Uniform Effect
 Representation][pizlo-effect] section. This notion of "abstract heaps" felt
 very... well, abstract. Somehow more abstract than the bitset representation.
 The pre-order and post-order integer pair as a way to represent nested heap
