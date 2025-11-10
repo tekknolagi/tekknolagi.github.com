@@ -218,7 +218,10 @@ implementations. We'll look at DOMJIT mostly because it's a smaller example and
 also illustrates something else that's interesting: builtins. We'll come back
 to builtins in a minute.
 
-Let's take a lookat how DOMJIT structures its abstract heaps: a YAML file.
+Let's take a lookat how DOMJIT structures its [abstract
+heaps][domjit-abstract-heaps]: a YAML file.
+
+[domjit-abstract-heaps]: https://github.com/WebKit/WebKit/blob/989c9f9cd5b1f0c9606820e219ee51da32a34c6b/Source/WebCore/domjit/DOMJITAbstractHeapRepository.yaml
 
 ```yaml
 DOM:
