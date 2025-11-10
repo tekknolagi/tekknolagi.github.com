@@ -65,22 +65,22 @@ common subexpression elimination (CSE), or move instructions around, and you
 start wondering how to represent effects. That's where I am right now. So
 here's a catalog of different compilers I have looked at recently.
 
-TODO explain why I am about to jump into Cinder and what i am going to explain
-about effect representations. "going to talk about bitsets and ranges"
+There are two main ways I have seen to represent effects: bitsets and heap
+range lists. We'll look at one example compiler for each, talk a bit about
+tradeoffs, then give a bunch of references to other major compilers.
 
-TODO explain the "wrong question" thing like from the IRs post: you don't care
-about the opcode name. you care about its annotated effects (like its annotated
-type)
+We'll start with [Cinder][cinder], a Python JIT, because that's what I used to
+work on.
+
+[cinder]: https://github.com/facebookincubator/cinder
 
 ## Cinder
 
-We'll start with [Cinder][cinder], a Python JIT, because that's what I used to
-work on. Cinder tracks heap effects for its high-level IR (HIR) in
+[Cinder][cinder] tracks heap effects for its high-level IR (HIR) in
 [instr_effects.h][cinder-instr-effects-h]. Pretty much everything happens in
 the `memoryEffects(const Instr& instr)` function, which is expected to know
 everything about what effects the given instruction might have.
 
-[cinder]: https://github.com/facebookincubator/cinder
 [cinder-instr-effects-h]: https://github.com/facebookincubator/cinderx/blob/8bf5af94e2792d3fd386ab25b1aeedae27276d50/cinderx/Jit/hir/instr_effects.h
 
 TODO explain lattice and link to relevant info
