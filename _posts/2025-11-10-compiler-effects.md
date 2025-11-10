@@ -459,6 +459,12 @@ reducers. It has effect query methods on it such as `can_eager_deopt` and
 Until recently, V8 also used Sea of Nodes as its IR representation, which also
 tracks side effects more explicitly in the structure of the IR itself.
 
+## Conclusion
+
+## Thank you
+
+Fil Pizlo, CF Bolz-Tereick, Chris Gregory
+
 <!--
 
 TODO Dart
