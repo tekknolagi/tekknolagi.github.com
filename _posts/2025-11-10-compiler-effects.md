@@ -169,109 +169,6 @@ there's a comparison
 
 TODO add transition
 
-## HHVM
-
-[HHVM](https://github.com/facebook/hhvm), a JIT for the
-[Hack](https://hacklang.org/) language, also uses a bitset for its memory
-effects. See for example: [alias-class.h][hhvm-alias-class-h] and
-[memory-effects.h][hhvm-memory-effects-h].
-
-[hhvm-alias-class-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/alias-class.h
-[hhvm-memory-effects-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/memory-effects.h
-
-HHVM has a couple places that use this information, such as [a
-definition-sinking pass][hhvm-def-sink-cpp], [alias
-analysis][hhvm-alias-analysis-h], [DCE][hhvm-dce-cpp], [store
-elimination][hhvm-store-elim-cpp], and more.
-
-[hhvm-def-sink-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/def-sink.cpp
-[hhvm-alias-analysis-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/alias-analysis.h
-[hhvm-dce-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/dce.cpp
-[hhvm-store-elim-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/store-elim.cpp
-
-If you are wondering why the HHVM representation looks similar to the Cinder
-representation, it's because some former HHVM engineers such as Brett Simmers
-also worked on Cinder!
-
-## Android ART
-
-(note that I am linking an ART fork on GitHub as a reference, but the upstream
-code is [hosted on googlesource][googlesource-art])
-
-[googlesource-art]: https://android.googlesource.com/platform/art/+/refs/heads/main/compiler/optimizing/nodes.h
-
-Android's [ART Java runtime](https://source.android.com/docs/core/runtime) also
-uses a bitset for its effect representation. It's a very compact class called
-`SideEffects` in [nodes.h][art-nodes-h].
-
-[art-nodes-h]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/nodes.h#L1602
-
-The side effects are used in [loop-invariant code motion][art-licm-cc], [global
-value numbering][art-gvn-cc], [write barrier
-elimination][art-write-barrier-elimination-cc], [scheduling][art-scheduler-cc],
-and more.
-
-[art-licm-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/licm.cc#L104
-[art-gvn-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/gvn.cc#L204
-[art-write-barrier-elimination-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/write_barrier_elimination.cc#L45
-[art-scheduler-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/scheduler.cc#L55
-
-## .NET/CoreCLR
-
-CoreCLR mostly [uses a bitset][clr-sideeffects-h] for its `SideEffectSet`
-class. This one is interesting though because it also splits out effects
-specifically to include sets of local variables (`LclVarSet`).
-
-[clr-sideeffects-h]: https://github.com/dotnet/runtime/blob/a0878687d02b42034f4ea433ddd7a72b741510b8/src/coreclr/jit/sideeffects.h#L169
-
-## V8
-
-V8 is about six completely different compilers in a trenchcoat.{{ site.citation_needed }}
-
-Turboshaft uses a struct in [operations.h][turboshaft-operations-h] called
-`OpEffects` which is two bitsets for reads/writes of effects. This is used in
-[value numbering][turboshaft-value-numbering-reducer-h] as well a bunch of
-other small optimization passes they call "reducers".
-
-[turboshaft-operations-h]: https://github.com/v8/v8/blob/e817fdf31a2947b2105bd665067d92282e4b4d59/src/compiler/turboshaft/operations.h#L577
-[turboshaft-value-numbering-reducer-h]: https://github.com/v8/v8/blob/42f5ff65d12f0ef9294fa7d3875feba938a81904/src/compiler/turboshaft/value-numbering-reducer.h#L164
-
-Maglev also has this thing called `NodeT::kProperties` in [their IR
-nodes][maglev-ir-h] that also looks like a bitset and is used in their various
-reducers. It has effect query methods on it such as `can_eager_deopt` and
-`can_write`.
-
-[maglev-ir-h]: https://github.com/v8/v8/blob/42f5ff65d12f0ef9294fa7d3875feba938a81904/src/maglev/maglev-ir.h
-
-Until recently, V8 also used Sea of Nodes as its IR representation, which also
-tracks side effects more explicitly in the structure of the IR itself.
-
-## Simple
-
-Speaking of Sea of Nodes (SoN), [Simple](https://github.com/seaofnodes/simple)
-is Cliff Click's pet SoN project to try and showcase the idea to the
-world---outside of a HotSpot C2 context.
-
-This one is a little harder for me to understand but it looks like each
-translation unit has a [`StartNode`][simple-startnode-java] that doles out
-different classes of memory nodes for each alias class. Each IR node then takes
-data dependencies on whatever effect nodes it might uses.
-
-[simple-startnode-java]: https://github.com/SeaOfNodes/Simple/blob/1426384fc7d0e9947e38ad6d523a5e53c324d710/chapter10/src/main/java/com/seaofnodes/simple/node/StartNode.java#L33
-
-Alias classes are split up based on the paper [Type-Based Alias Analysis][tbaa]
-(PDF): "Our approach is a form of TBAA similar to the 'FieldTypeDecl' algorithm
-described in the paper."
-
-[tbaa]: /assets/img/tbaa.pdf
-
-<!-- TODO: insert Cliff Click messages -->
-
-The Simple project is structured into sequential implementation stages and
-alias classes come into the picture in [Chapter 10][simple-chapter-10].
-
-[simple-chapter-10]: https://github.com/SeaOfNodes/Simple/tree/main/chapter10
-
 ## JavaScriptCore
 
 Speaking of TBAA, I keep coming back to [How I implement SSA form][pizlo-ssa]
@@ -447,9 +344,125 @@ https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/S
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGStructureAbstractValue.h
 -->
 
+## Simple
+
+Speaking of Sea of Nodes (SoN), [Simple](https://github.com/seaofnodes/simple)
+is Cliff Click's pet SoN project to try and showcase the idea to the
+world---outside of a HotSpot C2 context.
+
+This one is a little harder for me to understand but it looks like each
+translation unit has a [`StartNode`][simple-startnode-java] that doles out
+different classes of memory nodes for each alias class. Each IR node then takes
+data dependencies on whatever effect nodes it might uses.
+
+[simple-startnode-java]: https://github.com/SeaOfNodes/Simple/blob/1426384fc7d0e9947e38ad6d523a5e53c324d710/chapter10/src/main/java/com/seaofnodes/simple/node/StartNode.java#L33
+
+Alias classes are split up based on the paper [Type-Based Alias Analysis][tbaa]
+(PDF): "Our approach is a form of TBAA similar to the 'FieldTypeDecl' algorithm
+described in the paper."
+
+[tbaa]: /assets/img/tbaa.pdf
+
+<!-- TODO: insert Cliff Click messages -->
+
+The Simple project is structured into sequential implementation stages and
+alias classes come into the picture in [Chapter 10][simple-chapter-10].
+
+[simple-chapter-10]: https://github.com/SeaOfNodes/Simple/tree/main/chapter10
+
+
+## Other implementations
+
+### HHVM
+
+[HHVM](https://github.com/facebook/hhvm), a JIT for the
+[Hack](https://hacklang.org/) language, also uses a bitset for its memory
+effects. See for example: [alias-class.h][hhvm-alias-class-h] and
+[memory-effects.h][hhvm-memory-effects-h].
+
+[hhvm-alias-class-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/alias-class.h
+[hhvm-memory-effects-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/memory-effects.h
+
+HHVM has a couple places that use this information, such as [a
+definition-sinking pass][hhvm-def-sink-cpp], [alias
+analysis][hhvm-alias-analysis-h], [DCE][hhvm-dce-cpp], [store
+elimination][hhvm-store-elim-cpp], and more.
+
+[hhvm-def-sink-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/def-sink.cpp
+[hhvm-alias-analysis-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/alias-analysis.h
+[hhvm-dce-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/dce.cpp
+[hhvm-store-elim-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/store-elim.cpp
+
+If you are wondering why the HHVM representation looks similar to the Cinder
+representation, it's because some former HHVM engineers such as Brett Simmers
+also worked on Cinder!
+
+### Android ART
+
+(note that I am linking an ART fork on GitHub as a reference, but the upstream
+code is [hosted on googlesource][googlesource-art])
+
+[googlesource-art]: https://android.googlesource.com/platform/art/+/refs/heads/main/compiler/optimizing/nodes.h
+
+Android's [ART Java runtime](https://source.android.com/docs/core/runtime) also
+uses a bitset for its effect representation. It's a very compact class called
+`SideEffects` in [nodes.h][art-nodes-h].
+
+[art-nodes-h]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/nodes.h#L1602
+
+The side effects are used in [loop-invariant code motion][art-licm-cc], [global
+value numbering][art-gvn-cc], [write barrier
+elimination][art-write-barrier-elimination-cc], [scheduling][art-scheduler-cc],
+and more.
+
+[art-licm-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/licm.cc#L104
+[art-gvn-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/gvn.cc#L204
+[art-write-barrier-elimination-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/write_barrier_elimination.cc#L45
+[art-scheduler-cc]: https://github.com/LineageOS/android_art/blob/c09a5c724799afdc5f89071b682b181c0bd23099/compiler/optimizing/scheduler.cc#L55
+
+### .NET/CoreCLR
+
+CoreCLR mostly [uses a bitset][clr-sideeffects-h] for its `SideEffectSet`
+class. This one is interesting though because it also splits out effects
+specifically to include sets of local variables (`LclVarSet`).
+
+[clr-sideeffects-h]: https://github.com/dotnet/runtime/blob/a0878687d02b42034f4ea433ddd7a72b741510b8/src/coreclr/jit/sideeffects.h#L169
+
+### V8
+
+V8 is about six completely different compilers in a trenchcoat.{{ site.citation_needed }}
+
+Turboshaft uses a struct in [operations.h][turboshaft-operations-h] called
+`OpEffects` which is two bitsets for reads/writes of effects. This is used in
+[value numbering][turboshaft-value-numbering-reducer-h] as well a bunch of
+other small optimization passes they call "reducers".
+
+[turboshaft-operations-h]: https://github.com/v8/v8/blob/e817fdf31a2947b2105bd665067d92282e4b4d59/src/compiler/turboshaft/operations.h#L577
+[turboshaft-value-numbering-reducer-h]: https://github.com/v8/v8/blob/42f5ff65d12f0ef9294fa7d3875feba938a81904/src/compiler/turboshaft/value-numbering-reducer.h#L164
+
+Maglev also has this thing called `NodeT::kProperties` in [their IR
+nodes][maglev-ir-h] that also looks like a bitset and is used in their various
+reducers. It has effect query methods on it such as `can_eager_deopt` and
+`can_write`.
+
+[maglev-ir-h]: https://github.com/v8/v8/blob/42f5ff65d12f0ef9294fa7d3875feba938a81904/src/maglev/maglev-ir.h
+
+Until recently, V8 also used Sea of Nodes as its IR representation, which also
+tracks side effects more explicitly in the structure of the IR itself.
+
 <!--
 
 TODO Dart
+https://github.com/dart-lang/sdk/blob/59905c43f1a0394394ad5545ee439bcba63dea55/runtime/vm/constants_riscv.h#L968
+https://github.com/dart-lang/sdk/blob/59905c43f1a0394394ad5545ee439bcba63dea55/runtime/vm/compiler/backend/redundancy_elimination.cc#L758
+https://github.com/dart-lang/sdk/blob/59905c43f1a0394394ad5545ee439bcba63dea55/runtime/vm/compiler/backend/redundancy_elimination.cc#L1096
+
+ChakraCore
+https://github.com/chakra-core/ChakraCore/blob/2dba810c925eb366e44a1f7d7a5b2e289e2f8510/lib/Runtime/Types/RecyclableObject.h#L172
+
+SpiderMonkey
+https://github.com/servo/mozjs/blob/77645ed41f588297fd8d7edaee71500f4c83d070/mozjs-sys/mozjs/js/src/jit/MIR.h#L935
+https://github.com/servo/mozjs/blob/77645ed41f588297fd8d7edaee71500f4c83d070/mozjs-sys/mozjs/js/src/jit/MIR.h#L9658
 
 Cinder LIR
 https://github.com/facebookincubator/cinderx/blob/main/cinderx/Jit/lir/instruction.h
