@@ -239,8 +239,9 @@ DOM:
 ```
 
 It's a hierarchy. `Node_firstChild` is a subheap of `Node` is a subheap of...
-and so on. Sibling heaps are unrelated: `Node_firstChild` and `Node_lastChild`,
-for example, are disjoint.
+and so on. A write to any `Node_nextSibling` is a write to `Node` is a write to
+... Sibling heaps are unrelated: `Node_firstChild` and `Node_lastChild`, for
+example, are disjoint.
 
 To get a feel for this, I wired up a [simplified version][zjit-bitset] of
 ZJIT's bitset generator (for *types!*) to read a YAML document and generate a
