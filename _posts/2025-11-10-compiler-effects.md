@@ -47,6 +47,9 @@ common subexpression elimination (CSE), or move instructions around, and you
 start wondering how to represent effects. That's where I am right now. So
 here's a catalog of different compilers I have looked at recently.
 
+TODO explain why I am about to jump into Cinder and what i am going to explain
+about effect representations. "going to talk about bitsets and ranges"
+
 ## Cinder
 
 We'll start with [Cinder][cinder], a Python JIT, because that's what I used to
@@ -150,6 +153,9 @@ arbitrarily.
 These memory effects could in the future be used for instruction re-ordering,
 but they are mostly used in two places in Cinder: the refcount insertion pass
 and DCE.
+
+TODO push all other bitset impls to the bottom and go straight to JSC so
+there's a comparison
 
 ## HHVM
 
@@ -382,7 +388,7 @@ Now that we understand the representation, let's take a look at how the DFG
 (for example) uses these heap ranges in analysis. The DFG is structured in such
 a way that it can make use of the DOMJIT heap ranges directly, which is neat.
 
-<!-- TODO insert functors -->
+TODO insert functors and how we're not materializing lists anywhere
 
 <!--
 We can tweak it slightly to use the symbolic names and it looks maybe slightly
