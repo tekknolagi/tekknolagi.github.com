@@ -38,8 +38,15 @@ another_var[0] = 5
 
 The goal of effects is to communicate to the compiler if, for example, these two IR
 instructions can be re-ordered. The second instruction *might* write to a
-location that the first one reads. But it also might not! And if they look at
-disjoint locations, there need not be any explicit order enforced.
+location that the first one reads. But it also might not! This is about knowing
+if `some_var` and `another_var` *alias*---if they are different names that
+refer to the same object.
+
+We can answer that question directly, but often it's cheaper to compute an
+approximate answer: *could* they even alias? It's possible that `some_var` and
+`another_var` have different types, meaning that they (as long as you have
+strict aliasing) by definition represent different locations. And if they look
+at disjoint locations, there need not be any explicit order enforced.
 
 Different compilers keep track of this information differently. The null effect
 analysis gives up and says "every instruction is maximally effectful" and
