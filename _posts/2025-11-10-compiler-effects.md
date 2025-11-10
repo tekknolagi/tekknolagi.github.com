@@ -56,6 +56,10 @@ here's a catalog of different compilers I have looked at recently.
 TODO explain why I am about to jump into Cinder and what i am going to explain
 about effect representations. "going to talk about bitsets and ranges"
 
+TODO explain the "wrong question" thing like from the IRs post: you don't care
+about the opcode name. you care about its annotated effects (like its annotated
+type)
+
 ## Cinder
 
 We'll start with [Cinder][cinder], a Python JIT, because that's what I used to
