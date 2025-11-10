@@ -1,7 +1,6 @@
 require 'set'
 require 'yaml'
 
-# Type represents not just a Ruby class but a named union of other types.
 class Type
   attr_accessor :name, :subtypes
 
@@ -21,23 +20,6 @@ class Type
       sub.add_subtypes h.to_a
     end
   end
-end
-
-# Helper to generate graphviz.
-def to_graphviz_rec type
-  type.subtypes.each {|subtype|
-    puts type.name + "->" + subtype.name + ";"
-  }
-  type.subtypes.each {|subtype|
-    to_graphviz_rec subtype
-  }
-end
-
-# Generate graphviz.
-def to_graphviz type
-  puts "digraph G {"
-  to_graphviz_rec type
-  puts "}"
 end
 
 # ===== Start generating the type DAG =====
