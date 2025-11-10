@@ -120,8 +120,12 @@ enum BitIndexes {
 
 Note that each bit implicitly represents a set: `ListItem` does not refer to a
 *specific* list index, but the infinite set of all possible list indices. It's
-*any* list item. Still, every list item is completely disjoint from, say, every
+*any* list index. Still, every list index is completely disjoint from, say, every
 entry in a global variable table.
+
+(And, to be clear, an object in a list might be the same as an object in a
+global variable table. The objects themselves can alias. But the thing being
+written to or read from is the container.)
 
 Like other bitset lattices, it's possible to union the sets by or-ing the bits.
 It's possible to query for overlap by and-ing the bits.
