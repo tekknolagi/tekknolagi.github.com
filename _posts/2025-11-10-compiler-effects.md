@@ -312,6 +312,10 @@ mod bits {
 
 It already comes with a little diagram, which is super helpful for readability.
 
+Any empty range(s) represent empty heap effects: if the start and end are the
+same number, there are no effects. There is no one `Empty` value, but any empty
+range could be normalized to `HeapRange { start: 0, end: 0 }`.
+
 Maybe this was obvious to you, dear reader, but this pre-order/post-order thing
 is about nested ranges! Seeing the output of the generator laid out clearly
 like this made it make a lot more sense for me.
@@ -345,8 +349,7 @@ class HeapRange {
     }
 ```
 
-The empty range(s) represent empty heap effects: if the start and end are the
-same number, there are no effects. This is represented by the `operator bool()`
+This is represented by the `operator bool()`
 and implicit boolean conversions. To reinforce the whole nested heap ranges
 thing, `isSubtypeOf` is asking if one `HeapRange` contains another.
 -->
