@@ -7,11 +7,16 @@ Compilers like to keep track of each IR instruction's *effects*. An
 instruction's effects vary wildly from having no effects at all, to writing a
 specific variable, to completely unknown (writing all state).
 
+<!--
 TODO directly explain what compilers care about: make things more efficient. to
 do that, there are techniques such as DCE, strength reduction, re-ordering,
 SSAPRE, etc
+-->
 
-TODO link to /blog/irs/
+This post can be thought of as a continuation of [What I talk about when I talk
+about IRs](/blog/irs/), specifically the section talking about asking the right
+questions. When we talk about effects, we should ask the right questions: not
+*what opcode is this?* but instead *what effects does this opcode have?*
 
 Different compilers represent and track these effects differently. I've been
 thinking about how to represent these effects all year, so I have been doing
