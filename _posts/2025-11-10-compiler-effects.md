@@ -58,6 +58,8 @@ everything about what effects the given instruction might have.
 [cinder]: https://github.com/facebookincubator/cinder
 [cinder-instr-effects-h]: https://github.com/facebookincubator/cinderx/blob/8bf5af94e2792d3fd386ab25b1aeedae27276d50/cinderx/Jit/hir/instr_effects.h
 
+TODO explain lattice and link to relevant info
+
 The data representation is a bitset representation of a lattice called an
 `AliasClass` and that is defined in [alias_class.h][cinder-alias-class-h]. Each
 bit in the bitset represents a distinct location in the heap: reads from and
