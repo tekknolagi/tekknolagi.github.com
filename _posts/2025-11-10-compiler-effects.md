@@ -11,6 +11,8 @@ TODO directly explain what compilers care about: make things more efficient. to
 do that, there are techniques such as DCE, strength reduction, re-ordering,
 SSAPRE, etc
 
+TODO link to /blog/irs/
+
 Different compilers represent and track these effects differently. I've been
 thinking about how to represent these effects all year, so I have been doing
 some reading. In this post I will give some summaries of the landscape of
