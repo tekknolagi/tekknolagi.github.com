@@ -316,6 +316,7 @@ Maybe this was obvious to you, dear reader, but this pre-order/post-order thing
 is about nested ranges! Seeing the output of the generator laid out clearly
 like this made it make a lot more sense for me.
 
+<!--
 So how do we compute subtyping relationships with `HeapRange`s? We check range
 overlap! Here is [DOMJIT's C++ implementation][domjit-is-subtype-of]:
 
@@ -348,6 +349,7 @@ The empty range(s) represent empty heap effects: if the start and end are the
 same number, there are no effects. This is represented by the `operator bool()`
 and implicit boolean conversions. To reinforce the whole nested heap ranges
 thing, `isSubtypeOf` is asking if one `HeapRange` contains another.
+-->
 
 What about checking overlap? This is a little bit different from checking
 subtyping and where a lot of the real work happens:
