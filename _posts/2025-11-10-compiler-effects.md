@@ -176,6 +176,23 @@ These memory effects could in the future be used for instruction re-ordering,
 but they are mostly used in two places in Cinder: the refcount insertion pass
 and DCE.
 
+DCE involves first finding the set of instructions that need to be kept around
+because they are useful/important/have effects. So here is what the Cinder DCE
+`isUseful` looks like:
+
+```c++
+bool isUseful(Instr& instr) {
+  return instr.IsTerminator() || instr.IsSnapshot() ||
+      (instr.asDeoptBase() != nullptr && !instr.IsPrimitiveBox()) ||
+      (!instr.IsPhi() && memoryEffects(instr).may_store != AEmpty);
+}
+```
+
+There are some other checks in there that could be cleaned up by having
+better-defined memory effects, like making terminators have a `Control` effect,
+`Snapshot` have some kind of effect (or being kept around via data
+dependencies), etc. But `memoryEffects` is right there at the core of it!
+
 TODO add transition
 
 ## JavaScriptCore
