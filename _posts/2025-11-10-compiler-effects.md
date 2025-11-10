@@ -122,7 +122,7 @@ All of this together lets the optimizer ask and answer questions such as:
 
 * where might this instruction write?
 * where does this instruction borrow its input from?
-* do these two instructions write destinations overlap?
+* do these two instructions' write destinations overlap?
 
 and more.
 
