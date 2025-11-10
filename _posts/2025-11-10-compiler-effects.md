@@ -171,9 +171,6 @@ These memory effects could in the future be used for instruction re-ordering,
 but they are mostly used in two places in Cinder: the refcount insertion pass
 and DCE.
 
-TODO push all other bitset impls to the bottom and go straight to JSC so
-there's a comparison
-
 TODO add transition
 
 ## JavaScriptCore
