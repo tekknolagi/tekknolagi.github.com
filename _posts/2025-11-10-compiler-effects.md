@@ -47,7 +47,7 @@ location that the first one reads. But it also might not! This is about knowing
 if `some_var` and `another_var` *alias*---if they are different names that
 refer to the same object.
 
-We can answer that question directly, but often it's cheaper to compute an
+We can sometimes answer that question directly, but often it's cheaper to compute an
 approximate answer: *could* they even alias? It's possible that `some_var` and
 `another_var` have different types, meaning that they (as long as you have
 strict aliasing) by definition represent different locations. And if they look
