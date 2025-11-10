@@ -312,8 +312,41 @@ mod bits {
 
 It already comes with a little diagram, which is super helpful for readability.
 
+Maybe this was obvious to you, dear reader, but this pre-order/post-order thing
+is about nested ranges! Seeing the output of the generator laid out clearly
+like this made it make a lot more sense for me.
+
 So how do we compute subtyping relationships with `HeapRange`s? We check range
-overlap!
+overlap! Here is [DOMJIT's C++ implementation][domjit-is-subtype-of]:
+
+[domjit-is-subtype-of]: https://github.com/WebKit/WebKit/blob/989c9f9cd5b1f0c9606820e219ee51da32a34c6b/Source/JavaScriptCore/domjit/DOMJITHeapRange.h#L99
+
+```c++
+class HeapRange {
+    constexpr explicit operator bool() const {
+        return m_begin != m_end;
+    }
+
+    bool isStrictSubtypeOf(const HeapRange& other) const {
+        if (!*this || !other)
+            return false;
+        if (*this == other)
+            return false;
+        return other.m_begin <= m_begin && m_end <= other.m_end;
+    }
+
+    bool isSubtypeOf(const HeapRange& other) const {
+        if (!*this || !other)
+            return false;
+        if (*this == other)
+            return true;
+        return isStrictSubtypeOf(other);
+    }
+```
+
+The empty range(s) represent empty heap effects: if the start and end are the
+same number, there are no effects. This is represented by the `operator bool()`
+and implicit boolean conversions.
 
 TODO mention union vs multiple ranges query
 
@@ -321,15 +354,6 @@ I asked Fil if both bitsets and int ranges answer the same question, why use
 int ranges? He said that it's more flexible long-term: bitsets get expensive as
 soon as you need over 128 bits (you might need to heap allocate them!) whereas
 ranges have no such ceiling.
-
-<!-- TODO insert range overlap code -->
-
-The empty range(s) represent empty heap effects: if the start and end are the
-same number, there are no effects.
-
-Maybe this was obvious to you, dear reader, but this pre-order/post-order thing
-is *just* about nested ranges! Seeing the output of the generator laid out
-clearly like this made it make a lot more sense for me.
 
 Now that we understand the representation, let's take a look at how the DFG
 (for example) uses these heap ranges in analysis. The DFG is structured in such
