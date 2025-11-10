@@ -346,7 +346,10 @@ class HeapRange {
 
 The empty range(s) represent empty heap effects: if the start and end are the
 same number, there are no effects. This is represented by the `operator bool()`
-and implicit boolean conversions.
+and implicit boolean conversions. See also [How to check for overlapping
+intervals][overlapping-intervals] for more fun.
+
+[overlapping-intervals]: https://zayenz.se/blog/post/how-to-check-for-overlapping-intervals/
 
 TODO mention union vs multiple ranges query
 
