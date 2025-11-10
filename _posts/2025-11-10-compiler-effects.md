@@ -264,8 +264,8 @@ mod bits {
   pub const Node_parentNode: u64 = 1u64 << 6;
   pub const Node_previousSibling: u64 = 1u64 << 7;
   pub const Node: u64 = Node_firstChild | Node_lastChild | Node_nextSibling | Node_ownerDocument | Node_parentNode | Node_previousSibling;
-  pub const DOM: u64 = Tree;
   pub const Tree: u64 = Document | Node;
+  pub const DOM: u64 = Tree;
   pub const NumTypeBits: u64 = 8;
 }
 ```
