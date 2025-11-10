@@ -125,7 +125,7 @@ entry in a global variable table.
 
 (And, to be clear, an object in a list might be the same as an object in a
 global variable table. The objects themselves can alias. But the thing being
-written to or read from is the container.)
+written to or read from, the thing *being side effected*, is the container.)
 
 Like other bitset lattices, it's possible to union the sets by or-ing the bits.
 It's possible to query for overlap by and-ing the bits.
