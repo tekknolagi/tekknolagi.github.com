@@ -346,10 +346,56 @@ class HeapRange {
 
 The empty range(s) represent empty heap effects: if the start and end are the
 same number, there are no effects. This is represented by the `operator bool()`
-and implicit boolean conversions. See also [How to check for overlapping
-intervals][overlapping-intervals] for more fun.
+and implicit boolean conversions. To reinforce the whole nested heap ranges
+thing, `isSubtypeOf` is asking if one `HeapRange` contains another.
+
+What about checking overlap? This is a little bit different from checking
+subtyping and where a lot of the real work happens:
+
+https://github.com/WebKit/WebKit/blob/989c9f9cd5b1f0c9606820e219ee51da32a34c6b/Source/JavaScriptCore/domjit/DOMJITHeapRange.h#L108
+
+```c++
+namespace WTF {
+// Check if two ranges overlap assuming that neither range is empty.
+template<typename T>
+constexpr bool nonEmptyRangesOverlap(T leftMin, T leftMax, T rightMin, T rightMax)
+{
+    ASSERT_UNDER_CONSTEXPR_CONTEXT(leftMin < leftMax);
+    ASSERT_UNDER_CONSTEXPR_CONTEXT(rightMin < rightMax);
+
+    return leftMax > rightMin && rightMax > leftMin;
+}
+
+// Pass ranges with the min being inclusive and the max being exclusive.
+template<typename T>
+constexpr bool rangesOverlap(T leftMin, T leftMax, T rightMin, T rightMax) {
+    ASSERT_UNDER_CONSTEXPR_CONTEXT(leftMin <= leftMax);
+    ASSERT_UNDER_CONSTEXPR_CONTEXT(rightMin <= rightMax);
+
+    // Empty ranges interfere with nothing.
+    if (leftMin == leftMax)
+        return false;
+    if (rightMin == rightMax)
+        return false;
+
+    return nonEmptyRangesOverlap(leftMin, leftMax, rightMin, rightMax);
+}
+}
+
+class HeapRange {
+    bool overlaps(const HeapRange& other) const {
+        return WTF::rangesOverlap(m_begin, m_end, other.m_begin, other.m_end);
+    }
+}
+```
+
+(See also [How to check for overlapping intervals][overlapping-intervals] and
+[Range overlap in two compares][two-compares] for more fun.)
 
 [overlapping-intervals]: https://zayenz.se/blog/post/how-to-check-for-overlapping-intervals/
+[two-compares]: https://nedbatchelder.com/blog/201310/range_overlap_in_two_compares.html
+
+This overlap check is used
 
 TODO mention union vs multiple ranges query
 
