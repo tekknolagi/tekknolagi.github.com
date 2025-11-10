@@ -161,7 +161,7 @@ effects. See for example: [alias-class.h][hhvm-alias-class-h] and
 [hhvm-alias-class-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/alias-class.h
 [hhvm-memory-effects-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/memory-effects.h
 
-HHVM has a couple places that uses this information, such as [a
+HHVM has a couple places that use this information, such as [a
 definition-sinking pass][hhvm-def-sink-cpp], [alias
 analysis][hhvm-alias-analysis-h], [DCE][hhvm-dce-cpp], [store
 elimination][hhvm-store-elim-cpp], and more.
