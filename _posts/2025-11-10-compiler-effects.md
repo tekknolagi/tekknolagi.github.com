@@ -16,7 +16,8 @@ approaches. Please feel free to suggest more.
 
 Internal IR effect tracking is similar to the programming language notion of
 algebraic effects in type systems, but internally, compilers keep track of
-finer-grained effects. These effects indicate what instructions can be
+finer-grained effects. Effects such as "writes to a local variable", "writes to
+a list", or "reads from a the stack" indicate what instructions can be
 re-ordered, duplicated, or removed entirely.
 
 For example, consider the following pseodocode for some made-up language that
