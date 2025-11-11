@@ -453,11 +453,19 @@ class NoOp:
 
 class WritesToMemoryOrStack:
     def __init__(self):
-        self.overlaps = False
+        self.result = False
 
     def __call__(self, other):
-        self.overlaps |= Memory.overlaps(other)
-        self.overlaps |= Stack.overlaps(other)
+        self.result |= Memory.overlaps(other)
+        self.result |= Stack.overlaps(other)
+
+# unused in this example, but interesting
+class IsPure:
+    def __init__(self):
+        self.result = True
+
+    def __call__(self, other):
+        self.result = False
 
 # report effects of a given instruction
 def clobberize(instr, read, write):
@@ -476,7 +484,7 @@ def clobberize(instr, read, write):
 instr = ...
 result = WritesToMemoryOrStack()
 compute_effects(instr, NoOp, result)
-if result.overlaps:
+if result.result:
     # boo
     ...
 ```
