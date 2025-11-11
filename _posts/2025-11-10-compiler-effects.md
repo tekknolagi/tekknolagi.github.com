@@ -130,11 +130,25 @@ written to or read from, the thing *being side effected*, is the container.)
 Like other bitset lattices, it's possible to union the sets by or-ing the bits.
 It's possible to query for overlap by and-ing the bits.
 
+```c++
+class AliasClass {
+  // The union of two AliasClass
+  AliasClass operator|(AliasClass other) const {
+    return AliasClass{bits_ | other.bits_};
+  }
+
+  // The intersection (overlap) of two AliasClass
+  AliasClass operator&(AliasClass other) const {
+    return AliasClass{bits_ & other.bits_};
+  }
+};
+```
+
 If this sounds familiar, it's because (as the repo notes) it's a similar idea
 to Cinder's [type lattice representation](/blog/lattice-bitset/).
 
-And, like other lattices, there is both a bottom element (no effects) and a
-top element (all possible effects):
+Like other lattices, there is both a bottom element (no effects) and a top
+element (all possible effects):
 
 ```c
 #define HIR_OR_BITS(name) | k##name
@@ -147,6 +161,9 @@ top element (all possible effects):
   /* Memory locations accessible by managed code */ \
   X(ManagedHeapAny, kAny & ~kFuncArgs)
 ```
+
+Union operations naturally hit a fixpoint at `Any` and intersection operations
+naturally hit a fixpoint at `Empty`.
 
 All of this together lets the optimizer ask and answer questions such as:
 
