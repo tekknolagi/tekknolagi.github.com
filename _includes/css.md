@@ -1,2 +1,7 @@
 <!-- Light mode by default -->
-<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+{% capture styles %}
+{% include main.css %}
+{% endcapture %}
+<style>
+{{ styles | scssify }}
+</style>
