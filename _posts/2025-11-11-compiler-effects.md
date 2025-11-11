@@ -56,7 +56,7 @@ on strength reductions. Over-approximations of effects should always be
 valid.
 
 But at some point you start wanting to do dead code elimination (DCE), or
-common subexpression elimination (CSE), or eliminate loads/stores, or move
+common subexpression elimination (CSE), or loads/store elimination, or move
 instructions around, and you start wondering how to represent effects. That's
 where I am right now. So here's a catalog of different compilers I have looked
 at recently.
