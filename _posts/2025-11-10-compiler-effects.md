@@ -160,7 +160,8 @@ naturally hit a fixpoint at `Empty`.
 All of this together lets the optimizer ask and answer questions such as:
 
 * where might this instruction write?
-* where does this instruction borrow its input from?
+* (because CPython is reference counted and incref implies ownership) where
+  does this instruction borrow its input from?
 * do these two instructions' write destinations overlap?
 
 and more.
@@ -181,7 +182,8 @@ StoreListItem v1, 0, v2
 
 You can imagine that `LoadTupleItem` declares that it reads from the
 `TupleItem` heap and `StoreListItem` declares that it writes to the `ListItem`
-heap. Because tuples and lists cannot be converted into one another, these are
+heap. Because tuple and list pointers cannot be casted into one another and
+therefore cannot alias, these are
 disjoint heaps in our bitset. Therefore `ListItem & TupleItem == 0`, therefore
 these memory operations can never interfere! They can (for example) be
 re-ordered arbitrarily.
@@ -202,10 +204,8 @@ bool isUseful(Instr& instr) {
 }
 ```
 
-There are some other checks in there that could be cleaned up by having
-better-defined memory effects, like making terminators have a `Control` effect,
-`Snapshot` have some kind of effect (or being kept around via data
-dependencies), etc. But `memoryEffects` is right there at the core of it!
+There are some other checks in there but `memoryEffects` is right there at the
+core of it!
 
 Now that we have seen the bitset representation of effects and an
 implementation in Cinder, let's take a look at a different representation and
@@ -430,9 +430,8 @@ tree. So what gives?
 I asked Fil if both bitsets and int ranges answer the same question, why use
 int ranges? He said that it's more flexible long-term: bitsets get expensive as
 soon as you need over 128 bits (you might need to heap allocate them!) whereas
-ranges have no such ceiling.
-
-Additionally, despite Fil writing this in his SSA post:
+ranges have no such ceiling. But doesn't holding sequences of ranges require
+heap allocation? Well, despite Fil writing this in his SSA post:
 
 > The purpose of the effect representation baked into the IR is to provide a
 > precise always-available baseline for alias information that is super easy to
@@ -449,56 +448,8 @@ Let's take a look at how the DFG (for example) uses these heap ranges in
 analysis. The DFG is structured in such a way that it can make use of the
 DOMJIT heap ranges directly, which is neat.
 
-Here's a very terse pseudo-code version of what they do to look at before you
-read the C++:
-
-```python
-# A minimal example
-class NoOp:
-    def __call__(self, other):
-        pass
-
-class WritesToMemoryOrStack:
-    def __init__(self):
-        self.result = False
-
-    def __call__(self, other):
-        self.result |= Memory.overlaps(other)
-        self.result |= Stack.overlaps(other)
-
-# unused in this example, but interesting to pass into as a functor to the
-# `write` parameter
-class IsPure:
-    def __init__(self):
-        self.result = True
-
-    def __call__(self, other):
-        self.result = False
-
-# report effects of a given instruction
-def clobberize(instr, read, write):
-    match instr:
-        case Constant(_):
-            pass
-        case LoadField(_):
-            read(Memory)
-        case StoreField(_):
-            write(Memory)
-        case LoadLocal(_):
-            read(Stack)
-        case StoreLocal(_):
-            write(Stack)
-
-instr = ...
-result = WritesToMemoryOrStack()
-clobberize(instr, NoOp, result)
-if result.result:
-    # boo
-    ...
-
-```
-
-Okay, now that you have been prepped, time for some C++ (and later, templates)!
+Note that `AbstractHeap` in the example below is a thin wrapper over the DFG
+compiler's own `DOMJIT::HeapRange` equivalent:
 
 ```c++
 class AbstractHeapOverlaps {
@@ -532,9 +483,8 @@ bool writesOverlap(Graph& graph, Node* node, AbstractHeap heap)
 }
 ```
 
-where `clobberize` is the function that calls these functors (`noOp` or
-`addWrite` in this case) for each effect that the given IR instruction `node`
-declares.
+`clobberize` is the function that calls these functors (`noOp` or `addWrite` in
+this case) for each effect that the given IR instruction `node` declares.
 
 I've pulled some relevant snippets of `clobberize`, which is quite long, that I
 think are interesting.
@@ -625,11 +575,14 @@ void clobberize(Graph& graph, Node* node, const ReadFunctor& read, const WriteFu
     }
     }
 }
-
 ```
 
+(Remember that these `AbstractHeap` operations are very similar to DOMJIT's
+`HeapRange` with a couple more details---and in some cases even contain DOMJIT
+`HeapRange`s!)
+
 This `CallDOM` node is the way for the DOM APIs in the browser---a significant
-chunk of the builtins, which are written in C++---can communicate what they do
+chunk of the builtins, which are written in C++---to communicate what they do
 to the optimizing compiler. Without any annotations, the JIT has to assume that
 a call into C++ could do anything to the JIT state. Bummer!
 
