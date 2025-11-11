@@ -275,7 +275,9 @@ div.footnotes hr {
   .highlight .na {
     color: #79740e;
   }
-  .highlight .m, .highlight .mb, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mx {
+  .highlight .m, .highlight .mb, .highlight .mf, .highlight .mh,
+  .highlight .mi, .highlight .il, .highlight .mo, .highlight .mx,
+  .highlight .bp {
     color: #8f3f71;
   }
   .highlight .ss {
