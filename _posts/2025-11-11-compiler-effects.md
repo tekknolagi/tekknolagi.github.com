@@ -642,7 +642,35 @@ described in the paper."
 
 [tbaa]: /assets/img/tbaa.pdf
 
-<!-- TODO: insert Cliff Click messages -->
+<!--
+
+Cliff Click says:
+
+All effects are represented as edges in the graph, the same edges as normal value flows, and all edges in Simple/C2 are simple pointers (and hence are unlabeled).
+
+StartNode produces all effects and StopNode consumes them; same for Call and CallEnd.
+Effects, being just another form of value, can be merged in PhiNodes.
+Effects are generally split into smaller disjoint pieces, and recombined before Stop/Call.  Splitting into disjoint pieces allows more precision in the IR, and so more optimizations.
+The common first split is the Memory effect from all other effects.  Other effects are generally some form of abstract i/o (all file system operations, reading/writing device controller memory, all external calls to disjoint address spaces, etc), or control.  Control is Just Another Edge denoting normal control flow, and e.g. data ops that depend on a prior control op use it to guard for safety.  Things like div-by-0, or null-ptr-check, or array-index-OOB are all done with a control edge to the guarding test.
+
+Memory effects are further split into disjoint aliases; operations in one alias class can never overlap with another (this is a Y/N choice, not a may/must choice).  These aliases are equivalence classes; all mem ops belong in exactly one class, and the set of classes exactly partitions all of memory.  Common splits are fields in a struct (no 'f' field ever overlaps with any 'g' field), or kinds of arrays (no int[] overlaps with a flt[]).
+
+In this example a = l[0]; l[0] = 5, we might have as IR:
+
+a = Load(ctrl-for-AIOOB, mem-for-int[], offset);
+mem-for-int[] = Store(ctrl-for-AIOOB, mem-for-int[], offset, 5)
+
+
+
+Note that the Load and Store are not ordered here.  This Store IS ordered against all other int[] Stores.
+The serializing algo Global Code Motion will add an anti-dep as needed, and then order the Load & Store.
+
+Splitting is basically by having a "narrow" user read from a "fat memory".  Narrow, because its using a single alias and is one of the memops (e.g. Loads and Stores).  A "fat memory" always comes from Start & CallEnd.  A MemMerge can merge a bunch of narrow aliases (and one fat) and make a fat memory.  Basically its all done lazily by "doing nothing", and requiring the graph builder not produce a junk graph.
+
+Splitting happens when the Parser decides you are manipulating a slice.
+THere are some peephole's for widening the split region over a larger area, allowing more memory optimizations in the larger wider area.
+Load & Stores have a peep to move "up past" a MemMerge on the correct alias edge.
+-->
 
 The Simple project is structured into sequential implementation stages and
 alias classes come into the picture in [Chapter 10][simple-chapter-10].
