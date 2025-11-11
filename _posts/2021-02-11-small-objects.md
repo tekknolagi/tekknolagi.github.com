@@ -329,7 +329,7 @@ pointers.
 Thanks for reading! Make sure to check out [the
 repo](https://github.com/tekknolagi/icdemo) and poke at the code.
 
-**A small update:** I wrote and then did post about [an assembly version of the
+**A small update:** I wrote code for and then never wrote a post about [an assembly version of the
 interpreter][asm-interpreter]. If you are curious about that, you may enjoy
 [zackoverflow's blog post][zackoverflow-template-interpreter] on the subject.
 
