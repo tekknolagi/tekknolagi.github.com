@@ -166,7 +166,7 @@ DEPENDENCIES
   jekyll-sitemap
   kramdown
   liquid-c
-  rouge
+  rouge (>= 4.6)
   webrick
 
 BUNDLED WITH
