@@ -191,8 +191,8 @@ You can imagine that `LoadTupleItem` declares that it reads from the
 `TupleItem` heap and `StoreListItem` declares that it writes to the `ListItem`
 heap. Because tuples and lists cannot be converted into one another, these are
 disjoint heaps in our bitset. Therefore `ListItem & TupleItem == 0`, therefore
-these memory operations can never interfere! They can be re-ordered
-arbitrarily.
+these memory operations can never interfere! They can (for example) be
+re-ordered arbitrarily.
 
 These memory effects could in the future be used for instruction re-ordering,
 but they are mostly used in two places in Cinder: the refcount insertion pass
