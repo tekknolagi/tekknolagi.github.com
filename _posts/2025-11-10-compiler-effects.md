@@ -226,8 +226,8 @@ effects just did not click.
 [pizlo-effect]: https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963#uniform-effect-representation
 
 It didn't make any sense until I actually went spelunking in JavaScriptCore and
-found one of several implementations---because, you know, JSC is also six
-compilers in a trenchcoat.
+found one of several implementations---because, you know, JSC is six compilers
+in a trenchcoat{{ site.citation_needed }}.
 
 DFG, B3, DOMJIT, and probably others all have their own abstract heap
 implementations. We'll look at DOMJIT mostly because it's a smaller example and
@@ -713,7 +713,7 @@ specifically to include sets of local variables (`LclVarSet`).
 
 ### V8
 
-V8 is about six completely different compilers in a trenchcoat.{{ site.citation_needed }}
+V8 is also about six completely different compilers in a trenchcoat.
 
 Turboshaft uses a struct in [operations.h][turboshaft-operations-h] called
 `OpEffects` which is two bitsets for reads/writes of effects. This is used in
@@ -753,7 +753,7 @@ Remember to ask *the right questions* of your IR when doing analysis.
 
 Thank you to [Fil Pizlo](http://www.filpizlo.com/) for writing his initial
 GitHub Gist and sending me on this journey and thank you to [Chris
-Gregory](https://www.chrisgregory.me/) and [Ufuk
+Gregory](https://www.chrisgregory.me/), Brett Simmers, and [Ufuk
 Kayserilioglu](https://ufuk.dev/) for feedback on making some of the
 explanations more helpful.
 
