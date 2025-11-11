@@ -284,6 +284,11 @@ div.footnotes hr {
 }
 
 @media screen and (prefers-color-scheme: dark) {
+  /* Inline code */
+  code:not(.highlight pre code) {
+      color: #fe8019;
+  }
+
   /* Borrowed from https://github.com/daveyarwood/gruvbox-pygments */
   .highlight .hll { background-color: #ffffcc }
   .highlight  { background: #282828; color: #ebdbb2; background-color: #282828 }
