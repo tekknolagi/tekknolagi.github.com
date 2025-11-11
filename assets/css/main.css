@@ -55,10 +55,6 @@ pre {
 footer hr {
     margin-top: 40px;
 }
-/* Inline code */
-code:not(.highlight pre code) {
-    color: green;
-}
 table {
   margin: 15px 0;
   padding: 0; }
@@ -190,6 +186,11 @@ div.footnotes hr {
 }
 
 @media screen or print {
+  /* Inline code */
+  code:not(.highlight pre code) {
+      color: green;
+  }
+
   .highlight table td { padding: 5px; }
   .highlight table pre { margin: 0; }
   .highlight, .highlight .w {
