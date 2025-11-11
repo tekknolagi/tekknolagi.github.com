@@ -416,20 +416,23 @@ class HeapRange {
 [overlapping-intervals]: https://zayenz.se/blog/post/how-to-check-for-overlapping-intervals/
 [two-compares]: https://nedbatchelder.com/blog/201310/range_overlap_in_two_compares.html
 
-This overlap check is used
+While bitsets are a dense representation (you have to hold every bit), they are
+very compact and they are very precise. You can hold any number of combinations
+of 64 or 128 bits in a single register. The union and intersection operations
+are very cheap.
 
-TODO mention union vs multiple ranges query
+With int ranges, it's a little more complicated. An imprecise union of `a` and
+`b` can take the maximal range that covers both `a` and `b`. To get a more
+precise union, you have to keep track of both. In the worst case, if you want
+efficient arbitrary queries, you need to store your int ranges in an interval
+tree. So what gives?
 
 I asked Fil if both bitsets and int ranges answer the same question, why use
 int ranges? He said that it's more flexible long-term: bitsets get expensive as
 soon as you need over 128 bits (you might need to heap allocate them!) whereas
 ranges have no such ceiling.
 
-Now that we understand the representation, let's take a look at how the DFG
-(for example) uses these heap ranges in analysis. The DFG is structured in such
-a way that it can make use of the DOMJIT heap ranges directly, which is neat.
-
-Now, Fil writes:
+Additionally, despite Fil writing this in his SSA post:
 
 > The purpose of the effect representation baked into the IR is to provide a
 > precise always-available baseline for alias information that is super easy to
@@ -441,6 +444,10 @@ It's important to note that this doesn't actually involve any allocation of
 lists. JSC does this very clever thing where they have "functors" that they
 pass in as arguments that compress/summarize what they want to out of an
 instruction's effects.
+
+Let's take a look at how the DFG (for example) uses these heap ranges in
+analysis. The DFG is structured in such a way that it can make use of the
+DOMJIT heap ranges directly, which is neat.
 
 Here's a very terse pseudo-code version of what they do to look at before you
 read the C++:
