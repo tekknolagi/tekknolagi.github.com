@@ -1,0 +1,359 @@
+body {
+    font-family: serif;
+}
+div.pagecontents {
+    counter-reset: figures;
+    margin: 30px auto 0px auto;
+}
+div.pagecontents p, div.pagecontents li {
+    line-height: 1.2;
+    font-size: 16px;
+}
+div.pagecontents, code, pre {
+    max-width: 650px;
+}
+div.navbar {
+    display: inline-block;
+    padding: 10px;
+    /* Thanks, oilshell.org, for inspiration. */
+    background-color: #DEE;
+}
+li.post-item {
+    display: table;
+    width: 100%;
+}
+a.post-title span {
+    float: left;
+}
+div.post-date i {
+    float: right;
+}
+h1, h2, h2 {
+    line-height: 1.2;
+}
+aside {
+/* margin-top: -20px;
+    margin-bottom: -10px; */
+    margin-left: 20px;
+    font-style: italic;
+}
+pre {
+    overflow: auto;
+    word-wrap: normal;
+    white-space: pre;
+    display: block;
+    padding: 15px;
+}
+.newlink:after {
+    content: "(new!)";
+    padding-left: 5px;
+    color: red;
+    font-style: italic;
+    display: inline-block;
+    text-decoration: none;
+}
+footer hr {
+    margin-top: 40px;
+}
+table {
+  margin: 15px 0;
+  padding: 0; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8;
+    }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      text-align: left;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      text-align: left;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+/* Thanks to
+https://css-tricks.com/snippets/css/prevent-superscripts-and-subscripts-from-affecting-line-height/
+*/
+sup, sub {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+}
+sub {
+  top: 0.4em;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #dfdfdf;
+    background: #101010;
+  }
+  div.navbar {
+    background-color: #212121;
+  }
+  a[href] {
+    color: #9e9eff;
+  }
+  a[href]:visited {
+    color: #bebedf;
+  }
+  code.highlighter-rouge {
+    color: #fe8019;
+  }
+  svg, object.svg, img.svg, img[src$=".svg"] {
+    filter: invert(100%);
+  }
+  table tr {
+    border-top: 1px solid #555;
+    background-color: #121212;
+  }
+  table tr:nth-child(2n) {
+    background-color: #212121;
+  }
+  li code, p code {
+    color: #fe8019;
+  }
+}
+
+/* Stuff for posts */
+img.post-inline-image {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+div.post-co-authors {
+    padding-top: 10px;
+}
+/* TODO(max): See https://alexwlchan.net/2021/10/console-copying/ to disable
+ * prompt selection in console blocks */
+
+/* Begin: display a small horizontal bar before footnote elements if they
+ * exist. */
+div.footnotes {
+  position: relative;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+div.footnotes:before {
+  /* Element only present when there are footnotes. */
+  content: '';
+  width: 50%;
+  left: 25%;
+  height: 2px;
+  background: #b0b0b0;
+  position: absolute;
+  top: -1px;
+}
+/* End horizontal bar. */
+
+a.footnote:before {
+ content: "[";
+}
+
+a.footnote:after {
+    content: "]";
+}
+figure object, figure svg, figure img {
+  max-width: 100%;
+  display: block;
+  margin: auto;
+}
+figure figcaption {
+  margin-top: 10px;
+}
+figcaption::before {
+    counter-increment: figures;
+    content: "Fig. " counter(figures) " - ";
+    font-weight: bold;
+}
+
+/* gojekyll includes an <hr> in footnotes that we don't want */
+div.footnotes hr {
+  display: none;
+}
+
+@media (screen or print) {
+  /* Inline code */
+  code:not(.highlight pre code) {
+      color: green;
+  }
+
+  .highlight table td { padding: 5px; }
+  .highlight table pre { margin: 0; }
+  .highlight, .highlight .w {
+    color: #282828;
+    background-color: #fbf1c7;
+  }
+  .highlight .err {
+    color: #9d0006;
+    background-color: #fbf1c7;
+    font-weight: bold;
+  }
+  .highlight .c, .highlight .ch, .highlight .cd, .highlight .cm, .highlight .cpf, .highlight .c1, .highlight .cs {
+    color: #928374;
+    font-style: italic;
+  }
+  .highlight .cp {
+    color: #427b58;
+  }
+  .highlight .nt {
+    color: #9d0006;
+  }
+  .highlight .o, .highlight .ow {
+    color: #282828;
+  }
+  .highlight .p, .highlight .pi {
+    color: #282828;
+  }
+  .highlight .gi {
+    color: #79740e;
+    background-color: #fbf1c7;
+  }
+  .highlight .gd {
+    color: #9d0006;
+    background-color: #fbf1c7;
+  }
+  .highlight .gh {
+    color: #79740e;
+    font-weight: bold;
+  }
+  .highlight .k, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kv {
+    color: #9d0006;
+  }
+  .highlight .kc {
+    color: #8f3f71;
+  }
+  .highlight .kt {
+    color: #b57614;
+  }
+  .highlight .kd {
+    color: #af3a03;
+  }
+  .highlight .s, .highlight .sb, .highlight .sc, .highlight .dl, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .s1 {
+    color: #79740e;
+    font-style: italic;
+  }
+  .highlight .si {
+    color: #79740e;
+    font-style: italic;
+  }
+  .highlight .sr {
+    color: #79740e;
+    font-style: italic;
+  }
+  .highlight .sa {
+    color: #9d0006;
+  }
+  .highlight .se {
+    color: #af3a03;
+  }
+  .highlight .nn {
+    color: #427b58;
+  }
+  .highlight .nc {
+    color: #427b58;
+  }
+  .highlight .no {
+    color: #8f3f71;
+  }
+  .highlight .na {
+    color: #79740e;
+  }
+  .highlight .m, .highlight .mb, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mx {
+    color: #8f3f71;
+  }
+  .highlight .ss {
+    color: #076678;
+  }
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  /* Borrowed from https://github.com/daveyarwood/gruvbox-pygments */
+  .highlight .hll { background-color: #ffffcc }
+  .highlight  { background: #282828; color: #ebdbb2; background-color: #282828 }
+  .highlight .c { color: #928374; font-style: italic; } /* Comment */
+  .highlight .err { color: #ebdbb2; } /* Error */
+  .highlight .esc { color: #ebdbb2; } /* Escape */
+  .highlight .g { color: #ebdbb2; } /* Generic */
+  .highlight .k { color: #fe8019; } /* Keyword */
+  .highlight .l { color: #ebdbb2; } /* Literal */
+  .highlight .n { color: #ebdbb2; } /* Name */
+  .highlight .o { color: #fe8019; } /* Operator */
+  .highlight .x { color: #ebdbb2; } /* Other */
+  .highlight .p { color: #ebdbb2; } /* Punctuation */
+  .highlight .ch { color: #928374; font-style: italic; } /* Comment.Hashbang */
+  .highlight .cm { color: #928374; font-style: italic; } /* Comment.Multiline */
+  .highlight .cp { color: #8ec07c; } /* Comment.Preproc */
+  .highlight .c1 { color: #928374; font-style: italic; } /* Comment.Single */
+  .highlight .cs { color: #928374; font-style: italic; } /* Comment.Special */
+  .highlight .gd { color: #282828; background-color: #fb4934 } /* Generic.Deleted */
+  .highlight .ge { color: #83a598; text-decoration: underline; } /* Generic.Emph */
+  .highlight .gr { color: #ebdbb2; font-weight: bold; background-color: #fb4934 } /* Generic.Error */
+  .highlight .gh { color: #b8bb26; font-weight: bold; } /* Generic.Heading */
+  .highlight .gi { color: #282828; background-color: #b8bb26 } /* Generic.Inserted */
+  .highlight .go { color: #ebdbb2; } /* Generic.Output */
+  /* TODO(max): Consider making prompt, output noselect https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting */
+  .highlight .gp { color: #ebdbb2; } /* Generic.Prompt */
+  .highlight .gs { color: #ebdbb2; } /* Generic.Strong */
+  .highlight .gu { color: #b8bb26; font-weight: bold; } /* Generic.Subheading */
+  .highlight .gt { color: #ebdbb2; font-weight: bold; background-color: #fb4934 } /* Generic.Traceback */
+  .highlight .kc { color: #fe8019; } /* Keyword.Constant */
+  .highlight .kd { color: #fe8019; } /* Keyword.Declaration */
+  .highlight .kn { color: #fe8019; } /* Keyword.Namespace */
+  .highlight .kp { color: #fe8019; } /* Keyword.Pseudo */
+  .highlight .kr { color: #fe8019; } /* Keyword.Reserved */
+  .highlight .kt { color: #faed2f; } /* Keyword.Type */
+  .highlight .ld { color: #ebdbb2; } /* Literal.Date */
+  .highlight .m { color: #d3869b; } /* Literal.Number */
+  .highlight .s { color: #b8bb26; } /* Literal.String */
+  .highlight .na { color: #b8bb26; font-weight: bold; } /* Name.Attribute */
+  .highlight .nb { color: #fabd2f; } /* Name.Builtin */
+  .highlight .nc { color: #ebdbb2; } /* Name.Class */
+  .highlight .no { color: #d3869b; } /* Name.Constant */
+  .highlight .nd { color: #ebdbb2; } /* Name.Decorator */
+  .highlight .ni { color: #fabd2f; } /* Name.Entity */
+  .highlight .ne { color: #fb4934; } /* Name.Exception */
+  .highlight .nf { color: #fabd2f; } /* Name.Function */
+  .highlight .nl { color: #fb4934; } /* Name.Label */
+  .highlight .nn { color: #ebdbb2; } /* Name.Namespace */
+  .highlight .nx { color: #ebdbb2; } /* Name.Other */
+  .highlight .py { color: #ebdbb2; } /* Name.Property */
+  .highlight .nt { color: #fb4934; } /* Name.Tag */
+  .highlight .nv { color: #ebdbb2; } /* Name.Variable */
+  .highlight .ow { color: #fe8019; } /* Operator.Word */
+  .highlight .w { color: #ebdbb2; background-color: #282828; } /* Text.Whitespace */
+  .highlight .mb { color: #d3869b; } /* Literal.Number.Bin */
+  .highlight .mf { color: #d3869b; } /* Literal.Number.Float */
+  .highlight .mh { color: #d3869b; } /* Literal.Number.Hex */
+  .highlight .mi { color: #d3869b; } /* Literal.Number.Integer */
+  .highlight .mo { color: #d3869b; } /* Literal.Number.Oct */
+  .highlight .sb { color: #b8bb26; } /* Literal.String.Backtick */
+  .highlight .sc { color: #b8bb26; } /* Literal.String.Char */
+  .highlight .sd { color: #b8bb26; } /* Literal.String.Doc */
+  .highlight .s2 { color: #b8bb26; } /* Literal.String.Double */
+  .highlight .se { color: #b8bb26; } /* Literal.String.Escape */
+  .highlight .sh { color: #b8bb26; } /* Literal.String.Heredoc */
+  .highlight .si { color: #b8bb26; } /* Literal.String.Interpol */
+  .highlight .sx { color: #b8bb26; } /* Literal.String.Other */
+  .highlight .sr { color: #b8bb26; } /* Literal.String.Regex */
+  .highlight .s1 { color: #b8bb26; } /* Literal.String.Single */
+  .highlight .ss { color: #83a598; } /* Literal.String.Symbol */
+  .highlight .bp { color: #fabd2f; } /* Name.Builtin.Pseudo */
+  .highlight .vc { color: #ebdbb2; } /* Name.Variable.Class */
+  .highlight .vg { color: #ebdbb2; } /* Name.Variable.Global */
+  .highlight .vi { color: #ebdbb2; } /* Name.Variable.Instance */
+  .highlight .il { color: #d3869b; } /* Literal.Number.Integer.Long */
+}
