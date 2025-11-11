@@ -429,7 +429,59 @@ Now that we understand the representation, let's take a look at how the DFG
 (for example) uses these heap ranges in analysis. The DFG is structured in such
 a way that it can make use of the DOMJIT heap ranges directly, which is neat.
 
-TODO insert functors and how we're not materializing lists anywhere
+Now, Fil writes:
+
+> The purpose of the effect representation baked into the IR is to provide a
+> precise always-available baseline for alias information that is super easy to
+> work with. [...] you can have instructions report that they read/write
+> multiple heaps [...] you can have a utility function that produces such lists
+> on demand.
+
+It's important to note that this doesn't actually involve any allocation of
+lists. JSC does this very clever thing where they have "functors" that they
+pass in as arguments that compress/summarize what they want to out of an
+instruction's effects.
+
+Here's a very terse pseudo-code version of what they do to look at before you
+read the C++:
+
+```python
+# A minimal example
+class NoOp:
+    def __call__(self, other):
+        pass
+
+class WritesToMemoryOrStack:
+    def __init__(self):
+        self.overlaps = False
+
+    def __call__(self, other):
+        self.overlaps |= Memory.overlaps(other)
+        self.overlaps |= Stack.overlaps(other)
+
+# report effects of a given instruction
+def clobberize(instr, read, write):
+    match instr:
+        case Constant:
+            pass
+        case LoadField:
+            read(Memory)
+        case StoreField:
+            write(Memory)
+        case LoadLocal:
+            read(Stack)
+        case StoreLocal:
+            write(Stack)
+
+instr = ...
+result = WritesToMemoryOrStack()
+compute_effects(instr, NoOp, result)
+if result.overlaps:
+    # boo
+    ...
+```
+
+Okay, now that you have been prepped, time for some C++ (and later, templates)!
 
 ```c++
 class AbstractHeapOverlaps {
