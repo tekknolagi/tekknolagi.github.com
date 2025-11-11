@@ -378,10 +378,10 @@ and implicit boolean conversions. To reinforce the whole nested heap ranges
 thing, `isSubtypeOf` is asking if one `HeapRange` contains another.
 -->
 
-What about checking overlap? This is a little bit different from checking
-subtyping and where a lot of the real work happens:
+What about checking overlap? Here is the [implementation in
+JSC][jsc-range-overlap].
 
-https://github.com/WebKit/WebKit/blob/989c9f9cd5b1f0c9606820e219ee51da32a34c6b/Source/JavaScriptCore/domjit/DOMJITHeapRange.h#L108
+[jsc-range-overlap]: https://github.com/WebKit/WebKit/blob/989c9f9cd5b1f0c9606820e219ee51da32a34c6b/Source/JavaScriptCore/domjit/DOMJITHeapRange.h#L108
 
 ```c++
 namespace WTF {
