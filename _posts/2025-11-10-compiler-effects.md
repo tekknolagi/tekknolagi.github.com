@@ -471,23 +471,24 @@ class IsPure:
 # report effects of a given instruction
 def clobberize(instr, read, write):
     match instr:
-        case Constant:
+        case Constant(_):
             pass
-        case LoadField:
+        case LoadField(_):
             read(Memory)
-        case StoreField:
+        case StoreField(_):
             write(Memory)
-        case LoadLocal:
+        case LoadLocal(_):
             read(Stack)
-        case StoreLocal:
+        case StoreLocal(_):
             write(Stack)
 
 instr = ...
 result = WritesToMemoryOrStack()
-compute_effects(instr, NoOp, result)
+clobberize(instr, NoOp, result)
 if result.result:
     # boo
     ...
+
 ```
 
 Okay, now that you have been prepped, time for some C++ (and later, templates)!
