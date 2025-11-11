@@ -75,7 +75,7 @@ what type `left` is and therefore what code to run when reading `left.add`.
 This program will be compiled down to a couple Python bytecode instructions
 that do a very generic `LOAD_METHOD`/`CALL_METHOD` operation:
 
-```
+```console?lang=python&prompt=>>>,...
 >>> import dis
 >>> dis.dis("""
 ... def do_add(left, right):
