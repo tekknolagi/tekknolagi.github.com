@@ -667,12 +667,14 @@ effects. See for example: [alias-class.h][hhvm-alias-class-h] and
 HHVM has a couple places that use this information, such as [a
 definition-sinking pass][hhvm-def-sink-cpp], [alias
 analysis][hhvm-alias-analysis-h], [DCE][hhvm-dce-cpp], [store
-elimination][hhvm-store-elim-cpp], and more.
+elimination][hhvm-store-elim-cpp], [refcount opts][hhvm-refcount-opts], and
+more.
 
 [hhvm-def-sink-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/def-sink.cpp
 [hhvm-alias-analysis-h]: https://github.com/facebook/hhvm/blob/0395507623c2c08afc1d54c0c2e72bc8a3bd87f1/hphp/runtime/vm/jit/alias-analysis.h
 [hhvm-dce-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/dce.cpp
 [hhvm-store-elim-cpp]: https://github.com/facebook/hhvm/blob/4cdb85bf737450bf6cb837d3167718993f9170d7/hphp/runtime/vm/jit/store-elim.cpp
+[hhvm-refcount-opts]: https://github.com/facebook/hhvm/blob/1f9eda80656b79634b6956084481ed5a43d8bc2e/hphp/runtime/vm/jit/refcount-opts.cpp
 
 If you are wondering why the HHVM representation looks similar to the Cinder
 representation, it's because some former HHVM engineers such as Brett Simmers
