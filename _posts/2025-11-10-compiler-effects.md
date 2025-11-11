@@ -459,7 +459,8 @@ class WritesToMemoryOrStack:
         self.result |= Memory.overlaps(other)
         self.result |= Stack.overlaps(other)
 
-# unused in this example, but interesting
+# unused in this example, but interesting to pass into as a functor to the
+# `write` parameter
 class IsPure:
     def __init__(self):
         self.result = True
