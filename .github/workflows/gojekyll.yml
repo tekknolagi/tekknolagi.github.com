@@ -14,5 +14,7 @@ jobs:
     - uses: actions/setup-go@v5
     - name: Install gojekyll
       run: go install github.com/osteele/gojekyll@f9614d36ebe8ce623bbeefbfcf79547ff060fbb8
+    - name: Install sass
+      run: npm install -g sass
     - name: Build site
       run: gojekyll build
