@@ -3,15 +3,9 @@ title: A catalog of side effects
 layout: post
 ---
 
-Compilers like to keep track of each IR instruction's *effects*. An
+Optimizing compilers like to keep track of each IR instruction's *effects*. An
 instruction's effects vary wildly from having no effects at all, to writing a
 specific variable, to completely unknown (writing all state).
-
-<!--
-TODO directly explain what compilers care about: make things more efficient. to
-do that, there are techniques such as DCE, strength reduction, re-ordering,
-SSAPRE, etc
--->
 
 This post can be thought of as a continuation of [What I talk about when I talk
 about IRs](/blog/irs/), specifically the section talking about asking the right
