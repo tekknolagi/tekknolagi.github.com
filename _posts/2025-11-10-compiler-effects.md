@@ -576,29 +576,6 @@ inlined as a little memory read snippet using a JIT builder API. Neat.)
 [node-firstchild]: https://developer.mozilla.org/en-US/docs/Web/API/Node/firstChild
 [firstchild-annotation]: https://github.com/WebKit/WebKit/blob/32bda1b1d73527ba1d05ccba0aa8e463ddeac56d/Source/WebCore/domjit/JSNodeDOMJIT.cpp#L86
 
-<!--
-We can tweak it slightly to use the symbolic names and it looks maybe slightly
-easier to read:
-
-```rust
-mod bits {
-  /* ... */
-  pub const DOM: HeapRange = HeapRange { start: Tree.start, end: Tree.end };
-  pub const Tree: HeapRange = HeapRange { start: Node.start, end: Document.end };
-  pub const Node: HeapRange = HeapRange { start: Node_firstChild.start, end: Node_ownerDocument.end };
-  pub const Node_firstChild: HeapRange = HeapRange { start: 0, end: 1 };
-  pub const Node_lastChild: HeapRange = HeapRange { start: 1, end: 2 };
-  pub const Node_parentNode: HeapRange = HeapRange { start: 2, end: 3 };
-  pub const Node_nextSibling: HeapRange = HeapRange { start: 3, end: 4 };
-  pub const Node_previousSibling: HeapRange = HeapRange { start: 4, end: 5 };
-  pub const Node_ownerDocument: HeapRange = HeapRange { start: 5, end: 6 };
-  pub const Document: HeapRange = HeapRange { start: Document_documentElement.start, end: Document_body.end };
-  pub const Document_documentElement: HeapRange = HeapRange { start: 6, end: 7 };
-  pub const Document_body: HeapRange = HeapRange { start: 7, end: 8 };
-}
-```
--->
-
 <!-- TODO tie it back to the original example -->
 
 <!--
@@ -623,9 +600,9 @@ https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/S
 
 ## Simple
 
-Speaking of Sea of Nodes (SoN), [Simple](https://github.com/seaofnodes/simple)
-is Cliff Click's pet SoN project to try and showcase the idea to the
-world---outside of a HotSpot C2 context.
+[Simple](https://github.com/seaofnodes/simple) is Cliff Click's pet Sea of
+Nodes (SoN) project to try and showcase the idea to the world---outside of a
+HotSpot C2 context.
 
 This one is a little harder for me to understand but it looks like each
 translation unit has a [`StartNode`][simple-startnode-java] that doles out
