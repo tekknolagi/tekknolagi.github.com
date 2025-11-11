@@ -667,6 +667,8 @@ https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/S
 https://github.com/WebKit/WebKit/blob/b99cb96a7a3e5978b475d2365b72196e15a1a326/Source/JavaScriptCore/dfg/DFGStructureAbstractValue.h
 -->
 
+Last, we'll look at Simple, which has a slightly different take on all of this.
+
 ## Simple
 
 [Simple](https://github.com/seaofnodes/simple) is Cliff Click's pet Sea of
@@ -693,6 +695,9 @@ alias classes come into the picture in [Chapter 10][simple-chapter-10].
 
 [simple-chapter-10]: https://github.com/SeaOfNodes/Simple/tree/main/chapter10
 
+Because I spent a while spelunking through other implementations to see how
+other projects did this, here is a list of the projects I looked at. Mostly,
+they use bitsets.
 
 ## Other implementations
 
@@ -775,9 +780,19 @@ tracks side effects more explicitly in the structure of the IR itself.
 
 ## Conclusion
 
+Both bitsets and int ranges are perfectly cromulent ways of representing heap
+effects for your IR. The Sea of Nodes approach is also probably okay since it
+powers HotSpot C2 and (for a time) V8.
+
+Remember to ask *the right questions* of your IR when doing analysis.
+
 ## Thank you
 
-Fil Pizlo, CF Bolz-Tereick, Chris Gregory
+Thank you to [Fil Pizlo][http://www.filpizlo.com/] for writing his initial
+GitHub Gist and sending me on this journey and thank you to [Chris
+Gregory][https://www.chrisgregory.me/] and [Ufuk
+Kayserilioglu][https://ufuk.dev/] for feedback on making some of the
+explanations more helpful.
 
 <!--
 
