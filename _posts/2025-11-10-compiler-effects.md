@@ -194,9 +194,9 @@ disjoint heaps in our bitset. Therefore `ListItem & TupleItem == 0`, therefore
 these memory operations can never interfere! They can (for example) be
 re-ordered arbitrarily.
 
-These memory effects could in the future be used for instruction re-ordering,
-but they are mostly used in two places in Cinder: the refcount insertion pass
-and DCE.
+In Cinder, these memory effects could in the future be used for instruction
+re-ordering, but they are today mostly used in two places: the refcount
+insertion pass and DCE.
 
 DCE involves first finding the set of instructions that need to be kept around
 because they are useful/important/have effects. So here is what the Cinder DCE
@@ -215,7 +215,9 @@ better-defined memory effects, like making terminators have a `Control` effect,
 `Snapshot` have some kind of effect (or being kept around via data
 dependencies), etc. But `memoryEffects` is right there at the core of it!
 
-TODO add transition
+Now that we have seen the bitset representation of effects and an
+implementation in Cinder, let's take a look at a different representation and
+and an implementation in JavaScriptCore.
 
 ## JavaScriptCore
 
