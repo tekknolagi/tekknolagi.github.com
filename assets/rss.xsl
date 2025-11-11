@@ -35,7 +35,7 @@ xslt: true
             </ul>
             <p>...and more on <a href="/blog">the blog page</a>!</p>
           </div>
-          <i class="newlink">Made with XSLT!</i>
+          <i class="newlink">Made with XSLT!</i> Unfortunately, Google is <a href="https://xslt.rip/">killing this feature</a>.
           {% include footer.md %}
         </div>
       </body>
