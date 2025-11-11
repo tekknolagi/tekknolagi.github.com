@@ -852,4 +852,6 @@ http://kameken.clique.jp/Lectures/Lectures2013/Compiler2013/a26-stanier.pdf
 
 Partitioned Lattice per Variable (PLV) -- that's in Chapter 13 on SSI
 
+TODO maybe lattice in ascent
+
 -->
