@@ -295,6 +295,7 @@ my [Compiling a Lisp](/blog/compiling-a-lisp-8/#assembler-libraries) post.
 * [Bunny](https://github.com/signaldust/bunny-jit) (C++)
 * [dstogov's IR](https://github.com/dstogov/ir) (C)
 * [PeachPy](https://github.com/Maratyszcza/PeachPy) (Python)
+* [cj](https://github.com/hellerve-pl-experiments/cj) and [blog](https://blog.veitheller.de/cj:_Making_a_minimal,_complete_JIT.html) (C)
 
 ### Things I want to write about
 
