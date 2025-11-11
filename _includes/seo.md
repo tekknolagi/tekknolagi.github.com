@@ -7,3 +7,4 @@
     {% seo %}
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
     <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
