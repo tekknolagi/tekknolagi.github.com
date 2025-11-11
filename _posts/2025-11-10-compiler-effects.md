@@ -778,6 +778,14 @@ reducers. It has effect query methods on it such as `can_eager_deopt` and
 Until recently, V8 also used Sea of Nodes as its IR representation, which also
 tracks side effects more explicitly in the structure of the IR itself.
 
+## Guile
+
+[Guile Scheme][guile] looks like it has a [custom tagging
+scheme][guile-effects] type thing.
+
+[guile]: https://www.gnu.org/software/guile/
+[guile-effects]: https://wingolog.org/archives/2014/05/18/effects-analysis-in-guile
+
 ## Conclusion
 
 Both bitsets and int ranges are perfectly cromulent ways of representing heap
@@ -833,9 +841,6 @@ https://conf.researchr.org/details/cgo-2024/cgo-2024-main-conference/31/Represen
 
 Scala LMS graph IR
 https://2023.splashcon.org/details/splash-2023-oopsla/46/Graph-IRs-for-Impure-Higher-Order-Languages-Making-Aggressive-Optimizations-Affordab
-
-Guile Scheme
-https://wingolog.org/archives/2014/05/18/effects-analysis-in-guile
 
 MIR and borrow checker
 https://rustc-dev-guide.rust-lang.org/part-3-intro.html#source-code-representation
