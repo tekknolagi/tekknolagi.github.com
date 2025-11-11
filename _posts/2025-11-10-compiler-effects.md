@@ -56,9 +56,10 @@ on strength reductions. Over-approximations of effects should always be
 valid.
 
 But at some point you start wanting to do dead code elimination (DCE), or
-common subexpression elimination (CSE), or move instructions around, and you
-start wondering how to represent effects. That's where I am right now. So
-here's a catalog of different compilers I have looked at recently.
+common subexpression elimination (CSE), or eliminate loads/stores, or move
+instructions around, and you start wondering how to represent effects. That's
+where I am right now. So here's a catalog of different compilers I have looked
+at recently.
 
 There are two main ways I have seen to represent effects: bitsets and heap
 range lists. We'll look at one example compiler for each, talk a bit about
