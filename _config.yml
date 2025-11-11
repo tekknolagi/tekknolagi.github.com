@@ -42,6 +42,9 @@ plugins:
   - jekyll-sitemap
   - rouge
 
+sass:
+    style: compressed
+
 collections:
     blog_lisp:
         output: true
