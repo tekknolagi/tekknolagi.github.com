@@ -130,7 +130,7 @@ With these, we model the world.
 
 ## Algorithm W
 
-Algorithm W is probably the most famous one (citation needed) because it was
+Algorithm W is probably the most famous one{{ site.citation_needed }} because it was
 presented in the paper as the easiest to prove correct. It's also free of side
 effects, which probably appeals to [Haskell nerds][haskell-uf].
 
