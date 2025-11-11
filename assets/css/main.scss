@@ -188,7 +188,7 @@ div.footnotes hr {
   display: none;
 }
 
-@media (screen or print) {
+@media screen, print {
   /* Inline code */
   code:not(.highlight pre code) {
       color: green;
