@@ -329,6 +329,13 @@ pointers.
 Thanks for reading! Make sure to check out [the
 repo](https://github.com/tekknolagi/icdemo) and poke at the code.
 
+**A small update:** I wrote and then did post about [an assembly version of the
+interpreter][asm-interpreter]. If you are curious about that, you may enjoy
+[zackoverflow's blog post][zackoverflow-template-interpreter] on the subject.
+
+[asm-interpreter]: https://github.com/tekknolagi/icdemo/blob/c4649c22afcd20455b7429431cd9be1fa2170402/interpreter.c#L433
+[zackoverflow-template-interpreter]: https://zackoverflow.dev/writing/template-interpreters
+
 ## Exploring further
 
 In this post, we made an executive decision to shrink the available integer
