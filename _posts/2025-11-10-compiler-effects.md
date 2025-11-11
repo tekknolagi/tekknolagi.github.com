@@ -788,10 +788,10 @@ Remember to ask *the right questions* of your IR when doing analysis.
 
 ## Thank you
 
-Thank you to [Fil Pizlo][http://www.filpizlo.com/] for writing his initial
+Thank you to [Fil Pizlo](http://www.filpizlo.com/) for writing his initial
 GitHub Gist and sending me on this journey and thank you to [Chris
-Gregory][https://www.chrisgregory.me/] and [Ufuk
-Kayserilioglu][https://ufuk.dev/] for feedback on making some of the
+Gregory](https://www.chrisgregory.me/) and [Ufuk
+Kayserilioglu](https://ufuk.dev/) for feedback on making some of the
 explanations more helpful.
 
 <!--
