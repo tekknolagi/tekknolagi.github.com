@@ -78,8 +78,6 @@ everything about what effects the given instruction might have.
 
 [cinder-instr-effects-h]: https://github.com/facebookincubator/cinderx/blob/8bf5af94e2792d3fd386ab25b1aeedae27276d50/cinderx/Jit/hir/instr_effects.h
 
-TODO explain lattice and link to relevant info
-
 The data representation is a bitset representation of a lattice called an
 `AliasClass` and that is defined in [alias_class.h][cinder-alias-class-h]. Each
 bit in the bitset represents a distinct location in the heap: reads from and
@@ -433,7 +431,150 @@ a way that it can make use of the DOMJIT heap ranges directly, which is neat.
 
 TODO insert functors and how we're not materializing lists anywhere
 
-TODO come back to builtins and C calls
+```c++
+class AbstractHeapOverlaps {
+public:
+    AbstractHeapOverlaps(AbstractHeap heap)
+        : m_heap(heap)
+        , m_result(false)
+    {
+    }
+
+    void operator()(AbstractHeap otherHeap) const
+    {
+        if (m_result)
+            return;
+        m_result = m_heap.overlaps(otherHeap);
+    }
+
+    bool result() const { return m_result; }
+
+private:
+    AbstractHeap m_heap;
+    mutable bool m_result;
+};
+
+bool writesOverlap(Graph& graph, Node* node, AbstractHeap heap)
+{
+    NoOpClobberize noOp;
+    AbstractHeapOverlaps addWrite(heap);
+    clobberize(graph, node, noOp, addWrite, noOp);
+    return addWrite.result();
+}
+```
+
+where `clobberize` is the function that calls these functors (`noOp` or
+`addWrite` in this case) for each effect that the given IR instruction `node`
+declares.
+
+I've pulled some relevant snippets of `clobberize`, which is quite long, that I
+think are interesting.
+
+First, some instructions (constants, here) have no effects. There's some
+utility in the `def(PureValue(...))` call but I didn't understand fully.
+
+Then there are some instructions that conditionally have effects depending on
+the use types of their operands.[^dfg-use-type] Taking the absolute value of an
+Int32 or a Double is effect-free but otherwise looks like it can run arbitrary
+code.
+
+[^dfg-use-type]: This is because the DFG compiler does this interesting thing
+    where they track and guard the input types on *use* vs having types
+    attached to the input's own *def*. It might be a clean way to handle shapes
+    inside the type system while also allowing the type+shape of an object to
+    change over time (which it can do in many dynamic language runtimes).
+
+Some run-time IR guards that might cause side exits are annotated as
+such---they write to the `SideState` heap.
+
+Local variable instructions read *specific* heaps indexed by what looks like
+the local index but I'm not sure. This means accessing two different locals
+won't alias!
+
+Instructions that allocate can't be re-ordered, it looks like; they both read
+and write the `HeapObjectCount`. This probably limits the amount of allocation
+sinking that can be done.
+
+Then there's `CallDOM`, which is the builtins stuff I was talking about. We'll
+come back to that after the code block.
+
+```c++
+template<typename ReadFunctor, typename WriteFunctor, typename DefFunctor, typename ClobberTopFunctor>
+void clobberize(Graph& graph, Node* node, const ReadFunctor& read, const WriteFunctor& write, const DefFunctor& def)
+{
+    // ...
+
+    switch (node->op()) {
+    case JSConstant:
+    case DoubleConstant:
+    case Int52Constant:
+        def(PureValue(node, node->constant()));
+        return;
+
+    case ArithAbs:
+        if (node->child1().useKind() == Int32Use || node->child1().useKind() == DoubleRepUse)
+            def(PureValue(node, node->arithMode()));
+        else
+            clobberTop();
+        return;
+
+    case AssertInBounds:
+    case AssertNotEmpty:
+        write(SideState);
+        return;
+
+    case GetLocal:
+        read(AbstractHeap(Stack, node->operand()));
+        def(HeapLocation(StackLoc, AbstractHeap(Stack, node->operand())), LazyNode(node));
+        return;
+
+    case NewArrayWithSize:
+    case NewArrayWithSizeAndStructure:
+        read(HeapObjectCount);
+        write(HeapObjectCount);
+        return;
+
+    case CallDOM: {
+        const DOMJIT::Signature* signature = node->signature();
+        DOMJIT::Effect effect = signature->effect;
+        if (effect.reads) {
+            if (effect.reads == DOMJIT::HeapRange::top())
+                read(World);
+            else
+                read(AbstractHeap(DOMState, effect.reads.rawRepresentation()));
+        }
+        if (effect.writes) {
+            if (effect.writes == DOMJIT::HeapRange::top()) {
+                if (Options::validateDFGClobberize())
+                    clobberTopFunctor();
+                write(Heap);
+            } else
+                write(AbstractHeap(DOMState, effect.writes.rawRepresentation()));
+        }
+        ASSERT_WITH_MESSAGE(effect.def == DOMJIT::HeapRange::top(), "Currently, we do not accept any def for CallDOM.");
+        return;
+    }
+    }
+}
+
+```
+
+This `CallDOM` node is the way for the DOM APIs in the browser---a significant
+chunk of the builtins, which are written in C++---can communicate what they do
+to the optimizing compiler. Without any annotations, the JIT has to assume that
+a call into C++ could do anything to the JIT state. Bummer!
+
+But because, for example, [`Node.firstChild`][node-firstchild] [annotates what
+memory it reads from][firstchild-annotation] and what it *doesn't* write to,
+the JIT can optimize around it better---or even remove the access completely.
+It means the JIT can reason about calls to known builtins *the same way* that
+it reasons about normal JIT opcodes.
+
+(Incidentally it looks like it doesn't even make a C call, but instead is
+inlined as a little memory read snippet using a JIT builder API. Neat.)
+
+[node-firstchild]: https://developer.mozilla.org/en-US/docs/Web/API/Node/firstChild
+[firstchild-annotation]: https://github.com/WebKit/WebKit/blob/32bda1b1d73527ba1d05ccba0aa8e463ddeac56d/Source/WebCore/domjit/JSNodeDOMJIT.cpp#L86
 
 <!--
 We can tweak it slightly to use the symbolic names and it looks maybe slightly
