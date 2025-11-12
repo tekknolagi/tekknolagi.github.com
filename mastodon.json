@@ -66519,6 +66519,138 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115534486860897641": {
+      "id": "115534486860897641",
+      "created_at": "2025-11-12T02:59:24.457Z",
+      "in_reply_to_id": "115523705945305036",
+      "in_reply_to_account_id": "109368468994664531",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115534486860897641",
+      "url": "https://mastodon.social/@tekknolagi/115534486860897641",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://types.pl/@sliminality\" class=\"u-url mention\">@<span>sliminality</span></a></span> wish I could quote. The amount of times someone has dismissed with &quot;just syntax&quot; or &quot;just engineering&quot; and made me feel like a complete dunce is so high. &quot;Just engineering&quot;. Ugh</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109368468994664531",
+          "username": "sliminality",
+          "url": "https://types.pl/@sliminality",
+          "acct": "sliminality@types.pl"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115534480838263737": {
+      "id": "115534480838263737",
+      "created_at": "2025-11-12T02:57:52.566Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115534480838263737/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/115534480838263737/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "115523705945305036",
+        "created_at": "2025-11-10T05:17:38.000Z",
+        "in_reply_to_id": "115522694391171460",
+        "in_reply_to_account_id": "109368468994664531",
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://types.pl/users/sliminality/statuses/115523705781140957",
+        "url": "https://types.pl/@sliminality/115523705781140957",
+        "replies_count": 8,
+        "reblogs_count": 12,
+        "favourites_count": 47,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>Title: Concrete syntax matters, actually</p><p>Abstract: Too many programming languages researchers dismiss concrete syntax as an afterthought: arbitrary, superficial, or distracting from matters of \u201cactual\u201d (semantic) importance. This received view ignores a critical factor: the human at the computer. Concrete syntax defines the principal interface through which programmers interact with the vast majority of programming languages. Moreover, this interface is hardly decoupled from semantics; even trivial-seeming differences in keywords, sigils, and indentation can affect how programmers utilize and reason about language behavior. Using examples from asynchronous control flow, gradual subtyping, first-class functions, and more, I will make a case for the importance of concrete syntax, why language designers often overlook it, and what this implies for those of us who care about the usability of abstractions. Finally, I will describe some preliminary work evaluating the role of lexical ambiguity in programmer comprehension of type system features.</p>",
+        "reblog": null,
+        "account": {
+          "id": "109368468994664531",
+          "username": "sliminality",
+          "acct": "sliminality@types.pl",
+          "display_name": "Nintendo .DS_Store",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2022-11-18T00:00:00.000Z",
+          "note": "<p>Experienced computer scientist capable of robustly evaluating first-order logic in an infinite number of ways. Skilled in Microsoft PowerPoint and the spineless, tagless lambda calculus <a href=\"https://slim.computer\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">slim.computer</span><span class=\"invisible\"></span></a></p>",
+          "url": "https://types.pl/@sliminality",
+          "uri": "https://types.pl/users/sliminality",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/109/368/468/994/664/531/original/489d4e17fe572a0b.jpeg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/368/468/994/664/531/original/489d4e17fe572a0b.jpeg",
+          "header": "https://files.mastodon.social/cache/accounts/headers/109/368/468/994/664/531/original/e731e94178b1b922.jpeg",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/109/368/468/994/664/531/original/e731e94178b1b922.jpeg",
+          "followers_count": 1616,
+          "following_count": 61,
+          "statuses_count": 1595,
+          "last_status_at": "2025-11-12",
+          "hide_collections": false,
+          "emojis": [],
+          "fields": []
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
