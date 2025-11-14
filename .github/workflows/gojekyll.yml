@@ -16,5 +16,7 @@ jobs:
       run: go install github.com/osteele/gojekyll@25e5c542c56ed26a3eb095f2a3237970d3ff17df
     - name: Install sass
       run: npm install -g sass
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
     - name: Build site
       run: gojekyll build
