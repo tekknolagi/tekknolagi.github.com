@@ -17,8 +17,8 @@ jobs:
     - name: Install sass
       run: npm install -g sass
     - name: Manually run sass
-      run:
-        - sass --style=compressed assets/css/main.scss assets/css/main.css
-        - rm assets/css/main.scss
+      run: sass --style=compressed assets/css/main.scss assets/css/main.css
+    - name: Delete SCSS
+      run: rm assets/css/main.scss
     - name: Build site
       run: gojekyll build
