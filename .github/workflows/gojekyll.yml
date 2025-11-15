@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-go@v5
     - name: Install gojekyll
-      run: go install github.com/osteele/gojekyll@25e5c542c56ed26a3eb095f2a3237970d3ff17df
+      run: go install github.com/osteele/gojekyll@f7f30178b467758f402ef4f8fce42fbfa2a03666
     - name: Install sass
       run: npm install -g sass
     - name: Build site
