@@ -61,6 +61,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="market" data-location="8WM9+83 Roxbury, Boston">El Platanero</li>
             <li class="food" data-location="9WJ2+JR Somerville">Himalayan Kitchen</li>
             <li class="food" data-location="9VFX+HM Cambridge">Punjabi Dhaba</li>
+            <li class="food" data-location="8VRG+PH Brookline">Bab Korean Bistro</li>
             <!--
             Pending food poisoning...
             <li class="food" data-location="9V5R+X2 Cambridge">Surya Veg N Dosa Company</li>
