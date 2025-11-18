@@ -52,7 +52,6 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="food" data-location="CV4R+4M Medford">Oasis Brazilian Restaurant</li>
             <li class="drinks" data-location="8WW7+VQ Boston">Bukowski Tavern</li>
             <li class="drinks" data-location="8WW6+MG Boston">The Bebop</li>
-            <li class="coffee" data-location="8WR8+QJ Boston">Farmers Horse Coffee</li>
             <li class="food" data-location="9W8C+HP Cambridge">The Helmand</li>
             <li class="activity"><a href="https://www.bostontrails.org/">Walking City Trail</a></li>
             <li class="food" data-location="9VFJ+C5 Cambridge">Joe's Pizza</li>
@@ -60,7 +59,12 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="food" data-location="9VQJ+V2 Cambridge">Sugar &amp; Spice</li>
             <li class="food drinks" data-location="8WPF+QJ Boston">Toro</li>
             <li class="market" data-location="8WM9+83 Roxbury, Boston">El Platanero</li>
+            <li class="food" data-location="9WJ2+JR Somerville">Himalayan Kitchen</li>
+            <li class="food" data-location="9VFX+HM Cambridge">Punjabi Dhaba</li>
+            <!--
+            Pending food poisoning...
             <li class="food" data-location="9V5R+X2 Cambridge">Surya Veg N Dosa Company</li>
+            -->
         </ul>
     </div>
     <div class="city:nyc">
