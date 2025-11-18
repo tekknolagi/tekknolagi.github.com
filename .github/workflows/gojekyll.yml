@@ -15,10 +15,10 @@ jobs:
     - name: Install gojekyll
       run: go install github.com/osteele/gojekyll@4a2ed83a4fcff5d0db7438a5bf57b9c69481974a
     - name: Install sass
-      run: npm install -g sass
-    - name: Manually run sass
-      run: sass --style=compressed assets/css/main.scss assets/css/main.css
-    - name: Delete SCSS
-      run: rm assets/css/main.scss
+      run: npm install -g sass-embedded
+    # - name: Manually run sass
+    #   run: sass --style=compressed assets/css/main.scss assets/css/main.css
+    # - name: Delete SCSS
+    #   run: rm assets/css/main.scss
     - name: Build site
       run: gojekyll build
