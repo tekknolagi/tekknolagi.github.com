@@ -66788,6 +66788,43 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115578263908298365": {
+      "id": "115578263908298365",
+      "created_at": "2025-11-19T20:32:29.186Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115578263908298365",
+      "url": "https://mastodon.social/@tekknolagi/115578263908298365",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>I hope in 100 years when we have flying autonomous taxis or whatever Boston still slaps ugly hackney carriage plates on them</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
