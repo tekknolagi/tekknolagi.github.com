@@ -66825,6 +66825,43 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115584406567099163": {
+      "id": "115584406567099163",
+      "created_at": "2025-11-20T22:34:38.728Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115584406567099163",
+      "url": "https://mastodon.social/@tekknolagi/115584406567099163",
+      "replies_count": 1,
+      "reblogs_count": 2,
+      "favourites_count": 4,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Our compiler uses AI* and LLMs* to do advanced reasoning and make your code much faster!</p><p>* Abstract Interpretation <br />* Large Lattice Models</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
