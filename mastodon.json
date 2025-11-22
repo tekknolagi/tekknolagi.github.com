@@ -66862,6 +66862,43 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115594903670597841": {
+      "id": "115594903670597841",
+      "created_at": "2025-11-22T19:04:11.807Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115594903670597841",
+      "url": "https://mastodon.social/@tekknolagi/115594903670597841",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Went and looked at a repo on GitHub. &quot;Hey, looks neat,&quot; I think. The readme thanks its contributors, including.... me? Apparently I committed 7 times in 2016. Who knew</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
