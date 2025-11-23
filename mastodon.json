@@ -66936,6 +66936,43 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115597346898560319": {
+      "id": "115597346898560319",
+      "created_at": "2025-11-23T05:25:32.508Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115597346898560319",
+      "url": "https://mastodon.social/@tekknolagi/115597346898560319",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>I have been writing blog posts in a text editor and using a static site generator for about 12 years now but I found myself reminiscing about the web auto-save publish-on-click flow. There&#39;s a certain romance to it.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
