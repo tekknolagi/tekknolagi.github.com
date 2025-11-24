@@ -67010,6 +67010,62 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115601769484861522": {
+      "id": "115601769484861522",
+      "created_at": "2025-11-24T00:10:15.819Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115601769484861522",
+      "url": "https://mastodon.social/@tekknolagi/115601769484861522",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>After bothering the maintainers of gojekyll (which works very close to 100% for my blog!) I now know that my site uses a lot of weird Jekyll quirks and features that I did not know I was using</p><p>I did just find <a href=\"https://github.com/betterwebinit/rustyll\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">github.com/betterwebinit/rusty</span><span class=\"invisible\">ll</span></a> too but that mostly just crashed on my site :(</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://github.com/betterwebinit/rustyll",
+        "title": "GitHub - betterwebinit/rustyll: Future-Proof Blazing Fast Static Site Generator (SSG)",
+        "description": "Future-Proof Blazing Fast Static Site Generator (SSG) - betterwebinit/rustyll",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "GitHub",
+        "provider_url": "",
+        "html": "",
+        "width": 678,
+        "height": 339,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/171/851/845/original/4bf6648955d51756.png",
+        "image_description": "Future-Proof Blazing Fast Static Site Generator (SSG) - betterwebinit/rustyll",
+        "embed_url": "",
+        "blurhash": "UQSF-CjsRjxuyDR*WBt6Vrt7ofay_NWVxaWB",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
