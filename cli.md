@@ -132,3 +132,14 @@ for (int i = 0; i < nthings; i++) {
 ```
 
 Originally from [Tufts CS 40](https://www.cs.tufts.edu/cs/40/docs/idioms.html).
+
+## Render a code snippet to HTML
+
+Just use Vim:
+
+```console
+$ vim -c "set bg=light" -c "colorscheme gruvbox" -c TOhtml -c 'saveas! test.html' -c qa test.py
+$ # now look at test.html
+```
+
+Configure the color scheme, background, output filename, etc as you like.
