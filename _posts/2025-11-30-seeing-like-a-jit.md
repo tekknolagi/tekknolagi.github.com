@@ -30,8 +30,11 @@ The first step is understanding this is learning about *the fast paths* and
 
 ## The fast paths
 
-Most programmers don't use most programming language features. Look at the
-following Ruby code snippet:
+Most programmers don't use most programming language features.
+
+
+
+Look at the following Ruby code snippet:
 
 ```ruby
 def add(a, b)
