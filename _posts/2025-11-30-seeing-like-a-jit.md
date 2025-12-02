@@ -145,11 +145,15 @@ total bummer.
 
 ### Dynamic properties
 
-Perhaps more clever, we could also use [quickening][quickening] (PDF) to
-generate specialized versions of the opcode handlers that can assume *without
-checking* that integer plus and string plus have not been tampered with. Then,
-only if the methods get tampered with, re-write all of the specialized opcodes
-that depend on this property to the more generic version.
+There are other properties we care to check: the method override. Even if we
+make this override check cheap---a load and a compare, perhaps---it's still
+significant overhead for adding two small numbers.
+
+We could instead use [quickening][quickening] (PDF) to generate specialized
+versions of the opcode handlers that can assume *without checking* that integer
+plus and string plus have not been tampered with. Then, only if the methods get
+tampered with, re-write all of the specialized opcodes that depend on this
+property to the more generic version.
 
 [quickening]: /assets/img/ic-meets-quickening.pdf
 
