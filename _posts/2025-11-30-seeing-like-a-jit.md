@@ -149,12 +149,40 @@ There are other properties we care to check: the method override. Even if we
 make this override check cheap---a load and a compare, perhaps---it's still
 significant overhead for adding two small numbers.
 
-We could instead use [quickening][quickening] (PDF) to generate specialized
-versions of the opcode handlers that can assume *without checking* that integer
-plus and string plus have not been tampered with. Then, only if the methods get
-tampered with, re-write all of the specialized opcodes that depend on this
-property to the more generic version.
+And most people who run high-performance and high-assurance applications don't
+patch the standard library! If it does happen, it is in testing libraries or
+for some kind of infrequent tracing.
+
+Instead of eagerly checking, we could lazily deoptimize.
+
+We could use [quickening][quickening] (PDF) to generate specialized versions of
+the opcode handlers that can assume *without checking* that integer plus and
+string plus have not been tampered with. Then, only if the methods get tampered
+with, re-write all of the specialized opcodes that depend on this property to
+the more generic version.
 
 [quickening]: /assets/img/ic-meets-quickening.pdf
+
+```c
+VALUE handle_send_plus(Symbol name, int argc) {
+    assert(argc == 1);
+    VALUE left = stack_at(1);
+    VALUE right = stack_at(0);
+    if (is_fixnum(right) && is_fixnum(left)) {
+        stack_popn(2);
+        return fixnum_add(left, right);
+    }
+    if (is_string(right) && is_string(left)) {
+        stack_popn(2);
+        return string_concat(left, right);
+    }
+    void *method = lookup_method(left, name);
+    return call_method(method, stack_ptr() - argc, argc);
+}
+
+VALUE handle_send(Symbol name, int argc) {
+    // ... as before ...
+}
+```
 
 ### In a JIT
