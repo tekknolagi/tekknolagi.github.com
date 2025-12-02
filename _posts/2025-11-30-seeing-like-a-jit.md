@@ -30,10 +30,11 @@ The first step is understanding this is learning about *the fast paths* and
 
 ## The fast paths
 
-Most programmers don't use most programming language features.
-
-
 We'll start with the view from the interpreter
+
+### Static properties
+
+Most programmers don't use most programming language features.
 
 
 Look at the following Ruby code snippet:
@@ -129,12 +130,12 @@ VALUE handle_send(Symbol name, int argc) {
 
 You may notice that we still have some situations for which some checks are
 known at bytecode-compile-time: we may know the type of the left hand side or
-the right hand side. So why not specialize those into their own handlers as
-well?
+the right hand side. So why not specialize those cases into their own handlers
+as well?
 
 Partially this is because it's not worth the effort: we've already specialized
-addition at no cost to other method sends and your compiler will probably do a
-good job optimizing through the helper function calls.
+addition at no cost to other method sends and your C compiler will probably do
+a good job optimizing through the helper function calls.
 
 But also, code, especially hand-written code, comes with a maintenance burden.
 Are you going to manually deal with all of this[^deegen]? No, that would be a
@@ -142,4 +143,14 @@ total bummer.
 
 [^deegen]: deegen
 
+### Dynamic properties
 
+Perhaps more clever, we could also use [quickening][quickening] (PDF) to
+generate specialized versions of the opcode handlers that can assume *without
+checking* that integer plus and string plus have not been tampered with. Then,
+only if the methods get tampered with, re-write all of the specialized opcodes
+that depend on this property to the more generic version.
+
+[quickening]: /assets/img/ic-meets-quickening.pdf
+
+### In a JIT
