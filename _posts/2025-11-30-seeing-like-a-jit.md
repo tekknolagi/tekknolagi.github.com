@@ -33,6 +33,8 @@ The first step is understanding this is learning about *the fast paths* and
 Most programmers don't use most programming language features.
 
 
+We'll start with the view from the interpreter
+
 
 Look at the following Ruby code snippet:
 
@@ -49,7 +51,7 @@ Inside the interpreter, the opcode handler might look something like this:
 
 ```c
 VALUE handle_send(Symbol name, int argc) {
-    VALUE receiver = stack_at(argc + 1);
+    VALUE receiver = stack_at(argc);
     void *method = lookup_method(receiver, name);
     return call_method(method, stack_ptr() - argc, argc);
 }
@@ -71,23 +73,73 @@ VALUE handle_send(Symbol name, int argc) {
           && is_fixnum(stack_at(0))
           && is_fixnum(stack_at(1))
           && nobody_has_overridden_integer_plus()) {
-        return fixnum_add(stack_at(1), stack_at(0));
+        VALUE right = stack_pop();
+        VALUE left = stack_pop();
+        return fixnum_add(left, right);
     }
     if (name == Symbol_PLUS
           && argc == 1
           && is_string(stack_at(0))
           && is_string(stack_at(1))
           && nobody_has_overridden_string_plus()) {
-        return string_concat(stack_at(1), stack_at(0));
+        VALUE right = stack_pop();
+        VALUE left = stack_pop();
+        return string_concat(left, right);
     }
-    VALUE receiver = stack_at(argc + 1);
+    VALUE receiver = stack_at(argc);
     void *method = lookup_method(receiver, name);
     return call_method(method, stack_ptr() - argc, argc);
 }
 ```
 
-There's just one problem:
+These new checks, which only apply to a bytecode-compile-time known subset of
+method sends, slow down the other method sends. As (for example) Koichi Sasada
+noticed when creating YARV, there is no sense compiling this directly to a very
+generic method call, brushing your hands off, and calling it done.
 
-As (for example) Koichi Sasada noticed when creating YARV, there is no sense
-compiling this directly to that method call, brushing your hands off, and
-calling it done.
+Instead, we should split out the send into multiple handlers and only have the
+bytecode compiler generate this specialized addition opcode when have the right
+number of arguments:
+
+```c
+VALUE handle_send_plus(Symbol name, int argc) {
+    assert(argc == 1);
+    VALUE left = stack_at(1);
+    VALUE right = stack_at(0);
+    if (is_fixnum(right)
+          && is_fixnum(left)
+          && nobody_has_overridden_integer_plus()) {
+        stack_popn(2);
+        return fixnum_add(left, right);
+    }
+    if (is_string(right)
+          && is_string(left)
+          && nobody_has_overridden_string_plus()) {
+        stack_popn(2);
+        return string_concat(left, right);
+    }
+    void *method = lookup_method(left, name);
+    return call_method(method, stack_ptr() - argc, argc);
+}
+
+VALUE handle_send(Symbol name, int argc) {
+    // ... as before ...
+}
+```
+
+You may notice that we still have some situations for which some checks are
+known at bytecode-compile-time: we may know the type of the left hand side or
+the right hand side. So why not specialize those into their own handlers as
+well?
+
+Partially this is because it's not worth the effort: we've already specialized
+addition at no cost to other method sends and your compiler will probably do a
+good job optimizing through the helper function calls.
+
+But also, code, especially hand-written code, comes with a maintenance burden.
+Are you going to manually deal with all of this[^deegen]? No, that would be a
+total bummer.
+
+[^deegen]: deegen
+
+
