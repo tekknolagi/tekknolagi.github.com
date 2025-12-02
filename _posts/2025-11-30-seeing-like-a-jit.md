@@ -42,7 +42,7 @@ end
 As I and others have [made a habit of saying](/blog/typed-python/), in
 languages such as Ruby and Python, this kind of code could do *anything*. The
 surface syntax of addition is compiled to a virtual method call under the hood.
-The opcode handler, simplified, looks something like this:
+Inside the interpreter, the opcode handler might look something like this:
 
 ```c
 VALUE handle_send(Symbol name, int argc) {
