@@ -53,9 +53,13 @@ VALUE handle_send(Symbol name, int argc) {
 ```
 
 We, as VM implementors, have additional context: most people use `+` to mean
-integer addition or string concatenation. So if we inline some very fast checks
-into the method send handler, we can execute integer addition and string
-concatenation much faster.
+integer addition or string concatenation[^measure]. So if we inline some very
+fast checks into the method send handler, we can execute integer addition and
+string concatenation much faster.
+
+[^measure]: Citation needed, but people are on average not very creative. To
+    determine if this is the case for your programming system, you must measure
+    and get some statistics for the applications you care about.
 
 ```c
 VALUE handle_send(Symbol name, int argc) {
