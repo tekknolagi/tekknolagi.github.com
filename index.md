@@ -16,6 +16,10 @@ and a Hacker in Residence at the Dartmouth College computer science department.
 I did a half-batch of [Recurse Center]({{site.rc_scout}}) (Fall 2 2024) and
 really enjoyed it. I am a [Ruby committer](https://bugs.ruby-lang.org/projects/ruby-master).
 
+**New:** I am on the program committee for [MoreVMs 2026][]!
+
+[MoreVMs 2026]: https://2026.programming-conference.org/home/MoreVMs-2026
+
 You can [email me](mailto:contact@bernsteinbear.com) if you so desire. I'm
 happy to talk about education, programming languages, cycling, and more.
 
