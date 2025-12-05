@@ -18,6 +18,10 @@ economically.
 The first step is understanding this is learning about *the fast paths* and
 *the tradeoffs*. That's what we'll talk about in this post.
 
+TODO also the separation of "if i see that an object has a type or some
+property it means it has been guaranteed somewhere else and i need to just
+assume that has been taken care of"
+
 [^real-job]: While the platonic ideal of my job might look like graph transforms,
     reading through how the current Intel microarchitecture works, bug fixing, and
     copying HotSpot's (or insert your choice of dynamic language platform here)
