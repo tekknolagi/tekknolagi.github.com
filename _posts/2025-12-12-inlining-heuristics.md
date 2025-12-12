@@ -39,6 +39,7 @@ https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/docs/design/coreclr/jit/inline-size-estimates.md?plain=1#L5
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/fginline.cpp
 https://github.com/dotnet/runtime/issues/10303
+https://github.com/AndyAyersMS/PerformanceExplorer/blob/master/notes/notes-aug-2016.md
 
 Graal
 https://ieeexplore.ieee.org/document/8661171
