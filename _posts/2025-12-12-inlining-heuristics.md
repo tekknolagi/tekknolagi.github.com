@@ -38,6 +38,7 @@ https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inlinepolicy.cpp
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/docs/design/coreclr/jit/inline-size-estimates.md?plain=1#L5
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/fginline.cpp
+https://github.com/dotnet/runtime/issues/10303
 
 Graal
 https://ieeexplore.ieee.org/document/8661171
@@ -47,6 +48,14 @@ https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/r
 https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L1023
 https://web.archive.org/web/20170830093403id_/https://link.springer.com/content/pdf/10.1007/978-3-540-78791-4_5.pdf
 
+HHVM
+https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/hphp/runtime/vm/jit/inlining-decider.h#L89
+
+ART
+https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/inliner.h
+
 Other
 https://webdocs.cs.ualberta.ca/~amaral/thesis/ErickOchoaMSc.pdf
 https://karimali.ca/resources/papers/ourinliner.pdf
+https://dl.acm.org/doi/10.1145/182409.182489
+https://github.com/chrisseaton/rhizome/blob/main/doc/inlining.md
