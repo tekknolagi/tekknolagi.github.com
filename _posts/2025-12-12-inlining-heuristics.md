@@ -42,4 +42,4 @@ https://ieeexplore.ieee.org/document/8661171
 Dart
 https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L49
 https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L1023
-https://d1wqtxts1xzle7.cloudfront.net/107396135/978-3-540-78791-4_5-libre.pdf?1700061416=&response-content-disposition=inline%3B+filename%3DAn_Adaptive_Strategy_for_Inline_Substitu.pdf&Expires=1765553941&Signature=I40ZWMjTyGSw5IAs0MXnBbdNdceTTA2MmGR55SJ51vq2U-eBZSRgH7~HTcLHKTvnI05T1dZIrtbsEVnPSXryQinyGlWok7LYXELW3AYSBL8D6mhlpB2Zp7cuNDmfSkTiAEXN8eLYCAjfy8a7RBskH5nlQs9mewePekkuUaxHRKai6upTGdZMiGEOiGgWHTNacp46QB9MOL9P7xvaqR~PblFyuHAIpi3zFjfBGJi1vP0Q466ZJyRVJ~ucK1rQ9vP5kt41xb0e-MnFUWkvSV4Pv1KmHX4UNNJSaox7Ab7OzjUP1vcMV2FXbb2FDz~0SHwz5~ec0v7PCs8R06mYMa1G5g__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
+https://web.archive.org/web/20170830093403id_/https://link.springer.com/content/pdf/10.1007/978-3-540-78791-4_5.pdf
