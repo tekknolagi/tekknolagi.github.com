@@ -67153,6 +67153,143 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115735382717607236": {
+      "id": "115735382717607236",
+      "created_at": "2025-12-17T14:29:51.960Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115735382717607236",
+      "url": "https://mastodon.social/@tekknolagi/115735382717607236",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>HN is down :/ what do I do with my time</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115735361078670476": {
+      "id": "115735361078670476",
+      "created_at": "2025-12-17T14:24:21.777Z",
+      "in_reply_to_id": "115735174239462364",
+      "in_reply_to_account_id": "108052247634806016",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115735361078670476",
+      "url": "https://mastodon.social/@tekknolagi/115735361078670476",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@CanLehmann\" class=\"u-url mention\">@<span>CanLehmann</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> I haven&#39;t gotten this far in my personal journey for regalloc but from the papers it seems like it&#39;s a combination of splitting and hinting. Splitting is a replacement for fixed/pinned registers and hinting joins lifetimes that should be related</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108052247634806016",
+          "username": "CanLehmann",
+          "url": "https://mastodon.social/@CanLehmann",
+          "acct": "CanLehmann"
+        },
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115735360294368575": {
+      "id": "115735360294368575",
+      "created_at": "2025-12-17T14:24:09.818Z",
+      "in_reply_to_id": "115735174239462364",
+      "in_reply_to_account_id": "108052247634806016",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115735360294368575",
+      "url": "https://mastodon.social/@tekknolagi/115735360294368575",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@CanLehmann\" class=\"u-url mention\">@<span>CanLehmann</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> I haven&#39;t gotten this far in my personal journey for regalloc but from the papers it seems like it&#39;s a combination of splitting and hinting. Splitting is a replacement for fixed/pinned registers and hinting joins lifetimes that should be related</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108052247634806016",
+          "username": "CanLehmann",
+          "url": "https://mastodon.social/@CanLehmann",
+          "acct": "CanLehmann"
+        },
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
