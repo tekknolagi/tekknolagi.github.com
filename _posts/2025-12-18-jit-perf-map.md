@@ -45,6 +45,10 @@ to `/tmp/perf-{PID}.map`. Per the Linux docs linked above,
 >
 > symbolname is the rest of the line, so it could contain special characters.
 
+You can now happily run `perf record your_jit [...]` or `samply record your_jit
+[...]` and have JIT frames be named in the output. We hide this behind
+the `--zjit-perf` flag to avoid file I/O overhead when we don't need it.
+
 ## There is also the JIT dump interface
 
 Perf map is the older way to interact with perf: a newer, more complicated way
