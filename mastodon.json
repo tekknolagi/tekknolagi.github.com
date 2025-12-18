@@ -67428,6 +67428,62 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115741421863253188": {
+      "id": "115741421863253188",
+      "created_at": "2025-12-18T16:05:42.014Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115741421863253188",
+      "url": "https://mastodon.social/@tekknolagi/115741421863253188",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Ruby 4.0.0 preview3 is released! Give ZJIT a go by running it on your CI and let us know in Zulip what broke!</p><p><a href=\"https://www.ruby-lang.org/en/news/2025/12/18/ruby-4-0-0-preview3-released/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"ellipsis\">ruby-lang.org/en/news/2025/12/</span><span class=\"invisible\">18/ruby-4-0-0-preview3-released/</span></a></p><p><a href=\"https://docs.ruby-lang.org/en/master/jit/zjit_md.html\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">docs.ruby-lang.org/en/master/j</span><span class=\"invisible\">it/zjit_md.html</span></a></p><p><a href=\"https://zjit.zulipchat.com/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">zjit.zulipchat.com/</span><span class=\"invisible\"></span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://www.ruby-lang.org/en/news/2025/12/18/ruby-4-0-0-preview3-released/",
+        "title": "Ruby 4.0.0 preview3 Released",
+        "description": "",
+        "language": null,
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
