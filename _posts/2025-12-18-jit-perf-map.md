@@ -14,8 +14,8 @@ the [perf map interface][].
 
 This is the entirety of the implementation in ZJIT[^hex]:
 
-[^hex]: We actually use `{:#x}`, which I noticed while writing this is wrong
-    because it leaves in the `0x`.
+[^hex]: We actually use `{:#x}`, which I noticed today is wrong. `{:#x}` leaves
+    in the `0x`, and it shouldn't; instead **use `{:x}`**.
 
 ```rust
 fn register_with_perf(iseq_name: String, start_ptr: usize, code_size: usize) {
