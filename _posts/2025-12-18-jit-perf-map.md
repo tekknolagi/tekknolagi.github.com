@@ -5,8 +5,8 @@ layout: post
 
 Brief one today. I got asked "does YJIT/ZJIT have support for [Linux] perf?"
 
-The answer is yes, and it also works with [samply][], because both understand
-the [perf map interface][].
+The answer is yes, and it also works with [samply][] (including on macOS!),
+because both understand the [perf map interface][].
 
 [samply]: https://github.com/mstange/samply
 
