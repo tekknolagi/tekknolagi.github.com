@@ -67658,6 +67658,50 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115744548875074729": {
+      "id": "115744548875074729",
+      "created_at": "2025-12-19T05:20:56.420Z",
+      "in_reply_to_id": "115744513804758560",
+      "in_reply_to_account_id": "1306813",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115744548875074729",
+      "url": "https://mastodon.social/@tekknolagi/115744548875074729",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@akkartik\" class=\"u-url mention\">@<span>akkartik</span></a></span> for what?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "1306813",
+          "username": "akkartik",
+          "url": "https://merveilles.town/@akkartik",
+          "acct": "akkartik@merveilles.town"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
