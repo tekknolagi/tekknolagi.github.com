@@ -67584,6 +67584,80 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115744492348526079": {
+      "id": "115744492348526079",
+      "created_at": "2025-12-19T05:06:33.889Z",
+      "in_reply_to_id": "115744416416509838",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115744492348526079",
+      "url": "https://mastodon.social/@tekknolagi/115744492348526079",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>I&#39;m going to have to buy a new frickin drive to update this computer. Will be the largest boot drive in existence. 240 Giga Bytes</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115744416416509838": {
+      "id": "115744416416509838",
+      "created_at": "2025-12-19T04:47:15.267Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115744416416509838",
+      "url": "https://mastodon.social/@tekknolagi/115744416416509838",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Why Does The Ubuntu Upgrade Need One Thousand Of God&#39;s Own Megabytes In My Boot Partition ?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
