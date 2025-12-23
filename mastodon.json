@@ -67702,6 +67702,62 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115769383246082337": {
+      "id": "115769383246082337",
+      "created_at": "2025-12-23T14:36:38.849Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115769383246082337",
+      "url": "https://mastodon.social/@tekknolagi/115769383246082337",
+      "replies_count": 1,
+      "reblogs_count": 4,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Alright stop, collaborate and listen<br />[Fabr]ice is back with my brand new invention</p><p><a href=\"https://github.com/bellard/mquickjs\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/bellard/mquickjs</span><span class=\"invisible\"></span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://github.com/bellard/mquickjs",
+        "title": "GitHub - bellard/mquickjs: Public repository of the Micro QuickJS Javascript Engine",
+        "description": "Public repository of the Micro QuickJS Javascript Engine - bellard/mquickjs",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "GitHub",
+        "provider_url": "",
+        "html": "",
+        "width": 678,
+        "height": 339,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/175/532/415/original/bad18e60451898ca.png",
+        "image_description": "Public repository of the Micro QuickJS Javascript Engine - bellard/mquickjs",
+        "embed_url": "",
+        "blurhash": "USR{*|n-t6xu%Mjbj[ofIAWBofa#~qk8WEax",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
