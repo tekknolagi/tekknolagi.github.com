@@ -458,7 +458,7 @@ class C
 end
 ```
 
-CRuby has a shape system and ZJIT makes use it, so we end up optimizing this
+CRuby has a shape system and ZJIT makes use of it, so we end up optimizing this
 code (if it's monomorphic) into a series of shape checks and stores. The HIR
 might end up looking something like the mess below, where I've annotated the
 shape guards (can be thought of as loads) and stores with asterisks:
