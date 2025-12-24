@@ -57,7 +57,7 @@ This means we can start writing some new optimization pass and our first test:
 ```python
 def optimize_load_store(bb: Block):
     opt_bb = Block()
-    # TODO: copy an optimized version into opt_bb
+    # TODO: copy an optimized version of bb into opt_bb
     return opt_bb
 
 def test_two_loads():
