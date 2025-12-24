@@ -191,9 +191,9 @@ room](https://zjit.zulipchat.com) to discuss and improve ZJIT.
 ### A cool graph visualization tool
 
 You *have to* check out our intern Aiden's [integration of Iongraph into
-ZJIT](/2025-11-19-adding-iongraph-support/). Now we have clickable, zoomable,
-scrollable graphs of all our functions and all our optimization passes. It's
-great!
+ZJIT](https://railsatscale.com/2025-11-19-adding-iongraph-support/). Now we
+have clickable, zoomable, scrollable graphs of all our functions and all our
+optimization passes. It's great!
 
 Try zooming (Ctrl-scroll), clicking the different optimization passes on the
 left, clicking the instruction IDs in each basic block (definitions and uses),
