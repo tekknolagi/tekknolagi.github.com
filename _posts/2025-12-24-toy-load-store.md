@@ -215,7 +215,7 @@ def optimize_load_store(bb: Block):
 It makes our test pass, too, which is great news.
 
 Unfortunately, this runs into problems due to aliasing: it's entirely possible
-that our heap could contain a pair `(v0, 0)` and a pair `(v1, 0)` where `v0`
+that our compile-time heap could contain a pair `(v0, 0)` and a pair `(v1, 0)` where `v0`
 and `v1` are the same object (but not known to the optimizer). Then we might
 run into a situation where we incorrectly cache loads because the optimizer
 doesn't know our abstract addresses `(v0, 0)` and `(v1, 0)` are actually the
