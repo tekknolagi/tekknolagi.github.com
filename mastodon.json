@@ -67758,6 +67758,62 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115775335704789056": {
+      "id": "115775335704789056",
+      "created_at": "2025-12-24T15:50:26.162Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115775335704789056",
+      "url": "https://mastodon.social/@tekknolagi/115775335704789056",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>ZJIT is available starting in Ruby 4.0! Please try it out on your test suite, maybe in a staging environment, and let us know how it goes!</p><p><a href=\"https://railsatscale.com/2025-12-24-launch-zjit/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">railsatscale.com/2025-12-24-la</span><span class=\"invisible\">unch-zjit/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://railsatscale.com/2025-12-24-launch-zjit/",
+        "title": "ZJIT is now available in Ruby 4.0",
+        "description": "ZJIT is now available with the release of Ruby 4.0. Here\u2019s an update of our progress.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Rails at Scale",
+        "provider_url": "",
+        "html": "",
+        "width": 640,
+        "height": 360,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/175/650/796/original/b0a8724f1e022f8e.png",
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": "U~H.Qbj]ofj[~qj[oej[-;WBoffPt7j[j[fQ",
+        "published_at": "2025-12-24T00:00:00.000Z",
+        "authors": []
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
