@@ -224,7 +224,8 @@ same pointer at run-time.
 This means that we are breaking abstract interpretation rules: our abstract
 interpreter has to correctly model *all* possible outcomes at run-time. This
 means to me that we should instead pick some tactic in-between clearing all
-information (correct but over-eager) and clearing only object+offset.
+information (correct but over-eager) and clearing only exact matches of
+object+offset (incorrect).
 
 The term that will help us here is called an *alias class*. It is a name for a
 way to efficiently partition objects in your abstract heap into completely
