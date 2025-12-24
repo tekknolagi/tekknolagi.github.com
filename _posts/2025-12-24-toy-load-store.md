@@ -442,6 +442,66 @@ before being overwritten.
 TODO, I suppose. I have not gotten this far yet. If I get around to it, I will
 come back and update the post.
 
+## In the real world
+
+This small optimization pass may seem silly or fiddly---when would we ever see
+something like this in a real IR?---but it's pretty useful. Here's the Ruby
+code that got me thinking about it again some years later for ZJIT:
+
+```ruby
+class C
+  def initialize
+    @a = 1
+    @b = 2
+    @c = 3
+  end
+end
+```
+
+ZJIT makes use of the shape system, so we end up optimizing this code (if it's
+monomorphic) into a series of shape checks and stores. The HIR might end up
+looking something like the mess below, where I've annotated the shape guards
+(can be thought of as loads) and stores with asterisks:
+
+```
+fn initialize@tmp/init.rb:3:
+# ...
+bb2(v6:BasicObject):
+  v10:Fixnum[1] = Const Value(1)
+  v31:HeapBasicObject = GuardType v6, HeapBasicObject
+* v32:HeapBasicObject = GuardShape v31, 0x400000
+* StoreField v32, :@a@0x10, v10
+  WriteBarrier v32, v10
+  v35:CShape[0x40008e] = Const CShape(0x40008e)
+* StoreField v32, :_shape_id@0x4, v35
+  v16:Fixnum[2] = Const Value(2)
+  v37:HeapBasicObject = GuardType v6, HeapBasicObject
+* v38:HeapBasicObject = GuardShape v37, 0x40008e
+* StoreField v38, :@b@0x18, v16
+  WriteBarrier v38, v16
+  v41:CShape[0x40008f] = Const CShape(0x40008f)
+* StoreField v38, :_shape_id@0x4, v41
+  v22:Fixnum[3] = Const Value(3)
+  v43:HeapBasicObject = GuardType v6, HeapBasicObject
+* v44:HeapBasicObject = GuardShape v43, 0x40008f
+* StoreField v44, :@c@0x20, v22
+  WriteBarrier v44, v22
+  v47:CShape[0x400090] = Const CShape(0x400090)
+* StoreField v44, :_shape_id@0x4, v47
+  CheckInterrupts
+  Return v22
+```
+
+If we had store-load forwarding in ZJIT, we could get rid of the intermediate
+shape guards; they would know the shape from the previous `StoreField`
+instruction. If we had dead store elimination, we could get rid of the
+intermediate shape writes; they are never read. (And the repeated type guards
+to check if it's a heap object still are just silly and need to get removed
+eventually.)
+
+This is on the roadmap and will make object initialization even faster than it
+is right now.
+
 ## Wrapping up
 
 Thanks for reading the text version of the video that CF and I made a while
