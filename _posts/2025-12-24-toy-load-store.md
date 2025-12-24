@@ -261,7 +261,90 @@ def optimize_load_store(bb: Block):
 
 Great! Now our test passes.
 
+This concludes the load optimization section of the post. We have modeled
+enough of loads and stores that we can eliminate redundant loads. Very cool.
+But we can go further.
+
 ## Caching stores
+
+Stores don't just invalidate information. They also give us new information!
+Any time we see an operation of the form `v1 = store(v0, 8, 5)` we also learn
+that `load(v0, 8) == 5`! Until it gets invalidated, anyway.
+
+For example, in this test, we can eliminate the load from `var0` at offset 0:
+
+```python
+def test_load_after_store_removed():
+    bb = Block()
+    var0 = bb.getarg(0)
+    bb.store(var0, 0, 5)
+    var1 = bb.load(var0, 0)
+    var2 = bb.load(var0, 1)
+    bb.escape(var1)
+    bb.escape(var2)
+    opt_bb = optimize_load_store(bb)
+    assert bb_to_str(opt_bb) == """\
+var0 = getarg(0)
+var1 = store(var0, 0, 5)
+var2 = load(var0, 1)
+var3 = escape(5)
+var4 = escape(var2)"""
+```
+
+Making that work is thankfully not very hard; we need only add that new
+information to the compile-time heap after removing all the
+potentially-aliased info:
+
+```python
+def optimize_load_store(bb: Block):
+    opt_bb = Block()
+    compile_time_heap: Dict[Tuple[Value, int], Value] = {}
+    for op in bb:
+        if op.name == "store":
+            offset = get_num(op, 1)
+            compile_time_heap = # ... as before ...
+            obj = op.arg(0)
+            new_value = op.arg(2)
+            compile_time_heap[(obj, offset)] = new_value  # NEW!
+        elif op.name == "load":
+            # ...
+        opt_bb.append(op)
+    return opt_bb
+```
+
+This makes the test pass. It makes another test fail, but only
+because---oops---we now know more. You can delete the old test because the new
+test supersedes it.
+
+Now, note that we are not removing the store. This is because we have nothing
+in our optimizer that keeps track of what might have observed the side-effects
+of the store. What if the object got `escape`d? Or someone did a load later on?
+We would only be able to remove the store (`continue`) if we could guarantee it
+was not observable.
+
+In our current framework, this only happens in one case: someone is doing a
+store of the exact same value that already exists in our compile-time heap.
+That is, either the same constant, or the same SSA value. If we see this, then
+we can completely skip the second store instruction.
+
+Here's a test case for that, where we have gained information from the load
+instruction that we can then use to get rid of the store instruction:
+
+```python
+def test_load_then_store():
+    bb = Block()
+    arg1 = bb.getarg(0)
+    var1 = bb.load(arg1, 0)
+    bb.store(arg1, 0, var1)
+    bb.escape(var1)
+    opt_bb = optimize_load_store(bb)
+    assert bb_to_str(opt_bb) == """\
+var0 = getarg(0)
+var1 = load(var0, 0)
+var2 = escape(var1)"""
+```
+
+Let's make it pass.
 
 ## Removing dead stores
 
