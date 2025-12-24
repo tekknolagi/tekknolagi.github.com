@@ -344,7 +344,89 @@ var1 = load(var0, 0)
 var2 = escape(var1)"""
 ```
 
-Let's make it pass.
+Let's make it pass. To do that, first we'll make an equality function that
+works for both constants and operations. Constants are equal if their values
+are equal, and operations are equal if they are the identical (by
+address/pointer) operation.
+
+```python
+def eq_value(left: Value|None, right: Value) -> bool:
+    if isinstance(left, Constant) and isinstance(right, Constant):
+        return left.value == right.value
+    return left is right
+```
+
+This is a partial equality: if two operations are not equal under `eq_value`,
+it doesn't mean that they are different, only that we don't know that they are
+the same.
+
+Then, after that, we need only check if the current value in the compile-time
+heap is the same as the value being stored in. If it is, wonderful. No need to
+store. `continue` and don't append the operation to `opt_bb`:
+
+```python
+def optimize_load_store(bb: Block):
+    opt_bb = Block()
+    compile_time_heap: Dict[Tuple[Value, int], Value] = {}
+    for op in bb:
+        if op.name == "store":
+            obj = op.arg(0)
+            offset = get_num(op, 1)
+            store_info = (obj, offset)
+            current_value = compile_time_heap.get(store_info)
+            new_value = op.arg(2)
+            if eq_value(current_value, new_value):  # NEW!
+                continue
+            compile_time_heap = # ... as before ...
+            # ...
+        elif op.name == "load":
+            load_info = (op.arg(0), get_num(op, 1))
+            if load_info in compile_time_heap:
+                op.make_equal_to(compile_time_heap[load_info])
+                continue
+            compile_time_heap[load_info] = op
+        opt_bb.append(op)
+    return opt_bb
+```
+
+This makes our load-then-store pass and it also makes other tests pass too,
+like eliminating a store after another store!
+
+```python
+def test_store_after_store():
+    bb = Block()
+    arg1 = bb.getarg(0)
+    bb.store(arg1, 0, 5)
+    bb.store(arg1, 0, 5)
+    opt_bb = optimize_load_store(bb)
+    assert bb_to_str(opt_bb) == """\
+var0 = getarg(0)
+var1 = store(var0, 0, 5)"""
+```
+
+Unfortunately, this only works if the values---constants or SSA values---are
+known to be the same. If we store *different* values, we can't optimize. In the
+live stream, we left this an exercise for the viewer:
+
+```python
+@pytest.mark.xfail
+def test_exercise_for_the_reader():
+    bb = Block()
+    arg0 = bb.getarg(0)
+    var0 = bb.store(arg0, 0, 5)
+    var1 = bb.store(arg0, 0, 7)
+    var2 = bb.load(arg0, 0)
+    bb.escape(var2)
+    opt_bb = optimize_load_store(bb)
+    assert bb_to_str(opt_bb) == """\
+var0 = getarg(0)
+var1 = store(var0, 0, 7)
+var2 = escape(7)"""
+```
+
+We would only be able to optimize this away if we had some notion of a store
+being *dead*. In this case, that is a store in which the value is never read
+before being overwritten.
 
 ## Removing dead stores
 
