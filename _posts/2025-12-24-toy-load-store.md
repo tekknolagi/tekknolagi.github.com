@@ -448,8 +448,8 @@ Thanks for reading the text version of the video that CF and I made a while
 back. Now you know how to do load/store elimination on traces.
 
 I think this does not need too much extra work to get it going on full CFGs;
-you can do block-local version of this pretty much verbatim, and if you want to
-go global, you need dominator information and gen-kill sets.
+you can do a block-local version of this pretty much verbatim, and if you want
+to go global, you need dominator information and gen-kill sets.
 
 Maybe I will touch on this in a future post...
 
