@@ -3,7 +3,9 @@ title: "Load and store forwarding in the Toy Optimizer"
 layout: post
 ---
 
-Another entry in the 
+*Another entry in the [Toy Optimizer series][series]*.
+
+[series]: https://pypy.org/categories/toy-optimizer.html
 
 A long, long time ago (two years!) CF Bolz-Tereick and I made a [video about
 load/store forwarding][video] and accompanying [GitHub Gist][gist] about
