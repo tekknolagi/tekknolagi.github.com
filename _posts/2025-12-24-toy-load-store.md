@@ -140,6 +140,9 @@ var4 = escape(var1)
 var5 = escape(var3)"""
 ```
 
+This test fails because we are incorrectly keeping around `var1` in our
+abstract heap. We need to get rid of it and not replace `var3` with `var1`.
+
 ## Invalidating cached loads
 
 So it turns out we have to also model stores in order to cache loads correctly.
