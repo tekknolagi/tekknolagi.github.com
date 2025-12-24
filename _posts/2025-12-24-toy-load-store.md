@@ -7,12 +7,13 @@ layout: post
 
 [series]: https://pypy.org/categories/toy-optimizer.html
 
-A long, long time ago (two years!) CF Bolz-Tereick and I made a [video about
-load/store forwarding][video] and accompanying [GitHub Gist][gist] about
+A long, long time ago (two years!) [CF Bolz-Tereick][cf] and I made a [video about
+load/store forwarding][video] and an accompanying [GitHub Gist][gist] about
 load/store forwarding in the Toy Optimizer. I said I would write a blog post
 about it, but never found the time---it got lost amid a sea of large life
 changes.
 
+[cf]: https://cfbolz.de/
 [video]: https://www.youtube.com/watch?v=w-UHg0yOPSE
 [gist]: https://gist.github.com/tekknolagi/4e3fa26d350f6d3b39ede40d372b97fe
 
