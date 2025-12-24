@@ -214,3 +214,58 @@ and `v1` are the same object (but not known to the optimizer). Then we might
 run into a situation where we incorrectly cache loads because the optimizer
 doesn't know our abstract addresses `(v0, 0)` and `(v1, 0)` are actually the
 same pointer at run-time.
+
+This means that we are breaking abstract interpretation rules: our abstract
+interpreter has to correctly model *all* possible outcomes at run-time. This
+means to me that we should instead pick some tactic in-between clearing all
+information (correct but over-eager) and clearing only object+offset.
+
+The term that will help us here is called an *alias class*. It is a name for a
+way to efficiently partition objects in your abstract heap into completely
+disjoint sets. Writes to any object in one class never affect objects in
+another class.
+
+Our very scrappy alias classes will be just based on the offset: each offset is
+a different alias class. If we write to any object at offset K, we have to
+invalidate all of our compile-time offset K knowledge---even if it's for
+another object. This is a nice middle ground, and it's possible because our
+(made up) object system guarantees that distinct objects do not overlap, and
+also that we are not writing out-of-bounds.[^tbaa]
+
+[^tbaa]: We could do better. If we had type information, we could also use that
+    to make alias classes. Writes to a List will never overlap with writes to a
+    Map, for example. This requires your compiler to have strict aliasing---if
+    you can freely cast between types, as in C, then this tactic goes out the
+    window.
+
+So let's remove all of the entries from `compile_time_heap` where the offset
+matches the offset in the current `store`:
+
+```python
+def optimize_load_store(bb: Block):
+    opt_bb = Block()
+    compile_time_heap: Dict[Tuple[Value, int], Value] = {}
+    for op in bb:
+        if op.name == "store":
+            offset = get_num(op, 1)
+            compile_time_heap = {
+                load_info: value
+                for load_info, value in compile_time_heap.items()
+                if load_info[1] != offset
+            }
+        elif op.name == "load":
+            # ...
+        opt_bb.append(op)
+    return opt_bb
+```
+
+Great! Now our test passes.
+
+## Caching stores
+
+## Removing dead stores
+
+## Thank you
+
+Thank you to CF, who walked me through this live on a stream two years ago!
+This blog post wouldn't be possible without you.
