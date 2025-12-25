@@ -42,7 +42,7 @@ v5 = do_something(v1, 123, v1)
 (where `load(v0, 5)` is equivalent to `*(v0+5)` in C syntax and `store(v0, 6,
 123)` is equvialent to `*(v0+6)=123` in C syntax)
 
-This indicates that we were able to remove two redundant loads by keeping
+This indicates that we were able to eliminate two redundant loads by keeping
 around information about previous loads and stores. Let's get to work making
 this possible.
 
