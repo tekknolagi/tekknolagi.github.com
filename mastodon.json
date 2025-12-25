@@ -67814,6 +67814,106 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115777126778917644": {
+      "id": "115777126778917644",
+      "created_at": "2025-12-24T23:25:55.788Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115777126778917644",
+      "url": "https://mastodon.social/@tekknolagi/115777126778917644",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>new post about load/store elimination</p><p>merry christmas!</p><p><a href=\"https://bernsteinbear.com/blog/toy-load-store/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bernsteinbear.com/blog/toy-loa</span><span class=\"invisible\">d-store/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://bernsteinbear.com/blog/toy-load-store/",
+        "title": "Load and store forwarding in the Toy Optimizer",
+        "description": "Another entry in the Toy Optimizer series.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Max Bernstein",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": "2025-12-24T00:00:00.000Z",
+        "authors": [
+          {
+            "name": "",
+            "url": "",
+            "account": {
+              "id": "1300106",
+              "username": "tekknolagi",
+              "acct": "tekknolagi",
+              "display_name": "Max B",
+              "locked": false,
+              "bot": false,
+              "discoverable": true,
+              "indexable": true,
+              "group": false,
+              "created_at": "2020-10-20T00:00:00.000Z",
+              "note": "<p>Let&#39;s chat about compilers</p>",
+              "url": "https://mastodon.social/@tekknolagi",
+              "uri": "https://mastodon.social/users/tekknolagi",
+              "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "header": "https://mastodon.social/headers/original/missing.png",
+              "header_static": "https://mastodon.social/headers/original/missing.png",
+              "followers_count": 569,
+              "following_count": 288,
+              "statuses_count": 1376,
+              "last_status_at": "2025-12-24",
+              "hide_collections": false,
+              "noindex": false,
+              "emojis": [],
+              "roles": [],
+              "fields": [
+                {
+                  "name": "website",
+                  "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2022-12-07T01:44:28.737+00:00"
+                },
+                {
+                  "name": "github",
+                  "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2023-07-26T16:28:07.403+00:00"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
