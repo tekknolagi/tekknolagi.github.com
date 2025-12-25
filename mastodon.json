@@ -67914,6 +67914,118 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115777955299101233": {
+      "id": "115777955299101233",
+      "created_at": "2025-12-25T02:56:38.004Z",
+      "in_reply_to_id": "115777947535753164",
+      "in_reply_to_account_id": "108052247634806016",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115777955299101233",
+      "url": "https://mastodon.social/@tekknolagi/115777955299101233",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@CanLehmann\" class=\"u-url mention\">@<span>CanLehmann</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.world/@cfallin\" class=\"u-url mention\">@<span>cfallin</span></a></span> find is very very cheap. Especially with path compression etc. I dunno. I like it also since it allows you to continue replacing even before rewriting every other operand</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108052247634806016",
+          "username": "CanLehmann",
+          "url": "https://mastodon.social/@CanLehmann",
+          "acct": "CanLehmann"
+        },
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        },
+        {
+          "id": "109576349872070104",
+          "username": "cfallin",
+          "url": "https://mastodon.world/@cfallin",
+          "acct": "cfallin@mastodon.world"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115777928625698112": {
+      "id": "115777928625698112",
+      "created_at": "2025-12-25T02:49:50.997Z",
+      "in_reply_to_id": "115777921354747925",
+      "in_reply_to_account_id": "108052247634806016",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115777928625698112",
+      "url": "https://mastodon.social/@tekknolagi/115777928625698112",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@CanLehmann\" class=\"u-url mention\">@<span>CanLehmann</span></a></span> Well, you don&#39;t need to go rewrite everything else. It&#39;s used in pypy and zjit at least, probably more. Oh, I think also JSC does too. </p><p>cc <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> and <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.world/@cfallin\" class=\"u-url mention\">@<span>cfallin</span></a></span> who may know more</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108052247634806016",
+          "username": "CanLehmann",
+          "url": "https://mastodon.social/@CanLehmann",
+          "acct": "CanLehmann"
+        },
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        },
+        {
+          "id": "109576349872070104",
+          "username": "cfallin",
+          "url": "https://mastodon.world/@cfallin",
+          "acct": "cfallin@mastodon.world"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
