@@ -7,18 +7,18 @@ layout: post
 
 [series]: https://pypy.org/categories/toy-optimizer.html
 
-A long, long time ago (two years!) [CF Bolz-Tereick][cf] and I made a [video about
-load/store forwarding][video] and an accompanying [GitHub Gist][gist] about
-load/store forwarding in the Toy Optimizer. I said I would write a blog post
-about it, but never found the time---it got lost amid a sea of large life
-changes.
+A long, long time ago (two years!) [CF Bolz-Tereick][cf] and I made a [video
+about load/store forwarding][video] and an accompanying [GitHub Gist][gist]
+about load/store forwarding (also load elimination) in the Toy Optimizer. I
+said I would write a blog post about it, but never found the time---it got lost
+amid a sea of large life changes.
 
 [cf]: https://cfbolz.de/
 [video]: https://www.youtube.com/watch?v=w-UHg0yOPSE
 [gist]: https://gist.github.com/tekknolagi/4e3fa26d350f6d3b39ede40d372b97fe
 
 It's a neat idea: do an abstract interpretation over the trace, modeling the
-heap at compile-time, removing redundant reads and writes. That means it's
+heap at compile-time, eliminating redundant loads and stores. That means it's
 possible to optimize traces like this:
 
 ```
@@ -38,6 +38,9 @@ v1 = load(v0, 5)
 v2 = store(v0, 6, 123)
 v5 = do_something(v1, 123, v1)
 ```
+
+(where `load(v0, 5)` is equivalent to `*(v0+5)` in C syntax and `store(v0, 6,
+123)` is equvialent to `*(v0+6)=123` in C syntax)
 
 This indicates that we were able to remove two redundant loads by keeping
 around information about previous loads and stores. Let's get to work making
