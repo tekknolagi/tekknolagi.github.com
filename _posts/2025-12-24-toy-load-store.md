@@ -9,7 +9,7 @@ layout: post
 
 A long, long time ago (two years!) [CF Bolz-Tereick][cf] and I made a [video
 about load/store forwarding][video] and an accompanying [GitHub Gist][gist]
-about load/store forwarding (also load elimination) in the Toy Optimizer. I
+about load/store forwarding (also called load elimination) in the Toy Optimizer. I
 said I would write a blog post about it, but never found the time---it got lost
 amid a sea of large life changes.
 
