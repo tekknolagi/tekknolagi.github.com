@@ -43,7 +43,7 @@ try to run CI, etc, and let us know what you run into on [the Ruby issue
 tracker][redmine] (or, if you don't want to make a Ruby Bugs account, we would
 also take reports [on GitHub][issues]).
 
-[redmine]: https://bugs.ruby-lang.org/projects/ruby-master/issues?query_id=378
+[redmine]: https://bugs.ruby-lang.org/projects/ruby-master/issues?set_filter=1&tracker_id=1
 [issues]: https://github.com/Shopify/ruby/issues
 
 ## State of the compiler
