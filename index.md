@@ -30,8 +30,6 @@ That's probably an understatement. Here are some of my favorite projects:
 * [ZJIT](https://github.com/ruby/ruby/tree/master/zjit), Ruby's new method JIT
   compiler. See the [merge blog post](https://railsatscale.com/2025-05-14-merge-zjit/)
   and the [4.0 blog post](https://railsatscale.com/2025-12-24-launch-zjit/)
-* The [National Malware Association](https://nationalmalware.org/), an
-  organization focused on security and education
 * [scrapscript.py](https://github.com/tekknolagi/scrapscript), an
   implementation of the Scrapscript language. Check out the [blog](/blog/scrapscript/)
   [posts](/blog/scrapscript-baseline/) (and [three](/blog/scrapscript-tricks/),
