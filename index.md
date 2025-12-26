@@ -28,7 +28,8 @@ happy to talk about education, programming languages, cycling, and more.
 That's probably an understatement. Here are some of my favorite projects:
 
 * [ZJIT](https://github.com/ruby/ruby/tree/master/zjit), Ruby's new method JIT
-  compiler. See the [launch blog post](https://railsatscale.com/2025-05-14-merge-zjit/)
+  compiler. See the [merge blog post](https://railsatscale.com/2025-05-14-merge-zjit/)
+  and the [4.0 blog post](https://railsatscale.com/2025-12-24-launch-zjit/)
 * The [National Malware Association](https://nationalmalware.org/), an
   organization focused on security and education
 * [scrapscript.py](https://github.com/tekknolagi/scrapscript), an
