@@ -176,7 +176,7 @@ keep our load from offset 0 cached here:
 [^size]: In this toy optimizer example, we are assuming that all reads and writes
     are the same size and different offsets don't overlap at all. This is often
     the case for managed runtimes, where object fields are pointer-sized and
-    all reads/writes are pointed aligned.
+    all reads/writes are pointer-aligned.
 
 ```python
 def test_store_to_same_object_different_offset_does_not_invalidate_load():
