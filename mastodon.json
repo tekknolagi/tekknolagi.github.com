@@ -68063,6 +68063,94 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115803480087113188": {
+      "id": "115803480087113188",
+      "created_at": "2025-12-29T15:07:55.355Z",
+      "in_reply_to_id": "115798154967108860",
+      "in_reply_to_account_id": "109944575156049031",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115803480087113188",
+      "url": "https://mastodon.social/@tekknolagi/115803480087113188",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://martianbase.net/@mackuba\" class=\"u-url mention\">@<span>mackuba</span></a></span> this looks like a bug. Can you please file a ticket on redmine with a repro?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109944575156049031",
+          "username": "mackuba",
+          "url": "https://martianbase.net/@mackuba",
+          "acct": "mackuba@martianbase.net"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115803476789232647": {
+      "id": "115803476789232647",
+      "created_at": "2025-12-29T15:07:05.033Z",
+      "in_reply_to_id": "115798162634825274",
+      "in_reply_to_account_id": "112372168643815235",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115803476789232647",
+      "url": "https://mastodon.social/@tekknolagi/115803476789232647",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://bsky.brid.gy/r/https://bsky.app/profile/mackuba.eu\" class=\"u-url mention\">@<span>mackuba.eu</span></a></span> this looks like a bug. Can you please file a ticket on redmine with a repro?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "112372168643815235",
+          "username": "mackuba.eu",
+          "url": "https://bsky.brid.gy/r/https://bsky.app/profile/mackuba.eu",
+          "acct": "mackuba.eu@bsky.brid.gy"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
