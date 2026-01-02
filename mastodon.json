@@ -68526,6 +68526,43 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115826293190813203": {
+      "id": "115826293190813203",
+      "created_at": "2026-01-02T15:49:35.695Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115826293190813203",
+      "url": "https://mastodon.social/@tekknolagi/115826293190813203",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Over a year late, I finally figured out and set up KVM on my monitor. It&#39;s amazing. 2026 is the year I stop manually switching cables back and forth ~daily</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
