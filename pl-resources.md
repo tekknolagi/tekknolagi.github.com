@@ -451,6 +451,8 @@ Right now this is probably going to just be a section on Ninja clones.
 
 ## Game Boy Emulators
 
+[![](/assets/img/gameboy.gif)](https://zakhary.dev/blog/gbc-web-button)
+
 * The [Pan Docs](https://gbdev.io/pandocs/), which give technical data about
   the Game Boy hardware, I/O ports, flags, cartridges, memory map, etc
 * This excellent [explanation](https://realboyemulator.wordpress.com/2013/01/03/a-look-at-the-game-boy-bootstrap-let-the-fun-begin/)
