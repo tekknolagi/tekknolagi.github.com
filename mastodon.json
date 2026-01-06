@@ -68714,6 +68714,50 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115845058084770378": {
+      "id": "115845058084770378",
+      "created_at": "2026-01-05T23:21:45.259Z",
+      "in_reply_to_id": "115844484462456398",
+      "in_reply_to_account_id": "109944575156049031",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115845058084770378",
+      "url": "https://mastodon.social/@tekknolagi/115845058084770378",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://martianbase.net/@mackuba\" class=\"u-url mention\">@<span>mackuba</span></a></span> thank you for following up! Today was the first day I was back at work. The issue is great for tracking the regression</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109944575156049031",
+          "username": "mackuba",
+          "url": "https://martianbase.net/@mackuba",
+          "acct": "mackuba@martianbase.net"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
