@@ -181,3 +181,6 @@ are due to having other fields, or alignment, or something.
 * PyPy, for example in [their optimizer](https://github.com/pypy/pypy/blob/376cb12babe6bc8f43a550d2981a322513be24de/rpython/jit/metainterp/optimizeopt/rewrite.py#L98)
 * ZJIT, for example in [the constant folding pass](https://github.com/ruby/ruby/blob/1852ef43778d59a64881b293b0b887e2bc5af37a/zjit/src/hir.rs#L3852)
 * HotSpot C1, for example in [their GVN pass](https://github.com/openjdk/jdk/blob/95137580b81fb48474b0d8fb748d9d4af7a27850/src/hotspot/share/c1/c1_ValueMap.cpp#L619)
+<!-- Linking ART GVN for good measure even though no union-find:
+https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/gvn.cc#L482
+-->
