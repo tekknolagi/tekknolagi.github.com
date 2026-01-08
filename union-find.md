@@ -188,3 +188,4 @@ https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf
 <!-- Linkin ActionScript (!!!) GVN for fun
 https://github.com/adobe/avmplus/blob/858d034a3bd3a54d9b70909386435cf4aec81d21/halfmoon/hm-valnum.cpp#L418
 -->
+* yk, [similar to the JSC destructive way](https://github.com/ykjit/yk/blob/b20f0bbd3177a3cee6bdc3b9e0d31e6adac0706d/ykrt/src/compile/jitc_yk/jit_ir/mod.rs#L479)
