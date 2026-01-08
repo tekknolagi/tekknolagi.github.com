@@ -184,3 +184,7 @@ are due to having other fields, or alignment, or something.
 <!-- Linking ART GVN for good measure even though no union-find:
 https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/gvn.cc#L482
 -->
+* CPS variable substitution in [Compiling with Continuations, Continued](https://www.ccs.neu.edu/home/shivers/cs6983/papers/compilingwithcontinuationscontinued.pdf) (PDF)
+<!-- Linkin ActionScript (!!!) GVN for fun
+https://github.com/adobe/avmplus/blob/858d034a3bd3a54d9b70909386435cf4aec81d21/halfmoon/hm-valnum.cpp#L418
+-->
