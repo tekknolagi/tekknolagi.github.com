@@ -68758,6 +68758,68 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115857911590284814": {
+      "id": "115857911590284814",
+      "created_at": "2026-01-08T05:50:34.180Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115857911590284814",
+      "url": "https://mastodon.social/@tekknolagi/115857911590284814",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Another successful drive-by contribution to ZJIT from a &quot;stranger&quot;! Thank you, Nozomi Hijikata!</p><p><a href=\"https://github.com/ruby/ruby/pull/15747\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/ruby/ruby/pull/15747</span><span class=\"invisible\"></span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://github.com/ruby/ruby/pull/15747",
+        "title": "ZJIT: Add ArrayAset instruction to hir by nozomemein \u00b7 Pull Request #15747 \u00b7 ruby/ruby",
+        "description": "Closes: Shopify#804\nBenchmark\nloops-times\n\nwall clock time\n\nbefore patch: Average of last 10, non-warmup iters: 3557ms\nafter patch: Average of last 10, non-warmup iters: 3362ms\n\n\nzjit stats below\n\n...",
+        "language": "en",
+        "type": "link",
+        "author_name": "nozomemein",
+        "author_url": "",
+        "provider_name": "GitHub",
+        "provider_url": "",
+        "html": "",
+        "width": 678,
+        "height": 339,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/177/158/888/original/e78a8e7d09b262d5.png",
+        "image_description": "Closes: Shopify#804\nBenchmark\nloops-times\n\nwall clock time\n\nbefore patch: Average of last 10, non-warmup iters: 3557ms\nafter patch: Average of last 10, non-warmup iters: 3362ms\n\n\nzjit stats below\n\n...",
+        "embed_url": "",
+        "blurhash": "UVRypZWBofxu%gt7WVs:V@s:WBWV~qkCWBRj",
+        "published_at": null,
+        "authors": [
+          {
+            "name": "nozomemein",
+            "url": "",
+            "account": null
+          }
+        ]
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
