@@ -173,3 +173,10 @@ are due to having other fields, or alignment, or something.
 * annotating edges (groupoids, lesbre/lemerre paper)
 * persistence (undo)
 * parallelism (win wang)
+
+## Users of union-find
+
+* Maxine VM, for example in [their GVN pass](https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/opt/GlobalValueNumberer.java#L48)
+* JavaScriptCore, for example in [their B3 CSE pass](https://github.com/WebKit/WebKit/blob/3046a6cb9f089f7423b61ecfb17674e01b8e6db9/Source/JavaScriptCore/b3/B3PureCSE.cpp#L91)
+* PyPy, for example in [their optimizer](https://github.com/pypy/pypy/blob/376cb12babe6bc8f43a550d2981a322513be24de/rpython/jit/metainterp/optimizeopt/rewrite.py#L98)
+* ZJIT, for example in [the constant folding pass](https://github.com/ruby/ruby/blob/1852ef43778d59a64881b293b0b887e2bc5af37a/zjit/src/hir.rs#L3852)
