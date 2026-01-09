@@ -68907,6 +68907,56 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115862091236017699": {
+      "id": "115862091236017699",
+      "created_at": "2026-01-08T23:33:30.516Z",
+      "in_reply_to_id": "115861603381996084",
+      "in_reply_to_account_id": "1375248",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115862091236017699",
+      "url": "https://mastodon.social/@tekknolagi/115862091236017699",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://oldbytes.space/@psf\" class=\"u-url mention\">@<span>psf</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://merveilles.town/@akkartik\" class=\"u-url mention\">@<span>akkartik</span></a></span> regrettably I have no idea. I&#39;ve done only surface work on tendra. I just have heard it&#39;s very flexible as compilers go</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "1375248",
+          "username": "psf",
+          "url": "https://oldbytes.space/@psf",
+          "acct": "psf@oldbytes.space"
+        },
+        {
+          "id": "1306813",
+          "username": "akkartik",
+          "url": "https://merveilles.town/@akkartik",
+          "acct": "akkartik@merveilles.town"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
