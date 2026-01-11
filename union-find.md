@@ -193,3 +193,7 @@ https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf
 https://github.com/adobe/avmplus/blob/858d034a3bd3a54d9b70909386435cf4aec81d21/halfmoon/hm-valnum.cpp#L418
 -->
 * yk, [similar to the JSC destructive way](https://github.com/ykjit/yk/blob/b20f0bbd3177a3cee6bdc3b9e0d31e6adac0706d/ykrt/src/compile/jitc_yk/jit_ir/mod.rs#L479)
+* Cinder, though it doesn't make full use of it, has a destructive union-find
+  but their `Identity` is called `Assign`. See
+  [copy_propagation.cpp](https://github.com/facebookincubator/cinderx/blob/dbeb911a535962677ea28c4bee733fffb9afb06e/cinderx/Jit/hir/copy_propagation.cpp)
+  and [pass.cpp](https://github.com/facebookincubator/cinderx/blob/9f704553dd303600344952e6400364d8f3abb263/cinderx/Jit/hir/pass.cpp#L83)
