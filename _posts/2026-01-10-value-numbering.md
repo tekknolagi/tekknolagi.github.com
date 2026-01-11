@@ -122,6 +122,16 @@ numbering. Why might an instruction opt-out of value numbering?
 
 ## Pure vs impure
 
+Some instructions are not "pure". Purity is in the eye of the beholder, but in
+general it means that an instruction does not interact with the state of the
+outside world, except for trivial computation on its operands.
+
+A load from an array object is not a pure operation. The load operation
+implicitly relies on the state of the memory. In addition, in some runtime
+systmes, the load might raise an exception. Changing the source location where
+an exception is raised is generally frowned upon. Languages such as Java often
+have this requirement codified in their specifications.
+
 ## Hash consing
 
 ## Equivalence classes
