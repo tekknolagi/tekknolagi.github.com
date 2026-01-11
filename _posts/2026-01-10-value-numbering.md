@@ -9,7 +9,7 @@ Static single assignment (SSA) gives names to values: every expression has a
 name, and each name corresponds to exactly one expression. It transforms
 programs like this:
 
-```
+```python
 x = 0
 x = x + 1
 x = x + 1
@@ -17,7 +17,7 @@ x = x + 1
 
 into
 
-```
+```python
 v0 = 0
 v1 = v0 + 1
 v2 = v1 + 1
@@ -29,61 +29,108 @@ The first computes 1 and the second computes 2. In this example, it is not
 possible to substitute in a variable and re-use the value of `x + 1`, because
 the `x`s are different.
 
-Now let us move to the land of JIT compilers and SSA.
+But what if we see two "textually" identical instructions in SSA? That sounds
+much more promising than non-SSA because we have removed (much of) the
+statefulness of it all. When can we re-use the result?
 
-## JIT compilers and SSA
+## Local value numbering
 
-Frequently in a compiler, especially a compiler for a dynamic language, we may
-see a program come into the optimizer looking like this:
+Let's extend the above IR snippet with two more instructions, v3 and v4.
 
-```
-v0 = ...
-v1 = 123
-SetIvar v0, "a", v1    # v0.a = 123, ish
-v3 = 456
-SetIvar v0, "b", v3    # v1.b = 456, ish
-```
-
-In this example, the instruction `SetIvar` represents an generic attribute
-write, a property write, an instance variable write---whatever you call it---an
-operation that behaves like storing a value into a hashmap on an object.
-
-Because such operations are frequent and hashmap operations execute quite a few
-instructions, dynamic language runtimes often implement these "hashmaps" with
-shapes/layouts/maps/hidden classes. This means each object contains a pointer
-to a description of its memory layout. This layout pointer (which I will call
-"shape" for the duration of this post) can change over time as attributes are
-added or deleted.
-
-Consider an annotated version of the above IR snippet:
-
-```
-v0 = ...
-# state 0
-v1 = 123
-SetIvar v0, "a", v1    # v0.a = 123, ish
-# state 1
-v3 = 456
-SetIvar v0, "b", v3    # v1.b = 456, ish
-# state 2
+```python
+v0 = 0
+v1 = v0 + 1
+v2 = v1 + 1
+v3 = v0 + 1  # new
+v4 = do_something(v2, v3)
 ```
 
-<!--
-At state 0, the object has some unknown shape. At state 1, it has a new shape
-that has the `a` attribute. At state 2, it has a new shape that has both the
-`a` and `b` fields.
--->
+In this new snippet, v3 looks the same as v1: adding v0 and 1. Assuming our
+addition operation is some ideal mathematical addition, we can absolutely
+re-use v1; no need to compute the addition again. We can rewrite the IR to
+something like:
 
-These `SetIvar` operations are very generic, so we want to optimize them. We
-have observed in the interpreter that the object coming into the first
-`SetIvar` frequently enters with the shape ID `Shape700` (for example). The
-compiler looks, and `Shape700` is empty. In order to add a new attribute to the
-object, we have to
+```python
+v0 = 0
+v1 = v0 + 1
+v2 = v1 + 1
+v3 = v1
+v4 = do_something(v2, v3)
+```
 
-https://aosabook.org/en/500L/a-simple-object-model.html
-https://mathiasbynens.be/notes/shapes-ics
-https://poddarayush.com/posts/object-shapes-improve-ruby-code-performance/
-https://chrisseaton.com/truffleruby/rubykaigi21/
-https://chromium.googlesource.com/external/github.com/v8/v8.wiki/+/60dc23b22b18adc6a8902bd9693e386a3748040a/Design-Elements.md#dynamic-machine-code-generation
+This is kind of similar to the destructive union-find representation that
+JavaScriptCore and a couple other compilers use, where the optimizer doesn't
+eagerly re-write all uses but instead leaves a little breadcrumb
+`Identity`/`Assign` instruction.
+
+We could then run our copy propagation pass ("union-find cleanup"?) and get:
+
+```python
+v0 = 0
+v1 = v0 + 1
+v2 = v1 + 1
+v4 = do_something(v2, v1)
+```
+
+Great. But how does this happen? How does an optimizer identify reusable
+instruction candidates that are "textually identical"? Generally, there is [no
+actual text in the
+IR](https://pointersgonewild.com/2011/10/07/optimizing-global-value-numbering/).
+
+One popular solution is to compute a hash of each instruction. Then any
+instructions with the same hash (that also compare equal, in case of
+collisions) are considered equivalent.
+
+I particularly like the Maxine VM implementation. For example, here is the
+`valueNumber` implementation for most binary operations:
+
+```java
+// The base class for binary operations
+public abstract class Op2 extends Instruction {
+    public final int opcode;  // (IMUL, IADD, ...)
+    Value x;
+    Value y;
+
+    @Override
+    public int valueNumber() {
+        // There are other fields but only opcode, and operands get hashed
+        return Util.hash2(opcode, x, y);
+    }
+
+    @Override
+    public boolean valueEqual(Instruction i) {
+        if (i instanceof Op2) {
+            Op2 o = (Op2) i;
+            return opcode == o.opcode && x == o.x && y == o.y;
+        }
+        return false;
+    }
+}
+
+class Util {
+    public static int hash2(int hash, Object x, Object y) {
+        // always set at least one bit in case the hash wraps to zero
+        return 0x20000000
+        | (hash + 7 * System.identityHashCode(x)
+           + 11 * System.identityHashCode(y));
+    }
+}
+```
+
+The value numbering implementation assumes that if a `valueNumber`
+function returns 0, it does not wish to be considered for value
+numbering. Why might an instruction not opt-in to value numbering?
+
+## Pure vs impure
+
+## Hash consing
+
+## Equivalence classes
+
+## State management and invalidation
+
+## Global value numbering
+
+## Acyclic e-graphs
 
 https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/global-value-numbering/
