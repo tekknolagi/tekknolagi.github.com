@@ -44,12 +44,41 @@ v3 = 456
 SetIvar v0, "b", v3    # v1.b = 456, ish
 ```
 
-In this example, the instruction `SetIvar` represents an attribute write, a
-property write, an instance variable write---whatever you call it---an
+In this example, the instruction `SetIvar` represents an generic attribute
+write, a property write, an instance variable write---whatever you call it---an
 operation that behaves like storing a value into a hashmap on an object.
 
 Because such operations are frequent and hashmap operations execute quite a few
-instructions, dynamic language runtimes often model 
+instructions, dynamic language runtimes often implement these "hashmaps" with
+shapes/layouts/maps/hidden classes. This means each object contains a pointer
+to a description of its memory layout. This layout pointer (which I will call
+"shape" for the duration of this post) can change over time as attributes are
+added or deleted.
+
+Consider an annotated version of the above IR snippet:
+
+```
+v0 = ...
+# state 0
+v1 = 123
+SetIvar v0, "a", v1    # v0.a = 123, ish
+# state 1
+v3 = 456
+SetIvar v0, "b", v3    # v1.b = 456, ish
+# state 2
+```
+
+<!--
+At state 0, the object has some unknown shape. At state 1, it has a new shape
+that has the `a` attribute. At state 2, it has a new shape that has both the
+`a` and `b` fields.
+-->
+
+These `SetIvar` operations are very generic, so we want to optimize them. We
+have observed in the interpreter that the object coming into the first
+`SetIvar` frequently enters with the shape ID `Shape700` (for example). The
+compiler looks, and `Shape700` is empty. In order to add a new attribute to the
+object, we have to
 
 https://aosabook.org/en/500L/a-simple-object-model.html
 https://mathiasbynens.be/notes/shapes-ics
