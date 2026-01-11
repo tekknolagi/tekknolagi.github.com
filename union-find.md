@@ -78,7 +78,16 @@ sequence of m ≥ n find and n – 1 union operations in O(m α(m, n)) time.
 
 ## Path splitting
 
-...todo
+(from Wikipedia)
+
+```
+function Find(x) is
+    while x.parent ≠ x do
+        (x, x.parent) := (x.parent, x.parent.parent)
+    end while
+    return x
+end function
+```
 
 ## Path halving
 
