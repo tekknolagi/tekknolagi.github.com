@@ -158,8 +158,6 @@ for (Instruction instr = block.next(); instr != null; instr = instr.next()) {
 ## Equivalence classes
 -->
 
-## State management and invalidation
-
 ## Global value numbering
 
 ```java
@@ -199,6 +197,8 @@ public class GlobalValueNumberer {
     }
 }
 ```
+
+## State management and invalidation
 
 ## Acyclic e-graphs
 
