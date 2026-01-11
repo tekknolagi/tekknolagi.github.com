@@ -119,7 +119,7 @@ class Util {
 
 The value numbering implementation assumes that if a `valueNumber`
 function returns 0, it does not wish to be considered for value
-numbering. Why might an instruction not opt-in to value numbering?
+numbering. Why might an instruction opt-out of value numbering?
 
 ## Pure vs impure
 
