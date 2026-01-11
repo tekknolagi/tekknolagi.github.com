@@ -162,6 +162,44 @@ for (Instruction instr = block.next(); instr != null; instr = instr.next()) {
 
 ## Global value numbering
 
+```java
+public class GlobalValueNumberer {
+    final HashMap<BlockBegin, ValueMap> valueMaps;
+    final InstructionSubstituter subst;
+    ValueMap currentMap;
+
+    public GlobalValueNumberer(IR ir) {
+        this.subst = new InstructionSubstituter(ir);
+        List<BlockBegin> blocks = ir.linearScanOrder();
+        valueMaps = new HashMap<BlockBegin, ValueMap>(blocks.size());
+        optimize(blocks);
+        subst.finish();
+    }
+
+    void optimize(List<BlockBegin> blocks) {
+        int numBlocks = blocks.size();
+        BlockBegin startBlock = blocks.get(0);
+
+        // initial value map, with nesting 0
+        valueMaps.put(startBlock, new ValueMap());
+
+        for (int i = 1; i < numBlocks; i++) {
+            // iterate through all the blocks
+            BlockBegin block = blocks.get(i);
+            BlockBegin dominator = block.dominator();
+
+            // create new value map with increased nesting
+            currentMap = new ValueMap(valueMaps.get(dominator));
+
+            // << INSERT LOCAL VALUE NUMBERING HERE >>
+
+            // remember value map for successors
+            valueMaps.put(block, currentMap);
+        }
+    }
+}
+```
+
 ## Acyclic e-graphs
 
 https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/global-value-numbering/
