@@ -86,6 +86,8 @@ I particularly like the Maxine VM implementation. For example, here is the
 clarity:
 
 ```java
+public abstract class Instruction extends Value { ... }
+
 // The base class for binary operations
 public abstract class Op2 extends Instruction {
     // Each binary operation has an opcode and two opearands
