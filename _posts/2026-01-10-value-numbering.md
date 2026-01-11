@@ -88,6 +88,7 @@ clarity:
 ```java
 // The base class for binary operations
 public abstract class Op2 extends Instruction {
+    // Each binary operation has an opcode and two opearands
     public final int opcode;  // (IMUL, IADD, ...)
     Value x;
     Value y;
