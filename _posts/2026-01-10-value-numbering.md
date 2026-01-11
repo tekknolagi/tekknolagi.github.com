@@ -134,6 +134,26 @@ have this requirement codified in their specifications.
 
 ## Hash consing
 
+```java
+// Local value numbering
+BlockBegin block = ...;
+ValueMap currentMap = new ValueMap();
+InstructionSubstituter subst = new InstructionSubstituter();
+
+// visit all instructions of this block
+for (Instruction instr = block.next(); instr != null; instr = instr.next()) {
+    // attempt value numbering (uses valueNumber() and valueEqual())
+    //
+    // return a previous instruction if it exists in the map, or insert the
+    // current instruction into the map and return it
+    Instruction f = currentMap.findInsert(instr);
+    if (f != instr) {
+        // remember the replacement in the union-find
+        subst.setSubst(instr, f);
+    }
+}
+```
+
 ## Equivalence classes
 
 ## State management and invalidation
