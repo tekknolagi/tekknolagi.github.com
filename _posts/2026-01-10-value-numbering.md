@@ -204,6 +204,8 @@ public class GlobalValueNumberer {
 
 ## State management and invalidation
 
+MemoryMap and GraphBuilder
+
 ## Acyclic e-graphs
 
 https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/global-value-numbering/
