@@ -82,7 +82,8 @@ instructions with the same hash (that also compare equal, in case of
 collisions) are considered equivalent.
 
 I particularly like the Maxine VM implementation. For example, here is the
-`valueNumber` implementation for most binary operations:
+`valueNumber` implementation for most binary operations, slightly modified for
+clarity:
 
 ```java
 // The base class for binary operations
@@ -93,8 +94,12 @@ public abstract class Op2 extends Instruction {
 
     @Override
     public int valueNumber() {
-        // There are other fields but only opcode, and operands get hashed
-        return Util.hash2(opcode, x, y);
+        // There are other fields but only opcode, and operands get hashed.
+        // Always set at least one bit in case the hash wraps to zero.
+        return 0x20000000
+        | (opcode
+           + 7  * System.identityHashCode(x)
+           + 11 * System.identityHashCode(y));
     }
 
     @Override
@@ -104,15 +109,6 @@ public abstract class Op2 extends Instruction {
             return opcode == o.opcode && x == o.x && y == o.y;
         }
         return false;
-    }
-}
-
-class Util {
-    public static int hash2(int hash, Object x, Object y) {
-        // always set at least one bit in case the hash wraps to zero
-        return 0x20000000
-        | (hash + 7 * System.identityHashCode(x)
-           + 11 * System.identityHashCode(y));
     }
 }
 ```
