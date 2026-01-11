@@ -132,7 +132,7 @@ systmes, the load might raise an exception. Changing the source location where
 an exception is raised is generally frowned upon. Languages such as Java often
 have this requirement codified in their specifications.
 
-## Hash consing
+## Local value numbering
 
 ```java
 // Local value numbering
@@ -154,7 +154,9 @@ for (Instruction instr = block.next(); instr != null; instr = instr.next()) {
 }
 ```
 
+<!--
 ## Equivalence classes
+-->
 
 ## State management and invalidation
 
