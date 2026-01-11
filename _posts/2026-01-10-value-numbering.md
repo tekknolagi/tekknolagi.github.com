@@ -168,6 +168,7 @@ public class GlobalValueNumberer {
 
     public GlobalValueNumberer(IR ir) {
         this.subst = new InstructionSubstituter(ir);
+        // reverse post-order
         List<BlockBegin> blocks = ir.linearScanOrder();
         valueMaps = new HashMap<BlockBegin, ValueMap>(blocks.size());
         optimize(blocks);
