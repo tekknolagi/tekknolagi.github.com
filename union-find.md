@@ -173,6 +173,13 @@ are due to having other fields, or alignment, or something.
 * annotating edges (groupoids, lesbre/lemerre paper)
 * persistence (undo)
 * parallelism (win wang)
+* cheap enumeration
+
+<!--
+https://mastodon.social/@harold@mastodon.gamedev.place/114599334552539997
+I've probably mentioned this before but a neat thing to add to union-find is another array of integers that is also initialized to 0,1,2... but you update it differently than the array of parents: for the union, when the roots aren't the same, swap the corresponding entries of the array.
+That gives you a bunch of cyclic linked lists that let you enumerate any given set in the UF without scanning the whole UF, and you still have a cheap union (unlike maintaining explicit lists)
+-->
 
 ## Users of union-find
 
