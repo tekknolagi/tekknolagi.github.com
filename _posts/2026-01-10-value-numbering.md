@@ -132,6 +132,9 @@ systmes, the load might raise an exception. Changing the source location where
 an exception is raised is generally frowned upon. Languages such as Java often
 have this requirement codified in their specifications.
 
+We'll work only on pure operations for now, but we'll come back to this later.
+We do often want to optimize impure operations as well!
+
 ## Local value numbering
 
 ```java
