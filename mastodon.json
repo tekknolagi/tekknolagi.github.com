@@ -68957,6 +68957,43 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115879774232754368": {
+      "id": "115879774232754368",
+      "created_at": "2026-01-12T02:30:31.629Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115879774232754368",
+      "url": "https://mastodon.social/@tekknolagi/115879774232754368",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Has anyone written up the kind of reasoning you do in a JIT with speculative deoptimization where you can say X operation &quot;has no effects&quot; because if it had an effect, we would have left the current translation unit?</p><p>I feel like it&#39;s really interesting but don&#39;t even know how to search for this</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
