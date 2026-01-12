@@ -68994,6 +68994,138 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115880000722129395": {
+      "id": "115880000722129395",
+      "created_at": "2026-01-12T03:28:07.582Z",
+      "in_reply_to_id": "115879999799531822",
+      "in_reply_to_account_id": "113211473838980739",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115880000722129395",
+      "url": "https://mastodon.social/@tekknolagi/115880000722129395",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@mgaudet\" class=\"u-url mention\">@<span>mgaudet</span></a></span> (it would be equivalent to a call)</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "113211473838980739",
+          "username": "mgaudet",
+          "url": "https://discuss.systems/@mgaudet",
+          "acct": "mgaudet@discuss.systems"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115879999799531822": {
+      "id": "115879999799531822",
+      "created_at": "2026-01-12T03:27:53.506Z",
+      "in_reply_to_id": "115879997428280687",
+      "in_reply_to_account_id": "113211473838980739",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115879999799531822",
+      "url": "https://mastodon.social/@tekknolagi/115879999799531822",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@mgaudet\" class=\"u-url mention\">@<span>mgaudet</span></a></span> the latter--side exit. we *could* re-enter the JIT, but then a lot of assumptions might have to be invalidated for that control path</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "113211473838980739",
+          "username": "mgaudet",
+          "url": "https://discuss.systems/@mgaudet",
+          "acct": "mgaudet@discuss.systems"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115879988453807734": {
+      "id": "115879988453807734",
+      "created_at": "2026-01-12T03:25:00.395Z",
+      "in_reply_to_id": "115879977952063021",
+      "in_reply_to_account_id": "113211473838980739",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115879988453807734",
+      "url": "https://mastodon.social/@tekknolagi/115879988453807734",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@mgaudet\" class=\"u-url mention\">@<span>mgaudet</span></a></span> So say you have some opcode CheckInterrupts which has interpreter semantics &quot;check <br />a bit on the thread state. if it is set, run period (managed arbitrary code) computations&quot;. In the JIT, the semantics are the same but if the bit is set, control leaves the JITed code. So in the JIT, this opcode would not do any memory kills in, say, value numbering, because it has no effects</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "113211473838980739",
+          "username": "mgaudet",
+          "url": "https://discuss.systems/@mgaudet",
+          "acct": "mgaudet@discuss.systems"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
