@@ -36,6 +36,16 @@ assume that has been taken care of"
 
 We'll start with the view from the interpreter
 
+### Data structures
+
+People do a lot of operations on integers
+
+Most common integers are small (citation needed)
+
+Split between fixnums and bignums: immediate vs heap-allocated
+
+Operations on fixnums, though tagged, are very fast
+
 ### Static properties
 
 Most programmers don't use most programming language features.
