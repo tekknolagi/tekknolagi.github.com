@@ -200,3 +200,44 @@ VALUE handle_send(Symbol name, int argc) {
 ```
 
 ### In a JIT
+
+Now we are in the JIT compiler. Many JIT compilers take the existing
+interpreter bytecode and transform it into an intermediate representation (IR)
+more suitable for optimization.
+
+A stack based bytecode, for example, might get turned into an SSA IR where the
+stack has been folded away at compile-time. Take this snippet of invented
+stack-based bytecode, where the way to transfer data between instructions is
+the stack:
+
+```
+push 1
+push 2
+add
+```
+
+This bytecode has its stack unrolled at compile-time by abstract
+interpretation. As the compiler iterates over the bytecode instructions, it
+creates an IR node for each instruction. It pushes the address of that IR node
+onto a compile-time stack. Then, when an opcode needs input operands, they are
+read off the compile-time stack. This gives the add instruction (in this case)
+direct pointers to the left and right operands.
+
+```
+v0 = 1
+v1 = 2
+v2 = add v0 v1
+```
+
+It looks like we are assigning variable names here but pretend instead of these
+made-up vNNN names there are arrows/pointers/... between instructions. This is
+a dataflow graph, where uses (instructions) point to defs (their operands).
+
+This is so useful because whenever we are doing some kind of local optimization
+on an instruction, we need only do a bit of light pointer chasing to learn
+about the properties of the operands. "Oh, the type associated with v0 is int?"
+You can look it up right on the IR node.
+
+(More about this in [What I talk about when I talk about IRs](/blog/irs/).)
+
+Then, by the time we hit the compiler, we probably have some amount of profile info
