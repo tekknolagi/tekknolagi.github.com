@@ -46,6 +46,8 @@ local table (size: 2, argc: 0 [opts: 2, rest: -1, post: 0, block: -1, kw: -1@-1,
 $
 ```
 
+(See the jump table debug output: `[ 2] a@0<Opt=0> [ 1] b@1<Opt=5>`)
+
 Unlike in Python, where default arguments are evaluated *at function creation
 time*, Ruby computes the default values *at function call time*. For this
 reason, embedding the default code inside the callee makes a lot of sense; we
