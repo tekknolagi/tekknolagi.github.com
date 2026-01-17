@@ -16,11 +16,11 @@ use the variant of SSA with block parameters.
 
 Where it gets weird, though, is our handling of multiple entrypoints. See, YARV
 handles default positional parameters (but *not* default keyword parameters) by
-embedding the code to compute the positionals inside the bytecode. Then callers
-are responsible for figuring out what offset in the bytecode they should start
-running the callee, depending on the amount of arguments provided. (Keyword
-parameters have explicit presence checks in the callee because they are passed
-in un-ordered.)
+embedding the code to compute the defaults inside the callee bytecode. Then
+callers are responsible for figuring out what offset in the bytecode they
+should start running the callee, depending on the amount of arguments the
+caller provides. (Keyword parameters have explicit presence checks in the
+callee because they are passed in un-ordered.)
 
 In the following example, we have a function that takes two optional positional
 parameters `a` and `b`. If neither is provided, we start at offset `0000`. If
