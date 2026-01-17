@@ -62,6 +62,7 @@ This has led us to design the HIR to support *multiple function entrypoints*.
 Instead of having just a single entry block, as most control-flow graphs do,
 each of our functions now has an array of function entries: one for the
 interpreter, at least one for the JIT, and more for default parameter handling.
+Each of these entry blocks is separately callable from the outside world.
 
 ```
 HIR example
