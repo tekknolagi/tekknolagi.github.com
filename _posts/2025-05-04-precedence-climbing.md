@@ -15,7 +15,7 @@ function calls in under 200 SLOC. It builds an "AST" in the form of nested
 Python lists that kind of look like S-expressions (but you could also make
 classes for AST nodes if you like).
 
-```console?lang=python&prompt=>>>,...
+```console?lang=python&prompt=>>>,...&output=python
 >>> tokenize("1+2*3")
 [1, '+', 2, '*', 3]
 >>> parse(_)
