@@ -1,0 +1,66 @@
+---
+title: "A survey of inlining heuristics"
+layout: post
+---
+
+V8 TurboFan
+https://docs.google.com/document/d/1VoYBhpDhJC4VlqMXCKvae-8IGuheBGxy32EOgC2LnT8/edit
+https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.h#L14
+
+V8 Maglev
+https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/maglev/maglev-inlining.h#L36
+
+HotSpot C2
+https://github.com/openjdk/jdk/blob/a05d5d2514c835f2bfeaf7a8c7df0ac241f0177f/src/hotspot/share/opto/bytecodeInfo.cpp#L116
+
+HotSpot C1
+https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L755
+https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L3854
+
+SpiderMonkey Wasm
+https://github.com/mozilla-firefox/firefox/blob/438a3ce10eb77fb50d968463b7741117aec5bb4a/js/src/wasm/WasmHeuristics.h#L213
+
+PyPy
+"always"
+
+Cinder
+https://github.com/facebookincubator/cinderx/blob/ccb8e40a3509d9fdfe22870f56e8547562763067/cinderx/Jit/hir/inliner.cpp#L343
+
+"optimal inlining"
+https://ethz.ch/content/dam/ethz/special-interest/infk/ast-dam/documents/Theodoridis-ASPLOS22-Inlining-Paper.pdf
+
+machine learning
+https://ieeexplore.ieee.org/document/6495004
+https://ssw.jku.at/Teaching/PhDTheses/Mosaner/Dissertation%20Mosaner.pdf
+
+.NET
+https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inline.def#L94
+https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inlinepolicy.cpp
+https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/docs/design/coreclr/jit/inline-size-estimates.md?plain=1#L5
+https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/fginline.cpp
+https://github.com/dotnet/runtime/issues/10303
+https://github.com/AndyAyersMS/PerformanceExplorer/blob/master/notes/notes-aug-2016.md
+
+Graal
+https://ieeexplore.ieee.org/document/8661171
+
+Dart
+https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L49
+https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L1023
+https://web.archive.org/web/20170830093403id_/https://link.springer.com/content/pdf/10.1007/978-3-540-78791-4_5.pdf
+
+HHVM
+https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/hphp/runtime/vm/jit/inlining-decider.h#L89
+
+ART
+https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/inliner.h
+
+Other
+https://webdocs.cs.ualberta.ca/~amaral/thesis/ErickOchoaMSc.pdf
+https://karimali.ca/resources/papers/ourinliner.pdf
+https://dl.acm.org/doi/10.1145/182409.182489
+https://github.com/chrisseaton/rhizome/blob/main/doc/inlining.md
+
+Maxine
+
+JikesRVM
