@@ -120,7 +120,7 @@ bb6(v49:BasicObject, v50:BasicObject, v51:BasicObject):
 
 If you're not a fan of text HIR, here is an embedded clickable visualization of
 HIR thanks to our former intern [Aiden](https://aidenfoxivey.com/) porting
-Firefox's Iongraph:
+Firefox's [Iongraph](https://github.com/mozilla-spidermonkey/iongraph):
 
 <iframe width="100%" height="400" src="/assets/zjit-multi-entry-iongraph.html"></iframe>
 
