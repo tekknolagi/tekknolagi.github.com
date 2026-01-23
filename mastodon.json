@@ -69651,6 +69651,188 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115945262041925966": {
+      "id": "115945262041925966",
+      "created_at": "2026-01-23T16:04:56.333Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115945262041925966/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/115945262041925966/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "115942198121288058",
+        "created_at": "2026-01-23T03:05:44.579Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.social/users/tekknolagi/statuses/115942198121288058",
+        "url": "https://mastodon.social/@tekknolagi/115942198121288058",
+        "replies_count": 3,
+        "reblogs_count": 4,
+        "favourites_count": 5,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>My graphs,, they are not flowing </p><p><a href=\"https://bernsteinbear.com/blog/multiple-entry/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bernsteinbear.com/blog/multipl</span><span class=\"invisible\">e-entry/</span></a></p>",
+        "reblog": null,
+        "application": {
+          "name": "Mastodon for Android",
+          "website": "https://app.joinmastodon.org/android"
+        },
+        "account": {
+          "id": "1300106",
+          "username": "tekknolagi",
+          "acct": "tekknolagi",
+          "display_name": "Max B",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2020-10-20T00:00:00.000Z",
+          "note": "<p>Let&#39;s chat about compilers</p>",
+          "url": "https://mastodon.social/@tekknolagi",
+          "uri": "https://mastodon.social/users/tekknolagi",
+          "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "followers_count": 574,
+          "following_count": 288,
+          "statuses_count": 1405,
+          "last_status_at": "2026-01-23",
+          "hide_collections": false,
+          "noindex": false,
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "website",
+              "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2022-12-07T01:44:28.737+00:00"
+            },
+            {
+              "name": "github",
+              "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2023-07-26T16:28:07.403+00:00"
+            },
+            {
+              "name": "bsky",
+              "value": "<a href=\"https://bsky.app/profile/bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bsky.app/profile/bernsteinbear</span><span class=\"invisible\">.com</span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": {
+          "url": "https://bernsteinbear.com/blog/multiple-entry/",
+          "title": "A multi-entry CFG design conundrum",
+          "description": "Background and bytecode design",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "Max Bernstein",
+          "provider_url": "",
+          "html": "",
+          "width": 0,
+          "height": 0,
+          "image": null,
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": null,
+          "published_at": "2026-01-22T00:00:00.000Z",
+          "authors": [
+            {
+              "name": "",
+              "url": "",
+              "account": {
+                "id": "1300106",
+                "username": "tekknolagi",
+                "acct": "tekknolagi",
+                "display_name": "Max B",
+                "locked": false,
+                "bot": false,
+                "discoverable": true,
+                "indexable": true,
+                "group": false,
+                "created_at": "2020-10-20T00:00:00.000Z",
+                "note": "<p>Let&#39;s chat about compilers</p>",
+                "url": "https://mastodon.social/@tekknolagi",
+                "uri": "https://mastodon.social/users/tekknolagi",
+                "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+                "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+                "header": "https://mastodon.social/headers/original/missing.png",
+                "header_static": "https://mastodon.social/headers/original/missing.png",
+                "followers_count": 574,
+                "following_count": 288,
+                "statuses_count": 1405,
+                "last_status_at": "2026-01-23",
+                "hide_collections": false,
+                "noindex": false,
+                "emojis": [],
+                "roles": [],
+                "fields": [
+                  {
+                    "name": "website",
+                    "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+                    "verified_at": "2022-12-07T01:44:28.737+00:00"
+                  },
+                  {
+                    "name": "github",
+                    "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+                    "verified_at": "2023-07-26T16:28:07.403+00:00"
+                  },
+                  {
+                    "name": "bsky",
+                    "value": "<a href=\"https://bsky.app/profile/bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bsky.app/profile/bernsteinbear</span><span class=\"invisible\">.com</span></a>",
+                    "verified_at": null
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
