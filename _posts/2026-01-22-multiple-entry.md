@@ -25,8 +25,12 @@ handles default positional parameters (but *not* default keyword parameters) by
 embedding the code to compute the defaults inside the callee bytecode. Then
 callers are responsible for figuring out what offset in the bytecode they
 should start running the callee, depending on the amount of arguments the
-caller provides. (Keyword parameters have explicit presence checks in the
-callee because they are passed in un-ordered.)
+caller provides.[^keywords]
+
+[^keywords]: Keyword parameters have some mix of caller/callee presence checks
+    in the callee because they are passed in un-ordered. The caller handles
+    simple constant defaults whereas the callee handles anything that may
+    raise. Check out [Kevin Newton's awesome overview](https://kddnewton.com/2022/12/17/advent-of-yarv-part-17).
 
 In the following example, we have a function that takes two optional positional
 parameters `a` and `b`. If neither is provided, we start at offset `0000`. If
