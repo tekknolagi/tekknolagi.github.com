@@ -1,5 +1,5 @@
 ---
-title: "A CFG design conundrum"
+title: "A multi-entry CFG design conundrum"
 layout: post
 ---
 
@@ -9,10 +9,16 @@ The ZJIT compiler compiles Ruby bytecode (YARV) to machine code. It starts by
 transforming the stack machine bytecode into a high-level graph-based
 intermediate representation called HIR.
 
-We use a more or less typical control-flow graph (CFG) in HIR. We have a
+We use a more or less typical[^ebb] control-flow graph (CFG) in HIR. We have a
 compilation unit, `Function`, which has multiple basic blocks, `Block`. Each
 block contains multiple instructions, `Insn`. HIR is always in SSA form, and we
-use the variant of SSA with block parameters.
+use the variant of SSA with block parameters instead of phi nodes.
+
+[^ebb]: We use extended basic blocks (EBBs), but this doesn't matter for this
+    post. It makes dominators and predecessors slightly more complicated (now
+    you have dominating *instructions*), but that's about it as far as I can
+    tell. We'll see how they fare in the face of more complicated analysis
+    later.
 
 Where it gets weird, though, is our handling of multiple entrypoints. See, YARV
 handles default positional parameters (but *not* default keyword parameters) by
@@ -66,9 +72,60 @@ each of our functions now has an array of function entries: one for the
 interpreter, at least one for the JIT, and more for default parameter handling.
 Each of these entry blocks is separately callable from the outside world.
 
+Here is what the (slightly cleaned up) HIR looks like for the above example:
+
 ```
-HIR example
+Optimized HIR:
+fn foo@tmp/branchnil.rb:4:
+bb0():
+  EntryPoint interpreter
+  v1:BasicObject = LoadSelf
+  v2:BasicObject = GetLocal :a, l0, SP@5
+  v3:BasicObject = GetLocal :b, l0, SP@4
+  v4:CPtr = LoadPC
+  v5:CPtr[CPtr(0x16d27e908)] = Const CPtr(0x16d282120)
+  v6:CBool = IsBitEqual v4, v5
+  IfTrue v6, bb2(v1, v2, v3)
+  v8:CPtr[CPtr(0x16d27e908)] = Const CPtr(0x16d282120)
+  v9:CBool = IsBitEqual v4, v8
+  IfTrue v9, bb4(v1, v2, v3)
+  Jump bb6(v1, v2, v3)
+bb1(v13:BasicObject):
+  EntryPoint JIT(0)
+  v14:NilClass = Const Value(nil)
+  v15:NilClass = Const Value(nil)
+  Jump bb2(v13, v14, v15)
+bb2(v27:BasicObject, v28:BasicObject, v29:BasicObject):
+  v65:HeapObject[...] = GuardType v27, HeapObject[class_exact*:Object@VALUE(0x1043aed00)]
+  v66:BasicObject = SendWithoutBlockDirect v65, :compute_a (0x16d282148)
+  Jump bb4(v27, v66, v29)
+bb3(v18:BasicObject, v19:BasicObject):
+  EntryPoint JIT(1)
+  v20:NilClass = Const Value(nil)
+  Jump bb4(v18, v19, v20)
+bb4(v38:BasicObject, v39:BasicObject, v40:BasicObject):
+  v69:HeapObject[...] = GuardType v38, HeapObject[class_exact*:Object@VALUE(0x1043aed00)]
+  v70:BasicObject = SendWithoutBlockDirect v69, :compute_b (0x16d282148)
+  Jump bb6(v38, v39, v70)
+bb5(v23:BasicObject, v24:BasicObject, v25:BasicObject):
+  EntryPoint JIT(2)
+  Jump bb6(v23, v24, v25)
+bb6(v49:BasicObject, v50:BasicObject, v51:BasicObject):
+  v73:Fixnum = GuardType v50, Fixnum
+  v74:Fixnum = GuardType v51, Fixnum
+  v75:Fixnum = FixnumAdd v73, v74
+  CheckInterrupts
+  Return v75
 ```
+
+If you're not a fan of text HIR, here is an embedded clickable visualization of
+HIR thanks to our former intern [Aiden](https://aidenfoxivey.com/) porting
+Firefox's Iongraph:
+
+<iframe width="100%" height="400" src="/assets/zjit-multi-entry-iongraph.html"></iframe>
+
+(You might have to scroll sideways and down and zoom around. Or you can [open it
+in its own window](/assets/zjit-multi-entry-iongraph.html).)
 
 Each entry block also comes with block parameters which mirror the function's
 parameters. These get passed in (roughly) the System V ABI registers.
@@ -76,10 +133,9 @@ parameters. These get passed in (roughly) the System V ABI registers.
 This is kind of gross. We have to handle these blocks specially in reverse
 post-order (RPO) graph traversal. And, recently, I ran into an even worse case
 when trying to implement the Cooper-style "engineered" dominator algorithm: if
-we walk backwards in block dominators, the walk is not guaranteed to be
-confluent (TODO right word?). All non-entry blocks are dominated by all entry
-blocks, which are only dominated by themselves. There is no one "start block".
-So what is there to do?
+we walk backwards in block dominators, the walk is not guaranteed to converge.
+All non-entry blocks are dominated by all entry blocks, which are only
+dominated by themselves. There is no one "start block". So what is there to do?
 
 ## The design conundrum
 
@@ -112,4 +168,9 @@ None of these approaches feel great to me. The probable candidate is **2.b**
 where we have `LoadArg` instructions. That gives us flexibility to also later
 add full specialization without forcing it.
 
-What does your compiler do?
+Cameron Zwarich also notes that this this is an analogue to the common problem
+people have when implementing the reverse: postdominators. This is because
+often functions have multiple return IR instructions. He notes the usual
+solution is to transform them into branches to a single return instruction.
+
+Do you have this problem? What does your compiler do?
