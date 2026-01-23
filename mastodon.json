@@ -69563,6 +69563,94 @@
         "manual": [],
         "current_user": "denied"
       }
+    },
+    "115944997649201014": {
+      "id": "115944997649201014",
+      "created_at": "2026-01-23T14:57:41.991Z",
+      "in_reply_to_id": "115944963493207063",
+      "in_reply_to_account_id": "113209149255044442",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115944997649201014",
+      "url": "https://mastodon.social/@tekknolagi/115944997649201014",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://a.bloodyno.se/users/lynn\" class=\"u-url mention\">@<span>lynn</span></a></span> Ruby does LICENSE-BSD and LICENSE-GPL as two files</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "113209149255044442",
+          "username": "lynn",
+          "url": "https://a.bloodyno.se/users/lynn",
+          "acct": "lynn@a.bloodyno.se"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "115944845312187507": {
+      "id": "115944845312187507",
+      "created_at": "2026-01-23T14:18:57.508Z",
+      "in_reply_to_id": "115942558330915599",
+      "in_reply_to_account_id": "147970",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/115944845312187507",
+      "url": "https://mastodon.social/@tekknolagi/115944845312187507",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@regehr\" class=\"u-url mention\">@<span>regehr</span></a></span> fil pizlo plans to for his project, if he hasn&#39;t already</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "147970",
+          "username": "regehr",
+          "url": "https://mastodon.social/@regehr",
+          "acct": "regehr"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
     }
   }
 }
