@@ -2,6 +2,7 @@
 title: Damas-Hindley-Milner inference two ways
 layout: post
 co_authors: River Dillon Keefer
+series: scrapscript
 ---
 
 ## What is Damas-Hindley-Milner?
