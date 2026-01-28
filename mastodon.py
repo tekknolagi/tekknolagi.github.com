@@ -61,8 +61,7 @@ def get_all_toots(user_id, min_id):
 
 
 def update_db(db):
-    if "user" not in db:
-        db["user"] = lookup_user(USER)
+    db["user"] = lookup_user(USER)
     user_id = db["user"]["id"]
     if "toots" in db:
         min_id = max(int(id) for id in db["toots"].keys())
