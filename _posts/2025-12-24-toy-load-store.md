@@ -515,6 +515,14 @@ block is pretty much the same as a trace, so you can do a block-local version
 without much fuss. If you want to go global, you need dominator information and
 gen-kill sets.
 
+Maybe check out the implementation in other compilers:
+
+* [V8's old Hydrogen load elimination](https://github.com/tekknolagi/v8/blob/f030838700a83cde6992cb8ebcb3facc6a8fc1f1/src/crankshaft/hydrogen-load-elimination.cc)
+* [V8's old Hydrogen escape analysis](https://github.com/tekknolagi/v8/blob/f030838700a83cde6992cb8ebcb3facc6a8fc1f1/src/crankshaft/hydrogen-escape-analysis.cc)
+  * Which also does some load-store forwarding
+* [V8's old Hydrogen simple alias analysis](https://github.com/tekknolagi/v8/blob/f030838700a83cde6992cb8ebcb3facc6a8fc1f1/src/crankshaft/hydrogen-alias-analysis.h)
+* [Android ART's load-store elimination](https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/load_store_elimination.cc)
+
 Maybe I will touch on this in a future post...
 
 ## Thank you
