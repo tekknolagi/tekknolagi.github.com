@@ -123,41 +123,18 @@ Other = Any.add_child("Other")
 Any.compute(0)
 
 
-class Load(Operation):
-    def __init__(self, obj: Value, offset: Value, heap: AbstractHeap = Any):
-        super().__init__("load", [obj, offset])
-        self.heap = heap
-
-
-class Store(Operation):
-    def __init__(
-        self, obj: Value, offset: Value, value: Value, heap: AbstractHeap = Any
-    ):
-        super().__init__("store", [obj, offset, value])
-        self.heap = heap
-
-
-def wraparg(arg):
-    if not isinstance(arg, (Value, AbstractHeap)):
-        arg = Constant(arg)
-    return arg
-
-
 class Block(list):
     def opbuilder(opname: str):
+        def wraparg(arg):
+            if not isinstance(arg, Value):
+                arg = Constant(arg)
+            return arg
+
         def build(self, *args):
             # construct an Operation, wrap the
             # arguments in Constants if necessary
             op = Operation(opname, [wraparg(arg) for arg in args])
             # add it to self, the basic block
-            self.append(op)
-            return op
-
-        return build
-
-    def class_opbuilder(cls):
-        def build(self, *args):
-            op = cls(*[wraparg(arg) for arg in args])
             self.append(op)
             return op
 
@@ -173,8 +150,6 @@ class Block(list):
     alloc = opbuilder("alloc")
     load = opbuilder("load")
     store = opbuilder("store")
-    # load = class_opbuilder(Load)
-    # store = class_opbuilder(Store)
     alias = opbuilder("alias")
     escape = opbuilder("escape")
 
