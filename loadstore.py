@@ -13,9 +13,7 @@ class Value:
 
 
 class Operation(Value):
-    def __init__(
-        self, name: str, args: List[Value]
-    ):
+    def __init__(self, name: str, args: List[Value]):
         self.name = name
         self.args = args
         self.forwarded = None
@@ -58,10 +56,8 @@ class Constant(Value):
         return self
 
     def _set_forwarded(self, value: Value):
-        assert (
-            isinstance(value, Constant)
-            and value.value == self.value
-        )
+        assert isinstance(value, Constant) and value.value == self.value
+
 
 class Block(list):
     def opbuilder(opname: str):
@@ -69,14 +65,15 @@ class Block(list):
             if not isinstance(arg, Value):
                 arg = Constant(arg)
             return arg
+
         def build(self, *args):
             # construct an Operation, wrap the
             # arguments in Constants if necessary
-            op = Operation(opname,
-                [wraparg(arg) for arg in args])
+            op = Operation(opname, [wraparg(arg) for arg in args])
             # add it to self, the basic block
             self.append(op)
             return op
+
         return build
 
     # a bunch of operations we support
@@ -92,6 +89,7 @@ class Block(list):
     alias = opbuilder("alias")
     escape = opbuilder("escape")
 
+
 def bb_to_str(bb: Block, varprefix: str = "var"):
     def arg_to_str(arg: Value):
         if isinstance(arg, Constant):
@@ -104,22 +102,22 @@ def bb_to_str(bb: Block, varprefix: str = "var"):
     for index, op in enumerate(bb):
         var = f"{varprefix}{index}"
         varnames[op] = var
-        arguments = ", ".join(
-            arg_to_str(op.arg(i))
-                for i in range(len(op.args))
-        )
+        arguments = ", ".join(arg_to_str(op.arg(i)) for i in range(len(op.args)))
         strop = f"{var} = {op.name}({arguments})"
         res.append(strop)
     return "\n".join(res)
+
 
 def get_num(op, index=1):
     assert isinstance(op.arg(index), Constant)
     return op.arg(index).value
 
-def eq_value(left: Value|None, right: Value) -> bool:
+
+def eq_value(left: Value | None, right: Value) -> bool:
     if isinstance(left, Constant) and isinstance(right, Constant):
         return left.value == right.value
     return left is right
+
 
 def optimize_load_store(bb: Block):
     opt_bb = Block()
@@ -151,6 +149,7 @@ def optimize_load_store(bb: Block):
         opt_bb.append(op)
     return opt_bb
 
+
 def test_two_loads():
     bb = Block()
     var0 = bb.getarg(0)
@@ -159,11 +158,15 @@ def test_two_loads():
     bb.escape(var1)
     bb.escape(var2)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = load(var0, 0)
 var2 = escape(var1)
 var3 = escape(var1)"""
+    )
+
 
 def test_store_to_same_object_offset_invalidates_load():
     bb = Block()
@@ -174,12 +177,16 @@ def test_store_to_same_object_offset_invalidates_load():
     bb.escape(var1)
     bb.escape(var3)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = load(var0, 0)
 var2 = store(var0, 0, 5)
 var3 = escape(var1)
 var4 = escape(5)"""
+    )
+
 
 def test_store_to_same_object_different_offset_does_not_invalidate_load():
     bb = Block()
@@ -190,12 +197,16 @@ def test_store_to_same_object_different_offset_does_not_invalidate_load():
     bb.escape(var1)
     bb.escape(var3)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = load(var0, 0)
 var2 = store(var0, 4, 5)
 var3 = escape(var1)
 var4 = escape(var1)"""
+    )
+
 
 def test_store_at_same_offset_invalidates_load():
     bb = Block()
@@ -207,7 +218,9 @@ def test_store_at_same_offset_invalidates_load():
     bb.escape(var2)
     bb.escape(var4)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = getarg(1)
 var2 = load(var0, 0)
@@ -215,6 +228,8 @@ var3 = store(var1, 0, 5)
 var4 = load(var0, 0)
 var5 = escape(var2)
 var6 = escape(var4)"""
+    )
+
 
 def test_load_after_store_removed():
     bb = Block()
@@ -225,12 +240,16 @@ def test_load_after_store_removed():
     bb.escape(var1)
     bb.escape(var2)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = store(var0, 0, 5)
 var2 = load(var0, 1)
 var3 = escape(5)
 var4 = escape(var2)"""
+    )
+
 
 def test_loads_between_stores_removed():
     bb = Block()
@@ -242,12 +261,16 @@ def test_loads_between_stores_removed():
     bb.escape(var1)
     bb.escape(var2)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = store(var0, 0, 5)
 var2 = store(var0, 0, 7)
 var3 = escape(5)
 var4 = escape(7)"""
+    )
+
 
 def test_two_stores_same_offset():
     bb = Block()
@@ -260,7 +283,9 @@ def test_two_stores_same_offset():
     bb.escape(load1)
     bb.escape(load2)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = getarg(1)
 var2 = store(var0, 0, 5)
@@ -268,6 +293,8 @@ var3 = store(var1, 0, 7)
 var4 = load(var0, 0)
 var5 = escape(var4)
 var6 = escape(7)"""
+    )
+
 
 def test_two_stores_different_offset():
     bb = Block()
@@ -280,13 +307,17 @@ def test_two_stores_different_offset():
     bb.escape(load1)
     bb.escape(load2)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = getarg(1)
 var2 = store(var0, 0, 5)
 var3 = store(var1, 1, 7)
 var4 = escape(5)
 var5 = escape(7)"""
+    )
+
 
 def test_two_loads():
     bb = Block()
@@ -296,11 +327,15 @@ def test_two_loads():
     bb.escape(var1)
     bb.escape(var2)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = load(var0, 0)
 var2 = escape(var1)
 var3 = escape(var1)"""
+    )
+
 
 def test_load_store_load():
     bb = Block()
@@ -315,6 +350,7 @@ def test_load_store_load():
     # Cannot optimize :(
     assert bb_to_str(opt_bb) == bb_to_str(bb)
 
+
 def test_load_then_store():
     bb = Block()
     arg1 = bb.getarg(0)
@@ -322,12 +358,17 @@ def test_load_then_store():
     bb.store(arg1, 0, var1)
     bb.escape(var1)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = load(var0, 0)
 var2 = escape(var1)"""
+    )
+
 
 # TODO(max): Test above with aliasing objects
+
 
 def test_load_then_store_then_load():
     bb = Block()
@@ -338,11 +379,15 @@ def test_load_then_store_then_load():
     bb.escape(var1)
     bb.escape(var2)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = load(var0, 0)
 var2 = escape(var1)
 var3 = escape(var1)"""
+    )
+
 
 def test_store_after_store():
     bb = Block()
@@ -350,9 +395,13 @@ def test_store_after_store():
     bb.store(arg1, 0, 5)
     bb.store(arg1, 0, 5)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = store(var0, 0, 5)"""
+    )
+
 
 def test_load_store_aliasing():
     bb = Block()
@@ -378,13 +427,17 @@ def test_load_store_aliasing():
     # Because we don't know if they alias or not, we can only remove the
     # intersection of the above two cases: var2, var3, var4.
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = getarg(1)
 var2 = load(var0, 0)
 var3 = load(var1, 0)
 var4 = escape(var2)
 var5 = escape(var3)"""
+    )
+
 
 @pytest.mark.xfail
 def test_exercise_for_the_viewer():
@@ -395,7 +448,10 @@ def test_exercise_for_the_viewer():
     var2 = bb.load(arg0, 0)
     bb.escape(var2)
     opt_bb = optimize_load_store(bb)
-    assert bb_to_str(opt_bb) == """\
+    assert (
+        bb_to_str(opt_bb)
+        == """\
 var0 = getarg(0)
 var1 = store(var0, 0, 7)
 var2 = escape(7)"""
+    )
