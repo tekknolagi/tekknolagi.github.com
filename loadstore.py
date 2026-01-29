@@ -59,18 +59,105 @@ class Constant(Value):
         assert isinstance(value, Constant) and value.value == self.value
 
 
+class HeapRange:
+    def __init__(self, start: int, end: int) -> None:
+        self.start = start
+        self.end = end
+
+    def __eq__(self, other: "HeapRange") -> bool:
+        if not isinstance(other, HeapRange):
+            return False
+        return self.start == other.start and self.end == other.end
+
+    def __hash__(self) -> int:
+        return hash((HeapRange, self.start, self.end))
+
+    def __repr__(self) -> str:
+        return f"[{self.start}, {self.end})"
+
+    def is_empty(self) -> bool:
+        return self.start == self.end
+
+    def overlaps(self, other: "HeapRange") -> bool:
+        # Empty ranges interfere with nothing
+        if self.is_empty() or other.is_empty():
+            return False
+        return self.end > other.start and other.end > self.start
+
+
+class AbstractHeap:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.parent = None
+        self.children = []
+        self.range = None
+
+    def add_child(self, name: str) -> None:
+        result = AbstractHeap(name)
+        result.parent = self
+        self.children.append(result)
+        return result
+
+    def compute(self, start: int) -> None:
+        current = start
+        if not self.children:
+            self.range = HeapRange(start, current + 1)
+            return
+        for child in self.children:
+            child.compute(current)
+            current = child.range.end
+        self.range = HeapRange(start, current)
+
+    def all_heaps(self) -> List["AbstractHeap"]:
+        result = [self]
+        for child in self.children:
+            result.extend(child.all_heaps())
+        return result
+
+
+Any = AbstractHeap("Any")
+Object = Any.add_child("Object")
+Array = Object.add_child("Array")
+String = Object.add_child("String")
+Other = Any.add_child("Other")
+Any.compute(0)
+
+
+class Load(Operation):
+    def __init__(self, obj: Value, offset: Value, heap: AbstractHeap = Any):
+        super().__init__("load", [obj, offset])
+        self.heap = heap
+
+
+class Store(Operation):
+    def __init__(
+        self, obj: Value, offset: Value, value: Value, heap: AbstractHeap = Any
+    ):
+        super().__init__("store", [obj, offset, value])
+        self.heap = heap
+
+
+def wraparg(arg):
+    if not isinstance(arg, (Value, AbstractHeap)):
+        arg = Constant(arg)
+    return arg
+
+
 class Block(list):
     def opbuilder(opname: str):
-        def wraparg(arg):
-            if not isinstance(arg, Value):
-                arg = Constant(arg)
-            return arg
-
         def build(self, *args):
             # construct an Operation, wrap the
             # arguments in Constants if necessary
             op = Operation(opname, [wraparg(arg) for arg in args])
             # add it to self, the basic block
+            self.append(op)
+            return op
+
+        return build
+
+    def class_opbuilder(cls):
+        def build(self, *args):
+            op = cls(*[wraparg(arg) for arg in args])
             self.append(op)
             return op
 
@@ -86,6 +173,8 @@ class Block(list):
     alloc = opbuilder("alloc")
     load = opbuilder("load")
     store = opbuilder("store")
+    # load = class_opbuilder(Load)
+    # store = class_opbuilder(Store)
     alias = opbuilder("alias")
     escape = opbuilder("escape")
 
@@ -124,28 +213,45 @@ def optimize_load_store(bb: Block):
     # Stores things we know about the heap at... compile-time.
     # Key: an object and an offset pair acting as a heap address
     # Value: a previous SSA value we know exists at that address
-    compile_time_heap: Dict[Tuple[Value, int], Value] = {}
+    compile_time_heaps: Dict[HeapRange, Dict[Tuple[Value, int], Value]] = {}
+    for heap in Any.all_heaps():
+        compile_time_heaps[heap.range] = {}
     for op in bb:
         if op.name == "store":
             obj = op.arg(0)
+            recv_heap = obj.info or Any
             offset = get_num(op, 1)
             store_info = (obj, offset)
-            current_value = compile_time_heap.get(store_info)
+            current_value = compile_time_heaps[recv_heap.range].get(store_info)
             new_value = op.arg(2)
             if eq_value(current_value, new_value):
                 continue
-            compile_time_heap = {
-                load_info: value
-                for load_info, value in compile_time_heap.items()
-                if load_info[1] != offset
-            }
-            compile_time_heap[store_info] = new_value
+            new_heap = {}
+            # Invalidate any knowledge of loads that overlap (may alias) with
+            # recv_heap
+            for (heap_range, heap) in compile_time_heaps.items():
+                if recv_heap.range.overlaps(heap_range):
+                    # We can be more specific than removing all load
+                    # information; we can limit aliasing to loads at the same
+                    # offset
+                    new_heap = {
+                        load_info: value
+                        for load_info, value in heap.items()
+                        if load_info[1] != offset
+                    }
+                    heap.clear()
+                    heap.update(new_heap)
+            compile_time_heaps[recv_heap.range][store_info] = new_value
         elif op.name == "load":
-            load_info = (op.arg(0), get_num(op, 1))
-            if load_info in compile_time_heap:
-                op.make_equal_to(compile_time_heap[load_info])
+            obj = op.arg(0)
+            offset = get_num(op, 1)
+            recv_heap = obj.info or Any
+            load_info = (obj, offset)
+            heap = compile_time_heaps[recv_heap.range]
+            if load_info in heap:
+                op.make_equal_to(heap[load_info])
                 continue
-            compile_time_heap[load_info] = op
+            heap[load_info] = op
         opt_bb.append(op)
     return opt_bb
 
@@ -185,6 +291,28 @@ var1 = load(var0, 0)
 var2 = store(var0, 0, 5)
 var3 = escape(var1)
 var4 = escape(5)"""
+    )
+
+
+def test_store_to_same_offset_different_heaps_does_not_invalidate_load():
+    bb = Block()
+    var0 = bb.getarg(0)
+    var0.info = Array
+    var1 = bb.getarg(1)
+    var1.info = String
+    var2 = bb.store(var0, 0, 3)
+    var3 = bb.store(var1, 0, 4)
+    var4 = bb.load(var0, 0)
+    bb.escape(var4)
+    opt_bb = optimize_load_store(bb)
+    assert (
+        bb_to_str(opt_bb)
+        == """\
+var0 = getarg(0)
+var1 = getarg(1)
+var2 = store(var0, 0, 3)
+var3 = store(var1, 0, 4)
+var4 = escape(3)"""
     )
 
 
