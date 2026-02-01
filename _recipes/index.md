@@ -42,6 +42,9 @@ Tried, enjoyed, and repeated frequently by yours truly.
 * [Cheesy Cabbage Tteokbokki](https://web.archive.org/web/20220616091010/https://cooking.nytimes.com/recipes/1023237-cheesy-cabbage-tteokbokki)
   (also visible [here](https://www.justtherecipe.com/?url=https://cooking.nytimes.com/recipes/1023237-cheesy-cabbage-tteokbokki))
   * One pot, delicious
+* [Spiced Chickpea Stew with Coconut and Turmeric](https://www.alisoneroman.com/recipes/spiced-chickpea-stew-with-coconut-and-turmeric/)
+  by Alison Roman
+  * One pot, delicious
 
 ## Other text-based recipes
 
