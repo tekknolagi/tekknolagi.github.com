@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 575,
     "following_count": 288,
-    "statuses_count": 1411,
+    "statuses_count": 1412,
     "last_status_at": "2026-02-05",
     "hide_collections": false,
     "noindex": false,
@@ -70187,6 +70187,62 @@
       },
       "media_attachments": [],
       "mentions": [
+        {
+          "id": "233950",
+          "username": "jdryg",
+          "url": "https://mastodon.gamedev.place/@jdryg",
+          "acct": "jdryg@mastodon.gamedev.place"
+        },
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116018197245932092": {
+      "id": "116018197245932092",
+      "created_at": "2026-02-05T13:13:19.195Z",
+      "in_reply_to_id": "116017064309410836",
+      "in_reply_to_account_id": "109337913296719557",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116018197245932092",
+      "url": "https://mastodon.social/@tekknolagi/116018197245932092",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://fediscience.org/@MatthieuLemerre\" class=\"u-url mention\">@<span>MatthieuLemerre</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.gamedev.place/@jdryg\" class=\"u-url mention\">@<span>jdryg</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> well but sometimes I don&#39;t always care what I find, you know? Sometimes it doesn&#39;t matter to the program that we gain more information there</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109337913296719557",
+          "username": "MatthieuLemerre",
+          "url": "https://fediscience.org/@MatthieuLemerre",
+          "acct": "MatthieuLemerre@fediscience.org"
+        },
         {
           "id": "233950",
           "username": "jdryg",
