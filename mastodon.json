@@ -15,12 +15,14 @@
     "uri": "https://mastodon.social/users/tekknolagi",
     "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
     "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+    "avatar_description": "",
     "header": "https://mastodon.social/headers/original/missing.png",
     "header_static": "https://mastodon.social/headers/original/missing.png",
-    "followers_count": 395,
-    "following_count": 257,
-    "statuses_count": 994,
-    "last_status_at": "2024-12-27",
+    "header_description": "",
+    "followers_count": 575,
+    "following_count": 288,
+    "statuses_count": 1408,
+    "last_status_at": "2026-02-05",
     "hide_collections": false,
     "noindex": false,
     "emojis": [],
@@ -35,6 +37,11 @@
         "name": "github",
         "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
         "verified_at": "2023-07-26T16:28:07.403+00:00"
+      },
+      {
+        "name": "bsky",
+        "value": "<a href=\"https://bsky.app/profile/bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bsky.app/profile/bernsteinbear</span><span class=\"invisible\">.com</span></a>",
+        "verified_at": null
       }
     ]
   },
@@ -69821,6 +69828,228 @@
       "application": null,
       "media_attachments": [],
       "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116016561577860740": {
+      "id": "116016561577860740",
+      "created_at": "2026-02-05T06:17:20.880Z",
+      "in_reply_to_id": "116016549060644212",
+      "in_reply_to_account_id": "233950",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116016561577860740",
+      "url": "https://mastodon.social/@tekknolagi/116016561577860740",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.gamedev.place/@jdryg\" class=\"u-url mention\">@<span>jdryg</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> oh, I see what you mean. I am still waiting for an approachable (partial, limited) into-ssi for existing SSA programs. We have a small version of it that we do during SSA build, which feels much easier :/</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "233950",
+          "username": "jdryg",
+          "url": "https://mastodon.gamedev.place/@jdryg",
+          "acct": "jdryg@mastodon.gamedev.place"
+        },
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116016420181399979": {
+      "id": "116016420181399979",
+      "created_at": "2026-02-05T05:41:23.389Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116016420181399979/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/116016420181399979/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "115996720543587769",
+        "created_at": "2026-02-01T18:11:28.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://chaos.social/users/scy/statuses/115996720406940802",
+        "url": "https://chaos.social/@scy/115996720406940802",
+        "replies_count": 6,
+        "reblogs_count": 252,
+        "favourites_count": 408,
+        "quotes_count": 1,
+        "edited_at": null,
+        "content": "<p>Take me down to parallax city<br>Where the back moves slow and the front moves quickly</p>",
+        "reblog": null,
+        "account": {
+          "id": "108130441598770953",
+          "username": "scy",
+          "acct": "scy@chaos.social",
+          "display_name": "scy",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2022-04-14T00:00:00.000Z",
+          "note": "<p>Nerd. Freelance Software Dev. Relationship Anarchist. Sometimes lives in a van. Queer White cis dude, promotes anti-capitalism, anti-fascism, intersectional feminism, the fight against climate change, and thoughtful, ethical behavior in general.</p><p>Toots in English or German about software development (mainly Python, JavaScript, Shell), Linux, Vim, electronics/\u00b5Cs, van life, politics, sex, (inter)personal &amp; emotional things, music, Star Trek, beverages. :progress_pride:</p><p>May contain awful puns.</p>",
+          "url": "https://chaos.social/@scy",
+          "uri": "https://chaos.social/users/scy",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/108/130/441/598/770/953/original/d73868bb6fb7ff4e.jpg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/108/130/441/598/770/953/original/d73868bb6fb7ff4e.jpg",
+          "avatar_description": "",
+          "header": "https://files.mastodon.social/cache/accounts/headers/108/130/441/598/770/953/original/4309773811fdf469.png",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/108/130/441/598/770/953/original/4309773811fdf469.png",
+          "header_description": "",
+          "followers_count": 2675,
+          "following_count": 769,
+          "statuses_count": 23837,
+          "last_status_at": "2026-02-04",
+          "hide_collections": false,
+          "emojis": [
+            {
+              "shortcode": "progress_pride",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/000/427/533/original/16bfda48bae41d48.png",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/000/427/533/static/16bfda48bae41d48.png",
+              "visible_in_picker": true
+            }
+          ],
+          "fields": [
+            {
+              "name": "Pronomen/Pronouns",
+              "value": "Deutsch: er, they \u2022 English: he, they",
+              "verified_at": null
+            },
+            {
+              "name": "Sprachen/Languages",
+              "value": "Deutsch, English, learning portugu\u00eas &amp; fran\u00e7ais",
+              "verified_at": null
+            },
+            {
+              "name": "Website",
+              "value": "<a href=\"https://scy.name\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">scy.name</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2026-02-04T15:18:45.000+00:00"
+            },
+            {
+              "name": "Available for Flirts\u00a0& Dates?",
+              "value": "Yep, both! Limited time offer! <a href=\"https://chaos.social/tags/Fedisingles\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>Fedisingles</span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116016413652397950": {
+      "id": "116016413652397950",
+      "created_at": "2026-02-05T05:39:43.739Z",
+      "in_reply_to_id": "116012438546166566",
+      "in_reply_to_account_id": "233950",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116016413652397950",
+      "url": "https://mastodon.social/@tekknolagi/116016413652397950",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.gamedev.place/@jdryg\" class=\"u-url mention\">@<span>jdryg</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> you can use sccp algorithm but your domain can be known bits, I think</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "233950",
+          "username": "jdryg",
+          "url": "https://mastodon.gamedev.place/@jdryg",
+          "acct": "jdryg@mastodon.gamedev.place"
+        },
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
       "tags": [],
       "emojis": [],
       "quote": null,
