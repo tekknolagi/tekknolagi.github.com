@@ -56,6 +56,10 @@ https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/fginline.cpp
 https://github.com/dotnet/runtime/issues/10303
 https://github.com/AndyAyersMS/PerformanceExplorer/blob/master/notes/notes-aug-2016.md
+<!--
+LSRA heuristics
+https://github.com/dotnet/runtime/blob/2d638dc1179164a08d9387cbe6354fe2b7e4d823/docs/design/coreclr/jit/lsra-heuristic-tuning.md
+-->
 
 Graal
 https://ieeexplore.ieee.org/document/8661171
