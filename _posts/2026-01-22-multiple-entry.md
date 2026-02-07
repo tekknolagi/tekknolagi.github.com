@@ -59,10 +59,12 @@ $
 (See the jump table debug output: `[ 2] a@0<Opt=0> [ 1] b@1<Opt=5>`)
 
 Unlike in Python, where default arguments are evaluated *at function creation
-time*, Ruby computes the default values *at function call time*. For this
-reason, embedding the default code inside the callee makes a lot of sense; we
-have a full call frame already set up, so any exception handling machinery
-or profiling or ... doesn't need special treatment.
+time*, Ruby computes the default values *at function call time*. This includes
+arbitrary function calls, raising exceptions, doing long I/O, or whatever your
+heart desires. For this reason, embedding the default code inside the callee
+makes a lot of sense; we have a full call frame already set up, so any
+optimizations (!), side-exits, exception handling machinery, profiling, etc
+doesn't need special treatment.
 
 Since the caller knows what arguments it is passing, and often to what
 function, we can efficiently support this in the JIT. We just need to know what
