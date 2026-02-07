@@ -86,3 +86,5 @@ https://www.cresco.enea.it/SC05/schedule/pdf/pap274.pdf
 Maxine
 
 JikesRVM
+
+Partial inlining
