@@ -80,6 +80,7 @@ https://webdocs.cs.ualberta.ca/~amaral/thesis/ErickOchoaMSc.pdf
 https://karimali.ca/resources/papers/ourinliner.pdf
 https://dl.acm.org/doi/10.1145/182409.182489
 https://github.com/chrisseaton/rhizome/blob/main/doc/inlining.md
+http://aleksandar-prokopec.com/resources/docs/prio-inliner-final.pdf
 
 Maxine
 
