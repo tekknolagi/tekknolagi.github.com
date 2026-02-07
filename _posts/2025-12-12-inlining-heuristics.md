@@ -13,6 +13,14 @@ https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/magle
 HotSpot C2
 https://github.com/openjdk/jdk/blob/a05d5d2514c835f2bfeaf7a8c7df0ac241f0177f/src/hotspot/share/opto/bytecodeInfo.cpp#L116
 
+Not too small
+
+Walk up the call stack to figure out what to compile
+
+Handling the right thing to inline: def foo(a) = a.each {|x| x }
+want to compile `foo`, inline each, inline block, not compile block separately
+(probably)
+
 HotSpot C1
 https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L755
 https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L3854
