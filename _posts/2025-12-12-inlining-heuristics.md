@@ -27,6 +27,7 @@ want to compile `foo`, inline each, inline block, not compile block separately
 TruffleRuby uses weighted compile queue
 
 HotSpot C1
+https://bernsteinbear.com/assets/img/design-hotspot-client-compiler.pdf
 https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L755
 https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L3854
 
