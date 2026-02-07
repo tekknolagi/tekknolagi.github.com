@@ -30,6 +30,8 @@ https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src
 SpiderMonkey Wasm
 https://github.com/mozilla-firefox/firefox/blob/438a3ce10eb77fb50d968463b7741117aec5bb4a/js/src/wasm/WasmHeuristics.h#L213
 
+SpiderMonkey ICScript
+
 PyPy
 "always"
 
