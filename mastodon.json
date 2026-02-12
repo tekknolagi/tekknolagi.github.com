@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 576,
     "following_count": 288,
-    "statuses_count": 1415,
-    "last_status_at": "2026-02-11",
+    "statuses_count": 1416,
+    "last_status_at": "2026-02-12",
     "hide_collections": false,
     "noindex": false,
     "emojis": [],
@@ -70381,6 +70381,43 @@
           "acct": "mgaudet@discuss.systems"
         }
       ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116055293358490159": {
+      "id": "116055293358490159",
+      "created_at": "2026-02-12T02:27:20.957Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116055293358490159",
+      "url": "https://mastodon.social/@tekknolagi/116055293358490159",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>You&#39;re absolutely right. The vertical axis is not X, it&#39;s Y.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
       "tags": [],
       "emojis": [],
       "quote": null,
