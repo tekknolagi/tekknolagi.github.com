@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 576,
     "following_count": 288,
-    "statuses_count": 1416,
-    "last_status_at": "2026-02-12",
+    "statuses_count": 1417,
+    "last_status_at": "2026-02-13",
     "hide_collections": false,
     "noindex": false,
     "emojis": [],
@@ -70411,6 +70411,43 @@
       "quotes_count": 0,
       "edited_at": null,
       "content": "<p>You&#39;re absolutely right. The vertical axis is not X, it&#39;s Y.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116064211999631811": {
+      "id": "116064211999631811",
+      "created_at": "2026-02-13T16:15:28.610Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116064211999631811",
+      "url": "https://mastodon.social/@tekknolagi/116064211999631811",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>My former (excellent!) compiler intern is now in team matching at Google for full time. Anyone on Dart, V8, Go, ... who would chat with them? Thank you!!</p>",
       "reblog": null,
       "application": {
         "name": "Mastodon for Android",
