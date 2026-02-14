@@ -191,9 +191,8 @@ def optimize_load_store(bb: Block):
     opt_bb = Block()
     # Stores things we know about the heap at... compile-time.
     # Key: an object and an offset pair acting as a heap address
-    # Value: a previous SSA value we know exists at that address and its heap
-    # range
-    compile_time_heap: Dict[(Value, int), Value] = {}
+    # Value: a previous SSA value we know exists at that address
+    compile_time_heap: Dict[Tuple[Value, int], Value] = {}
     for op in bb:
         if op.name == "store":
             obj = op.arg(0)
