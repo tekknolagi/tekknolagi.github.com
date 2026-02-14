@@ -189,7 +189,7 @@ def optimize_load_store(bb: Block):
     # Key: an object and an offset pair acting as a heap address
     # Value: a previous SSA value we know exists at that address and its heap
     # range
-    compile_time_heap: Dict[(Value, int), (HeapRange, Value)] = {}
+    compile_time_heap: Dict[(Value, int), Value] = {}
     for op in bb:
         if op.name == "store":
             obj = op.arg(0)
@@ -198,19 +198,20 @@ def optimize_load_store(bb: Block):
             store_info = (obj, offset)
             new_value = op.arg(2)
             result = compile_time_heap.get(store_info)
-            if result is not None and eq_value(result[1], new_value):
+            if result is not None and eq_value(result, new_value):
                 continue
             new_heap = {}
             # Invalidate any knowledge of loads that overlap (may alias) with
             # recv_heap
-            for (old_obj, old_offset), (old_heap, old_val) in compile_time_heap.items():
+            for (old_obj, old_offset), old_val in compile_time_heap.items():
                 # We can be more specific than removing all load
                 # information; we can limit aliasing to loads at the same
                 # offset
+                old_heap = old_obj.info or Any
                 if recv_heap.range.overlaps(old_heap.range) and offset == old_offset:
                     continue
-                new_heap[(old_obj, old_offset)] = (old_heap, old_val)
-            new_heap[store_info] = (recv_heap, new_value)
+                new_heap[(old_obj, old_offset)] = old_val
+            new_heap[store_info] = new_value
             compile_time_heap = new_heap
         elif op.name == "load":
             obj = op.arg(0)
@@ -219,9 +220,9 @@ def optimize_load_store(bb: Block):
             load_info = (obj, offset)
             result = compile_time_heap.get(load_info)
             if result is not None:
-                op.make_equal_to(result[1])
+                op.make_equal_to(result)
                 continue
-            compile_time_heap[load_info] = (recv_heap, op)
+            compile_time_heap[load_info] = op
         opt_bb.append(op)
     return opt_bb
 
