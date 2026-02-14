@@ -198,29 +198,21 @@ def optimize_load_store(bb: Block):
             obj = op.arg(0)
             offset = get_num(op, 1)
             store_info = (obj, offset)
+            current_value = compile_time_heap.get(store_info)
             new_value = op.arg(2)
-            result = compile_time_heap.get(store_info)
-            if result is not None and eq_value(result, new_value):
+            if eq_value(current_value, new_value):
                 continue
-            new_heap = {}
-            # Invalidate any knowledge of loads that overlap (may alias) with
-            # obj
-            for (old_obj, old_offset), old_val in compile_time_heap.items():
-                # We can be more specific than removing all load
-                # information; we can limit aliasing to loads at the same
-                # offset
-                if may_alias(obj, old_obj) and offset == old_offset:
-                    continue
-                new_heap[(old_obj, old_offset)] = old_val
-            new_heap[store_info] = new_value
-            compile_time_heap = new_heap
+            compile_time_heap = {
+                load_info: value
+                for load_info, value in compile_time_heap.items()
+                if load_info[1] != offset
+                or not may_alias(load_info[0], obj)
+            }
+            compile_time_heap[store_info] = new_value
         elif op.name == "load":
-            obj = op.arg(0)
-            offset = get_num(op, 1)
-            load_info = (obj, offset)
-            result = compile_time_heap.get(load_info)
-            if result is not None:
-                op.make_equal_to(result)
+            load_info = (op.arg(0), get_num(op, 1))
+            if load_info in compile_time_heap:
+                op.make_equal_to(compile_time_heap[load_info])
                 continue
             compile_time_heap[load_info] = op
         opt_bb.append(op)
