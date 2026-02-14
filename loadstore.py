@@ -183,6 +183,10 @@ def eq_value(left: Value | None, right: Value) -> bool:
     return left is right
 
 
+def may_alias(left: Value, right: Value) -> bool:
+    return (left.info or Any).range.overlaps((right.info or Any).range)
+
+
 def optimize_load_store(bb: Block):
     opt_bb = Block()
     # Stores things we know about the heap at... compile-time.
@@ -207,8 +211,7 @@ def optimize_load_store(bb: Block):
                 # We can be more specific than removing all load
                 # information; we can limit aliasing to loads at the same
                 # offset
-                old_heap = old_obj.info or Any
-                if recv_heap.range.overlaps(old_heap.range) and offset == old_offset:
+                if may_alias(obj, old_obj) and offset == old_offset:
                     continue
                 new_heap[(old_obj, old_offset)] = old_val
             new_heap[store_info] = new_value
