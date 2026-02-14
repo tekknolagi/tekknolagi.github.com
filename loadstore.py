@@ -207,6 +207,9 @@ def optimize_load_store(bb: Block):
                 for load_info, value in compile_time_heap.items()
                 if load_info[1] != offset
                 or not may_alias(load_info[0], obj)
+                # DeMorgan's law:
+                # if load_info[1] == offset
+                # and may_alias(load_info[0], obj)
             }
             compile_time_heap[store_info] = new_value
         elif op.name == "load":
