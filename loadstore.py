@@ -196,7 +196,6 @@ def optimize_load_store(bb: Block):
     for op in bb:
         if op.name == "store":
             obj = op.arg(0)
-            recv_heap = obj.info or Any
             offset = get_num(op, 1)
             store_info = (obj, offset)
             new_value = op.arg(2)
@@ -205,7 +204,7 @@ def optimize_load_store(bb: Block):
                 continue
             new_heap = {}
             # Invalidate any knowledge of loads that overlap (may alias) with
-            # recv_heap
+            # obj
             for (old_obj, old_offset), old_val in compile_time_heap.items():
                 # We can be more specific than removing all load
                 # information; we can limit aliasing to loads at the same
@@ -218,7 +217,6 @@ def optimize_load_store(bb: Block):
         elif op.name == "load":
             obj = op.arg(0)
             offset = get_num(op, 1)
-            recv_heap = obj.info or Any
             load_info = (obj, offset)
             result = compile_time_heap.get(load_info)
             if result is not None:
