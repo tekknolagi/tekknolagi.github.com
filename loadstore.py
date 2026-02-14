@@ -184,6 +184,8 @@ def eq_value(left: Value | None, right: Value) -> bool:
 
 
 def may_alias(left: Value, right: Value) -> bool:
+    # Consider also: newness
+    # See Hydrogen lightweight alias analysis
     return (left.info or Any).range.overlaps((right.info or Any).range)
 
 
