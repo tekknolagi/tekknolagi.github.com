@@ -19,10 +19,10 @@
     "header": "https://mastodon.social/headers/original/missing.png",
     "header_static": "https://mastodon.social/headers/original/missing.png",
     "header_description": "",
-    "followers_count": 576,
+    "followers_count": 575,
     "following_count": 288,
-    "statuses_count": 1417,
-    "last_status_at": "2026-02-13",
+    "statuses_count": 1418,
+    "last_status_at": "2026-02-15",
     "hide_collections": false,
     "noindex": false,
     "emojis": [],
@@ -70454,6 +70454,69 @@
         "website": "https://app.joinmastodon.org/android"
       },
       "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116076338371767506": {
+      "id": "116076338371767506",
+      "created_at": "2026-02-15T19:39:22.368Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116076338371767506",
+      "url": "https://mastodon.social/@tekknolagi/116076338371767506",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>I&#39;m a little rusty... First sourdough in a while</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [
+        {
+          "id": "116076335820805387",
+          "type": "image",
+          "url": "https://files.mastodon.social/media_attachments/files/116/076/335/820/805/387/original/3e2a4ad0f5613088.jpg",
+          "preview_url": "https://files.mastodon.social/media_attachments/files/116/076/335/820/805/387/small/3e2a4ad0f5613088.jpg",
+          "remote_url": null,
+          "preview_remote_url": null,
+          "text_url": null,
+          "meta": {
+            "original": {
+              "width": 2496,
+              "height": 3324,
+              "size": "2496x3324",
+              "aspect": 0.7509025270758123
+            },
+            "small": {
+              "width": 416,
+              "height": 554,
+              "size": "416x554",
+              "aspect": 0.7509025270758123
+            }
+          },
+          "description": "Tall round boule, dark, with flour spots. Scored in an X on the top. Has slight ear",
+          "blurhash": "UFH-lTV?_Nxa9a9GIUWBY6ozwbxt9G%LjZNG"
+        }
+      ],
       "mentions": [],
       "tags": [],
       "emojis": [],
