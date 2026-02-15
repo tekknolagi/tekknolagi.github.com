@@ -64,14 +64,6 @@ class HeapRange:
         self.start = start
         self.end = end
 
-    def __eq__(self, other: "HeapRange") -> bool:
-        if not isinstance(other, HeapRange):
-            return False
-        return self.start == other.start and self.end == other.end
-
-    def __hash__(self) -> int:
-        return hash((HeapRange, self.start, self.end))
-
     def __repr__(self) -> str:
         return f"[{self.start}, {self.end})"
 
