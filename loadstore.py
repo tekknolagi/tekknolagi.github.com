@@ -59,6 +59,62 @@ class Constant(Value):
         assert isinstance(value, Constant) and value.value == self.value
 
 
+class HeapRange:
+    def __init__(self, start: int, end: int) -> None:
+        self.start = start
+        self.end = end
+
+    def __repr__(self) -> str:
+        return f"[{self.start}, {self.end})"
+
+    def is_empty(self) -> bool:
+        return self.start == self.end
+
+    def overlaps(self, other: "HeapRange") -> bool:
+        # Empty ranges interfere with nothing
+        if self.is_empty() or other.is_empty():
+            return False
+        return self.end > other.start and other.end > self.start
+
+
+class AbstractHeap:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.parent = None
+        self.children = []
+        self.range = None
+
+    def add_child(self, name: str) -> None:
+        result = AbstractHeap(name)
+        result.parent = self
+        self.children.append(result)
+        return result
+
+    def compute(self, start: int) -> None:
+        current = start
+        if not self.children:
+            self.range = HeapRange(start, current + 1)
+            return
+        for child in self.children:
+            child.compute(current)
+            current = child.range.end
+        self.range = HeapRange(start, current)
+
+    def all_heaps(self) -> List["AbstractHeap"]:
+        result = [self]
+        for child in self.children:
+            result.extend(child.all_heaps())
+        return result
+
+
+Any = AbstractHeap("Any")
+Object = Any.add_child("Object")
+Array = Object.add_child("Array")
+String = Object.add_child("String")
+Other = Any.add_child("Other")
+Any.compute(0)
+
+
 class Block(list):
     def opbuilder(opname: str):
         def wraparg(arg):
@@ -119,6 +175,12 @@ def eq_value(left: Value | None, right: Value) -> bool:
     return left is right
 
 
+def may_alias(left: Value, right: Value) -> bool:
+    # Consider also: newness
+    # See Hydrogen lightweight alias analysis
+    return (left.info or Any).range.overlaps((right.info or Any).range)
+
+
 def optimize_load_store(bb: Block):
     opt_bb = Block()
     # Stores things we know about the heap at... compile-time.
@@ -138,6 +200,10 @@ def optimize_load_store(bb: Block):
                 load_info: value
                 for load_info, value in compile_time_heap.items()
                 if load_info[1] != offset
+                or not may_alias(load_info[0], obj)
+                # DeMorgan's law:
+                # if load_info[1] == offset
+                # and may_alias(load_info[0], obj)
             }
             compile_time_heap[store_info] = new_value
         elif op.name == "load":
@@ -185,6 +251,28 @@ var1 = load(var0, 0)
 var2 = store(var0, 0, 5)
 var3 = escape(var1)
 var4 = escape(5)"""
+    )
+
+
+def test_store_to_same_offset_different_heaps_does_not_invalidate_load():
+    bb = Block()
+    var0 = bb.getarg(0)
+    var0.info = Array
+    var1 = bb.getarg(1)
+    var1.info = String
+    var2 = bb.store(var0, 0, 3)
+    var3 = bb.store(var1, 0, 4)
+    var4 = bb.load(var0, 0)
+    bb.escape(var4)
+    opt_bb = optimize_load_store(bb)
+    assert (
+        bb_to_str(opt_bb)
+        == """\
+var0 = getarg(0)
+var1 = getarg(1)
+var2 = store(var0, 0, 3)
+var3 = store(var1, 0, 4)
+var4 = escape(3)"""
     )
 
 
