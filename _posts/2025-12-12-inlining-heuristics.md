@@ -73,10 +73,11 @@ caller. The other week, I watched my colleague
 [k0kubun](https://github.com/k0kubun) replicate that bit of the inliner inside
 ZJIT in about 30 minutes.
 
-It's a little harder when pretty much every part of the VM is observable from
+There is more to do when pretty much every part of the VM is observable from
 the guest language: both Python and Ruby allow inspecting the state of the
 locals, the call stack, etc from user code. So there's some more machinery
-still required to pretend like the function was not inlined.
+still required to pretend like the function was not inlined. I talk about this
+a little bit in the Cinder blog post.
 
 Even so, all of that can probably be designed and wired together in a couple
 of months. Then you will find yourself tuning the inliner for the next 10
