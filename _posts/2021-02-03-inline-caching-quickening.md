@@ -16,8 +16,8 @@ some branches and indirection in the common path. Stefan Brunthaler writes
 about it in his papers [Efficient Interpretation using Quickening][quickening]
 and [Inline Caching Meets Quickening][ic-quickening].
 
-[quickening]: https://publications.sba-research.org/publications/dls10.pdf
-[ic-quickening]: https://publications.sba-research.org/publications/ecoop10.pdf
+[quickening]: /assets/img/efficient-interpretation-quickening.pdf
+[ic-quickening]: /assets/img/ic-meets-quickening.pdf
 
 ## The problem
 
