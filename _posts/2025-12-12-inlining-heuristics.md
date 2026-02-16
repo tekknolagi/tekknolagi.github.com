@@ -3,6 +3,18 @@ title: "A survey of inlining heuristics"
 layout: post
 ---
 
+Compilers, especially method just-in-time compilers, operate on one function at
+a time. It is a natural code unit size, especially for a dynamic language JIT:
+at a given point in time, what more information can you gather about other
+parts of a running, changing system?
+
+I don't have any data to back this up---maybe I should go gather some---but on
+average, methods are small. Especially in languages such as Ruby that use
+method dispatch for everything, even instance variable (attribute, field, ...)
+lookups, they are *small*. And everywhere.
+
+This makes the compiler sad. If we are to continue to anthropomorphize them,
+
 V8 Hydrogen
 https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807
 
