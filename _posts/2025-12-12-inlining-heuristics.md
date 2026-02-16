@@ -35,13 +35,19 @@ def distance_from_origin(x, y)
 end
 ```
 
-Right now, in the `distance_from_origin` method, I count N different method calls:
+Right now, in the `distance_from_origin` method, I count 8 different method calls:
 
 * `Point.new`
 * `Point#initialize`
 * `Point.new`
 * `Point#initialize`
 * `Point#distance`
+* `Float#**`
+* `Float#**`
+* `Math.sqrt`
+
+(Technically more, but the ivar lookups addition, and subtraction, are
+generally specialized and don't push a frame, even in the interpreter.)
 
 Furthermore, there are at least two heap allocations: one for each `Point`
 instance.
