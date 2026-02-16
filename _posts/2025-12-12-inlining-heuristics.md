@@ -14,6 +14,55 @@ method dispatch for everything, even instance variable (attribute, field, ...)
 lookups, they are *small*. And everywhere.
 
 This makes the compiler sad. If we are to continue to anthropomorphize them,
+compilers like having more context so they can optimize better. Consider the
+following silly-looking example that is actually representative of a lot of
+real-world code:
+
+```ruby
+class Point
+  def initialize(x, y)
+    @x = x
+    @y = y
+  end
+
+  def distance(other)
+    Math.sqrt((@x - other.x)**2 + (@y - other.y)**2)
+  end
+end
+
+def distance_from_origin(x, y)
+  Point.new(x, y).distance(Point.new(0, 0))
+end
+```
+
+Right now, in the `distance_from_origin` method, I count N different method calls:
+
+* `Point.new`
+* `Point#initialize`
+* `Point.new`
+* `Point#initialize`
+* `Point#distance`
+
+Furthermore, there are at least two heap allocations: one for each `Point`
+instance.
+
+Last, there is a bunch of memory traffic to and from `Point` instances.
+
+This all is a huge bummer! What should be a simple math operation is now
+overwhelmed with a bunch of other stuff. `Point` is certainly not a zero-cost
+abstraction.
+
+Even if we had a bunch of other optimizations such as load-store elimination or
+escape analysis, they would not be able to do much: pretty much everything
+escapes and is effectful. That is, unless we *inline*.
+
+## Inlining: the "easy" part
+
+I wrote about the design and implementation of Cinder's inliner ([FB
+link](https://engineering.fb.com/2022/05/02/open-source/cinder-jits-instagram/),
+[personal blog link](/blog/cinder-jit-inliner/)) a couple of years ago.
+
+## When: the harder part
 
 V8 Hydrogen
 https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807
