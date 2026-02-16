@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 575,
     "following_count": 288,
-    "statuses_count": 1420,
+    "statuses_count": 1422,
     "last_status_at": "2026-02-16",
     "hide_collections": false,
     "noindex": false,
@@ -70622,6 +70622,157 @@
       "emojis": [],
       "quote": null,
       "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116081463233274334": {
+      "id": "116081463233274334",
+      "created_at": "2026-02-16T17:22:41.548Z",
+      "in_reply_to_id": "116081451697205408",
+      "in_reply_to_account_id": "109327813406238355",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116081463233274334",
+      "url": "https://mastodon.social/@tekknolagi/116081463233274334",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://ruby.social/@peterzhu2118\" class=\"u-url mention\">@<span>peterzhu2118</span></a></span> See you in Hakodate!!</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109327813406238355",
+          "username": "peterzhu2118",
+          "url": "https://ruby.social/@peterzhu2118",
+          "acct": "peterzhu2118@ruby.social"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116081462723389364": {
+      "id": "116081462723389364",
+      "created_at": "2026-02-16T17:22:33.772Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116081462723389364",
+      "url": "https://mastodon.social/@tekknolagi/116081462723389364",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Load-store elimination, now with type-based alias analysis (TBAA)</p><p><a href=\"https://bernsteinbear.com/blog/toy-tbaa/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bernsteinbear.com/blog/toy-tba</span><span class=\"invisible\">a/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://bernsteinbear.com/blog/toy-tbaa/",
+        "title": "Type-based alias analysis in the Toy Optimizer",
+        "description": "Another entry in the Toy Optimizer series.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Max Bernstein",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": "2026-02-16T00:00:00.000Z",
+        "authors": [
+          {
+            "name": "",
+            "url": "",
+            "account": {
+              "id": "1300106",
+              "username": "tekknolagi",
+              "acct": "tekknolagi",
+              "display_name": "Max B",
+              "locked": false,
+              "bot": false,
+              "discoverable": true,
+              "indexable": true,
+              "group": false,
+              "created_at": "2020-10-20T00:00:00.000Z",
+              "note": "<p>Let&#39;s chat about compilers</p>",
+              "url": "https://mastodon.social/@tekknolagi",
+              "uri": "https://mastodon.social/users/tekknolagi",
+              "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "avatar_description": "",
+              "header": "https://mastodon.social/headers/original/missing.png",
+              "header_static": "https://mastodon.social/headers/original/missing.png",
+              "header_description": "",
+              "followers_count": 575,
+              "following_count": 288,
+              "statuses_count": 1422,
+              "last_status_at": "2026-02-16",
+              "hide_collections": false,
+              "noindex": false,
+              "emojis": [],
+              "roles": [],
+              "fields": [
+                {
+                  "name": "website",
+                  "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2022-12-07T01:44:28.737+00:00"
+                },
+                {
+                  "name": "github",
+                  "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2023-07-26T16:28:07.403+00:00"
+                },
+                {
+                  "name": "bsky",
+                  "value": "<a href=\"https://bsky.app/profile/bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bsky.app/profile/bernsteinbear</span><span class=\"invisible\">.com</span></a>",
+                  "verified_at": null
+                }
+              ]
+            }
+          }
+        ]
+      },
       "poll": null,
       "quote_approval": {
         "automatic": [
