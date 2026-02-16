@@ -85,6 +85,9 @@ years.
 
 ## When: the harder part
 
+The system through a microscope: local reasoning increases compiler scope but
+no visibility into (dynamic!) global system still. So you have heuristics
+
 V8 Hydrogen
 https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807
 
