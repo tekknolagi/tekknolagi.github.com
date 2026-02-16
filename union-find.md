@@ -9,6 +9,8 @@ stores equivalence classes quickly and compactly. It has a bunch of uses:
 
 * compiler optimizer rewriting
 * [type inference](/blog/type-inference/)
+* [escape analysis](/assets/img/escape-analysis-client-compiler.pdf) (PDF)
+* [register allocation](/assets/img/linear-scan-ra-context-ssa.pdf) (PDF)
 * pointer analysis (see Steensgaard's algorithm)
 * into-SSA ([Bebenita's algorithm](/assets/img/bebenita-ssa.pdf) (PDF))
 * probably more
