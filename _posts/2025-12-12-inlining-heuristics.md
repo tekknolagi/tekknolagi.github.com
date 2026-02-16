@@ -67,7 +67,9 @@ that enables a bunch of other optimization passes to kick in.
 
 I wrote about the design and implementation of Cinder's inliner ([FB
 link](https://engineering.fb.com/2022/05/02/open-source/cinder-jits-instagram/),
-[personal blog link](/blog/cinder-jit-inliner/)) a couple of years ago.
+[personal blog link](/blog/cinder-jit-inliner/)) a couple of years ago. I wrote
+about arguably the simplest part, which is copying the callee body into the
+caller.
 
 ## When: the harder part
 
