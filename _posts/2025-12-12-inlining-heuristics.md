@@ -54,7 +54,8 @@ abstraction.
 
 Even if we had a bunch of other optimizations such as load-store elimination or
 escape analysis, they would not be able to do much: pretty much everything
-escapes and is effectful. That is, unless we *inline*.
+escapes and is effectful. That is, unless we *inline*. Inlining is the lever
+that enables a bunch of other optimization passes to kick in.
 
 ## Inlining: the "easy" part
 
