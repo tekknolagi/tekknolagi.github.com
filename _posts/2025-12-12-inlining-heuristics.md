@@ -46,7 +46,7 @@ Right now, in the `distance_from_origin` method, I count 8 different method call
 * `Float#**`
 * `Math.sqrt`
 
-(Technically more, but the ivar lookups addition, and subtraction, are
+(Technically more, but the ivar lookups, addition, and subtraction, are
 generally specialized and don't push a frame, even in the interpreter.)
 
 Furthermore, there are at least two heap allocations: one for each `Point`
