@@ -607,6 +607,8 @@ forth.
 
 ## Further reading
 
+First see [microegg](https://github.com/mwillsey/microegg) by Max Willsey.
+
 Cranelift uses a modified form of e-graph called an [aegraph][aegraph]. It's
 different in that the entire e-graph can be topo sorted and equality arrows can
 only point to earlier nodes. There are probably some very interesting
