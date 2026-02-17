@@ -82,3 +82,26 @@ TIL `for x in [1,2,3]; puts x; end` sends `#each`
 
 Most disassembly dumps won't look exactly like this though. We've disabled the
 bytecode optimizer by specifying `insns_without_opt`. The bytecode optimizer
+makes the interpreter faster by specializing some opcodes for common cases. For
+example, instead of `1` emitting a `putobject` that looks up a value from the
+constant table, there is a specialized instruction that directly pushes `1`
+because it is so common. Here is the same instruction sequence but with the
+bytecode optimizer turned on:
+
+If we disassemble this Ruby code by doing `ruby --dump=insns file.rb`, we see
+the bytecode both for the main (top level file) code and also for the `foo`
+method:
+
+```
+== disasm: #<ISeq:foo@-:1 (1,0)-(5,3)>
+local table (size: 2, argc: 0 [...])
+[ 2] a@0        [ 1] b@1
+0000 putobject_INT2FIX_1_                                 (   2)[LiCa]
+0001 setlocal_WC_0              a@0
+0003 putobject                  2                         (   3)[Li]
+0005 setlocal_WC_0              b@1
+0007 getlocal_WC_0              a@0                       (   4)[Li]
+0009 getlocal_WC_0              b@1
+0011 opt_plus                   <calldata!mid:+, argc:1, ARGS_SIMPLE>[CcCr]
+0013 leave                                                (   5)[Re]
+```
