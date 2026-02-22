@@ -335,6 +335,11 @@ Unclear how `inlineable_calls` is populated... jk it's in `MaybeReduceResult Mag
 JSC only inlines based on bytecode profile information, and only inlines
 bytecode??
 
+<!--
+Compile plan
+https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/Source/JavaScriptCore/dfg/DFGPlan.cpp#L186
+-->
+
 ### SpiderMonkey
 
 Wasm
