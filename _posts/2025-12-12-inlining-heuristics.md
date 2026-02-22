@@ -91,7 +91,7 @@ you are trying to make an entire (dynamic!) system faster but you are only
 looking through a microscope and only capable of local reasoning. Whereas other
 optimizations such as strength reduction, inline caches, and value numbering
 are an un-alloyed good for the generated code, inlining can have *negative
-effects*.
+effects*. It is perhaps the first optimization that has non-local impact.
 
 If you inline wrong, your code size might blow up. This might thrash your CPU's
 caches. Bummer, but happens to the best of us.
