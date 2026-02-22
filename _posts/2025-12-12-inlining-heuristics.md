@@ -86,8 +86,29 @@ years. This is much harder.
 
 ## When: the harder part
 
-The system through a microscope: local reasoning increases compiler scope but
-no visibility into (dynamic!) global system still. So you have heuristics
+The thing that makes inlining difficult, especially in a method JIT, is that
+you are trying to make an entire (dynamic!) system faster but you are only
+looking through a microscope and only capable of local reasoning. Whereas other
+optimizations such as strength reduction, inline caches, and value numbering
+are an un-alloyed good for the generated code, inlining can have *negative
+effects*.
+
+If you inline wrong, your code size might blow up. This might thrash your CPU's
+caches. Bummer, but happens to the best of us.
+
+But also, if you inline wrong, you might get in the way of other helpful
+optimizations: if you hit some size limit after inlining method A, you might
+never get to inline B, which is the key to unlocking the performance of the
+method you are trying to optimize.
+
+You have to write your compiler to reason about all of this stuff but also have
+really bounded compile times. So you have heuristics.
+
+I did a survey of a bunch of compilers, mostly JIT compilers, to see what their
+inlining heuristics look like. I also read (skimmed) some papers to see what
+those folks had to say. I wonder if they agree.
+
+## The survey
 
 V8 Hydrogen
 https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807
