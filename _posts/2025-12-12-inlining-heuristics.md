@@ -69,9 +69,9 @@ I wrote about the design and implementation of Cinder's inliner ([FB
 link](https://engineering.fb.com/2022/05/02/open-source/cinder-jits-instagram/),
 [personal blog link](/blog/cinder-jit-inliner/)) a couple of years ago. I wrote
 about arguably the simplest part, which is copying the callee body into the
-caller. The other week, I watched my colleague
-[k0kubun](https://github.com/k0kubun) replicate that bit of the inliner inside
-ZJIT in about 30 minutes.
+caller. It took me at least a week to get working. The other week, I watched my
+colleague [k0kubun](https://github.com/k0kubun) replicate that bit of the
+inliner inside ZJIT in about 30 minutes.
 
 There is more to do when pretty much every part of the VM is observable from
 the guest language: both Python and Ruby allow inspecting the state of the
