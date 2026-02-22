@@ -110,17 +110,21 @@ those folks had to say. I wonder if they agree.
 
 ## The survey
 
-We'll start with Cinder, because when I wrote it I added only the simplest
-heuristics, mostly "don't inline" signals. Over time, after I left, people
-tuned it a bit more.
+We'll start with [Cinder][cinder], because when I wrote it I added only the
+simplest heuristics, mostly "don't inline" signals. Over time, after I left,
+people tuned it a bit more.
+
+[cinder]: https://github.com/facebookincubator/cinderx
 
 ### Cinder
 
-The inliner starts from the caller CFG, walking it to find suitable inlining
-candidates. Inlining candidates are only for call targets that are known---in
-Cinder's case, only for monomorphic call targets---and pass some checks. The
-callee is only known by it's function object, which includes its bytecode.
-There is no IR available for the callee.
+The [inliner][cinder-inliner] starts from the caller CFG, walking it to find
+suitable inlining candidates. Inlining candidates are only for call targets
+that are known---in Cinder's case, only for monomorphic call targets---and pass
+some checks. The callee is only known by it's function object, which includes
+its bytecode. There is no IR available for the callee.
+
+[cinder-inliner]: https://github.com/facebookincubator/cinderx/blob/88189ebf4bfd196ac7578c5076efa39bfa11f211/cinderx/Jit/hir/inliner.cpp#L341
 
 Most of the "can't handle this" checks are related to argument handling. Python
 has a pretty complex calling convention, so if the caller/callee have not
@@ -244,9 +248,6 @@ SpiderMonkey ICScript
 
 PyPy
 "always"
-
-Cinder
-https://github.com/facebookincubator/cinderx/blob/ccb8e40a3509d9fdfe22870f56e8547562763067/cinderx/Jit/hir/inliner.cpp#L343
 
 "optimal inlining"
 https://ethz.ch/content/dam/ethz/special-interest/infk/ast-dam/documents/Theodoridis-ASPLOS22-Inlining-Paper.pdf
