@@ -252,6 +252,14 @@ https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/magle
 
 ### JavaScriptCore
 
+* Bytecode inlining
+  * https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/Source/JavaScriptCore/bytecode/CodeBlock.cpp#L2453
+* DFG
+  * https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/Source/JavaScriptCore/dfg/DFGCapabilities.cpp#L76
+
+JSC only inlines based on bytecode profile information, and only inlines
+bytecode??
+
 ### SpiderMonkey
 
 Wasm
