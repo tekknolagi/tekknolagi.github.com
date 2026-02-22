@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 579,
     "following_count": 288,
-    "statuses_count": 1428,
-    "last_status_at": "2026-02-21",
+    "statuses_count": 1429,
+    "last_status_at": "2026-02-22",
     "hide_collections": false,
     "noindex": false,
     "emojis": [],
@@ -71329,6 +71329,43 @@
         }
       },
       "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116116126591537298": {
+      "id": "116116126591537298",
+      "created_at": "2026-02-22T20:18:02.418Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116116126591537298",
+      "url": "https://mastodon.social/@tekknolagi/116116126591537298",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 3,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>S&#39;s new iPhone started setup at the Apple store. Only WiFi network it knew was &quot;Apple Store&quot;. We leave midway through the update. Realize at home we can&#39;t connect to a new network. What to do?</p><p>Configure the access point to make a new network called &quot;Apple Store&quot;, of course.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
       "media_attachments": [],
       "mentions": [],
       "tags": [],
