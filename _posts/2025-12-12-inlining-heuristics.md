@@ -238,6 +238,8 @@ frame pushes and pops, whereas Cinder has some complicated mechanism to do it
 
 TODO get more details here
 
+### V8
+
 V8 Hydrogen
 https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807
 
@@ -247,6 +249,8 @@ https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compi
 
 V8 Maglev
 https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/maglev/maglev-inlining.h#L36
+
+### HotSpot
 
 HotSpot C2
 https://github.com/openjdk/jdk/blob/a05d5d2514c835f2bfeaf7a8c7df0ac241f0177f/src/hotspot/share/opto/bytecodeInfo.cpp#L116
@@ -259,29 +263,27 @@ Handling the right thing to inline: def foo(a) = a.each {|x| x }
 want to compile `foo`, inline each, inline block, not compile block separately
 (probably)
 
-TruffleRuby uses weighted compile queue
-
 HotSpot C1
 https://bernsteinbear.com/assets/img/design-hotspot-client-compiler.pdf
 https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L755
 https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L3854
 
-SpiderMonkey Wasm
+### TruffleRuby
+
+TruffleRuby uses weighted compile queue
+
+Graal
+https://ieeexplore.ieee.org/document/8661171
+
+### SpiderMonkey
+
+Wasm
 https://github.com/mozilla-firefox/firefox/blob/438a3ce10eb77fb50d968463b7741117aec5bb4a/js/src/wasm/WasmHeuristics.h#L213
 
 SpiderMonkey ICScript
 
-PyPy
-"always"
+### .NET
 
-"optimal inlining"
-https://ethz.ch/content/dam/ethz/special-interest/infk/ast-dam/documents/Theodoridis-ASPLOS22-Inlining-Paper.pdf
-
-machine learning
-https://ieeexplore.ieee.org/document/6495004
-https://ssw.jku.at/Teaching/PhDTheses/Mosaner/Dissertation%20Mosaner.pdf
-
-.NET
 https://github.com/dotnet/runtime/blob/2d638dc1179164a08d9387cbe6354fe2b7e4d823/docs/design/coreclr/jit/inlining-plans.md
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inline.def#L94
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inlinepolicy.cpp
@@ -294,19 +296,34 @@ LSRA heuristics
 https://github.com/dotnet/runtime/blob/2d638dc1179164a08d9387cbe6354fe2b7e4d823/docs/design/coreclr/jit/lsra-heuristic-tuning.md
 -->
 
-Graal
-https://ieeexplore.ieee.org/document/8661171
+### Dart
 
-Dart
 https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L49
 https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L1023
 https://web.archive.org/web/20170830093403id_/https://link.springer.com/content/pdf/10.1007/978-3-540-78791-4_5.pdf
 
-HHVM
+### HHVM
+
 https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/hphp/runtime/vm/jit/inlining-decider.h#L89
 
-ART
+### ART
+
 https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/inliner.h
+
+### Maxine
+
+### JikesRVM
+
+### Other/research
+
+Partial inlining
+
+"optimal inlining"
+https://ethz.ch/content/dam/ethz/special-interest/infk/ast-dam/documents/Theodoridis-ASPLOS22-Inlining-Paper.pdf
+
+machine learning
+https://ieeexplore.ieee.org/document/6495004
+https://ssw.jku.at/Teaching/PhDTheses/Mosaner/Dissertation%20Mosaner.pdf
 
 Other
 https://webdocs.cs.ualberta.ca/~amaral/thesis/ErickOchoaMSc.pdf
@@ -318,8 +335,3 @@ https://www.cresco.enea.it/SC05/schedule/pdf/pap274.pdf
 https://dl.acm.org/doi/pdf/10.1145/3563838.3567677
 clusters from https://llvm.org/devmtg/2022-05/slides/2022EuroLLVM-CustomBenefitDrivenInliner-in-FalconJIT.pdf
 
-Maxine
-
-JikesRVM
-
-Partial inlining
