@@ -129,7 +129,10 @@ its bytecode. There is no IR available for the callee.
 Most of the "can't handle this" checks are related to argument handling. Python
 has a pretty complex calling convention, so if the caller/callee have not
 agreed on how the arguments should be passed through, the inliner doesn't care
-to try and figure it out on its own.
+to try and figure it out on its own. That is the responsibility of [other parts
+of the compiler][cinder-resolve-args].
+
+[cinder-resolve-args]: https://github.com/facebookincubator/cinderx/blob/88189ebf4bfd196ac7578c5076efa39bfa11f211/cinderx/Jit/hir/simplify.cpp#L1765
 
 ```c++
 bool canInline(Function& caller, AbstractCall* call_instr) {
