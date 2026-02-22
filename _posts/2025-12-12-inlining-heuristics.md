@@ -250,6 +250,19 @@ https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compi
 V8 Maglev
 https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/maglev/maglev-inlining.h#L36
 
+### JavaScriptCore
+
+### SpiderMonkey
+
+Wasm
+https://github.com/mozilla-firefox/firefox/blob/438a3ce10eb77fb50d968463b7741117aec5bb4a/js/src/wasm/WasmHeuristics.h#L213
+
+SpiderMonkey ICScript
+
+### Wasmtime and Cranelift
+
+https://fitzgen.com/2025/11/19/inliner.html
+
 ### HotSpot
 
 HotSpot C2
@@ -274,13 +287,6 @@ TruffleRuby uses weighted compile queue
 
 Graal
 https://ieeexplore.ieee.org/document/8661171
-
-### SpiderMonkey
-
-Wasm
-https://github.com/mozilla-firefox/firefox/blob/438a3ce10eb77fb50d968463b7741117aec5bb4a/js/src/wasm/WasmHeuristics.h#L213
-
-SpiderMonkey ICScript
 
 ### .NET
 
