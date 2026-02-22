@@ -214,7 +214,29 @@ that too.
 
 ### PyPy
 
+There are two inliners in PyPy. One is inside the RPython to C translation
+pipeline, which acts more like an ahead-of-time compiler[^rpython-inliner].
+Then there is the tracing JIT bit, which has its own optimizer and heuristics.
+We're going to look at the latter.
 
+[^rpython-inliner]: [Check it
+    out](https://github.com/pypy/pypy/blob/bab69dca82606f9e4feaf5507f8dd8dfb3e968b2/rpython/translator/backendopt/inline.py#L144)
+    if you like. I stumbled across it by accident.
+
+I talked to [CF Bolz-Tereick](https://cfbolz.de/) about the inliner and their
+comment was that PyPy's inlining heuristic is "yes". There are a couple of
+exceptions, such as not inlining recursive functions or functions with loops.
+But the basic idea of tracing includes tracing through call instructions, which
+naturally means that you are "inlining".
+
+PyPy also does this neat thing where they treat frame pushes like normal
+allocation. Frame pushes, frame reads, and frame writes get written to the
+trace like normal object memory traffic and can get optimized away like other
+field reads and writes. This means that they can "just" use DCE to eliminate
+frame pushes and pops, whereas Cinder has some complicated mechanism to do it
+(which is my fault).
+
+TODO get more details here
 
 V8 Hydrogen
 https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807
