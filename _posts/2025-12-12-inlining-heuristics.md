@@ -110,6 +110,105 @@ those folks had to say. I wonder if they agree.
 
 ## The survey
 
+We'll start with Cinder, because when I wrote it I added only the simplest
+heuristics, mostly "don't inline" signals. Over time, after I left, people
+tuned it a bit more.
+
+### Cinder
+
+The inliner starts from the caller CFG, walking it to find suitable inlining
+candidates. Inlining candidates are only for call targets that are known---in
+Cinder's case, only for monomorphic call targets---and pass some checks. The
+callee is only known by it's function object, which includes its bytecode.
+There is no IR available for the callee.
+
+Most of the "can't handle this" checks are related to argument handling. Python
+has a pretty complex calling convention, so if the caller/callee have not
+agreed on how the arguments should be passed through, the inliner doesn't care
+to try and figure it out on its own.
+
+```c++
+bool canInline(Function& caller, AbstractCall* call_instr) {
+  // ...
+  BorrowedRef<PyFunctionObject> func = call_instr->func;
+  auto fail = [&](InlineFailureType failure_type) {
+    dlogAndCollectFailureStats(caller, call_instr, failure_type);
+    return false;
+  };
+
+  if (func->func_kwdefaults != nullptr) {
+    return fail(InlineFailureType::kHasKwdefaults);
+  }
+
+  BorrowedRef<PyCodeObject> code{func->func_code};
+  JIT_CHECK(PyCode_Check(code), "Expected PyCodeObject");
+
+  if (code->co_kwonlyargcount > 0) {
+    return fail(InlineFailureType::kHasKwOnlyArgs);
+  }
+  if (code->co_flags & CO_VARARGS) {
+    return fail(InlineFailureType::kHasVarargs);
+  }
+  if (code->co_flags & CO_VARKEYWORDS) {
+    return fail(InlineFailureType::kHasVarkwargs);
+  }
+  // ...
+}
+```
+
+Failures are logged so they can be analyzed. If the Cinder team determines that
+there is some very frequent case they should handle, they will find out from
+the logs.
+
+The inliner collects all candidate call instructions in one pass over the CFG.
+It loads the configurable "cost limit" from the options struct. Then it does
+one pass over the inlining candidates vector, inlining until it (maybe) hits
+the cost limit.
+
+```c++
+// ...
+size_t cost_limit = getConfig().inliner_cost_limit;
+size_t cost = codeCost(irfunc.code);
+
+// Inline as many calls as possible, starting from the top of the function and
+// working down.
+for (auto& call : to_inline) {
+  BorrowedRef<PyCodeObject> call_code{call.func->func_code};
+  size_t new_cost = cost + codeCost(call_code);
+  if (new_cost > cost_limit) {
+    LOG_INLINER(
+        "Inliner reached cost limit of {} when trying to inline {} into {}, "
+        "inlining stopping early",
+        new_cost,
+        funcFullname(call.func),
+        irfunc.fullname);
+    break;
+  }
+  cost = new_cost;
+
+  inlineFunctionCall(irfunc, &call);
+
+  // We need to reflow types after every inline to propagate new type
+  // information from the callee.
+  reflowTypes(irfunc);
+}
+// ...
+```
+
+It does some graph maintenance work after inlining these calls, but that's it.
+
+This approach gets a surprising amount of utility for being so simple: it
+inlines constants (quite a few methods look like `def foo(): return 5`), small
+methods, and (at least, as far as I can remember) shrinks the compiled code
+size. All for very little compile time overhead.
+
+There's one other "standalone" Python JIT out there, PyPy. So we should look at
+that too.
+
+### PyPy
+
+
+
 V8 Hydrogen
 https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807
 
