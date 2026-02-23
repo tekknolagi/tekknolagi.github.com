@@ -433,6 +433,59 @@ https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/r
 https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L1023
 https://web.archive.org/web/20170830093403id_/https://link.springer.com/content/pdf/10.1007/978-3-540-78791-4_5.pdf
 
+```c++
+DEFINE_FLAG(int,
+            deoptimization_counter_inlining_threshold,
+            12,
+            "How many times we allow deoptimization before we stop inlining.");
+DEFINE_FLAG(bool, trace_inlining, false, "Trace inlining");
+DEFINE_FLAG(charp, inlining_filter, nullptr, "Inline only in named function");
+
+// Flags for inlining heuristics.
+DEFINE_FLAG(int,
+            inline_getters_setters_smaller_than,
+            10,
+            "Always inline getters and setters that have fewer instructions");
+DEFINE_FLAG(int,
+            inlining_depth_threshold,
+            6,
+            "Inline function calls up to threshold nesting depth");
+DEFINE_FLAG(
+    int,
+    inlining_size_threshold,
+    25,
+    "Always inline functions that have threshold or fewer instructions");
+DEFINE_FLAG(int,
+            inlining_callee_call_sites_threshold,
+            1,
+            "Always inline functions containing threshold or fewer calls.");
+DEFINE_FLAG(int,
+            inlining_callee_size_threshold,
+            160,
+            "Do not inline callees larger than threshold");
+DEFINE_FLAG(int,
+            inlining_small_leaf_size_threshold,
+            50,
+            "Do not inline leaf callees larger than threshold");
+DEFINE_FLAG(int,
+            inlining_caller_size_threshold,
+            50000,
+            "Stop inlining once caller reaches the threshold.");
+DEFINE_FLAG(int,
+            inlining_hotness,
+            10,
+            "Inline only hotter calls, in percents (0 .. 100); "
+            "default 10%: calls above-equal 10% of max-count are inlined.");
+DEFINE_FLAG(int,
+            inlining_recursion_depth_threshold,
+            1,
+            "Inline recursive function calls up to threshold recursion depth.");
+DEFINE_FLAG(int,
+            max_inlined_per_depth,
+            500,
+            "Max. number of inlined calls per depth");
+```
+
 ### HHVM
 
 https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/hphp/runtime/vm/jit/inlining-decider.h#L89
