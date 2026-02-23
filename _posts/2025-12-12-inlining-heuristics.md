@@ -386,6 +386,26 @@ https://bernsteinbear.com/assets/img/design-hotspot-client-compiler.pdf
 https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L755
 https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L3854
 
+* skip callees with exception handlers (unless explicitly allowed with a CLI flag)
+* skip synchronized callees (unless explicitly allowed with a CLI flag)
+* skip classes with unlinked callees
+* skip uninitialized classes
+* ...
+
+heuristics:
+* max inline level (default 9)
+* max recursive inline level (default 1)
+* callee bytecode size (max for top level is 35 bytecodes, but falls off by 10% per inline level)
+* callee stack usage (max of 10 slots)
+    ```c++
+        // Additional condition to limit stack usage for non-recursive calls.
+        if ((callee_recursive_level == 0) &&
+            (callee->max_stack() + callee->max_locals() - callee->size_of_parameters() > C1InlineStackLimit)) {
+          INLINE_BAILOUT("callee uses too much stack");
+        }
+    ```
+* max total method size (default 8000 bytecodes)
+
 ### TruffleRuby
 
 TruffleRuby uses weighted compile queue
