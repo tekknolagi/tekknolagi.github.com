@@ -49,11 +49,12 @@ this possible.
 ## The usual infrastructure
 
 We'll start off with the usual infrastructure from the [Toy
-Optimizer series][toy-optimizer]: a very stringly-typed representation of a
+Optimizer series][toy-optimizer]: a very [stringly-typed][stringly] representation of a
 [trace-based SSA IR][toy-ir] and a union-find rewrite mechanism.
 
 [toy-optimizer]: https://pypy.org/categories/toy-optimizer.html
 [toy-ir]: https://gist.github.com/tekknolagi/4e3fa26d350f6d3b39ede40d372b97fe#file-port-py-L4-L112
+[stringly]: https://wiki.c2.com/?StringlyTyped
 
 This means we can start writing some new optimization pass and our first test:
 
