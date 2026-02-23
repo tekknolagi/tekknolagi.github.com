@@ -486,6 +486,42 @@ DEFINE_FLAG(int,
             "Max. number of inlined calls per depth");
 ```
 
+```c++
+  // Inlining heuristics based on Cooper et al. 2008.
+  InliningDecision ShouldWeInline(const Function& callee,
+                                  intptr_t instr_count,
+                                  intptr_t call_site_count) {
+    // Pragma or size heuristics.
+    if (inliner_->AlwaysInline(callee)) {
+      return InliningDecision::Yes("AlwaysInline");
+    } else if (inlined_size_ > FLAG_inlining_caller_size_threshold) {
+      // Prevent caller methods becoming humongous and thus slow to compile.
+      return InliningDecision::No("--inlining-caller-size-threshold");
+    } else if (instr_count > FLAG_inlining_callee_size_threshold) {
+      // Prevent inlining of callee methods that exceed certain size.
+      return InliningDecision::No("--inlining-callee-size-threshold");
+    }
+    // Inlining depth.
+    const int callee_inlining_depth = callee.inlining_depth();
+    if (callee_inlining_depth > 0 &&
+        ((callee_inlining_depth + inlining_depth_) >
+         FLAG_inlining_depth_threshold)) {
+      return InliningDecision::No("--inlining-depth-threshold");
+    }
+    // Situation instr_count == 0 denotes no counts have been computed yet.
+    // In that case, we say ok to the early heuristic and come back with the
+    // late heuristic.
+    if (instr_count == 0) {
+      return InliningDecision::Yes("need to count first");
+    } else if (instr_count <= FLAG_inlining_size_threshold) {
+      return InliningDecision::Yes("--inlining-size-threshold");
+    } else if (call_site_count <= FLAG_inlining_callee_call_sites_threshold) {
+      return InliningDecision::Yes("--inlining-callee-call-sites-threshold");
+    }
+    return InliningDecision::No("default");
+  }
+```
+
 ### HHVM
 
 https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/hphp/runtime/vm/jit/inlining-decider.h#L89
