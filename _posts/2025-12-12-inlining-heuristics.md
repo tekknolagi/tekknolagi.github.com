@@ -441,6 +441,107 @@ https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/h
 
 https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/inliner.h
 
+```c++
+// Instruction limit to control memory.
+static constexpr size_t kMaximumNumberOfTotalInstructions = 1024;
+
+// Maximum number of instructions for considering a method small,
+// which we will always try to inline if the other non-instruction limits
+// are not reached.
+static constexpr size_t kMaximumNumberOfInstructionsForSmallMethod = 3;
+
+// Limit the number of dex registers that we accumulate while inlining
+// to avoid creating large amount of nested environments.
+static constexpr size_t kMaximumNumberOfCumulatedDexRegisters = 32;
+
+// Limit recursive call inlining, which do not benefit from too
+// much inlining compared to code locality.
+static constexpr size_t kMaximumNumberOfRecursiveCalls = 4;
+
+// Limit recursive polymorphic call inlining to prevent code bloat, since it can quickly get out of
+// hand in the presence of multiple Wrapper classes. We set this to 0 to disallow polymorphic
+// recursive calls at all.
+static constexpr size_t kMaximumNumberOfPolymorphicRecursiveCalls = 0;
+
+// Controls the use of inline caches in AOT mode.
+static constexpr bool kUseAOTInlineCaches = true;
+
+// Controls the use of inlining try catches.
+static constexpr bool kInlineTryCatches = true;
+```
+
+```c++
+void HInliner::UpdateInliningBudget() {
+  if (total_number_of_instructions_ >= kMaximumNumberOfTotalInstructions) {
+    // Always try to inline small methods.
+    inlining_budget_ = kMaximumNumberOfInstructionsForSmallMethod;
+  } else {
+    inlining_budget_ = std::max(
+        kMaximumNumberOfInstructionsForSmallMethod,
+        kMaximumNumberOfTotalInstructions - total_number_of_instructions_);
+  }
+}
+```
+
+```c++
+bool HInliner::IsInliningEncouraged(const HInvoke* invoke_instruction,
+                                    ArtMethod* method,
+                                    const CodeItemDataAccessor& accessor) const {
+  if (CountRecursiveCallsOf(method) > kMaximumNumberOfRecursiveCalls) {
+    LOG_FAIL(stats_, MethodCompilationStat::kNotInlinedRecursiveBudget)
+        << "Method "
+        << method->PrettyMethod()
+        << " is not inlined because it has reached its recursive call budget.";
+    return false;
+  }
+
+  size_t inline_max_code_units = codegen_->GetCompilerOptions().GetInlineMaxCodeUnits();
+  if (accessor.InsnsSizeInCodeUnits() > inline_max_code_units) {
+    LOG_FAIL(stats_, MethodCompilationStat::kNotInlinedCodeItem)
+        << "Method " << method->PrettyMethod()
+        << " is not inlined because its code item is too big: "
+        << accessor.InsnsSizeInCodeUnits()
+        << " > "
+        << inline_max_code_units;
+    return false;
+  }
+
+  if (graph_->IsCompilingBaseline() &&
+      accessor.InsnsSizeInCodeUnits() > CompilerOptions::kBaselineInlineMaxCodeUnits) {
+    LOG_FAIL_NO_STAT() << "Reached baseline maximum code unit for inlining  "
+                       << method->PrettyMethod();
+    outermost_graph_->SetUsefulOptimizing();
+    return false;
+  }
+
+  if (invoke_instruction->GetBlock()->GetLastInstruction()->IsThrow()) {
+    LOG_FAIL(stats_, MethodCompilationStat::kNotInlinedEndsWithThrow)
+        << "Method " << method->PrettyMethod()
+        << " is not inlined because its block ends with a throw";
+    return false;
+  }
+
+  return true;
+}
+```
+
+```c++
+if (outermost_graph_->IsCompilingBaseline() &&
+    (current->IsInvokeVirtual() || current->IsInvokeInterface()) &&
+    ProfilingInfoBuilder::IsInlineCacheUseful(current->AsInvoke(), codegen_)) {
+  uint32_t maximum_inlining_depth_for_baseline =
+      InlineCache::MaxDexPcEncodingDepth(
+          outermost_graph_->GetArtMethod(),
+          codegen_->GetCompilerOptions().GetInlineMaxCodeUnits());
+  if (depth_ + 1 > maximum_inlining_depth_for_baseline) {
+    LOG_FAIL_NO_STAT() << "Reached maximum depth for inlining in baseline compilation: "
+                       << depth_ << " for " << callee_graph->GetArtMethod()->PrettyMethod();
+    outermost_graph_->SetUsefulOptimizing();
+    return false;
+  }
+}
+```
+
 ### Maxine
 
 ### JikesRVM
