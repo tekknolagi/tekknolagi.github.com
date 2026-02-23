@@ -567,3 +567,7 @@ https://www.cresco.enea.it/SC05/schedule/pdf/pap274.pdf
 https://dl.acm.org/doi/pdf/10.1145/3563838.3567677
 clusters from https://llvm.org/devmtg/2022-05/slides/2022EuroLLVM-CustomBenefitDrivenInliner-in-FalconJIT.pdf
 
+
+### Graal
+
+https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/inlining/policy/GreedyInliningPolicy.java
