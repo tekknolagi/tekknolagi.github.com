@@ -250,6 +250,81 @@ https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compi
 V8 Maglev
 https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/maglev/maglev-inlining.h#L36
 
+```c++
+bool MaglevInliner::CanInlineCall() {
+  return !graph_->inlineable_calls().empty() &&
+         (graph_->total_inlined_bytecode_size() <
+              max_inlined_bytecode_size_cumulative() ||
+          graph_->total_inlined_bytecode_size_small() <
+              max_inlined_bytecode_size_small_total());
+}
+```
+
+```c++
+bool MaglevInliner::InlineCallSites() {
+  DCHECK(CanInlineCall());
+  while (!graph_->inlineable_calls().empty()) {
+    MaglevCallSiteInfo* call_site = ChooseNextCallSite();
+
+    bool is_small_with_heapnum_input_outputs =
+        IsSmallWithHeapNumberInputsOutputs(call_site);
+
+    if (graph_->total_inlined_bytecode_size() >
+        max_inlined_bytecode_size_cumulative()) {
+      // We ran out of budget. Checking if this is a small-ish function that we
+      // can still inline.
+      if (graph_->total_inlined_bytecode_size_small() >
+          max_inlined_bytecode_size_small_total()) {
+        graph_->compilation_info()->set_could_not_inline_all_candidates();
+        break;
+      }
+
+      if (!is_small_with_heapnum_input_outputs) {
+        graph_->compilation_info()->set_could_not_inline_all_candidates();
+        // Not that we don't break just rather just continue: next candidates
+        // might be inlineable.
+        continue;
+      }
+    }
+
+    InliningResult result =
+        BuildInlineFunction(call_site, is_small_with_heapnum_input_outputs);
+    if (result == InliningResult::kAbort) return false;
+    if (result == InliningResult::kFail) continue;
+    DCHECK_EQ(result, InliningResult::kDone);
+
+    // Remove unreachable blocks if we have any.
+    if (graph_->may_have_unreachable_blocks()) {
+      graph_->RemoveUnreachableBlocks();
+    }
+  }
+  return true;
+}
+```
+
+```c++
+bool MaglevInliner::Run() {
+  if (graph_->inlineable_calls().empty()) return true;
+
+  while (CanInlineCall()) {
+    if (!InlineCallSites()) return false;
+    RunOptimizer();
+  }
+
+  // Clear conversion, identities and ReturnedValues uses from deopt frames.
+  // ...
+  return true;
+}
+```
+
+`bool MaglevGraphBuilder::CanInlineCall(compiler::SharedFunctionInfoRef shared, float call_frequency) {`
+
+`bool MaglevGraphBuilder::ShouldEagerInlineCall(`
+
+`MaybeReduceResult MaglevGraphBuilder::TryBuildCallKnownJSFunction(`
+
+Unclear how `inlineable_calls` is populated... jk it's in `MaybeReduceResult MaglevGraphBuilder::TryBuildInlineCall(`
+
 ### JavaScriptCore
 
 * Bytecode inlining
