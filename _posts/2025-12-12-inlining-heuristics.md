@@ -522,6 +522,16 @@ DEFINE_FLAG(int,
   }
 ```
 
+<!--
+CompileType
+https://github.com/dart-lang/sdk/blob/d3c0a3768bd4be4a92886e136811b5f748b63ddd/runtime/vm/compiler/backend/compile_type.h#L43
+-->
+
+<!--
+intrinsics
+https://github.com/dart-lang/sdk/blob/d3c0a3768bd4be4a92886e136811b5f748b63ddd/runtime/vm/compiler/call_specializer.cc#L3229
+-->
+
 ### HHVM
 
 https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/hphp/runtime/vm/jit/inlining-decider.h#L89
