@@ -240,8 +240,22 @@ TODO get more details here
 
 ### V8
 
-V8 Hydrogen
-https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807
+#### V8 Hydrogen
+
+Inlining happens during Hydrogen graph building
+* https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L9236
+
+Don't store function bytecode of all functions; need to re-parse callee *text
+source* to inline
+
+Heuristics https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807
+* something about native context
+* check callee AST size against configurable limit
+* check inlining depth against configurable limit
+* don't inline recursive functions
+* check current cumulative method size (as tracked by AST node count) against
+  configurable limit
+*
 
 V8 TurboFan
 https://docs.google.com/document/d/1VoYBhpDhJC4VlqMXCKvae-8IGuheBGxy32EOgC2LnT8/edit
