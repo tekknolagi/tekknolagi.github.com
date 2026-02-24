@@ -534,7 +534,47 @@ https://github.com/dart-lang/sdk/blob/d3c0a3768bd4be4a92886e136811b5f748b63ddd/r
 
 ### HHVM
 
+tracelet based
+
 https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/hphp/runtime/vm/jit/inlining-decider.h#L89
+
+```c++
+  // Refuse if the cost exceeds our thresholds.
+  // We measure the cost of inlining each callstack and stop when it exceeds a
+  // certain threshold.  (Note that we do not measure the total cost of all the
+  // inlined calls for a given caller---just the cost of each nested stack.)
+  cost = costOfInlining(callerSk, callee, regionAndUnit, annotationsPtr);
+  if (cost <= Cfg::HHIR::AlwaysInlineVasmCostLimit) {
+    return accept(folly::sformat("cost={} within always-inline limit", cost));
+  }
+
+  if (region.instrSize() > irgs.budgetBCInstrs) {
+    return refuse(folly::sformat(
+      "exhausted bytecode budget: budgetBCInstrs={}, regionSize={}",
+      irgs.budgetBCInstrs, region.instrSize()));
+  }
+  auto maxTotalCost = adjustedMaxVasmCost(irgs, region, inlineDepth(irgs));
+  int maxCost = maxTotalCost;
+  if (Cfg::HHIR::InliningUseStackedCost) {
+    maxCost -= irgs.inlineState.cost;
+  }
+  const auto baseProfCount = s_baseProfCount.load();
+  const auto callerProfCount = irgen::curProfCount(irgs);
+  const auto calleeProfCount = irgen::calleeProfCount(irgs, region);
+  if (cost > maxCost) {
+    auto const depth = inlineDepth(irgs);
+    return refuse(folly::sformat(
+      "too expensive: cost={} : maxCost={} : "
+      "baseProfCount={} : callerProfCount={} : calleeProfCount={} : depth={}",
+      cost, maxCost, baseProfCount, callerProfCount, calleeProfCount, depth));
+  }
+
+  return accept(folly::sformat("small region with return: cost={} : "
+                               "maxTotalCost={} : maxCost={} : baseProfCount={}"
+                               " : callerProfCount={} : calleeProfCount={}",
+                               cost, maxTotalCost, maxCost, baseProfCount,
+                               callerProfCount, calleeProfCount));
+```
 
 ### ART
 
