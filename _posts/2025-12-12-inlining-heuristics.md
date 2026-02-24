@@ -683,7 +683,11 @@ if (outermost_graph_->IsCompilingBaseline() &&
 
 ### Maxine
 
+no inliner :(
+
 ### JikesRVM
+
+https://github.com/JikesRVM/JikesRVM/blob/5072f19761115d987b6ee162f49a03522d36c697/rvm/src/org/jikesrvm/compilers/opt/inlining/DefaultInlineOracle.java#L55
 
 ### Other/research
 
