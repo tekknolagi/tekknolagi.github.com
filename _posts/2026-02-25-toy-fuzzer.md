@@ -232,6 +232,11 @@ See the [full code](https://github.com/tekknolagi/tekknolagi.github.com/blob/fbc
 ## Extensions
 
 * Synthesize (different) types for non-aliasing objects and add them in `info`
+    <!--
+      * CF notes that we could maybe do this by, instead of adding `.info`, have a
+        `checktype` guard instruction that the optimizer can use to learn types and
+        change aliasing from inside the trace
+    -->
 * Shrink/reduce failing examples down for easier debugging
 * Use Hypothesis for property-based testing, which CF notes also gives you
   shrinking
