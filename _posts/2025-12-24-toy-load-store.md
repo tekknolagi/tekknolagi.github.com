@@ -508,6 +508,8 @@ is right now.
 
 ## Wrapping up
 
+See the [full code](https://github.com/tekknolagi/tekknolagi.github.com/blob/74aad4d26d166f9bc847bafcd503378d78d294ee/loadstore.py).
+
 Thanks for reading the text version of the video that CF and I made a while
 back. Now you know how to do load/store elimination on traces.
 

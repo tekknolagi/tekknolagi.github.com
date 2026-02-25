@@ -225,6 +225,10 @@ the un-optimized and optimized traces in the `assert` failure messages. But we
 get a nice diff of the heap automatically, which is neat. And it points to an
 aliasing problem!
 
+## Full code
+
+See the [full code](https://github.com/tekknolagi/tekknolagi.github.com/blob/fbccf9696e98721ca77c8d5ec5f828a11492b04c/loadstore.py).
+
 ## Extensions
 
 * Synthesize (different) types for non-aliasing objects and add them in `info`
