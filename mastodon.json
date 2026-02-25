@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 579,
     "following_count": 288,
-    "statuses_count": 1431,
+    "statuses_count": 1432,
     "last_status_at": "2026-02-25",
     "hide_collections": false,
     "show_media": true,
@@ -71529,6 +71529,50 @@
           }
         ]
       },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116132926052298607": {
+      "id": "116132926052298607",
+      "created_at": "2026-02-25T19:30:21.845Z",
+      "in_reply_to_id": "116132525367508002",
+      "in_reply_to_account_id": "228526",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116132926052298607",
+      "url": "https://mastodon.social/@tekknolagi/116132926052298607",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@doty\" class=\"u-url mention\">@<span>doty</span></a></span> I&#39;m glad you&#39;re reading!!</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "228526",
+          "username": "doty",
+          "url": "https://mastodon.social/@doty",
+          "acct": "doty"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
       "poll": null,
       "quote_approval": {
         "automatic": [
