@@ -4,6 +4,8 @@ import random
 import re
 from typing import Optional, Any, List, Tuple, Dict
 
+import z3
+
 
 class Value:
     def find(self):
@@ -613,3 +615,106 @@ def test_random_programs():
     for i in range(num_programs):
         program = generate_program()
         verify_program(program)
+
+
+# --- Z3-based symbolic equivalence checking ---
+
+
+def _z3_resolve(val, ssa):
+    """Convert a Value (Constant or Operation) to a Z3 expression."""
+    if isinstance(val, Constant):
+        return z3.IntVal(val.value)
+    return ssa[val]
+
+
+def z3_encode_program(bb, arg_syms, initial_heap):
+    """Symbolically execute a basic block over a Z3 heap model.
+
+    The heap is Array(Int, Array(Int, Int))—a map from object identity
+    to a map from offset to value.  Object identities are symbolic Z3
+    Ints so aliasing is handled automatically by the solver.
+
+    Returns (escaped_values, final_heap).
+    """
+    heap = initial_heap
+    ssa = {}
+    escaped = []
+    for op in bb:
+        if op.name == "getarg":
+            ssa[op] = arg_syms[get_num(op, 0)]
+        elif op.name == "store":
+            obj = _z3_resolve(op.arg(0), ssa)
+            offset = get_num(op, 1)
+            value = _z3_resolve(op.arg(2), ssa)
+            obj_arr = z3.Select(heap, obj)
+            heap = z3.Store(heap, obj, z3.Store(obj_arr, offset, value))
+        elif op.name == "load":
+            obj = _z3_resolve(op.arg(0), ssa)
+            offset = get_num(op, 1)
+            ssa[op] = z3.Select(z3.Select(heap, obj), offset)
+        elif op.name == "escape":
+            escaped.append(_z3_resolve(op.arg(0), ssa))
+        else:
+            raise NotImplementedError(f"Unknown op {op.name}")
+    return escaped, heap
+
+
+def z3_verify_program(bb):
+    """Check optimize_load_store preserves semantics for ALL aliasing configs.
+
+    Unlike verify_program which only tests two concrete aliasing
+    configurations, this asks Z3 to search over every possible
+    assignment of object identities and initial heap contents.
+    """
+    arg_syms = [z3.Int(f"arg{i}") for i in range(3)]
+    inner = z3.ArraySort(z3.IntSort(), z3.IntSort())
+    heap = z3.Array("heap", z3.IntSort(), inner)
+
+    # Encode the original program
+    escaped_before, heap_before = z3_encode_program(bb, arg_syms, heap)
+
+    # Optimize (mutates forwarding pointers on the original ops)
+    opt_bb = optimize_load_store(bb)
+
+    # Encode the optimized program (same initial args & heap)
+    escaped_after, heap_after = z3_encode_program(opt_bb, arg_syms, heap)
+
+    assert len(escaped_before) == len(escaped_after), (
+        f"escape count mismatch: {len(escaped_before)} vs {len(escaped_after)}"
+    )
+
+    # Collect differences to check
+    diffs = [eb != ea for eb, ea in zip(escaped_before, escaped_after)]
+
+    # Also verify heap equivalence at every (arg, offset) that appears
+    offsets = set()
+    for op in bb:
+        if op.name in ("store", "load"):
+            offsets.add(get_num(op, 1))
+    for a in arg_syms:
+        for off in offsets:
+            diffs.append(
+                z3.Select(z3.Select(heap_before, a), off)
+                != z3.Select(z3.Select(heap_after, a), off)
+            )
+
+    if not diffs:
+        return True  # trivially equivalent
+
+    s = z3.Solver()
+    s.add(z3.Or(*diffs))
+    if s.check() == z3.sat:
+        m = s.model()
+        print(f"BUG! model: {m}")
+        print(f"  args = {[m.evaluate(a) for a in arg_syms]}")
+        print(f"  Original:\n{bb_to_str(bb)}")
+        print(f"  Optimized:\n{bb_to_str(opt_bb)}")
+        return False
+    return True
+
+
+def test_z3_random_programs():
+    random.seed(0)
+    for i in range(1000):
+        bb = generate_program()
+        assert z3_verify_program(bb), f"Failed on program {i}"
