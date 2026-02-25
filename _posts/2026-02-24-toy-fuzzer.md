@@ -205,7 +205,7 @@ FAILED loadstore.py::test_random_programs - AssertionError: assert {('a', 0): 4,
 $
 ```
 
-We sould probably use `bb_to_str(bb)` and `bb_to_str(optimized)` to print out
+We should probably use `bb_to_str(bb)` and `bb_to_str(optimized)` to print out
 the un-optimized and optimized traces in the `assert` failure messages. But we
 get a nice diff of the heap automatically, which is neat. And it points to an
 aliasing problem!
