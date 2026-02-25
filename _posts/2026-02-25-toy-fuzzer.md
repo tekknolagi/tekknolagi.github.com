@@ -70,10 +70,19 @@ No idea what would generate something like this, but oh well.
 ## Verifying programs
 
 Then we want to come up with our invariants. I picked the invariant that, under
-the same preconditions, the heap will look the after running an optimized
-program as it would under an un-optimized program. So we can delete
+the same preconditions, the heap will look the same after running an optimized
+program as it would under an un-optimized program[^equivalence]. So we can delete
 instructions, but if we don't have a load-bearing store, store the wrong
 information, or cache stale loads, we will probably catch that.
+
+[^equivalence]: CF notes that this notion of equivalence works for this
+    optimizer but not for one that does allocation removal (escape analysis).
+    If we removed allocations and writes to them, we would be changing the heap
+    results and our verifier would appear to fail. This means we have to, if we
+    are to delete allocations, pick a more subtle definition of equivalence.
+
+    Perhaps something that looks like escape analysis in the verifier's
+    interpreter?
 
 ```python
 def verify_program(bb):
@@ -222,3 +231,7 @@ aliasing problem!
 * Shrink/reduce failing examples down for easier debugging
 
 [cf-smt-fuzz]: https://pypy.org/posts/2022/12/jit-bug-finding-smt-fuzzing.html
+
+## Thanks
+
+Thank you to [CF Bolz-Tereick](https://cfbolz.de/) for feedback on this post!
