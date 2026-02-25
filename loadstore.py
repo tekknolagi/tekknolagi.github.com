@@ -219,29 +219,6 @@ def optimize_load_store(bb: Block):
     return opt_bb
 
 
-def optimize_dead_store(bb: Block):
-    """Backward pass: remove stores that are overwritten before being read."""
-    killed = set()
-    result = Block()
-    for op in reversed(bb):
-        if op.name == "store":
-            obj = op.arg(0)
-            offset = get_num(op, 1)
-            if (obj, offset) in killed:
-                continue
-            killed.add((obj, offset))
-        elif op.name == "load":
-            obj = op.arg(0)
-            offset = get_num(op, 1)
-            killed = {
-                (o, off) for o, off in killed
-                if off != offset or not may_alias(o, obj)
-            }
-        result.append(op)
-    result.reverse()
-    return result
-
-
 def test_two_loads():
     bb = Block()
     var0 = bb.getarg(0)
@@ -553,73 +530,6 @@ var5 = escape(var3)"""
     )
 
 
-def test_dead_store_basic():
-    bb = Block()
-    arg0 = bb.getarg(0)
-    bb.store(arg0, 0, 5)
-    bb.store(arg0, 0, 7)
-    opt_bb = optimize_dead_store(bb)
-    assert (
-        bb_to_str(opt_bb)
-        == """\
-var0 = getarg(0)
-var1 = store(var0, 0, 7)"""
-    )
-
-
-def test_dead_store_load_prevents_elimination():
-    bb = Block()
-    arg0 = bb.getarg(0)
-    bb.store(arg0, 0, 5)
-    var1 = bb.load(arg0, 0)
-    bb.store(arg0, 0, 7)
-    bb.escape(var1)
-    opt_bb = optimize_dead_store(bb)
-    # The first store is NOT dead because the load reads it
-    assert bb_to_str(opt_bb) == bb_to_str(bb)
-
-
-def test_dead_store_different_offset():
-    bb = Block()
-    arg0 = bb.getarg(0)
-    bb.store(arg0, 0, 5)
-    bb.store(arg0, 1, 7)
-    opt_bb = optimize_dead_store(bb)
-    # Different offsets, neither is dead
-    assert bb_to_str(opt_bb) == bb_to_str(bb)
-
-
-def test_dead_store_aliasing_load_prevents_elimination():
-    bb = Block()
-    arg0 = bb.getarg(0)
-    arg1 = bb.getarg(1)
-    bb.store(arg0, 0, 5)
-    var1 = bb.load(arg1, 0)  # may alias arg0
-    bb.store(arg0, 0, 7)
-    bb.escape(var1)
-    opt_bb = optimize_dead_store(bb)
-    # The load through arg1 may read (arg0, 0), so first store is not dead
-    assert bb_to_str(opt_bb) == bb_to_str(bb)
-
-
-def test_exercise_for_the_viewer():
-    bb = Block()
-    arg0 = bb.getarg(0)
-    var0 = bb.store(arg0, 0, 5)
-    var1 = bb.store(arg0, 0, 7)
-    var2 = bb.load(arg0, 0)
-    bb.escape(var2)
-    opt_bb = optimize_load_store(bb)
-    opt_bb = optimize_dead_store(opt_bb)
-    assert (
-        bb_to_str(opt_bb)
-        == """\
-var0 = getarg(0)
-var1 = store(var0, 0, 7)
-var2 = escape(7)"""
-    )
-
-
 def generate_program():
     bb = Block()
     args = [bb.getarg(i) for i in range(3)]
@@ -641,6 +551,7 @@ def generate_program():
         else:
             raise NotImplementedError(f"Unknown operation {op}")
     return bb
+
 
 def interpret_program(bb, args):
     heap = {}
@@ -671,6 +582,7 @@ def interpret_program(bb, args):
     heap["escaped"] = escaped
     return heap
 
+
 def verify_program(bb):
     before_no_alias = interpret_program(bb, ["a", "b", "c"])
     a = "a"
@@ -681,234 +593,10 @@ def verify_program(bb):
     assert before_no_alias == after_no_alias
     assert before_alias == after_alias
 
+
 def test_random_programs():
     random.seed(0)
     num_programs = 100000
     for i in range(num_programs):
         program = generate_program()
         verify_program(program)
-
-
-# --- Z3-based symbolic equivalence checking ---
-
-
-def _z3_resolve(val, ssa):
-    """Convert a Value (Constant or Operation) to a Z3 expression."""
-    if isinstance(val, Constant):
-        return z3.IntVal(val.value)
-    return ssa[val]
-
-
-def z3_encode_program(bb, arg_syms, initial_heap):
-    """Symbolically execute a basic block over a Z3 heap model.
-
-    The heap is Array(Int, Array(Int, Int))—a map from object identity
-    to a map from offset to value.  Object identities are symbolic Z3
-    Ints so aliasing is handled automatically by the solver.
-
-    Returns (escaped_values, final_heap).
-    """
-    heap = initial_heap
-    ssa = {}
-    escaped = []
-    for op in bb:
-        if op.name == "getarg":
-            ssa[op] = arg_syms[get_num(op, 0)]
-        elif op.name == "store":
-            obj = _z3_resolve(op.arg(0), ssa)
-            offset = get_num(op, 1)
-            value = _z3_resolve(op.arg(2), ssa)
-            obj_arr = z3.Select(heap, obj)
-            heap = z3.Store(heap, obj, z3.Store(obj_arr, offset, value))
-        elif op.name == "load":
-            obj = _z3_resolve(op.arg(0), ssa)
-            offset = get_num(op, 1)
-            ssa[op] = z3.Select(z3.Select(heap, obj), offset)
-        elif op.name == "escape":
-            escaped.append(_z3_resolve(op.arg(0), ssa))
-        else:
-            raise NotImplementedError(f"Unknown op {op.name}")
-    return escaped, heap
-
-
-def z3_verify_program(bb, verbose=False):
-    """Check optimize_load_store preserves semantics for ALL aliasing configs.
-
-    Unlike verify_program which only tests two concrete aliasing
-    configurations, this asks Z3 to search over every possible
-    assignment of object identities and initial heap contents.
-    """
-    arg_syms = [z3.Int(f"arg{i}") for i in range(3)]
-    inner = z3.ArraySort(z3.IntSort(), z3.IntSort())
-    heap = z3.Array("heap", z3.IntSort(), inner)
-
-    # Encode the original program
-    escaped_before, heap_before = z3_encode_program(bb, arg_syms, heap)
-
-    # Optimize (mutates forwarding pointers on the original ops)
-    opt_bb = optimize_load_store(bb)
-
-    # Encode the optimized program (same initial args & heap)
-    escaped_after, heap_after = z3_encode_program(opt_bb, arg_syms, heap)
-
-    assert len(escaped_before) == len(escaped_after), (
-        f"escape count mismatch: {len(escaped_before)} vs {len(escaped_after)}"
-    )
-
-    # Collect differences to check
-    diffs = [eb != ea for eb, ea in zip(escaped_before, escaped_after)]
-
-    # Also verify heap equivalence at every (arg, offset) that appears
-    offsets = set()
-    for op in bb:
-        if op.name in ("store", "load"):
-            offsets.add(get_num(op, 1))
-    for a in arg_syms:
-        for off in offsets:
-            diffs.append(
-                z3.Select(z3.Select(heap_before, a), off)
-                != z3.Select(z3.Select(heap_after, a), off)
-            )
-
-    if not diffs:
-        return True  # trivially equivalent
-
-    s = z3.Solver()
-    s.add(z3.Or(*diffs))
-    if s.check() == z3.sat:
-        if verbose:
-            m = s.model()
-            print(f"Counterexample: args = {[m.evaluate(a) for a in arg_syms]}")
-        return False
-    return True
-
-
-# --- Test-case minimization (delta debugging) ---
-
-# Programs are serialized as lists of tuples so we can manipulate and
-# rebuild them without worrying about mutated forwarding pointers.
-#
-# ("getarg", arg_index)
-# ("load",   ("ref", obj_idx), offset)
-# ("store",  ("ref", obj_idx), offset, value)   -- value: int | ("ref", idx)
-# ("escape", value)                              -- value: int | ("ref", idx)
-
-
-def block_to_instrs(bb):
-    op_map = {}
-    instrs = []
-    for i, op in enumerate(bb):
-        op_map[op] = i
-        if op.name == "getarg":
-            instrs.append(("getarg", get_num(op, 0)))
-        elif op.name == "load":
-            instrs.append(("load", ("ref", op_map[op.arg(0)]), get_num(op, 1)))
-        elif op.name == "store":
-            val = op.arg(2)
-            v = val.value if isinstance(val, Constant) else ("ref", op_map[val])
-            instrs.append(
-                ("store", ("ref", op_map[op.arg(0)]), get_num(op, 1), v)
-            )
-        elif op.name == "escape":
-            val = op.arg(0)
-            v = val.value if isinstance(val, Constant) else ("ref", op_map[val])
-            instrs.append(("escape", v))
-    return instrs
-
-
-def instrs_to_block(instrs):
-    bb = Block()
-    ops = []
-    for instr in instrs:
-        if instr[0] == "getarg":
-            ops.append(bb.getarg(instr[1]))
-        elif instr[0] == "load":
-            ops.append(bb.load(ops[instr[1][1]], instr[2]))
-        elif instr[0] == "store":
-            val = instr[3]
-            val = ops[val[1]] if isinstance(val, tuple) else val
-            ops.append(bb.store(ops[instr[1][1]], instr[2], val))
-        elif instr[0] == "escape":
-            val = instr[1]
-            val = ops[val[1]] if isinstance(val, tuple) else val
-            ops.append(bb.escape(val))
-    return bb
-
-
-def _instr_refs(instr):
-    """Return the set of instruction indices this instruction references."""
-    return {
-        f[1] for f in instr[1:] if isinstance(f, tuple) and f[0] == "ref"
-    }
-
-
-def _dependents(instrs, idx):
-    """All instructions that transitively depend on idx."""
-    deps = set()
-    queue = [idx]
-    while queue:
-        i = queue.pop()
-        for j in range(i + 1, len(instrs)):
-            if i in _instr_refs(instrs[j]) and j not in deps:
-                deps.add(j)
-                queue.append(j)
-    return deps
-
-
-def _remove_indices(instrs, to_remove):
-    """Remove a set of indices and renumber surviving references."""
-    old_to_new = {}
-    n = 0
-    for j in range(len(instrs)):
-        if j not in to_remove:
-            old_to_new[j] = n
-            n += 1
-
-    def fix(field):
-        if isinstance(field, tuple) and field[0] == "ref":
-            return ("ref", old_to_new[field[1]])
-        return field
-
-    return [
-        tuple(instr[0:1] + tuple(fix(f) for f in instr[1:]))
-        for j, instr in enumerate(instrs)
-        if j not in to_remove
-    ]
-
-
-def shrink_failing_program(bb):
-    """Minimize a program that fails z3_verify_program."""
-    instrs = block_to_instrs(bb)
-    changed = True
-    while changed:
-        changed = False
-        for i in range(len(instrs) - 1, -1, -1):
-            if instrs[i][0] == "getarg":
-                continue
-            to_remove = {i} | _dependents(instrs, i)
-            candidate = _remove_indices(instrs, to_remove)
-            try:
-                new_bb = instrs_to_block(candidate)
-                if not z3_verify_program(new_bb):
-                    instrs = candidate
-                    changed = True
-                    break
-            except Exception:
-                continue
-    return instrs_to_block(instrs)
-
-
-def test_z3_random_programs():
-    random.seed(0)
-    for i in range(1000):
-        bb = generate_program()
-        if not z3_verify_program(bb):
-            small = shrink_failing_program(bb)
-            # Re-verify verbosely to get the counterexample
-            z3_verify_program(small, verbose=True)
-            opt = optimize_load_store(small)
-            assert False, (
-                f"Program {i} fails.\n"
-                f"Minimal reproducer:\n{bb_to_str(small)}\n"
-                f"Optimized:\n{bb_to_str(opt)}"
-            )

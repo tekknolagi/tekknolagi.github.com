@@ -150,6 +150,8 @@ Then we run a bunch of random tests through the verifier!
 
 ```python
 def test_random_programs():
+    # Remove random.seed if using in CI... instead print the seed out so you
+    # can reproduce crashes if you find them
     random.seed(0)
     num_programs = 100000
     for i in range(num_programs):
