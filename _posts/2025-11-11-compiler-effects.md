@@ -487,7 +487,7 @@ bool writesOverlap(Graph& graph, Node* node, AbstractHeap heap)
 [`clobberize`][clobberize] is the function that calls these functors (`noOp` or `addWrite` in
 this case) for each effect that the given IR instruction `node` declares.
 
-[clobberize](https://github.com/WebKit/WebKit/blob/4865155d2fcb7cf39aad87597da8f29909d9b7f7/Source/JavaScriptCore/dfg/DFGClobberize.h#L49)
+[clobberize]: https://github.com/WebKit/WebKit/blob/4865155d2fcb7cf39aad87597da8f29909d9b7f7/Source/JavaScriptCore/dfg/DFGClobberize.h#L49
 
 I've pulled some relevant snippets of `clobberize`, which is quite long, that I
 think are interesting.
