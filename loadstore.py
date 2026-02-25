@@ -1,5 +1,6 @@
 # See LICENSE for license.
 import pytest
+import random
 import re
 from typing import Optional, Any, List, Tuple, Dict
 
@@ -545,10 +546,7 @@ var2 = escape(7)"""
     )
 
 
-def generate_program(seed=None):
-    import random
-    if seed is not None:
-        random.seed(seed)
+def generate_program():
     bb = Block()
     args = [bb.getarg(i) for i in range(3)]
     num_ops = random.randint(0, 10)
@@ -610,6 +608,7 @@ def verify_program(bb):
     assert before_alias == after_alias
 
 def test_random_programs():
+    random.seed(0)
     num_programs = 100000
     for i in range(num_programs):
         program = generate_program()
