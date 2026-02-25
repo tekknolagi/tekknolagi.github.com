@@ -538,7 +538,6 @@ def generate_program():
     for _ in range(num_ops):
         op = random.choice(["load", "store", "escape"])
         arg = random.choice(args)
-        a_value = random.choice(ops_with_values)
         offset = random.randint(0, 4)
         if op == "load":
             v = bb.load(arg, offset)
@@ -547,6 +546,7 @@ def generate_program():
             value = random.randint(0, 10)
             bb.store(arg, offset, value)
         elif op == "escape":
+            a_value = random.choice(ops_with_values)
             bb.escape(a_value)
         else:
             raise NotImplementedError(f"Unknown operation {op}")
