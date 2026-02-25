@@ -511,7 +511,11 @@ is right now.
 See the [full code](https://github.com/tekknolagi/tekknolagi.github.com/blob/74aad4d26d166f9bc847bafcd503378d78d294ee/loadstore.py).
 
 Thanks for reading the text version of the video that CF and I made a while
-back. Now you know how to do load/store elimination on traces.
+back. Now you know how to do load/store elimination on traces. For a full
+compiler that has other operations, you will need to model their
+effects/potential heap writes in your optimizer... perhaps even using the
+`AbstractHeap` machinery we have here. For example, a function call probably
+writes to all heaps and therefore clears `compile_time_heap`.
 
 I think this does not need too much extra work to get it going on full CFGs; a
 block is pretty much the same as a trace, so you can do a block-local version
