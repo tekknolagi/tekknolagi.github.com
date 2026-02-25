@@ -213,6 +213,7 @@ aliasing problem!
 ## Extensions
 
 * Synthesize (different) types for non-aliasing objects and add them in `info`
+* Use Hypothesis for property-based testing
 * [Use Z3 to encode][cf-smt-fuzz] the generated programs instead of randomly interpreting them
 * Shrink/reduce failing examples down for easier debugging
 
