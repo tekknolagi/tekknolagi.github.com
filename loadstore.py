@@ -196,15 +196,15 @@ def optimize_load_store(bb: Block):
             new_value = op.arg(2)
             if eq_value(current_value, new_value):
                 continue
-            compile_time_heap = {
-                load_info: value
-                for load_info, value in compile_time_heap.items()
-                if load_info[1] != offset
-                or not may_alias(load_info[0], obj)
-                # DeMorgan's law:
-                # if load_info[1] == offset
-                # and may_alias(load_info[0], obj)
-            }
+            # compile_time_heap = {
+            #     load_info: value
+            #     for load_info, value in compile_time_heap.items()
+            #     if load_info[1] != offset
+            #     or not may_alias(load_info[0], obj)
+            #     # DeMorgan's law:
+            #     # if load_info[1] == offset
+            #     # and may_alias(load_info[0], obj)
+            # }
             compile_time_heap[store_info] = new_value
         elif op.name == "load":
             load_info = (op.arg(0), get_num(op, 1))
@@ -543,3 +543,74 @@ var0 = getarg(0)
 var1 = store(var0, 0, 7)
 var2 = escape(7)"""
     )
+
+
+def generate_program(seed=None):
+    import random
+    if seed is not None:
+        random.seed(seed)
+    bb = Block()
+    args = [bb.getarg(i) for i in range(3)]
+    num_ops = random.randint(0, 10)
+    ops_with_values = args[:]
+    for _ in range(num_ops):
+        op = random.choice(["load", "store", "escape"])
+        arg = random.choice(args)
+        a_value = random.choice(ops_with_values)
+        offset = random.randint(0, 4)
+        if op == "load":
+            v = bb.load(arg, offset)
+            ops_with_values.append(v)
+        elif op == "store":
+            value = random.randint(0, 10)
+            bb.store(arg, offset, value)
+        elif op == "escape":
+            bb.escape(a_value)
+        else:
+            raise NotImplementedError(f"Unknown operation {op}")
+    return bb
+
+def interpret_program(bb, args):
+    heap = {}
+    ssa = {}
+    escaped = []
+    for op in bb:
+        if op.name == "getarg":
+            ssa[op] = args[get_num(op, 0)]
+        elif op.name == "store":
+            obj = op.arg(0)
+            offset = get_num(op, 1)
+            value = get_num(op, 2)
+            heap[(obj, offset)] = value
+        elif op.name == "load":
+            obj = op.arg(0)
+            offset = get_num(op, 1)
+            unknown = "unknown"
+            value = heap.get((obj, offset), "unknown")
+            ssa[op] = value
+        elif op.name == "escape":
+            value = op.arg(0)
+            if isinstance(value, Constant):
+                escaped.append(value.value)
+            else:
+                escaped.append(ssa[value])
+        else:
+            raise NotImplementedError(f"Unknown operation {op.name}")
+    heap["escaped"] = escaped
+    return heap
+
+def verify_program(bb):
+    before_no_alias = interpret_program(bb, ["a", "b", "c"])
+    a = "a"
+    before_alias = interpret_program(bb, [a, a, a])
+    optimized = optimize_load_store(bb)
+    after_no_alias = interpret_program(optimized, ["a", "b", "c"])
+    after_alias = interpret_program(optimized, [a, a, a])
+    assert before_no_alias == after_no_alias
+    assert before_alias == after_alias
+
+def test_random_programs():
+    num_programs = 100000
+    for i in range(num_programs):
+        program = generate_program()
+        verify_program(program)
