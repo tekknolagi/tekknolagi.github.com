@@ -159,8 +159,12 @@ That explains why the verifier didn't find that bug!
 
 ## Testing the verifier
 
-So does it work? Let's comment out the main load-bearing pillar of correctness
-in the optimizer---removing aliasing writes---and see what happens.
+So does it work? If you run it, it'll hang for a bit and then report no issues.
+That's helpful, in a sense... it's revealing that it is unable to find a
+certain class of bug in the optimizer.
+
+Let's comment out the main load-bearing pillar of correctness in the
+optimizer---removing aliasing writes---and see what happens.
 
 We get a crash nearly instantly:
 
