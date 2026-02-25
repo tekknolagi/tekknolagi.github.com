@@ -70,10 +70,10 @@ No idea what would generate something like this, but oh well.
 ## Verifying programs
 
 Then we want to come up with our invariants. I picked the invariant that, under
-the same preconditions, heap will look the after running an optimized program
-as it would under an un-optimized program. So we can delete instructions, but
-if we store the wrong information or cache stale loads, we will probably catch
-that.
+the same preconditions, the heap will look the after running an optimized
+program as it would under an un-optimized program. So we can delete
+instructions, but if we store the wrong information or cache stale loads, we
+will probably catch that.
 
 ```python
 def verify_program(bb):
