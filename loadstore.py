@@ -219,6 +219,29 @@ def optimize_load_store(bb: Block):
     return opt_bb
 
 
+def optimize_dead_store(bb: Block):
+    """Backward pass: remove stores that are overwritten before being read."""
+    killed = set()
+    result = Block()
+    for op in reversed(bb):
+        if op.name == "store":
+            obj = op.arg(0)
+            offset = get_num(op, 1)
+            if (obj, offset) in killed:
+                continue
+            killed.add((obj, offset))
+        elif op.name == "load":
+            obj = op.arg(0)
+            offset = get_num(op, 1)
+            killed = {
+                (o, off) for o, off in killed
+                if off != offset or not may_alias(o, obj)
+            }
+        result.append(op)
+    result.reverse()
+    return result
+
+
 def test_two_loads():
     bb = Block()
     var0 = bb.getarg(0)
@@ -530,7 +553,55 @@ var5 = escape(var3)"""
     )
 
 
-@pytest.mark.xfail
+def test_dead_store_basic():
+    bb = Block()
+    arg0 = bb.getarg(0)
+    bb.store(arg0, 0, 5)
+    bb.store(arg0, 0, 7)
+    opt_bb = optimize_dead_store(bb)
+    assert (
+        bb_to_str(opt_bb)
+        == """\
+var0 = getarg(0)
+var1 = store(var0, 0, 7)"""
+    )
+
+
+def test_dead_store_load_prevents_elimination():
+    bb = Block()
+    arg0 = bb.getarg(0)
+    bb.store(arg0, 0, 5)
+    var1 = bb.load(arg0, 0)
+    bb.store(arg0, 0, 7)
+    bb.escape(var1)
+    opt_bb = optimize_dead_store(bb)
+    # The first store is NOT dead because the load reads it
+    assert bb_to_str(opt_bb) == bb_to_str(bb)
+
+
+def test_dead_store_different_offset():
+    bb = Block()
+    arg0 = bb.getarg(0)
+    bb.store(arg0, 0, 5)
+    bb.store(arg0, 1, 7)
+    opt_bb = optimize_dead_store(bb)
+    # Different offsets, neither is dead
+    assert bb_to_str(opt_bb) == bb_to_str(bb)
+
+
+def test_dead_store_aliasing_load_prevents_elimination():
+    bb = Block()
+    arg0 = bb.getarg(0)
+    arg1 = bb.getarg(1)
+    bb.store(arg0, 0, 5)
+    var1 = bb.load(arg1, 0)  # may alias arg0
+    bb.store(arg0, 0, 7)
+    bb.escape(var1)
+    opt_bb = optimize_dead_store(bb)
+    # The load through arg1 may read (arg0, 0), so first store is not dead
+    assert bb_to_str(opt_bb) == bb_to_str(bb)
+
+
 def test_exercise_for_the_viewer():
     bb = Block()
     arg0 = bb.getarg(0)
@@ -539,6 +610,7 @@ def test_exercise_for_the_viewer():
     var2 = bb.load(arg0, 0)
     bb.escape(var2)
     opt_bb = optimize_load_store(bb)
+    opt_bb = optimize_dead_store(opt_bb)
     assert (
         bb_to_str(opt_bb)
         == """\
