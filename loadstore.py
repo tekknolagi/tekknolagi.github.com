@@ -1,7 +1,10 @@
 # See LICENSE for license.
 import pytest
+import random
 import re
 from typing import Optional, Any, List, Tuple, Dict
+
+import z3
 
 
 class Value:
@@ -527,19 +530,73 @@ var5 = escape(var3)"""
     )
 
 
-@pytest.mark.xfail
-def test_exercise_for_the_viewer():
+def generate_program():
     bb = Block()
-    arg0 = bb.getarg(0)
-    var0 = bb.store(arg0, 0, 5)
-    var1 = bb.store(arg0, 0, 7)
-    var2 = bb.load(arg0, 0)
-    bb.escape(var2)
-    opt_bb = optimize_load_store(bb)
-    assert (
-        bb_to_str(opt_bb)
-        == """\
-var0 = getarg(0)
-var1 = store(var0, 0, 7)
-var2 = escape(7)"""
-    )
+    args = [bb.getarg(i) for i in range(3)]
+    num_ops = random.randint(0, 10)
+    ops_with_values = args[:]
+    for _ in range(num_ops):
+        op = random.choice(["load", "store", "escape"])
+        arg = random.choice(args)
+        a_value = random.choice(ops_with_values)
+        offset = random.randint(0, 4)
+        if op == "load":
+            v = bb.load(arg, offset)
+            ops_with_values.append(v)
+        elif op == "store":
+            value = random.randint(0, 10)
+            bb.store(arg, offset, value)
+        elif op == "escape":
+            bb.escape(a_value)
+        else:
+            raise NotImplementedError(f"Unknown operation {op}")
+    return bb
+
+
+def interpret_program(bb, args):
+    heap = {}
+    ssa = {}
+    escaped = []
+    for op in bb:
+        if op.name == "getarg":
+            ssa[op] = args[get_num(op, 0)]
+        elif op.name == "store":
+            obj = ssa[op.arg(0)]
+            offset = get_num(op, 1)
+            value = get_num(op, 2)
+            heap[(obj, offset)] = value
+        elif op.name == "load":
+            obj = ssa[op.arg(0)]
+            offset = get_num(op, 1)
+            unknown = "unknown"
+            value = heap.get((obj, offset), "unknown")
+            ssa[op] = value
+        elif op.name == "escape":
+            value = op.arg(0)
+            if isinstance(value, Constant):
+                escaped.append(value.value)
+            else:
+                escaped.append(ssa[value])
+        else:
+            raise NotImplementedError(f"Unknown operation {op.name}")
+    heap["escaped"] = escaped
+    return heap
+
+
+def verify_program(bb):
+    before_no_alias = interpret_program(bb, ["a", "b", "c"])
+    a = "a"
+    before_alias = interpret_program(bb, [a, a, a])
+    optimized = optimize_load_store(bb)
+    after_no_alias = interpret_program(optimized, ["a", "b", "c"])
+    after_alias = interpret_program(optimized, [a, a, a])
+    assert before_no_alias == after_no_alias
+    assert before_alias == after_alias
+
+
+def test_random_programs():
+    random.seed(0)
+    num_programs = 100000
+    for i in range(num_programs):
+        program = generate_program()
+        verify_program(program)
