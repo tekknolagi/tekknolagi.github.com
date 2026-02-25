@@ -10,7 +10,8 @@ the interactions of multiple components or multiple optimization passes.
 I wanted to see if I could write a fuzzer to catch some of these bugs
 automatically. But a fuzzer alone isn't much use without some correctness
 oracle---in this case, we want a more interesting bug than accidentally
-crashing the optimizer.
+crashing the optimizer. We want to see if the optimizer introduces a
+correctness bug in the program.
 
 So I set off in the most straightforward way possible, inspired by my
 hazy memories of a former [CF blog post][cf-gc-fuzz].
