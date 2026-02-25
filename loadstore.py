@@ -196,15 +196,15 @@ def optimize_load_store(bb: Block):
             new_value = op.arg(2)
             if eq_value(current_value, new_value):
                 continue
-            # compile_time_heap = {
-            #     load_info: value
-            #     for load_info, value in compile_time_heap.items()
-            #     if load_info[1] != offset
-            #     or not may_alias(load_info[0], obj)
-            #     # DeMorgan's law:
-            #     # if load_info[1] == offset
-            #     # and may_alias(load_info[0], obj)
-            # }
+            compile_time_heap = {
+                load_info: value
+                for load_info, value in compile_time_heap.items()
+                if load_info[1] != offset
+                or not may_alias(load_info[0], obj)
+                # DeMorgan's law:
+                # if load_info[1] == offset
+                # and may_alias(load_info[0], obj)
+            }
             compile_time_heap[store_info] = new_value
         elif op.name == "load":
             load_info = (op.arg(0), get_num(op, 1))
@@ -578,12 +578,12 @@ def interpret_program(bb, args):
         if op.name == "getarg":
             ssa[op] = args[get_num(op, 0)]
         elif op.name == "store":
-            obj = op.arg(0)
+            obj = ssa[op.arg(0)]
             offset = get_num(op, 1)
             value = get_num(op, 2)
             heap[(obj, offset)] = value
         elif op.name == "load":
-            obj = op.arg(0)
+            obj = ssa[op.arg(0)]
             offset = get_num(op, 1)
             unknown = "unknown"
             value = heap.get((obj, offset), "unknown")
