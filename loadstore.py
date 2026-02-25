@@ -659,7 +659,7 @@ def z3_encode_program(bb, arg_syms, initial_heap):
     return escaped, heap
 
 
-def z3_verify_program(bb):
+def z3_verify_program(bb, verbose=False):
     """Check optimize_load_store preserves semantics for ALL aliasing configs.
 
     Unlike verify_program which only tests two concrete aliasing
@@ -704,17 +704,139 @@ def z3_verify_program(bb):
     s = z3.Solver()
     s.add(z3.Or(*diffs))
     if s.check() == z3.sat:
-        m = s.model()
-        print(f"BUG! model: {m}")
-        print(f"  args = {[m.evaluate(a) for a in arg_syms]}")
-        print(f"  Original:\n{bb_to_str(bb)}")
-        print(f"  Optimized:\n{bb_to_str(opt_bb)}")
+        if verbose:
+            m = s.model()
+            print(f"Counterexample: args = {[m.evaluate(a) for a in arg_syms]}")
         return False
     return True
+
+
+# --- Test-case minimization (delta debugging) ---
+
+# Programs are serialized as lists of tuples so we can manipulate and
+# rebuild them without worrying about mutated forwarding pointers.
+#
+# ("getarg", arg_index)
+# ("load",   ("ref", obj_idx), offset)
+# ("store",  ("ref", obj_idx), offset, value)   -- value: int | ("ref", idx)
+# ("escape", value)                              -- value: int | ("ref", idx)
+
+
+def block_to_instrs(bb):
+    op_map = {}
+    instrs = []
+    for i, op in enumerate(bb):
+        op_map[op] = i
+        if op.name == "getarg":
+            instrs.append(("getarg", get_num(op, 0)))
+        elif op.name == "load":
+            instrs.append(("load", ("ref", op_map[op.arg(0)]), get_num(op, 1)))
+        elif op.name == "store":
+            val = op.arg(2)
+            v = val.value if isinstance(val, Constant) else ("ref", op_map[val])
+            instrs.append(
+                ("store", ("ref", op_map[op.arg(0)]), get_num(op, 1), v)
+            )
+        elif op.name == "escape":
+            val = op.arg(0)
+            v = val.value if isinstance(val, Constant) else ("ref", op_map[val])
+            instrs.append(("escape", v))
+    return instrs
+
+
+def instrs_to_block(instrs):
+    bb = Block()
+    ops = []
+    for instr in instrs:
+        if instr[0] == "getarg":
+            ops.append(bb.getarg(instr[1]))
+        elif instr[0] == "load":
+            ops.append(bb.load(ops[instr[1][1]], instr[2]))
+        elif instr[0] == "store":
+            val = instr[3]
+            val = ops[val[1]] if isinstance(val, tuple) else val
+            ops.append(bb.store(ops[instr[1][1]], instr[2], val))
+        elif instr[0] == "escape":
+            val = instr[1]
+            val = ops[val[1]] if isinstance(val, tuple) else val
+            ops.append(bb.escape(val))
+    return bb
+
+
+def _instr_refs(instr):
+    """Return the set of instruction indices this instruction references."""
+    return {
+        f[1] for f in instr[1:] if isinstance(f, tuple) and f[0] == "ref"
+    }
+
+
+def _dependents(instrs, idx):
+    """All instructions that transitively depend on idx."""
+    deps = set()
+    queue = [idx]
+    while queue:
+        i = queue.pop()
+        for j in range(i + 1, len(instrs)):
+            if i in _instr_refs(instrs[j]) and j not in deps:
+                deps.add(j)
+                queue.append(j)
+    return deps
+
+
+def _remove_indices(instrs, to_remove):
+    """Remove a set of indices and renumber surviving references."""
+    old_to_new = {}
+    n = 0
+    for j in range(len(instrs)):
+        if j not in to_remove:
+            old_to_new[j] = n
+            n += 1
+
+    def fix(field):
+        if isinstance(field, tuple) and field[0] == "ref":
+            return ("ref", old_to_new[field[1]])
+        return field
+
+    return [
+        tuple(instr[0:1] + tuple(fix(f) for f in instr[1:]))
+        for j, instr in enumerate(instrs)
+        if j not in to_remove
+    ]
+
+
+def shrink_failing_program(bb):
+    """Minimize a program that fails z3_verify_program."""
+    instrs = block_to_instrs(bb)
+    changed = True
+    while changed:
+        changed = False
+        for i in range(len(instrs) - 1, -1, -1):
+            if instrs[i][0] == "getarg":
+                continue
+            to_remove = {i} | _dependents(instrs, i)
+            candidate = _remove_indices(instrs, to_remove)
+            try:
+                new_bb = instrs_to_block(candidate)
+                if not z3_verify_program(new_bb):
+                    instrs = candidate
+                    changed = True
+                    break
+            except Exception:
+                continue
+    return instrs_to_block(instrs)
 
 
 def test_z3_random_programs():
     random.seed(0)
     for i in range(1000):
         bb = generate_program()
-        assert z3_verify_program(bb), f"Failed on program {i}"
+        if not z3_verify_program(bb):
+            small = shrink_failing_program(bb)
+            # Re-verify verbosely to get the counterexample
+            z3_verify_program(small, verbose=True)
+            opt = optimize_load_store(small)
+            assert False, (
+                f"Program {i} fails.\n"
+                f"Minimal reproducer:\n{bb_to_str(small)}\n"
+                f"Optimized:\n{bb_to_str(opt)}"
+            )
