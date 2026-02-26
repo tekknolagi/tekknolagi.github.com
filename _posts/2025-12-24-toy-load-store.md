@@ -250,7 +250,7 @@ also that we are not writing out-of-bounds.[^tbaa]
     window.
 
     This is called [Type-based alias analysis](/assets/img/tbaa.pdf) (PDF), or
-    TBAA.
+    TBAA. I cover it in [the next post](/blog/toy-tbaa/).
 
 So let's remove all of the entries from `compile_time_heap` where the offset
 matches the offset in the current `store`:
