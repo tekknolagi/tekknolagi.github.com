@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 580,
     "following_count": 288,
-    "statuses_count": 1435,
+    "statuses_count": 1436,
     "last_status_at": "2026-02-26",
     "hide_collections": false,
     "show_media": true,
@@ -71706,6 +71706,50 @@
       },
       "media_attachments": [],
       "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116135439173230371": {
+      "id": "116135439173230371",
+      "created_at": "2026-02-26T06:09:29.031Z",
+      "in_reply_to_id": "116135257553233858",
+      "in_reply_to_account_id": "110182438756240431",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116135439173230371",
+      "url": "https://mastodon.social/@tekknolagi/116135439173230371",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://cosocial.ca/@avi\" class=\"u-url mention\">@<span>avi</span></a></span> unfortunately not working in firefox :( blank space where video should be</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "110182438756240431",
+          "username": "avi",
+          "url": "https://cosocial.ca/@avi",
+          "acct": "avi@cosocial.ca"
+        }
+      ],
       "tags": [],
       "emojis": [],
       "quote": null,
