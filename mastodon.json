@@ -19,10 +19,10 @@
     "header": "https://mastodon.social/headers/original/missing.png",
     "header_static": "https://mastodon.social/headers/original/missing.png",
     "header_description": "",
-    "followers_count": 579,
+    "followers_count": 580,
     "following_count": 288,
-    "statuses_count": 1432,
-    "last_status_at": "2026-02-25",
+    "statuses_count": 1435,
+    "last_status_at": "2026-02-26",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -71569,6 +71569,143 @@
           "acct": "doty"
         }
       ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116134981114641209": {
+      "id": "116134981114641209",
+      "created_at": "2026-02-26T04:12:59.605Z",
+      "in_reply_to_id": "116134964265007007",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116134981114641209",
+      "url": "https://mastodon.social/@tekknolagi/116134981114641209",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Anyway in the process of thinking about this I sketched the tiniest interpreter generator and superinstruction generator (but not finder)</p><p><a href=\"https://gist.github.com/tekknolagi/8071878faa59514e3a2155bc8798638b\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">gist.github.com/tekknolagi/807</span><span class=\"invisible\">1878faa59514e3a2155bc8798638b</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": {
+        "url": "https://gist.github.com/tekknolagi/8071878faa59514e3a2155bc8798638b",
+        "title": "interp.c",
+        "description": "GitHub Gist: instantly share code, notes, and snippets.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Gist",
+        "provider_url": "",
+        "html": "",
+        "width": 678,
+        "height": 339,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/183/303/776/original/53e5bb9d0aa464bb.png",
+        "image_description": "GitHub Gist: instantly share code, notes, and snippets.",
+        "embed_url": "",
+        "blurhash": "U56RP[_3IUD%00D$xu%MofayWBWB_3-;RjM{",
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116134970186786730": {
+      "id": "116134970186786730",
+      "created_at": "2026-02-26T04:10:12.864Z",
+      "in_reply_to_id": "116134964265007007",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116134970186786730",
+      "url": "https://mastodon.social/@tekknolagi/116134970186786730",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>maybe cc <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@sbrunthaler\" class=\"u-url mention\">@<span>sbrunthaler</span></a></span> ? I will have to see what you say about superinstructions in your papers</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "111250459755377079",
+          "username": "sbrunthaler",
+          "url": "https://mastodon.social/@sbrunthaler",
+          "acct": "sbrunthaler"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116134964265007007": {
+      "id": "116134964265007007",
+      "created_at": "2026-02-26T04:08:42.502Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116134964265007007",
+      "url": "https://mastodon.social/@tekknolagi/116134964265007007",
+      "replies_count": 2,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>So my friend Chris taught me what byte pair encoding is and then I was idly thinking about it and I wonder if people can/do use this for generating bytecode interpreter superinstructions.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Web",
+        "website": null
+      },
+      "media_attachments": [],
+      "mentions": [],
       "tags": [],
       "emojis": [],
       "quote": null,
