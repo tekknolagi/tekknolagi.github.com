@@ -4,8 +4,6 @@ import random
 import re
 from typing import Optional, Any, List, Tuple, Dict
 
-import z3
-
 
 class Value:
     def find(self):
@@ -109,6 +107,9 @@ class AbstractHeap:
             result.extend(child.all_heaps())
         return result
 
+    def __repr__(self) -> str:
+        return f"AbstractHeap({self.name})"
+
 
 Any = AbstractHeap("Any")
 Object = Any.add_child("Object")
@@ -146,6 +147,7 @@ class Block(list):
     load = opbuilder("load")
     store = opbuilder("store")
     alias = opbuilder("alias")
+    checktype = opbuilder("checktype")
     escape = opbuilder("escape")
 
 
@@ -529,28 +531,61 @@ var4 = escape(var2)
 var5 = escape(var3)"""
     )
 
+class Ref:
+    def __init__(self, num_slots):
+        self.slots = [None] * num_slots
 
 def generate_program():
     bb = Block()
-    args = [bb.getarg(i) for i in range(3)]
+    args = []
+    refs = []
     num_ops = random.randint(0, 10)
     ops_with_values = args[:]
-    for _ in range(num_ops):
-        op = random.choice(["load", "store", "escape"])
-        arg = random.choice(args)
-        offset = random.randint(0, 4)
-        if op == "load":
+    generate some random refs
+    sample_values = [object(), 1, "string", (1, 2, 3)]
+    while len(bb) < num_ops:
+        op = random.choice(["getarg", "load", "store", "checktype", "escape"])
+        if op == "getarg":
+            v = bb.getarg(len(args))
+            # either pick an existing argument to make them alias
+            # or generate a new one
+            if args and random.choice([True, False]):
+                v._example_value = random.choice(args)._example_value
+            else:
+                v._example_value = random.choice(sample_values)
+            args.append(v)
+        elif op == "load":
+            load from random ref
+            if not args: continue
+            arg = random.choice(args)
+            offset = random.randint(0, 4)
             v = bb.load(arg, offset)
             ops_with_values.append(v)
         elif op == "store":
+            store to random ref
+            if not args: continue
+            arg = random.choice(args)
+            offset = random.randint(0, 4)
             value = random.randint(0, 10)
             bb.store(arg, offset, value)
+        elif op == "checktype":
+            if not args: continue
+            arg = random.choice(args)
+            ty = None
+            match arg._example_value:
+                case int(): ty = Other
+                case str(): ty = String
+                case tuple(): ty = Array
+                case object(): ty = Object
+                case _: raise NotImplementedError()
+            bb.checktype(arg, ty)
         elif op == "escape":
+            if not ops_with_values: continue
             a_value = random.choice(ops_with_values)
             bb.escape(a_value)
         else:
             raise NotImplementedError(f"Unknown operation {op}")
-    return bb
+    return bb, [arg._example_value for arg in args]
 
 
 def interpret_program(bb, args):
@@ -571,6 +606,8 @@ def interpret_program(bb, args):
             unknown = "unknown"
             value = heap.get((obj, offset), "unknown")
             ssa[op] = value
+        elif op.name == "checktype":
+            pass
         elif op.name == "escape":
             value = op.arg(0)
             if isinstance(value, Constant):
@@ -583,20 +620,19 @@ def interpret_program(bb, args):
     return heap
 
 
-def verify_program(bb):
-    before_no_alias = interpret_program(bb, ["a", "b", "c"])
-    a = "a"
-    before_alias = interpret_program(bb, [a, a, a])
+def verify_program(bb, args):
+    before = interpret_program(bb, args)
     optimized = optimize_load_store(bb)
-    after_no_alias = interpret_program(optimized, ["a", "b", "c"])
-    after_alias = interpret_program(optimized, [a, a, a])
-    assert before_no_alias == after_no_alias
-    assert before_alias == after_alias
+    after = interpret_program(optimized, args)
+    assert before == after
 
 
 def test_random_programs():
     random.seed(0)
     num_programs = 100000
     for i in range(num_programs):
-        program = generate_program()
-        verify_program(program)
+        program, args = generate_program()
+        print()
+        print(bb_to_str(program))
+        print()
+        verify_program(program, args)
