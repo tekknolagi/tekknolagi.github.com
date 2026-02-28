@@ -180,3 +180,8 @@ often functions have multiple return IR instructions. He notes the usual
 solution is to transform them into branches to a single return instruction.
 
 Do you have this problem? What does your compiler do?
+
+## Update: a conclusion
+
+We have decided to go with [the superblock
+approach](https://github.com/ruby/ruby/pull/16200).
