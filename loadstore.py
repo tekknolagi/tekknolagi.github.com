@@ -531,6 +531,105 @@ var5 = escape(var3)"""
     )
 
 
+def optimize_dead_store(bb: Block):
+    opt_bb = Block()
+    unread_stores = set()
+    for op in reversed(bb):
+        if op.name == "store":
+            obj = op.arg(0)
+            offset = get_num(op, 1)
+            store_info = (obj, offset)
+            if store_info in unread_stores:
+                continue
+            unread_stores.add(store_info)
+        elif op.name == "load":
+            load_info = (op.arg(0), get_num(op, 1))
+            # TIL about set.discard... I only knew about set.remove all this
+            # time
+            unread_stores = {k for k in unread_stores
+                             if k[1] != load_info[1]
+                             or not may_alias(k[0], load_info[0])}
+        else:
+            # TODO(max): If this could read memory, invalidate unread_stores
+            pass
+        opt_bb.append(op)
+    opt_bb.reverse()
+    return opt_bb
+
+
+def test_eliminate_redundant_store_to_same_object():
+    bb = Block()
+    var0 = bb.getarg(0)
+    bb.store(var0, 0, 3)
+    bb.store(var0, 0, 4)
+    bb.store(var0, 0, 5)
+    opt_bb = optimize_dead_store(bb)
+    assert bb_to_str(opt_bb) == """\
+var0 = getarg(0)
+var1 = store(var0, 0, 5)"""
+
+
+def test_dont_eliminate_store_to_different_offset():
+    bb = Block()
+    var0 = bb.getarg(0)
+    bb.store(var0, 0, 3)
+    bb.store(var0, 1, 4)
+    bb.store(var0, 0, 5)
+    opt_bb = optimize_dead_store(bb)
+    assert bb_to_str(opt_bb) == """\
+var0 = getarg(0)
+var1 = store(var0, 1, 4)
+var2 = store(var0, 0, 5)"""
+
+
+def test_dont_eliminate_store_to_same_offset_different_object():
+    bb = Block()
+    var0 = bb.getarg(0)
+    var1 = bb.getarg(1)
+    var2 = bb.store(var0, 0, 3)
+    var3 = bb.load(var1, 0)
+    var4 = bb.store(var0, 0, 4)
+    opt_bb = optimize_dead_store(bb)
+    assert bb_to_str(opt_bb) == """\
+var0 = getarg(0)
+var1 = getarg(1)
+var2 = store(var0, 0, 3)
+var3 = load(var1, 0)
+var4 = store(var0, 0, 4)"""
+
+
+def test_eliminate_store_to_same_offset_different_type():
+    bb = Block()
+    var0 = bb.getarg(0)
+    var0.info = Array
+    var1 = bb.getarg(1)
+    var1.info = String
+    bb.store(var0, 0, 3)
+    bb.load(var1, 0, 4)
+    bb.store(var0, 0, 5)
+    opt_bb = optimize_dead_store(bb)
+    assert bb_to_str(opt_bb) == """\
+var0 = getarg(0)
+var1 = getarg(1)
+var2 = load(var1, 0, 4)
+var3 = store(var0, 0, 5)"""
+
+
+def test_exercise_for_the_reader():
+    bb = Block()
+    arg0 = bb.getarg(0)
+    var0 = bb.store(arg0, 0, 5)
+    var1 = bb.store(arg0, 0, 7)
+    var2 = bb.load(arg0, 0)
+    bb.escape(var2)
+    opt_bb = optimize_load_store(bb)
+    opt_bb = optimize_dead_store(opt_bb)
+    assert bb_to_str(opt_bb) == """\
+var0 = getarg(0)
+var1 = store(var0, 0, 7)
+var2 = escape(7)"""
+
+
 def generate_program():
     bb = Block()
     args = [bb.getarg(i) for i in range(3)]
