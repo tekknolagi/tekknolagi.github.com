@@ -213,6 +213,9 @@ def optimize_load_store(bb: Block):
                 op.make_equal_to(compile_time_heap[load_info])
                 continue
             compile_time_heap[load_info] = op
+        else:
+            # TODO(max): If this could write memory, invalidate compile_time_heap
+            pass
         opt_bb.append(op)
     return opt_bb
 
