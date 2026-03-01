@@ -4,8 +4,6 @@ import random
 import re
 from typing import Optional, Any, List, Tuple, Dict
 
-import z3
-
 
 class Value:
     def find(self):
