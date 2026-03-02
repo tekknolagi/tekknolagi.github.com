@@ -10,11 +10,23 @@ import html
 import os
 import re
 import shutil
-import sys
 
 import markdown2
 import yaml
-from liquid2 import DictLoader, Environment
+from liquid2 import DictLoader, Environment, Node, Tag
+from liquid2.builtin.expressions import (
+    Path,
+    StringLiteral,
+    parse_keyword_arguments,
+    parse_primitive,
+    parse_string_or_identifier,
+    parse_string_or_path,
+)
+from liquid2.builtin.tags.include_tag import IncludeTag
+from liquid2.context import RenderContext
+from liquid2.exceptions import LiquidSyntaxError
+from liquid2.stream import TokenStream
+from liquid2.token import TagToken, TokenType
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -102,10 +114,8 @@ def url_for_page(fm, rel_path):
 # Liquid setup
 # ---------------------------------------------------------------------------
 
-# Jekyll uses unquoted include names: {% include foo.md %}
-# python-liquid2 requires quoted names: {% include "foo.md" %}
-_INCLUDE_RE = re.compile(r"\{%[-\s]*include\s+(\S+)\s*%\}")
-# {% link _posts/YYYY-MM-DD-slug.md %} (may span two lines)
+# {% link _posts/YYYY-MM-DD-slug.md %} contains filesystem paths with '/'
+# which the liquid2 lexer rejects, so this must remain as preprocessing.
 _LINK_RE = re.compile(r"\{%-?\s*\n?\s*link\s+_posts/(\S+?)\.md\s*%\}")
 
 
@@ -114,66 +124,131 @@ def _link_to_url(m, permalink_pattern):
     return permalink_pattern.replace(":slug", slug)
 
 
-def preprocess_liquid(text, page_fm, site_cfg):
-    """Fix Liquid syntax differences between Jekyll and python-liquid2."""
+def preprocess_liquid(text, site_cfg):
+    """Resolve {% link %} tags (which contain '/' that the lexer rejects)."""
     permalink = site_cfg.get("permalink", "/blog/:slug/")
-
-    # Resolve {% link %} tags to URLs
-    text = _LINK_RE.sub(lambda m: _link_to_url(m, permalink), text)
-
-    # Quote include names
-    def _quote_include(m):
-        name = m.group(1)
-        if name.startswith('"') or name.startswith("'"):
-            return m.group(0)
-        return '{%% include "%s" %%}' % name
-
-    text = _INCLUDE_RE.sub(_quote_include, text)
-    # Replace {% seo %} with generated HTML
-    text = text.replace("{% seo %}", _seo_html(page_fm, site_cfg))
-    return text
+    return _LINK_RE.sub(lambda m: _link_to_url(m, permalink), text)
 
 
-def _seo_html(page_fm, site_cfg):
-    """Generate minimal SEO tags similar to jekyll-seo-tag."""
-    title = page_fm.get("title", "")
-    site_title = site_cfg.get("title", "")
-    if title and site_title:
-        full_title = f"{title} | {site_title}"
-    else:
-        full_title = title or site_title
-    desc = page_fm.get("description", site_cfg.get("description", ""))
-    url = site_cfg.get("url", "")
-    canonical = page_fm.get("canonical_url", "")
-    parts = [f"<title>{html.escape(full_title)}</title>"]
-    if desc:
-        parts.append(
-            f'<meta name="description" content="{html.escape(desc)}" />'
+# --- Custom Liquid tags ---
+
+
+class JekyllIncludeTag(IncludeTag):
+    """Override include to treat unquoted names like css.md as string literals."""
+
+    def parse(self, stream: TokenStream) -> Node:
+        token = stream.current()
+        assert isinstance(token, TagToken)
+        if not token.expression:
+            raise LiquidSyntaxError("expected template name", token=token)
+
+        tokens = TokenStream(token.expression)
+        name = parse_string_or_path(tokens.next())
+
+        # Jekyll uses unquoted include names: {% include css.md %}
+        # The lexer parses 'css.md' as a Path(['css', 'md']).
+        # Convert it to a string literal so the loader can find the template.
+        if isinstance(name, Path):
+            name = StringLiteral(name.token, ".".join(name.path))
+
+        loop = False
+        var = None
+        alias = None
+
+        if tokens.current().type_ == TokenType.FOR and tokens.peek().type_ not in (
+            TokenType.COLON,
+            TokenType.COMMA,
+        ):
+            tokens.next()
+            loop = True
+            var = parse_primitive(self.env, tokens.next())
+            if tokens.current().type_ == TokenType.AS:
+                tokens.next()
+                alias = parse_string_or_identifier(tokens.next())
+        elif tokens.current().type_ == TokenType.WITH and tokens.peek().type_ not in (
+            TokenType.COLON,
+            TokenType.COMMA,
+        ):
+            tokens.next()
+            var = parse_primitive(self.env, tokens.next())
+            if tokens.current().type_ == TokenType.AS:
+                tokens.next()
+                alias = parse_string_or_identifier(tokens.next())
+
+        args = parse_keyword_arguments(self.env, tokens)
+        tokens.expect_eos()
+        return self.node_class(
+            token, name, loop=loop, var=var, alias=alias, args=args
         )
-    parts.append(
-        f'<meta property="og:title" content="{html.escape(full_title)}" />'
-    )
-    if desc:
+
+
+class SeoNode(Node):
+    """Render SEO meta tags similar to jekyll-seo-tag."""
+
+    __slots__ = ()
+
+    def render_to_output(self, context: RenderContext, buffer) -> int:
+        page = context.resolve("page", default={})
+        site = context.resolve("site", default={})
+        title = page.get("title", "") if isinstance(page, dict) else ""
+        site_title = site.get("title", "") if isinstance(site, dict) else ""
+        if title and site_title:
+            full_title = f"{title} | {site_title}"
+        else:
+            full_title = title or site_title
+        desc = ""
+        if isinstance(page, dict):
+            desc = page.get("description", "")
+        if not desc and isinstance(site, dict):
+            desc = site.get("description", "")
+        url = site.get("url", "") if isinstance(site, dict) else ""
+        canonical = page.get("canonical_url", "") if isinstance(page, dict) else ""
+        page_url = page.get("url", "") if isinstance(page, dict) else ""
+
+        parts = [f"<title>{html.escape(full_title)}</title>"]
+        if desc:
+            parts.append(
+                f'<meta name="description" content="{html.escape(desc)}" />'
+            )
         parts.append(
-            f'<meta property="og:description" content="{html.escape(desc)}" />'
+            f'<meta property="og:title" content="{html.escape(full_title)}" />'
         )
-    if canonical:
-        parts.append(f'<link rel="canonical" href="{html.escape(canonical)}" />')
-    elif url:
-        page_url = page_fm.get("url", "")
-        parts.append(
-            f'<link rel="canonical" href="{html.escape(url + page_url)}" />'
-        )
-    if url:
-        parts.append(f'<meta property="og:url" content="{html.escape(url)}" />')
-        parts.append(
-            f'<meta property="og:site_name" content="{html.escape(site_title)}" />'
-        )
-    return "\n    ".join(parts)
+        if desc:
+            parts.append(
+                f'<meta property="og:description" content="{html.escape(desc)}" />'
+            )
+        if canonical:
+            parts.append(
+                f'<link rel="canonical" href="{html.escape(canonical)}" />'
+            )
+        elif url:
+            parts.append(
+                f'<link rel="canonical" href="{html.escape(url + page_url)}" />'
+            )
+        if url:
+            parts.append(
+                f'<meta property="og:url" content="{html.escape(url)}" />'
+            )
+            parts.append(
+                f'<meta property="og:site_name" content="{html.escape(site_title)}" />'
+            )
+        out = "\n    ".join(parts)
+        buffer.write(out)
+        return len(out)
+
+
+class SeoTag(Tag):
+    """The {% seo %} tag."""
+
+    block = False
+    node_class = SeoNode
+
+    def parse(self, stream: TokenStream) -> Node:
+        return SeoNode(stream.current())
 
 
 def make_liquid_env(includes_dir, site_cfg):
-    """Build a liquid2 Environment with custom filters and includes."""
+    """Build a liquid2 Environment with custom tags and filters."""
     # Load all includes into a dict
     includes = {}
     if os.path.isdir(includes_dir):
@@ -184,6 +259,10 @@ def make_liquid_env(includes_dir, site_cfg):
 
     loader = DictLoader(includes)
     env = Environment(loader=loader)
+
+    # --- custom tags ---
+    env.tags["include"] = JekyllIncludeTag(env)
+    env.tags["seo"] = SeoTag(env)
 
     # --- custom filters ---
     base_url = site_cfg.get("url", "")
@@ -229,13 +308,13 @@ def make_liquid_env(includes_dir, site_cfg):
     return env, includes
 
 
-def render_liquid(env, template_text, variables, page_fm, site_cfg):
+def render_liquid(env, template_text, variables, site_cfg):
     """Pre-process and render a Liquid template string."""
-    preprocessed = preprocess_liquid(template_text, page_fm, site_cfg)
-    # Preprocess includes so {% seo %} and {% include %} syntax is fixed there too
+    preprocessed = preprocess_liquid(template_text, site_cfg)
+    # Preprocess includes to resolve {% link %} tags there too
     orig_includes = env.loader.templates
     new_includes = {
-        name: preprocess_liquid(src, page_fm, site_cfg)
+        name: preprocess_liquid(src, site_cfg)
         for name, src in orig_includes.items()
     }
     env.loader = DictLoader(new_includes)
@@ -401,7 +480,7 @@ def render_content(env, item, site, layouts, site_cfg, is_markdown):
     variables = {"site": site, "page": page_vars, "jekyll": {"environment": "development"}}
 
     # 1) Render Liquid in content body
-    rendered_body = render_liquid(env, body, variables, fm, site_cfg)
+    rendered_body = render_liquid(env, body, variables, site_cfg)
 
     # 2) Convert Markdown to HTML if needed
     if is_markdown:
@@ -413,7 +492,7 @@ def render_content(env, item, site, layouts, site_cfg, is_markdown):
         layout_src = layouts[layout_name]
         variables["content"] = rendered_body
         page_vars["content"] = rendered_body
-        final = render_liquid(env, layout_src, variables, fm, site_cfg)
+        final = render_liquid(env, layout_src, variables, site_cfg)
     elif layout_name == "none":
         # Render Liquid but don't wrap in layout
         final = rendered_body
