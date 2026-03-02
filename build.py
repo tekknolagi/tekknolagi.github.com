@@ -198,21 +198,28 @@ def make_liquid_env(includes_dir, site_cfg):
         return base_url + s
 
     def where_exp(iterable, var_name, expression):
-        """Minimal where_exp supporting 'var.attr != value' patterns."""
+        """Minimal where_exp for expressions like 'post.index != true'."""
         if not iterable:
             return []
         expr = expression.strip()
-        field = expr.replace(var_name + ".", "").split()[0] if var_name in expr else ""
-        negate = "!=" in expr
+        # Parse "var.field op value" from expressions like "post.index != true"
+        prefix = var_name + "."
+        if not expr.startswith(prefix):
+            return list(iterable)
+        rest = expr[len(prefix):]
+        parts = rest.split()
+        if len(parts) < 3:
+            return list(iterable)
+        field, op = parts[0], parts[1]
+        val_str = parts[2]
+        cmp_val = True if val_str == "true" else (False if val_str == "false" else val_str)
         results = []
         for item in iterable:
             v = item.get(field) if isinstance(item, dict) else getattr(item, field, None)
-            if negate:
-                if not v:
-                    results.append(item)
-            else:
-                if v:
-                    results.append(item)
+            if op == "!=" and v != cmp_val:
+                results.append(item)
+            elif op == "==" and v == cmp_val:
+                results.append(item)
         return results
 
     env.filters["xml_escape"] = xml_escape
@@ -225,11 +232,12 @@ def make_liquid_env(includes_dir, site_cfg):
 def render_liquid(env, template_text, variables, page_fm, site_cfg):
     """Pre-process and render a Liquid template string."""
     preprocessed = preprocess_liquid(template_text, page_fm, site_cfg)
-    # Also preprocess all includes
-    orig_includes = dict(env.loader.templates) if hasattr(env.loader, 'templates') else {}
-    new_includes = {}
-    for name, src in orig_includes.items():
-        new_includes[name] = preprocess_liquid(src, page_fm, site_cfg)
+    # Preprocess includes so {% seo %} and {% include %} syntax is fixed there too
+    orig_includes = env.loader.templates
+    new_includes = {
+        name: preprocess_liquid(src, page_fm, site_cfg)
+        for name, src in orig_includes.items()
+    }
     env.loader = DictLoader(new_includes)
     try:
         tpl = env.from_string(preprocessed)
@@ -446,7 +454,8 @@ def copy_static(src_dir, dest_dir):
         if os.path.isfile(src):
             shutil.copy2(src, dst)
 
-    # Handle SCSS -> CSS (strip frontmatter, copy as-is since no real SCSS features)
+    # Strip YAML frontmatter from .scss and rename to .css.
+    # This site's SCSS is plain CSS so no preprocessing is needed.
     scss_path = os.path.join(dest_dir, "assets", "css", "main.scss")
     css_path = os.path.join(dest_dir, "assets", "css", "main.css")
     if os.path.isfile(scss_path):
