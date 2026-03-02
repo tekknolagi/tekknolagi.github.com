@@ -358,6 +358,9 @@ _BLOCK_TAGS = frozenset({
 })
 
 
+_PYGMENTS_FORMATTER = HtmlFormatter(cssclass="codehilite")
+
+
 class _JekyllRenderer(mistune.HTMLRenderer):
     """Custom mistune renderer with Pygments highlighting and heading IDs.
 
@@ -373,7 +376,7 @@ class _JekyllRenderer(mistune.HTMLRenderer):
         if info:
             try:
                 lexer = get_lexer_by_name(info.strip())
-                return pyg_highlight(code, lexer, HtmlFormatter(cssclass="codehilite"))
+                return pyg_highlight(code, lexer, _PYGMENTS_FORMATTER)
             except ClassNotFound:
                 pass
         return f"<pre><code>{mistune.escape(code)}</code></pre>\n"
@@ -440,14 +443,14 @@ def _collapse_html_blanks(text):
     content as indented code blocks.  Removing blank lines while inside a
     block-level HTML element prevents this.
     """
+    _OPEN_RE = re.compile(r"<(" + "|".join(_BLOCK_TAGS) + r")\b")
+    _CLOSE_RE = re.compile(r"</(" + "|".join(_BLOCK_TAGS) + r")\b")
     lines = text.split("\n")
     result = []
     depth = 0
     for line in lines:
         stripped = line.strip()
-        for tag in _BLOCK_TAGS:
-            depth += len(re.findall(rf"<{tag}\b", stripped))
-            depth -= len(re.findall(rf"</{tag}\b", stripped))
+        depth += len(_OPEN_RE.findall(stripped)) - len(_CLOSE_RE.findall(stripped))
         if depth > 0 and not stripped:
             continue
         result.append(line)
