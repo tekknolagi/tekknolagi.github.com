@@ -336,10 +336,10 @@ def render_liquid(env, template_text, variables):
 # Markdown rendering (mistune + Pygments)
 # ---------------------------------------------------------------------------
 
-# Regex that matches <pre>…</pre> blocks (which contain code) or individual
-# HTML tags.  Everything *between* these matches is a text node that is safe
-# to modify for smart-dash conversion.
-_HTML_SKIP_RE = re.compile(r"(<pre[\s>].*?</pre>|<[^>]+>)", re.DOTALL)
+# Regex that matches <pre>…</pre> blocks (which contain code), HTML comments,
+# or individual HTML tags.  Everything *between* these matches is a text node
+# that is safe to modify for smart-dash conversion.
+_HTML_SKIP_RE = re.compile(r"(<pre[\s>].*?</pre>|<!--.*?-->|<[^>]+>)", re.DOTALL)
 
 # Kramdown annotation that marks a heading to be excluded from the TOC.
 _NO_TOC_RE = re.compile(
