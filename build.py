@@ -432,6 +432,7 @@ class _SmartDashInlineParser(InlineParser):
     """
 
     SPECIFICATION = dict(InlineParser.SPECIFICATION)
+    # Match 2–3 consecutive dashes, but not 4+ (e.g. markdown horizontal rules).
     SPECIFICATION["smart_dash"] = r"-{2,3}(?!-)"
 
     DEFAULT_RULES = InlineParser.DEFAULT_RULES + ("smart_dash",)
