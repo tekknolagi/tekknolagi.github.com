@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "python-liquid2>=0.3",
+#     "markdown2>=2.5",
+#     "pyyaml>=6",
+#     "pygments>=2",
+# ]
+# ///
 """Minimal Jekyll-compatible static site builder.
 
-Dependencies: python-liquid2, markdown2, pyyaml, pygments
-Usage: python3 build.py
+Usage: uv run build.py
 """
 
 import datetime
@@ -326,8 +334,28 @@ def render_liquid(env, template_text, variables, site_cfg):
 
 
 def render_markdown(text):
-    """Convert Markdown to HTML using markdown2."""
-    return markdown2.markdown(
+    """Convert Markdown to HTML using markdown2 with Pygments highlighting."""
+    # Strip kramdown attribute annotations before converting.
+    # {:.no_toc} marks headings to exclude from TOC generation.
+    no_toc_ids = set()
+    has_toc = "{:toc}" in text
+
+    def _strip_no_toc(m):
+        # Capture the heading text so we can build its id for exclusion
+        heading_text = m.group(1).strip()
+        hid = re.sub(r"[^\w\s-]", "", heading_text).strip().lower()
+        hid = re.sub(r"[\s]+", "-", hid)
+        no_toc_ids.add(hid)
+        return m.group(0).replace(m.group(2), "")
+
+    # Match: ## Heading\n{:.no_toc}
+    text = re.sub(
+        r"(^#{1,6}\s+.+)\n(\{:\s*\.no_toc\s*\})", _strip_no_toc, text, flags=re.MULTILINE
+    )
+    # Remove the {:toc} placeholder and preceding list marker
+    text = re.sub(r"^\*[^\n]*\n\{:toc\}\s*$", "<!-- TOC -->", text, flags=re.MULTILINE)
+
+    result = markdown2.markdown(
         text,
         extras=[
             "fenced-code-blocks",
@@ -337,8 +365,32 @@ def render_markdown(text):
             "code-friendly",
             "cuddled-lists",
             "strike",
+            "smarty-pants",
         ],
     )
+
+    if has_toc:
+        toc_html = _build_toc(result, no_toc_ids)
+        result = result.replace("<!-- TOC -->", toc_html, 1)
+    # Clean up any remaining <!-- TOC --> if {:toc} was absent
+    result = result.replace("<!-- TOC -->", "")
+    return result
+
+
+def _build_toc(html_content, exclude_ids):
+    """Build a table of contents HTML string from headings in the rendered HTML."""
+    headings = re.findall(r'<h([2-6])\s+id="([^"]+)"[^>]*>(.*?)</h\1>', html_content)
+    if not headings:
+        return ""
+    parts = ['<ul id="markdown-toc">']
+    for level_str, hid, title in headings:
+        if hid in exclude_ids:
+            continue
+        # Strip any HTML tags from the title
+        clean_title = re.sub(r"<[^>]+>", "", title)
+        parts.append(f'  <li><a href="#{hid}">{clean_title}</a></li>')
+    parts.append("</ul>")
+    return "\n".join(parts)
 
 
 # ---------------------------------------------------------------------------
@@ -544,6 +596,31 @@ def copy_static(src_dir, dest_dir):
         os.remove(scss_path)
 
 
+def load_asset_pages(src_dir):
+    """Find asset files that have YAML frontmatter and need Liquid processing."""
+    pages = []
+    skip_exts = {".scss"}  # Handled separately in copy_static
+    for root, _dirs, files in os.walk(os.path.join(src_dir, "assets")):
+        for fname in files:
+            if os.path.splitext(fname)[1] in skip_exts:
+                continue
+            path = os.path.join(root, fname)
+            try:
+                text = read_file(path)
+            except (UnicodeDecodeError, ValueError):
+                continue
+            if not text.startswith("---"):
+                continue
+            fm, body = parse_frontmatter(text)
+            if not fm:
+                fm = {}
+            rel = os.path.relpath(path, src_dir)
+            fm["url"] = "/" + rel
+            fm["path"] = rel
+            pages.append({"fm": fm, "body": body, "path": path, "ext": os.path.splitext(fname)[1]})
+    return pages
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -624,6 +701,15 @@ def main():
     # --- Copy static files ---
     print("Copying static files...")
     copy_static(SRC, DEST)
+
+    # --- Render asset files with frontmatter (e.g. rss.xsl) ---
+    asset_pages = load_asset_pages(SRC)
+    if asset_pages:
+        print(f"Rendering {len(asset_pages)} asset pages...")
+        for p in asset_pages:
+            output, _ = render_content(env, p, site, layouts, site_cfg, is_markdown=False)
+            out_path = os.path.join(DEST, p["fm"]["url"].lstrip("/"))
+            write_file(out_path, output)
 
     # Count output files
     count = sum(len(files) for _, _, files in os.walk(DEST))
