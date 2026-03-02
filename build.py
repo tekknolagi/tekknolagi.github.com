@@ -3,7 +3,7 @@
 # requires-python = ">=3.10"
 # dependencies = [
 #     "python-liquid2>=0.3",
-#     "markdown2>=2.5",
+#     "mistune>=3.2",
 #     "pyyaml>=6",
 #     "pygments>=2",
 # ]
@@ -19,8 +19,7 @@ import os
 import re
 import shutil
 
-import markdown2
-import pygments  # noqa: F401 – explicit dep; used by markdown2 fenced-code-blocks
+import mistune
 import yaml
 from liquid2 import DictLoader, Environment, Node, Tag
 from liquid2.builtin.expressions import (
@@ -36,7 +35,13 @@ from liquid2.context import RenderContext
 from liquid2.exceptions import LiquidSyntaxError
 from liquid2.stream import TokenStream
 from liquid2.token import TagToken, TokenType
-from xml.etree import ElementTree as ET
+from mistune.plugins.footnotes import footnotes
+from mistune.plugins.formatting import strikethrough
+from mistune.plugins.table import table
+from pygments import highlight as pyg_highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import get_lexer_by_name
+from pygments.util import ClassNotFound
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -328,7 +333,7 @@ def render_liquid(env, template_text, variables):
 
 
 # ---------------------------------------------------------------------------
-# Markdown / HTML post-processing
+# Markdown rendering (mistune + Pygments)
 # ---------------------------------------------------------------------------
 
 # Regex that matches <pre>…</pre> blocks (which contain code) or individual
@@ -344,23 +349,55 @@ _NO_TOC_RE = re.compile(
 # Kramdown {:toc} marker (preceded by a throwaway list bullet).
 _TOC_RE = re.compile(r"^\*[^\n]*\n\{:toc\}\s*$", re.MULTILINE)
 
-_MD_EXTRAS = [
-    "fenced-code-blocks",  # uses Pygments when installed
-    "footnotes",
-    "tables",
-    "header-ids",
-    "code-friendly",
-    "cuddled-lists",
-    "strike",
-    "toc",              # populates result.toc_html
-]
+
+class _JekyllRenderer(mistune.HTMLRenderer):
+    """Custom mistune renderer with Pygments highlighting and heading IDs.
+
+    Collects headings during rendering so a TOC can be built afterwards
+    without re-parsing the HTML.
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(escape=False, **kwargs)
+        self.toc_items: list[tuple[int, str, str]] = []
+
+    def block_code(self, code, info=None):
+        if info:
+            try:
+                lexer = get_lexer_by_name(info.strip())
+                return pyg_highlight(code, lexer, HtmlFormatter(cssclass="codehilite"))
+            except ClassNotFound:
+                pass
+        return f"<pre><code>{mistune.escape(code)}</code></pre>\n"
+
+    def heading(self, text, level, **attrs):
+        raw = re.sub(r"<[^>]+>", "", text)
+        hid = re.sub(r"[^\w\s-]", "", raw).strip().lower()
+        hid = re.sub(r"[\s]+", "-", hid)
+        self.toc_items.append((level, hid, raw.strip()))
+        return f'<h{level} id="{hid}">{text}</h{level}>\n'
+
+    def render_toc(self, exclude_titles=frozenset()):
+        """Build a flat ``<ul>`` TOC from collected headings."""
+        items = [
+            (hid, title)
+            for lvl, hid, title in self.toc_items
+            if lvl >= 2 and title not in exclude_titles
+        ]
+        if not items:
+            return ""
+        parts = ["<ul>"]
+        for hid, title in items:
+            parts.append(f'  <li><a href="#{hid}">{title}</a></li>')
+        parts.append("</ul>")
+        return "\n".join(parts)
 
 
 def _smart_dashes_html(html_text):
     """Convert ``---`` to em-dash and ``--`` to en-dash in HTML text nodes.
 
     Operates on *rendered* HTML so that ``<pre>``/``<code>`` blocks and tag
-    attributes are never touched – the right pipeline layer for this transform.
+    attributes are never touched.
     """
     parts = _HTML_SKIP_RE.split(html_text)
     for i, part in enumerate(parts):
@@ -370,9 +407,9 @@ def _smart_dashes_html(html_text):
 
 
 def _strip_kramdown_annotations(text):
-    """Strip kramdown `{:toc}` / `{:.no_toc}` from Markdown source.
+    """Strip kramdown ``{:toc}`` / ``{:.no_toc}`` from Markdown source.
 
-    Returns (cleaned_text, no_toc_heading_names, has_toc).
+    Returns *(cleaned_text, no_toc_heading_names, has_toc)*.
     """
     no_toc = set()
 
@@ -387,54 +424,31 @@ def _strip_kramdown_annotations(text):
     return text, no_toc, has_toc
 
 
-def _filter_toc(toc_html, exclude_titles):
-    """Remove entries whose text is in *exclude_titles* from markdown2's TOC.
-
-    Uses ElementTree to walk the ``<ul>``/``<li>`` tree properly rather than
-    attempting to regex-match nested HTML.
-    """
-    if not toc_html or not toc_html.strip():
-        return ""
-    root = ET.fromstring(f"<root>{toc_html}</root>")
-    toc_ul = root.find("ul")
-    if toc_ul is None:
-        return toc_html
-
-    def _prune(ul):
-        for li in list(ul):
-            a = li.find("a")
-            if a is not None and (a.text or "").strip() in exclude_titles:
-                ul.remove(li)
-            else:
-                for nested in li.findall("ul"):
-                    _prune(nested)
-                    if len(nested) == 0:
-                        li.remove(nested)
-
-    _prune(toc_ul)
-    return ET.tostring(toc_ul, encoding="unicode")
+# Build the mistune Markdown instance once (the renderer is reset per call).
+def _make_md(renderer):
+    return mistune.create_markdown(
+        renderer=renderer,
+        plugins=[table, footnotes, strikethrough],
+    )
 
 
 def render_markdown(text):
     """Convert Markdown to HTML (Pygments highlighting, TOC, smart dashes)."""
-    # 1. Strip kramdown annotations that markdown2 doesn't understand.
+    # 1. Strip kramdown annotations that mistune doesn't understand.
     text, no_toc, has_toc = _strip_kramdown_annotations(text)
 
-    # 2. Normalize kramdown-style backslash line breaks (``\`` at EOL → two
-    #    trailing spaces, which is standard Markdown for <br>).
-    text = re.sub(r"\\\n", "  \n", text)
+    # 2. Render Markdown → HTML.  A fresh renderer is used each time so
+    #    that toc_items doesn't accumulate across calls.
+    renderer = _JekyllRenderer()
+    md = _make_md(renderer)
+    out = md(text)
 
-    # 3. Render Markdown → HTML.
-    result = markdown2.markdown(text, extras=_MD_EXTRAS)
+    # 3. Post-process: smart dashes on HTML text nodes only.
+    out = _smart_dashes_html(out)
 
-    # 4. Post-process: smart dashes on HTML text nodes only.
-    out = _smart_dashes_html(str(result))
-
-    # 5. Insert TOC (built by markdown2) at the placeholder, filtering
-    #    out headings annotated with {:.no_toc}.
+    # 4. Insert TOC at the placeholder, excluding {:.no_toc} headings.
     if has_toc:
-        toc = _filter_toc(getattr(result, "toc_html", ""), no_toc)
-        out = out.replace("<!-- TOC -->", toc, 1)
+        out = out.replace("<!-- TOC -->", renderer.render_toc(no_toc), 1)
     out = out.replace("<!-- TOC -->", "")
     return out
 
