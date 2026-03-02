@@ -337,15 +337,12 @@ def render_markdown(text):
     """Convert Markdown to HTML using markdown2 with Pygments highlighting."""
     # Strip kramdown attribute annotations before converting.
     # {:.no_toc} marks headings to exclude from TOC generation.
-    no_toc_ids = set()
+    no_toc_headings = set()
     has_toc = "{:toc}" in text
 
     def _strip_no_toc(m):
-        # Capture the heading text so we can build its id for exclusion
-        heading_text = m.group(1).strip()
-        hid = re.sub(r"[^\w\s-]", "", heading_text).strip().lower()
-        hid = re.sub(r"[\s]+", "-", hid)
-        no_toc_ids.add(hid)
+        heading_text = m.group(1).strip().lstrip("#").strip()
+        no_toc_headings.add(heading_text)
         return m.group(0).replace(m.group(2), "")
 
     # Match: ## Heading\n{:.no_toc}
@@ -370,24 +367,25 @@ def render_markdown(text):
     )
 
     if has_toc:
-        toc_html = _build_toc(result, no_toc_ids)
+        toc_html = _build_toc(result, no_toc_headings)
         result = result.replace("<!-- TOC -->", toc_html, 1)
     # Clean up any remaining <!-- TOC --> if {:toc} was absent
     result = result.replace("<!-- TOC -->", "")
     return result
 
 
-def _build_toc(html_content, exclude_ids):
+def _build_toc(html_content, exclude_titles):
     """Build a table of contents HTML string from headings in the rendered HTML."""
-    headings = re.findall(r'<h([2-6])\s+id="([^"]+)"[^>]*>(.*?)</h\1>', html_content)
+    headings = re.findall(
+        r'<h([2-6])\s+id="([^"]+)"[^>]*>(.*?)</h\1>', html_content, re.DOTALL
+    )
     if not headings:
         return ""
     parts = ['<ul id="markdown-toc">']
-    for level_str, hid, title in headings:
-        if hid in exclude_ids:
+    for _level, hid, title in headings:
+        clean_title = re.sub(r"<[^>]+>", "", title).strip()
+        if clean_title in exclude_titles:
             continue
-        # Strip any HTML tags from the title
-        clean_title = re.sub(r"<[^>]+>", "", title)
         parts.append(f'  <li><a href="#{hid}">{clean_title}</a></li>')
     parts.append("</ul>")
     return "\n".join(parts)
