@@ -144,13 +144,13 @@ div.post-co-authors {
 
 /* Begin: display a small horizontal bar before footnote elements if they
  * exist. */
-div.footnotes {
+section.footnotes, div.footnotes {
   position: relative;
   display: inline-block;
   margin-top: 20px;
 }
 
-div.footnotes:before {
+section.footnotes:before, div.footnotes:before {
   /* Element only present when there are footnotes. */
   content: '';
   width: 50%;
@@ -184,7 +184,7 @@ figcaption::before {
 }
 
 /* gojekyll includes an <hr> in footnotes that we don't want */
-div.footnotes hr {
+section.footnotes hr, div.footnotes hr {
   display: none;
 }
 

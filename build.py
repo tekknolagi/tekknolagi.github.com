@@ -358,7 +358,7 @@ _BLOCK_TAGS = frozenset({
 })
 
 
-_PYGMENTS_FORMATTER = HtmlFormatter(cssclass="codehilite")
+_PYGMENTS_FORMATTER = HtmlFormatter(cssclass="highlight")
 
 
 class _JekyllRenderer(mistune.HTMLRenderer):
