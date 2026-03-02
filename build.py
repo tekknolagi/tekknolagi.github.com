@@ -82,15 +82,30 @@ def parse_frontmatter(text):
 
 
 def normalize_date(val):
-    """Convert various date representations to a datetime object."""
+    """Convert various date representations to a datetime object.
+
+    When a timezone abbreviation is present (e.g. PST, PDT, EDT), the time
+    is converted to UTC to match Jekyll's behaviour.
+    """
     if isinstance(val, datetime.datetime):
         return val
     if isinstance(val, datetime.date):
         return datetime.datetime(val.year, val.month, val.day)
     if isinstance(val, str):
         val = val.strip()
-        # Remove timezone abbreviation (e.g. "PDT", "PST")
-        val = re.sub(r"\s+[A-Z]{2,4}$", "", val)
+        # Extract and handle timezone abbreviation (e.g. "PDT", "PST")
+        tz_offsets = {
+            "PST": -8, "PDT": -7,
+            "MST": -7, "MDT": -6,
+            "CST": -6, "CDT": -5,
+            "EST": -5, "EDT": -4,
+            "UTC": 0, "GMT": 0,
+        }
+        utc_offset = None
+        tz_match = re.search(r"\s+([A-Z]{2,4})$", val)
+        if tz_match and tz_match.group(1) in tz_offsets:
+            utc_offset = tz_offsets[tz_match.group(1)]
+            val = val[:tz_match.start()]
         for fmt in (
             "%Y-%m-%d %H:%M:%S",
             "%Y-%m-%d",
@@ -98,7 +113,10 @@ def normalize_date(val):
             "%B %d, %Y",
         ):
             try:
-                return datetime.datetime.strptime(val, fmt)
+                dt = datetime.datetime.strptime(val, fmt)
+                if utc_offset is not None:
+                    dt -= datetime.timedelta(hours=utc_offset)
+                return dt
             except ValueError:
                 continue
     return datetime.datetime(2000, 1, 1)
@@ -338,6 +356,14 @@ def render_liquid(env, template_text, variables):
 # Markdown rendering (mistune + Pygments)
 # ---------------------------------------------------------------------------
 
+# Inline HTML elements (<span>, etc.) that appear on their own line with
+# content on subsequent lines.  mistune treats these as block-level HTML and
+# won't process markdown inside them.  Collapsing them to a single line lets
+# the inline parser handle the markdown content.
+_INLINE_HTML_BLOCK_RE = re.compile(
+    r"<(span[^>]*)>\n(.*?)\n</span>", re.DOTALL
+)
+
 # Kramdown annotation that marks a heading to be excluded from the TOC.
 _NO_TOC_RE = re.compile(
     r"(^#{1,6}\s+.+)\n\{:\s*\.no_toc\s*\}", re.MULTILINE
@@ -498,12 +524,16 @@ def render_markdown(text):
     # 1. Strip kramdown annotations that mistune doesn't understand.
     text, no_toc, has_toc = _strip_kramdown_annotations(text)
 
-    # 2. Remove blank lines inside HTML block elements.  Liquid templates
+    # 2. Collapse inline HTML elements (<span>) that span multiple lines
+    #    into single lines so mistune processes markdown inside them.
+    text = _INLINE_HTML_BLOCK_RE.sub(r"<\1>\2</span>", text)
+
+    # 3. Remove blank lines inside HTML block elements.  Liquid templates
     #    produce blank lines from {% for %}/{% unless %} tags; combined
     #    with indentation, mistune would misparse them as code blocks.
     text = _collapse_html_blanks(text)
 
-    # 3. Render Markdown → HTML.  A fresh renderer is used each time so
+    # 4. Render Markdown → HTML.  A fresh renderer is used each time so
     #    that toc_items doesn't accumulate across calls.  Smart dashes
     #    are handled by _SmartDashInlineParser during parsing, so code
     #    spans and HTML are never touched.
@@ -511,7 +541,7 @@ def render_markdown(text):
     md = _make_md(renderer)
     out = md(text)
 
-    # 4. Insert TOC at the placeholder, excluding {:.no_toc} headings.
+    # 5. Insert TOC at the placeholder, excluding {:.no_toc} headings.
     if has_toc:
         out = out.replace("<!-- TOC -->", renderer.render_toc(no_toc), 1)
     out = out.replace("<!-- TOC -->", "")
