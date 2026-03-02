@@ -20,6 +20,7 @@ import re
 import shutil
 
 import markdown2
+import pygments  # noqa: F401 – explicit dep; used by markdown2 fenced-code-blocks
 import yaml
 from liquid2 import DictLoader, Environment, Node, Tag
 from liquid2.builtin.expressions import (
@@ -35,6 +36,7 @@ from liquid2.context import RenderContext
 from liquid2.exceptions import LiquidSyntaxError
 from liquid2.stream import TokenStream
 from liquid2.token import TagToken, TokenType
+from xml.etree import ElementTree as ET
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -123,19 +125,17 @@ def url_for_page(fm, rel_path):
 # ---------------------------------------------------------------------------
 
 # {% link _posts/YYYY-MM-DD-slug.md %} contains filesystem paths with '/'
-# which the liquid2 lexer rejects, so this must remain as preprocessing.
+# which the liquid2 lexer rejects.  We resolve them once at load time so that
+# render_liquid never has to touch them.
 _LINK_RE = re.compile(r"\{%-?\s*\n?\s*link\s+_posts/(\S+?)\.md\s*%\}")
 
 
-def _link_to_url(m, permalink_pattern):
-    slug = slug_from_post_filename(m.group(1) + ".md")
-    return permalink_pattern.replace(":slug", slug)
-
-
-def preprocess_liquid(text, site_cfg):
-    """Resolve {% link %} tags (which contain '/' that the lexer rejects)."""
-    permalink = site_cfg.get("permalink", "/blog/:slug/")
-    return _LINK_RE.sub(lambda m: _link_to_url(m, permalink), text)
+def _resolve_link_tags(text, permalink_pattern):
+    """Replace {% link _posts/... %} with the resolved URL."""
+    def _repl(m):
+        slug = slug_from_post_filename(m.group(1) + ".md")
+        return permalink_pattern.replace(":slug", slug)
+    return _LINK_RE.sub(_repl, text)
 
 
 # --- Custom Liquid tags ---
@@ -257,13 +257,15 @@ class SeoTag(Tag):
 
 def make_liquid_env(includes_dir, site_cfg):
     """Build a liquid2 Environment with custom tags and filters."""
-    # Load all includes into a dict
+    permalink = site_cfg.get("permalink", "/blog/:slug/")
+
+    # Load all includes into a dict, resolving {% link %} tags once.
     includes = {}
     if os.path.isdir(includes_dir):
         for name in os.listdir(includes_dir):
             path = os.path.join(includes_dir, name)
             if os.path.isfile(path):
-                includes[name] = read_file(path)
+                includes[name] = _resolve_link_tags(read_file(path), permalink)
 
     loader = DictLoader(includes)
     env = Environment(loader=loader)
@@ -316,104 +318,125 @@ def make_liquid_env(includes_dir, site_cfg):
     return env, includes
 
 
-def render_liquid(env, template_text, variables, site_cfg):
-    """Pre-process and render a Liquid template string."""
-    preprocessed = preprocess_liquid(template_text, site_cfg)
-    # Preprocess includes to resolve {% link %} tags there too
-    orig_includes = env.loader.templates
-    new_includes = {
-        name: preprocess_liquid(src, site_cfg)
-        for name, src in orig_includes.items()
-    }
-    env.loader = DictLoader(new_includes)
-    try:
-        tpl = env.from_string(preprocessed)
-        return tpl.render(**variables)
-    finally:
-        env.loader = DictLoader(orig_includes)
+def render_liquid(env, template_text, variables):
+    """Render a Liquid template string.
+
+    All {% link %} tags must already be resolved before calling this.
+    """
+    tpl = env.from_string(template_text)
+    return tpl.render(**variables)
 
 
-def _smart_dashes(text):
-    """Convert --- to em-dash and -- to en-dash in text, skipping HTML tags and code blocks."""
-    # Split into fenced code blocks vs everything else first
-    parts = re.split(r"(```.*?```|`[^`]+`)", text, flags=re.DOTALL)
-    result = []
+# ---------------------------------------------------------------------------
+# Markdown / HTML post-processing
+# ---------------------------------------------------------------------------
+
+# Regex that matches <pre>…</pre> blocks (which contain code) or individual
+# HTML tags.  Everything *between* these matches is a text node that is safe
+# to modify for smart-dash conversion.
+_HTML_SKIP_RE = re.compile(r"(<pre[\s>].*?</pre>|<[^>]+>)", re.DOTALL)
+
+# Kramdown annotation that marks a heading to be excluded from the TOC.
+_NO_TOC_RE = re.compile(
+    r"(^#{1,6}\s+.+)\n\{:\s*\.no_toc\s*\}", re.MULTILINE
+)
+
+# Kramdown {:toc} marker (preceded by a throwaway list bullet).
+_TOC_RE = re.compile(r"^\*[^\n]*\n\{:toc\}\s*$", re.MULTILINE)
+
+_MD_EXTRAS = [
+    "fenced-code-blocks",  # uses Pygments when installed
+    "footnotes",
+    "tables",
+    "header-ids",
+    "code-friendly",
+    "cuddled-lists",
+    "strike",
+    "toc",              # populates result.toc_html
+]
+
+
+def _smart_dashes_html(html_text):
+    """Convert ``---`` to em-dash and ``--`` to en-dash in HTML text nodes.
+
+    Operates on *rendered* HTML so that ``<pre>``/``<code>`` blocks and tag
+    attributes are never touched – the right pipeline layer for this transform.
+    """
+    parts = _HTML_SKIP_RE.split(html_text)
     for i, part in enumerate(parts):
-        if part.startswith("`"):
-            result.append(part)
-        else:
-            # In non-code text, convert dashes but skip HTML tags
-            segments = re.split(r"(<[^>]+>)", part)
-            for seg in segments:
-                if seg.startswith("<"):
-                    result.append(seg)
-                else:
-                    seg = seg.replace("---", "\u2014")
-                    seg = seg.replace("--", "\u2013")
-                    result.append(seg)
-    return "".join(result)
+        if not part.startswith("<"):
+            parts[i] = part.replace("---", "\u2014").replace("--", "\u2013")
+    return "".join(parts)
+
+
+def _strip_kramdown_annotations(text):
+    """Strip kramdown `{:toc}` / `{:.no_toc}` from Markdown source.
+
+    Returns (cleaned_text, no_toc_heading_names, has_toc).
+    """
+    no_toc = set()
+
+    def _collect(m):
+        heading_text = m.group(1).strip().lstrip("#").strip()
+        no_toc.add(heading_text)
+        return m.group(1)  # keep heading, drop annotation
+
+    text = _NO_TOC_RE.sub(_collect, text)
+    has_toc = bool(_TOC_RE.search(text))
+    text = _TOC_RE.sub("<!-- TOC -->", text)
+    return text, no_toc, has_toc
+
+
+def _filter_toc(toc_html, exclude_titles):
+    """Remove entries whose text is in *exclude_titles* from markdown2's TOC.
+
+    Uses ElementTree to walk the ``<ul>``/``<li>`` tree properly rather than
+    attempting to regex-match nested HTML.
+    """
+    if not toc_html or not toc_html.strip():
+        return ""
+    root = ET.fromstring(f"<root>{toc_html}</root>")
+    toc_ul = root.find("ul")
+    if toc_ul is None:
+        return toc_html
+
+    def _prune(ul):
+        for li in list(ul):
+            a = li.find("a")
+            if a is not None and (a.text or "").strip() in exclude_titles:
+                ul.remove(li)
+            else:
+                for nested in li.findall("ul"):
+                    _prune(nested)
+                    if len(nested) == 0:
+                        li.remove(nested)
+
+    _prune(toc_ul)
+    return ET.tostring(toc_ul, encoding="unicode")
 
 
 def render_markdown(text):
-    """Convert Markdown to HTML using markdown2 with Pygments highlighting."""
-    # Strip kramdown attribute annotations before converting.
-    # {:.no_toc} marks headings to exclude from TOC generation.
-    no_toc_headings = set()
-    has_toc = "{:toc}" in text
+    """Convert Markdown to HTML (Pygments highlighting, TOC, smart dashes)."""
+    # 1. Strip kramdown annotations that markdown2 doesn't understand.
+    text, no_toc, has_toc = _strip_kramdown_annotations(text)
 
-    def _strip_no_toc(m):
-        heading_text = m.group(1).strip().lstrip("#").strip()
-        no_toc_headings.add(heading_text)
-        return m.group(0).replace(m.group(2), "")
+    # 2. Normalize kramdown-style backslash line breaks (``\`` at EOL → two
+    #    trailing spaces, which is standard Markdown for <br>).
+    text = re.sub(r"\\\n", "  \n", text)
 
-    # Match: ## Heading\n{:.no_toc}
-    text = re.sub(
-        r"(^#{1,6}\s+.+)\n(\{:\s*\.no_toc\s*\})", _strip_no_toc, text, flags=re.MULTILINE
-    )
-    # Remove the {:toc} placeholder and preceding list marker
-    text = re.sub(r"^\*[^\n]*\n\{:toc\}\s*$", "<!-- TOC -->", text, flags=re.MULTILINE)
+    # 3. Render Markdown → HTML.
+    result = markdown2.markdown(text, extras=_MD_EXTRAS)
 
-    # Convert --- to em-dash and -- to en-dash (like kramdown), avoiding HTML
-    # tags and code blocks.  We do this before markdown2 so that the dashes in
-    # the source are converted but HTML attribute quotes are left alone.
-    text = _smart_dashes(text)
+    # 4. Post-process: smart dashes on HTML text nodes only.
+    out = _smart_dashes_html(str(result))
 
-    result = markdown2.markdown(
-        text,
-        extras=[
-            "fenced-code-blocks",
-            "footnotes",
-            "tables",
-            "header-ids",
-            "code-friendly",
-            "cuddled-lists",
-            "strike",
-        ],
-    )
-
+    # 5. Insert TOC (built by markdown2) at the placeholder, filtering
+    #    out headings annotated with {:.no_toc}.
     if has_toc:
-        toc_html = _build_toc(result, no_toc_headings)
-        result = result.replace("<!-- TOC -->", toc_html, 1)
-    # Clean up any remaining <!-- TOC --> if {:toc} was absent
-    result = result.replace("<!-- TOC -->", "")
-    return result
-
-
-def _build_toc(html_content, exclude_titles):
-    """Build a table of contents HTML string from headings in the rendered HTML."""
-    headings = re.findall(
-        r'<h([2-6])\s+id="([^"]+)"[^>]*>(.*?)</h\1>', html_content, re.DOTALL
-    )
-    if not headings:
-        return ""
-    parts = ['<ul id="markdown-toc">']
-    for _level, hid, title in headings:
-        clean_title = re.sub(r"<[^>]+>", "", title).strip()
-        if clean_title in exclude_titles:
-            continue
-        parts.append(f'  <li><a href="#{hid}">{clean_title}</a></li>')
-    parts.append("</ul>")
-    return "\n".join(parts)
+        toc = _filter_toc(getattr(result, "toc_html", ""), no_toc)
+        out = out.replace("<!-- TOC -->", toc, 1)
+    out = out.replace("<!-- TOC -->", "")
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -449,6 +472,8 @@ def load_posts(posts_dir, permalink_pattern):
         fm["url"] = url
         fm["path"] = os.path.relpath(path, SRC)
         fm["slug"] = slug
+        # Resolve {% link %} tags once at load time.
+        body = _resolve_link_tags(body, permalink_pattern)
         posts.append({"fm": fm, "body": body, "path": path})
     posts.sort(key=lambda p: p["fm"]["date"], reverse=True)
     return posts
@@ -508,8 +533,8 @@ def load_pages(src_dir, exclude):
     return pages
 
 
-def load_layouts(layouts_dir):
-    """Load all layout templates."""
+def load_layouts(layouts_dir, permalink_pattern):
+    """Load all layout templates, resolving {% link %} tags once."""
     layouts = {}
     if not os.path.isdir(layouts_dir):
         return layouts
@@ -517,7 +542,7 @@ def load_layouts(layouts_dir):
         path = os.path.join(layouts_dir, fname)
         if os.path.isfile(path):
             name = os.path.splitext(fname)[0]
-            layouts[name] = read_file(path)
+            layouts[name] = _resolve_link_tags(read_file(path), permalink_pattern)
     return layouts
 
 
@@ -542,7 +567,7 @@ def build_site_data(site_cfg, posts, collections, pages):
     return site
 
 
-def render_content(env, item, site, layouts, site_cfg, is_markdown):
+def render_content(env, item, site, layouts, is_markdown):
     """Render a content item (post/page/collection item) to final HTML.
 
     Returns (final_html, rendered_body) where rendered_body is the content
@@ -555,7 +580,7 @@ def render_content(env, item, site, layouts, site_cfg, is_markdown):
     variables = {"site": site, "page": page_vars, "jekyll": {"environment": "development"}}
 
     # 1) Render Liquid in content body
-    rendered_body = render_liquid(env, body, variables, site_cfg)
+    rendered_body = render_liquid(env, body, variables)
 
     # 2) Convert Markdown to HTML if needed
     if is_markdown:
@@ -567,7 +592,7 @@ def render_content(env, item, site, layouts, site_cfg, is_markdown):
         layout_src = layouts[layout_name]
         variables["content"] = rendered_body
         page_vars["content"] = rendered_body
-        final = render_liquid(env, layout_src, variables, site_cfg)
+        final = render_liquid(env, layout_src, variables)
     elif layout_name == "none":
         # Render Liquid but don't wrap in layout
         final = rendered_body
@@ -661,12 +686,12 @@ def main():
     # Load config
     cfg_path = os.path.join(SRC, "_config.yml")
     site_cfg = yaml.safe_load(read_file(cfg_path)) if os.path.isfile(cfg_path) else {}
-
-    # Load layouts
-    layouts = load_layouts(os.path.join(SRC, "_layouts"))
-
-    # Load posts
     permalink = site_cfg.get("permalink", "/blog/:slug/")
+
+    # Load layouts ({% link %} tags resolved once here)
+    layouts = load_layouts(os.path.join(SRC, "_layouts"), permalink)
+
+    # Load posts ({% link %} tags resolved once here)
     posts = load_posts(os.path.join(SRC, "_posts"), permalink)
     # Filter out future posts
     now = datetime.datetime.now()
@@ -689,13 +714,13 @@ def main():
     # Build site data
     site = build_site_data(site_cfg, posts, collections, pages)
 
-    # Set up Liquid environment
+    # Set up Liquid environment (includes have {% link %} resolved once)
     env, _includes = make_liquid_env(os.path.join(SRC, "_includes"), site_cfg)
 
     # --- Render posts (first pass: get content for post.content) ---
     print(f"Rendering {len(posts)} posts...")
     for i, p in enumerate(posts):
-        output, body_html = render_content(env, p, site, layouts, site_cfg, is_markdown=True)
+        output, body_html = render_content(env, p, site, layouts, is_markdown=True)
         out_path = os.path.join(DEST, output_path_for_url(p["fm"]["url"]))
         write_file(out_path, output)
         # Store rendered content on site data so post.content works in templates
@@ -708,7 +733,7 @@ def main():
             continue
         print(f"Rendering {len(coll_items)} {coll_name} items...")
         for i, item in enumerate(coll_items):
-            output, body_html = render_content(env, item, site, layouts, site_cfg, is_markdown=True)
+            output, body_html = render_content(env, item, site, layouts, is_markdown=True)
             out_path = os.path.join(DEST, output_path_for_url(item["fm"]["url"]))
             write_file(out_path, output)
             site[coll_name][i]["content"] = body_html
@@ -717,7 +742,7 @@ def main():
     print(f"Rendering {len(pages)} pages...")
     for p in pages:
         is_md = p["ext"] == ".md"
-        output, _ = render_content(env, p, site, layouts, site_cfg, is_markdown=is_md)
+        output, _ = render_content(env, p, site, layouts, is_markdown=is_md)
         out_path = os.path.join(DEST, output_path_for_url(p["fm"]["url"]))
         write_file(out_path, output)
 
@@ -730,7 +755,7 @@ def main():
     if asset_pages:
         print(f"Rendering {len(asset_pages)} asset pages...")
         for p in asset_pages:
-            output, _ = render_content(env, p, site, layouts, site_cfg, is_markdown=False)
+            output, _ = render_content(env, p, site, layouts, is_markdown=False)
             out_path = os.path.join(DEST, p["fm"]["url"].lstrip("/"))
             write_file(out_path, output)
 
