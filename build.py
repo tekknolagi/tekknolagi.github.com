@@ -333,6 +333,27 @@ def render_liquid(env, template_text, variables, site_cfg):
         env.loader = DictLoader(orig_includes)
 
 
+def _smart_dashes(text):
+    """Convert --- to em-dash and -- to en-dash in text, skipping HTML tags and code blocks."""
+    # Split into fenced code blocks vs everything else first
+    parts = re.split(r"(```.*?```|`[^`]+`)", text, flags=re.DOTALL)
+    result = []
+    for i, part in enumerate(parts):
+        if part.startswith("`"):
+            result.append(part)
+        else:
+            # In non-code text, convert dashes but skip HTML tags
+            segments = re.split(r"(<[^>]+>)", part)
+            for seg in segments:
+                if seg.startswith("<"):
+                    result.append(seg)
+                else:
+                    seg = seg.replace("---", "\u2014")
+                    seg = seg.replace("--", "\u2013")
+                    result.append(seg)
+    return "".join(result)
+
+
 def render_markdown(text):
     """Convert Markdown to HTML using markdown2 with Pygments highlighting."""
     # Strip kramdown attribute annotations before converting.
@@ -352,6 +373,11 @@ def render_markdown(text):
     # Remove the {:toc} placeholder and preceding list marker
     text = re.sub(r"^\*[^\n]*\n\{:toc\}\s*$", "<!-- TOC -->", text, flags=re.MULTILINE)
 
+    # Convert --- to em-dash and -- to en-dash (like kramdown), avoiding HTML
+    # tags and code blocks.  We do this before markdown2 so that the dashes in
+    # the source are converted but HTML attribute quotes are left alone.
+    text = _smart_dashes(text)
+
     result = markdown2.markdown(
         text,
         extras=[
@@ -362,7 +388,6 @@ def render_markdown(text):
             "code-friendly",
             "cuddled-lists",
             "strike",
-            "smarty-pants",
         ],
     )
 
