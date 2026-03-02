@@ -356,11 +356,10 @@ def render_liquid(env, template_text, variables):
 # Markdown rendering (mistune + Pygments)
 # ---------------------------------------------------------------------------
 
-# Inline HTML elements (<span>, etc.) that appear on their own line with
-# content on subsequent lines.  mistune treats these as block-level HTML and
-# won't process markdown inside them.  Collapsing them to a single line lets
-# the inline parser handle the markdown content.
-_INLINE_HTML_BLOCK_RE = re.compile(
+# Multi-line <span> blocks: mistune treats a <span> on its own line as
+# block-level HTML and won't process markdown inside it.  Collapsing
+# to a single line lets the inline parser handle the markdown content.
+_INLINE_SPAN_RE = re.compile(
     r"<(span[^>]*)>\n(.*?)\n</span>", re.DOTALL
 )
 
@@ -526,7 +525,7 @@ def render_markdown(text):
 
     # 2. Collapse inline HTML elements (<span>) that span multiple lines
     #    into single lines so mistune processes markdown inside them.
-    text = _INLINE_HTML_BLOCK_RE.sub(r"<\1>\2</span>", text)
+    text = _INLINE_SPAN_RE.sub(r"<\1>\2</span>", text)
 
     # 3. Remove blank lines inside HTML block elements.  Liquid templates
     #    produce blank lines from {% for %}/{% unless %} tags; combined
