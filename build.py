@@ -20,6 +20,7 @@ import re
 import shutil
 
 import mistune
+from mistune import InlineParser, Markdown
 import yaml
 from liquid2 import DictLoader, Environment, Node, Tag
 from liquid2.builtin.expressions import (
@@ -203,20 +204,21 @@ class SeoNode(Node):
     def render_to_output(self, context: RenderContext, buffer) -> int:
         page = context.resolve("page", default={})
         site = context.resolve("site", default={})
-        title = page.get("title", "") if isinstance(page, dict) else ""
-        site_title = site.get("title", "") if isinstance(site, dict) else ""
+        if not isinstance(page, dict):
+            page = {}
+        if not isinstance(site, dict):
+            site = {}
+
+        title = page.get("title", "")
+        site_title = site.get("title", "")
         if title and site_title:
             full_title = f"{title} | {site_title}"
         else:
             full_title = title or site_title
-        desc = ""
-        if isinstance(page, dict):
-            desc = page.get("description", "")
-        if not desc and isinstance(site, dict):
-            desc = site.get("description", "")
-        url = site.get("url", "") if isinstance(site, dict) else ""
-        canonical = page.get("canonical_url", "") if isinstance(page, dict) else ""
-        page_url = page.get("url", "") if isinstance(page, dict) else ""
+        desc = page.get("description", "") or site.get("description", "")
+        url = site.get("url", "")
+        canonical = page.get("canonical_url", "")
+        page_url = page.get("url", "")
 
         parts = [f"<title>{html.escape(full_title)}</title>"]
         if desc:
@@ -320,7 +322,7 @@ def make_liquid_env(includes_dir, site_cfg):
     env.filters["absolute_url"] = absolute_url
     env.filters["where_exp"] = where_exp
 
-    return env, includes
+    return env
 
 
 def render_liquid(env, template_text, variables):
@@ -335,11 +337,6 @@ def render_liquid(env, template_text, variables):
 # ---------------------------------------------------------------------------
 # Markdown rendering (mistune + Pygments)
 # ---------------------------------------------------------------------------
-
-# Regex that matches <pre>…</pre> blocks (which contain code), HTML comments,
-# or individual HTML tags.  Everything *between* these matches is a text node
-# that is safe to modify for smart-dash conversion.
-_HTML_SKIP_RE = re.compile(r"(<pre[\s>].*?</pre>|<!--.*?-->|<[^>]+>)", re.DOTALL)
 
 # Kramdown annotation that marks a heading to be excluded from the TOC.
 _NO_TOC_RE = re.compile(
@@ -358,6 +355,10 @@ _BLOCK_TAGS = frozenset({
 })
 
 
+_BLOCK_OPEN_RE = re.compile(r"<(" + "|".join(_BLOCK_TAGS) + r")\b")
+_BLOCK_CLOSE_RE = re.compile(r"</(" + "|".join(_BLOCK_TAGS) + r")\b")
+
+
 _PYGMENTS_FORMATTER = HtmlFormatter(cssclass="highlight")
 
 
@@ -367,6 +368,12 @@ class _JekyllRenderer(mistune.HTMLRenderer):
     Collects headings during rendering so a TOC can be built afterwards
     without re-parsing the HTML.
     """
+
+    # Regex for smart-dash conversion inside raw HTML blocks: skip
+    # <pre>…</pre>, HTML comments, and individual tags.
+    _BLOCK_HTML_SKIP_RE = re.compile(
+        r"(<pre[\s>].*?</pre>|<!--.*?-->|<[^>]+>)", re.DOTALL
+    )
 
     def __init__(self, **kwargs):
         super().__init__(escape=False, **kwargs)
@@ -380,6 +387,19 @@ class _JekyllRenderer(mistune.HTMLRenderer):
             except ClassNotFound:
                 pass
         return f"<pre><code>{mistune.escape(code)}</code></pre>\n"
+
+    def block_html(self, html):
+        """Pass through raw HTML blocks, applying smart-dash conversion.
+
+        The inline parser handles smart dashes for markdown text, but raw
+        HTML blocks bypass inline parsing entirely.  We apply the same
+        conversion here, skipping ``<pre>``, comments, and tag attributes.
+        """
+        parts = self._BLOCK_HTML_SKIP_RE.split(html)
+        for i, part in enumerate(parts):
+            if not part.startswith("<"):
+                parts[i] = part.replace("---", "\u2014").replace("--", "\u2013")
+        return "".join(parts) + "\n"
 
     def heading(self, text, level, **attrs):
         raw = re.sub(r"<[^>]+>", "", text)
@@ -404,17 +424,25 @@ class _JekyllRenderer(mistune.HTMLRenderer):
         return "\n".join(parts)
 
 
-def _smart_dashes_html(html_text):
-    """Convert ``---`` to em-dash and ``--`` to en-dash in HTML text nodes.
+class _SmartDashInlineParser(InlineParser):
+    """Inline parser that converts ``---`` to em-dash and ``--`` to en-dash.
 
-    Operates on *rendered* HTML so that ``<pre>``/``<code>`` blocks and tag
-    attributes are never touched.
+    Because this is an inline rule, it naturally skips code spans, HTML tags,
+    and other non-text tokens — no post-processing regex needed.
     """
-    parts = _HTML_SKIP_RE.split(html_text)
-    for i, part in enumerate(parts):
-        if not part.startswith("<"):
-            parts[i] = part.replace("---", "\u2014").replace("--", "\u2013")
-    return "".join(parts)
+
+    SPECIFICATION = dict(InlineParser.SPECIFICATION)
+    SPECIFICATION["smart_dash"] = r"-{2,3}(?!-)"
+
+    DEFAULT_RULES = InlineParser.DEFAULT_RULES + ("smart_dash",)
+
+    def parse_smart_dash(self, m, state):
+        text = m.group(0)
+        if text == "---":
+            state.append_token({"type": "text", "raw": "\u2014"})
+        else:
+            state.append_token({"type": "text", "raw": "\u2013"})
+        return m.end()
 
 
 def _strip_kramdown_annotations(text):
@@ -443,24 +471,23 @@ def _collapse_html_blanks(text):
     content as indented code blocks.  Removing blank lines while inside a
     block-level HTML element prevents this.
     """
-    _OPEN_RE = re.compile(r"<(" + "|".join(_BLOCK_TAGS) + r")\b")
-    _CLOSE_RE = re.compile(r"</(" + "|".join(_BLOCK_TAGS) + r")\b")
     lines = text.split("\n")
     result = []
     depth = 0
     for line in lines:
         stripped = line.strip()
-        depth += len(_OPEN_RE.findall(stripped)) - len(_CLOSE_RE.findall(stripped))
+        depth += len(_BLOCK_OPEN_RE.findall(stripped)) - len(_BLOCK_CLOSE_RE.findall(stripped))
         if depth > 0 and not stripped:
             continue
         result.append(line)
     return "\n".join(result)
 
 
-# Build the mistune Markdown instance once (the renderer is reset per call).
 def _make_md(renderer):
-    return mistune.create_markdown(
+    """Build a mistune Markdown instance with smart-dash inline parsing."""
+    return Markdown(
         renderer=renderer,
+        inline=_SmartDashInlineParser(),
         plugins=[table, footnotes, strikethrough],
     )
 
@@ -476,15 +503,14 @@ def render_markdown(text):
     text = _collapse_html_blanks(text)
 
     # 3. Render Markdown → HTML.  A fresh renderer is used each time so
-    #    that toc_items doesn't accumulate across calls.
+    #    that toc_items doesn't accumulate across calls.  Smart dashes
+    #    are handled by _SmartDashInlineParser during parsing, so code
+    #    spans and HTML are never touched.
     renderer = _JekyllRenderer()
     md = _make_md(renderer)
     out = md(text)
 
-    # 4. Post-process: smart dashes on HTML text nodes only.
-    out = _smart_dashes_html(out)
-
-    # 5. Insert TOC at the placeholder, excluding {:.no_toc} headings.
+    # 4. Insert TOC at the placeholder, excluding {:.no_toc} headings.
     if has_toc:
         out = out.replace("<!-- TOC -->", renderer.render_toc(no_toc), 1)
     out = out.replace("<!-- TOC -->", "")
@@ -603,19 +629,13 @@ def load_layouts(layouts_dir, permalink_pattern):
 # ---------------------------------------------------------------------------
 
 
-def post_to_dict(p):
-    """Convert a post/page record to a dict for Liquid templates."""
-    d = dict(p["fm"])
-    return d
-
-
 def build_site_data(site_cfg, posts, collections, pages):
     """Build the site-level variables dict for Liquid."""
     site = dict(site_cfg)
-    site["posts"] = [post_to_dict(p) for p in posts]
-    site["pages"] = [post_to_dict(p) for p in pages]
+    site["posts"] = [dict(p["fm"]) for p in posts]
+    site["pages"] = [dict(p["fm"]) for p in pages]
     for coll_name, coll_items in collections.items():
-        site[coll_name] = [post_to_dict(p) for p in coll_items]
+        site[coll_name] = [dict(p["fm"]) for p in coll_items]
     return site
 
 
@@ -645,9 +665,6 @@ def render_content(env, item, site, layouts, is_markdown):
         variables["content"] = rendered_body
         page_vars["content"] = rendered_body
         final = render_liquid(env, layout_src, variables)
-    elif layout_name == "none":
-        # Render Liquid but don't wrap in layout
-        final = rendered_body
     else:
         final = rendered_body
 
@@ -767,7 +784,7 @@ def main():
     site = build_site_data(site_cfg, posts, collections, pages)
 
     # Set up Liquid environment (includes have {% link %} resolved once)
-    env, _includes = make_liquid_env(os.path.join(SRC, "_includes"), site_cfg)
+    env = make_liquid_env(os.path.join(SRC, "_includes"), site_cfg)
 
     # --- Render posts (first pass: get content for post.content) ---
     print(f"Rendering {len(posts)} posts...")
