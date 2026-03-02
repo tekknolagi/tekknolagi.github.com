@@ -350,6 +350,14 @@ _NO_TOC_RE = re.compile(
 _TOC_RE = re.compile(r"^\*[^\n]*\n\{:toc\}\s*$", re.MULTILINE)
 
 
+# Block-level HTML tags whose children should not be treated as code.
+_BLOCK_TAGS = frozenset({
+    "ul", "ol", "div", "table", "section", "article", "aside",
+    "header", "footer", "nav", "details", "fieldset", "figure",
+    "blockquote", "form", "dl",
+})
+
+
 class _JekyllRenderer(mistune.HTMLRenderer):
     """Custom mistune renderer with Pygments highlighting and heading IDs.
 
@@ -424,6 +432,28 @@ def _strip_kramdown_annotations(text):
     return text, no_toc, has_toc
 
 
+def _collapse_html_blanks(text):
+    """Remove blank lines inside HTML block elements.
+
+    Liquid templates produce blank lines from ``{% for %}``/``{% unless %}``
+    tags.  Combined with indentation, these cause mistune to misparse the
+    content as indented code blocks.  Removing blank lines while inside a
+    block-level HTML element prevents this.
+    """
+    lines = text.split("\n")
+    result = []
+    depth = 0
+    for line in lines:
+        stripped = line.strip()
+        for tag in _BLOCK_TAGS:
+            depth += len(re.findall(rf"<{tag}\b", stripped))
+            depth -= len(re.findall(rf"</{tag}\b", stripped))
+        if depth > 0 and not stripped:
+            continue
+        result.append(line)
+    return "\n".join(result)
+
+
 # Build the mistune Markdown instance once (the renderer is reset per call).
 def _make_md(renderer):
     return mistune.create_markdown(
@@ -437,16 +467,21 @@ def render_markdown(text):
     # 1. Strip kramdown annotations that mistune doesn't understand.
     text, no_toc, has_toc = _strip_kramdown_annotations(text)
 
-    # 2. Render Markdown → HTML.  A fresh renderer is used each time so
+    # 2. Remove blank lines inside HTML block elements.  Liquid templates
+    #    produce blank lines from {% for %}/{% unless %} tags; combined
+    #    with indentation, mistune would misparse them as code blocks.
+    text = _collapse_html_blanks(text)
+
+    # 3. Render Markdown → HTML.  A fresh renderer is used each time so
     #    that toc_items doesn't accumulate across calls.
     renderer = _JekyllRenderer()
     md = _make_md(renderer)
     out = md(text)
 
-    # 3. Post-process: smart dashes on HTML text nodes only.
+    # 4. Post-process: smart dashes on HTML text nodes only.
     out = _smart_dashes_html(out)
 
-    # 4. Insert TOC at the placeholder, excluding {:.no_toc} headings.
+    # 5. Insert TOC at the placeholder, excluding {:.no_toc} headings.
     if has_toc:
         out = out.replace("<!-- TOC -->", renderer.render_toc(no_toc), 1)
     out = out.replace("<!-- TOC -->", "")
