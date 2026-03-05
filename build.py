@@ -36,9 +36,28 @@ from liquid2.context import RenderContext
 from liquid2.exceptions import LiquidSyntaxError
 from liquid2.stream import TokenStream
 from liquid2.token import TagToken, TokenType
+import mistune.plugins.footnotes as _footnotes_mod
 from mistune.plugins.footnotes import footnotes
 from mistune.plugins.formatting import strikethrough
 from mistune.plugins.table import table
+
+# ---------------------------------------------------------------------------
+# Monkey-patch mistune footnote regex (upstream bug).
+#
+# The continuation-line pattern ``{1,4}(?! )`` rejects lines indented more
+# than 4 extra spaces, which truncates fenced code blocks that contain
+# indented code inside footnotes.  Changing to ``{1,}`` allows arbitrary
+# indentation in continuation lines.
+#
+# Minimal repro:  mistune_footnote_bug_repro.py
+# ---------------------------------------------------------------------------
+_footnotes_mod.REF_FOOTNOTE = (
+    r"^(?P<footnote_lead> {0,4})"
+    r"\[\^(?P<footnote_key>" + _footnotes_mod.LINK_LABEL + r")]:[ \t\n]"
+    r"(?P<footnote_text>[^\n]*(?:\n+|$)"
+    r"(?:(?P=footnote_lead) {1,}[^\n]*\n+)*"
+    r")"
+)
 from pygments import highlight as pyg_highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
