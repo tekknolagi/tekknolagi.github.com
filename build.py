@@ -15,6 +15,7 @@ Usage: uv run build.py
 
 import datetime
 import html
+import multiprocessing
 import os
 import re
 import shutil
@@ -942,6 +943,27 @@ def load_asset_pages(src_dir):
 
 
 # ---------------------------------------------------------------------------
+# Parallel rendering helpers
+# ---------------------------------------------------------------------------
+
+_worker_env = None
+_worker_layouts = None
+
+
+def _init_worker(includes_dir, site_cfg, layouts):
+    global _worker_env, _worker_layouts
+    _worker_env = make_liquid_env(includes_dir, site_cfg)
+    _worker_layouts = layouts
+
+
+def _render_one(args):
+    item, site, is_markdown, out_path = args
+    output, body_html = render_content(_worker_env, item, site, _worker_layouts, is_markdown)
+    write_file(out_path, output)
+    return body_html
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -986,37 +1008,36 @@ def main():
     # Build site data
     site = build_site_data(site_cfg, posts, collections, pages)
 
-    # Set up Liquid environment (includes have {% link %} resolved once)
-    env = make_liquid_env(os.path.join(SRC, "_includes"), site_cfg)
+    # Set up parallel pool (one process per render, nproc workers)
+    includes_dir = os.path.join(SRC, "_includes")
+    nproc = os.cpu_count() or 1
+    with multiprocessing.Pool(nproc, initializer=_init_worker,
+                              initargs=(includes_dir, site_cfg, layouts)) as pool:
+        # --- Render posts (first pass: get content for post.content) ---
+        print(f"Rendering {len(posts)} posts...")
+        tasks = [(p, site, True, os.path.join(DEST, output_path_for_url(p["fm"]["url"])))
+                 for p in posts]
+        results = pool.map(_render_one, tasks)
+        for i, body_html in enumerate(results):
+            site["posts"][i]["content"] = body_html
 
-    # --- Render posts (first pass: get content for post.content) ---
-    print(f"Rendering {len(posts)} posts...")
-    for i, p in enumerate(posts):
-        output, body_html = render_content(env, p, site, layouts, is_markdown=True)
-        out_path = os.path.join(DEST, output_path_for_url(p["fm"]["url"]))
-        write_file(out_path, output)
-        # Store rendered content on site data so post.content works in templates
-        site["posts"][i]["content"] = body_html
+        # --- Render collections ---
+        for coll_name, coll_items in collections.items():
+            coll_opts = collections_cfg.get(coll_name, {})
+            if not coll_opts.get("output", False):
+                continue
+            print(f"Rendering {len(coll_items)} {coll_name} items...")
+            tasks = [(item, site, True, os.path.join(DEST, output_path_for_url(item["fm"]["url"])))
+                     for item in coll_items]
+            results = pool.map(_render_one, tasks)
+            for i, body_html in enumerate(results):
+                site[coll_name][i]["content"] = body_html
 
-    # --- Render collections ---
-    for coll_name, coll_items in collections.items():
-        coll_opts = collections_cfg.get(coll_name, {})
-        if not coll_opts.get("output", False):
-            continue
-        print(f"Rendering {len(coll_items)} {coll_name} items...")
-        for i, item in enumerate(coll_items):
-            output, body_html = render_content(env, item, site, layouts, is_markdown=True)
-            out_path = os.path.join(DEST, output_path_for_url(item["fm"]["url"]))
-            write_file(out_path, output)
-            site[coll_name][i]["content"] = body_html
-
-    # --- Render pages ---
-    print(f"Rendering {len(pages)} pages...")
-    for p in pages:
-        is_md = p["ext"] == ".md"
-        output, _ = render_content(env, p, site, layouts, is_markdown=is_md)
-        out_path = os.path.join(DEST, output_path_for_url(p["fm"]["url"]))
-        write_file(out_path, output)
+        # --- Render pages ---
+        print(f"Rendering {len(pages)} pages...")
+        tasks = [(p, site, p["ext"] == ".md", os.path.join(DEST, output_path_for_url(p["fm"]["url"])))
+                 for p in pages]
+        pool.map(_render_one, tasks)
 
     # --- Copy static files ---
     print("Copying static files...")
@@ -1026,6 +1047,7 @@ def main():
     asset_pages = load_asset_pages(SRC)
     if asset_pages:
         print(f"Rendering {len(asset_pages)} asset pages...")
+        env = make_liquid_env(includes_dir, site_cfg)
         for p in asset_pages:
             output, _ = render_content(env, p, site, layouts, is_markdown=False)
             out_path = os.path.join(DEST, p["fm"]["url"].lstrip("/"))
