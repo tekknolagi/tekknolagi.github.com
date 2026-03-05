@@ -381,19 +381,137 @@ _BLOCK_OPEN_RE = re.compile(r"<(" + "|".join(_BLOCK_TAGS) + r")\b")
 _BLOCK_CLOSE_RE = re.compile(r"</(" + "|".join(_BLOCK_TAGS) + r")\b")
 
 
+# ---------------------------------------------------------------------------
+# Custom tokens for footnotes and smart dashes
+# ---------------------------------------------------------------------------
+
+import mistletoe.block_token as _block_token
+import mistletoe.span_token as _span_token
+import mistletoe.token as _token
+
+
+class FootnoteDef(_block_token.BlockToken):
+    """Block token for ``[^key]: body`` footnote definitions.
+
+    Like mistletoe's built-in ``Footnote`` (link reference definitions), this
+    token returns ``None`` from ``__new__`` so it never appears in the AST.
+    Instead, the definition is stored in ``_root_node.md_footnotes``.
+    """
+
+    # Match  [^key]:  at the start of a line (up to 3 leading spaces).
+    _START_RE = re.compile(r"^ {0,3}\[\^([^\]]+)\]:")
+
+    def __new__(cls, _):
+        return None
+
+    @classmethod
+    def start(cls, line):
+        return cls._START_RE.match(line) is not None
+
+    @classmethod
+    def read(cls, lines):
+        """Consume the definition header + indented continuation lines."""
+        first = next(lines)
+        m = cls._START_RE.match(first)
+        key = m.group(1)
+        # Text after the colon on the first line
+        first_body = first[m.end():].strip()
+        body_lines = [first_body + "\n"] if first_body else []
+
+        # Continuation: indented (≥1 space/tab) or blank lines
+        while lines.peek() is not None:
+            nxt = lines.peek()
+            if nxt.strip() == "":
+                # blank line — include it (might separate paragraphs)
+                body_lines.append("\n")
+                next(lines)
+            elif nxt[0] in (" ", "\t"):
+                # Dedent: remove up to 4 leading spaces
+                body_lines.append(re.sub(r"^ {1,4}", "", nxt))
+                next(lines)
+            else:
+                break
+
+        # Strip trailing blank lines
+        while body_lines and body_lines[-1].strip() == "":
+            body_lines.pop()
+
+        root = _token._root_node
+        if not hasattr(root, "md_footnotes"):
+            root.md_footnotes = {}
+        root.md_footnotes[key] = body_lines
+        return key  # non-None so tokenizer accepts it
+
+
+class FootnoteRef(_span_token.SpanToken):
+    r"""Span token for ``[^key]`` footnote references."""
+
+    pattern = re.compile(r"\[\^([^\]]+)\]")
+    parse_inner = False
+    parse_group = 1
+    # Higher precedence than links to avoid [^1] being eaten as link syntax.
+    precedence = 7
+
+    def __init__(self, match):
+        self.key = match.group(1)
+        root = _token._root_node
+        if not hasattr(root, "md_footnote_order"):
+            root.md_footnote_order = []
+        if not hasattr(root, "md_footnote_nums"):
+            root.md_footnote_nums = {}
+        if self.key not in root.md_footnote_nums:
+            num = len(root.md_footnote_nums) + 1
+            root.md_footnote_nums[self.key] = num
+            root.md_footnote_order.append(self.key)
+        self.num = root.md_footnote_nums[self.key]
+
+
+class SmartDash(_span_token.SpanToken):
+    """Span token for ``---`` (em-dash) and ``--`` (en-dash)."""
+
+    pattern = re.compile(r"-{2,3}(?!-)")
+    parse_inner = False
+    parse_group = 0
+    precedence = 3
+
+
 _PYGMENTS_FORMATTER = HtmlFormatter(cssclass="highlight")
+
+# Regex for smart-dash conversion inside raw HTML blocks: skip
+# <pre>…</pre>, HTML comments, and individual tags.
+_BLOCK_HTML_SKIP_RE = re.compile(
+    r"(<pre[\s>].*?</pre>|<!--.*?-->|<[^>]+>)", re.DOTALL
+)
+
+
+def _html_smart_dashes(text):
+    """Apply smart-dash conversion to raw HTML, skipping tags and <pre>."""
+    parts = _BLOCK_HTML_SKIP_RE.split(text)
+    for i, part in enumerate(parts):
+        if not part.startswith("<"):
+            parts[i] = part.replace("---", "\u2014").replace("--", "\u2013")
+    return "".join(parts)
 
 
 class _JekyllRenderer(HtmlRenderer):
-    """Custom mistletoe renderer with Pygments highlighting and heading IDs.
-
-    Collects headings during rendering so a TOC can be built afterwards
-    without re-parsing the HTML.
+    """Custom mistletoe renderer with Pygments highlighting, heading IDs,
+    footnotes, and smart dashes — all at the AST level.
     """
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(FootnoteRef, SmartDash, **kwargs)
         self.toc_items: list[tuple[int, str, str]] = []
+
+    def __enter__(self):
+        ret = super().__enter__()
+        # FootnoteDef is a block token that returns None (never in AST),
+        # so we register it directly rather than via extras (which would
+        # require a render method).  It must go before Footnote (link refs)
+        # in the token list so [^key]: doesn't get consumed as a link ref.
+        _block_token.add_token(FootnoteDef, position=0)
+        return ret
+
+    # -- block code (Pygments) -----------------------------------------------
 
     def render_block_code(self, token) -> str:
         lang = token.language or ""
@@ -404,7 +522,7 @@ class _JekyllRenderer(HtmlRenderer):
                 return pyg_highlight(code, lexer, _PYGMENTS_FORMATTER)
             except ClassNotFound:
                 pass
-        escaped = html.escape(code)
+        escaped = html.escape(code, quote=False)
         return (
             '<div class="language-plaintext highlighter-rouge">'
             '<div class="highlight"><pre class="highlight"><code>'
@@ -412,10 +530,14 @@ class _JekyllRenderer(HtmlRenderer):
             "</code></pre></div></div>\n"
         )
 
+    # -- inline code ---------------------------------------------------------
+
     def render_inline_code(self, token) -> str:
         code_text = token.children[0].content
-        escaped = html.escape(code_text)
+        escaped = html.escape(code_text, quote=False)
         return f'<code class="language-plaintext highlighter-rouge">{escaped}</code>'
+
+    # -- headings with IDs ---------------------------------------------------
 
     def render_heading(self, token) -> str:
         level = token.level
@@ -425,10 +547,6 @@ class _JekyllRenderer(HtmlRenderer):
         hid = re.sub(r"[\s]+", "-", hid)
         self.toc_items.append((level, hid, raw.strip()))
         return f'<h{level} id="{hid}">{inner}</h{level}>\n'
-
-    def render_html_block(self, token) -> str:
-        """Pass through raw HTML blocks, applying smart-dash conversion."""
-        return _apply_smart_dashes(token.content) + "\n"
 
     def render_toc(self, exclude_titles=frozenset()):
         """Build a flat ``<ul>`` TOC from collected headings."""
@@ -445,131 +563,81 @@ class _JekyllRenderer(HtmlRenderer):
         parts.append("</ul>")
         return "\n".join(parts)
 
+    # -- smart dashes --------------------------------------------------------
 
-# ---------------------------------------------------------------------------
-# Smart dashes (post-processing)
-# ---------------------------------------------------------------------------
+    def render_smart_dash(self, token) -> str:
+        text = token.content
+        return "\u2014" if text == "---" else "\u2013"
 
-# Skip <pre>…</pre>, <code>…</code>, HTML comments, and individual tags.
-_SMART_DASH_SKIP_RE = re.compile(
-    r"(<pre[\s>].*?</pre>|<code[\s>].*?</code>|<!--.*?-->|<[^>]+>)", re.DOTALL
-)
+    # -- raw HTML blocks (apply smart dashes) --------------------------------
 
+    def render_html_block(self, token) -> str:
+        return _html_smart_dashes(token.content) + "\n"
 
-def _apply_smart_dashes(text):
-    """Convert ``---`` to em-dash and ``--`` to en-dash in *text*.
+    # -- footnote ref --------------------------------------------------------
 
-    Skips content inside ``<pre>``, ``<code>``, HTML comments, and tags.
-    """
-    parts = _SMART_DASH_SKIP_RE.split(text)
-    for i, part in enumerate(parts):
-        if not part.startswith("<"):
-            parts[i] = part.replace("---", "\u2014").replace("--", "\u2013")
-    return "".join(parts)
-
-
-# ---------------------------------------------------------------------------
-# Footnote pre-processing
-# ---------------------------------------------------------------------------
-
-# Match footnote definitions: [^key]: text (with optional continuation lines)
-_FOOTNOTE_DEF_RE = re.compile(
-    r"^(?P<lead> {0,3})"           # up to 3 leading spaces
-    r"\[\^(?P<key>[^\]]+)\]:"      # [^key]:
-    r"[ \t]*(?P<first_line>[^\n]*)\n"  # first line of content
-    r"(?P<cont>"                   # continuation lines
-    r"(?:(?:[ \t]+[^\n]*|[ \t]*)\n)*"  # indented or blank lines
-    r")",
-    re.MULTILINE,
-)
-
-# Match footnote references in body text: [^key]
-_FOOTNOTE_REF_RE = re.compile(r"\[\^([^\]]+)\]")
-
-
-def _preprocess_footnotes(text):
-    """Extract footnote definitions and replace references with HTML.
-
-    Returns *(cleaned_text, footnotes_html)* where *footnotes_html* is the
-    ``<section class="footnotes">`` block (empty string if no footnotes).
-    """
-    # 1. Collect all footnote definitions
-    definitions = {}
-    for m in _FOOTNOTE_DEF_RE.finditer(text):
-        key = m.group("key")
-        first_line = m.group("first_line")
-        cont = m.group("cont")
-        # Dedent continuation lines: strip common leading whitespace (at least 4 spaces or 1 tab)
-        cont_lines = []
-        for line in cont.split("\n"):
-            if not line.strip():
-                cont_lines.append("")
-            else:
-                # Remove up to 4 leading spaces of indentation
-                dedented = re.sub(r"^ {1,4}", "", line)
-                cont_lines.append(dedented)
-        body = first_line
-        if cont_lines:
-            trailing = "\n".join(cont_lines)
-            if trailing.strip():
-                body = first_line + "\n" + trailing
-        definitions[key] = body.strip()
-
-    if not definitions:
-        return text, ""
-
-    # 2. Remove footnote definitions from the markdown
-    text = _FOOTNOTE_DEF_RE.sub("", text)
-
-    # 3. Assign numbers to footnotes in order of first reference
-    key_to_num = {}
-    counter = 0
-
-    def _ref_repl(m):
-        nonlocal counter
-        key = m.group(1)
-        if key not in definitions:
-            return m.group(0)  # leave unknown references as-is
-        if key not in key_to_num:
-            counter += 1
-            key_to_num[key] = counter
-        num = key_to_num[key]
+    def render_footnote_ref(self, token) -> str:
+        num = token.num
+        key = token.key
         return (
-            f'<sup class="footnote-ref" id="fnref-{num}">'
-            f'<a href="#fn-{num}">{num}</a></sup>'
+            f'<sup id="fnref:{key}">'
+            f'<a href="#fn:{key}" class="footnote" rel="footnote" role="doc-noteref">'
+            f'{num}</a></sup>'
         )
 
-    text = _FOOTNOTE_REF_RE.sub(_ref_repl, text)
+    # -- document (with footnotes section) -----------------------------------
 
-    if not key_to_num:
-        return text, ""
+    def render_document(self, token) -> str:
+        self.footnotes.update(token.footnotes)
+        inner = "\n".join(self.render(child) for child in token.children)
+        out = f"{inner}\n" if inner else ""
 
-    # 4. Build footnotes HTML section
-    # Render each footnote's text as markdown
-    fn_items = []
-    sorted_fns = sorted(key_to_num.items(), key=lambda kv: kv[1])
-    for key, num in sorted_fns:
-        fn_text = definitions.get(key, "")
-        # Render the footnote body as markdown
-        with _JekyllRenderer() as fn_renderer:
-            fn_doc = Document(fn_text)
-            fn_html = fn_renderer.render(fn_doc)
-        fn_html = fn_html.strip()
-        # Add backref link
-        backref = f' <a href="#fnref-{num}" class="footnote-backref">\u21a9</a>'
-        # Insert backref before closing </p> if present, otherwise append
-        if fn_html.endswith("</p>"):
-            fn_html = fn_html[:-4] + backref + "</p>"
-        else:
-            fn_html += backref
-        fn_items.append(f'<li id="fn-{num}">\n{fn_html}\n</li>')
+        # Build footnotes section from collected definitions
+        md_footnotes = getattr(token, "md_footnotes", {})
+        md_footnote_order = getattr(token, "md_footnote_order", [])
+        if md_footnotes and md_footnote_order:
+            parent_link_refs = dict(token.footnotes)  # link ref defs
+            fn_items = []
+            for key in md_footnote_order:
+                body_lines = md_footnotes.get(key)
+                if body_lines is None:
+                    continue
+                num = token.md_footnote_nums[key]
 
-    footnotes_html = (
-        '<section class="footnotes">\n<ol>\n'
-        + "\n".join(fn_items)
-        + "\n</ol>\n</section>"
-    )
-    return text, footnotes_html
+                # Parse footnote body as a sub-document, sharing parent
+                # link-reference definitions so [text][ref] links resolve.
+                # Pre-seed _root_node.footnotes before tokenization.
+                sub_doc = Document.__new__(Document)
+                sub_doc.footnotes = dict(parent_link_refs)
+                sub_doc.md_footnotes = {}
+                sub_doc.line_number = 1
+                _token._root_node = sub_doc
+                lines = body_lines
+                if isinstance(lines, str):
+                    lines = lines.splitlines(keepends=True)
+                lines = [l if l.endswith("\n") else l + "\n" for l in lines]
+                sub_doc.children = _block_token.tokenize(lines)
+                _token._root_node = None
+
+                fn_html = "\n".join(
+                    self.render(child) for child in sub_doc.children
+                ).strip()
+
+                # Add backref link
+                backref = f' <a href="#fnref:{key}" class="reversefootnote" role="doc-backlink">&#8617;</a>'
+                if fn_html.endswith("</p>"):
+                    fn_html = fn_html[:-4] + backref + "</p>"
+                else:
+                    fn_html += "\n" + backref
+                fn_items.append(f'<li id="fn:{key}">\n{fn_html}\n</li>')
+
+            out += (
+                '<div class="footnotes" role="doc-endnotes">\n<ol>\n'
+                + "\n".join(fn_items)
+                + "\n</ol>\n</div>\n"
+            )
+
+        return out
 
 
 # ---------------------------------------------------------------------------
@@ -621,7 +689,11 @@ def _collapse_html_blanks(text):
 
 
 def render_markdown(text):
-    """Convert Markdown to HTML (Pygments highlighting, TOC, smart dashes)."""
+    """Convert Markdown to HTML (Pygments highlighting, TOC, smart dashes).
+
+    Footnotes and smart dashes are handled at the AST level via custom
+    mistletoe tokens (FootnoteDef, FootnoteRef, SmartDash).
+    """
     # 1. Strip kramdown annotations that mistletoe doesn't understand.
     text, no_toc, has_toc = _strip_kramdown_annotations(text)
 
@@ -632,22 +704,13 @@ def render_markdown(text):
     # 3. Remove blank lines inside HTML block elements.
     text = _collapse_html_blanks(text)
 
-    # 4. Pre-process footnotes (mistletoe doesn't have a footnotes plugin).
-    text, footnotes_html = _preprocess_footnotes(text)
-
-    # 5. Render Markdown → HTML with mistletoe.
+    # 4. Render Markdown → HTML with mistletoe.  FootnoteDef/FootnoteRef
+    #    and SmartDash are registered as extra tokens by _JekyllRenderer.
     with _JekyllRenderer() as renderer:
         doc = Document(text)
         out = renderer.render(doc)
 
-        # 6. Apply smart dashes as post-processing (skip <pre>, <code>, tags).
-        out = _apply_smart_dashes(out)
-
-        # 7. Append footnotes section if present.
-        if footnotes_html:
-            out += "\n" + footnotes_html + "\n"
-
-        # 8. Insert TOC at the placeholder, excluding {:.no_toc} headings.
+        # 5. Insert TOC at the placeholder, excluding {:.no_toc} headings.
         if has_toc:
             out = out.replace("<!-- TOC -->", renderer.render_toc(no_toc), 1)
         out = out.replace("<!-- TOC -->", "")

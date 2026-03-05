@@ -8,3 +8,6 @@ _site
 __pycache__/
 mistune-build/
 mistletoe-build/
+jekyll-build/
+vendor/
+.bundle/
