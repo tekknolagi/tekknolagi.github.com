@@ -22,7 +22,7 @@ RUN rm /site/Gemfile.lock
 RUN bundle exec jekyll build --future
 
 FROM python:3.12-alpine as build_site_py
-RUN pip install --no-cache-dir python-liquid2 mistune pyyaml pygments
+RUN pip install --no-cache-dir python-liquid2 mistletoe pyyaml pygments
 RUN mkdir /site
 COPY . /site
 WORKDIR /site

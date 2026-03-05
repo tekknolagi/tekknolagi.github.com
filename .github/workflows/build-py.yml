@@ -18,6 +18,6 @@ jobs:
       with:
         python-version: '3.12'
     - name: Install dependencies
-      run: pip install python-liquid2 mistune pyyaml pygments
+      run: pip install python-liquid2 mistletoe pyyaml pygments
     - name: Build site
       run: python3 build.py
