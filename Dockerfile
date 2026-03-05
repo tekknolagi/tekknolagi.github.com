@@ -21,12 +21,17 @@ COPY . /site
 RUN rm /site/Gemfile.lock
 RUN bundle exec jekyll build --future
 
+FROM ghcr.io/astral-sh/uv:python3.12-alpine as build_site_py
+COPY . /site
+WORKDIR /site
+RUN uv run build.py
+
 FROM redbean as build_server
 COPY --from=build_site /site/_site/. _site
 WORKDIR _site
 RUN sh ../bin/zip -A -r ../bin/redbean *
 
 FROM busybox as web
-COPY --from=build_site /site/_site/. .
+COPY --from=build_site_py /site/_site/. .
 CMD ["busybox", "httpd", "-f", "-v", "-p", "8000"]
 EXPOSE 8000

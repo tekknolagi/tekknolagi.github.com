@@ -24,8 +24,8 @@ Here is some of my favorite music:
 * *Sinfonia Concertante for Violin, Viola, and Orchestra in E-flat (K1-364,
   K6-320d)* by W.A. Mozart
 * *Don Giovanni (K527)* by W.A. Mozart
-- *Karelia Suite* by Jean Sibelius
-- *Finlandia* by Jean Sibelius
+* *Karelia Suite* by Jean Sibelius
+* *Finlandia* by Jean Sibelius
 * *Cello Concerto in B minor* by Antonín Dvořák, conducted by Paavo Järvi
 * *Symphony No. 9 -- New World* by Antonín Dvořák, conducted by Herbert von
   Karajan
