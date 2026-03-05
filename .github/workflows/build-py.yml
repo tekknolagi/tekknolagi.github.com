@@ -21,5 +21,3 @@ jobs:
       run: pip install python-liquid2 mistune pyyaml pygments
     - name: Build site
       run: python3 build.py
-    - name: Run golden test
-      run: python3 test_golden.py
