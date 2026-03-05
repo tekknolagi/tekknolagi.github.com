@@ -411,7 +411,7 @@ class _JekyllRenderer(mistune.HTMLRenderer):
                 return pyg_highlight(code, lexer, _PYGMENTS_FORMATTER)
             except ClassNotFound:
                 pass
-        return f"<pre><code>{mistune.escape(code)}</code></pre>\n"
+        return f'<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{mistune.escape(code)}</code></pre></div></div>\n'
 
     def codespan(self, text):
         return f'<code class="language-plaintext highlighter-rouge">{mistune.escape(text)}</code>'
