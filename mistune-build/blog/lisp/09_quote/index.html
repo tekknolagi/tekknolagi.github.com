@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Writing a Lisp, Part 9: Quote | Max Bernstein</title>
+    <meta property="og:title" content="Writing a Lisp, Part 9: Quote | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/lisp/09_quote/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Writing a Lisp, Part 9: Quote</h1>
+        
+        <div class="post-inline-date"><i>February 1, 2017</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>Welcome back! I promise this post won't be nearly as long as the post about
+ASTs. This time we're going to cover the <code class="language-plaintext highlighter-rouge">quote</code> form and its special new
+syntax.</p>
+<p>Last time we noticed that writing something like:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="nb">apply</span><span class="w"> </span><span class="nb">+</span><span class="w"> </span><span class="p">(</span><span class="nb">list</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+<p>is not great, and we'd prefer to do instead:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="nb">apply</span><span class="w"> </span><span class="nb">+</span><span class="w"> </span><span class="o">&#39;</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+<p>and defer <a href="https://en.wikipedia.org/wiki/Repetitive_strain_injury">RSI</a> as much
+as we can. We'd also like to be able to have symbol literals, since right now
+we can't even build those. Symbols are exclusively used for variable names and
+there's no way to stop them from being evaluated as such:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 08_asts.ml
+&gt; (val x a)
+Exception: NotFound &quot;a&quot;.
+$
+</code></pre></div></div>
+<p>So let's add something that can defer evaluation, whether it's for lists, for
+variable names, or for entire expressions that we'll later feed into <code class="language-plaintext highlighter-rouge">eval</code>
+(when we get to our metacircular evaluator). That something is <code class="language-plaintext highlighter-rouge">quote</code>.</p>
+<p>According to the <a href="https://docs.racket-lang.org/guide/quote.html">Racket docs</a>:</p>
+<blockquote>
+<p>The <code class="language-plaintext highlighter-rouge">quote</code> form produces a constant:</p>
+<blockquote>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="k">quote</span><span class="w"> </span><span class="nv">datum</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p>The syntax of a <code class="language-plaintext highlighter-rouge">datum</code> is technically specified as anything that the <code class="language-plaintext highlighter-rouge">read</code>
+function parses as a single element. The value of the <code class="language-plaintext highlighter-rouge">quote</code> form is the
+same value that <code class="language-plaintext highlighter-rouge">read</code> would produce given <em><code class="language-plaintext highlighter-rouge">datum</code></em>.</p>
+</blockquote>
+<p>Which means, in short, that the result should be a <code class="language-plaintext highlighter-rouge">value</code>, not yet transformed
+into an <code class="language-plaintext highlighter-rouge">exp</code>.</p>
+<p>That sounds simple enough. Just... don't do anything. And it is! Let's add a
+constructor for it in <code class="language-plaintext highlighter-rouge">lobject</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">type</span> <span class="n">lobject</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Fixnum</span> <span class="k">of</span> <span class="kt">int</span>
+  <span class="o">|</span> <span class="nc">Boolean</span> <span class="k">of</span> <span class="kt">bool</span>
+  <span class="o">|</span> <span class="nc">Symbol</span> <span class="k">of</span> <span class="kt">string</span>
+  <span class="o">|</span> <span class="nc">Nil</span>
+  <span class="o">|</span> <span class="nc">Pair</span> <span class="k">of</span> <span class="n">lobject</span> <span class="o">*</span> <span class="n">lobject</span>
+  <span class="o">|</span> <span class="nc">Primitive</span> <span class="k">of</span> <span class="kt">string</span> <span class="o">*</span> <span class="o">(</span><span class="n">lobject</span> <span class="kt">list</span> <span class="o">-&gt;</span> <span class="n">lobject</span><span class="o">)</span>
+  <span class="o">|</span> <span class="nc">Quote</span> <span class="k">of</span> <span class="n">value</span>                                      <span class="c">(* NEW! *)</span>
+<span class="k">and</span> <span class="n">value</span> <span class="o">=</span> <span class="n">lobject</span>
+</pre></div>
+<p>We're adding it to <code class="language-plaintext highlighter-rouge">lobject</code> because our reader needs to be able to handle the
+new syntax with the single quote, and the reader only returns <code class="language-plaintext highlighter-rouge">value</code>s – not
+<code class="language-plaintext highlighter-rouge">exp</code>s. Speaking of our reader, let's add just one single line to make this
+work:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">read_sexp</span> <span class="n">stm</span> <span class="o">=</span>
+  <span class="o">[...]</span>
+  <span class="n">eat_whitespace</span> <span class="n">stm</span><span class="o">;</span>
+  <span class="k">let</span> <span class="n">c</span> <span class="o">=</span> <span class="n">read_char</span> <span class="n">stm</span> <span class="k">in</span>
+  <span class="o">[...]</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">&#39;\&#39;&#39;</span> <span class="k">then</span> <span class="nc">Quote</span> <span class="o">(</span><span class="n">read_sexp</span> <span class="n">stm</span><span class="o">)</span>            <span class="c">(* NEW! *)</span>
+  <span class="k">else</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">SyntaxError</span> <span class="o">(</span><span class="s2">&quot;Unexpected char &quot;</span> <span class="o">^</span> <span class="o">(</span><span class="n">stringOfChar</span> <span class="n">c</span><span class="o">)));;</span>
+</pre></div>
+<p>And there you have it. We can now read quoted expressions. The other form, the
+one that looks like a function application, we'll handle as a special case
+later — outside of the reader.</p>
+<p>We'll also want to add two cases to <code class="language-plaintext highlighter-rouge">build_ast</code> – one for <code class="language-plaintext highlighter-rouge">'</code> and one for
+<code class="language-plaintext highlighter-rouge">quote</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">build_ast</span> <span class="n">sexp</span> <span class="o">=</span>
+  <span class="k">match</span> <span class="n">sexp</span> <span class="k">with</span>
+  <span class="o">|</span> <span class="nc">Primitive</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="nc">ThisCan&#39;tHappenError</span>
+  <span class="o">|</span> <span class="nc">Fixnum</span> <span class="o">_</span> <span class="o">|</span> <span class="nc">Boolean</span> <span class="o">_</span> <span class="o">|</span> <span class="nc">Nil</span> <span class="o">|</span> <span class="nc">Quote</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="nc">Literal</span> <span class="n">sexp</span>    <span class="c">(* NEW *)</span>
+  <span class="o">|</span> <span class="nc">Symbol</span> <span class="n">s</span> <span class="o">-&gt;</span> <span class="nc">Var</span> <span class="n">s</span>
+  <span class="o">|</span> <span class="nc">Pair</span> <span class="o">_</span> <span class="k">when</span> <span class="n">is_list</span> <span class="n">sexp</span> <span class="o">-&gt;</span>
+      <span class="o">(</span><span class="k">match</span> <span class="n">pair_to_list</span> <span class="n">sexp</span> <span class="k">with</span>
+      <span class="o">[...]</span>
+      <span class="o">|</span> <span class="o">[</span><span class="nc">Symbol</span> <span class="s2">&quot;quote&quot;</span><span class="o">;</span> <span class="n">e</span><span class="o">]</span> <span class="o">-&gt;</span> <span class="nc">Literal</span> <span class="o">(</span><span class="nc">Quote</span> <span class="n">e</span><span class="o">)</span>            <span class="c">(* NEW *)</span>
+      <span class="o">|</span> <span class="o">[</span><span class="nc">Symbol</span> <span class="s2">&quot;val&quot;</span><span class="o">;</span> <span class="nc">Symbol</span> <span class="n">n</span><span class="o">;</span> <span class="n">e</span><span class="o">]</span> <span class="o">-&gt;</span> <span class="nc">Defexp</span> <span class="o">(</span><span class="nc">Val</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">build_ast</span> <span class="n">e</span><span class="o">))</span>
+      <span class="o">|</span> <span class="o">[</span><span class="nc">Symbol</span> <span class="s2">&quot;apply&quot;</span><span class="o">;</span> <span class="n">fnexp</span><span class="o">;</span> <span class="n">args</span><span class="o">]</span> <span class="o">-&gt;</span>
+          <span class="nc">Apply</span> <span class="o">(</span><span class="n">build_ast</span> <span class="n">fnexp</span><span class="o">,</span> <span class="n">build_ast</span> <span class="n">args</span><span class="o">)</span>
+      <span class="o">|</span> <span class="n">fnexp</span><span class="o">::</span><span class="n">args</span> <span class="o">-&gt;</span> <span class="nc">Call</span> <span class="o">(</span><span class="n">build_ast</span> <span class="n">fnexp</span><span class="o">,</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">build_ast</span> <span class="n">args</span><span class="o">)</span>
+      <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">ParseError</span> <span class="s2">&quot;poorly formed expression&quot;</span><span class="o">))</span>
+  <span class="o">|</span> <span class="nc">Pair</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="nc">Literal</span> <span class="n">sexp</span>
+</pre></div>
+<p>The best part is... <code class="language-plaintext highlighter-rouge">eval</code> is the simplest bit! Just don't quote the expression
+anymore and let it be evaluated!</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">evalexp</span> <span class="n">exp</span> <span class="n">env</span> <span class="o">=</span>
+  <span class="o">[...]</span>
+  <span class="k">let</span> <span class="k">rec</span> <span class="n">ev</span> <span class="o">=</span> <span class="k">function</span>
+    <span class="o">|</span> <span class="nc">Literal</span> <span class="nc">Quote</span> <span class="n">e</span> <span class="o">-&gt;</span> <span class="n">e</span>                                  <span class="c">(* NEW *)</span>
+    <span class="o">|</span> <span class="nc">Literal</span> <span class="n">l</span> <span class="o">-&gt;</span> <span class="n">l</span>
+    <span class="o">|</span> <span class="nc">Var</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">lookup</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">env</span><span class="o">)</span>
+    <span class="o">[...]</span>
+  <span class="k">in</span> <span class="n">ev</span> <span class="n">exp</span>
+</pre></div>
+<p>The only potentially tricky bit is that we have to add this case before the
+more general <code class="language-plaintext highlighter-rouge">Literal l</code> case or OCaml will complain at us that the <code class="language-plaintext highlighter-rouge">Literal Quote e</code> case is unused — which it would be.</p>
+<p>And we're done with <code class="language-plaintext highlighter-rouge">quote</code>. Just have to modify the printing function. Since
+we're done so early, I'll also go ahead and take the liberty of re-working the
+printing function into <em>stringifier</em>. That is, it won't actually do any
+printing to the console, but instead return a string. This turns out to be more
+flexible and easier to use in the long run. Since that's a pretty easy task —
+just remove all of the recursive <code class="language-plaintext highlighter-rouge">print_sexp</code> calls in favor of <code class="language-plaintext highlighter-rouge">string_sexp</code>
+calls and concatenate the results together with <code class="language-plaintext highlighter-rouge">^</code> — I'll also go ahead and
+add an AST printer. Why not? It'll make debugging easier in the future anyway.</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">string_exp</span> <span class="o">=</span> <span class="k">function</span>
+  <span class="o">|</span> <span class="nc">Literal</span> <span class="n">e</span> <span class="o">-&gt;</span> <span class="n">string_val</span> <span class="n">e</span>
+  <span class="o">|</span> <span class="nc">Var</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span>
+  <span class="o">|</span> <span class="nc">If</span> <span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="n">t</span><span class="o">,</span> <span class="n">f</span><span class="o">)</span> <span class="o">-&gt;</span>
+      <span class="s2">&quot;(if &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">c</span> <span class="o">^</span> <span class="s2">&quot; &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">t</span> <span class="o">^</span> <span class="s2">&quot; &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">f</span> <span class="o">^</span> <span class="s2">&quot;)&quot;</span>
+  <span class="o">|</span> <span class="nc">And</span> <span class="o">(</span><span class="n">c0</span><span class="o">,</span> <span class="n">c1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;(and &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">c0</span> <span class="o">^</span> <span class="s2">&quot; &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">c1</span> <span class="o">^</span> <span class="s2">&quot;)&quot;</span>
+  <span class="o">|</span> <span class="nc">Or</span> <span class="o">(</span><span class="n">c0</span><span class="o">,</span> <span class="n">c1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;(or &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">c0</span> <span class="o">^</span> <span class="s2">&quot; &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">c1</span> <span class="o">^</span> <span class="s2">&quot;)&quot;</span>
+  <span class="o">|</span> <span class="nc">Apply</span> <span class="o">(</span><span class="n">f</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;(apply &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">f</span> <span class="o">^</span> <span class="s2">&quot; &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">e</span> <span class="o">^</span> <span class="s2">&quot;)&quot;</span>
+  <span class="o">|</span> <span class="nc">Call</span> <span class="o">(</span><span class="n">f</span><span class="o">,</span> <span class="n">es</span><span class="o">)</span> <span class="o">-&gt;</span>
+      <span class="k">let</span> <span class="n">string_es</span> <span class="o">=</span> <span class="o">(</span><span class="nn">String</span><span class="p">.</span><span class="n">concat</span> <span class="s2">&quot; &quot;</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">string_exp</span> <span class="n">es</span><span class="o">))</span> <span class="k">in</span>
+      <span class="s2">&quot;(&quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">f</span> <span class="o">^</span> <span class="s2">&quot; &quot;</span> <span class="o">^</span> <span class="n">string_es</span> <span class="o">^</span> <span class="s2">&quot;)&quot;</span>
+  <span class="o">|</span> <span class="nc">Defexp</span> <span class="o">(</span><span class="nc">Val</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">e</span><span class="o">))</span> <span class="o">-&gt;</span> <span class="s2">&quot;(val &quot;</span> <span class="o">^</span> <span class="n">n</span> <span class="o">^</span> <span class="s2">&quot; &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">e</span> <span class="o">^</span> <span class="s2">&quot;)&quot;</span>
+  <span class="o">|</span> <span class="nc">Defexp</span> <span class="o">(</span><span class="nc">Exp</span> <span class="n">e</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">string_exp</span> <span class="n">e</span>
+
+<span class="k">and</span> <span class="n">string_val</span> <span class="n">e</span> <span class="o">=</span>
+    <span class="k">let</span> <span class="k">rec</span> <span class="n">string_list</span> <span class="n">l</span> <span class="o">=</span>
+        <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
+        <span class="o">|</span> <span class="nc">Pair</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="nc">Nil</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">string_val</span> <span class="n">a</span>
+        <span class="o">|</span> <span class="nc">Pair</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">string_val</span> <span class="n">a</span> <span class="o">^</span> <span class="s2">&quot; &quot;</span> <span class="o">^</span> <span class="n">string_list</span> <span class="n">b</span>
+        <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="nc">ThisCan&#39;tHappenError</span>
+    <span class="k">in</span>
+    <span class="k">let</span> <span class="n">string_pair</span> <span class="n">p</span> <span class="o">=</span>
+        <span class="k">match</span> <span class="n">p</span> <span class="k">with</span>
+        <span class="o">|</span> <span class="nc">Pair</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">string_val</span> <span class="n">a</span> <span class="o">^</span> <span class="s2">&quot; . &quot;</span> <span class="o">^</span> <span class="n">string_val</span> <span class="n">b</span>
+        <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="nc">ThisCan&#39;tHappenError</span>
+    <span class="k">in</span>
+    <span class="k">match</span> <span class="n">e</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Fixnum</span> <span class="n">v</span> <span class="o">-&gt;</span> <span class="n">string_of_int</span> <span class="n">v</span>
+    <span class="o">|</span> <span class="nc">Boolean</span> <span class="n">b</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s2">&quot;#t&quot;</span> <span class="k">else</span> <span class="s2">&quot;#f&quot;</span>
+    <span class="o">|</span> <span class="nc">Symbol</span> <span class="n">s</span> <span class="o">-&gt;</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="s2">&quot;nil&quot;</span>
+    <span class="o">|</span> <span class="nc">Pair</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span>
+        <span class="s2">&quot;(&quot;</span> <span class="o">^</span> <span class="o">(</span><span class="k">if</span> <span class="n">is_list</span> <span class="n">e</span> <span class="k">then</span> <span class="n">string_list</span> <span class="n">e</span> <span class="k">else</span> <span class="n">string_pair</span> <span class="n">e</span><span class="o">)</span> <span class="o">^</span> <span class="s2">&quot;)&quot;</span>
+    <span class="o">|</span> <span class="nc">Primitive</span> <span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="o">_)</span> <span class="o">-&gt;</span> <span class="s2">&quot;#&lt;primitive:&quot;</span> <span class="o">^</span> <span class="n">name</span> <span class="o">^</span> <span class="s2">&quot;&gt;&quot;</span>
+    <span class="o">|</span> <span class="nc">Quote</span> <span class="n">v</span> <span class="o">-&gt;</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">^</span> <span class="n">string_val</span> <span class="n">v</span>                         <span class="c">(* NEW *)</span>
+</pre></div>
+<p>Note that these two functions are mutually recursive (like our types) and
+therefore are defined with <code class="language-plaintext highlighter-rouge">and</code> and <code class="language-plaintext highlighter-rouge">let rec</code>.</p>
+<p>Also note that this requires a small change to the <code class="language-plaintext highlighter-rouge">repl</code> function:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">repl</span> <span class="n">stm</span> <span class="n">env</span> <span class="o">=</span>
+  <span class="n">print_string</span> <span class="s2">&quot;&gt; &quot;</span><span class="o">;</span>
+  <span class="n">flush</span> <span class="n">stdout</span><span class="o">;</span>
+  <span class="k">let</span> <span class="n">ast</span> <span class="o">=</span> <span class="n">build_ast</span> <span class="o">(</span><span class="n">read_sexp</span> <span class="n">stm</span><span class="o">)</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="o">(</span><span class="n">result</span><span class="o">,</span> <span class="n">env&#39;</span><span class="o">)</span> <span class="o">=</span> <span class="n">eval</span> <span class="n">ast</span> <span class="n">env</span> <span class="k">in</span>
+  <span class="n">print_endline</span> <span class="o">(</span><span class="n">string_val</span> <span class="n">result</span><span class="o">);</span>
+  <span class="n">repl</span> <span class="n">stm</span> <span class="n">env&#39;</span><span class="o">;;</span>
+</pre></div>
+<p>and there we go:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 09-quote.ml
+&gt; 'a
+a
+&gt; '4
+4
+&gt; '(1 2 3)
+(1 2 3)
+&gt; (apply + '(1 2))
+3
+&gt; '(quote e)
+(quote e)
+&gt; ''a
+'a
+&gt; (val x 'x)
+x
+&gt; x
+x
+&gt; 'whaaaaaaaat?
+whaaaaaaaat?
+&gt; Exception: End_of_file.
+$
+</code></pre></div></div>
+<p>Download the code <a href="/resources/lisp/09_quote.ml">here</a> if you want to mess with it.</p>
+<p>Next up, <a href="/blog/lisp/10_closures/">closures</a>.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_blog_lisp/09_quote.md" title="Help improve _blog_lisp/09_quote.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

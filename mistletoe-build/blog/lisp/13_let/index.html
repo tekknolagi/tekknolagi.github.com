@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Writing a Lisp, Part 13: Let | Max Bernstein</title>
+    <meta property="og:title" content="Writing a Lisp, Part 13: Let | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/lisp/13_let/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Writing a Lisp, Part 13: Let</h1>
+        
+        <div class="post-inline-date"><i>March 14, 2017</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>Here we are, here we are, with a fully-functional programming language. And
+yet, aside from using <code class="language-plaintext highlighter-rouge">val</code>, we have no good way of defining variables.
+Additionally, <code class="language-plaintext highlighter-rouge">val</code> has the side-effect of mutating its current environment –
+something we would rather avoid (at least for now).</p>
+<p>Most functional languages (SML, OCaml, Haskell, every single Lisp) have a
+solution to this problem: they have a form of expression called <code class="language-plaintext highlighter-rouge">let</code> that is
+used to bind a name to a value <em>only</em> in a given expression. Here's what it
+looks like in two different languages:</p>
+<div class="highlight"><pre><span></span><span class="c">(* OCaml *)</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">4</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">5</span> <span class="k">in</span>
+    <span class="n">y</span> <span class="o">*</span> <span class="n">x</span>
+<span class="c">(* =&gt; 20 *)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1">; Lisp</span>
+<span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">((</span><span class="nv">x</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nv">y</span><span class="w"> </span><span class="mi">5</span><span class="p">))</span>
+<span class="w">  </span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="nv">y</span><span class="w"> </span><span class="nv">x</span><span class="p">))</span>
+<span class="c1">; =&gt; 20</span>
+</pre></div>
+
+<p>Let, as it turns out, is a supremely important construct in functional
+programming. Without it, the programmer is required to use imperative
+constructs like <code class="language-plaintext highlighter-rouge">begin</code>, which evaluates a bunch of expressions and then
+returns the value of the last one:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="k">begin</span>
+<span class="w">  </span><span class="p">(</span><span class="nf">val</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="w">  </span><span class="p">(</span><span class="nf">val</span><span class="w"> </span><span class="nv">y</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="w">  </span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="nv">y</span><span class="w"> </span><span class="nv">x</span><span class="p">))</span>
+<span class="c1">; =&gt; 20</span>
+</pre></div>
+
+<p>There's a problem with that, though: it pollutes the existing environment with
+the values of <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code>. If <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> had other values beforehand... well,
+sorry. They're gone now. If you're feeling clever, however, you could instead
+use <code class="language-plaintext highlighter-rouge">lambda</code>, like so:</p>
+<div class="highlight"><pre><span></span><span class="p">(((</span><span class="k">lambda</span><span class="w"> </span><span class="p">(</span><span class="nv">x</span><span class="p">)</span>
+<span class="w">     </span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="p">(</span><span class="nv">y</span><span class="p">)</span>
+<span class="w">        </span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="nv">y</span><span class="w"> </span><span class="nv">x</span><span class="p">)))</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="c1">; =&gt; 12</span>
+</pre></div>
+
+<p>or even:</p>
+<div class="highlight"><pre><span></span><span class="p">((</span><span class="k">lambda</span><span class="w"> </span><span class="p">(</span><span class="nv">x</span><span class="w"> </span><span class="nv">y</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="nv">y</span><span class="w"> </span><span class="nv">x</span><span class="p">))</span>
+<span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="c1">; =&gt; 12</span>
+</pre></div>
+
+<p>If you guessed that using lambda-expressions to model <code class="language-plaintext highlighter-rouge">let</code> was a good idea,
+you're sort of right!</p>
+<p>You're right because it certainly works, and is more elegant than <code class="language-plaintext highlighter-rouge">begin</code>.  You
+should have concerns, though, about the amount of stack space that your typical
+lambda-expression uses. Right now, every single lambda-expression captures a
+copy of the existing environment. That's a <em>lot</em> of wasted space <sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup> —
+let-expressions are used often.</p>
+<p>Another thing you should be wondering about the choice in implementation: is
+there a difference between the two lambda representations above?</p>
+<p>Not really, even considering exceptional cases like two variables with the same
+name. Let's have a look:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 13_let.ml
+&gt; (((lambda (x) (lambda (x) x)) 5) 7)
+7
+&gt; ((lambda (x x) x) 5 7)
+7
+&gt; Exception: End_of_file.
+$
+</code></pre></div></div>
+
+<p>Even though we don't check for duplicate variable names in lambda-expressions,
+the results end up the same — the inner (last) <code class="language-plaintext highlighter-rouge">x</code> is the one that is most
+recently bound, and therefore used when evaluating the expression.</p>
+<h3 id="let">Let</h3>
+
+<p>Either way, what we're going to do in our implementation is less clever —
+just add a new AST constructor and evaluate them differently from other types
+of expression.</p>
+<p>Yes, this is "lame" because it adds more core interpreter features without
+"needing" to. But it saves some AST transform headache and gives some
+performance wins. <sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup></p>
+<div class="highlight"><pre><span></span><span class="o">[...]</span>
+<span class="k">and</span> <span class="n">let_kind</span> <span class="o">=</span> <span class="nc">LET</span> <span class="o">|</span> <span class="nc">LETSTAR</span> <span class="o">|</span> <span class="nc">LETREC</span>
+<span class="k">and</span> <span class="n">exp</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Literal</span> <span class="k">of</span> <span class="n">value</span>
+  <span class="o">|</span> <span class="nc">Var</span> <span class="k">of</span> <span class="n">name</span>
+  <span class="o">|</span> <span class="nc">If</span> <span class="k">of</span> <span class="n">exp</span> <span class="o">*</span> <span class="n">exp</span> <span class="o">*</span> <span class="n">exp</span>
+  <span class="o">|</span> <span class="nc">And</span> <span class="k">of</span> <span class="n">exp</span> <span class="o">*</span> <span class="n">exp</span>
+  <span class="o">|</span> <span class="nc">Or</span> <span class="k">of</span> <span class="n">exp</span> <span class="o">*</span> <span class="n">exp</span>
+  <span class="o">|</span> <span class="nc">Apply</span> <span class="k">of</span> <span class="n">exp</span> <span class="o">*</span> <span class="n">exp</span>
+  <span class="o">|</span> <span class="nc">Call</span> <span class="k">of</span> <span class="n">exp</span> <span class="o">*</span> <span class="n">exp</span> <span class="kt">list</span>
+  <span class="o">|</span> <span class="nc">Lambda</span> <span class="k">of</span> <span class="n">name</span> <span class="kt">list</span> <span class="o">*</span> <span class="n">exp</span>
+  <span class="o">|</span> <span class="nc">Let</span> <span class="k">of</span> <span class="n">let_kind</span> <span class="o">*</span> <span class="o">(</span><span class="n">name</span> <span class="o">*</span> <span class="n">exp</span><span class="o">)</span> <span class="kt">list</span> <span class="o">*</span> <span class="n">exp</span>             <span class="c">(* NEW! *)</span>
+  <span class="o">|</span> <span class="nc">Defexp</span> <span class="k">of</span> <span class="n">def</span>
+</pre></div>
+
+<p>The weird bit is the <code class="language-plaintext highlighter-rouge">let_kind</code>. Ignore <code class="language-plaintext highlighter-rouge">LETSTAR</code> and <code class="language-plaintext highlighter-rouge">LETREC</code> for now — I'll
+touch on them toward the end of this post.</p>
+<p>Now of course we have to go and patch all the non-exhaustive warnings that come
+up.</p>
+<p>In <code class="language-plaintext highlighter-rouge">string_exp</code>, we'll transform each binding into a string and then put them
+all together:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">string_exp</span> <span class="o">=</span>
+  <span class="k">let</span> <span class="n">spacesep_exp</span> <span class="n">es</span> <span class="o">=</span> <span class="n">spacesep</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">string_exp</span> <span class="n">es</span><span class="o">)</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="n">string_of_binding</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">=</span> <span class="s2">&quot;(&quot;</span> <span class="o">^</span> <span class="n">n</span> <span class="o">^</span> <span class="s2">&quot; &quot;</span> <span class="o">^</span> <span class="o">(</span><span class="n">string_exp</span> <span class="n">e</span><span class="o">)</span> <span class="o">^</span> <span class="s2">&quot;)&quot;</span> <span class="k">in</span>
+  <span class="k">function</span>
+  <span class="o">[...]</span>
+  <span class="o">|</span> <span class="nc">Lambda</span> <span class="o">(</span><span class="n">ns</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">-&gt;</span>  <span class="s2">&quot;(lambda (&quot;</span> <span class="o">^</span> <span class="n">spacesep</span> <span class="n">ns</span> <span class="o">^</span> <span class="s2">&quot;) &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">e</span> <span class="o">^</span> <span class="s2">&quot;)&quot;</span>
+  <span class="o">|</span> <span class="nc">Let</span> <span class="o">(</span><span class="n">kind</span><span class="o">,</span> <span class="n">bs</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">-&gt;</span>
+      <span class="k">let</span> <span class="n">str</span> <span class="o">=</span> <span class="k">match</span> <span class="n">kind</span> <span class="k">with</span>
+                <span class="o">|</span> <span class="nc">LET</span> <span class="o">-&gt;</span> <span class="s2">&quot;let&quot;</span>
+                <span class="o">|</span> <span class="nc">LETSTAR</span> <span class="o">-&gt;</span> <span class="s2">&quot;let*&quot;</span>
+                <span class="o">|</span> <span class="nc">LETREC</span> <span class="o">-&gt;</span> <span class="s2">&quot;letrec&quot;</span>
+      <span class="k">in</span>
+      <span class="k">let</span> <span class="n">bindings</span> <span class="o">=</span> <span class="n">spacesep</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">string_of_binding</span> <span class="n">bs</span><span class="o">)</span> <span class="k">in</span>
+      <span class="s2">&quot;(&quot;</span> <span class="o">^</span> <span class="n">str</span> <span class="o">^</span> <span class="s2">&quot; (&quot;</span> <span class="o">^</span> <span class="n">bindings</span> <span class="o">^</span> <span class="s2">&quot;) &quot;</span> <span class="o">^</span> <span class="n">string_exp</span> <span class="n">e</span> <span class="o">^</span> <span class="s2">&quot;)&quot;</span>
+  <span class="o">[...]</span>
+</pre></div>
+
+<p>I've also gone ahead and rewritten the stringify function for <code class="language-plaintext highlighter-rouge">lambda</code> to
+actually print the whole expression.</p>
+<p>In <code class="language-plaintext highlighter-rouge">build_ast</code>, we have to do some "heavy lifting" in transforming the list of
+lists to a <code class="language-plaintext highlighter-rouge">(name * exp) list</code>.</p>
+<div class="highlight"><pre><span></span><span class="k">exception</span> <span class="nc">UniqueError</span> <span class="k">of</span> <span class="kt">string</span>
+
+<span class="k">let</span> <span class="k">rec</span> <span class="n">assert_unique</span> <span class="o">=</span> <span class="k">function</span>
+  <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">()</span>
+  <span class="o">|</span> <span class="n">x</span><span class="o">::</span><span class="n">xs</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="nn">List</span><span class="p">.</span><span class="n">mem</span> <span class="n">x</span> <span class="n">xs</span> <span class="k">then</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">UniqueError</span> <span class="n">x</span><span class="o">)</span> <span class="k">else</span> <span class="n">assert_unique</span> <span class="n">xs</span>
+
+<span class="k">let</span> <span class="k">rec</span> <span class="n">build_ast</span> <span class="n">sexp</span> <span class="o">=</span>
+  <span class="o">[...]</span>
+  <span class="k">let</span> <span class="n">let_kinds</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;let&quot;</span><span class="o">,</span> <span class="nc">LET</span><span class="o">;</span> <span class="s2">&quot;let*&quot;</span><span class="o">,</span> <span class="nc">LETSTAR</span><span class="o">;</span> <span class="s2">&quot;letrec&quot;</span><span class="o">,</span> <span class="nc">LETREC</span><span class="o">]</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="n">valid_let</span> <span class="n">s</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">mem_assoc</span> <span class="n">s</span> <span class="n">let_kinds</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="n">to_kind</span> <span class="n">s</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">assoc</span> <span class="n">s</span> <span class="n">let_kinds</span> <span class="k">in</span>
+  <span class="k">match</span> <span class="n">sexp</span> <span class="k">with</span>
+  <span class="o">[...]</span>
+  <span class="o">|</span> <span class="nc">Pair</span> <span class="o">_</span> <span class="k">when</span> <span class="n">is_list</span> <span class="n">sexp</span> <span class="o">-&gt;</span>
+      <span class="o">(</span><span class="k">match</span> <span class="n">pair_to_list</span> <span class="n">sexp</span> <span class="k">with</span>
+      <span class="o">[...]</span>
+      <span class="o">|</span> <span class="o">(</span><span class="nc">Symbol</span> <span class="n">s</span><span class="o">)::</span><span class="n">bindings</span><span class="o">::</span><span class="n">exp</span><span class="o">::</span><span class="bp">[]</span> <span class="k">when</span> <span class="n">is_list</span> <span class="n">bindings</span> <span class="o">&amp;&amp;</span> <span class="n">valid_let</span> <span class="n">s</span> <span class="o">-&gt;</span>
+          <span class="k">let</span> <span class="n">mkbinding</span> <span class="o">=</span> <span class="k">function</span>
+            <span class="o">|</span> <span class="nc">Pair</span> <span class="o">(</span><span class="nc">Symbol</span> <span class="n">n</span><span class="o">,</span> <span class="nc">Pair</span> <span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="nc">Nil</span><span class="o">))</span> <span class="o">-&gt;</span> <span class="n">n</span><span class="o">,</span> <span class="n">build_ast</span> <span class="n">e</span>
+            <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">TypeError</span> <span class="s2">&quot;(let bindings exp)&quot;</span><span class="o">)</span>
+          <span class="k">in</span>
+          <span class="k">let</span> <span class="n">bindings</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">mkbinding</span> <span class="o">(</span><span class="n">pair_to_list</span> <span class="n">bindings</span><span class="o">)</span> <span class="k">in</span>
+          <span class="k">let</span> <span class="bp">()</span> <span class="o">=</span> <span class="n">assert_unique</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">fst</span> <span class="n">bindings</span><span class="o">)</span> <span class="k">in</span>
+          <span class="nc">Let</span> <span class="o">(</span><span class="n">to_kind</span> <span class="n">s</span><span class="o">,</span> <span class="n">bindings</span><span class="o">,</span> <span class="n">build_ast</span> <span class="n">exp</span><span class="o">)</span>
+      <span class="o">[...]</span>
+</pre></div>
+
+<p>I set up <code class="language-plaintext highlighter-rouge">let_kinds</code> as an association list <sup class="footnote-ref" id="fnref-3"><a href="#fn-3">3</a></sup> and then make helper
+functions (<code class="language-plaintext highlighter-rouge">valid_let</code>, to check if an symbol is "let", "let*", or "letrec";
+<code class="language-plaintext highlighter-rouge">to_kind</code> to transform a symbol into its equivalent constructor) to use down
+below.</p>
+<p>This code handles <code class="language-plaintext highlighter-rouge">let</code>, <code class="language-plaintext highlighter-rouge">let*</code>, and <code class="language-plaintext highlighter-rouge">letrec</code>, converting them into their
+appropriate representations.</p>
+<p>Note that I've also added a uniqueness constraint on the bindings – each of
+the names <em>must</em> be distinct from all others. This gets rid of some nastiness
+that we looked at above. Since this is useful, I've also gone ahead and called
+<code class="language-plaintext highlighter-rouge">assert_unique</code> in the <code class="language-plaintext highlighter-rouge">Lambda</code> and <code class="language-plaintext highlighter-rouge">Define</code> builders.</p>
+<p>The resulting <code class="language-plaintext highlighter-rouge">Let</code> AST is, as it turns out, a very convenient form for
+evaluation. We can take the ASTs we've built, evaluate them, and then put them
+neatly into our current environment when evaluating <code class="language-plaintext highlighter-rouge">exp</code>. Speaking of
+evaluation, now we'll handle the <code class="language-plaintext highlighter-rouge">Let</code> case in <code class="language-plaintext highlighter-rouge">evalexp</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">evalexp</span> <span class="n">exp</span> <span class="n">env</span> <span class="o">=</span>
+  <span class="o">[...]</span>
+  <span class="k">let</span> <span class="k">rec</span> <span class="n">ev</span> <span class="o">=</span> <span class="k">function</span>
+    <span class="o">[...]</span>
+    <span class="o">|</span> <span class="nc">Let</span> <span class="o">(</span><span class="nc">LET</span><span class="o">,</span> <span class="n">bs</span><span class="o">,</span> <span class="n">body</span><span class="o">)</span> <span class="o">-&gt;</span>
+        <span class="k">let</span> <span class="n">evbinding</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">=</span> <span class="n">n</span><span class="o">,</span> <span class="n">ref</span> <span class="o">(</span><span class="nc">Some</span> <span class="o">(</span><span class="n">ev</span> <span class="n">e</span><span class="o">))</span> <span class="k">in</span>
+        <span class="n">evalexp</span> <span class="n">body</span> <span class="o">(</span><span class="n">extend</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">evbinding</span> <span class="n">bs</span><span class="o">)</span> <span class="n">env</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Let</span> <span class="o">(</span><span class="nc">LETSTAR</span><span class="o">,</span> <span class="n">bs</span><span class="o">,</span> <span class="n">body</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="s2">&quot;Not yet implemented&quot;</span>
+    <span class="o">|</span> <span class="nc">Let</span> <span class="o">(</span><span class="nc">LETREC</span><span class="o">,</span> <span class="n">bs</span><span class="o">,</span> <span class="n">body</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="s2">&quot;Not yet implemented&quot;</span>
+    <span class="o">|</span> <span class="nc">Defexp</span> <span class="n">d</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="nc">ThisCan&#39;tHappenError</span>
+  <span class="k">in</span> <span class="n">ev</span> <span class="n">exp</span>
+</pre></div>
+
+<p>The bit that's annoying is the <code class="language-plaintext highlighter-rouge">value option ref</code> type, so I've added
+<code class="language-plaintext highlighter-rouge">evbinding</code> to simplify the code. I've also made sure that <code class="language-plaintext highlighter-rouge">let*</code> raises an
+error because we haven't made it yet.</p>
+<p>Let's give it a whirl to see if it works:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 13_let.ml
+&gt; (val x 4)
+4
+&gt; (let ((x 2)) x)
+2
+&gt; (let ((x 2) (y 4)) (* x y))
+8
+&gt; (let ((x 3) (x 4)) x)
+Exception: UniqueError &quot;x&quot;.
+$ ocaml 13_let.ml
+&gt; (let ((x 3) (y x)) y)
+Exception: NotFound &quot;x&quot;.
+$ ocaml 13_let.ml
+&gt; (let* ((x 4) (y x)) y)
+Exception: Failure &quot;Not yet implemented&quot;.
+&gt; (letrec () &#x27;anything-here)
+Exception: Failure &quot;Not yet implemented&quot;.
+$
+</code></pre></div></div>
+
+<p>Looks like our <code class="language-plaintext highlighter-rouge">UniqueError</code> works!</p>
+<p>Even though I did not specify that this is correct, the expression <code class="language-plaintext highlighter-rouge">(let ((x 3) (y x)) y)</code> <em>should</em> indeed be an error. This is because each binding expression
+(<code class="language-plaintext highlighter-rouge">3</code> and <code class="language-plaintext highlighter-rouge">x</code> in this case) is evaluated in the pre-let environment, in
+isolation.  Whenever I get around to formally specifying the behavior for this
+language using <em>operational semantics</em>, this will become more clear.</p>
+<h3 id="letstar">Letstar</h3>
+
+<p>But what if we want to refer to previous bindings? We can totally do that, and
+that's where <code class="language-plaintext highlighter-rouge">let*</code> comes in. With <code class="language-plaintext highlighter-rouge">let*</code> each binding can refer to all
+previous bindings, but no future ones. So it's kind of like a bunch of nested
+<code class="language-plaintext highlighter-rouge">let</code>s:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="k">let*</span><span class="w"> </span><span class="p">((</span><span class="nf">x</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nf">y</span><span class="w"> </span><span class="nv">x</span><span class="p">))</span><span class="w"> </span><span class="nv">y</span><span class="p">)</span>
+<span class="c1">; is equivalent to</span>
+<span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">((</span><span class="nf">x</span><span class="w"> </span><span class="mi">5</span><span class="p">))</span>
+<span class="w">  </span><span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">((</span><span class="nf">y</span><span class="w"> </span><span class="nv">x</span><span class="p">))</span>
+<span class="w">    </span><span class="nv">y</span><span class="p">))</span>
+</pre></div>
+
+<p>We've already implemented all of the plumbing for <code class="language-plaintext highlighter-rouge">let*</code> except for evaluation.
+Just like the implementation decision for <code class="language-plaintext highlighter-rouge">let</code>, we could simply do an AST
+transform and make it a bunch of nested <code class="language-plaintext highlighter-rouge">let</code>. We're going to make a parallel
+implementation instead:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">evalexp</span> <span class="n">exp</span> <span class="n">env</span> <span class="o">=</span>
+  <span class="o">[...]</span>
+  <span class="k">let</span> <span class="k">rec</span> <span class="n">ev</span> <span class="o">=</span> <span class="k">function</span>
+    <span class="o">|</span> <span class="nc">Let</span> <span class="o">(</span><span class="nc">LET</span><span class="o">,</span> <span class="n">bs</span><span class="o">,</span> <span class="n">body</span><span class="o">)</span> <span class="o">-&gt;</span>
+        <span class="k">let</span> <span class="n">evbinding</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">=</span> <span class="n">n</span><span class="o">,</span> <span class="n">ref</span> <span class="o">(</span><span class="nc">Some</span> <span class="o">(</span><span class="n">ev</span> <span class="n">e</span><span class="o">))</span> <span class="k">in</span>
+        <span class="n">evalexp</span> <span class="n">body</span> <span class="o">(</span><span class="n">extend</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">evbinding</span> <span class="n">bs</span><span class="o">)</span> <span class="n">env</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Let</span> <span class="o">(</span><span class="nc">LETSTAR</span><span class="o">,</span> <span class="n">bs</span><span class="o">,</span> <span class="n">body</span><span class="o">)</span> <span class="o">-&gt;</span>                           <span class="c">(* NEW! *)</span>
+        <span class="k">let</span> <span class="n">evbinding</span> <span class="n">acc</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">=</span> <span class="n">bind</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">evalexp</span> <span class="n">e</span> <span class="n">acc</span><span class="o">,</span> <span class="n">acc</span><span class="o">)</span> <span class="k">in</span>
+        <span class="n">evalexp</span> <span class="n">body</span> <span class="o">(</span><span class="n">extend</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="n">evbinding</span> <span class="bp">[]</span> <span class="n">bs</span><span class="o">)</span> <span class="n">env</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Let</span> <span class="o">(</span><span class="nc">LETREC</span><span class="o">,</span> <span class="n">bs</span><span class="o">,</span> <span class="n">body</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="s2">&quot;Not yet implemented&quot;</span>
+    <span class="o">|</span> <span class="nc">Defexp</span> <span class="n">d</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="nc">ThisCan&#39;tHappenError</span>
+  <span class="k">in</span> <span class="n">ev</span> <span class="n">exp</span>
+</pre></div>
+
+<p><em>EDIT: Turns out there's a glaring issue in the <code class="language-plaintext highlighter-rouge">let*</code> implementation above.
+See <a href="../16_stdlib/">16: Standard Library</a> for corrections.</em></p>
+<p>With <code class="language-plaintext highlighter-rouge">fold_left</code>, we make sure that we evaluate each of the bindings in order,
+and in the environment created by evaluating the previous bindings. Ahh,
+functional programming... where would I be without you?</p>
+<p>On another note, according to most of the implementations that I looked up when
+writing this post, <code class="language-plaintext highlighter-rouge">let*</code> does not normally have a distinct variable
+requirement, but lets later bindings shadow previous ones. This allows for
+imperative-esque things like:</p>
+<div class="highlight"><pre><span></span><span class="c1">; Not allowed in our interpreter:</span>
+<span class="p">(</span><span class="k">let*</span><span class="w"> </span><span class="p">((</span><span class="nf">x</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="w">       </span><span class="p">(</span><span class="nf">x</span><span class="w"> </span><span class="p">(</span><span class="nf">factorial</span><span class="w"> </span><span class="nv">x</span><span class="p">))</span>
+<span class="w">       </span><span class="p">(</span><span class="nf">x</span><span class="w"> </span><span class="p">(</span><span class="nb">sqrt</span><span class="w"> </span><span class="nv">x</span><span class="p">))</span>
+<span class="w">       </span><span class="p">(</span><span class="nf">x</span><span class="w"> </span><span class="p">(</span><span class="nf">to-string</span><span class="w"> </span><span class="nv">x</span><span class="p">)))</span>
+<span class="w">  </span><span class="p">(</span><span class="nf">print</span><span class="w"> </span><span class="nv">x</span><span class="p">))</span>
+</pre></div>
+
+<p>Since we handled distinct names at the AST building level and treated all the
+let-expressions as the same, ours will be a wee bit different. If you feel
+compelled to change the interpreter so that binding uniqueness is checked at
+evaluation-time instead of at AST-build-time, go right ahead. It shouldn't be
+too much of a hassle or break any code we're going to write.</p>
+<p>Let's test out <code class="language-plaintext highlighter-rouge">let*</code> now:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 13_let.ml
+&gt; (let* ((x 4) (y x)) y)
+4
+&gt; Exception: End_of_file.
+$
+</code></pre></div></div>
+
+<p>Swell.</p>
+<h3 id="letrec">Letrec</h3>
+
+<p>The third type of let-expression, <code class="language-plaintext highlighter-rouge">letrec</code>, is like <code class="language-plaintext highlighter-rouge">let*</code> but it allows a
+binding to reference any (even the current binding!) — not just bindings that
+precede it. The caveat, though, is that the values have to be
+lambda-expressions. Otherwise we'd run into weird issues with topologically
+sorting the variables so they can be properly recursively defined... bunch of
+nonsense. It looks like this:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="k">letrec</span><span class="w"> </span><span class="p">((</span><span class="nf">f</span><span class="w"> </span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="p">(</span><span class="nf">x</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nf">g</span><span class="w"> </span><span class="p">(</span><span class="nb">+</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="mi">1</span><span class="p">))))</span>
+<span class="w">         </span><span class="p">(</span><span class="nf">g</span><span class="w"> </span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="p">(</span><span class="nf">x</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nb">+</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="mi">3</span><span class="p">))))</span>
+<span class="w">  </span><span class="p">(</span><span class="nf">f</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="c1">; =&gt; 4</span>
+</pre></div>
+
+<p>or even:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="k">letrec</span><span class="w"> </span><span class="p">((</span><span class="nf">factorial</span><span class="w"> </span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="p">(</span><span class="nf">x</span><span class="p">)</span>
+<span class="w">                        </span><span class="p">(</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">&lt;</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">                           </span><span class="mi">1</span>
+<span class="w">                           </span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="p">(</span><span class="nf">factorial</span><span class="w"> </span><span class="p">(</span><span class="nb">-</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="mi">1</span><span class="p">)))))))</span>
+<span class="w">  </span><span class="p">(</span><span class="nf">factorial</span><span class="w"> </span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">; =&gt; 120</span>
+</pre></div>
+
+<p>It's what we <em>should</em> have used in the last post, instead of adding that ugly
+hack to <code class="language-plaintext highlighter-rouge">evalapply</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">evalexp</span> <span class="n">exp</span> <span class="n">env</span> <span class="o">=</span>
+  <span class="k">let</span> <span class="n">evalapply</span> <span class="n">f</span> <span class="n">vs</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">f</span> <span class="k">with</span>
+      <span class="o">|</span> <span class="nc">Primitive</span> <span class="o">(_,</span> <span class="n">f</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">f</span> <span class="n">vs</span>
+      <span class="o">|</span> <span class="nc">Closure</span> <span class="o">(</span><span class="n">ns</span><span class="o">,</span> <span class="n">e</span><span class="o">,</span> <span class="n">clenv</span><span class="o">)</span> <span class="o">-&gt;</span>
+          <span class="c">(*        vvvvvvv     ugly!! wrong!!     vvvv *)</span>
+          <span class="n">evalexp</span> <span class="n">e</span> <span class="o">(</span><span class="n">extend</span> <span class="o">(</span><span class="n">bindlist</span> <span class="n">ns</span> <span class="n">vs</span> <span class="n">clenv</span><span class="o">)</span> <span class="n">env</span><span class="o">)</span>
+  <span class="o">[...]</span>
+</pre></div>
+
+<p>So let's revert <code class="language-plaintext highlighter-rouge">evalapply</code> to its normal happy self:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">evalexp</span> <span class="n">exp</span> <span class="n">env</span> <span class="o">=</span>
+  <span class="k">let</span> <span class="n">evalapply</span> <span class="n">f</span> <span class="n">vs</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">f</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Primitive</span> <span class="o">(_,</span> <span class="n">f</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">f</span> <span class="n">vs</span>
+    <span class="o">|</span> <span class="nc">Closure</span> <span class="o">(</span><span class="n">ns</span><span class="o">,</span> <span class="n">e</span><span class="o">,</span> <span class="n">clenv</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">evalexp</span> <span class="n">e</span> <span class="o">(</span><span class="n">bindlist</span> <span class="n">ns</span> <span class="n">vs</span> <span class="n">clenv</span><span class="o">)</span>
+  <span class="o">[...]</span>
+</pre></div>
+
+<img class="post-inline-image" src="/assets/img/lisp/bob-ross.gif" />
+
+<p>...and get crackalackin' on <code class="language-plaintext highlighter-rouge">letrec</code>. First let's modify <code class="language-plaintext highlighter-rouge">mkloc</code> so that it can
+take any argument and just returns a new empty ("unspecified") reference:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="n">mkloc</span> <span class="bp">()</span> <span class="o">=</span> <span class="n">ref</span> <span class="nc">None</span>    <span class="c">(* OLD *)</span>
+<span class="k">let</span> <span class="n">mkloc</span> <span class="o">_</span> <span class="o">=</span> <span class="n">ref</span> <span class="nc">None</span>     <span class="c">(* NEW *)</span>
+</pre></div>
+
+<p>We're not doing this to save source code space. That would be silly. We're
+doing this so that we can more easily use it in mapping functions without
+wrapping it in an anonymous function. You'll see what I mean in a second:</p>
+<h4 id="ocaml">OCaml</h4>
+
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">evalexp</span> <span class="n">exp</span> <span class="n">env</span> <span class="o">=</span>
+  <span class="o">[...]</span>
+  <span class="k">let</span> <span class="k">rec</span> <span class="n">unzip</span> <span class="n">ls</span> <span class="o">=</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">fst</span> <span class="n">ls</span><span class="o">,</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">snd</span> <span class="n">ls</span><span class="o">)</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="k">rec</span> <span class="n">ev</span> <span class="o">=</span> <span class="k">function</span>
+    <span class="o">[...]</span>
+    <span class="o">|</span> <span class="nc">Let</span> <span class="o">(</span><span class="nc">LETREC</span><span class="o">,</span> <span class="n">bs</span><span class="o">,</span> <span class="n">body</span><span class="o">)</span> <span class="o">-&gt;</span>
+        <span class="k">let</span> <span class="n">names</span><span class="o">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">unzip</span> <span class="n">bs</span> <span class="k">in</span>
+        <span class="k">let</span> <span class="n">env&#39;</span> <span class="o">=</span> <span class="n">bindloclist</span> <span class="n">names</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">mkloc</span> <span class="n">values</span><span class="o">)</span> <span class="n">env</span> <span class="k">in</span>
+        <span class="k">let</span> <span class="n">updates</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">n</span><span class="o">,</span> <span class="nc">Some</span> <span class="o">(</span><span class="n">evalexp</span> <span class="n">e</span> <span class="n">env&#39;</span><span class="o">))</span> <span class="n">bs</span> <span class="k">in</span>
+        <span class="k">let</span> <span class="bp">()</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">iter</span> <span class="o">(</span><span class="k">fun</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">assoc</span> <span class="n">n</span> <span class="n">env&#39;</span><span class="o">)</span> <span class="o">:=</span> <span class="n">v</span><span class="o">)</span> <span class="n">updates</span> <span class="k">in</span>
+        <span class="n">evalexp</span> <span class="n">body</span> <span class="n">env&#39;</span>
+    <span class="o">|</span> <span class="nc">Defexp</span> <span class="n">d</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="nc">ThisCan&#39;tHappenError</span>
+  <span class="k">in</span> <span class="n">ev</span> <span class="n">exp</span>
+</pre></div>
+
+<h4 id="english">English</h4>
+
+<p><code class="language-plaintext highlighter-rouge">unzip</code> is your standard unzip function. It takes a list of tuples and returns
+two lists. The first list is all of the first elements and the second list is
+all of the second elements. This implementation makes two passes over the list
+but oh well. It's readable.</p>
+<p>Here's how <code class="language-plaintext highlighter-rouge">letrec</code> works, in neatly enumerated steps <sup class="footnote-ref" id="fnref-4"><a href="#fn-4">4</a></sup>:</p>
+<ol>
+<li>Use <code class="language-plaintext highlighter-rouge">unzip</code> to break apart the bindings given to <code class="language-plaintext highlighter-rouge">letrec</code> into lists of
+names and values.</li>
+<li>Make a list of empty ("unspecified") locations by mapping <code class="language-plaintext highlighter-rouge">mkloc</code> over the
+values (this is just <code class="language-plaintext highlighter-rouge">List.map mkloc values</code>).</li>
+<li>Bind the list of names to those empty values, attaching the resulting new
+environment to the current one.</li>
+<li>Evaluate each of the expressions, making a neat little <code class="language-plaintext highlighter-rouge">option ref</code> box for
+them one by one.</li>
+<li>Put all of those values from Step 4 into their proper boxes.</li>
+<li>Evaluate the body of the <code class="language-plaintext highlighter-rouge">letrec</code> in the new environment with all of the
+values resolved.</li>
+</ol>
+<p>At some point when I figure out a good way of making diagrams, or perhaps when
+I find a good enough one online, I will include a diagram here. Call that a
+TODO.</p>
+<p>You're probably wondering why not do the let-expressions post first and <em>then</em>
+do mutually recursive functions in the metacircular evaluator? Yeah, well. I
+didn't think of that. That's part of the fun of this series, I think. I'm a
+real human and I make mistakes. Why hide them?</p>
+<p>I've fixed the metacircular evaluator now, and the results don't look too
+shabby:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="k">define</span><span class="w"> </span><span class="nb">eval</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="nf">e</span><span class="w"> </span><span class="nv">env</span><span class="p">)</span>
+<span class="w">   </span><span class="p">(</span><span class="k">letrec</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="p">(</span><span class="nf">eval-cond</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="p">(</span><span class="nf">c</span><span class="w"> </span><span class="nv">a</span><span class="p">)</span>
+<span class="w">            </span><span class="p">(</span><span class="k">cond</span><span class="w"> </span><span class="p">((</span><span class="nf">null</span><span class="o">.</span><span class="w"> </span><span class="nv">c</span><span class="p">)</span><span class="w"> </span><span class="ss">&#39;error</span><span class="p">)</span>
+<span class="w">                  </span><span class="p">((</span><span class="nb">eval</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="nb">caar</span><span class="w"> </span><span class="nv">c</span><span class="p">)</span><span class="w"> </span><span class="nv">a</span><span class="p">)</span><span class="w">  </span><span class="p">(</span><span class="nb">eval</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="nb">cadar</span><span class="w"> </span><span class="nv">c</span><span class="p">)</span><span class="w"> </span><span class="nv">a</span><span class="p">))</span>
+<span class="w">                  </span><span class="p">(</span><span class="no">#t</span><span class="w"> </span><span class="p">(</span><span class="nf">eval-cond</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="nb">cdr</span><span class="w"> </span><span class="nv">c</span><span class="p">)</span><span class="w"> </span><span class="nv">a</span><span class="p">)))))</span>
+
+<span class="w">        </span><span class="p">(</span><span class="nf">map-eval</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="p">(</span><span class="nf">exps</span><span class="w"> </span><span class="nv">env</span><span class="p">)</span>
+<span class="w">          </span><span class="p">(</span><span class="k">cond</span><span class="w"> </span><span class="p">((</span><span class="nf">null</span><span class="o">.</span><span class="w"> </span><span class="nv">exps</span><span class="p">)</span><span class="w"> </span><span class="o">&#39;</span><span class="p">())</span>
+<span class="w">                </span><span class="p">(</span><span class="no">#t</span><span class="w"> </span><span class="p">(</span><span class="nb">cons</span><span class="w"> </span><span class="p">(</span><span class="nb">eval</span><span class="o">.</span><span class="w">  </span><span class="p">(</span><span class="nb">car</span><span class="w"> </span><span class="nv">exps</span><span class="p">)</span><span class="w"> </span><span class="nv">env</span><span class="p">)</span>
+<span class="w">                          </span><span class="p">(</span><span class="nf">map-eval</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="nb">cdr</span><span class="w"> </span><span class="nv">exps</span><span class="p">)</span><span class="w"> </span><span class="nv">env</span><span class="p">))))))</span>
+<span class="w">            </span><span class="p">)</span>
+
+<span class="w">      </span><span class="p">(</span><span class="k">cond</span>
+<span class="w">        </span><span class="p">((</span><span class="nf">sym?</span><span class="w"> </span><span class="nv">e</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nf">lookup</span><span class="o">.</span><span class="w"> </span><span class="nv">e</span><span class="w"> </span><span class="nv">env</span><span class="p">))</span>
+<span class="w">        </span><span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
+
+<p>You can see we now define <code class="language-plaintext highlighter-rouge">eval-cond.</code> and <code class="language-plaintext highlighter-rouge">map-eval.</code> as lambda-expressions
+inside a <code class="language-plaintext highlighter-rouge">letrec</code> in <code class="language-plaintext highlighter-rouge">eval.</code>, instead of as two mutually recursive auxiliary
+functions. How wonderful!</p>
+<p>Download the code <a href="/resources/lisp/13_let.ml">here (ml)</a> and
+<a href="/resources/lisp/13_let.lsp">here (lisp)</a> if you want to mess with it.</p>
+<p>Next up, <a href="/blog/lisp/14_comments/">comments</a>.</p>
+<!--
+    http://tmcnab.github.io/Hyperglot/
+-->
+
+
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p>They use a lot of stack space <em>for now</em>. Later on we'll optimize
+lambda-expressions. I can hardly wait! (Seriously, it's awesome.) <a href="#fnref-1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-2">
+<p>There's this idea of AST "lowering", which means taking a more advanced AST
+(like one with <code class="language-plaintext highlighter-rouge">let</code> in it) and transforming it into a less advanced AST
+(like one with all the <code class="language-plaintext highlighter-rouge">let</code>s transformed into <code class="language-plaintext highlighter-rouge">lambda</code>s). AST lowering is
+one of many common compiler stages in the process of producing machine
+code. There may even be multiple stages comprised completely of lowering
+transformations! <a href="#fnref-2" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-3">
+<p>An association list is a linked list of key-value pairs. It can be used
+much the same way as a hash table can (query, add, remove, etc), except for
+the time complexity (<code class="language-plaintext highlighter-rouge">O(n)</code> vs a hashtable's <code class="language-plaintext highlighter-rouge">O(1)</code>). In this case, though,
+we've got an upper bound on the number of elements in our list --- 3. So
+technically still constant time! <a href="#fnref-3" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-4">
+<p>A big thank you to <a href="http://www.cs.tufts.edu/~nr/">Norman Ramsey</a>, whose
+clear code and explanations helped fix a bug or two in this implementation. <a href="#fnref-4" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_blog_lisp/13_let.md" title="Help improve _blog_lisp/13_let.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>The GDB JIT interface | Max Bernstein</title>
+    <meta property="og:title" content="The GDB JIT interface | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/gdb-jit/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">The GDB JIT interface</h1>
+        
+        <div class="post-inline-date"><i>December 30, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>GDB is great for stepping through machine code to figure out what is going on.
+It uses debug information under the hood to present you with a tidy backtrace
+and also determine how much machine code to print when you type <code class="language-plaintext highlighter-rouge">disassemble</code>.</p>
+<p>This debug information comes from your compiler. Clang, GCC, rustc, etc all
+produce debug data in a format called <a href="https://dwarfstd.org/">DWARF</a> and then embed that debug
+information inside the binary (ELF, Mach-O, ...) when you do <code class="language-plaintext highlighter-rouge">-ggdb</code> or
+equivalent.</p>
+<p>Unfortunately, this means that by default, GDB has no idea what is going on if
+you break in a JIT-compiled function. You can step instruction-by-instruction
+and whatnot, but that's about it. This is because the current instruction
+pointer is nowhere to be found in any of the existing debug info tables from
+the host runtime code, so your terminal is filled with <code class="language-plaintext highlighter-rouge">???</code>. See this example
+from the V8 docs:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#8  0x08281674 in v8::internal::Runtime_SetProperty (args=...) at src/runtime.cc:3758
+#9  0xf5cae28e in ?? ()
+#10 0xf5cc3a0a in ?? ()
+#11 0xf5cc38f4 in ?? ()
+#12 0xf5cbef19 in ?? ()
+#13 0xf5cb09a2 in ?? ()
+#14 0x0809e0a5 in v8::internal::Invoke (...) at src/execution.cc:97
+</code></pre></div></div>
+<p>Fortunately, there is a <em>JIT interface</em> to GDB. If you implement a couple of
+functions in your JIT and run them every time you finish compiling a function,
+you can get the debugging niceties for your JIT code too. See again a V8
+example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#6  0x082857fc in v8::internal::Runtime_SetProperty (args=...) at src/runtime.cc:3758
+#7  0xf5cae28e in ?? ()
+#8  0xf5cc3a0a in loop () at test.js:6
+#9  0xf5cc38f4 in test.js () at test.js:13
+#10 0xf5cbef19 in ?? ()
+#11 0xf5cb09a2 in ?? ()
+#12 0x0809e1f9 in v8::internal::Invoke (...) at src/execution.cc:97
+</code></pre></div></div>
+<p>Unfortunately, the GDB docs are <a href="https://sourceware.org/gdb/current/onlinedocs/gdb.html/JIT-Interface.html">somewhat sparse</a>. So I went
+spelunking through a bunch of different projects to try and understand what is
+going on.</p>
+<h2 id="the-big-picture-and-the-old-interface">The big picture (and the old interface)</h2>
+<p>GDB expects your runtime to expose a function called
+<code class="language-plaintext highlighter-rouge">__jit_debug_register_code</code> and a global variable called
+<code class="language-plaintext highlighter-rouge">__jit_debug_descriptor</code>. GDB automatically adds its own internal breakpoints
+at this function, if it exists. Then, when you compile code, you call this
+function from your runtime.</p>
+<p>In slightly more detail:</p>
+<ol>
+<li>Compile a function in your JIT compiler. This gives you a function name,
+maybe other metadata, an executable code address, and a code size</li>
+<li>Generate an <em>entire</em> ELF/Mach-O/... object in-memory (!) for that one
+function, describing its name, code region, maybe other DWARF metadata such
+as line number maps</li>
+<li>Write a <code class="language-plaintext highlighter-rouge">jit_code_entry</code> linked list node that points at your object
+(&quot;symfile&quot;)</li>
+<li>Link it into the <code class="language-plaintext highlighter-rouge">__jit_debug_descriptor</code> linked list</li>
+<li>Call <code class="language-plaintext highlighter-rouge">__jit_debug_register_code</code>, which gives GDB control of the process so it can
+pick up the new function's metadata</li>
+<li>Optionally, break into (or crash inside) one of your JITed functions</li>
+<li>At some point, later, when your function gets GCed, unregister your code by
+editing the linked list and calling <code class="language-plaintext highlighter-rouge">__jit_debug_register_code</code> again</li>
+</ol>
+<p>This is why you see compiler projects such as V8 including large swaths of code
+just to make object files:</p>
+<ul>
+<li><a href="https://github.com/v8/v8/blob/5668ed57de1c7c8dd5c3dc1598bf071e17d29c8c/src/diagnostics/gdb-jit.cc">V8</a></li>
+<li><a href="https://github.com/facebookincubator/cinderx/blob/e6e925b20e6fa3fe1e100f147e1c8cd03076ebfb/cinderx/Jit/jit_gdb_support.cpp">Cinder</a></li>
+<li><a href="https://github.com/zendtech/php-src/blob/f82e5b3abe1ff1d3ffc7954b0810bc584fd650a5/ext/opcache/jit/zend_jit_gdb.c#L473">Zend PHP</a></li>
+<li><a href="https://github.com/dotnet/runtime/blob/3c040478f19e0f317790acab05dbe3ada9f52dc4/src/coreclr/vm/gdbjit.cpp">CoreCLR/.NET</a></li>
+<li><a href="https://github.com/qemu/qemu/blob/942b0d378a1de9649085ad6db5306d5b8cef3591/tcg/tcg.c#L7064">QEMU</a></li>
+<li><a href="https://github.com/WebKit/WebKit/blob/0afc2a867ab45651ac6c353c7b6ade5482b7bba7/Source/JavaScriptCore/jit/GdbJIT.cpp">JavaScriptCore</a></li>
+<li><a href="https://github.com/LuaJIT/LuaJIT/blob/7152e15489d2077cd299ee23e3d51a4c599ab14f/src/lj_gdbjit.c">LuaJIT</a></li>
+<li><a href="https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/runtime/jit/debugger_interface.cc#L187">ART</a><ul>
+<li>which looks like it does something smart about grouping the JIT code
+entries together (<code class="language-plaintext highlighter-rouge">RepackEntries</code>), but I'm not sure exactly what it does</li>
+</ul>
+</li>
+<li><a href="https://github.com/facebook/hhvm/blob/b1c47dcfbc574b508fd084f27ba4a06bcf4ba188/hphp/runtime/vm/debug/elfwriter.cpp#L622">HHVM</a></li>
+<li><a href="https://github.com/TomatOrg/TomatoDotNet/blob/80266bb8dc0e7f0644f0638ecd98dfad4fb74427/src/dotnet/jit/gdb.c">TomatoDotNet</a></li>
+<li><a href="https://github.com/jatovm/jato/blob/bb1c7d4fd987e016b2e0379182c4bfbb8c1c1a78/jit/elf.c#L164">Jato JVM</a></li>
+<li><a href="https://gist.github.com/yyny/4a012029b5889853c18b1efc19bb598e">a minimal example</a></li>
+<li><a href="https://github.com/sisshiki1969/jit-debug/blob/213c72512761f815fc0b067ce68ee0ae12962e2a/src/main.rs">monoruby</a></li>
+<li><a href="https://github.com/mono/mono/blob/0f53e9e151d92944cacab3e24ac359410c606df6/mono/mini/dwarfwriter.c">Mono</a></li>
+<li>It looks like Dart <a href="https://github.com/dart-lang/sdk/commit/c4238c71da13d61ff32332058d371c5b2e92694b">used to</a>
+have support for this but has since removed it</li>
+<li><a href="https://github.com/bytecodealliance/wasmtime/blob/b5272a5f103053f5ada2a38d5302a8d1e2de442d/crates/wasmtime/src/runtime/code_memory.rs#L509">wasmtime</a></li>
+</ul>
+<p>Because this is a huge hassle, GDB also has a newer interface that does not
+require making an ELF/Mach-O/...+DWARF object.</p>
+<h2 id="custom-debug-info-the-new-interface">Custom debug info (the new interface)</h2>
+<p>This new interface requires writing a binary format of your choice. You make
+the writer and you make the reader. Then, when you are in GDB, you load your
+reader as a shared object.</p>
+<p>The reader must implement <a href="https://sourceware.org/gdb/current/onlinedocs/gdb.html/Writing-JIT-Debug-Info-Readers.html#Writing-JIT-Debug-Info-Readers">the interface specified by GDB</a>:</p>
+<div class="highlight"><pre><span></span><span class="n">GDB_DECLARE_GPL_COMPATIBLE_READER</span><span class="p">;</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">gdb_reader_funcs</span><span class="w"> </span><span class="o">*</span><span class="n">gdb_init_reader</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">gdb_reader_funcs</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="cm">/* Must be set to GDB_READER_INTERFACE_VERSION.  */</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">reader_version</span><span class="p">;</span>
+
+<span class="w">  </span><span class="cm">/* For use by the reader.  */</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">priv_data</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">gdb_read_debug_info</span><span class="w"> </span><span class="o">*</span><span class="n">read</span><span class="p">;</span>
+<span class="w">  </span><span class="n">gdb_unwind_frame</span><span class="w"> </span><span class="o">*</span><span class="n">unwind</span><span class="p">;</span>
+<span class="w">  </span><span class="n">gdb_get_frame_id</span><span class="w"> </span><span class="o">*</span><span class="n">get_frame_id</span><span class="p">;</span>
+<span class="w">  </span><span class="n">gdb_destroy_reader</span><span class="w"> </span><span class="o">*</span><span class="n">destroy</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+<p>The <code class="language-plaintext highlighter-rouge">read</code> function pointer does the bulk of the work and is responsible for
+matching code ranges to function names, line numbers, and more.</p>
+<p>Here are <a href="https://pwparchive.wordpress.com/2011/11/20/new-jit-interface-for-gdb/">some details from Sanjoy Das</a>.</p>
+<p>Only a few runtimes implement this interface. Most of them stub out the
+<code class="language-plaintext highlighter-rouge">unwind</code> and <code class="language-plaintext highlighter-rouge">get_frame_id</code> function pointers:</p>
+<ul>
+<li><a href="https://github.com/ykjit/yk/blob/755e533aa74ef5fa82a6586147727e23146b95fc/ykrt/src/compile/jitc_yk/gdb.rs#L216">yk write</a> <br />
+<a href="https://github.com/ykjit/yk/blob/755e533aa74ef5fa82a6586147727e23146b95fc/ykrt/yk_gdb_plugin/yk_gdb_plugin.c#L22">yk read</a></li>
+<li><a href="https://github.com/tetzank/asmjit-utilities/blob/2fdbb99f7e002df4f8d7aa97c29910743adfc991/gdb/gdbjit.cpp">asmjit-utilities write</a> <br />
+<a href="https://github.com/tetzank/asmjit-utilities/blob/2fdbb99f7e002df4f8d7aa97c29910743adfc991/gdb/jit-reader/gdbjit-reader.c">asmjit-utilities read</a></li>
+<li><a href="https://github.com/erlang/otp/blob/28a44634fb04b95ea666abb8aac7254e2c87ae05/erts/emulator/beam/jit/beam_jit_metadata.cpp#L123">Erlang/OTP write</a> <br />
+<a href="https://github.com/erlang/otp-gdb-tools/blob/7b864f58c534699e4124e31ecfda86041b941037/jit-reader.c">Erlang/OTP read</a></li>
+<li><a href="https://github.com/FEX-Emu/FEX/blob/c8d72eabe589392b962bec94d002c5ffdb7381c2/FEXCore/Source/Interface/GDBJIT/GDBJIT.cpp#L110">FEX write</a> <br />
+<a href="https://github.com/FEX-Emu/FEX/blob/c8d72eabe589392b962bec94d002c5ffdb7381c2/Source/Tools/FEXGDBReader/FEXGDBReader.cpp#L8">FEX read</a></li>
+<li><a href="https://github.com/bullno1/buxn-jit/blob/69effb96d5fe9725258fe367efcefd6911ef32fd/src/gdb/hook.c">buxn-jit write</a> <br />
+<a href="https://github.com/bullno1/buxn-jit/blob/69effb96d5fe9725258fe367efcefd6911ef32fd/src/gdb/reader.c">buxn-jit read</a></li>
+<li><a href="https://github.com/KreitinnSoftware/box64/blob/f224a93cc83f9da34bc85ebb5414168d476a135d/src/tools/gdbjit.c#L45">box64 write</a> <br />
+<a href="https://github.com/KreitinnSoftware/box64/blob/f224a93cc83f9da34bc85ebb5414168d476a135d/gdbjit/reader.c">box64 read</a></li>
+<li><a href="https://github.com/no-defun-allowed/ccl/blob/094a9ec5bf203db118e0ffc8ce2b5b80fc1c91dd/lisp-kernel/gdb.c">ccl write</a> <br />
+<a href="https://gist.github.com/no-defun-allowed/32d38c5e664586c724cf2e0e97f0d2b1">ccl read</a></li>
+</ul>
+<p>I think it also requires at least the reader to proclaim it is GPL via the
+macro <code class="language-plaintext highlighter-rouge">GDB_DECLARE_GPL_COMPATIBLE_READER</code>.</p>
+<p>Since I wrote about the <a href="/blog/jit-perf-map/">perf map interface</a> recently, I
+have it on my mind. Why can't we reuse it in GDB?</p>
+<h2 id="adapting-to-the-linux-perf-interface">Adapting to the Linux perf interface</h2>
+<p>I suppose it would be possible to try and upstream a patch to GDB to support
+the Linux perf map interface for JITs. After all, why shouldn't it be able to
+automatically pick up symbols from <code class="language-plaintext highlighter-rouge">/tmp/perf-...</code>? That would be great
+baseline debug info for &quot;free&quot;.</p>
+<p>In the meantime, maybe it is reasonable to create a re-usable custom debug
+reader:</p>
+<ul>
+<li>When registering code, write the address and name to <code class="language-plaintext highlighter-rouge">/tmp/perf-...</code> as you normally would</li>
+<li>Write the filename as the symfile (does this make <code class="language-plaintext highlighter-rouge">/tmp</code> the magic number?)</li>
+<li>Have the debug info reader just parse the perf map file</li>
+</ul>
+<p>It would be less flexible than both the DWARF and custom readers support: it
+would only be able to handle filename and code region. No embedding source code
+for GDB to display in your debugger. But maybe that is okay for a partial
+solution?</p>
+<p><strong>Update:</strong> Here is <a href="https://github.com/tekknolagi/gdb-jit-linux-perf-map">my small attempt</a>
+at such a plugin.</p>
+<h2 id="the-n-squared-problem">The n-squared problem</h2>
+<p>V8 notes in their <a href="https://v8.dev/docs/gdb-jit">GDB JIT docs</a> that because the JIT interface is
+a linked list and we only keep a pointer to the head, we get O(n<sup>2</sup>)
+behavior. Bummer. This becomes especially noticeable since they register
+additional code objects not just for functions, but also trampolines, cache
+stubs, etc.</p>
+<h2 id="garbage-collection">Garbage collection</h2>
+<p>Since GDB expects the code pointer in your symbol object file not to move, you
+have to make sure to have a stable symbol file pointer and stable executable
+code pointer. To make this happen, V8 disables its moving GC.</p>
+<p>Additionally, if your compiled function gets collected, you have to make sure
+to unregister the function. Instead of doing this eagerly, ART treats the GDB
+JIT linked list as a weakref and periodically removes dead code entries from
+it.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-12-30-gdb-jit.md" title="Help improve _posts/2025-12-30-gdb-jit.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

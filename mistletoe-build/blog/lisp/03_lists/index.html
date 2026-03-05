@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Writing a Lisp, Part 3: Lists | Max Bernstein</title>
+    <meta property="og:title" content="Writing a Lisp, Part 3: Lists | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/lisp/03_lists/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Writing a Lisp, Part 3: Lists</h1>
+        
+        <div class="post-inline-date"><i>December 6, 2016</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>Last time we added symbols to our interpreter, so that leaves us currently with
+symbols, integers, and booleans. That's great and all, but isn't the whole
+point of Lisp to have lists? 'bout time we added those.</p>
+<!--
+In Lisp you can reason about two types of lists: normal lists, which get
+evaluated, and quoted lists, which are (for the time being) data, and do not
+get evaluated.
+
+```scheme
+(add 3 4)     ;; Going to get evaluated!
+'(42 69 613)  ;; Going to get stored as data!
+```
+
+The difference in syntax is just one little single quote, but they are very
+different. The former is a function call, while the latter is just a collection
+of elements. The fun part about Lisp: they're stored nearly identically.
+-->
+
+<p>The fun part about Lisp: lists don't technically exist. Instead what we
+have are called <a href="https://en.wikipedia.org/wiki/Cons">cons cells</a>:</p>
+<figure style="display: block; margin: 0 auto; max-width: 450px;" >
+  <img class="svg" style="max-width: 450px;" src="/assets/img/lisp/03_lists_cons.svg" />
+  <figcaption>Fig. 1 - Cons cell diagram of our above list, courtesy of
+              Wikipedia.</figcaption>
+</figure>
+
+<p>That's a fancy way to say that the only <a href="https://en.wikipedia.org/wiki/Composite_data_type">compound data
+type</a> in our language is a
+<a href="https://docs.racket-lang.org/guide/pairs.html">pair</a>, and lists are pairs all
+the way down. If you had a function called <code class="language-plaintext highlighter-rouge">pair</code> that constructed a pair out
+of its two arguments, it would look like this:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="nf">pair</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="p">(</span><span class="nf">pair</span><span class="w"> </span><span class="mi">69</span><span class="w"> </span><span class="p">(</span><span class="nf">pair</span><span class="w"> </span><span class="mi">613</span><span class="w"> </span><span class="nv">nil</span><span class="p">)))</span>
+</pre></div>
+
+<p>Where <code class="language-plaintext highlighter-rouge">nil</code> is the <code class="language-plaintext highlighter-rouge">NULL</code> value of our language. All lists in Lisp end with
+<code class="language-plaintext highlighter-rouge">nil</code>, just as all C-style strings end with the 0 byte (<code class="language-plaintext highlighter-rouge">NUL</code>). Since all lists
+end in <code class="language-plaintext highlighter-rouge">nil</code>, any pair construct that <em>doesn't</em> end in a list is just a
+handy-dandy pair:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="nf">pair</span><span class="w"> </span><span class="ss">&#39;Mozart</span><span class="w"> </span><span class="ss">&#39;Marriage-Of-Figaro</span><span class="p">)</span><span class="w">  </span><span class="c1">;; Some contrived example</span>
+</pre></div>
+
+<p>Anyway. Before we get started parsing (which is easier than you probably
+think), let's talk type representation. Currently we've got <code class="language-plaintext highlighter-rouge">Fixnum</code>,
+<code class="language-plaintext highlighter-rouge">Boolean</code>, and <code class="language-plaintext highlighter-rouge">Symbol</code> type constructors:</p>
+<div class="highlight"><pre><span></span><span class="k">type</span> <span class="n">lobject</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Fixnum</span> <span class="k">of</span> <span class="kt">int</span>
+  <span class="o">|</span> <span class="nc">Boolean</span> <span class="k">of</span> <span class="kt">bool</span>
+  <span class="o">|</span> <span class="nc">Symbol</span> <span class="k">of</span> <span class="kt">string</span>
+</pre></div>
+
+<p>Let's add <code class="language-plaintext highlighter-rouge">nil</code> as its own type, since it's a special value. Then we can just
+represent a pair as an OCaml tuple of any combination of <code class="language-plaintext highlighter-rouge">lobject</code>s!</p>
+<div class="highlight"><pre><span></span><span class="k">type</span> <span class="n">lobject</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Fixnum</span> <span class="k">of</span> <span class="kt">int</span>
+  <span class="o">|</span> <span class="nc">Boolean</span> <span class="k">of</span> <span class="kt">bool</span>
+  <span class="o">|</span> <span class="nc">Symbol</span> <span class="k">of</span> <span class="kt">string</span>
+  <span class="o">|</span> <span class="nc">Nil</span>
+  <span class="o">|</span> <span class="nc">Pair</span> <span class="k">of</span> <span class="n">lobject</span> <span class="o">*</span> <span class="n">lobject</span>
+</pre></div>
+
+<p>This means that we've just knocked off <code class="language-plaintext highlighter-rouge">nil</code>, pairs, and lists all in one go.
+In two lines. Bam. OCaml. So what does a list look like in our <code class="language-plaintext highlighter-rouge">lobject</code> type
+system?</p>
+<div class="highlight"><pre><span></span><span class="nc">Pair</span><span class="o">(</span><span class="nc">Fixnum</span> <span class="mi">42</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="nc">Fixnum</span> <span class="mi">69</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="nc">Fixnum</span> <span class="mi">613</span><span class="o">,</span> <span class="nc">Nil</span><span class="o">)))</span> <span class="c">(* Gross *)</span>
+</pre></div>
+
+<p>Okay, so that's not so great to type manually. I'll give you that one. But
+thankfully we won't have to type it manually too much – the parser should
+build it for us! And, if we really want, we could write a function to transform
+that into a native OCaml <code class="language-plaintext highlighter-rouge">lobject list</code> for us. Maybe something like:</p>
+<div class="highlight"><pre><span></span><span class="c">(* TODO: Test. Currently Untested. *)</span>
+<span class="k">let</span> <span class="k">rec</span> <span class="n">pair_to_list</span> <span class="n">pr</span> <span class="o">=</span>
+  <span class="k">match</span> <span class="n">pr</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">a</span><span class="o">::(</span><span class="n">pair_to_list</span> <span class="n">b</span><span class="o">)</span>
+</pre></div>
+
+<p>The only problem with that function is that it will raise an exception if it
+encounters an argument of type "something else than <code class="language-plaintext highlighter-rouge">Nil</code> or <code class="language-plaintext highlighter-rouge">Pair</code>".</p>
+<p>In any case, the <code class="language-plaintext highlighter-rouge">Pair</code> representation is just fine. Let's try some parsing!</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">read_object</span> <span class="n">stm</span> <span class="o">=</span>
+  <span class="o">[...]</span>
+  <span class="k">let</span> <span class="k">rec</span> <span class="n">read_list</span> <span class="n">stm</span> <span class="o">=</span>              <span class="c">(* NEW *)</span>
+    <span class="n">eat_whitespace</span> <span class="n">stm</span><span class="o">;</span>
+    <span class="k">let</span> <span class="n">c</span> <span class="o">=</span> <span class="n">read_char</span> <span class="n">stm</span> <span class="k">in</span>
+    <span class="k">if</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">&#39;)&#39;</span>
+    <span class="k">then</span> <span class="nc">Nil</span>
+    <span class="k">else</span>
+      <span class="k">let</span> <span class="o">_</span> <span class="o">=</span> <span class="n">unread_char</span> <span class="n">stm</span> <span class="n">c</span> <span class="k">in</span>
+      <span class="k">let</span> <span class="n">car</span> <span class="o">=</span> <span class="n">read_sexp</span> <span class="n">stm</span> <span class="k">in</span>
+      <span class="k">let</span> <span class="n">cdr</span> <span class="o">=</span> <span class="n">read_list</span> <span class="n">stm</span> <span class="k">in</span>
+      <span class="nc">Pair</span><span class="o">(</span><span class="n">car</span><span class="o">,</span> <span class="n">cdr</span><span class="o">)</span>
+  <span class="o">[...]</span>
+  <span class="k">in</span>
+  <span class="n">eat_whitespace</span> <span class="n">stm</span><span class="o">;</span>                  <span class="c">(* OLD stuff *)</span>
+  <span class="k">let</span> <span class="n">c</span> <span class="o">=</span> <span class="n">read_char</span> <span class="n">stm</span> <span class="k">in</span>
+  <span class="o">[...]</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">&#39;(&#39;</span>
+  <span class="k">then</span> <span class="n">read_list</span> <span class="n">stm</span>                   <span class="c">(* NEW *)</span>
+  <span class="o">[...]</span>
+  <span class="k">else</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">SyntaxError</span> <span class="o">(</span><span class="s2">&quot;Unexpected char &quot;</span> <span class="o">^</span> <span class="nn">Char</span><span class="p">.</span><span class="n">escaped</span> <span class="n">c</span><span class="o">));;</span>
+</pre></div>
+
+<p>Let's pick apart the two new things here. First (in execution order), we have a
+clause in our parser that detects if we're on an opening parenthesis. If we
+are, it's time to read a list. So read it!</p>
+<p>Next, we have a function <code class="language-plaintext highlighter-rouge">read_list</code> that happily crunches in new data until it
+sees a closing parenthesis. The fun part is, it's potentially recursive in how
+it handles lists! If the input is <code class="language-plaintext highlighter-rouge">(1 2 (3 4))</code>, for example, it'll start to
+read in <code class="language-plaintext highlighter-rouge">(3 4)</code>, notice that there is a left parenthesis, and then read in a
+new list! And return it! To <code class="language-plaintext highlighter-rouge">read_object</code>! Recursion is super cool.</p>
+<p>Sweet. So now it's technically possible to read in lists in the REPL but we
+won't actually be able to visually confirm that unless we can show some
+evidence in the Print part of the REPL – which means that we need to add to
+<code class="language-plaintext highlighter-rouge">print_sexp</code>. Let's work out a skeleton:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">print_sexp</span> <span class="n">e</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">e</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Fixnum</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_int</span> <span class="n">v</span>
+    <span class="o">|</span> <span class="nc">Boolean</span><span class="o">(</span><span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_string</span> <span class="o">(</span><span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s2">&quot;#t&quot;</span> <span class="k">else</span> <span class="s2">&quot;#f&quot;</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Symbol</span><span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_string</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="c">(* ??? *)</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="c">(* ??? *)</span>
+</pre></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">Nil</code> case is pretty simple for us, thankfully. We can just print the
+string <code class="language-plaintext highlighter-rouge">&quot;nil&quot;</code> and that's that. Pair is a little bit more complicated in that
+it has two things to print and has to deal with parentheses. But let's give it
+a go anyway.</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">print_sexp</span> <span class="n">e</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">e</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Fixnum</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_int</span> <span class="n">v</span>
+    <span class="o">|</span> <span class="nc">Boolean</span><span class="o">(</span><span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_string</span> <span class="o">(</span><span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s2">&quot;#t&quot;</span> <span class="k">else</span> <span class="s2">&quot;#f&quot;</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Symbol</span><span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_string</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="n">print_string</span> <span class="s2">&quot;nil&quot;</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span>
+            <span class="n">print_string</span> <span class="s2">&quot;(&quot;</span><span class="o">;</span>
+            <span class="n">print_sexp</span> <span class="n">a</span><span class="o">;</span>
+            <span class="n">print_string</span> <span class="s2">&quot; . &quot;</span><span class="o">;</span>
+            <span class="n">print_sexp</span> <span class="n">b</span><span class="o">;</span>
+            <span class="n">print_string</span> <span class="s2">&quot;)&quot;</span><span class="o">;;</span>
+</pre></div>
+
+<p>Whew. So just recursion, once more. Print parens, print the contained objects,
+get on with your life. Let's give it a whirl!</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 03_lists.ml
+File &quot;03_lists.ml&quot;, line 47, characters 4-73:           # from pair_to_list
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(Fixnum _|Boolean _|Symbol _)
+&gt; (42 69 613)
+(42 . (69 . (613 . nil)))
+&gt;
+</code></pre></div></div>
+
+<p>Hey, that's pretty similar to both Wikipedia's diagram, the <code class="language-plaintext highlighter-rouge">pair</code> function
+calls, and our own internal representation with <code class="language-plaintext highlighter-rouge">Pair</code>! Neat. It's not
+generally what we want when examining lists, though. It's much easier for the
+(very much human) programmer to look at the flat representation of nested
+pairs.</p>
+<p>In order to distinguish between "normal" pairs and pairs that are lists, we're
+going to have to make a guess and have a function called <code class="language-plaintext highlighter-rouge">is_list</code>. Then we can
+write a function to print that type of flat list, and a function to print a
+"normal" pair.</p>
+<div class="highlight"><pre><span></span><span class="o">[...]</span>
+<span class="k">let</span> <span class="k">rec</span> <span class="n">print_list</span> <span class="n">l</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="nc">Nil</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_sexp</span> <span class="n">a</span><span class="o">;</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_sexp</span> <span class="n">a</span><span class="o">;</span> <span class="n">print_string</span> <span class="s2">&quot; &quot;</span><span class="o">;</span> <span class="n">print_list</span> <span class="n">b</span>
+<span class="k">in</span>
+<span class="k">let</span> <span class="n">print_pair</span> <span class="o">(</span><span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">))</span> <span class="o">=</span>
+    <span class="n">print_sexp</span> <span class="n">a</span><span class="o">;</span> <span class="n">print_string</span> <span class="s2">&quot; . &quot;</span><span class="o">;</span> <span class="n">print_sexp</span> <span class="n">b</span>
+<span class="k">in</span>
+<span class="o">[...]</span>
+</pre></div>
+
+<p>Fine, sure – but how do we write <code class="language-plaintext highlighter-rouge">is_list</code>? I suppose if every second element
+all the way down is a list and at some point it ends in <code class="language-plaintext highlighter-rouge">nil</code>, then it's a
+list...</p>
+<div class="highlight"><pre><span></span><span class="o">[...]</span>
+<span class="k">let</span> <span class="k">rec</span> <span class="n">is_list</span> <span class="n">e</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">e</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="bp">true</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">is_list</span> <span class="n">b</span>
+    <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="bp">false</span>
+<span class="k">in</span>
+<span class="o">[...]</span>
+</pre></div>
+
+<p>Great! So, all-in-all, our print function looks like this:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">print_sexp</span> <span class="n">e</span> <span class="o">=</span>
+    <span class="k">let</span> <span class="k">rec</span> <span class="n">is_list</span> <span class="n">e</span> <span class="o">=</span>
+        <span class="k">match</span> <span class="n">e</span> <span class="k">with</span>
+        <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="bp">true</span>
+        <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">is_list</span> <span class="n">b</span>
+        <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="bp">false</span>
+    <span class="k">in</span>
+    <span class="k">let</span> <span class="k">rec</span> <span class="n">print_list</span> <span class="n">l</span> <span class="o">=</span>
+        <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
+        <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="nc">Nil</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_sexp</span> <span class="n">a</span>
+        <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_sexp</span> <span class="n">a</span><span class="o">;</span> <span class="n">print_string</span> <span class="s2">&quot; &quot;</span><span class="o">;</span> <span class="n">print_list</span> <span class="n">b</span>
+    <span class="k">in</span>
+    <span class="k">let</span> <span class="n">print_pair</span> <span class="n">p</span> <span class="o">=</span>
+        <span class="k">match</span> <span class="n">p</span> <span class="k">with</span>
+        <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_sexp</span> <span class="n">a</span><span class="o">;</span> <span class="n">print_string</span> <span class="s2">&quot; . &quot;</span><span class="o">;</span> <span class="n">print_sexp</span> <span class="n">b</span>
+    <span class="k">in</span>
+    <span class="k">match</span> <span class="n">e</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Fixnum</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_int</span> <span class="n">v</span>
+    <span class="o">|</span> <span class="nc">Boolean</span><span class="o">(</span><span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_string</span> <span class="o">(</span><span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s2">&quot;#t&quot;</span> <span class="k">else</span> <span class="s2">&quot;#f&quot;</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Symbol</span><span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_string</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="n">print_string</span> <span class="s2">&quot;nil&quot;</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span>
+            <span class="n">print_string</span> <span class="s2">&quot;(&quot;</span><span class="o">;</span>
+            <span class="k">if</span> <span class="n">is_list</span> <span class="n">e</span>
+            <span class="k">then</span> <span class="n">print_list</span> <span class="n">e</span>
+            <span class="k">else</span> <span class="n">print_pair</span> <span class="n">e</span><span class="o">;</span>
+            <span class="n">print_string</span> <span class="s2">&quot;)&quot;</span><span class="o">;;</span>
+</pre></div>
+
+<p>Doesn't look so bad. So let's try it out.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 03_lists.ml
+File &quot;03_lists.ml&quot;, line 48, characters 4-73:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(Fixnum _|Boolean _|Symbol _)
+File &quot;03_lists.ml&quot;, line 116, characters 8-129:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(Fixnum _|Boolean _|Symbol _|Nil)
+File &quot;03_lists.ml&quot;, line 121, characters 19-88:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(Fixnum _|Boolean _|Symbol _|Nil)
+&gt; (42 69 613)
+(42 69 613)
+&gt;
+</code></pre></div></div>
+
+<p>Not great. We're writing these functions everywhere that assume <em>so many
+things</em> about the types of their arguments that just can't be assumed. Like
+what happens if we give <code class="language-plaintext highlighter-rouge">print_list</code> a <code class="language-plaintext highlighter-rouge">Fixnum</code>? Bad, bad things. So let's
+patch those up with a new exception. Let's called it <code class="language-plaintext highlighter-rouge">ThisCan&#x27;tHappenError</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">exception</span> <span class="nc">ThisCan&#39;tHappenError</span><span class="o">;;</span>
+</pre></div>
+
+<p>and let's make sure to put one in <code class="language-plaintext highlighter-rouge">pair_to_list</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">pair_to_list</span> <span class="n">pr</span> <span class="o">=</span>
+<span class="k">match</span> <span class="n">pr</span> <span class="k">with</span>
+<span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
+<span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">a</span><span class="o">::(</span><span class="n">pair_to_list</span> <span class="n">b</span><span class="o">)</span>
+<span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="nc">ThisCan&#39;tHappenError</span><span class="o">;;</span>
+</pre></div>
+
+<p>and in <code class="language-plaintext highlighter-rouge">print_list</code>:</p>
+<div class="highlight"><pre><span></span><span class="o">[...]</span>
+<span class="k">let</span> <span class="k">rec</span> <span class="n">print_list</span> <span class="n">l</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="nc">Nil</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_sexp</span> <span class="n">a</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_sexp</span> <span class="n">a</span><span class="o">;</span> <span class="n">print_string</span> <span class="s2">&quot; &quot;</span><span class="o">;</span> <span class="n">print_list</span> <span class="n">b</span>
+    <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="nc">ThisCan&#39;tHappenError</span>
+<span class="k">in</span>
+<span class="o">[...]</span>
+</pre></div>
+
+<p>and in <code class="language-plaintext highlighter-rouge">print_pair</code>:</p>
+<div class="highlight"><pre><span></span><span class="o">[...]</span>
+<span class="k">let</span> <span class="n">print_pair</span> <span class="n">p</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">p</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_sexp</span> <span class="n">a</span><span class="o">;</span> <span class="n">print_string</span> <span class="s2">&quot; . &quot;</span><span class="o">;</span> <span class="n">print_sexp</span> <span class="n">b</span>
+    <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="nc">ThisCan&#39;tHappenError</span>
+<span class="k">in</span>
+<span class="o">[...]</span>
+</pre></div>
+
+<p>and try one more time.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 03_lists.ml
+&gt; (42 69 613)
+(42 69 613)
+&gt; ()
+nil
+&gt; nil
+nil
+&gt;
+</code></pre></div></div>
+
+<p>Ahhhhhh. Much better.</p>
+<p>But you might be asking yourself (or me) – how can we possibly make a non-list
+<code class="language-plaintext highlighter-rouge">Pair</code> from the REPL if the REPL will only read lists? Great question. The
+answer for now is that we'll have to add a special function later that builds
+pairs for us. It shouldn't be a great need until then.</p>
+<p>Download the code <a href="/resources/lisp/03_lists.ml">here</a> if you want to mess
+with it.</p>
+<p>Next up, <a href="/blog/lisp/04_environments/">environments</a>.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_blog_lisp/03_lists.md" title="Help improve _blog_lisp/03_lists.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

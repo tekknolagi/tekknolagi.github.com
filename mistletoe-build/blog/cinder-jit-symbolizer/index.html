@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Writing a symbolizer for the Cinder JIT | Max Bernstein</title>
+    <meta name="description" content="Adding more names to debug information is always helpful.
+" />
+    <meta property="og:title" content="Writing a symbolizer for the Cinder JIT | Max Bernstein" />
+    <meta property="og:description" content="Adding more names to debug information is always helpful.
+" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/cinder-jit-symbolizer/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Writing a symbolizer for the Cinder JIT</h1>
+        
+        <div class="post-inline-date"><i>November 3, 2022</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>I work on <a href="https://github.com/facebookincubator/cinder">Cinder</a>, a just-in-time
+(JIT) compiler built on top of CPython. If you aren't familiar with Cinder and
+want to learn more, <a href="/blog/cinder-jit-inliner/">a previous post about the
+inliner</a> gives a decent overview of the JIT. This
+post will talk about our function symbolizer, why we added it, and how it
+works.</p>
+<p>To follow along, check out <a href="https://github.com/facebookincubator/cinder/blob/ab2f6b5ca5274bbdd632b658cdce7de2274bfc56/Jit/symbolizer.cpp">symbolizer.cpp</a>. If you notice
+something amiss, please let me know! Either send me an email, post on
+<a href="https://lists.sr.ht/~max/blog-comments">~max/blog-comments</a>, or comment on one
+of the various angry internet sites this will eventually get posted to.</p>
+<h2 id="motivation">Motivation</h2>
+
+<p>The JIT transforms Python bytecode to machine code. Along the way, we support
+printing the intermediate representations (IRs) for debugging. We also support
+disassembling the resulting machine code for the same reason.</p>
+<p>The various IRs and machine code contain references to C and C++ functions by
+address. While a running process only needs the address to go about its job,
+software engineers like me need a little more than <code class="language-plaintext highlighter-rouge">0x3A28213A</code> to debug
+things. This leaves us wanting a function that can go from address to function
+name: a <em>symbolizer</em>.</p>
+<p>You might wonder why we don't instead keep all of the names inside the
+instructions. After all, we probably add the function pointers by name (like
+<code class="language-plaintext highlighter-rouge">env.emit&lt;CallCFunction&gt;(PyNumber_Add, ...)</code>. Why not also add the string
+<code class="language-plaintext highlighter-rouge">&quot;PyNumber_Add&quot;</code> alongside it?</p>
+<p>I quite honestly do not have a good answer. I think it would take work to
+thread all of that additional information through the system so that we can
+guarantee it, but:</p>
+<ol>
+<li>I already did this for the instructions that read from and write to fields.
+It's great.</li>
+<li>Writing this symbolizer also took a lot of work.</li>
+</ol>
+<p>In the end I decided to do what other projects like HHVM seem to do and wrote
+the darn symbolizer.</p>
+<h2 id="the-journey">The journey</h2>
+
+<p>I wanted names in our debug output. Seeing stuff like
+<code class="language-plaintext highlighter-rouge">CallCFunction&lt;0x6339392C&gt; v1 v7</code> was driving me batty.<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup> How am I
+supposed to know what that represents? Sure, I can kind of make an inference
+from the context, but it's not pleasant.</p>
+<p>And it's even worse in the machine code, where there are no names. Take a look
+at an example dump of assembly code from the JIT:</p>
+<div class="highlight"><pre><span></span><span class="nf">Epilogue</span>
+<span class="w">  </span><span class="nf">mov</span><span class="w">    </span><span class="mh">0x118</span><span class="p">(</span><span class="o">%</span><span class="nb">rdi</span><span class="p">),</span><span class="o">%</span><span class="nb">rsi</span>
+<span class="w">  </span><span class="nf">btq</span><span class="w">    </span><span class="kc">$</span><span class="mh">0x0</span><span class="p">,</span><span class="mh">0x8</span><span class="p">(</span><span class="o">%</span><span class="nb">rsi</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">mov</span><span class="w">    </span><span class="p">(</span><span class="o">%</span><span class="nb">rsi</span><span class="p">),</span><span class="o">%</span><span class="nb">rsi</span>
+<span class="w">  </span><span class="nf">mov</span><span class="w">    </span><span class="o">%</span><span class="nb">rsi</span><span class="p">,</span><span class="mh">0x118</span><span class="p">(</span><span class="o">%</span><span class="nb">rdi</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">jae</span><span class="w">    </span><span class="mh">0x7f19fdf1d2f3</span>
+<span class="w">  </span><span class="nf">mov</span><span class="w">    </span><span class="o">%</span><span class="nb">rax</span><span class="p">,</span><span class="o">-</span><span class="mh">0x8</span><span class="p">(</span><span class="o">%</span><span class="nb">rbp</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">callq</span><span class="w">  </span><span class="o">*</span><span class="mh">0x69</span><span class="p">(</span><span class="o">%</span><span class="nv">rip</span><span class="p">)</span><span class="w">        </span><span class="c1"># 0x7f19fdf1d358</span>
+<span class="w">  </span><span class="nf">mov</span><span class="w">    </span><span class="o">-</span><span class="mh">0x8</span><span class="p">(</span><span class="o">%</span><span class="nb">rbp</span><span class="p">),</span><span class="o">%</span><span class="nb">rax</span>
+</pre></div>
+
+<p>We can see that the disassembler has helpfully annotated the RIP-relative call
+with the address it found later in the instruction stream. But that number is
+still meaningless to me. I would much rather have the following:</p>
+<div class="highlight"><pre><span></span><span class="nf">Epilogue</span>
+<span class="w">  </span><span class="nf">mov</span><span class="w">    </span><span class="mh">0x118</span><span class="p">(</span><span class="o">%</span><span class="nb">rdi</span><span class="p">),</span><span class="o">%</span><span class="nb">rsi</span>
+<span class="w">  </span><span class="nf">btq</span><span class="w">    </span><span class="kc">$</span><span class="mh">0x0</span><span class="p">,</span><span class="mh">0x8</span><span class="p">(</span><span class="o">%</span><span class="nb">rsi</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">mov</span><span class="w">    </span><span class="p">(</span><span class="o">%</span><span class="nb">rsi</span><span class="p">),</span><span class="o">%</span><span class="nb">rsi</span>
+<span class="w">  </span><span class="nf">mov</span><span class="w">    </span><span class="o">%</span><span class="nb">rsi</span><span class="p">,</span><span class="mh">0x118</span><span class="p">(</span><span class="o">%</span><span class="nb">rdi</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">jae</span><span class="w">    </span><span class="mh">0x7f19fdf1d2f3</span>
+<span class="w">  </span><span class="nf">mov</span><span class="w">    </span><span class="o">%</span><span class="nb">rax</span><span class="p">,</span><span class="o">-</span><span class="mh">0x8</span><span class="p">(</span><span class="o">%</span><span class="nb">rbp</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">callq</span><span class="w">  </span><span class="o">*</span><span class="mh">0x69</span><span class="p">(</span><span class="o">%</span><span class="nv">rip</span><span class="p">)</span><span class="w">        </span><span class="c1"># 0x7f19fdf1d358 (JITRT_UnlinkFrame(_ts*))</span>
+<span class="w">  </span><span class="nf">mov</span><span class="w">    </span><span class="o">-</span><span class="mh">0x8</span><span class="p">(</span><span class="o">%</span><span class="nb">rbp</span><span class="p">),</span><span class="o">%</span><span class="nb">rax</span>
+</pre></div>
+
+<p>Beautiful. A crisp, clear function name. So how do we get there?</p>
+<p>For some cases in the project we already used <code class="language-plaintext highlighter-rouge">dladdr</code> as a limited symbolizer.
+Unfortunately, <code class="language-plaintext highlighter-rouge">dladdr</code> only works if the function is in some <code class="language-plaintext highlighter-rouge">.so</code> that your
+application loaded. If you are trying to symbolize a function from your own
+executable, you're out of luck.</p>
+<p>I learned somewhere that at least for ELF binaries (and probably other
+executable formats), there are names stored in the header. I had no idea how to
+read my own ELF header. I tried to read from the start of the executable and
+found an ELF header! It was great! And then I tried to read a section header
+and got a segfault.</p>
+<p>I learned (from <a href="https://stackoverflow.com/users/50617/employed-russian">Employed Russian</a>, as apparently
+everybody who works on low-level things does) that section headers are not
+loaded into memory at process start. Bummer. So how do we read the header?</p>
+<p>Well, we loaded the executable from the disk on process boot. Why not read it
+again? I went off to <code class="language-plaintext highlighter-rouge">mmap</code> the file <code class="language-plaintext highlighter-rouge">/proc/self/exe</code> so that I could read from
+that instead.</p>
+<p>I had some crashes, so I went to see if Valgrind could track down anything
+weird for me. It turns out, though, that Valgrind <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1925786">had a bug</a>
+where it wouldn't intercept the <code class="language-plaintext highlighter-rouge">open</code> of <code class="language-plaintext highlighter-rouge">/proc/self/exe</code> for the <code class="language-plaintext highlighter-rouge">mmap</code>, so
+actually I was reading <em>Valgrind's</em> executable instead of my own when trying to
+track down my memory error. Talk about multiple levels of confusion. At the
+time of symbolizer writing, the bug had been fixed, but I did not have the
+latest version on hand.</p>
+<p>I finally got the constructor working:</p>
+<div class="highlight"><pre><span></span><span class="n">Symbolizer</span><span class="o">::</span><span class="n">Symbolizer</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">exe_path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">exe_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">::</span><span class="n">open</span><span class="p">(</span><span class="n">exe_path</span><span class="p">,</span><span class="w"> </span><span class="n">O_RDONLY</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">exe_fd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">JIT_LOG</span><span class="p">(</span><span class="s">&quot;Could not open %s: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">exe_path</span><span class="p">,</span><span class="w"> </span><span class="o">::</span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// Close the file descriptor. We don&#39;t need to keep it around for the mapping</span>
+<span class="w">  </span><span class="c1">// to be valid and if we leave it lying around then some CPython tests fail</span>
+<span class="w">  </span><span class="c1">// because they rely on specific file descriptor numbers.</span>
+<span class="w">  </span><span class="n">SCOPE_EXIT</span><span class="p">(</span><span class="o">::</span><span class="n">close</span><span class="p">(</span><span class="n">exe_fd</span><span class="p">));</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">stat</span><span class="w"> </span><span class="n">statbuf</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">stat_result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">::</span><span class="n">fstat</span><span class="p">(</span><span class="n">exe_fd</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">statbuf</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">stat_result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">JIT_LOG</span><span class="p">(</span><span class="s">&quot;Could not stat %s: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">exe_path</span><span class="p">,</span><span class="w"> </span><span class="o">::</span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="kt">off_t</span><span class="w"> </span><span class="n">exe_size_signed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">statbuf</span><span class="p">.</span><span class="n">st_size</span><span class="p">;</span>
+<span class="w">  </span><span class="n">JIT_CHECK</span><span class="p">(</span><span class="n">exe_size_signed</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;exe size should not be negative&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">exe_size_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">exe_size_signed</span><span class="p">);</span>
+<span class="w">  </span><span class="n">exe_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">*&gt;</span><span class="p">(</span>
+<span class="w">      </span><span class="o">::</span><span class="n">mmap</span><span class="p">(</span><span class="k">nullptr</span><span class="p">,</span><span class="w"> </span><span class="n">exe_size_</span><span class="p">,</span><span class="w"> </span><span class="n">PROT_READ</span><span class="p">,</span><span class="w"> </span><span class="n">MAP_PRIVATE</span><span class="p">,</span><span class="w"> </span><span class="n">exe_fd</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">exe_</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">MAP_FAILED</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">JIT_LOG</span><span class="p">(</span><span class="s">&quot;could not mmap&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">exe_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">elf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">ElfW</span><span class="p">(</span><span class="n">Ehdr</span><span class="p">)</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">exe_</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">shdr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">ElfW</span><span class="p">(</span><span class="n">Shdr</span><span class="p">)</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">exe_</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">elf</span><span class="o">-&gt;</span><span class="n">e_shoff</span><span class="p">);</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exe_</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">shdr</span><span class="p">[</span><span class="n">elf</span><span class="o">-&gt;</span><span class="n">e_shstrndx</span><span class="p">].</span><span class="n">sh_offset</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">elf</span><span class="o">-&gt;</span><span class="n">e_shnum</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">shdr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">sh_size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">strcmp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">str</span><span class="p">[</span><span class="n">shdr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">sh_name</span><span class="p">],</span><span class="w"> </span><span class="s">&quot;.symtab&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">symtab_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">ElfW</span><span class="p">(</span><span class="n">Shdr</span><span class="p">)</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">shdr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">strcmp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">str</span><span class="p">[</span><span class="n">shdr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">sh_name</span><span class="p">],</span><span class="w"> </span><span class="s">&quot;.strtab&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">strtab_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">ElfW</span><span class="p">(</span><span class="n">Shdr</span><span class="p">)</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">shdr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>In this blob of constructor code, we:</p>
+<ol>
+<li><code class="language-plaintext highlighter-rouge">open</code> the file to get a file descriptor</li>
+<li><code class="language-plaintext highlighter-rouge">fstat</code> the file to get its size</li>
+<li><code class="language-plaintext highlighter-rouge">mmap</code> the file so we can read from its contents</li>
+<li>Read the section headers one by one until we find <code class="language-plaintext highlighter-rouge">.symtab</code> and <code class="language-plaintext highlighter-rouge">.strtab</code></li>
+</ol>
+<p>Through a bunch of trial and error and reading too much half-working code on
+the internet and too many manual pages, I got the symbolizer working! I managed
+to make it symbolize function names from our executable and fall back to
+<code class="language-plaintext highlighter-rouge">dladdr</code> for symbols in shared objects.</p>
+<div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Symbolizer</span><span class="o">::</span><span class="n">symbolize</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">func</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Try the cache first. We might have looked it up before.</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">cached</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cache_</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">func</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cached</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">cache_</span><span class="p">.</span><span class="n">end</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">cached</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// Then try dladdr. It might be able to find the symbol.</span>
+<span class="w">  </span><span class="n">Dl_info</span><span class="w"> </span><span class="n">info</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">::</span><span class="n">dladdr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">info</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">info</span><span class="p">.</span><span class="n">dli_sname</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">cache</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="p">.</span><span class="n">dli_sname</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isInitialized</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// Fall back to reading our own ELF header.</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">sym</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">ElfW</span><span class="p">(</span><span class="n">Sym</span><span class="p">)</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">exe_</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">symtab_</span><span class="o">-&gt;</span><span class="n">sh_offset</span><span class="p">);</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exe_</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">strtab_</span><span class="o">-&gt;</span><span class="n">sh_offset</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">symtab_</span><span class="o">-&gt;</span><span class="n">sh_size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ElfW</span><span class="p">(</span><span class="n">Sym</span><span class="p">));</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">sym</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">st_value</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">func</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">cache</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sym</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">st_name</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>In this snippet, we:</p>
+<ol>
+<li>Try reading from our cache. Nothing fancy, just an <code class="language-plaintext highlighter-rouge">unordered_map</code></li>
+<li>Try calling <code class="language-plaintext highlighter-rouge">dladdr</code></li>
+<li>Loop over the symbol table until we find a symbol whose address corresponds
+to the address passed in</li>
+</ol>
+<p>Problem solved, right? Nope:</p>
+<ul>
+<li>We also ship the JIT as a <code class="language-plaintext highlighter-rouge">.so</code>. If we reference a private symbol from the
+Cinder <code class="language-plaintext highlighter-rouge">.so</code>, our fancy symbol table walker won't be able to find it because
+it only reads from the executable. <code class="language-plaintext highlighter-rouge">dladdr</code> won't be able to resolve it
+either.</li>
+<li>Some other reason that I can't remember right now but it was irritating.</li>
+</ul>
+<p>I borrowed some of our tech lead Matt Page's code for reading <code class="language-plaintext highlighter-rouge">.so</code>s and that
+solved those problems. I'm not super sure why this code is different from the
+code for reading the executable ELF header. It <em>looks</em> very similar. Maybe they
+can be combined. If you're going to borrow some of our code, his looks more
+correct. It handles more edge cases.</p>
+<p>Then, finally, since we're using C++, we get fun mangled names. I used
+<code class="language-plaintext highlighter-rouge">abi::__cxa_demangle</code> to get a nice readable name.</p>
+<h2 id="requirements">Requirements</h2>
+
+<p>This symbolizer only supports Linux/ELF. It won't work on macOS, which uses
+Mach-O. I have no idea about BSDs and friends. It <em>should</em> be 32-bit compatible
+out of the box, though, due to use of <code class="language-plaintext highlighter-rouge">ELfW</code> instead of its explicitly-sized
+variants.</p>
+<h2 id="conclusion">Conclusion</h2>
+
+<p>A symbolizer that has to support very few platforms can be written in a couple
+hundred lines and understood. Hopefully it's reusable. Let me know what weird
+bugs you run into if you use it.</p>
+<p>This isn't meant to be fast. I have no idea how very slow it is. Please don't
+tell me. I added a cache so I wouldn't have to think about it too hard. The
+thought is that once a symbol is looked up, it will likely be looked up again
+in dumps of a future compiler pass.</p>
+<p>It's going to be a minute before I go spelunking through ELF again.</p>
+<h2 id="similar-work">Similar work</h2>
+
+<p>Google's Abseil library includes <a href="https://github.com/abseil/abseil-cpp/blob/d819278ab70ee5e59fa91d76a66abeaa106b95c9/absl/debugging/symbolize_elf.inc">a symbolizer</a>. Same with the
+folly library: <a href="https://github.com/facebook/folly/blob/74d381aacc02cfd892d394205f1e066c76e18e60/folly/experimental/symbolizer/Symbolizer.cpp">symbolizer</a> and <a href="https://github.com/facebook/folly/blob/74d381aacc02cfd892d394205f1e066c76e18e60/folly/experimental/symbolizer/Elf.cpp">elf utils</a>.</p>
+<p>Also, I did a lot of reading through ClickHouse's <a href="https://github.com/ClickHouse/ClickHouse/blob/c8068bdfa260ccf486c2d0417b1eea9cbfb0ad59/src/Common/SymbolIndex.cpp">symbol
+indexer</a> and it helped clear up some misconceptions and
+outright errors from various StackOverflow answers.</p>
+<p>HHVM has <a href="https://github.com/facebook/hhvm/blob/a2e15b83bd3ff360068dcf584264a42d85fe0c90/hphp/util/stack-trace.cpp">a symbolizer</a> that relies on Folly but apparently they also
+support using LibBFD.</p>
+<p>Last, I heard that you can use <code class="language-plaintext highlighter-rouge">libbacktrace</code> as a sort of symbolizer, but you
+need to link with <code class="language-plaintext highlighter-rouge">-rdynamic</code> and it won't find static/private symbols.</p>
+<h2 id="resources">Resources</h2>
+
+<p><a href="https://www.conradk.com/2017/05/28/elf-from-scratch">ELF from scratch</a> by Conrad Kleinespel helped me understand how the
+headers are laid out. Diagrams are nice and all but it's super helpful to see
+sample code iterating over section headers and stuff.</p>
+
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p>Actually, it's worse than that. We didn't even print the
+addresses originally. <a href="#fnref-1" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2022-11-03-cinder-jit-symbolizer.md" title="Help improve _posts/2022-11-03-cinder-jit-symbolizer.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

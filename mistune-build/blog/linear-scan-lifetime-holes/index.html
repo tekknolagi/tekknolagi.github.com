@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Linear scan with lifetime holes | Max Bernstein</title>
+    <meta property="og:title" content="Linear scan with lifetime holes | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/linear-scan-lifetime-holes/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Linear scan with lifetime holes</h1>
+        
+        <div class="post-inline-date"><i>August 24, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>In my <a href="/blog/linear-scan/">last post</a>, I explained a bit about how to retrofit
+SSA onto the original linear scan algorithm. I went over all of the details for
+how to go from low-level IR to register assignments—liveness analysis,
+scheduling, building intervals, and the actual linear scan algorithm.</p>
+<p>Basically, we made it to 1997 linear scan, with small adaptations for
+allocating directly on SSA.</p>
+<p>This time, we're going to retrofit <em>lifetime holes</em>.</p>
+<h2 id="lifetime-holes">Lifetime holes</h2>
+<p>Lifetime holes come into play because a linearized sequence of instructions is
+not a great proxy for storing or using metadata about a program originally
+stored as a graph.</p>
+<p>According to <a href="/assets/img/wimmer-linear-scan-ssa.pdf">Linear Scan Register Allocation on SSA Form</a> (PDF,
+2010):</p>
+<blockquote>
+<p>The lifetime interval of a virtual register must cover all parts where this
+register is needed, with lifetime holes in between. Lifetime holes occur
+because the control flow graph is reduced to a list of blocks before register
+allocation. If a register flows into an <code class="language-plaintext highlighter-rouge">else</code>-block, but not into the
+corresponding <code class="language-plaintext highlighter-rouge">if</code>-block, the lifetime interval has a hole for the <code class="language-plaintext highlighter-rouge">if</code>-block.</p>
+</blockquote>
+<p>Lifetime holes come from <a href="/assets/img/quality-speed-linear-scan-ra-clean.pdf">Quality and Speed in Linear-scan Register
+Allocation</a> (PDF, 1998) by Traub, Holloway, and Smith. Figure 1,
+though not in SSA form, is a nice diagram for understanding how lifetime holes
+may occur. Unfortunately, the paper contains a rather sparse plaintext
+description of their algorithm that I did not understand how to apply to my
+concrete allocator.</p>
+<p>Thankfully, other papers continued this line of research in (at least) 2002,
+2005, and 2010. We will piece snippets from those papers together to understand
+what's going on.</p>
+<p>Let's take a look at the sample IR snippet from Wimmer2010 to illustrate how
+lifetime holes form:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>16: label B1(R10, R11):
+18: jmp B2($1, R11)
+     # vvvvvvvvvv #
+20: label B2(R12, R13)
+22: cmp R13, $1
+24: branch lessThan B4() else B3()
+
+26: label B3()
+28: mul R12, R13 -&gt; R14
+30: sub R13, $1 -&gt; R15
+32: jump B2(R14, R15)
+
+34: label B4()
+     # ^^^^^^^^^^ #
+36: add R10, R12 -&gt; R16
+38: ret R16
+</code></pre></div></div>
+<p>Virtual register R12 is not used between position 28 and 34. For this reason,
+Wimmer's interval building algorithm assigns it the interval <code class="language-plaintext highlighter-rouge">[[20, 28), [34, ...)]</code>. Note how the interval has two disjoint ranges with space in the middle.</p>
+<p>Our simplified interval building algorithm from last time gave us—in the same
+notation—the interval <code class="language-plaintext highlighter-rouge">[[20, ...)]</code> (well, <code class="language-plaintext highlighter-rouge">[[20, 36)]</code> in our modified
+snippet). This simplified interval only supports one range with no lifetime
+holes.</p>
+<p>Ideally we would be able to use the physical register assigned to R12 for
+another virtual register in this empty slot! For example, maybe R14 or R15,
+which have short lifetimes that completely fit into the hole.</p>
+<p>Another example is a control-flow diamond. In this example, B1 jumps to either
+B3 or B2, which then merge at B4. Virtual register R0 is defined in B1 and only
+used in one of the branches, B3. It's also not used in B4—if it were used in
+B4, it would be live in both B2 and B3!</p>
+<!--
+# dot IN.dot -Tsvg -Nfontname=Monospace -Efontname=Monospace > OUT.svg
+
+digraph G {
+node [shape=plaintext]
+B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B1()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">R0 = loadi $123&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">blt →B3, →B2&nbsp;</TD></TR>
+</TABLE>>];
+B1:s -> B3:params:n;
+B1:s -> B2:params:n;
+B2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B2()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">R1 = loadi $456&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">R2 = add R1, $1&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="2">jump →B4&nbsp;</TD></TR>
+</TABLE>>];
+B2:s -> B4:params:n;
+B3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B3()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">R3 = mul R0, $2&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">jump →B4&nbsp;</TD></TR>
+</TABLE>>];
+B3:s -> B4:params:n;
+B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B4()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">ret $5&nbsp;</TD></TR>
+</TABLE>>];
+}
+-->
+
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/lsra-diamond-cfg.svg"></object>
+</figure>
+
+<p>Once we schedule it, the need for lifetime holes becomes more apparent:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0: label B1:
+2: R0 = loadi $123
+4: blt iftrue: →B3, iffalse: →B2
+
+6: label B2:
+8: R1 = loadi $456
+10: R2 = add R1, $1
+12: jump →B4
+
+14: label B3:
+16: R3 = mul R0, $2
+18: jump →B4
+
+20: label B4:
+22: ret $5
+</code></pre></div></div>
+<p>Since B2 gets scheduled (in this case, arbitrarily) before B3, there's a gap
+where R0—which is completely unused in B2—would otherwise take up space in
+our simplified interval form. Let's fix that by adding some lifetime holes.</p>
+<p><strong>Even though</strong> we are adding some gaps between ranges, each interval still
+gets assigned <em>one location for its entire life</em>. It's just that in the gaps,
+we get to put other smaller intervals, like lichen growing between bricks.</p>
+<p>To get lifetime holes, we have to modify our interval data structure a bit.</p>
+<h2 id="finding-lifetime-holes">Finding lifetime holes</h2>
+<p>Our interval currently only supports a single range:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Interval</span>
+<span class="w">  </span><span class="kp">attr_reader</span><span class="w"> </span><span class="ss">:range</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">raise</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">add_range</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">raise</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">set_from</span><span class="p">(</span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">raise</span>
+<span class="k">end</span>
+</pre></div>
+<p>We can change this to support multiple ranges by changing <em>just one character</em>!!!</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Interval</span>
+<span class="w">  </span><span class="kp">attr_reader</span><span class="w"> </span><span class="ss">:ranges</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">raise</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">add_range</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">raise</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">set_from</span><span class="p">(</span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">raise</span>
+<span class="k">end</span>
+</pre></div>
+<p>Har har. Okay, so we now have an array of <code class="language-plaintext highlighter-rouge">Range</code> instead of just a single
+<code class="language-plaintext highlighter-rouge">Range</code>. But now we have to implement the methods differently.</p>
+<p>We'll start with <code class="language-plaintext highlighter-rouge">initialize</code>. The start state of an interval is an empty array
+of ranges:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Interval</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">initialize</span>
+<span class="w">    </span><span class="vi">@ranges</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>Because we're iterating backwards through the blocks and backwards through
+instructions in each block, we'll be starting with instruction 38 and working
+our way linearly backwards until 16.</p>
+<p>This means that we'll see later uses before earlier uses, and uses before defs.
+In order to keep the <code class="language-plaintext highlighter-rouge">@ranges</code> array in sorted order, we need to add each new
+range to the front. This is O(n) in an array, so use a deque or linked list.
+(Alternatively, push to the end and then reverse them afterwards.)</p>
+<!-- TODO why keep them disjoint? -->
+
+<p>We keep the ranges in sorted order because it makes keeping them disjoint
+easier, as we'll see in <code class="language-plaintext highlighter-rouge">add_range</code> and <code class="language-plaintext highlighter-rouge">set_from</code>. Let's start with <code class="language-plaintext highlighter-rouge">set_from</code>
+since it's very similar to the previous version:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Interval</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">set_from</span><span class="p">(</span><span class="n">from</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="vi">@ranges</span><span class="o">.</span><span class="n">empty?</span>
+<span class="w">      </span><span class="c1"># @ranges is empty when we don&#39;t have a use of the vreg</span>
+<span class="w">      </span><span class="vi">@ranges</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="no">Range</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">)</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">      </span><span class="vi">@ranges</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Range</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="vi">@ranges</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="n">end</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">assert_sorted_and_disjoint</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p><code class="language-plaintext highlighter-rouge">add_range</code> has a couple more cases, but we'll go through them step by step.
+First, a quick check that the range is the right way 'round:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Interval</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">add_range</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">from</span>
+<span class="w">      </span><span class="k">raise</span><span class="w"> </span><span class="no">ArgumentError</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Invalid range: </span><span class="si">#{</span><span class="n">from</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="n">to</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>Then we have a straightforward case: if we don't have any ranges yet, add a
+brand new one:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Interval</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">add_range</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="vi">@ranges</span><span class="o">.</span><span class="n">empty?</span>
+<span class="w">      </span><span class="vi">@ranges</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="no">Range</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<span class="w">      </span><span class="k">return</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>But if we do have ranges, this new range might be totally subsumed by the
+existing first range. This happens if a virtual register is live for the
+entirety of a block and also used inside that block. The uses that cause an
+<code class="language-plaintext highlighter-rouge">add_range</code> don't add any new information:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Interval</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">add_range</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="vi">@ranges</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">cover?</span><span class="p">(</span><span class="n">from</span><span class="o">..</span><span class="n">to</span><span class="p">)</span>
+<span class="w">      </span><span class="n">assert_sorted_and_disjoint</span>
+<span class="w">      </span><span class="k">return</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>Another case is that the new range has a partial overlap with the existing
+first range. This happens when we're adding ranges for all of the live-out
+virtual registers; the range for the predecessor block (say <code class="language-plaintext highlighter-rouge">[4, 8]</code>) will abut
+the range for the successor block (say <code class="language-plaintext highlighter-rouge">[8, 12]</code>). We merge these ranges into
+one big range (say, <code class="language-plaintext highlighter-rouge">[4, 12]</code>):</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Interval</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">add_range</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="vi">@ranges</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">cover?</span><span class="p">(</span><span class="n">to</span><span class="p">)</span>
+<span class="w">      </span><span class="vi">@ranges</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Range</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="vi">@ranges</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
+<span class="w">      </span><span class="n">assert_sorted_and_disjoint</span>
+<span class="w">      </span><span class="k">return</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>The last case is the case that gives us lifetime holes and happens when the new
+range is already completely disjoint from the existing first range. That is
+also a straightforward case: put the new range in at the start of the list.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Interval</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">add_range</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">    </span><span class="c1"># TODO(max): Use a linked list or deque or something to avoid O(n) insertions</span>
+<span class="w">    </span><span class="vi">@ranges</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="no">Range</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">))</span>
+<span class="w">    </span><span class="n">assert_sorted_and_disjoint</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>This is all fine and good. I added this to the register allocator to test out
+the lifetime hole finding but kept the rest of the same (changed the APIs
+slightly so the interval could pretend it was still one big range). The tests
+passed. Neat!</p>
+<p>I also verified that the lifetime holes were what we expected. This means our
+<code class="language-plaintext highlighter-rouge">build_intervals</code> function works unmodified with the new <code class="language-plaintext highlighter-rouge">Interval</code>
+implementation. That makes sense, given that we copied the implementation off
+of Wimmer2010, which can deal with lifetime holes.</p>
+<p>Now we would like to use this new information in the register allocator.</p>
+<h2 id="modified-linear-scan">Modified linear scan</h2>
+<p>It took a little bit of untangling, but the required modifications to support
+lifetime holes in the register assignment phase are not too invasive. To get an
+idea of the difference, I took the original <a href="/assets/img/linearscan-ra.pdf">Poletto1999</a> (PDF) algorithm
+and rewrote it in the style of the <a href="/assets/img/linear-scan-ra-context-ssa.pdf">Mössenböck2002</a> (PDF)
+algorithm.</p>
+<p>For example, here is Poletto1999:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LinearScanRegisterAllocation
+active ← {}
+foreach live interval i, in order of increasing start point
+  ExpireOldIntervals(i)
+  if length(active) = R then
+    SpillAtInterval(i)
+  else
+    register[i] ← a register removed from pool of free registers
+    add i to active, sorted by increasing end point
+
+ExpireOldIntervals(i)
+foreach interval j in active, in order of increasing end point
+  if endpoint[j] ≥ startpoint[i] then
+    return
+  remove j from active
+  add register[j] to pool of free registers
+
+SpillAtInterval(i)
+spill ← last interval in active
+if endpoint[spill] &gt; endpoint[i] then
+  register[i] ← register[spill]
+  location[spill] ← new stack location
+  remove spill from active
+  add i to active, sorted by increasing end point
+else
+  location[i] ← new stack location
+</code></pre></div></div>
+<p>And here it is again, reformatted a bit. The implicit <code class="language-plaintext highlighter-rouge">unhandled</code> and <code class="language-plaintext highlighter-rouge">handled</code>
+sets that don't get names in Poletto1999 now get names. <code class="language-plaintext highlighter-rouge">ExpireOldIntervals</code> is
+inlined and <code class="language-plaintext highlighter-rouge">SpillAtInterval</code> gets a new name:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LINEARSCAN()
+unhandled ← all intervals in increasing order of their start points
+active ← {}; handled ← {}
+free ← set of available registers
+while unhandled ≠ {} do
+  cur ← pick and remove the first interval from unhandled
+  //----- check for active intervals that expired
+  for each interval i in active do
+    if i ends before cur.beg then
+      move i to handled and add i.reg to free
+
+  //----- collect available registers in f
+  f ← free
+
+  //----- select a register from f
+  if f = {} then
+    ASSIGNMEMLOC(cur) // see below
+  else
+    cur.reg ← any register in f
+    free ← free – {cur.reg}
+    move cur to active
+
+ASSIGNMEMLOC(cur: Interval)
+spill ← last interval in active
+if spill.end &gt; cur.end then
+  cur.reg ← spill.reg
+  spill.location ← new stack location
+  move spill from active to handled
+  move cur to active
+else
+  cur.location ← new stack location
+</code></pre></div></div>
+<p>Now we can pick out all of the bits of Mössenböck2002 that look like they are
+responsible for dealing with lifetime holes.</p>
+<p>For example, the algorithm now has a fourth set, <code class="language-plaintext highlighter-rouge">inactive</code>. This set holds
+intervals that have holes that contain the current interval's start position.
+These intervals are assigned registers that are potential candidates for the
+current interval to live (more on this in a sec).</p>
+<p>I say potential candidates because in order for them to be a home for the
+current interval, an inactive interval has to be completely disjoint from the
+current interval. If they overlap at all—in any of their ranges—then we
+would be trying to put two virtual registers into one physical register at the
+same program point. That's a bad compile.</p>
+<p>We have to do a little extra bookkeeping in <code class="language-plaintext highlighter-rouge">ASSIGNMEMLOC</code> because now one
+physical register can be assigned to more than one interval that is still in
+the middle of being processed (active and inactive sets). If we choose to
+spill, we have to make sure that all conflicting uses of the register
+(intervals that overlap with the current interval) get reassigned locations.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LINEARSCAN()
+unhandled ← all intervals in increasing order of their start points
+active ← {}; handled ← {}
+inactive ← {}
+free ← set of available registers
+while unhandled ≠ {} do
+  cur ← pick and remove the first interval from unhandled
+  //----- check for active intervals that expired
+  for each interval i in active do
+    if i ends before cur.beg then
+      move i to handled and add i.reg to free
+    else if i does not overlap cur.beg then
+      move i to inactive and add i.reg to free
+  //----- check for inactive intervals that expired or become reactivated
+  for each interval i in inactive do
+    if i ends before cur.beg then
+      move i to handled
+    else if i overlaps cur.beg then
+      move i to active and remove i.reg from free
+
+  //----- collect available registers in f
+  f ← free
+  for each interval i in inactive that overlaps cur do f ← f – {i.reg}
+
+  //----- select a register from f
+  if f = {} then
+    ASSIGNMEMLOC(cur) // see below
+  else
+    cur.reg ← any register in f
+    free ← free – {cur.reg}
+    move cur to active
+
+ASSIGNMEMLOC(cur: Interval)
+spill ← heuristic: pick some interval from active or inactive
+if spill.end &gt; cur.end then
+  r = spill.reg
+  conflicting = set of active or inactive intervals with register r that
+    overlap with cur
+  move all intervals in conflicting to handled
+  assign memory locations to them
+  cur.reg ← r
+  move cur to active
+else
+  cur.location ← new stack location
+</code></pre></div></div>
+<p>Note that this begins to depart from strictly linear (time) linear scan: the
+<code class="language-plaintext highlighter-rouge">inactive</code> set is bounded not by the number of physical registers but instead
+by the number of virtual registers. Mössenböck2002 notes that the size of the
+<code class="language-plaintext highlighter-rouge">inactive</code> set is generally very small, though, so &quot;linear in practice&quot;.</p>
+<blockquote>
+<p>EDIT: After re-reading Wimmer2010, I noticed that they say:</p>
+<blockquote>
+<p>[...] introduced non-linear parts. Two of them are highlighted in Figure 6
+where the set of inactive intervals is iterated. The set can contain an
+arbitrary number of intervals since it is not bound by the number of
+physical registers. Testing the current interval for intersection with all
+of them can therefore be expensive.</p>
+<p>When the lifetime intervals are created from code in SSA form, this test is
+not necessary anymore: All intervals in inactive start before the current
+interval, so they do not intersect with the current interval at their
+definition. They are inactive and thus have a lifetime hole at the current
+position, so they do not intersect with the current interval at its
+definition. SSA form therefore guarantees that they never intersect [7],
+making the entire loop that tests for intersection unnecessary.</p>
+<p>Unfortunately, splitting of intervals leads to intervals that no longer
+adhere to the SSA form properties because it destroys SSA form. Therefore,
+the intersection test cannot be omitted completely; it must be performed if
+the current interval has been split off from another interval.</p>
+</blockquote>
+<p>Which indicates to me that we may actually be able to leave off that loop
+over the inactive intervals after all? Unclear. I'll have to come back and
+mess with this later.</p>
+</blockquote>
+<p>I left out the parts about register weights that are heuristics to improve
+register allocation. They are not core to supporting lifetime holes. You can
+add them back in if you like.</p>
+<p>Here is a text diff to make it clear what changed:</p>
+<div class="highlight"><pre><span></span><span class="gh">diff --git a/tmp/lsra b/tmp/lsra-holes</span>
+<span class="gh">index e9de35b..de79a63 100644</span>
+<span class="gd">--- a/tmp/lsra</span>
+<span class="gi">+++ b/tmp/lsra-holes</span>
+<span class="gu">@@ -1,6 +1,7 @@</span>
+<span class="w"> </span>LINEARSCAN()
+<span class="w"> </span>unhandled ← all intervals in increasing order of their start points
+<span class="w"> </span>active ← {}; handled ← {}
+<span class="gi">+inactive ← {}</span>
+<span class="w"> </span>free ← set of available registers
+<span class="w"> </span>while unhandled ≠ {} do
+<span class="w"> </span>  cur ← pick and remove the first interval from unhandled
+<span class="gu">@@ -8,9 +9,18 @@ while unhandled ≠ {} do</span>
+<span class="w"> </span>  for each interval i in active do
+<span class="w"> </span>    if i ends before cur.beg then
+<span class="w"> </span>      move i to handled and add i.reg to free
+<span class="gi">+    else if i does not overlap cur.beg then</span>
+<span class="gi">+      move i to inactive and add i.reg to free</span>
+<span class="gi">+  //----- check for inactive intervals that expired or become reactivated</span>
+<span class="gi">+  for each interval i in inactive do</span>
+<span class="gi">+    if i ends before cur.beg then</span>
+<span class="gi">+      move i to handled</span>
+<span class="gi">+    else if i overlaps cur.beg then</span>
+<span class="gi">+      move i to active and remove i.reg from free</span>
+
+<span class="w"> </span>  //----- collect available registers in f
+<span class="w"> </span>  f ← free
+<span class="gi">+  for each interval i in inactive that overlaps cur do f ← f – {i.reg}</span>
+
+<span class="w"> </span>  //----- select a register from f
+<span class="w"> </span>  if f = {} then
+<span class="gu">@@ -23,10 +33,10 @@ while unhandled ≠ {} do</span>
+<span class="w"> </span>ASSIGNMEMLOC(cur: Interval)
+<span class="gd">-spill ← last interval in active</span>
+<span class="gi">+spill ← heuristic: pick some interval from active or inactive</span>
+<span class="w"> </span>if spill.end &gt; cur.end then
+<span class="gd">-  cur.reg ← spill.reg</span>
+<span class="gd">-  spill.location ← new stack location</span>
+<span class="gd">-  move spill from active to handled</span>
+<span class="gi">+  r = spill.reg</span>
+<span class="gi">+  conflicting = set of active or inactive intervals with register r that</span>
+<span class="gi">+    overlap with cur</span>
+<span class="gi">+  move all intervals in conflicting to handled</span>
+<span class="gi">+  assign memory locations to them</span>
+<span class="gi">+  cur.reg ← r</span>
+<span class="w"> </span>  move cur to active
+<span class="w"> </span>else
+<span class="w"> </span>  cur.location ← new stack location
+</pre></div>
+<p>This reformatting and diffing made it much easier for me to reason about what
+specifically had to be changed.</p>
+<p>There's just one thing left after register assignment: resolution and SSA
+deconstruction.</p>
+<h2 id="resolution-and-ssa-destruction">Resolution and SSA destruction</h2>
+<p>I'm pretty sure we can actually just keep the resolution the same. In our
+<code class="language-plaintext highlighter-rouge">resolve</code> function, we are only making sure that the block arguments get
+parallel-moved into the block parameters. That hasn't changed.</p>
+<p>Wimmer2010 says:</p>
+<blockquote>
+<p>Linear scan register allocation with splitting of lifetime intervals requires
+a resolution phase after the actual allocation. Because the control flow
+graph is reduced to a list of blocks, control flow is possible between blocks
+that are not adjacent in the list. When the location of an interval is
+different at the end of the predecessor and at the start of the successor, a
+move instruction must be inserted to resolve the conflict.</p>
+</blockquote>
+<p>That's great news for us: we don't do splitting. An interval, though it has
+lifetime holes, still only ever has one location for its entire life. So once
+an interval begins, we don't need to think about moving its contents.</p>
+<p>So I was actually overly conservative in the previous post, which I have
+amended!</p>
+<h2 id="fixed-intervals-and-register-constraints">Fixed intervals and register constraints?</h2>
+<p>Mössenböck2002 also tackles register constraints with this notion of &quot;fixed
+intervals&quot;—intervals that have been pre-allocated physical registers.</p>
+<p>Since I eventually want to use &quot;register hinting&quot; from Wimmer2005 and
+Wimmer2010, I'm going to ignore the fixed interval part of Mössenböck2002 for
+now. It seems like they work nicely together.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+<p>We added lifetime holes to our register allocator without too much effort. This
+better maps the graph-like nature of the IR onto the linear sequence of
+instructions and should get us some better allocation for short-lived virtual
+registers.</p>
+<p>Maybe next time we will add <em>interval splitting</em>, which will help us a) address
+ABI constraints more cleanly in function calls and b) remove the dependence on
+reserving a scratch register.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-08-24-linear-scan-lifetime-holes.md" title="Help improve _posts/2025-08-24-linear-scan-lifetime-holes.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

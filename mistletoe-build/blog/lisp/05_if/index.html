@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Writing a Lisp, Part 5: If-Expressions | Max Bernstein</title>
+    <meta property="og:title" content="Writing a Lisp, Part 5: If-Expressions | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/lisp/05_if/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Writing a Lisp, Part 5: If-Expressions</h1>
+        
+        <div class="post-inline-date"><i>December 19, 2016</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <!--
+Last time we added environments to our Lisp, but they are not much use in their
+current state - there's no way to interact with them from inside the REPL. So
+we're going to
+-->
+
+<p>Last time we added environments to our Lisp. This time, we're going to add
+<a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">if-expressions</a>.
+If-expressions are an important part of a language, and a key piece in making
+our Lisp <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing complete</a>.</p>
+<p>If-expressions will be our first
+<a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Self_002dEvaluating-Forms.html">non-self-evaluating</a>
+structure. That means we'll need some additional plumbing to deal with them.</p>
+<p>For example, we'll need to introduce an <code class="language-plaintext highlighter-rouge">eval_sexp</code> function. <code class="language-plaintext highlighter-rouge">eval_sexp</code> will
+be the "Eval" in "Read-Eval-Print-Loop". The final piece! Also notice that we
+are modifying <code class="language-plaintext highlighter-rouge">repl</code> to take into account <em>environments</em>. We do this because
+the environments will be necessary in the future. How else will, say, variables
+be evaluated?</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">repl</span> <span class="n">stm</span> <span class="n">env</span> <span class="o">=</span>
+  <span class="n">print_string</span> <span class="s2">&quot;&gt; &quot;</span><span class="o">;</span>
+  <span class="n">flush</span> <span class="n">stdout</span><span class="o">;</span>
+  <span class="k">let</span> <span class="n">sexp</span> <span class="o">=</span> <span class="n">read_sexp</span> <span class="n">stm</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="o">(</span><span class="n">result</span><span class="o">,</span> <span class="n">env&#39;</span><span class="o">)</span> <span class="o">=</span> <span class="n">eval_sexp</span> <span class="n">sexp</span> <span class="n">env</span> <span class="k">in</span>
+  <span class="n">print_sexp</span> <span class="n">result</span><span class="o">;</span>
+  <span class="n">print_newline</span> <span class="bp">()</span><span class="o">;</span>
+  <span class="n">repl</span> <span class="n">stm</span> <span class="n">env&#39;</span><span class="o">;;</span>
+
+<span class="k">let</span> <span class="n">main</span> <span class="o">=</span>
+  <span class="k">let</span> <span class="n">stm</span> <span class="o">=</span> <span class="o">{</span> <span class="n">chr</span><span class="o">=</span><span class="bp">[]</span><span class="o">;</span> <span class="n">line_num</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span> <span class="n">chan</span><span class="o">=</span><span class="n">stdin</span> <span class="o">}</span> <span class="k">in</span>
+  <span class="n">repl</span> <span class="n">stm</span> <span class="nc">Nil</span><span class="o">;;</span>
+</pre></div>
+
+<p>We start off with the empty environment and in fact don't end up modifying it
+anywhere. We'll get there later.</p>
+<p><code class="language-plaintext highlighter-rouge">eval_sexp</code> of course doesn't exist yet, so let's make it. For now, we'll say
+that <code class="language-plaintext highlighter-rouge">Symbol</code>s, <code class="language-plaintext highlighter-rouge">Fixnum</code>s, <code class="language-plaintext highlighter-rouge">Boolean</code>s, and <code class="language-plaintext highlighter-rouge">Nil</code> all are self-evaluating – but
+note that in the future <code class="language-plaintext highlighter-rouge">Symbol</code>s will be handled differently, as they are also
+used for variable names.</p>
+<div class="highlight"><pre><span></span><span class="k">exception</span> <span class="nc">TypeError</span> <span class="k">of</span> <span class="kt">string</span><span class="o">;;</span>
+
+<span class="k">let</span> <span class="k">rec</span> <span class="n">eval_sexp</span> <span class="n">sexp</span> <span class="n">env</span> <span class="o">=</span>
+    <span class="k">let</span> <span class="n">eval_if</span> <span class="n">cond</span> <span class="n">iftrue</span> <span class="n">iffalse</span> <span class="o">=</span>
+        <span class="k">let</span> <span class="o">(</span><span class="n">condval</span><span class="o">,</span> <span class="o">_)</span> <span class="o">=</span> <span class="n">eval_sexp</span> <span class="n">cond</span> <span class="n">env</span> <span class="k">in</span>
+        <span class="k">match</span> <span class="n">condval</span> <span class="k">with</span>
+        <span class="o">|</span> <span class="nc">Boolean</span><span class="o">(</span><span class="bp">true</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">iftrue</span>
+        <span class="o">|</span> <span class="nc">Boolean</span><span class="o">(</span><span class="bp">false</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">iffalse</span>
+        <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">TypeError</span> <span class="s2">&quot;(if bool e1 e2)&quot;</span><span class="o">)</span>
+    <span class="k">in</span>
+    <span class="k">match</span> <span class="n">sexp</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Fixnum</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="nc">Fixnum</span><span class="o">(</span><span class="n">v</span><span class="o">),</span> <span class="n">env</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Boolean</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="nc">Boolean</span><span class="o">(</span><span class="n">v</span><span class="o">),</span> <span class="n">env</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Symbol</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="nc">Symbol</span><span class="o">(</span><span class="n">v</span><span class="o">),</span> <span class="n">env</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="nc">Nil</span><span class="o">,</span> <span class="n">env</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="nc">Symbol</span> <span class="s2">&quot;if&quot;</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">cond</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">iftrue</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">iffalse</span><span class="o">,</span> <span class="nc">Nil</span><span class="o">))))</span> <span class="o">-&gt;</span>
+            <span class="n">eval_sexp</span> <span class="o">(</span><span class="n">eval_if</span> <span class="n">cond</span> <span class="n">iftrue</span> <span class="n">iffalse</span><span class="o">)</span> <span class="n">env</span>
+    <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="n">sexp</span><span class="o">,</span> <span class="n">env</span><span class="o">)</span>
+</pre></div>
+
+<p>So this is a fun function. Let's take a walk through it step by step. First
+there's a definition for <code class="language-plaintext highlighter-rouge">eval_if</code> – we'll get back to that in a second. Skip
+it for now. Next, there's all this nonsense so that the simple types can
+self-evaluate:</p>
+<div class="highlight"><pre><span></span><span class="o">[...]</span>
+<span class="k">match</span> <span class="n">sexp</span> <span class="k">with</span>
+<span class="o">|</span> <span class="nc">Fixnum</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="nc">Fixnum</span><span class="o">(</span><span class="n">v</span><span class="o">),</span> <span class="n">env</span><span class="o">)</span>
+<span class="o">|</span> <span class="nc">Boolean</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="nc">Boolean</span><span class="o">(</span><span class="n">v</span><span class="o">),</span> <span class="n">env</span><span class="o">)</span>
+<span class="o">|</span> <span class="nc">Symbol</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="nc">Symbol</span><span class="o">(</span><span class="n">v</span><span class="o">),</span> <span class="n">env</span><span class="o">)</span>
+<span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="nc">Nil</span><span class="o">,</span> <span class="n">env</span><span class="o">)</span>
+<span class="o">[...]</span>
+</pre></div>
+
+<p>Then we get to the really nasty-looking bit that evaluates if-expressions. This
+clause</p>
+<div class="highlight"><pre><span></span><span class="o">[...]</span>
+<span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="nc">Symbol</span> <span class="s2">&quot;if&quot;</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">cond</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">iftrue</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">iffalse</span><span class="o">,</span> <span class="nc">Nil</span><span class="o">))))</span> <span class="o">-&gt;</span>
+        <span class="n">eval_sexp</span> <span class="o">(</span><span class="n">eval_if</span> <span class="n">cond</span> <span class="n">iftrue</span> <span class="n">iffalse</span><span class="o">)</span> <span class="n">env</span>
+<span class="o">[...]</span>
+</pre></div>
+
+<p>matches against the structure of the given s-expression. If-expressions should have the
+form <code class="language-plaintext highlighter-rouge">(if bool-exp true-exp false-exp)</code>. If the condition is <code class="language-plaintext highlighter-rouge">true</code>, <code class="language-plaintext highlighter-rouge">true-exp</code>
+gets evaluated. If the condition is <code class="language-plaintext highlighter-rouge">false</code>, <code class="language-plaintext highlighter-rouge">false-exp</code> gets evaluated.</p>
+<p><strong>EDIT:</strong> Note that the way that <code class="language-plaintext highlighter-rouge">if</code> is implemented here is very much <em>unlike</em>
+how <code class="language-plaintext highlighter-rouge">if</code> is implemented in languages like C. In C, C++, Java, and others, there
+is no scope leak. That is, if you have a program like:</p>
+<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><code class="language-plaintext highlighter-rouge">x</code> (unless otherwise declared and defined) cannot be used outside of the <code class="language-plaintext highlighter-rouge">if</code>.
+In our Lisp implementation, it's possible to do something like:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="k">if</span><span class="w"> </span><span class="no">#t</span><span class="w"> </span><span class="p">(</span><span class="nf">val</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+
+<p>And then <code class="language-plaintext highlighter-rouge">x</code> can be used after the if-statement. If we wanted to emulate the
+C-like behavior, we could rewrite <code class="language-plaintext highlighter-rouge">if</code> as:</p>
+<div class="highlight"><pre><span></span><span class="o">[...]</span>
+<span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="nc">Symbol</span> <span class="s2">&quot;if&quot;</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">cond</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">iftrue</span><span class="o">,</span> <span class="nc">Pair</span><span class="o">(</span><span class="n">iffalse</span><span class="o">,</span> <span class="nc">Nil</span><span class="o">))))</span> <span class="o">-&gt;</span>
+        <span class="k">let</span> <span class="o">(</span><span class="n">expval</span><span class="o">,</span> <span class="o">_)</span> <span class="o">=</span> <span class="n">eval_sexp</span> <span class="o">(</span><span class="n">eval_if</span> <span class="n">cond</span> <span class="n">iftrue</span> <span class="n">iffalse</span><span class="o">)</span> <span class="n">env</span> <span class="k">in</span>
+        <span class="o">(</span><span class="n">expval</span><span class="o">,</span> <span class="n">env</span><span class="o">)</span>
+<span class="o">[...]</span>
+</pre></div>
+
+<p>This would discard the environment returned by the <code class="language-plaintext highlighter-rouge">if</code> statement and instead
+use the original environment passed into the <code class="language-plaintext highlighter-rouge">if</code>.</p>
+<p><strong>/EDIT</strong></p>
+<p>If for some reason the condition is of the wrong type, raise an error:</p>
+<div class="highlight"><pre><span></span><span class="o">[...]</span>
+<span class="k">let</span> <span class="n">eval_if</span> <span class="n">cond</span> <span class="n">iftrue</span> <span class="n">iffalse</span> <span class="o">=</span>
+    <span class="k">let</span> <span class="o">(</span><span class="n">condval</span><span class="o">,</span> <span class="o">_)</span> <span class="o">=</span> <span class="n">eval_sexp</span> <span class="n">cond</span> <span class="n">env</span> <span class="k">in</span>
+    <span class="k">match</span> <span class="n">condval</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Boolean</span><span class="o">(</span><span class="bp">true</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">iftrue</span>
+    <span class="o">|</span> <span class="nc">Boolean</span><span class="o">(</span><span class="bp">false</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">iffalse</span>
+    <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">TypeError</span> <span class="s2">&quot;(if bool e1 e2)&quot;</span><span class="o">)</span>
+<span class="o">[...]</span>
+</pre></div>
+
+<p>Last, if the expression is of any other form, just return it as-is and let it
+get printed. So, self-evaluating. For now.</p>
+<p>Throughout all this, though, you're probably wondering why we're returning a
+tuple of the resulting expression and the resulting environment. Good thing to
+wonder. It turns out that some expressions that we'll want to implement down
+the line <em>should</em> have
+<a href="http://softwareengineering.stackexchange.com/questions/40297/what-is-a-side-effect">side-effects</a>.
+Like <code class="language-plaintext highlighter-rouge">(val x 5)</code>, which binds a variable in the current scope. If we didn't
+return the new environment with <code class="language-plaintext highlighter-rouge">x</code> in it, we'd have no way of capturing the
+changes.</p>
+<p>Alright. Shall we take it for a spin?</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 05_if.ml
+&gt; (+ 1 2)
+(+ 1 2)
+&gt; #t
+#t
+&gt; (if #t 3 4)
+3
+&gt; (if #f 3 4)
+4
+&gt; (if (if #t #f #t) 3 4)
+4
+&gt; (if 3 4 5)
+Exception: TypeError &quot;(if bool e1 e2)&quot;.
+$
+</code></pre></div></div>
+
+<p>Looks like it works and fails appropriately!</p>
+<p>Download the code <a href="/resources/lisp/05_if.ml">here</a> if you want to mess with it.</p>
+<p>Next up, <a href="/blog/lisp/06_prim1/">primitive procedures</a>.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_blog_lisp/05_if.md" title="Help improve _blog_lisp/05_if.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

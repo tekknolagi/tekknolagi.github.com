@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Nix derivations by hand, without guessing | Max Bernstein</title>
+    <meta property="og:title" content="Nix derivations by hand, without guessing | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/nix-by-hand/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Nix derivations by hand, without guessing</h1>
+        
+        <div class="post-inline-date"><i>April 5, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>I went on a little low-level Nix adventure yesterday and early this morning
+because of <a href="https://fzakaria.com/2025/03/23/nix-derivations-by-hand">this excellent blog post</a>. In it, Farid builds up the
+simplest possible Nix derivation—making a file that has the contents "hello
+world". Here's what I like about it:</p>
+<ul>
+<li>No Nix language; just the really fiddly low-level bits of building a
+derivation by hand</li>
+<li>It's incremental, building from a little friendly JSON blob and incrementally
+adding scarier parts</li>
+<li>It only uses two low-level Nix commands</li>
+</ul>
+<p>One thing that I did not understand after reading, though, was where the hashes
+come from. Farid's post does the same thing that I occasionally do with the C++
+or Rust compiler, where we intionally cause an error to get information that
+the compiler already knows. That's not very satisfying for someone (me) who is
+starting basically from zero. So I went down a bit of a rabbit hole trying to
+figure out how to manually generate these hashes.</p>
+<p>But first, let's get some terms out of the way. Please forgive (but help me
+correct) mistakes along the way, because this is my first time messing around
+with Nix.</p>
+<h2 id="what-on-earth-is-a-derivation">What on earth is a derivation?</h2>
+
+<p>As far as I can tell, it's a very precise recipe for building a file. It's kind
+of like a Make recipe or a shell script except all of its inputs <em>and outputs</em>
+refer to well-known long paths in <code class="language-plaintext highlighter-rouge">/nix/store</code>.</p>
+<p>Here's an example from Farid's blog that we will be trying to replicate in this
+post that has one of these path names:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;simple&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;x86_64-linux&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;builder&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/bin/sh&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;out&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;inputSrcs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;inputDrvs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;out&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;-c&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;echo &#39;hello world&#39; &gt; $out&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>In it, we have a <code class="language-plaintext highlighter-rouge">name</code> field (your pick) and a <code class="language-plaintext highlighter-rouge">system</code> field (I am guessing
+there are a couple of well-known system/platform names. I am also running
+x86_64 Linux by happenstance. If you follow along, your hashes will be the
+same as my hashes <em>only if</em> you are on the same system, I think.).</p>
+<p>We also have this thing called a <code class="language-plaintext highlighter-rouge">builder</code>, which is the singular command that
+gets run. In this case, we also pass it <code class="language-plaintext highlighter-rouge">args</code> (at the bottom) and environment
+variables from <code class="language-plaintext highlighter-rouge">env</code>. Don't think too hard about <code class="language-plaintext highlighter-rouge">inputSrcs</code> and <code class="language-plaintext highlighter-rouge">inputDrvs</code>
+because they don't come into play in this post.</p>
+<p>Last, we have <code class="language-plaintext highlighter-rouge">outputs</code>, which, like <code class="language-plaintext highlighter-rouge">env</code>, also has this magical path name.
+It's the output file (or directory, I think) that your Nix derivation is
+required to create. The name <code class="language-plaintext highlighter-rouge">out</code> in each of <code class="language-plaintext highlighter-rouge">outputs</code> and <code class="language-plaintext highlighter-rouge">env</code> is arbitrary
+and I think they don't have to have the same name. Just convention.</p>
+<p>This derivation roughly corresponds to the following Make recipe (remember that
+Make variables also start with <code class="language-plaintext highlighter-rouge">$</code> so you have to escape your shell variables
+like <code class="language-plaintext highlighter-rouge">$${var}</code>):</p>
+<div class="highlight"><pre><span></span><span class="nf">/nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple</span><span class="o">:</span>
+<span class="w">	</span><span class="nb">export</span><span class="w"> </span><span class="nv">out</span><span class="o">=</span>/nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;hello world&#39;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$$</span><span class="o">{</span>out<span class="o">}</span>
+</pre></div>
+
+<p>But where does that huge path come from?</p>
+<h2 id="getting-set-up">Getting set up</h2>
+
+<p>I didn't want to install Nix, so I did all of my explorations inside Docker. If
+you're not going to use Nix long-term, I recommend you do the same, since it
+otherwise makes some pretty invasive system changes.</p>
+<p>Here's all you need to get started:</p>
+<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="w"> </span><span class="s">nixos/nix</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
+</pre></div>
+
+<p>Now you can build a Docker container:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>.<span class="w"> </span>-t<span class="w"> </span>notnix
+<span class="go">...</span>
+<span class="gp">$</span>
+</pre></div>
+
+<p>and then start <code class="language-plaintext highlighter-rouge">/bin/sh</code>, the only shell in an easy-to-remember path:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-i<span class="w"> </span>-t<span class="w"> </span>notnix<span class="w"> </span>/bin/sh
+<span class="gp">sh-5.2#</span>
+<span class="go">...</span>
+</pre></div>
+
+<p>Any time I use a Nix command in the rest of the article, it's either in a
+Docker <code class="language-plaintext highlighter-rouge">RUN</code> command or in <code class="language-plaintext highlighter-rouge">/bin/sh</code> inside a running Nix container.</p>
+<p>Now let's find some hashes.</p>
+<h2 id="finding-hashes">Finding hashes</h2>
+
+<p>John Ott pointed out to me that Nix <a href="https://nixos.org/guides/nix-pills/18-nix-store-paths.html">docs on store paths</a> had a
+partial answer. He said that the path comes from hashing the ATerm
+representation of the derivation with the outPath set to an empty string.</p>
+<p>...what?</p>
+<p>So after some digging and re-reading Farid's post, apparently ATerm is an
+old(er) configuration language that looks kind of like building OCaml variants.
+And I guess it makes sense that we shouldn't need the path to calculate the
+path (otherwise we'd be in circular trouble). So I had Nix create the ATerm
+form of my JSON derivation without any paths:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;simple&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;x86_64-linux&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;builder&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/bin/sh&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;out&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;inputSrcs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;inputDrvs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;-c&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;echo &#39;hello world&#39; &gt; $out&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>by running:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>nix<span class="w"> </span>--extra-experimental-features<span class="w"> </span>nix-command<span class="w"> </span>derivation<span class="w"> </span>add<span class="w"> </span>&lt;<span class="w"> </span>simple.json
+<span class="go">/nix/store/1p6dixyqvjddfq5fmys3i55nl90ckjam-simple.drv</span>
+<span class="gp">$</span>
+</pre></div>
+
+<p>Running that command outputs the path of the ATerm form file, which we can
+check out:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>/nix/store/1p6dixyqvjddfq5fmys3i55nl90ckjam-simple.drv
+<span class="go">Derive([(&quot;out&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;)],[],[],&quot;x86_64-linux&quot;,&quot;/bin/sh&quot;,[&quot;-c&quot;,&quot;echo &#39;hello world&#39; &gt; $out&quot;],[(&quot;out&quot;,&quot;&quot;)])$</span>
+</pre></div>
+
+<p>You can see they are making sure to remove all whitespace, even the trailing
+newline (hence the <code class="language-plaintext highlighter-rouge">$</code> at the end, which is my shell prompt).</p>
+<p>Okay, so we have an ATerm form of the derivation and it has no output path. I
+guess we hash it? I got a little lost at this point until Jamey Sharp chimed in
+with the even more detailed <a href="https://nix.dev/manual/nix/2.24/protocols/store-path">store path specification</a>.</p>
+<p>This clarified, after many reads, that we have to do the following steps. At
+some point I switched to using Python because it got a little text manipulation
+heavy:</p>
+<ol>
+<li>Call the ATerm derivation sans output path the <code class="language-plaintext highlighter-rouge">inner-fingerprint</code> because
+we're not doing anything with <code class="language-plaintext highlighter-rouge">text</code> or <code class="language-plaintext highlighter-rouge">source</code> types or NARs or something</li>
+<li>Make a SHA256-hash of the <code class="language-plaintext highlighter-rouge">inner-fingerprint</code> and then base16-encode it.
+That's called the <code class="language-plaintext highlighter-rouge">inner-digest</code></li>
+</ol>
+<p>Okay, not so bad:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">inner_fingerprint</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">inner_fingerprint_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">file_digest</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;sha256&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+<span class="n">inner_digest</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">base64</span><span class="o">.</span><span class="n">b16encode</span><span class="p">(</span><span class="n">inner_fingerprint_hash</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+
+<p>Then, once we have that, we do some more stuff to it:</p>
+<ol>
+<li>Combine the <code class="language-plaintext highlighter-rouge">inner-digest</code> with some other fields like the derivation's
+<code class="language-plaintext highlighter-rouge">name</code> and call that the <code class="language-plaintext highlighter-rouge">fingerprint</code></li>
+<li>Hash that, take the first 20 bits, and take the base32 representation of
+that</li>
+</ol>
+<p>Alright, not so bad, Python can do all of this in the standard library:</p>
+<div class="highlight"><pre><span></span><span class="n">name</span> <span class="o">=</span> <span class="n">deriv</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>  <span class="c1"># &quot;simple&quot;</span>
+<span class="c1"># the &quot;out&quot; is the name we picked earlier and is arbitrary</span>
+<span class="n">fingerprint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;output:out:sha256:</span><span class="si">{</span><span class="n">inner_digest</span><span class="si">}</span><span class="s2">:/nix/store:</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">fingerprint_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">fingerprint</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+<span class="n">fingerprint_digest</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">b32encode</span><span class="p">(</span><span class="n">fingerprint_hash</span><span class="p">[:</span><span class="mi">20</span><span class="p">])</span>
+</pre></div>
+
+<p><em>However.</em> The docs are misleading about two things and that sent me on a merry
+chase.</p>
+<p>First of all, Nix does <em>not</em> use normal base32. They use a different character
+set. Also, they base32 <em>in reverse</em>. I didn't figure either of these things out
+until <em>tombl</em> chimed in on Twitter.</p>
+<p>Second of all, the store-path docs are outright lying when they say "the first
+160 bits [20 bytes] of a SHA-256 hash". Instead, what they <em>should say</em> is "do
+this weird XOR thing on the hash, folding it back onto itself kinda."</p>
+<p>I only got that second bit by digging through <a href="https://github.com/NixOS/nix/blob/cf5e59911bb47e4d64a57270429a70f380076c1c/src/libutil/hash.cc#L387">the Nix C++
+codebase</a>. So instead, what we really want is this:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">to_nix_base32</span><span class="p">(</span><span class="n">bytes_data</span><span class="p">):</span>
+    <span class="n">b32_alphabet</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ234567&quot;</span>
+    <span class="n">b32_nix</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;0123456789abcdfghijklmnpqrsvwxyz&quot;</span>
+    <span class="n">trans</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="n">b32_alphabet</span><span class="p">,</span> <span class="n">b32_nix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b32encode</span><span class="p">(</span><span class="n">bytes_data</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">compress_hash</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">newlen</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="n">newlen</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">)):</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="n">newlen</span><span class="p">]</span> <span class="o">^=</span> <span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="n">fingerprint</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;output:</span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">:sha256:</span><span class="si">{</span><span class="n">inner_digest</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">STORE_DIR</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+<span class="n">fingerprint_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">fingerprint</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+<span class="n">fingerprint_digest</span> <span class="o">=</span> <span class="n">to_nix_base32</span><span class="p">(</span><span class="n">compress_hash</span><span class="p">(</span><span class="n">fingerprint_hash</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</pre></div>
+
+<p>I'm using <code class="language-plaintext highlighter-rouge">bytes.maketrans</code> because Python makes it easy enough to convert
+between normal-base32 and nix-base32 but you should also take a look a
+standalone implementation of nix-base32. For example, here is <a href="https://github.com/tvlfyi/tvix/blob/ac27df9ae51f69c1b746b7c8c2ad22f5a857ca52/nix-compat/src/nixbase32.rs#L17">a link to
+Tvix's</a>.</p>
+<p>This magic number that pops out of the correct fingerprint hashing method is
+the same as the one from Farid's post! <code class="language-plaintext highlighter-rouge">5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb</code></p>
+<p>Now we can add that back into the JSON as an output path and an environment
+variable to finally get the same JSON blob as before:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;simple&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;x86_64-linux&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;builder&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/bin/sh&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;out&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;inputSrcs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;inputDrvs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;out&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;-c&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;echo &#39;hello world&#39; &gt; $out&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>And, just as Farid promised, Nix accepts our derivation JSON and gives us a new
+ATerm:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>nix<span class="w"> </span>--extra-experimental-features<span class="w"> </span>nix-command<span class="w"> </span>derivation<span class="w"> </span>add<span class="w"> </span>&lt;<span class="w"> </span>simple.json
+<span class="go">/nix/store/vh5zww1mqbcshfcblrw3y92v7kkzamfx-simple.drv</span>
+<span class="gp">$</span>
+</pre></div>
+
+<p>It's same derivation Path that Farid has in his post, too.</p>
+<p>But having a derivation in hand doesn't mean anything other than we
+have—finally—written a correct recipe to build a thing. Let's run it and
+see the output!</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>nix-store<span class="w"> </span>--realize<span class="w"> </span>/nix/store/vh5zww1mqbcshfcblrw3y92v7kkzamfx-simple.drv
+<span class="go">...</span>
+<span class="go">/nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple</span>
+<span class="gp">$ </span>cat<span class="w"> </span>/nix/store/5bkcqwq3qb6dxshcj44hr1jrf8k7qhxb-simple
+<span class="go">hello world</span>
+<span class="gp">$</span>
+</pre></div>
+
+<p>I'm calling that success. We build a derivation by hand without any
+guess-and-check!</p>
+<p>Check out <a href="https://github.com/tekknolagi/manual-nix/tree/815b670eee196447ad52a6bce25068575ff2bd65">my Python code</a> if you like.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-04-05-nix-by-hand.md" title="Help improve _posts/2025-04-05-nix-by-hand.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

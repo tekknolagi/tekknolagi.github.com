@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Writing that changed how I think about PL | Max Bernstein</title>
+    <meta property="og:title" content="Writing that changed how I think about PL | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/pl-writing/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Writing that changed how I think about PL</h1>
+        
+        <div class="post-inline-date"><i>May 13, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>Every so often I come across a paper, blog post, or (occasionally) video that
+completely changes how I think about a topic in programming languages and
+compilers. For some of these posts, I can't even remember how I thought about
+the idea <em>before</em> reading it—it was that impactful.</p>
+<p>Here are some of those posts in no particular order:</p>
+<ul>
+<li><a href="https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector">a simple semi-space collector</a> by Andy Wingo brought the concept
+of a Cheney/copying/compacting garbage collector from theory to practice for
+me. The garbage collector core<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup> in the post is tiny, extensible, and
+can be understood in an afternoon.</li>
+<li><a href="https://pypy.org/posts/2022/07/toy-optimizer.html">Implementing a Toy Optimizer</a> by CF Bolz-Tereick changed how
+I think about instruction rewrites in an optimizer. No more find-and-replace.
+Instead, use a forwarding pointer! I love union-find. The whole toy optimizer
+series is fantastic: each post brings something new and interesting to the
+table.</li>
+<li><a href="https://pypy.org/posts/2024/08/toy-knownbits.html">A Knownbits Abstract Domain for the Toy Optimizer, Correctly</a> by
+CF Bolz-Tereick is a two-for-one. It both introduced me to a new abstract
+domain for optimizers and changed how I think about Z3. Before, I vaguely
+knew about Z3 as this thing that can check numeric operations, kind of. The
+post, however, uses Z3 as a proof engine: if Z3 can't find a counterexample,
+the code is correct<sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup>. Furthermore, it uses Z3 as a verifier <em>for
+Python code</em> by using the same Python code on both Z3 objects and normal
+Python objects.</li>
+<li><a href="https://cfallin.org/blog/2021/03/15/cranelift-isel-3/">Cranelift, Part 3: Correctness in Register Allocation</a> by
+Chris Fallin also made proofs more accessible, but in a different way.
+Instead of proving your register allocator correct on <em>all</em> inputs, prove it
+correct on one input: the current code. This means that in production, you
+either get a correct register allocation or a meaningful crash. Additionally,
+it uses fuzzing as a state space exploration tool that can identify bugs by
+making the verifier fail.</li>
+<li><a href="https://swtch.com/~rsc/regexp/regexp2.html">Regular Expression Matching: the Virtual Machine Approach</a> by Russ
+Cox made regular expression engines make sense to me. In the blog post is a
+small regular expression engine in under 50 lines of readable code. As a side
+effect, it also made coroutines/fibers/schedulers more understandable because
+its implementation of nondeterminism makes regex &quot;threads&quot; in user-space.</li>
+<li><a href="https://github.com/karpathy/micrograd">micrograd</a> by Andrej Karpathy is a tiny implementation of neural
+networks with no libraries (not even NumPy). It's how I came to understand
+machine learning and even write some blog posts about it.</li>
+<li><a href="https://gist.github.com/pizlonator/cf1e72b8600b1437dda8153ea3fdb963">How I implement SSA form</a> by Fil Pizlo changed how I think about
+union-find. Instead of either storing an additional pointer inside every
+object or having a side-table, add an <code class="language-plaintext highlighter-rouge">Identity</code> tag that can store the
+pointer. Unlike the other two approaches, this is a destructive rewrite, but
+it saves space. It also introduces two new things that I am still mulling
+over: Phi/Upsilon form and TBAA-style heap effects.</li>
+<li><a href="https://webkit.org/blog/10308/speculation-in-javascriptcore/">Speculation in JavaScriptCore</a> is another absolute banger
+by Fil Pizlo. I learn new things every time I re-read this post, which
+describes how JSC's various optimizers work (and I guess how Fil thinks about
+optimizers).</li>
+<li><a href="https://www.youtube.com/watch?v=ZI198eFghJk">Modernizing Compiler Design for Carbon Toolchain</a> is a talk by
+Chandler Carruth on the design of the Carbon compiler. About 29 minutes into
+it Chandler sets <em>incredibly aggressive</em> compile-time budgets and explains
+how the compiler is architected to fit in that time budget. At around 40
+minutes, he starts explaining per-layer how this works, starting at the
+lexer.</li>
+<li><a href="https://aosabook.org/en/500L/a-python-interpreter-written-in-python.html">A Python Interpreter Written in Python</a> by Allison Kaptur
+made bytecode interpreters (and, specifically, how CPython works internally)
+click for me.</li>
+<li><a href="https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing">Parsing expressions by precedence climbing</a> by Eli
+Bendersky presented an understandable and easier-to-develop alternative to
+traditional hand-written recursive descent parsers. It both made parsers less
+scary to me and also at the same time illustrated how precedence climbing is
+the same algorithm as recursive descent but instead of having 10 different
+functions with similar structure, it uses one function and a table.</li>
+<li><a href="https://github.com/k0kubun/ruby-jit-challenge">Ruby JIT Challenge</a> by Takashi Kokubun is a great start
+to code generation and it is more general than JIT, too. In the post he also
+shows off a cool approach to register allocation that I had not seen before:
+fold your stack operations at compile-time to operate on a virtual stack of
+physical registers.</li>
+<li><a href="https://bernsteinbear.com/assets/img/11-ghuloum.pdf">An Incremental Approach to Compiler Construction</a>
+(PDF) by Abdulaziz Ghuloum brought compilers and code generation from a
+mystical multi-pass beast down to an understandable single-pass form. I like
+how it implements each feature end-to-end, one by one.</li>
+<li><a href="https://borretti.me/article/lessons-writing-compiler">Lessons from Writing a Compiler</a> by Fernando Borretti puts
+into words this stripey implementation strategy in the first section, which
+is really neat.</li>
+<li><a href="https://dl.acm.org/doi/10.1145/3434304">egg: Fast and extensible equality saturation</a> by [multiple authors]
+changed how I think about optimizers and pass ordering. Why <em>not</em> just
+generate the compressed hypergraph of all possible versions of an expression
+and then pick the &quot;best&quot; one? I mean, there are a couple of reasons, but it
+was mind-expanding.</li>
+<li><a href="https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md">Cranelift: Using E-Graphs for Verified, Cooperating Middle-End
+Optimizations</a> by Chris Fallin showed that e-graphs are
+workable and remarkably effective in a production compiler, even if you don't
+do the &quot;full shebang&quot;.</li>
+<li><a href="https://www.philipzucker.com/smart_constructor_aegraph/">Acyclic Egraphs and Smart Constructors</a> by Phil Zucker further
+explores acyclic egraphs in the small. This one was a slow burn: I read it
+when it came out, didn't really get it, and then months later it clicked
+more. I'm sure that in a few months it'll click again.</li>
+<li><a href="https://old.reddit.com/r/ProgrammingLanguages/comments/mrifdr/treewalking_interpreters_and_cachelocality/gumsi2v/">This Reddit comment</a> by Bob Nystrom and <a href="https://www.cs.cornell.edu/~asampson/blog/flattening.html">Flattening
+ASTs</a> by Adrian Sampson are a double whammy that led to two
+things: 1) AST storage can be really compact, almost like bytecode 2) a
+really interesting discussion on Mastodon about massively-parallel lock-free
+abstract interpretation if IRs were stored like this. This (and some off-hand
+comments by Cliff Click about bump-allocation only taking &quot;a few clocks&quot;)
+changed how I think about allocating and referring to IR nodes.</li>
+</ul>
+<p>I hope you enjoy the readings!</p>
+<section class="footnotes">
+<ol>
+<li id="fn-1"><p>There's just one small bug in that post: <code class="language-plaintext highlighter-rouge">is_forwarded</code> should check
+if the bit is 0, not 1. The correct version is:</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">is_forwarded</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="w"> </span><span class="o">*</span><span class="n">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">obj</span><span class="o">-&gt;</span><span class="n">tag</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">NOT_FORWARDED_BIT</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>&quot;There is a contract between the GC and the user in which the user agrees
+to always set the NOT_FORWARDED_BIT in the first word of its objects.&quot;<a href="#fnref-1" class="footnote">&#8617;</a></p></li>
+<li id="fn-2"><p>For some definition of correct, anyway. What does it even mean
+for code to be correct? I have a whole unit on this in <a href="https://bernsteinbear.com/isdt/">my course</a>
+because it's a tricky topic.<a href="#fnref-2" class="footnote">&#8617;</a></p></li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-05-13-pl-writing.md" title="Help improve _posts/2025-05-13-pl-writing.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

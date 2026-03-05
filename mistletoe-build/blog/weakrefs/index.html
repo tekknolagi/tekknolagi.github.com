@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Weak references and garbage collectors | Max Bernstein</title>
+    <meta property="og:title" content="Weak references and garbage collectors | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/weakrefs/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Weak references and garbage collectors</h1>
+        
+        <div class="post-inline-date"><i>January 4, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>From 2018 to 2021, I worked on a greenfield Python runtime called
+<a href="https://github.com/tekknolagi/skybison">Skybison</a>.
+One of its major differences from CPython was that it used a moving garbage
+collector (GC). This I understood in theory—I knew that it ran when the heap
+filled up, knew we needed handles to update pointers in the runtime's code, had
+read the <a href="/assets/img/moon-gc.pdf">Moon paper</a> (PDF)—but the other day, I
+wanted to implement weak references and couldn't immediately figure it out.
+Skybison thankfully has a reasonably clear implementation. So now I'm writing
+this post, mostly for myself, but maybe it will be useful to you as well.</p>
+<p>In this post I'll give a brief overview of a garbage collector, a sample
+"normal" object, and then show the special handling for weak references. I've
+taken inspiration from the Skybison code, but it's possible other projects have
+different approaches.</p>
+<h2 id="garbage-collectors">Garbage collectors</h2>
+
+<p>While this post talks mostly about moving garbage collectors, I think the
+weakref handling applies pretty cleanly to mark-sweep and other types of
+stop-the-world GC as well. I don't know about reference counting or concurrent
+GC, though.</p>
+<blockquote>
+<p>As an aside, if you have not been in the internals of a moving garbage
+collector before, I wholeheartedly recommend <a href="https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector">Andy Wingo's post</a>.
+He's distilled the core ideas so well. Ever read a post that's so well
+written and concise that it takes your breath away? It's what brought the
+Moon paper from dream land into the real world for me.</p>
+</blockquote>
+<p>The important things to know about a garbage collector for this post are:</p>
+<ul>
+<li>It collects objects when they are dead</li>
+<li>Dead means that they have no pointers pointing to them</li>
+<li>"No pointers" means no non-weakref pointers</li>
+<li>A weakref is itself a type of object</li>
+<li>The weakref object might still be alive</li>
+<li>When a weakref's referent (thing it points to) dies, the <code class="language-plaintext highlighter-rouge">ref.referent</code> field
+should be cleared</li>
+</ul>
+<p>Here is the core of Scrapscript's garbage collector. It's a very slightly
+modified version of Andy's semispace GC. There are two phases, marked by
+comments in the code: 1) scan the roots 2) incrementally copy over the object
+graph (indirectly) pointed to by the roots. Everything not indirectly pointed
+to is dead.</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">collect</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_heap</span><span class="o">*</span><span class="w"> </span><span class="n">heap</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">flip</span><span class="p">(</span><span class="n">heap</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// Scan the roots and copy them into newspace</span>
+<span class="w">  </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">heap</span><span class="o">-&gt;</span><span class="n">hp</span><span class="p">;</span>
+<span class="w">  </span><span class="n">for_each_root</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">copy_to_newspace</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// Now go copy the rest of the graph</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">scan</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">heap</span><span class="o">-&gt;</span><span class="n">hp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="w"> </span><span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="p">)</span><span class="n">scan</span><span class="p">;</span>
+<span class="w">    </span><span class="n">for_each_field</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">copy_to_newspace</span><span class="p">);</span>
+<span class="w">    </span><span class="n">scan</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">heap_object_size</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">for_each_field</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="w"> </span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_heap</span><span class="o">*</span><span class="w"> </span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">VisitFn</span><span class="w"> </span><span class="n">visit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">obj_tag</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">TAG_LIST</span><span class="p">:</span>
+<span class="w">      </span><span class="n">visit</span><span class="p">(</span><span class="o">&amp;</span><span class="p">((</span><span class="k">struct</span><span class="w"> </span><span class="nc">list</span><span class="o">*</span><span class="p">)</span><span class="n">obj</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">heap</span><span class="p">);</span>
+<span class="w">      </span><span class="n">visit</span><span class="p">(</span><span class="o">&amp;</span><span class="p">((</span><span class="k">struct</span><span class="w"> </span><span class="nc">list</span><span class="o">*</span><span class="p">)</span><span class="n">obj</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">rest</span><span class="p">,</span><span class="w"> </span><span class="n">heap</span><span class="p">);</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span>
+<span class="w">      </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;unknown tag: %u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">obj_tag</span><span class="p">(</span><span class="n">obj</span><span class="p">));</span>
+<span class="w">      </span><span class="n">abort</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">copy_to_newspace</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">**</span><span class="w"> </span><span class="n">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_heap</span><span class="o">*</span><span class="w"> </span><span class="n">heap</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">pointer</span><span class="p">;</span>
+<span class="w">  </span><span class="o">*</span><span class="n">pointer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">is_forwarded</span><span class="p">(</span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">forwarded</span><span class="p">(</span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<blockquote>
+<p>As an aside, using newspace as a queue like this (and, implict here, using
+forwarding pointers) is called Cheney copying after a technique described by
+CJ Cheney in his <a href="/assets/img/cheney.pdf">1970 paper</a> (PDF). It's not
+important for this blog post, but it's worth knowing about.</p>
+</blockquote>
+<p>Now, here's the problem. Say we were to add an empty case for weakrefs in
+<code class="language-plaintext highlighter-rouge">for_each_field</code>.</p>
+<div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">TAG_WEAKREF</span><span class="p">:</span>
+<span class="w">      </span><span class="c1">// Don&#39;t visit the referent.</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="c1">// ...</span>
+</pre></div>
+
+<p>That's great and all—the weakref won't keep its referent alive—but there
+are two problems:</p>
+<ol>
+<li>If the referent dies, we have a dangling pointer into oldspace. We should
+instead clear the referent and have it point to some NULL-like sentinel
+object.</li>
+<li>If the referent ends up staying alive, we have a dangling pointer to a
+forwarded object and need to fix it up.</li>
+</ol>
+<p>Let's add one more step to fix both problems.</p>
+<h2 id="weak-references">Weak references</h2>
+
+<p>At a high level, we want to find all the still-alive weakref objects and fix up
+their referent pointers. If the referent is still alive, we want to update it
+to the updated (forwarded) pointer in newspace. If the referent is dead, we
+want to set the referent field to <code class="language-plaintext highlighter-rouge">NULL</code> or something. This has to happen after
+the main collection, since that heap root and heap traversal determines what is
+still alive and what is dead.</p>
+<p>We could do another full heap traversal to find all the weakrefs, but that
+might be slow: the heap could be arbitrarily large. In that case, one weakref
+at the end might incur a second full heap scan. Not great. Instead, we make
+weakrefs pay-as-you-go: each weakref contains a <code class="language-plaintext highlighter-rouge">link</code> field so that we can put
+it in a linked list in the first heap scan. Then, we'll traverse only the
+linked list of weakrefs to update their referents.</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="w"> </span><span class="n">HEAD</span><span class="p">;</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="w"> </span><span class="n">referent</span><span class="p">;</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="w"> </span><span class="n">link</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="w"> </span><span class="n">delayed_references</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">enqueue_weakref</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="w"> </span><span class="n">ref</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">ref</span><span class="o">-&gt;</span><span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delayed_references</span><span class="p">;</span>
+<span class="w">  </span><span class="n">delayed_references</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ref</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="w"> </span><span class="n">dequeue_weakref</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delayed_references</span><span class="p">;</span>
+<span class="w">  </span><span class="n">delayed_references</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">;</span>
+<span class="w">  </span><span class="n">result</span><span class="o">-&gt;</span><span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">is_weakref</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="p">);</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">collect</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_heap</span><span class="o">*</span><span class="w"> </span><span class="n">heap</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">flip</span><span class="p">(</span><span class="n">heap</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// Scan the roots and copy them into newspace</span>
+<span class="w">  </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">heap</span><span class="o">-&gt;</span><span class="n">hp</span><span class="p">;</span>
+<span class="w">  </span><span class="n">for_each_root</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">copy_to_newspace</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// Now go copy the rest of the graph</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">scan</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">heap</span><span class="o">-&gt;</span><span class="n">hp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="w"> </span><span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="p">)</span><span class="n">scan</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_weakref</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Enqueue to linked list (new!)</span>
+<span class="w">      </span><span class="n">enqueue_weakref</span><span class="p">((</span><span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="p">)</span><span class="n">obj</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">for_each_field</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">copy_to_newspace</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">scan</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">heap_object_size</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// Update or clear all referents (new!)</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">delayed_references</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="w"> </span><span class="n">ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dequeue_weakref</span><span class="p">();</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="w"> </span><span class="n">referent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ref</span><span class="o">-&gt;</span><span class="n">referent</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ref</span><span class="o">-&gt;</span><span class="n">referent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">is_forwarded</span><span class="p">(</span><span class="n">referent</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">forwarded</span><span class="p">(</span><span class="n">referent</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">link</code> field is otherwise completely unused during normal program
+operations. Its sole purpose is to be GC metadata.</p>
+<p>Let's see what this looks like with two examples: 1) a weakref whose referent
+dies 2) a weakref whose referent lives across a collection.</p>
+<p>We use this thing called "handles" (or shadow stack, or ...) to mark pointers
+as needed by C code that the garbage collector does not know about. To learn
+more about that, check out <a href="/blog/scrapscript-baseline/">my post on the Scrapscript baseline
+compiler</a>. Search for "handles".</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">HANDLES</span><span class="p">();</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_heap</span><span class="o">*</span><span class="w"> </span><span class="n">heap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_heap</span><span class="p">(</span><span class="mi">1024</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// left4dead_num has no handle; it will die at the call to collect().</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="w"> </span><span class="n">left4dead_num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mknum</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// keptalive_num is kept alive and the pointer is updated because we have</span>
+<span class="w">  </span><span class="c1">// used a handle.</span>
+<span class="w">  </span><span class="n">GC_HANDLE</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">keptalive_num</span><span class="p">,</span><span class="w"> </span><span class="n">mknum</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">));</span>
+<span class="w">  </span><span class="c1">// Both weakref *objects* will be kept alive beacuse of the handles.</span>
+<span class="w">  </span><span class="n">GC_HANDLE</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">ref0</span><span class="p">,</span><span class="w"> </span><span class="n">mkweakref</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">left4dead_num</span><span class="p">));</span>
+<span class="w">  </span><span class="n">GC_HANDLE</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">ref1</span><span class="p">,</span><span class="w"> </span><span class="n">mkweakref</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">keptalive_num</span><span class="p">));</span>
+<span class="w">  </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ref0 %p with referent %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">ref0</span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="p">)</span><span class="n">ref0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">referent</span><span class="p">);</span>
+<span class="w">  </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ref1 %p with referent %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">ref1</span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="p">)</span><span class="n">ref1</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">referent</span><span class="p">);</span>
+<span class="w">  </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;COLLECTING</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">collect</span><span class="p">(</span><span class="n">heap</span><span class="p">);</span>
+<span class="w">  </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ref0 %p with referent %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">ref0</span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="p">)</span><span class="n">ref0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">referent</span><span class="p">);</span>
+<span class="w">  </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ref1 %p with referent %p (keptalive is %p)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">ref1</span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="k">struct</span><span class="w"> </span><span class="nc">weakref</span><span class="o">*</span><span class="p">)</span><span class="n">ref1</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">referent</span><span class="p">,</span><span class="w"> </span><span class="n">keptalive_num</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Lo, ref0's referent is cleared while ref1's referent gets updated to the new
+pointer:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./main
+ref0 0x771baf155020 with referent 0x771baf155000
+ref1 0x771baf155038 with referent 0x771baf155010
+COLLECTING
+ref0 0x771baf155810 with referent (nil)
+ref1 0x771baf155828 with referent 0x771baf155800 (keptalive is 0x771baf155800)
+$
+</code></pre></div></div>
+
+<p>Nice.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>Thank you to <a href="https://cfallin.org/">Chris Fallin</a> for reviewing this post.</p>
+<p>See the <a href="https://github.com/tekknolagi/wingogc">full code snippet</a> (including
+the entire GC).</p>
+<h2 id="other-approaches">Other approaches</h2>
+
+<p>The T3 compiler used oldspace for data structures. See <a href="/assets/img/clark.pdf">Clark's 1976
+paper</a> (PDF). Thanks, Taylor, for linking to this in a
+comment on <a href="https://wingolog.org/archives/2022/12/11/we-iterate-so-that-you-can-recurse">Andy Wingo's post</a>.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-01-04-weakrefs.md" title="Help improve _posts/2025-01-04-weakrefs.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

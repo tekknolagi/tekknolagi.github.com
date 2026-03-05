@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Programming languages resources | Max Bernstein</title>
+    <meta property="og:title" content="Programming languages resources | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/pl-resources/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+  </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="page-title">Programming languages resources</h1>
+        <div class="container">
+            <p>This page is a collection of my favorite resources for people getting started
+writing programming languages. I hope to keep it updated as long as I continue
+to find great stuff.</p>
+<p>I made a <a class="newlink" href="https://www.zazzle.com/compiler_ampersand_2_t_shirt-235252907121889789">fun compilers t-shirt</a>
+and also a <a class="newlink" href="https://www.zazzle.com/jit_compiler_t_shirt-256576487744451029">fun JIT compilers t-shirt</a></p>
+<h2 id="compilers">Compilers</h2>
+
+<ul>
+<li>Tufts compilers course <a href="http://www.cs.tufts.edu/~sguyer/classes/comp181-2006/">COMP/CS 181</a>
+(2006, but it's been taught more recently. I should probably ping Sam.)</li>
+<li>Cornell compilers course <a href="https://www.cs.cornell.edu/courses/cs6120/2019fa/project/">CS 6120</a>
+and interesting approach to project-based learning</li>
+<li>Nora Sandler's <a href="https://norasandler.com/2017/11/29/Write-a-Compiler.html">minimal C compiler</a></li>
+<li>Jack Crenshaw's <a href="https://compilers.iecc.com/crenshaw/">let's build a compiler</a></li>
+<li><a href="http://web.archive.org/web/20170712044658/https://ryanflannery.net/teaching/common/recursive-descent-parsing/">Recursive descent parsing</a>
+in C. Note that this just verifies the input string, and more has to be done
+to build a tree out of the input.</li>
+<li>Vidar Hokstad's <a href="http://hokstad.com/compiler">Writing a compiler in Ruby, bottom up</a></li>
+<li>Rui Ueyama's <a href="https://github.com/rui314/chibicc">chibicc</a>, a C compiler in
+the Ghuloum style</li>
+<li>The <a href="https://github.com/natalie-lang/natalie">Natalie</a> compiler for Ruby</li>
+<li>Compiler passes
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Sparse_conditional_constant_propagation">Sparse conditional constant propagation</a>
+(<a href="https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/sccp/">Bril blog post</a> and
+<a href="https://twitter.com/thorstenball/status/1526788333761863680/photo/1">Thorsten Ball tweet</a>)</li>
+</ul>
+</li>
+<li>I've heard good things about <a href="https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-088478-0">Engineering a Compiler</a>
+(<a href="https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-815412-0">3rd edition</a> coming soon!)</li>
+<li><a href="https://legacy.cs.indiana.edu/~dyb/pubs/ddcg.pdf">Destination-driven code generation</a> (PDF)
+<ul>
+<li><a href="https://github.com/tekknolagi/ddcg">My implementation</a></li>
+<li>And <a href="/assets/img/46b-codegeneration-in-V8.pdf">One-pass Code Generation in V8</a> (PDF)</li>
+</ul>
+</li>
+<li><a href="https://dl.acm.org/doi/10.1145/3276945.3276950">JavaScript AOT compilation</a>
+by Manuel Serrano
+<ul>
+<li><a href="https://dl.acm.org/doi/pdf/10.1145/3473575">Of JavaScript AOT Compilation Performance</a> (PDF)
+by Manuel Serrano</li>
+<li><a href="https://github.com/manuel-serrano/hop">GitHub repo</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="lisp-specific">Lisp specific</h2>
+
+<ul>
+<li>kanaka's <a href="https://github.com/kanaka/mal">mal</a></li>
+<li>leo (lwh)'s <a href="https://www.lwh.jp/lisp/">Building LISP</a></li>
+<li>Peter Michaux's <a href="http://peter.michaux.ca/articles/scheme-from-scratch-introduction">Scheme from Scratch</a></li>
+<li>Daniel Holden's <a href="http://buildyourownlisp.com/contents">Build Your Own Lisp</a></li>
+<li>Anthony C. Hay's fairly readable <a href="http://howtowriteaprogram.blogspot.com/2010/11/lisp-interpreter-in-90-lines-of-c.html">Lisp interpreter in 90 lines of C++</a></li>
+<li>My own <a href="https://bernsteinbear.com/blog/lisp/">Writing a Lisp</a> blog post
+series</li>
+<li>carld's <a href="https://carld.github.io/2017/06/20/lisp-in-less-than-200-lines-of-c.html">Lisp in less than 200 lines of C</a></li>
+<li>UTexas's <a href="https://www.cs.utexas.edu/ftp/garbage/cs345/schintro-v14/schintro_142.html#SEC271">A simple scheme compiler</a></li>
+<li>Rui Ueyama's <a href="https://github.com/rui314/minilisp">minilisp</a></li>
+<li>The <a href="http://www.call-with-current-continuation.org/bones/">Bones</a> Scheme
+compiler</li>
+<li>The <a href="https://course.ccs.neu.edu/cs4410sp20/#%28part._lectures%29_">lecture notes</a>
+for a course developing a Ghuloum-style compiler</li>
+<li>Ghuloum implementations
+<ul>
+<li>Abdulaziz Ghuloum's <a href="/assets/img/11-ghuloum.pdf">minimal Scheme to x86 compiler</a> (PDF)</li>
+<li>My <a href="https://bernsteinbear.com/blog/compiling-a-lisp-0/">adaptation</a> in C
+(with <a href="https://github.com/tekknolagi/ghuloum">implementation</a>)</li>
+<li><a href="https://generalproblem.net/lets_build_a_compiler/01-starting-out/">Let's build a compiler</a></li>
+<li>Thorsten Ball's <a href="https://github.com/mrnugget/scheme_x86">adaptation</a></li>
+<li>Nada Amin's <a href="https://github.com/namin/inc">adaptation</a></li>
+</ul>
+</li>
+<li>Tao of Mac's <a href="https://taoofmac.com/space/dev/lisp">Lisp implementation list</a></li>
+<li><a href="https://github.com/jart/sectorlisp">sectorlisp</a> and
+<a href="https://justine.lol/sectorlisp2/">sectorlisp2</a> and
+<a href="https://justine.lol/lambda/">lambda calculus in 383 bytes</a></li>
+<li><a href="http://www.iro.umontreal.ca/~feeley/papers/GermainFeeleyMonnierELSW05.pdf">Termite: a Lisp for Distributed Computing</a> (PDF)</li>
+</ul>
+<h2 id="runtimes">Runtimes</h2>
+
+<ul>
+<li>munificent's <a href="https://craftinginterpreters.com/">Crafting Interpreters</a> book</li>
+<li>Mario Wolczko's <a href="http://www.wolczko.com/CS294/">CS 294-113</a>, a course on
+managed runtimes</li>
+<li>My own <a href="https://bernsteinbear.com/blog/bytecode-interpreters/">bytecode compiler/VM</a>
+blog post</li>
+<li>Justin Meiners and Ryan Pendelton's <a href="https://justinmeiners.github.io/lc3-vm/">Write your own virtual machine</a></li>
+<li>Maxime Chevalier-Boisvert's <a href="https://pointersgonewild.com/about/">website</a></li>
+<li>Serge's <a href="https://zserge.com/posts/jvm/">toy JVM</a></li>
+<li><a href="https://codewords.recurse.com/issues/seven/dragon-taming-with-tailbiter-a-bytecode-compiler">Dragon taming with Tailbiter</a></li>
+<li><a href="https://notes.eatonphil.com/">Phil Eaton</a>'s <a href="https://notes.eatonphil.com/javascript-implementations.html">list of JS implementations</a></li>
+<li><a href="https://chrisseaton.com/">Chris Seaton</a>'s <a href="https://ruby-compilers.com/">The Ruby Compiler Survey</a>
+and <a href="https://www.youtube.com/watch?v=Zg-1_7ed0hE">RubyConf 2021 talk</a> (video) about
+it</li>
+<li>Laurence Tratt's "Why aren't more users more happy with our VMs?"
+<a href="https://tratt.net/laurie/blog/entries/why_arent_more_users_more_happy_with_our_vms_part_1.html">Part 1</a>
+and <a href="https://tratt.net/laurie/blog/entries/why_arent_more_users_more_happy_with_our_vms_part_2.html">Part 2</a></li>
+<li>Interesting runtimes
+<ul>
+<li><a href="https://github.com/toitlang/toit">Toit</a></li>
+<li><a href="https://github.com/tekknolagi/skybison">Skybison</a></li>
+</ul>
+</li>
+<li>Russ Cox's <a href="https://swtch.com/~rsc/regexp/regexp2.html">Regular expression matching: the virtual machine approach</a></li>
+<li>Bun tweet about <a href="https://mobile.twitter.com/jarredsumner/status/1557791189490737155">DOMJIT</a></li>
+<li>Andy Wingo's <a href="https://wingolog.org/archives/2022/12/10/a-simple-semi-space-collector">a simple semi-space collector</a></li>
+</ul>
+<h2 id="runtime-optimization">Runtime optimization</h2>
+
+<p>Here are some resources I have found useful for understanding the ideas and
+research around optimizing dynamic languages.</p>
+<ul>
+<li><a href="https://dl.acm.org/doi/10.1145/800017.800542">Efficient implementation of the Smalltalk-80 system</a></li>
+<li>Stefan Brunthaler's work
+<ul>
+<li><a href="https://dl.acm.org/doi/abs/10.1145/1869631.1869633">Efficient interpretation using quickening</a></li>
+<li><a href="https://dl.acm.org/doi/10.5555/1883978.1884008">Inline caching meets quickening</a></li>
+<li><a href="https://arxiv.org/pdf/2109.02958.pdf">Multi-Level Quickening: Ten Years Later</a> (PDF)</li>
+</ul>
+</li>
+<li><a href="https://bibliography.selflanguage.org/_static/pics.pdf">Optimizing dynamically-typed object-oriented languages with polymorphic inline caches</a> (PDF)</li>
+<li><a href="https://dl.acm.org/doi/10.1145/800055.802040">Garbage collection in a large LISP system</a></li>
+<li>Urs Hölzle's thesis, <a href="http://i.stanford.edu/pub/cstr/reports/cs/tr/94/1520/CS-TR-94-1520.pdf">Adaptive Optimization for Self</a> (PDF)</li>
+<li><a href="https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache">An inline cache isn't just a cache</a></li>
+<li><a href="https://blog.pyston.org/2016/06/30/baseline-jit-and-inline-caches/">Baseline JIT and inline caches</a></li>
+<li><a href="https://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html">Javascript hidden classes and inline caching in V8</a></li>
+<li><a href="https://jandemooij.nl/blog/cacheir/">CacheIR: A new approach to Inline Caching in Firefox</a>
+<ul>
+<li><a href="https://searchfox.org/mozilla-central/rev/c0bed29d643393af6ebe77aa31455f283f169202/js/src/jit/TrialInlining.h#29-48">Note on trial inlining</a>
+using CacheIR</li>
+</ul>
+</li>
+<li>Basic block versioning
+<ul>
+<li><a href="https://arxiv.org/pdf/1411.0352v2.pdf">Simple and Effective Type Check Removal through Lazy Basic Block Versioning</a> (PDF)</li>
+<li><a href="https://arxiv.org/pdf/1507.02437.pdf">Extending Basic Block Versioning with Typed Object Shapes</a> (PDF)</li>
+<li><a href="https://arxiv.org/pdf/1511.02956.pdf">Interprocedural Type Specialization of JavaScript Programs Without Type Analysis</a> (PDF)</li>
+</ul>
+</li>
+<li><a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.5.4929&amp;rep=rep1&amp;type=pdf">Stack Caching for Interpreters</a> (PDF)</li>
+<li><a href="https://wiki.openjdk.java.net/display/HotSpot/PerformanceTechniques">Hotspot performance techniques</a></li>
+<li><a href="http://nominolo.blogspot.com/2012/07/implementing-fast-interpreters.html">Assembly interpreters</a>
+and <a href="http://nominolo.blogspot.com/2012/07/implementing-fast-interpreters_31.html">follow-up</a>
+<ul>
+<li>Make sure to take a look at "Further Reading"</li>
+<li>A <a href="http://web.archive.org/web/20151206043326/https://blog.mozilla.org/dmandelin/2008/06/03/squirrelfish/">post</a>
+including a snippet on direct-threaded dispatch in an assembly interpreter</li>
+</ul>
+</li>
+<li>Stefan Marr's <a href="https://stefan-marr.de/2020/06/efficient-and-safe-implementations-of-dynamic-languages/">page</a>
+about efficient and safe implementations of dynamic languages</li>
+<li>The Wikipedia page for <a href="https://en.wikipedia.org/wiki/Cheney%27s_algorithm">Cheney's algorithm</a></li>
+<li>This <a href="https://github.com/thlorenz/v8-perf/blob/master/compiler.md">web page</a>
+about V8 internals</li>
+<li>Vyacheslav Egorov's <a href="https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html">inline cache</a>
+explanation for JavaScript</li>
+<li>Caio Lima's <a href="https://caiolima.github.io/jsc/2020/03/12/jsc-inline-cache.html">inline cache</a>
+explanation for JSC (with assembly!)</li>
+<li>V8's <a href="https://v8.dev/blog/sparkplug">blog post</a> about their baseline/template
+JIT</li>
+<li>V8's <a href="https://v8.dev/blog/csa">blog post</a> about optimizing builtins with
+<code class="language-plaintext highlighter-rouge">CodeStubAssembler</code></li>
+<li>Object shapes
+<ul>
+<li><a href="https://chrisseaton.com/">Chris Seaton</a>'s <a href="https://chrisseaton.com/truffleruby/rubykaigi21/">RubyKaigi talk</a></li>
+<li><a href="http://tenderlovemaking.com/">Aaron Patterson</a> and <a href="https://jemma.dev/">Jemma Issroff</a>'s
+<a href="https://www.youtube.com/watch?v=C9q4V_WJ6_k">livestream</a> (video)</li>
+</ul>
+</li>
+<li>Kate Temkin's <a href="https://github.com/ktemkin/qemu/tree/with_tcti">QEMU fork</a>
+with a gadget-based pseudo-JIT and associated
+<a href="https://twitter.com/ktemkin/status/1375835935061942274">Twitter thread</a></li>
+<li><a href="https://medium.com/bumble-tech/when-pigs-fly-optimising-bytecode-interpreters-f64fb6bfa20f">When pigs fly: optimizing bytecode interpreters</a>
+<ul>
+<li>I particularly like the snippet on bytecode VM traces</li>
+</ul>
+</li>
+<li>Optimized Python runtimes
+<ul>
+<li><a href="https://github.com/facebookincubator/cinder">Cinder</a></li>
+<li><a href="https://github.com/facebookexperimental/skybison">Skybison</a></li>
+<li><a href="https://github.com/tonybaloney/Pyjion">Pyjion</a></li>
+<li><a href="https://github.com/pyston/pyston">Pyston</a></li>
+<li><a href="https://foss.heptapod.net/pypy/pypy">PyPy</a></li>
+<li><a href="https://github.com/rjpower/falcon">Falcon</a></li>
+<li><a href="https://github.com/deepmind/s6">S6</a></li>
+<li><a href="https://github.com/oracle/graalpython">GraalPy</a></li>
+<li>Slightly less mature JITs
+<ul>
+<li><a href="https://github.com/davidmalcolm/coconut">coconut</a></li>
+<li><a href="https://github.com/jpages/twopy">twopy</a></li>
+<li><a href="https://github.com/thautwarm/diojit">diojit</a></li>
+<li><a href="https://github.com/pylbbv/pylbbv">pyLBBVAndPatch</a>, which uses lazy basic
+block versioning and copy-and-patch code generation</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Starlark is a total language similar to Python. It is used in build systems.
+I wonder if it could be used to generate Ninja files as a sort of "mini
+Bazel/Buck".
+<ul>
+<li>in <a href="https://github.com/google/starlark-go/">Go</a></li>
+<li>in <a href="https://github.com/bazelbuild/bazel/tree/master/src/main/java/net/starlark/java">Java</a></li>
+<li>in <a href="https://github.com/facebookexperimental/starlark-rust">Rust</a></li>
+</ul>
+</li>
+<li>This SSA paper: <a href="/assets/img/braun13cc.pdf">Simple and Efficient Construction of Static Single Assignment Form</a> (PDF)</li>
+<li>Resources on mechanical sympathy and optimization coaching
+<ul>
+<li><a href="https://www.ccs.neu.edu/home/stamourv/papers/optimization-coaching.pdf">Optimization Coaching</a> (PDF)</li>
+<li><a href="https://rfrn.org/~shu/papers/ecoop15.pdf">Optimization Coaching for JavaScript</a> (PDF)</li>
+<li><a href="https://users.cs.northwestern.edu/~stamourv/papers/dissertation.pdf">Vincent's thesis</a> (PDF)</li>
+<li><a href="https://github.com/Berkeley-Correctness-Group/JITProf">JITProf</a> and
+<a href="https://github.com/JacksonGL/jitprof-visualization">JITProf-visualization</a></li>
+<li><a href="https://github.com/Instagram/MonkeyType">MonkeyType</a> for Python</li>
+<li><a href="https://github.com/brandtbucher/specialist">specialist</a> for Python</li>
+<li><a href="https://kobzol.github.io/rust/cargo/2023/08/12/rust-llvm-optimization-remarks.html">Inspecting rustc LLVM optimization remarks using cargo-remark</a></li>
+</ul>
+</li>
+<li>This paper about encoding low-level semantics in a higher-level language for
+optimizing code: <a href="http://users.cecs.anu.edu.au/~steveb/pubs/papers/vmmagic-vee-2009.pdf">Demystifying Magic: High-level Low-level
+Programming</a></li>
+<li>Meta-tracing JITs in native code
+<ul>
+<li><a href="https://github.com/nbp/holyjit">holyjit</a> (Rust)</li>
+<li><a href="https://github.com/chc4/lineiform">lineiform</a> (Rust)</li>
+<li><a href="https://github.com/matthewfl/redmagic">redmagic</a> (C)</li>
+<li><a href="https://github.com/prg-titech/baccaml">BacCaml</a> (OCaml)</li>
+<li><a href="https://github.com/ykjit/yk">yk</a> (Rust), but it seems to be somewhat
+stealthily under development</li>
+<li>Deegen, as in
+<a href="https://github.com/luajit-remake/luajit-remake">LuaJIT-Remake</a> is a meta
+(not tracing) JIT (C++)</li>
+</ul>
+</li>
+<li>Bump allocators: <a href="https://fitzgeraldnick.com/2019/11/01/always-bump-downwards.html">always bump downwards</a>!</li>
+<li><a href="http://metamodular.com/SICL/call-site-optimization.pdf">Call-site optimization for Common Lisp</a> (PDF)</li>
+<li>Posts about trace optimization:
+<ul>
+<li><a href="https://www.pypy.org/posts/2022/07/toy-optimizer.html">Implementing a Toy Optimizer</a></li>
+<li><a href="https://www.pypy.org/posts/2022/10/toy-optimizer-allocation-removal.html">Allocation Removal in the Toy Optimizer</a></li>
+</ul>
+</li>
+<li>A nice <a href="https://github.com/smvv/pypy-traceview">PyPy trace viewer</a></li>
+<li>WebKit/JavaScriptCore stuff:
+<ul>
+<li><a href="https://webkit.org/blog/3362/introducing-the-webkit-ftl-jit/">FTL JIT</a></li>
+<li><a href="https://webkit.org/docs/b3/">B3</a>, the Bare Bones Backend</li>
+<li><a href="https://webkit.org/blog/10308/speculation-in-javascriptcore/">Speculation in JavaScriptCore</a></li>
+</ul>
+</li>
+<li><a href="https://sillycross.github.io/2022/11/22/2022-11-22/">Building the fastest Lua interpreter.. automatically!</a></li>
+<li><a href="http://www.complang.tuwien.ac.at/forth/threaded-code.html">Threaded code</a> by Anton Ertl</li>
+<li>Compiling coroutines/generators to state machines
+<ul>
+<li><a href="https://github.com/darsvador/generator">Rust proc macro</a></li>
+<li><a href="https://dl.acm.org/doi/pdf/10.1145/3486607.3486751?casa_token=HhJYg3t8opMAAAAA:mLO0yLTbR6TRIlffJAPCuRzuAUEFGvNJGRfJj7lUgnsCbUGvS7ISh2bkqD9581h8Mn6kjCQiDFxAXA">Kotlin coroutine
+paper</a> (PDF)
+<ul>
+<li>docs: <a href="https://kotlinlang.org/spec/asynchronous-programming-with-coroutines.html#coroutine-state-machine">Kotlin coroutine implementation</a></li>
+<li><a href="https://github.com/JetBrains/kotlin/blob/894ba9ab809c400de048d43fa98f89087100fcbc/compiler/backend/src/org/jetbrains/kotlin/codegen/coroutines/coroutines-codegen.md">more writing</a></li>
+</ul>
+</li>
+<li><a href="http://facebook.github.io/regenerator/">Regenerator for JS coroutines</a></li>
+<li><a href="https://ssw.jku.at/General/Staff/LS/coro/CoroIntroduction.pdf">Coroutines in Java</a> (PDF)</li>
+</ul>
+</li>
+</ul>
+<p>And here are runtime optimization resources that I wrote!</p>
+<ul>
+<li><a href="/blog/inline-caching/">Inline caching</a>, a post containing a small demo of
+how to speed up attribute lookups in an interpreter</li>
+<li><a href="/blog/inline-caching-quickening/">Inline caching: quickening</a>, a post about
+speeding up interpreters using self-modifying bytecode ("bytecode rewriting"
+or "quickening")</li>
+<li><a href="/blog/small-objects/">Small objects and pointer tagging</a>, a post about
+speeding up interpreters using pointer tagging and encoding small objects
+inside pointers</li>
+</ul>
+<h3 id="pointer-tagging-and-nan-boxing">Pointer tagging and NaN boxing</h3>
+
+<p>Resources on representing small values efficiently.</p>
+<ul>
+<li>nikic's <a href="https://nikic.github.io/2012/02/02/Pointer-magic-for-efficient-dynamic-value-representations.html">Pointer magic...</a></li>
+<li>Sean's <a href="https://sean.cm/a/nan-boxing">NaN-Boxing</a></li>
+<li>zuiderkwast's <a href="https://github.com/zuiderkwast/nanbox">nanbox</a></li>
+<li>albertnetymk's <a href="http://albertnetymk.github.io/2016/08/06/nan_boxing/">NaN Boxing</a></li>
+<li>Ghuloum's <a href="/assets/img/11-ghuloum.pdf">Incremental approach</a>
+(PDF), which introduces pointer tagging in a compiler setting</li>
+<li>Chicken Scheme's <a href="https://wiki.call-cc.org/man/4/Data%20representation">data representation</a></li>
+<li>Guile Scheme's <a href="https://www.gnu.org/software/guile/manual/html_node/Faster-Integers.html">Faster Integers</a></li>
+<li>Femtolisp <a href="https://github.com/JeffBezanson/femtolisp/blob/master/flisp.h">object implementation</a></li>
+<li>Leonard Schütz's <a href="https://leonardschuetz.ch/blog/nan-boxing/">NaN Boxing</a> article</li>
+<li>Piotr Duperas's <a href="https://piotrduperas.com/posts/nan-boxing/">NaN boxing or how to make the world dynamic</a></li>
+<li>Fedor Indutny's <a href="https://darksi.de/6.smis-and-doubles/">SMIs and Doubles</a></li>
+</ul>
+<h3 id="just-in-time-compilers">Just-In-Time compilers</h3>
+
+<p>Small JITs to help understand the basics. Note that these implementations tend
+to focus on the compiling ASTs or IRs to machine code, rather than the parts of
+the JIT that offer the most performance: inline caching and code inlining.
+Compiling is great but unless you're producing good machine code, it may not do
+a whole lot.</p>
+<ul>
+<li>Antonio Cuni's <a href="https://github.com/antocuni/jit30min">jit30min</a></li>
+<li>Christian Stigen Larsen's <a href="https://csl.name/post/python-jit/">Writing a basic x86-64 JIT compiler from scratch in stock Python</a></li>
+<li>Ben Hoyt's <a href="https://benhoyt.com/writings/pyast64/">Compiling Python syntax to x86-64 assembly for fun and (zero) profit</a></li>
+<li>My very undocumented (but hopefully readable)
+<a href="https://github.com/tekknolagi/ghuloum">implementation</a> of the Ghuloum
+compiler</li>
+<li>Matt Page's <a href="https://github.com/mpage/template_jit">template_jit</a> for
+CPython, which also contains a readable CFG implementation</li>
+</ul>
+<h3 id="assembler-libraries">Assembler libraries</h3>
+
+<p>Sometimes you want to generate assembly from a host language. Common use cases
+include compilers, both ahead-of-time and just-in-time. Here are some libraries
+that can help with that.</p>
+<ul>
+<li>Tachyon's <a href="https://github.com/Tachyon-Team/Tachyon/tree/master/source/backend/x86">x86-64 assembler</a> (JS)</li>
+<li>Higgs' <a href="https://github.com/higgsjs/Higgs/blob/master/source/jit/x86.d">x86-64 assembler</a> (D),
+which is based on Tachyon's</li>
+<li>yjit's <a href="https://github.com/Shopify/ruby/blob/56a1220128d18a7422f72e25d99b2bee9c7e5a86/yjit_asm.h">x86-64 assembler</a>
+(C) from Shopify's Ruby JIT, which is based on Higgs'</li>
+<li>Dart's <a href="https://github.com/dart-lang/sdk/tree/1e24fe7d699a1c36be142afa21859c6a9c82d035/runtime/vm/compiler/assembler">multi-arch assembler</a>
+(C++) and <a href="https://github.com/dart-lang/sdk/blob/1e24fe7d699a1c36be142afa21859c6a9c82d035/runtime/vm/constants_x64.h">relevant constants</a>,
+both of which need some extracting from the main project</li>
+<li>Strongtalk's <a href="https://github.com/talksmall/Strongtalk/tree/39b336f8399230502535e7ac12c9c1814552e6da/vm/asm">x86 assembler</a> (C)</li>
+<li>AsmJit's <a href="https://github.com/asmjit/asmjit">multi-arch assembler</a> (C++)</li>
+<li>PeachPy's <a href="https://github.com/Maratyszcza/PeachPy">x86-64 assembler</a> (Python)</li>
+<li>PPCI's <a href="https://github.com/windelbouwman/ppci/blob/915c069e0667042c085ec42c78e9e3c9a5295324/ppci/arch/x86_64/instructions.py">x86-64 assembler</a> (Python)
+and other great compiler infrastructure</li>
+<li>My <a href="https://gist.github.com/tekknolagi/201539673cfcc60df73ef75a8a9b5896">small x86-64 assembler</a> (C),
+which I forked from the pervognsen's <a href="https://gist.github.com/pervognsen/9d815016d8ef39f1b2c8e509ee2cf052">original</a> (C)</li>
+<li>A <a href="https://www.felixcloutier.com/documents/gcc-asm.html">guide to using GCC inline assembly</a></li>
+<li>Whatever <a href="https://github.com/bytecodealliance/wasm-micro-runtime/blob/main/core/iwasm/fast-jit/cg/x86-64/jit_codegen_x86_64.cpp">this is</a>
+from the wasm micro runtime (C++)</li>
+<li><a href="https://github.com/zyantific/zasm">zasm</a> (C++)</li>
+<li><a href="https://github.com/sisshiki1969/monoasm">monoasm</a> (Rust)</li>
+<li><a href="https://github.com/hellerve-pl-experiments/cj">cj</a> and <a href="https://blog.veitheller.de/cj:_Making_a_minimal,_complete_JIT.html">blog</a> (C)</li>
+</ul>
+<p>For more inspiration, check out some of the assemblers in runtimes I mention in
+my <a href="/blog/compiling-a-lisp-8/#assembler-libraries">Compiling a Lisp</a> post.</p>
+<h3 id="little-low-level-jit-ir-libraries">Little low-level JIT IR libraries</h3>
+
+<ul>
+<li><a href="https://github.com/signaldust/bunny-jit">Bunny</a> (C++)</li>
+<li><a href="https://github.com/dstogov/ir">dstogov's IR</a> (C)</li>
+<li><a href="https://github.com/Maratyszcza/PeachPy">PeachPy</a> (Python)</li>
+<li><a href="https://github.com/hellerve-pl-experiments/cj">cj</a> and <a href="https://blog.veitheller.de/cj:_Making_a_minimal,_complete_JIT.html">blog</a> (C)</li>
+</ul>
+<h3 id="things-i-want-to-write-about">Things I want to write about</h3>
+
+<p>I have not written much about runtime optimization yet, but I would like to
+write about:</p>
+<ul>
+<li>Assembly interpreters (known to the JDK folks as a "template interpreter")
+<ul>
+<li><a href="https://github.com/tekknolagi/icdemo/tree/mb-asm-interpreter">asm interpreter for icdemo</a></li>
+<li><a href="https://metebalci.com/blog/demystifying-the-jvm-jvm-variants-cppinterpreter-and-templateinterpreter/">template interpreter</a></li>
+<li><a href="https://github.com/openjdk/jdk/blob/master/src/hotspot/cpu/x86/templateTable_x86.cpp">source on github</a></li>
+</ul>
+</li>
+<li>Inline caching for attribute lookup
+<ul>
+<li>Including actually-inline assembly caches with <code class="language-plaintext highlighter-rouge">cmp</code>/<code class="language-plaintext highlighter-rouge">jmp</code> and stub, and a
+C++ wrapper
+(How does <a href="https://github.com/v8/v8/tree/main/src/ic">V8</a> do it?
+<a href="https://github.com/openjdk-mirror/jdk7u-hotspot/blob/50bdefc3afe944ca74c3093e7448d6b889cd20d1/src/share/vm/code/compiledIC.hpp">Hotspot</a>?
+<a href="https://github.com/dart-lang/sdk/blob/4258a597893ec9e6434aa5d0557c24343a5e238d/runtime/vm/code_patcher_x64.cc">Dart (maybe)</a>? JSC?)
+<ul>
+<li>Andy Wingo's <a href="https://wingolog.org/archives/2018/02/07/design-notes-on-inline-caches-in-guile">notes</a></li>
+<li><a href="https://www.youtube.com/watch?v=u7zRSm8jzvA">Feedback vectors in V8</a> (video) (<a href="https://github.com/v8/v8/blob/924a299e1ab26fd785ecc264123a9219ff32537f/src/objects/feedback-vector.h">code</a>)</li>
+<li><a href="https://wiki.openjdk.java.net/display/HotSpot/Overview+of+CompiledIC+and+CompiledStaticCall">Notes</a> on Hotspot CompiledIC</li>
+</ul>
+</li>
+<li>Object shapes / hidden classes / layouts</li>
+<li>Compact objects</li>
+</ul>
+</li>
+<li>Attaching intrinsic functions or assembly stubs to well-known functions</li>
+<li>Garbage collectors
+<ul>
+<li>Heap and GC characteristics from <a href="https://dl.acm.org/doi/10.1145/800055.802040">Garbage collection in a large LISP system</a></li>
+<li>Object handles in a copying collector
+(see <a href="https://www.reddit.com/r/ProgrammingLanguages/comments/i8u96f/implementations_of_copying_garbage_collector/g1chjk2/">Andy Chu's comment</a>)
+<ul>
+<li><a href="https://www.cs.tufts.edu/comp/150FP/archive/jim-miller/JIT-GC-Info.htm">GC Information Encoding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Fast paths for common cases ("do less")</li>
+<li>JIT intermediate representations and how they help solve problems around
+megamorphic call sites, inlining, etc</li>
+<li>The GDB JIT interface &amp; maintaining a parseable stack for unwinding
+<ul>
+<li><a href="https://sourceware.org/gdb/current/onlinedocs/gdb/Custom-Debug-Info.html#Custom-Debug-Info">gdb docs</a></li>
+<li><a href="https://pwparchive.wordpress.com/2011/11/20/new-jit-interface-for-gdb/">pwp</a></li>
+<li><a href="https://v8.dev/docs/gdb-jit">v8</a></li>
+</ul>
+</li>
+<li>Exception handling side-tables instead of block stacks
+<ul>
+<li><a href="https://www.infoworld.com/article/2076868/how-the-java-virtual-machine-handles-exceptions.html">jvm explanation</a></li>
+<li><a href="https://www.overops.com/blog/the-surprising-truth-of-java-exceptions-what-is-really-going-on-under-the-hood/">another jvm explanation</a></li>
+</ul>
+</li>
+<li>Debugging mindsets
+<ul>
+<li>Ways to think about debugging that make the process less stressful and
+thrashy</li>
+</ul>
+</li>
+<li>Code transformations and analysis
+<ul>
+<li>Definite assignment analysis</li>
+<li>Static Single Assignment (SSA)</li>
+</ul>
+</li>
+<li>Writing JITs without writing assembly
+<ul>
+<li><a href="https://blog.reverberate.org/2021/04/21/musttail-efficient-interpreters.html">Tail-calls for efficient interpreters</a>
+<ul>
+<li>Including <a href="https://dl.acm.org/doi/10.1145/223428.207165">(top of) stack caching</a></li>
+</ul>
+</li>
+<li><a href="https://arxiv.org/pdf/2011.13127.pdf">Copy-and-Patch compilation</a> (PDF)
+<ul>
+<li>Simplifying this would probably make for a fun blog post and could be
+combined with ICs and quickening from my runtime optimization series</li>
+<li><a href="https://sillycross.github.io/2022/11/22/2022-11-22/">Lua interpreter post</a></li>
+<li><a href="https://sillycross.github.io/2023/05/12/2023-05-12/">Lua JIT post</a></li>
+<li><a href="https://aha.stanford.edu/sites/g/files/sbiybj20066/files/media/file/aha_071923_xu_deegen_0.pdf">Deegen talk</a> (PDF)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Precise native stack roots
+<ul>
+<li><a href="/assets/img/gc-uncooperative.pdf">Accurate Garbage Collection in an Uncooperative Environment</a> (2002, PDF)</li>
+<li><a href="/assets/img/gc-uncooperative-revisited.pdf">Accurate Garbage Collection in Uncooperative Environments Revisited</a> (2006, PDF)</li>
+<li><a href="/assets/img/gc-lazy-stack.pdf">Accurate Garbage Collection in Uncooperative Environments with Lazy Pointer Stacks</a> (2007, PDF)
+<ul>
+<li>poster: <a href="http://filpizlo.com/lazy-ptr-stacks-poster.pdf">Accurate Garbage Collection in Uncooperative Environments with Lazy Pointer Stacks</a> (PDF)</li>
+</ul>
+</li>
+<li><a href="https://www.cs.utah.edu/plt/publications/ismm09-rwrf.pdf">Precise Garbage Collection for C</a> (PDF)</li>
+<li>Skybison/V8/... handles and handle scopes</li>
+<li>Using LLVM's stack maps to do free precise runtime handles
+<ul>
+<li><a href="https://llvm.org/docs/GarbageCollection.html">LLVM doc</a></li>
+<li><a href="https://stackoverflow.com/questions/15354488/how-to-embed-llvm-assembly-or-intrinsics-in-c-program-with-clang">Using LLVM intrinsics from C/C++</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Type lattices
+<ul>
+<li><a href="https://github.com/v8/v8/blob/ad655dc0435b02f40b19dd9b091c2dcbc3aed5f2/src/compiler/types.h">In V8</a></li>
+<li><a href="https://github.com/facebookincubator/cinder/blob/e54717062f1a0ab5698bd1abc484fb449b759499/Jit/hir/type.h">In Cinder</a></li>
+<li><a href="https://github.com/Constellation/iv/blob/64c3a9c7c517063f29d90d449180ea8f6f4d946f/iv/lv5/breaker/type.h#L4">In iv</a></li>
+</ul>
+</li>
+<li><a href="https://legacy.cs.indiana.edu/~dyb/pubs/ddcg.pdf">Destination-driven code generation</a> (PDF)
+<ul>
+<li><a href="https://github.com/tekknolagi/ddcg">My implementation</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="papers-i-want-to-read">Papers I want to read</h3>
+
+<ul>
+<li><a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.53.3605&amp;rep=rep1&amp;type=pdf">Destination-Driven Code Generation</a> (PDF)</li>
+<li><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/dps-fhpc17.pdf">Destination-Passing Style</a> (PDF)</li>
+<li><a href="http://www.cs.columbia.edu/~junfeng/17sp-e6121/papers/delta-debug.pdf">Yesterday, my program worked. Today, it does not. Why?</a> (PDF)</li>
+<li><a href="https://dl.acm.org/doi/pdf/10.1145/96709.96718">Interaction nets</a> (PDF)
+<ul>
+<li>And Interaction combinators</li>
+<li>See <a href="https://github.com/HigherOrderCO/HVM">HVM</a> and <a href="https://github.com/inpla/inpla">Inpla</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="systemv-abi">SystemV ABI</h3>
+
+<p>This is mostly a reminder for myself because I can never remember the order of
+registers. Sourced from the <a href="https://raw.githubusercontent.com/wiki/hjl-tools/x86-psABI/x86-64-psABI-1.0.pdf">AMD64 ABI Draft
+1.0</a>
+(PDF).</p>
+<p>Caller-saved: <code class="language-plaintext highlighter-rouge">rax</code>, <code class="language-plaintext highlighter-rouge">rcx</code>, <code class="language-plaintext highlighter-rouge">rdx</code>, <code class="language-plaintext highlighter-rouge">rsi</code>, <code class="language-plaintext highlighter-rouge">rdi</code>, <code class="language-plaintext highlighter-rouge">r8</code>-<code class="language-plaintext highlighter-rouge">r11</code>, <code class="language-plaintext highlighter-rouge">xmm0</code>-<code class="language-plaintext highlighter-rouge">xmm15</code>.</p>
+<p>Callee-saved: <code class="language-plaintext highlighter-rouge">rbx</code>, <code class="language-plaintext highlighter-rouge">rsp</code>, <code class="language-plaintext highlighter-rouge">rbp</code>, <code class="language-plaintext highlighter-rouge">r12</code>-<code class="language-plaintext highlighter-rouge">r15</code>.</p>
+<h4 id="for-integers">For integers</h4>
+
+<p>Return values in <code class="language-plaintext highlighter-rouge">rax</code> and <code class="language-plaintext highlighter-rouge">rdx</code>.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Register</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">1</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">rdi</code></td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">rsi</code></td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">rdx</code></td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">rcx</code></td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">r8</code></td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">r9</code></td>
+</tr>
+</tbody>
+</table>
+<p>Once registers are assigned, the arguments passed in memory are pushed on
+the stack in reversed (right-to-left) order</p>
+<h4 id="for-doubles">For doubles</h4>
+
+<p>Return values in <code class="language-plaintext highlighter-rouge">xmm0</code> and <code class="language-plaintext highlighter-rouge">xmm1</code>.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Register</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">1</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">xmm0</code></td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">xmm1</code></td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">xmm2</code></td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">xmm3</code></td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">xmm4</code></td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">xmm5</code></td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">xmm6</code></td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="left"><code class="language-plaintext highlighter-rouge">xmm7</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="interesting-tools">Interesting tools</h2>
+
+<p>This is a sort of grab-bag for helpful or interesting tools for programming
+language implementation.</p>
+<ul>
+<li><a href="https://justine.lol/blinkenlights/index.html">Blinkenlights</a>, a visual
+x86-64 emulator</li>
+<li><a href="https://justine.lol/cosmopolitan/index.html">Cosmopolitan libc</a></li>
+<li><a href="https://justine.lol/ftrace/">Cosmopolitan ftrace</a></li>
+</ul>
+<p>(wow, this is turning into a Justine Section)</p>
+<h3 id="egg-and-e-graph-related-things">Egg and e-graph-related things</h3>
+
+<ul>
+<li><a href="https://egraphs-good.github.io/">egg</a></li>
+<li><a href="https://github.com/egraphs-good/egg/discussions/106">Representing loops within egg</a></li>
+<li><a href="https://github.com/jameysharp/optir/">optir</a>, which uses egg</li>
+<li><a href="https://jamey.thesharps.us/2017/06/19/search-based-compiler-code-generation/">Search-based compiler code generation</a></li>
+<li><a href="https://faultlore.com/blah/oops-that-was-important/">Compiler optimizations are hard because they forget</a></li>
+<li><a href="https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md">Cranelift: Using E-Graphs for Verified, Cooperating Middle-End Optimizations</a></li>
+<li><a href="https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-705.pdf">Optimizing compilation with the Value State Dependence Graph</a> (PDF)</li>
+</ul>
+<h2 id="build-tools">Build tools</h2>
+
+<p>Right now this is probably going to just be a section on Ninja clones.</p>
+<ul>
+<li><a href="https://github.com/ninja-build/ninja">Ninja</a>, the original version</li>
+<li><a href="https://github.com/evmar/n2">n2</a>, another implementation by the original
+author (Rust)</li>
+<li><a href="https://github.com/michaelforney/samurai">samurai</a> (C99)</li>
+<li><a href="https://github.com/raviqqe/turtle-build">Turtle</a>, a version focused on
+high-level languages (Rust)</li>
+</ul>
+<h2 id="game-boy-emulators">Game Boy Emulators</h2>
+
+<p><a href="https://zakhary.dev/blog/gbc-web-button"><img src="/assets/img/gameboy.gif" alt="" /></a></p>
+<ul>
+<li>The <a href="https://gbdev.io/pandocs/">Pan Docs</a>, which give technical data about
+the Game Boy hardware, I/O ports, flags, cartridges, memory map, etc</li>
+<li>This excellent <a href="https://realboyemulator.wordpress.com/2013/01/03/a-look-at-the-game-boy-bootstrap-let-the-fun-begin/">explanation</a>
+of the boot ROM</li>
+<li>This <a href="https://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html">opcode table</a>
+that details the full instruction set, including CB opcodes</li>
+<li>This <a href="https://rednex.github.io/rgbds/gbz80.7.html">full opcode reference</a> for
+the GBZ80</li>
+<li>The <a href="http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf">Game Boy CPU manual</a> (PDF)</li>
+<li>The <a href="http://gameboy.mongenel.com/dmg/asmmemmap.html">GameBoy memory map</a></li>
+<li>This <a href="https://mattbruv.github.io/gameboy-crust/">blog post</a> that gives a
+pretty simple state machine for the different rendering steps</li>
+<li>The <a href="https://www.youtube.com/watch?v=HyzD8pNlpwI">Ultimate Game Boy Talk</a>
+(video) by Michael Steil at CCC</li>
+<li>This <a href="http://catskull.net/GB-Logo-Generator/">ROM generator</a> for custom logos</li>
+<li>This <a href="https://www.reddit.com/r/EmuDev/comments/cdtuyw/gameboy_emulator_fails_blargg_daa_test/etwcyvy/">sample DAA implementation</a></li>
+<li>This <a href="https://github.com/gbdev/awesome-gbdev">awesome-gbdev</a> list</li>
+<li>This <a href="https://github.com/drhelius/Gearboy">excellent emulator and debugger</a></li>
+<li>Another <a href="https://github.com/Jonazan2/PatBoy">emulator and debugger</a></li>
+<li>The <a href="https://gekkio.fi/files/gb-docs/gbctr.pdf">Game Boy complete technical reference</a> (PDF)</li>
+<li>This <a href="https://thomas.spurden.name/gameboy/">Gameboy Overview</a></li>
+<li>blargg's <a href="https://gbdev.gg8.se/files/roms/blargg-gb-tests/">test ROMs</a>
+which have instruction tests, sound tests, etc</li>
+<li>gekkio's <a href="https://github.com/Gekkio/mooneye-gb">emulator</a>
+and his <a href="https://github.com/Gekkio/mooneye-test-suite">test ROMs</a></li>
+<li>This <a href="https://github.com/Humpheh/goboy">fairly readable Go emulator</a>,
+which has helped me make sense of some features</li>
+<li>This <a href="https://github.com/simias/gaembuoy">fairly readable C emulator</a></li>
+<li>This <a href="https://github.com/MoleskiCoder/EightBit/blob/master/LR35902/src/LR35902.cpp">fairly readable C++ implementation</a></li>
+<li>This <a href="https://github.com/mattbruv/Gameboy-Crust/blob/master/src/core/gpu.rs">helpful GPU implementation in Rust</a></li>
+<li>This <a href="https://gb-archive.github.io/salvage/decoding_gbz80_opcodes/Decoding%20Gamboy%20Z80%20Opcodes.html">reference</a>
+for decoding GameBoy instructions.
+<ul>
+<li>NOTE: This has one <a href="https://github.com/gb-archive/salvage/issues/1">bug</a>
+that someone and I independently found. The <a href="https://github.com/phire/Kea">original repo</a>
+has fixed the bug but not the page linked above.</li>
+</ul>
+</li>
+<li>This <a href="http://web.archive.org/web/20200726064933/https://dandigit.com/posts/bigboy-writing-a-gameboy-emulator">summary blog post</a>
+explaining GPU modes</li>
+<li>And of course <a href="https://old.reddit.com/r/EmuDev/">/r/emudev</a></li>
+<li><a href="https://github.com/danistefanovic/build-your-own-x#build-your-own-emulator--virtual-machine">DIY emulator/VM resources</a></li>
+</ul>
+<p><a href="https://nullprogram.com/blog/2017/11/03/">This</a> is a potentially fun way to
+render the screen without SDL, but only for non-interactive purposes.</p>
+<p>This <a href="https://www.youtube.com/playlist?list=PLye7LM1YVhDHR4TGMklN3tMt_J2jIrn1w">YouTube</a>
+playlist looks like it could be worth a watch, but it's a lot of hours.</p>
+<h2 id="lists">Lists</h2>
+
+<blockquote>
+<p>I should probably pick and choose some great stuff from these lists to copy
+onto this page.</p>
+</blockquote>
+<ul>
+<li><a href="https://github.com/aalhour/awesome-compilers">awesome compilers resources</a></li>
+<li><a href="https://github.com/danistefanovic/build-your-own-x#build-your-own-programming-language">programming language resources</a></li>
+</ul>
+<h2 id="communities">Communities</h2>
+
+<ul>
+<li><a href="https://reddit.com/r/programminglanguages">/r/programminglanguages</a></li>
+<li><a href="https://reddit.com/r/compilers">/r/compilers</a></li>
+</ul>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/pl-resources.md" title="Help improve pl-resources.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

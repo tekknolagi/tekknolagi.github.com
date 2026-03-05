@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Linear scan register allocation on SSA | Max Bernstein</title>
+    <meta name="description" content="A linear scan through the history of... linear scan register allocation." />
+    <meta property="og:title" content="Linear scan register allocation on SSA | Max Bernstein" />
+    <meta property="og:description" content="A linear scan through the history of... linear scan register allocation." />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/linear-scan/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Linear scan register allocation on SSA</h1>
+        
+        <div class="post-inline-date"><i>August 13, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p><em>Much of the code and education that resulted in this post happened with <a href="https://tenderlovemaking.com/">Aaron
+Patterson</a>.</em></p>
+<p>The fundamental problem in register allocation is to take an IR that uses a
+virtual registers (as many as you like) and rewrite it to use a finite amount
+of physical registers and stack space<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup>.</p>
+<p>This is an example of a code snippet using virtual registers:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>add R1, R2 -&gt; R3
+add R1, R3 -&gt; R4
+ret R4
+</code></pre></div></div>
+
+<p>And here is the same example after it has been passed through a register
+allocator (note that Rs changed to Ps):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>add Stack[0], P0 -&gt; P1
+add Stack[0], P1 -&gt; P0
+ret
+</code></pre></div></div>
+
+<p>Each virtual register was assigned a physical place: R1 to the stack, R2 to P0,
+R3 to P1, and R4 <em>also</em> to P0 (since we weren't using R2 anymore).</p>
+<p>People use register allocators like they use garbage collectors: it's an
+abstraction that can manage your resources for you, maybe with some cost. When
+writing the back-end of a compiler, it's probably much easier to have a
+separate register-allocator-in-a-box than manually managing variable lifetimes
+while also considering all of your different target architectures.</p>
+<p>How do JIT compilers do register allocation? Well, "everyone knows" that "every
+JIT does its own variant of linear scan"<sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup>. This bothered me for some
+time because I've worked on a couple of JITs and still didn't understand the
+backend bits.</p>
+<p>There are a couple different approaches to register allocation, but in this
+post we'll focus on <em>linear scan of SSA</em>.</p>
+<p>I started reading <a href="/assets/img/wimmer-linear-scan-ssa.pdf">Linear Scan Register Allocation on SSA Form</a> (PDF,
+2010) by Wimmer and Franz after writing <a href="/blog/ssa/">A catalog of ways to generate
+SSA</a>. Reading alone didn't make a ton of sense—I ended up with a
+lot of very frustrated margin notes. I started trying to implement it alongside
+the paper. As it turns out, though, there is a rich history of papers in this
+area that it leans on really heavily. I needed to follow the chain of
+references!</p>
+<blockquote>
+<p>For example, here is a lovely explanation of the process, start to finish,
+from Christian Wimmer's <a href="/assets/img/wimmer-masters-thesis.pdf">Master's thesis</a> (PDF, 2004).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LINEAR_SCAN
+  // order blocks and operations (including loop detection)
+  COMPUTE_BLOCK_ORDER
+  NUMBER_OPERATIONS
+  // create intervals with live ranges
+  COMPUTE_LOCAL_LIVE_SETS
+  COMPUTE_GLOBAL_LIVE_SETS
+  BUILD_INTERVALS
+  // allocate registers
+  WALK_INTERVALS
+  RESOLVE_DATA_FLOW
+  // replace virtual registers with physical registers
+  ASSIGN_REG_NUM
+  // special handling for the Intel FPU stack
+  ALLOCATE_FPU_STACK
+</code></pre></div></div>
+
+<p>There it is, all laid out at once. It's very refreshing when compared to all
+of the compact research papers.</p>
+</blockquote>
+<p>I didn't realize that there were more than one or two papers on linear scan. So
+this post will also incidentally serve as a bit of a survey or a history of
+linear scan—as best as I can figure it out, anyway. If you were in or near
+the room where it happened, please feel free to reach out and correct some
+parts.</p>
+<h2 id="some-example-code">Some example code</h2>
+
+<p>Throughout this post, we'll use an example SSA code snippet from Wimmer2010,
+adapted from phi-SSA to block-argument-SSA. Wimmer2010's code snippet is
+between the arrows and we add some filler (as alluded to in the paper):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>label B1(R10, R11):
+jmp B2($1, R11)
+ # vvvvvvvvvv #
+label B2(R12, R13)
+cmp R13, $1
+branch lessThan B4()
+
+label B3()
+mul R12, R13 -&gt; R14
+sub R13, $1 -&gt; R15
+jump B2(R14, R15)
+
+label B4()
+ # ^^^^^^^^^^ #
+add R10, R12 -&gt; R16
+ret R16
+</code></pre></div></div>
+
+<p>Virtual registers start with R and are defined either with an arrow or by a
+block parameter.</p>
+<p>Because it takes a moment to untangle the unfamiliar syntax and draw the
+control-flow graph by hand, I've also provided the same code in graphical form.
+Block names (and block parameters) are shaded with grey.</p>
+<!--
+# dot IN.dot -Tsvg -Nfontname=Monospace -Efontname=Monospace > OUT.svg
+
+digraph G {
+node [shape=plaintext]
+B1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B1(R10, R11)&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">jump →B2($1, R11)&nbsp;</TD></TR>
+</TABLE>>];
+B1:s -> B2:params:n;
+B2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B2(R12, R13)&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">cmp R13, $1&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">blt →B4, →B3&nbsp;</TD></TR>
+</TABLE>>];
+B2:s -> B4:params:n;
+B2:s -> B3:params:n;
+B3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B3()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">R14 = mul R12, R13&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">R15 = sub R13, $1&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="2">jump →B2(R14, R15)&nbsp;</TD></TR>
+</TABLE>>];
+B3:s -> B2:params:n;
+B4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+<TR><TD PORT="params" BGCOLOR="lightgray">B4()&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="0">R16 = add R10, R12&nbsp;</TD></TR>
+<TR><TD ALIGN="left" PORT="1">ret R16&nbsp;</TD></TR>
+</TABLE>>];
+}
+-->
+
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/wimmer-lsra-cfg.svg"></object>
+<figcaption markdown=1>
+We have one entry block, `B1`, that is implied in
+Wimmer2010. Its only job is to define `R10` and `R11` for the rest of the CFG.
+Then we have a loop between `B2` and `B3` with an implicit fallthrough. Instead
+of doing that, we instead generate a conditional branch with explicit jump
+targets. This makes it possible to re-order blocks as much as we like.
+The contents of `B4` are also just to fill in the blanks from Wimmer2010 and
+add some variable uses.
+</figcaption>
+</figure>
+
+<p>Our goal for the post is to analyze this CFG, assign physical locations
+(registers or stack slots) to each virtual register, and then rewrite the code
+appropriately.</p>
+<p>For now, let's rewind the clock and look at how linear scan came about.</p>
+<h2 id="in-the-beginning">In the beginning</h2>
+
+<p>Linear scan register allocation (LSRA) has been around for awhile. It's neat
+because it does the actual register assignment part of register allocation in
+one pass over your low-level IR. (We'll talk more about what that means in a
+minute.)</p>
+<p>It first appeared in the literature in <a href="/assets/img/tcc-linearscan-ra.pdf">tcc: A System for Fast, Flexible, and
+High-level Dynamic Code Generation</a> (PDF, 1997) by Poletto, Engler,
+and Kaashoek. (Until writing this post, I had never seen this paper. It was
+only on a re-read of the 1999 paper (below) that I noticed it.) In this paper,
+they mostly describe a staged variant of C called 'C (TickC), for which a fast
+register allocator is quite useful.</p>
+<p>Then came a paper called <a href="/assets/img/quality-speed-linear-scan-ra-clean.pdf">Quality and Speed in Linear-scan Register
+Allocation</a> (PDF, 1998) by Traub, Holloway, and Smith. It adds
+some optimizations (lifetime holes, binpacking) to the algorithm presented in
+Poletto1997.</p>
+<p>Then came the first paper I read, and I think the paper everyone refers to when
+they talk about linear scan: <a href="/assets/img/linearscan-ra.pdf">Linear Scan Register Allocation</a> (PDF,
+1999) by Poletto and Sarkar. In this paper, they give a fast alternative to
+graph coloring register allocation, especially motivated by just-in-time
+compilers. In retrospect, it seems to be a bit of a rehash of the previous two
+papers.</p>
+<p>Linear scan (1997, 1999) operates on <em>live ranges</em> instead of virtual
+registers. A live range is a pair of integers [start, end) (end is exclusive)
+that begins when the register is defined and ends when it is last used. This
+means that there is an assumption that the order for instructions in your
+program has already been fixed into a single linear sequence! It also means
+that you have given each instruction a number that represents its position in
+that order.</p>
+<blockquote>
+<p>This may or not be a surprising requirement depending on your compilers
+background. It was surprising to me because I often live in control flow
+graph fantasy land where blocks are unordered and instructions sometimes
+float around. But if you live in a land of basic blocks that are already in
+reverse post order, then it may be less surprising.</p>
+</blockquote>
+<p>In non-SSA-land, these live ranges are different from the virtual registers:
+they represent some kind of lifetimes of each <em>version</em> of a virtual register.
+For an example, consider the following code snippet:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...      -&gt; a
+add 1, a -&gt; b
+add 1, b -&gt; c
+add 1, c -&gt; a
+add 1, a -&gt; d
+</code></pre></div></div>
+
+<p>There are two definitions of <code class="language-plaintext highlighter-rouge">a</code> and they each live for different amounts of
+time:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                  a  b  c  a  d
+...      -&gt; a     |                &lt;- the first a
+add 1, a -&gt; b     v  |
+add 1, b -&gt; c        v  |
+add 1, c -&gt; a           v  |       &lt;- the second a
+add 1, a -&gt; d              v  |
+</code></pre></div></div>
+
+<p>In fact, the ranges are completely disjoint. It wouldn't make sense for the
+register allocator to consider variables, because there's no reason the two
+<code class="language-plaintext highlighter-rouge">a</code>s should necessarily live in the same physical register.</p>
+<p>In SSA land, it's a little different: since each virtual registers only has one
+definition (by, uh, definition), live ranges are an exact 1:1 mapping with
+virtual registers. <strong>We'll focus on SSA for the remainder of the post because
+this is what I am currently interested in.</strong> The research community seems to
+have decided that allocating directly on SSA gives more information to the
+register allocator<sup class="footnote-ref" id="fnref-3"><a href="#fn-3">3</a></sup>.</p>
+<p>Linear scan starts at the point in your compiler process where you already know
+these live ranges—that you have already done some kind of analysis to build a
+mapping.</p>
+<p>In this blog post, we're going to back up to the point where we've just built
+our SSA low-level IR and have yet to do any work on it. We'll do all of the
+analysis from scratch.</p>
+<p>Part of this analysis is called <em>liveness analysis</em>.</p>
+<h2 id="liveness-analysis">Liveness analysis</h2>
+
+<p>The result of liveness analysis is a mapping of <code class="language-plaintext highlighter-rouge">BasicBlock -&gt; Set[Instruction]</code> that tells you which virtual registers (remember, since we're
+in SSA, instruction==vreg) are alive (used later) at the beginning of the basic
+block. This is called a <em>live-in</em> set. For example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>B0:
+... -&gt; R12
+... -&gt; R13
+jmp B1
+
+B1:
+mul R12, R13 -&gt; R14
+sub R13, 1 -&gt; R15
+jmp B2
+
+B2:
+add R14, R15 -&gt; R16
+ret R16
+</code></pre></div></div>
+
+<p>We compute liveness by working backwards: a variable is <em>live</em> from the moment
+it is backwardly-first used until its definition.</p>
+<p>In this case, at the end of B2, nothing is live. If we step backwards to the
+<code class="language-plaintext highlighter-rouge">ret</code>, we see a use: R16 becomes live. If we step once more, we see its
+definition—R16 no longer live—but now we see a use of R14 and R15, which
+become live. This leaves us with R14 and R15 being <em>live-in</em> to B2.</p>
+<p>This live-in set becomes B1's <em>live-out</em> set because B1 is B2's predecessor. We
+continue in B1. We could continue backwards linearly through the blocks. In
+fact, I encourage you to do it as an exercise. You should have a (potentially
+emtpy) set of registers per basic block.</p>
+<p>It gets more interesting, though, when we have branches: what does it mean when
+two blocks' live-in results merge into their shared predecessor? If we have two
+blocks A and B that are successors of a block C, the live-in sets get
+<em>unioned</em> together.</p>
+<!--
+digraph G {
+  node [shape=square];
+  C -> A;
+  C -> B;
+}
+-->
+
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="98pt" height="116pt" viewBox="0.00 0.00 98.00 116.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-112 94,-112 94,4 -4,4"/>
+<!-- C -->
+<g id="node1" class="node">
+<title>C</title>
+<polygon fill="none" stroke="black" points="63,-108 27,-108 27,-72 63,-72 63,-108"/>
+<text text-anchor="middle" x="45" y="-85.8" font-family="Times,serif" font-size="14.00">C</text>
+</g>
+<!-- A -->
+<g id="node2" class="node">
+<title>A</title>
+<polygon fill="none" stroke="black" points="36,-36 0,-36 0,0 36,0 36,-36"/>
+<text text-anchor="middle" x="18" y="-13.8" font-family="Times,serif" font-size="14.00">A</text>
+</g>
+<!-- C&#45;&gt;A -->
+<g id="edge1" class="edge">
+<title>C-&gt;A</title>
+<path fill="none" stroke="black" d="M38.33,-71.7C35.42,-64.15 31.93,-55.12 28.68,-46.68"/>
+<polygon fill="black" stroke="black" points="32.01,-45.59 25.14,-37.52 25.48,-48.11 32.01,-45.59"/>
+</g>
+<!-- B -->
+<g id="node3" class="node">
+<title>B</title>
+<polygon fill="none" stroke="black" points="90,-36 54,-36 54,0 90,0 90,-36"/>
+<text text-anchor="middle" x="72" y="-13.8" font-family="Times,serif" font-size="14.00">B</text>
+</g>
+<!-- C&#45;&gt;B -->
+<g id="edge2" class="edge">
+<title>C-&gt;B</title>
+<path fill="none" stroke="black" d="M51.67,-71.7C54.58,-64.15 58.07,-55.12 61.32,-46.68"/>
+<polygon fill="black" stroke="black" points="64.52,-48.11 64.86,-37.52 57.99,-45.59 64.52,-48.11"/>
+</g>
+</g>
+</svg>
+</figure>
+
+<p>That is, if there were some register R0 live-in to B and some register R1
+live-in to A, both R0 and R1 would be live-out of C. They may also be live-in
+to C, but that entirely depends on the contents of C.</p>
+<p>Since the total number of virtual registers is nonnegative and is finite for a
+given program, it seems like a good lattice for an <em>abstract interpreter</em>.
+That's right, we're doing AI.</p>
+<p>In this liveness analysis, we'll:</p>
+<ol>
+<li>compute a summary of what virtual registers each basic block needs to be
+alive (gen set) and what variables it defines (kill set)</li>
+<li>initialize all live-in sets to 0</li>
+<li>do an iterative dataflow analysis over the blocks until the live-in sets
+converge</li>
+</ol>
+<p>We store gen, kill, and live-in sets as bitsets, using some APIs conveniently
+available on Ruby's Integer class.</p>
+<p>Like most abstract interpretations, it doesn't matter what order we iterate
+over the collection of basic blocks for correctness, but it <em>does</em> matter for
+performance. In this case, iterating backwards (<code class="language-plaintext highlighter-rouge">post_order</code>) converges much
+faster than forwards (<code class="language-plaintext highlighter-rouge">reverse_post_order</code>):</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Function</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">compute_initial_liveness_sets</span><span class="w"> </span><span class="n">order</span>
+<span class="w">    </span><span class="c1"># Map of Block -&gt; what variables it alone needs to be live-in</span>
+<span class="w">    </span><span class="n">gen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="c1"># Map of Block -&gt; what variables it alone defines</span>
+<span class="w">    </span><span class="n">kill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="n">order</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">block</span><span class="o">|</span>
+<span class="w">      </span><span class="n">block</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">reverse_each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">insn</span><span class="o">|</span>
+<span class="w">        </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insn</span><span class="o">.</span><span class="n">out</span><span class="o">&amp;.</span><span class="n">as_vreg</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">out</span>
+<span class="w">          </span><span class="n">kill</span><span class="o">[</span><span class="n">block</span><span class="o">]</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">out</span><span class="o">.</span><span class="n">num</span><span class="p">)</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="n">insn</span><span class="o">.</span><span class="n">vreg_ins</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">vreg</span><span class="o">|</span>
+<span class="w">          </span><span class="n">gen</span><span class="o">[</span><span class="n">block</span><span class="o">]</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">vreg</span><span class="o">.</span><span class="n">num</span><span class="p">)</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">      </span><span class="n">block</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">param</span><span class="o">|</span>
+<span class="w">        </span><span class="n">kill</span><span class="o">[</span><span class="n">block</span><span class="o">]</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">param</span><span class="o">.</span><span class="n">num</span><span class="p">)</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="o">[</span><span class="n">gen</span><span class="p">,</span><span class="w"> </span><span class="n">kill</span><span class="o">]</span>
+<span class="w">  </span><span class="k">end</span>
+
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">analyze_liveness</span>
+<span class="w">    </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">post_order</span>
+<span class="w">    </span><span class="n">gen</span><span class="p">,</span><span class="w"> </span><span class="n">kill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_initial_liveness_sets</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Map from Block -&gt; what variables are live-in</span>
+<span class="w">    </span><span class="n">live_in</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kp">true</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="n">changed</span>
+<span class="w">      </span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kp">false</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">order</span>
+<span class="w">        </span><span class="c1"># Union-ing all the successors&#39; live-in sets gives us this block&#39;s</span>
+<span class="w">        </span><span class="c1"># live-out, which is a good starting point for computing the live-in</span>
+<span class="w">        </span><span class="n">block_live</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">block</span><span class="o">.</span><span class="n">successors</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">succ</span><span class="o">|</span><span class="w"> </span><span class="n">live_in</span><span class="o">[</span><span class="n">succ</span><span class="o">]</span><span class="w"> </span><span class="p">}</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="ss">:|</span><span class="p">)</span>
+<span class="w">        </span><span class="n">block_live</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">gen</span><span class="o">[</span><span class="n">block</span><span class="o">]</span>
+<span class="w">        </span><span class="n">block_live</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="n">kill</span><span class="o">[</span><span class="n">block</span><span class="o">]</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">live_in</span><span class="o">[</span><span class="n">block</span><span class="o">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">block_live</span>
+<span class="w">          </span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kp">true</span>
+<span class="w">          </span><span class="n">live_in</span><span class="o">[</span><span class="n">block</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">block_live</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">live_in</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>We could also use a worklist here, and it would be faster, but eh. Repeatedly
+iterating over all blocks is fine for now.</p>
+<p>The Wimmer2010 paper skips this liveness analysis entirely by assuming some
+computed information about your CFG: where loops start and end. It also
+requires all loop blocks be contiguous. Then it makes variables defined before
+a loop and used at any point inside the loop live <em>for the whole loop</em>. By
+having this information available, it folds the liveness analysis into the live
+range building, which we'll instead do separately in a moment.</p>
+<p>The Wimmer approach sounded complicated and finicky. Maybe it is, maybe it
+isn't. So I went with a dataflow liveness analysis instead. If it turns out to
+be the slow part, maybe it will matter enough to learn about this loop tagging
+method.</p>
+<p>For now, we will pick a <em>schedule</em> for the control-flow graph.</p>
+<h2 id="scheduling">Scheduling</h2>
+
+<p>In order to build live ranges, you have to have some kind of numbering system
+for your instructions, otherwise a live range's start and end are meaningless.
+We can write a function that fixes a particular block order (in this case,
+reverse post-order) and then assigns each block and instruction a number in a
+linear sequence. You can think of this as flattening or projecting the graph:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Function</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">number_instructions!</span>
+<span class="w">    </span><span class="vi">@block_order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpo</span>
+<span class="w">    </span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="w">  </span><span class="c1"># just so we match the Wimmer2010 paper</span>
+<span class="w">    </span><span class="vi">@block_order</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">blk</span><span class="o">|</span>
+<span class="w">      </span><span class="n">blk</span><span class="o">.</span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">number</span>
+<span class="w">      </span><span class="n">number</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">      </span><span class="n">blk</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">insn</span><span class="o">|</span>
+<span class="w">        </span><span class="n">insn</span><span class="o">.</span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">number</span>
+<span class="w">        </span><span class="n">number</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">      </span><span class="n">blk</span><span class="o">.</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">number</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<!--
+I think using RPO is just a heuristic; other block orders may shrink live
+ranges, reduce parallel moves, etc. I could be way off base here but I don't
+think we even have to order the blocks in dominance order because we're doing a
+full dataflow-based liveness analysis; the ordering and positioning
+requirements from Wimmer2010 come from the quick liveness with loop headers
+thing.
+-->
+
+<p>A couple interesting things to note:</p>
+<ul>
+<li>We number blocks because we use block starts as the start index for all of
+that block's parameters</li>
+<li>We start numbering at 16 just so we can eyeball things and make sure they
+line up with the Wimmer2010 paper</li>
+<li>We only give out even numbers because later we'll insert loads and stores at
+odd-numbered instructions
+<ul>
+<li>Cinder does this to <a href="https://github.com/facebookincubator/cinderx/blob/2b8774f077d6ef441207067411d157bb4f94a40b/cinderx/Jit/lir/regalloc.cpp#L243">separately identify instruction input and instruction output</a></li>
+<li>Vox <a href="https://github.com/MrSmith33/vox/blob/b49cc734d6e5119e20229ee2d14612e33c6a5499/source/vox/be/reg_alloc/linear_scan.d#L10">splits only at odd positions</a></li>
+</ul>
+</li>
+</ul>
+<p>Even though we have extra instructions, it looks very similar to the example in
+the Wimmer2010 paper.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>16: label B1(R10, R11):
+18: jmp B2($1, R11)
+     # vvvvvvvvvv #
+20: label B2(R12, R13)
+22: cmp R13, $1
+24: branch lessThan B4() else B3()
+
+26: label B3()
+28: mul R12, R13 -&gt; R14
+30: sub R13, $1 -&gt; R15
+32: jump B2(R14, R15)
+
+34: label B4()
+     # ^^^^^^^^^^ #
+36: add R10, R12 -&gt; R16
+38: ret R16
+</code></pre></div></div>
+
+<p>Since we're not going to be messing with the order of the instructions within a
+block anymore, all we have to do going forward is make sure that we iterate
+through the blocks in <code class="language-plaintext highlighter-rouge">@block_order</code>.</p>
+<p>Finally, we have all that we need to compute live ranges.</p>
+<h2 id="live-ranges">Live ranges</h2>
+
+<p>We'll more or less copy the algorithm to compute live ranges from the
+Wimmer2010 paper. We'll have two main differences:</p>
+<ul>
+<li>We're going to compute live ranges, not live intervals (as they do in the
+paper)</li>
+<li>We're going to use our dataflow liveness analysis, not the loop header thing</li>
+</ul>
+<p>I know I said we were going to be computing live ranges. So why am I presenting
+you with a function called <code class="language-plaintext highlighter-rouge">build_intervals</code>? That's because early in
+the history of linear scan (Traub1998!), people moved from having a single range for a
+particular virtual register to having <em>multiple</em> disjoint ranges. This
+collection of multiple ranges is called an <em>interval</em> and it exists to free up
+registers in the context of branches.</p>
+<p>For example, in the our IR snippet (above), R12 is defined in B2 as a block
+parameter, used in B3, and then not used again until some indetermine point in
+B4. (Our example uses it immediately in an add instruction to keep things
+short, but pretend the second use is some time away.)</p>
+<p>The Wimmer2010 paper creates a <em>lifetime hole</em> between 28 and 34, meaning that the
+interval for R12 (called i12) is <code class="language-plaintext highlighter-rouge">[[20, 28), [34, ...)]</code>. Interval holes are
+not strictly necessary—they exist to generate better code. So for this post,
+we're going to start simple and assume 1 interval == 1 range. We may come back
+later and add additional ranges, but that will require some fixes to our later
+implementation. We'll note where we think those fixes should happen.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BUILDINTERVALS
+for each block b in reverse order do
+  live = union of successor.liveIn for each successor of b
+  for each phi function phi of successors of b do
+    live.add(phi.inputOf(b))
+  for each opd in live do
+    intervals[opd].addRange(b.from, b.to)
+  for each operation op of b in reverse order do
+    for each output operand opd of op do
+      intervals[opd].setFrom(op.id)
+      live.remove(opd)
+    for each input operand opd of op do
+      intervals[opd].addRange(b.from, op.id)
+      live.add(opd)
+  for each phi function phi of b do
+    live.remove(phi.output)
+  if b is loop header then
+    loopEnd = last block of the loop starting at b
+    for each opd in live do
+      intervals[opd].addRange(b.from, loopEnd.to)
+  b.liveIn = live
+</code></pre></div></div>
+
+<p>Anyway, here is the mostly-copied annotated implementation of BuildIntervals
+from the Wimmer2010 paper:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Function</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">build_intervals</span><span class="w"> </span><span class="n">live_in</span>
+<span class="w">    </span><span class="n">intervals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="nb">hash</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="o">|</span><span class="w"> </span><span class="nb">hash</span><span class="o">[</span><span class="n">key</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Interval</span><span class="o">.</span><span class="n">new</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="vi">@block_order</span><span class="o">.</span><span class="n">reverse_each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">block</span><span class="o">|</span>
+<span class="w">      </span><span class="c1"># live = union of successor.liveIn for each successor of b</span>
+<span class="w">      </span><span class="c1"># this is the *live out* of the current block since we&#39;re going to be</span>
+<span class="w">      </span><span class="c1"># iterating backwards over instructions</span>
+<span class="w">      </span><span class="n">live</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">block</span><span class="o">.</span><span class="n">successors</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">succ</span><span class="o">|</span><span class="w"> </span><span class="n">live_in</span><span class="o">[</span><span class="n">succ</span><span class="o">]</span><span class="w"> </span><span class="p">}</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="ss">:|</span><span class="p">)</span>
+<span class="w">      </span><span class="c1"># for each phi function phi of successors of b do</span>
+<span class="w">      </span><span class="c1">#   live.add(phi.inputOf(b))</span>
+<span class="w">      </span><span class="n">live</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">block</span><span class="o">.</span><span class="n">out_vregs</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">vreg</span><span class="o">|</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">vreg</span><span class="o">.</span><span class="n">num</span><span class="w"> </span><span class="p">}</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="ss">:|</span><span class="p">)</span>
+<span class="w">      </span><span class="n">each_bit</span><span class="p">(</span><span class="n">live</span><span class="p">)</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">idx</span><span class="o">|</span>
+<span class="w">        </span><span class="n">opd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vreg</span><span class="w"> </span><span class="n">idx</span>
+<span class="w">        </span><span class="n">intervals</span><span class="o">[</span><span class="n">opd</span><span class="o">].</span><span class="n">add_range</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">block</span><span class="o">.</span><span class="n">to</span><span class="p">)</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">      </span><span class="n">block</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">reverse</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">insn</span><span class="o">|</span>
+<span class="w">        </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insn</span><span class="o">.</span><span class="n">out</span><span class="o">&amp;.</span><span class="n">as_vreg</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">out</span>
+<span class="w">          </span><span class="c1"># for each output operand opd of op do</span>
+<span class="w">          </span><span class="c1">#   intervals[opd].setFrom(op.id)</span>
+<span class="w">          </span><span class="n">intervals</span><span class="o">[</span><span class="n">out</span><span class="o">].</span><span class="n">set_from</span><span class="p">(</span><span class="n">insn</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="c1"># for each input operand opd of op do</span>
+<span class="w">        </span><span class="c1">#   intervals[opd].addRange(b.from, op.id)</span>
+<span class="w">        </span><span class="n">insn</span><span class="o">.</span><span class="n">vreg_ins</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">opd</span><span class="o">|</span>
+<span class="w">          </span><span class="n">intervals</span><span class="o">[</span><span class="n">opd</span><span class="o">].</span><span class="n">add_range</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">insn</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">intervals</span><span class="o">.</span><span class="n">default_proc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kp">nil</span>
+<span class="w">    </span><span class="n">intervals</span><span class="o">.</span><span class="n">freeze</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Another difference is that since we're using block parameters, we don't really
+have this <code class="language-plaintext highlighter-rouge">phi.inputOf</code> thing. That's just the block argument.</p>
+<p>The last difference is that since we're skipping the loop liveness hack, we
+don't modify a block's <code class="language-plaintext highlighter-rouge">live</code> set as we iterate through instructions.</p>
+<p>I know we said we're building live ranges, so our <code class="language-plaintext highlighter-rouge">Interval</code> class only has
+one <code class="language-plaintext highlighter-rouge">Range</code> on it. This is Ruby's built-in range, but it's really just being
+used as a tuple of integers here.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Interval</span>
+<span class="w">  </span><span class="kp">attr_reader</span><span class="w"> </span><span class="ss">:range</span>
+
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">add_range</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">from</span>
+<span class="w">      </span><span class="k">raise</span><span class="w"> </span><span class="no">ArgumentError</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Invalid range: </span><span class="si">#{</span><span class="n">from</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="n">to</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="vi">@range</span>
+<span class="w">      </span><span class="vi">@range</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Range</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<span class="w">      </span><span class="k">return</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="vi">@range</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Range</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="vi">@range</span><span class="o">.</span><span class="n">begin</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="o">].</span><span class="n">min</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="vi">@range</span><span class="o">.</span><span class="n">end</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="o">].</span><span class="n">max</span><span class="p">)</span>
+<span class="w">  </span><span class="k">end</span>
+
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">set_from</span><span class="p">(</span><span class="n">from</span><span class="p">)</span>
+<span class="w">    </span><span class="vi">@range</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="vi">@range</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="vi">@range</span><span class="o">.</span><span class="n">end</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">from</span>
+<span class="w">        </span><span class="k">raise</span><span class="w"> </span><span class="no">ArgumentError</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Invalid range: </span><span class="si">#{</span><span class="n">from</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="vi">@range</span><span class="o">.</span><span class="n">end</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">      </span><span class="no">Range</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="vi">@range</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">      </span><span class="c1"># This happens when we don&#39;t have a use of the vreg</span>
+<span class="w">      </span><span class="c1"># If we don&#39;t have a use, the live range is very short</span>
+<span class="w">      </span><span class="no">Range</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">end</span>
+
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">==</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+<span class="w">    </span><span class="n">other</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Interval</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="vi">@range</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">other</span><span class="o">.</span><span class="n">range</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Note that there's some implicit behavior happening here:</p>
+<ul>
+<li>If we haven't initialized a range yet, we build one automatically</li>
+<li>If we have a range, <code class="language-plaintext highlighter-rouge">add_range</code> builds the smallest range that overlaps with
+the existing range and incoming information</li>
+<li>If we have a range, <code class="language-plaintext highlighter-rouge">set_from</code> may shrink it</li>
+</ul>
+<p>For example, if we have <code class="language-plaintext highlighter-rouge">[1, 5)</code> and someone calls <code class="language-plaintext highlighter-rouge">add_range(7, 10)</code>, we end
+up with <code class="language-plaintext highlighter-rouge">[1, 10)</code>. There's no gap in the middle.</p>
+<p>And if we have <code class="language-plaintext highlighter-rouge">[1, 7)</code> and someone calls <code class="language-plaintext highlighter-rouge">set_from(3)</code>, we end up with <code class="language-plaintext highlighter-rouge">[3, 7)</code>.</p>
+<p>After figuring out from scratch some of these assumptions about what the
+interval/range API should and should not do, Aaron and I realized that there
+was some actual code for <code class="language-plaintext highlighter-rouge">add_range</code> in a different, earlier paper: <a href="/assets/img/linear-scan-ra-context-ssa.pdf">Linear
+Scan Register Allocation in the Context of SSA Form and Register
+Constraints</a> (PDF, 2002) by Mössenböck and Pfeiffer.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ADDRANGE(i: Instruction; b: Block; end: integer)
+  if b.first.n ≤ i.n ≤ b.last.n then range ← [i.n, end[ else range ← [b.first.n, end[
+  add range to interval[i.n] // merging adjacent ranges
+</code></pre></div></div>
+
+<p>Unfortunately, many other versions of this PDF look absolutely horrible (like
+bad OCR) and I had to do some digging to find the version linked above.</p>
+<p>Finally we can start thinking about doing some actual register assignment.
+Let's return to the 90s.</p>
+<h2 id="linear-scan">Linear scan</h2>
+
+<p>Because we have faithfully kept 1 interval == 1 range, we can re-use the linear
+scan algorithm from Poletto1999 (which looks, at a glance, to be the same
+as 1997).</p>
+<p>I recommend looking at the PDF side by side with the code. We have tried to
+keep the structure very similar.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LinearScanRegisterAllocation
+active ← {}
+foreach live interval i, in order of increasing start point
+  ExpireOldIntervals(i)
+  if length(active) = R then
+    SpillAtInterval(i)
+  else
+    register[i] ← a register removed from pool of free registers
+    add i to active, sorted by increasing end point
+
+ExpireOldIntervals(i)
+foreach interval j in active, in order of increasing end point
+  if endpoint[j] ≥ startpoint[i] then
+    return
+  remove j from active
+  add register[j] to pool of free registers
+
+SpillAtInterval(i)
+spill ← last interval in active
+if endpoint[spill] &gt; endpoint[i] then
+  register[i] ← register[spill]
+  location[spill] ← new stack location
+  remove spill from active
+  add i to active, sorted by increasing end point
+else
+  location[i] ← new stack location
+</code></pre></div></div>
+
+<p>Note that unlike in many programming languages these days, <code class="language-plaintext highlighter-rouge">{}</code> in the
+algorithm description represents a <em>set</em>, not a (hash-)map.</p>
+<p>In our Ruby code, we represent <code class="language-plaintext highlighter-rouge">active</code> as an array:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Function</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">ye_olde_linear_scan</span><span class="w"> </span><span class="n">intervals</span><span class="p">,</span><span class="w"> </span><span class="n">num_registers</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">num_registers</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">      </span><span class="k">raise</span><span class="w"> </span><span class="no">ArgumentError</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Number of registers must be positive&quot;</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">free_registers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Set</span><span class="o">.</span><span class="n">new</span><span class="w"> </span><span class="mi">0</span><span class="o">...</span><span class="n">num_registers</span>
+<span class="w">    </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span><span class="w">  </span><span class="c1"># Active intervals, sorted by increasing end point</span>
+<span class="w">    </span><span class="n">assignment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span><span class="w">  </span><span class="c1"># Map from Interval to PReg|StackSlot</span>
+<span class="w">    </span><span class="n">num_stack_slots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="c1"># Iterate through intervals in order of increasing start point</span>
+<span class="w">    </span><span class="c1"># TODO(max): Build a deque for intervals, pushing to the front, so we</span>
+<span class="w">    </span><span class="c1"># automatically get this in sorted order</span>
+<span class="w">    </span><span class="n">sorted_intervals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">intervals</span><span class="o">.</span><span class="n">sort_by</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">_</span><span class="p">,</span><span class="w"> </span><span class="n">interval</span><span class="o">|</span><span class="w"> </span><span class="n">interval</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">begin</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">sorted_intervals</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">_vreg</span><span class="p">,</span><span class="w"> </span><span class="n">interval</span><span class="o">|</span>
+<span class="w">      </span><span class="c1"># expire_old_intervals(interval)</span>
+<span class="w">      </span><span class="n">active</span><span class="o">.</span><span class="n">select!</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">active_interval</span><span class="o">|</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">active_interval</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">end</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">interval</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">begin</span>
+<span class="w">          </span><span class="kp">true</span>
+<span class="w">        </span><span class="k">else</span>
+<span class="w">          </span><span class="n">operand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assignment</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">active_interval</span><span class="p">)</span>
+<span class="w">          </span><span class="k">raise</span><span class="w"> </span><span class="s2">&quot;Should be assigned a register&quot;</span><span class="w"> </span><span class="k">unless</span><span class="w"> </span><span class="n">operand</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">PReg</span><span class="p">)</span>
+<span class="w">          </span><span class="n">free_registers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="w">          </span><span class="kp">false</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="n">active</span><span class="o">.</span><span class="n">length</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">num_registers</span>
+<span class="w">        </span><span class="c1"># spill_at_interval(interval)</span>
+<span class="w">        </span><span class="c1"># Pick an interval to spill. Picking the longest-lived active one is</span>
+<span class="w">        </span><span class="c1"># a heuristic from the original linear scan paper.</span>
+<span class="w">        </span><span class="n">spill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">active</span><span class="o">.</span><span class="n">last</span>
+<span class="w">        </span><span class="c1"># In either case, we need to allocate a slot on the stack.</span>
+<span class="w">        </span><span class="n">slot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">StackSlot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">num_stack_slots</span><span class="p">)</span>
+<span class="w">        </span><span class="n">num_stack_slots</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">spill</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">end</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">interval</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">end</span>
+<span class="w">          </span><span class="c1"># The last active interval ends further away than the current</span>
+<span class="w">          </span><span class="c1"># interval; spill the last active interval.</span>
+<span class="w">          </span><span class="n">assignment</span><span class="o">[</span><span class="n">interval</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assignment</span><span class="o">[</span><span class="n">spill</span><span class="o">]</span>
+<span class="w">          </span><span class="k">raise</span><span class="w"> </span><span class="s2">&quot;Should be assigned a register&quot;</span><span class="w"> </span><span class="k">unless</span><span class="w"> </span><span class="n">assignment</span><span class="o">[</span><span class="n">interval</span><span class="o">].</span><span class="n">is_a?</span><span class="p">(</span><span class="no">PReg</span><span class="p">)</span>
+<span class="w">          </span><span class="n">assignment</span><span class="o">[</span><span class="n">spill</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slot</span>
+<span class="w">          </span><span class="n">active</span><span class="o">.</span><span class="n">pop</span><span class="w">  </span><span class="c1"># We know spill is the last one</span>
+<span class="w">          </span><span class="c1"># Insert interval into already-sorted active</span>
+<span class="w">          </span><span class="n">insert_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">active</span><span class="o">.</span><span class="n">bsearch_index</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">i</span><span class="o">|</span><span class="w"> </span><span class="n">i</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">end</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">interval</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">end</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">active</span><span class="o">.</span><span class="n">length</span>
+<span class="w">          </span><span class="n">active</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">insert_idx</span><span class="p">,</span><span class="w"> </span><span class="n">interval</span><span class="p">)</span>
+<span class="w">        </span><span class="k">else</span>
+<span class="w">          </span><span class="c1"># The current interval ends further away than the last active</span>
+<span class="w">          </span><span class="c1"># interval; spill the current interval.</span>
+<span class="w">          </span><span class="n">assignment</span><span class="o">[</span><span class="n">interval</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slot</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">      </span><span class="k">else</span>
+<span class="w">        </span><span class="n">reg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">free_registers</span><span class="o">.</span><span class="n">min</span>
+<span class="w">        </span><span class="n">free_registers</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+<span class="w">        </span><span class="n">assignment</span><span class="o">[</span><span class="n">interval</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">PReg</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+<span class="w">        </span><span class="c1"># Insert interval into already-sorted active</span>
+<span class="w">        </span><span class="n">insert_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">active</span><span class="o">.</span><span class="n">bsearch_index</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">i</span><span class="o">|</span><span class="w"> </span><span class="n">i</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">end</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">interval</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">end</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">active</span><span class="o">.</span><span class="n">length</span>
+<span class="w">        </span><span class="n">active</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">insert_idx</span><span class="p">,</span><span class="w"> </span><span class="n">interval</span><span class="p">)</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="o">[</span><span class="n">assignment</span><span class="p">,</span><span class="w"> </span><span class="n">num_stack_slots</span><span class="o">]</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Internalizing this took us a bit. It is mostly a three-state machine:</p>
+<ul>
+<li>have not been allocated</li>
+<li>have been allocated a register</li>
+<li>have been allocated a stack slot</li>
+</ul>
+<p>We would like to come back to this and incrementally modify it as we add
+lifetime holes to intervals.</p>
+<p>I finally understood, very late in the game, that Poletto1999 linear scan assigns only one
+location per virtual register. <em>Ever</em>. It's not that every virtual register
+gets a shot in a register and then gets moved to a stack slot—that would be
+interval splitting and hopefully we get to that later—if a register gets
+spilled, it's in a stack slot from beginning to end.</p>
+<p>I only found this out accidentally after trying to figure out a bug (that
+wasn't a bug) due to a lovely sentence in <a href="/assets/img/optimized-interval-splitting-linear-scan-ra.pdf">Optimized Interval Splitting in a
+Linear Scan Register Allocator</a> (PDF, 2005) by
+Wimmer and Mössenböck):</p>
+<blockquote>
+<p>However, it cannot deal with lifetime holes and does not split intervals, so
+an interval has either a register assigned for the whole lifetime, or it is
+spilled completely.</p>
+</blockquote>
+<p>Also,</p>
+<blockquote>
+<p>In particular, it is not possible to implement the algorithm without
+reserving a scratch register: When a spilled interval is used by an
+instruction requiring the operand in a register, the interval must be
+temporarily reloaded to the scratch register</p>
+</blockquote>
+<p>Also,</p>
+<blockquote>
+<p>Additionally, register constraints for method calls and instructions
+requiring fixed registers must be handled separately</p>
+</blockquote>
+<p>Marvelous.</p>
+<p>Let's take a look at the code snippet again. Here it is before register
+allocation, using virtual registers:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>16: label B1(R10, R11):
+18: jmp B2($1, R11)
+     # vvvvvvvvvv #
+20: label B2(R12, R13)
+22: cmp R13, $1
+24: branch lessThan B4()
+
+26: label B3()
+28: mul R12, R13 -&gt; R14
+30: sub R13, $1 -&gt; R15
+32: jump B2(R14, R15)
+
+34: label B4()
+     # ^^^^^^^^^^ #
+36: add R10, R12 -&gt; R16
+38: ret R16
+</code></pre></div></div>
+
+<p>Let's run it through register allocation with incrementally decreasing numbers
+of physical registers available. We get the following assignments:</p>
+<ul>
+<li>4 registers <code class="language-plaintext highlighter-rouge">{R10: P0, R11: P1, R12: P1, R13: P2, R14: P3, R15: P2, R16: P0}</code></li>
+<li>3 registers <code class="language-plaintext highlighter-rouge">{R10: Stack[0], R11: P1, R12: P1, R13: P2, R14: P0, R15: P2, R16: P0}</code></li>
+<li>2 registers <code class="language-plaintext highlighter-rouge">{R10: Stack[0], R11: P1, R12: Stack[1], R13: P0, R14: P1, R15: P0, R16: P0}</code></li>
+<li>1 register <code class="language-plaintext highlighter-rouge">{R10: Stack[0], R11: P0, R12: Stack[1], R13: P0, R14: Stack[2], R15: P0, R16: P0}</code></li>
+</ul>
+<p>Some other things to note:</p>
+<ul>
+<li>
+<p>If you have a register free, choosing which register to allocate is a
+heuristic! It is tunable. There is probably some research out there that
+explores the space.</p>
+<p>In fact, you might even consider <em>not</em> allocating a register greedily. What
+might that look like? I have no idea.</p>
+</li>
+<li>
+<p>Spilling the interval with the furthest endpoint is a heuristic! You can
+pick any active interval you want. In <a href="/assets/img/register-spilling-range-splitting-ssa.pdf">Register Spilling and Live-Range
+Splitting for SSA-Form Programs</a> (PDF,
+2009) by Braun and Hack, for example, they present the MIN algorithm, which
+spills the interval with the furthest next use.</p>
+<p>This requires slightly more information and takes slightly more time than
+the default heuristic but apparently generates much better code.</p>
+</li>
+<li>
+<p>Also, block ordering? You guessed it. Heuristic.</p>
+</li>
+</ul>
+<p>Here is an example "slideshow" I generated by running linear scan with 2
+registers. Use the arrow keys to navigate forward and backward in time<sup class="footnote-ref" id="fnref-4"><a href="#fn-4">4</a></sup>.</p>
+<iframe src="/assets/lsra.html" width="100%" onload="this.style.height = this.contentWindow.document.documentElement.scrollHeight + 'px';"></iframe>
+
+<h2 id="resolving-ssa">Resolving SSA</h2>
+
+<p>At this point we have register <em>assignments</em>: we have a hash table mapping
+intervals to physical locations. That's great but we're still in SSA form:
+labelled code regions don't have block arguments in hardware. We need to write
+some code to take us out of SSA and into the real world.</p>
+<p>We can use a modified Wimmer2010 as a great start point here. It handles more
+than we need to right now—interval splitting—but we can simplify.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RESOLVE
+for each control flow edge from predecessor to successor do
+  for each interval it live at begin of successor do
+    if it starts at begin of successor then
+      phi = phi function defining it
+      opd = phi.inputOf(predecessor)
+      if opd is a constant then
+        moveFrom = opd
+      else
+        moveFrom = location of intervals[opd] at end of predecessor
+    else
+      moveFrom = location of it at end of predecessor
+    moveTo = location of it at begin of successor
+    if moveFrom ≠ moveTo then
+      mapping.add(moveFrom, moveTo)
+  mapping.orderAndInsertMoves()
+</code></pre></div></div>
+
+<p>Because we don't split intervals, we know that every interval live at the
+beginning of a block is either:</p>
+<ul>
+<li>live across an edge between two blocks and therefore has already been placed
+in a location by assignment/spill code</li>
+<li>beginning its life at the beginning of the block as a block parameter and
+therefore needs to be moved from its source location</li>
+</ul>
+<p>For this reason, we only handle the second case in our SSA resolution. If we
+added <del>lifetime holes</del> interval splitting, we would have to go back to the
+full Wimmer SSA resolution.</p>
+<p>This means that we're going to iterate over every outbound edge from every
+block. For each edge, we're going to insert some parallel moves.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Function</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">resolve_ssa</span><span class="w"> </span><span class="n">intervals</span><span class="p">,</span><span class="w"> </span><span class="n">assignments</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">    </span><span class="vi">@block_order</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">predecessor</span><span class="o">|</span>
+<span class="w">      </span><span class="n">outgoing_edges</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">predecessor</span><span class="o">.</span><span class="n">edges</span>
+<span class="w">      </span><span class="n">num_successors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">outgoing_edges</span><span class="o">.</span><span class="n">length</span>
+<span class="w">      </span><span class="n">outgoing_edges</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">edge</span><span class="o">|</span>
+<span class="w">        </span><span class="n">mapping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span>
+<span class="w">        </span><span class="n">successor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">edge</span><span class="o">.</span><span class="n">block</span>
+<span class="w">        </span><span class="n">edge</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">successor</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">moveFrom</span><span class="p">,</span><span class="w"> </span><span class="n">moveTo</span><span class="o">|</span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="n">moveFrom</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">moveTo</span>
+<span class="w">            </span><span class="n">mapping</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">[</span><span class="n">moveFrom</span><span class="p">,</span><span class="w"> </span><span class="n">moveTo</span><span class="o">]</span>
+<span class="w">          </span><span class="k">end</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="c1"># predecessor.order_and_insert_moves(mapping)</span>
+<span class="w">        </span><span class="c1"># TODO: order_and_insert_moves</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="c1"># Remove all block parameters and arguments; we have resolved SSA</span>
+<span class="w">    </span><span class="vi">@block_order</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">block</span><span class="o">|</span>
+<span class="w">      </span><span class="n">block</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">clear</span>
+<span class="w">      </span><span class="n">block</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">edge</span><span class="o">|</span>
+<span class="w">        </span><span class="n">edge</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">clear</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>This already looks very similar to the RESOLVE function from Wimmer2010.
+Unfortunately, Wimmer2010 basically shrugs off <code class="language-plaintext highlighter-rouge">orderAndInsertMoves</code> with an <em>eh, it's
+already in the literature</em> comment.</p>
+<h3 id="a-brief-and-frustrating-parallel-moves-detour">A brief and frustrating parallel moves detour</h3>
+
+<p>What's not made clear, though, is that this particular subroutine has been the
+source of a significant amount of bugs in the literature. Only recently did
+some folks roll through and suggest (proven!) fixes:</p>
+<ul>
+<li><a href="/assets/img/parallel-move-leroy.pdf">Battling windmills with Coq: formal verification of a compilation algorithm
+for parallel moves</a> (PDF, 2007) by Rideau, Serpette, and
+Leroy</li>
+<li><a href="/assets/img/boissinot-out-ssa.pdf">Revisiting Out-of-SSA Translation for Correctness, Code Quality, and
+Efficiency</a> (PDF, 2009) by Boissinot, Darte, Rastello,
+Dupont de Dinechin, and Guillon.
+<ul>
+<li>and again in <a href="/assets/img/boissinot-thesis.pdf">Boissinot's thesis</a> (PDF, 2010)</li>
+</ul>
+</li>
+</ul>
+<p>This sent us on a deep rabbit hole of trying to understand what bugs occur,
+when, and how to fix them. We implemented both the Leroy and the Boissinot
+algorithms. We found differences between Boissinot2009, Boissinot2010, and the
+SSA book implementation following those algorithms. We found Paul Sokolovsky's
+<a href="https://github.com/pfalcon/parcopy/">implementation with bugfixes</a>. We found
+Dmitry Stogov's <a href="https://github.com/pfalcon/parcopy/pull/1">unmerged pull
+request</a> to the same repository to
+fix another bug.</p>
+<p>We looked at Benoit Boissinot's thesis again and emailed him some questions. He
+responded! And then he even put up an <a href="https://github.com/bboissin/thesis_bboissin">amended version of his
+algorithm</a> in Rust with tests and
+fuzzing.</p>
+<p>All this is to say that this is still causing people grief and, though I
+understand page limits, I wish parallel moves were not handwaved away.</p>
+<p>We ended up with this implementation which passes all of the tests from
+Sokolovsky's repository as well as the example from Boissinot's thesis (though,
+as we discussed in the email, the example solution in the thesis is
+incorrect<sup class="footnote-ref" id="fnref-5"><a href="#fn-5">5</a></sup>).</p>
+<div class="highlight"><pre><span></span><span class="c1"># copies contains an array of [src, dst] arrays</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sequentialize</span><span class="w"> </span><span class="n">copies</span>
+<span class="w">  </span><span class="n">ready</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span><span class="w">  </span><span class="c1"># Contains only destination regs (&quot;available&quot;)</span>
+<span class="w">  </span><span class="n">to_do</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span><span class="w">  </span><span class="c1"># Contains only destination regs</span>
+<span class="w">  </span><span class="n">pred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span><span class="w">  </span><span class="c1"># Map of destination reg -&gt; what reg is written to it (its source)</span>
+<span class="w">  </span><span class="n">loc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span><span class="w">  </span><span class="c1"># Map of reg -&gt; the current location where the initial value of reg is available (&quot;resource&quot;)</span>
+<span class="w">  </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span>
+
+<span class="w">  </span><span class="n">emit_copy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1"># We add an arrow here just for clarity in reading this algorithm because</span>
+<span class="w">    </span><span class="c1"># different people do [src, dst] and [dst, src] depending on if they prefer</span>
+<span class="w">    </span><span class="c1"># Intel or AT&amp;T</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">[</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="o">]</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1"># In Ruby, loc[x] is nil if x not in loc, so this loop could be omitted</span>
+<span class="w">  </span><span class="n">copies</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">)</span><span class="o">|</span>
+<span class="w">    </span><span class="n">loc</span><span class="o">[</span><span class="n">dst</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kp">nil</span>
+<span class="w">  </span><span class="k">end</span>
+
+<span class="w">  </span><span class="n">copies</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">)</span><span class="o">|</span>
+<span class="w">    </span><span class="n">loc</span><span class="o">[</span><span class="n">src</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">src</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">pred</span><span class="o">.</span><span class="n">key?</span><span class="w"> </span><span class="n">dst</span><span class="w">  </span><span class="c1"># Alternatively, to_do.include? dst</span>
+<span class="w">      </span><span class="k">raise</span><span class="w"> </span><span class="s2">&quot;Conflicting assignments to destination </span><span class="si">#{</span><span class="n">dst</span><span class="si">}</span><span class="s2">, latest: </span><span class="si">#{</span><span class="o">[</span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">src</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">pred</span><span class="o">[</span><span class="n">dst</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">src</span>
+<span class="w">    </span><span class="n">to_do</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">dst</span>
+<span class="w">  </span><span class="k">end</span>
+
+<span class="w">  </span><span class="n">copies</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">)</span><span class="o">|</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="n">loc</span><span class="o">[</span><span class="n">dst</span><span class="o">]</span>
+<span class="w">      </span><span class="c1"># All destinations that are not also sources can be written to immediately (tree leaves)</span>
+<span class="w">      </span><span class="n">ready</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">dst</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">end</span>
+
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="o">!</span><span class="n">to_do</span><span class="o">.</span><span class="n">empty?</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ready</span><span class="o">.</span><span class="n">pop</span>
+<span class="w">      </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">loc</span><span class="o">[</span><span class="n">pred</span><span class="o">[</span><span class="n">b</span><span class="o">]]</span><span class="w"> </span><span class="c1"># a in the paper</span>
+<span class="w">      </span><span class="n">emit_copy</span><span class="o">.</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="w">      </span><span class="c1"># pred[b] is now living at b</span>
+<span class="w">      </span><span class="n">loc</span><span class="o">[</span><span class="n">pred</span><span class="o">[</span><span class="n">b</span><span class="o">]]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="n">to_do</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="w">        </span><span class="n">to_do</span><span class="o">.</span><span class="n">delete</span><span class="w"> </span><span class="n">a</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="n">pred</span><span class="o">[</span><span class="n">b</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">pred</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="w">        </span><span class="n">ready</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">to_do</span><span class="o">.</span><span class="n">empty?</span>
+<span class="w">      </span><span class="k">break</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="w">    </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to_do</span><span class="o">.</span><span class="n">pop</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">loc</span><span class="o">[</span><span class="n">pred</span><span class="o">[</span><span class="n">dst</span><span class="o">]]</span>
+<span class="w">      </span><span class="n">emit_copy</span><span class="o">.</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;tmp&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="n">loc</span><span class="o">[</span><span class="n">dst</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;tmp&quot;</span>
+<span class="w">      </span><span class="n">ready</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">dst</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="w">  </span><span class="n">result</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Leroy's algorithm, which is shorter, passes almost all the tests—in one test
+case, it uses one more temporary variable than Boissinot's does. We haven't
+spent much time looking at why.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">move_one</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">result</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">src</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">dst</span><span class="o">[</span><span class="n">i</span><span class="o">]</span>
+<span class="w">  </span><span class="n">status</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:being_moved</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">...</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">src</span><span class="o">[</span><span class="n">j</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">dst</span><span class="o">[</span><span class="n">i</span><span class="o">]</span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="n">status</span><span class="o">[</span><span class="n">j</span><span class="o">]</span>
+<span class="w">      </span><span class="k">when</span><span class="w"> </span><span class="ss">:to_move</span>
+<span class="w">        </span><span class="n">move_one</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">result</span>
+<span class="w">      </span><span class="k">when</span><span class="w"> </span><span class="ss">:being_moved</span>
+<span class="w">        </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">[</span><span class="n">src</span><span class="o">[</span><span class="n">j</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;tmp&quot;</span><span class="o">]</span>
+<span class="w">        </span><span class="n">src</span><span class="o">[</span><span class="n">j</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;tmp&quot;</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="w">  </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">[</span><span class="n">src</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="o">[</span><span class="n">i</span><span class="o">]]</span>
+<span class="w">  </span><span class="n">status</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:moved</span>
+<span class="k">end</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">leroy_sequentialize</span><span class="w"> </span><span class="n">copies</span>
+<span class="w">  </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">copies</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">it</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">copies</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">it</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="ss">:to_move</span><span class="o">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">src</span><span class="o">.</span><span class="n">length</span>
+<span class="w">  </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span>
+<span class="w">  </span><span class="n">status</span><span class="o">.</span><span class="n">each_with_index</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">item</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="o">|</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="ss">:to_move</span>
+<span class="w">      </span><span class="n">move_one</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">result</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="w">  </span><span class="n">result</span>
+<span class="k">end</span>
+</pre></div>
+
+<h3 id="back-to-ssa-resolution">Back to SSA resolution</h3>
+
+<p>Whatever algorithm you choose, you now have a way to parallel move some
+registers to some other registers. You have avoided the "swap problem".</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Function</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">resolve_ssa</span><span class="w"> </span><span class="n">intervals</span><span class="p">,</span><span class="w"> </span><span class="n">assignments</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">        </span><span class="c1"># predecessor.order_and_insert_moves(mapping)</span>
+<span class="w">        </span><span class="n">sequence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sequentialize</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">)</span><span class="o">|</span>
+<span class="w">          </span><span class="no">Insn</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:mov</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">src</span><span class="o">]</span><span class="p">)</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="c1"># TODO: insert the moves!</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>That's great. You can generate an ordered list of instructions from a tangled
+graph. But where do you put them? What about the "lost copy" problem?</p>
+<p>As it turns out, we still need to handle critical edge splitting. Let's
+consider what it means to insert moves at an edge between blocks <code class="language-plaintext highlighter-rouge">A -&gt; B</code> when
+the surrounding CFG looks a couple of different ways.</p>
+<ul>
+<li>Case 1: <code class="language-plaintext highlighter-rouge">A -&gt; B</code></li>
+<li>Case 2: <code class="language-plaintext highlighter-rouge">A -&gt; B</code> and <code class="language-plaintext highlighter-rouge">A -&gt; C</code></li>
+<li>Case 3: <code class="language-plaintext highlighter-rouge">A -&gt; B</code> and <code class="language-plaintext highlighter-rouge">D -&gt; B</code></li>
+<li>Case 4: <code class="language-plaintext highlighter-rouge">A -&gt; B</code> and <code class="language-plaintext highlighter-rouge">A -&gt; C</code> and <code class="language-plaintext highlighter-rouge">D -&gt; B</code></li>
+</ul>
+<p>These are the four (really, three) cases we may come across.</p>
+<p>In Case 1, if we only have two neighboring blocks A and B, we can
+insert the moves into either block. It doesn't matter: at the end of A or at
+the beginning of B are both fine.</p>
+<p>In Case 2, if A has two successors, then we should insert the moves at the
+beginning of B. That way we won't be mucking things up for the edge <code class="language-plaintext highlighter-rouge">A -&gt; C</code>.</p>
+<p>In Case 3, if B has two predecessors, then we should insert the moves at the
+end of A. That way we won't be mucking things up for the edge <code class="language-plaintext highlighter-rouge">D -&gt; B</code>.</p>
+<p>Case 4 is the most complicated. There is no extant place in the graph we can
+insert moves. If we insert in A, we mess things up for <code class="language-plaintext highlighter-rouge">A -&gt; C</code>. If we insert
+in <code class="language-plaintext highlighter-rouge">B</code>, we mess things up for <code class="language-plaintext highlighter-rouge">D -&gt; B</code>. Inserting in <code class="language-plaintext highlighter-rouge">C</code> or <code class="language-plaintext highlighter-rouge">D</code> doesn't make
+any sense. What is there to do?</p>
+<p>As it turns out, Case 4 is called a <em>critical edge</em>. And we have to split it.</p>
+<p>We can insert a new block E along the edge <code class="language-plaintext highlighter-rouge">A -&gt; B</code> and put the moves in E!
+That way they still happen along the edge without affecting any other blocks.
+Neat.</p>
+<p>In Ruby code, that looks like:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Function</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">resolve_ssa</span><span class="w"> </span><span class="n">intervals</span><span class="p">,</span><span class="w"> </span><span class="n">assignments</span>
+<span class="w">    </span><span class="n">num_predecessors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="vi">@block_order</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">block</span><span class="o">|</span>
+<span class="w">      </span><span class="n">block</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">edge</span><span class="o">|</span>
+<span class="w">        </span><span class="n">num_predecessors</span><span class="o">[</span><span class="n">edge</span><span class="o">.</span><span class="n">block</span><span class="o">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">        </span><span class="c1"># predecessor.order_and_insert_moves(mapping)</span>
+<span class="w">        </span><span class="n">sequence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">...</span>
+<span class="w">        </span><span class="c1"># If we don&#39;t have any moves to insert, we don&#39;t have any block to</span>
+<span class="w">        </span><span class="c1"># insert</span>
+<span class="w">        </span><span class="k">next</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">sequence</span><span class="o">.</span><span class="n">empty?</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">num_predecessors</span><span class="o">[</span><span class="n">successor</span><span class="o">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">num_successors</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">          </span><span class="c1"># Make a new interstitial block</span>
+<span class="w">          </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_block</span>
+<span class="w">          </span><span class="n">b</span><span class="o">.</span><span class="n">insert_moves_at_start</span><span class="w"> </span><span class="n">sequence</span>
+<span class="w">          </span><span class="n">b</span><span class="o">.</span><span class="n">instructions</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="no">Insn</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:jump</span><span class="p">,</span><span class="w"> </span><span class="kp">nil</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="no">Edge</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">successor</span><span class="p">,</span><span class="w"> </span><span class="o">[]</span><span class="p">)</span><span class="o">]</span><span class="p">)</span>
+<span class="w">          </span><span class="n">edge</span><span class="o">.</span><span class="n">block</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span>
+<span class="w">        </span><span class="k">elsif</span><span class="w"> </span><span class="n">num_successors</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">          </span><span class="c1"># Insert into the beginning of the block</span>
+<span class="w">          </span><span class="n">successor</span><span class="o">.</span><span class="n">insert_moves_at_start</span><span class="w"> </span><span class="n">sequence</span>
+<span class="w">        </span><span class="k">else</span>
+<span class="w">          </span><span class="c1"># Insert into the end of the block... before the terminator</span>
+<span class="w">          </span><span class="n">predecessor</span><span class="o">.</span><span class="n">insert_moves_at_end</span><span class="w"> </span><span class="n">sequence</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Adding a new block invalidates the cached <code class="language-plaintext highlighter-rouge">@block_order</code>, so we also need to
+recompute that.</p>
+<blockquote>
+<p>We could also avoid that by splitting critical edges earlier, before
+numbering. Then, when we arrive in <code class="language-plaintext highlighter-rouge">resolve_ssa</code>, we can clean up branches to
+empty blocks!</p>
+</blockquote>
+<p>(See also <a href="https://nickdesaulniers.github.io/blog/2023/01/27/critical-edge-splitting/">Nick's post on critical edge
+splitting</a>,
+which also links to Faddegon's thesis, which I should at least skim.)</p>
+<p>And that's it, folks. We have gone from virtual registers in SSA form to
+physical locations. Everything's all hunky-dory. We can just turn these LIR
+instructions into their very similar looking machine equivalents, right?</p>
+<p>Not so fast...</p>
+<h2 id="calls">Calls</h2>
+
+<p>You may have noticed that the original linear scan paper does not mention calls
+or other register constraints. I didn't really think about it until I wanted to
+make a function call. The authors of later linear scan papers definitely
+noticed, though; Wimmer2005 writes the following about Poletto1999:</p>
+<blockquote>
+<p>When a spilled interval is used by an instruction requiring the operand in a
+register, the interval must be temporarily reloaded to the scratch register.
+Additionally, register constraints for method calls and instructions
+requiring fixed registers must be handled separately.</p>
+</blockquote>
+<p>Fun. We will start off by handling calls and method parameters separately, we
+will note that it's not amazing code, and then we will eventually implement the
+later papers, which handle register constraints more naturally.</p>
+<p>We'll call this new function <code class="language-plaintext highlighter-rouge">handle_caller_saved_regs</code> after register
+allocation but before SSA resolution. We do it after register allocation so we
+know where each virtual register goes but before resolution so we can still
+inspect the virtual register operands.</p>
+<p>Its goal is to do a couple of things:</p>
+<ul>
+<li>Insert special <code class="language-plaintext highlighter-rouge">push</code> and <code class="language-plaintext highlighter-rouge">pop</code> instructions around <code class="language-plaintext highlighter-rouge">call</code> instructions to
+preserve virtual registers that are used on the other side of the <code class="language-plaintext highlighter-rouge">call</code>. We
+only care about preserving virtual registers that are stored in physical
+registers, though; no need to preserve anything that already lives on the
+stack.</li>
+<li>Do a parallel move of the call arguments into the ABI-specified parameter
+registers. We need to do a parallel move in case any of the arguments happen
+to already be living in parameter registers. (We're really getting good
+mileage out of this function.)</li>
+<li>Make sure that the value returned by the call in the ABI-specified return
+register ends up in in the location allocated to the output of the <code class="language-plaintext highlighter-rouge">call</code>
+instruction.</li>
+</ul>
+<p>We'll also remove the <code class="language-plaintext highlighter-rouge">call</code> operands since we're placing them in special
+registers explicitly now.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Function</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">handle_caller_saved_regs</span><span class="w"> </span><span class="n">intervals</span><span class="p">,</span><span class="w"> </span><span class="n">assignments</span><span class="p">,</span><span class="w"> </span><span class="n">return_reg</span><span class="p">,</span><span class="w"> </span><span class="n">param_regs</span>
+<span class="w">    </span><span class="vi">@block_order</span><span class="o">.</span><span class="n">each</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">block</span><span class="o">|</span>
+<span class="w">      </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">block</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">flat_map</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">insn</span><span class="o">|</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">insn</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="ss">:call</span>
+<span class="w">          </span><span class="n">survivors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">intervals</span><span class="o">.</span><span class="n">select</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">_vreg</span><span class="p">,</span><span class="w"> </span><span class="n">interval</span><span class="o">|</span>
+<span class="w">            </span><span class="n">interval</span><span class="o">.</span><span class="n">survives?</span><span class="p">(</span><span class="n">insn</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+<span class="w">          </span><span class="p">}</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:first</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">vreg</span><span class="o">|</span>
+<span class="w">            </span><span class="n">assignments</span><span class="o">[</span><span class="n">intervals</span><span class="o">[</span><span class="n">vreg</span><span class="o">]].</span><span class="n">is_a?</span><span class="p">(</span><span class="no">PReg</span><span class="p">)</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">          </span><span class="n">mov_input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insn</span><span class="o">.</span><span class="n">out</span>
+<span class="w">          </span><span class="n">insn</span><span class="o">.</span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">return_reg</span>
+
+<span class="w">          </span><span class="n">ins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insn</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">          </span><span class="k">raise</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">ins</span><span class="o">.</span><span class="n">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">param_regs</span><span class="o">.</span><span class="n">length</span>
+
+<span class="w">          </span><span class="n">insn</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">insn</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="w">          </span><span class="n">mapping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ins</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">param_regs</span><span class="p">)</span><span class="o">.</span><span class="n">to_h</span>
+<span class="w">          </span><span class="n">sequence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sequentialize</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">)</span><span class="o">|</span>
+<span class="w">            </span><span class="no">Insn</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:mov</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">src</span><span class="o">]</span><span class="p">)</span>
+<span class="w">          </span><span class="k">end</span>
+
+<span class="w">          </span><span class="n">survivors</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">s</span><span class="o">|</span><span class="w"> </span><span class="no">Insn</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:push</span><span class="p">,</span><span class="w"> </span><span class="kp">nil</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">s</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="n">sequence</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="o">[</span><span class="n">insn</span><span class="p">,</span><span class="w"> </span><span class="no">Insn</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:mov</span><span class="p">,</span><span class="w"> </span><span class="n">mov_input</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">return_reg</span><span class="o">]</span><span class="p">)</span><span class="o">]</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="n">survivors</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">s</span><span class="o">|</span><span class="w"> </span><span class="no">Insn</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:pop</span><span class="p">,</span><span class="w"> </span><span class="kp">nil</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">s</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="o">.</span><span class="n">reverse</span>
+<span class="w">        </span><span class="k">else</span>
+<span class="w">          </span><span class="n">insn</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">      </span><span class="n">block</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>(Unfortunately, this sidesteps handling the less-fun bit of calls in ABIs where
+after the 6th parameter, they are expected on the stack. It also completely
+ignores ABI size constraints.)</p>
+<p>Now, you may have noticed that we don't do anything special for the incoming
+params of the function we're compiling! That's another thing we have to handle.
+Thankfully, we can handle it with yet another parallel move (wow!) at the end
+of <code class="language-plaintext highlighter-rouge">resolve_ssa</code>.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Function</span>
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">resolve_ssa</span><span class="w"> </span><span class="n">intervals</span><span class="p">,</span><span class="w"> </span><span class="n">assignments</span>
+<span class="w">    </span><span class="c1"># ...</span>
+<span class="w">    </span><span class="c1"># We&#39;re typically going to have more param regs than block parameters</span>
+<span class="w">    </span><span class="c1"># When we zip the param regs with block params, we&#39;ll end up with param</span>
+<span class="w">    </span><span class="c1"># regs mapping to nil. We filter those away by selecting for tuples</span>
+<span class="w">    </span><span class="c1"># that have a truthy second value</span>
+<span class="w">    </span><span class="c1"># [[x, y], [z, nil]].select(&amp;:last) (reject the second tuple)</span>
+<span class="w">    </span><span class="n">mapping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">param_regs</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">entry_block</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:last</span><span class="p">)</span><span class="o">.</span><span class="n">to_h</span>
+<span class="w">    </span><span class="n">sequence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sequentialize</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">)</span><span class="o">|</span>
+<span class="w">      </span><span class="no">Insn</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:mov</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">src</span><span class="o">]</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">entry_block</span><span class="o">.</span><span class="n">insert_moves_at_start</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Again, this is yet another kind of thing where some of the later papers have
+much better ergonomics and also much better generated code.</p>
+<p>But this is really cool! If you have arrived at this point with me, we have
+successfully made it to 1997 and that is nothing to sneeze at. We have even
+adapted research from 1997 to work with SSA, avoiding several significant
+classes of bugs along the way.</p>
+<!--
+## Instruction selection and instruction splitting
+
+## Interval splitting
+
+## Register hints
+
+What is this iterated linear scan thing? Appears in JSC
+
+while (true) {
+  linearscan();
+  if (!would_spill) { break; }
+  interval = pick_an_interval_to_spill();
+  spill(interval);
+  remove_interval(interval);
+}
+-->
+
+<h2 id="validation-by-abstract-interpretation">Validation by abstract interpretation</h2>
+
+<p>We have just built an enormously complex machine. Even out the gate, with the
+original linear scan, there is a lot of machinery. It's possible to write tests
+that spot check sample programs of all shapes and sizes but it's <em>very</em>
+difficult to anticipate every possible edge case that will appear in the real
+world.</p>
+<p>Even if the original algorithm you're using has been proven correct, your
+implementation may have subtle bugs due to (for example) having slightly
+different invariants or even transcription errors.</p>
+<p>We have all these proof tools at our disposal: we can write an abstract
+interpreter that verifies properties of <em>one</em> graph, but it's very hard
+(impossible?) to scale that to sets of graphs.</p>
+<p>Maybe that's enough, though. In one of my favorite blog posts, Chris Fallin
+<a href="https://cfallin.org/blog/2021/03/15/cranelift-isel-3/">writes about</a> writing a
+register allocation verifier based on abstract interpretation. It can verify
+one concrete LIR function at a time. It's fast enough that it can be left on in
+debug builds. This means that a decent chunk of the time (tests, CI, maybe a
+production cluster) we can get a very clear signal that every register
+assignment that passes through the verifier satisfies some invariants.</p>
+<p>Furthermore, we are not limited to Real World Code. With the advent of fuzzing,
+one can imagine an always-on fuzzer that tries to break the register allocator.
+A verifier can then catch bugs that come from exploring this huge search space.</p>
+<p>Some time after finding Chris's blog post, I also stumbled across <a href="https://github.com/v8/v8/blob/cac6de03372c25987c6cbea49b4b39d9da437978/src/compiler/backend/register-allocator-verifier.h">the very same
+thing in
+V8</a>!</p>
+<p>I find this stuff so cool. I'll also mention Boissinot's <a href="https://github.com/bboissin/thesis_bboissin">Rust
+code</a> again because it does
+something similar for parallel moves.</p>
+<h2 id="see-also">See also</h2>
+
+<p>It's possible to do linear scan allocation in reverse, at least on traces
+without control-flow. See for example <a href="https://www.mattkeeter.com/blog/2022-10-04-ssra/">The Solid-State Register
+Allocator</a>, the <a href="https://github.com/LuaJIT/LuaJIT/blob/5e3c45c43bb0e0f1f2917d432e9d2dba12c42a6e/src/lj_asm.c#L198">LuaJIT
+register allocator</a>, and <a href="https://brrt-to-the-future.blogspot.com/2019/03/reverse-linear-scan-allocation-is.html">Reverse Linear Scan Allocation is
+probably a good idea</a>.
+By doing linear scan this way, it is also possible to avoid computing liveness
+and intervals. I am not sure if this works on programs with control-flow,
+though.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>We built a register allocator that works on SSA. Hopefully next time we will
+add features such as lifetime holes, interval splitting, and register hints.</p>
+<p>The full Ruby code listing is <del>not (yet?) public</del> <a href="https://github.com/tenderworks/regalloc">available under the Apache
+2 license</a>.</p>
+<p>UPDATE: See the post on <a href="/blog/linear-scan-lifetime-holes/">lifetime holes</a>.</p>
+<h2 id="thanks">Thanks</h2>
+
+<p>Thanks to <a href="https://waleedkhan.name/">Waleed Khan</a> and <a href="https://mstdn.ca/@iainireland">Iain
+Ireland</a> for giving feedback on this post.</p>
+
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p>It's not just about registers, either. In 2016, Facebook
+engineer Dave <a href="https://blog.waleedkhan.name/will-i-ever-use-this/">legendarily used linear-scan register allocation to book
+meeting rooms</a>. <a href="#fnref-1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-2">
+<p>Well. As I said on one of the social media sites earlier this
+year, "All AOT compilers are alike; each JIT compiler is fucked up in its
+own way."</p>
+<p>JavaScript:</p>
+<!-- * V8's Maglev uses -->
+
+<ul>
+<li>V8's TurboFan uses <a href="https://github.com/v8/v8/blob/12fa27f2f4d999320c524776ed29810c8694bafc/src/compiler/backend/register-allocator.h#L1545">linear scan</a></li>
+<li>SpiderMonkey uses a <a href="https://searchfox.org/mozilla-central/rev/c85c168374483a3c37aab49d7f587ea74a516492/js/src/jit/BacktrackingAllocator.h#28-31">backtracking allocator</a>
+based on <a href="https://blog.llvm.org/2011/09/greedy-register-allocation-in-llvm-30.html">LLVM's</a></li>
+<li>JavaScriptCore uses <a href="https://github.com/WebKit/WebKit/blob/f5a9393bdeff7c89685de21aa9f2df392139cc07/Source/JavaScriptCore/b3/air/AirAllocateRegistersAndStackByLinearScan.h#L37">linear scan "for
+optLevel&lt;2"</a>
+and <a href="https://github.com/WebKit/WebKit/blob/f5a9393bdeff7c89685de21aa9f2df392139cc07/Source/JavaScriptCore/b3/air/AirAllocateRegistersByGraphColoring.h">graph coloring otherwise</a>
+<ul>
+<li>There's also a "cssjit" with its own register allocator...</li>
+</ul>
+</li>
+</ul>
+<p>Java:</p>
+<ul>
+<li>HotSpot C1 uses (naturally) <a href="https://github.com/openjdk/jdk/blob/87d734012e3130501bfd37b23cee7f5e0a3a476f/src/hotspot/share/c1/c1_LinearScan.hpp">Wimmer2010 linear scan</a></li>
+<li>HotSpot C2 uses <a href="https://github.com/openjdk/jdk/blob/87d734012e3130501bfd37b23cee7f5e0a3a476f/src/hotspot/share/opto/regalloc.hpp">Chaitin-Briggs-Click graph coloring</a></li>
+<li>GraalVM uses <a href="https://github.com/oracle/graal/blob/e482f988939235ce94ee4a756c6bcc1d3df2bab2/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/lir/alloc/lsra/LinearScan.java">linear scan</a></li>
+<li>
+<!-- Dalvik, ART -->
+
+</li>
+</ul>
+<p>Python:</p>
+<!-- * PyPy uses -->
+
+<ul>
+<li>Cinder uses <a href="https://github.com/facebookincubator/cinderx/blob/5cf14ad8a68b6f04c1ca1cb99947da7d8d09c28b/cinderx/Jit/lir/regalloc.h">Wimmer2010 linear scan</a></li>
+<li>S6 uses a <a href="https://github.com/google-deepmind/s6/blob/69cac9c981fbd3217ed117c3898382cfe094efc0/src/code_generation/trace_register_allocator.h">trace register allocator</a>
+<ul>
+<li>This is a different thing than a tracing JIT; see <a href="/assets/img/trace-ra.pdf">Josef Eisl's thesis</a> (PDF, 2018)</li>
+</ul>
+</li>
+</ul>
+<p>Ruby:</p>
+<ul>
+<li>YJIT uses <a href="https://github.com/ruby/ruby/blob/231407c251d82573f578caf569a934c0ebb344e5/yjit/src/backend/ir.rs#L1388">linear scan</a></li>
+<li>ZJIT uses more or less the same backend, so also linear scan</li>
+</ul>
+<p>PHP:</p>
+<ul>
+<li>PHP uses <a href="https://github.com/php/php-src/blob/77dace78c324ef731e60fa98b4b8008cd7df1657/ext/opcache/jit/ir/ir_ra.c#L3479">linear scan</a></li>
+<li>HHVM uses <a href="https://github.com/facebook/hhvm/blob/e7bca518648e16bdb7c08e91d02f8c158d8e6c6f/hphp/runtime/vm/jit/vasm-xls.cpp#L1448">extended linear scan</a></li>
+</ul>
+<p>Lua:</p>
+<ul>
+<li>LuaJIT uses [reverse linear scan][luajit-lsra]</li>
+</ul> <a href="#fnref-2" class="footnote-backref">↩</a>
+</li>
+<li id="fn-3">
+<p>[Linear Scan Register Allocation in the Context of SSA Form
+and Register Constraints][lsra-context-ssa] (PDF, 2002) by Mössenböck and
+Pfeiffer notes:</p>
+<blockquote>
+<p>Our allocator relies on static single assignment form, which simplifies
+data flow analysis and tends to produce short live intervals.</p>
+</blockquote>
+<p>[Register allocation for programs in SSA-form][ra-programs-ssa] (PDF, 2006)
+by Hack, Grund, and Goos notes that interference graphs for SSA programs
+are chordal and can be optimally colored in quadratic time.</p>
+<p>[SSA Elimination after Register Allocation][ssa-elim-after-ra] (PDF, 2008)
+by Pereira and Palsberg notes:</p>
+<blockquote>
+<p>One of the main advantages of SSA based register allocation is the
+separation of phases between spilling and register assignment.</p>
+</blockquote>
+<p>Cliff Click (private communication, 2025) notes:</p>
+<blockquote>
+<p>It's easier. Got it already, why lose it [...] spilling always uses
+use/def and def/use edges.</p>
+</blockquote> <a href="#fnref-3" class="footnote-backref">↩</a>
+</li>
+<li id="fn-4">
+<p>This is inspired by <a href="https://rsms.me/">Rasmus Andersson</a>'s graph
+coloring <a href="https://rsms.me/projects/chaitin/">visualization</a> that I saw some
+years ago. <a href="#fnref-4" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-5">
+<p>The example in the thesis is to sequentialize the
+following parallel copy:</p>
+<ul>
+<li>a → b</li>
+<li>b → c</li>
+<li>c → a</li>
+<li>c → d</li>
+</ul>
+<p>The solution in the thesis is:</p>
+<ol>
+<li>c → d (c now lives in d)</li>
+<li>a → c (a now lives in c)</li>
+<li>b → a (b now lives in a)</li>
+<li>d → b (why are we copying c to b?)</li>
+</ol>
+<p>but we think this is incorrect. Solving manually, Aaron and I got:</p>
+<ol>
+<li>c → d (because d is not read from anywhere)</li>
+<li>b → c (because c is "freed up"; now in d)</li>
+<li>a → b (because b is "freed up"; now in c)</li>
+<li>d → a (because c is now in d, so d → a is equivalent to old_c → a)</li>
+</ol>
+<p>which is what the code gives us, too. <a href="#fnref-5" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-08-13-linear-scan.md" title="Help improve _posts/2025-08-13-linear-scan.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

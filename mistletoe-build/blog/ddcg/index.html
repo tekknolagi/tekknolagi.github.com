@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>A quick look at destination-driven code generation | Max Bernstein</title>
+    <meta property="og:title" content="A quick look at destination-driven code generation | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/ddcg/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">A quick look at destination-driven code generation</h1>
+        
+        <div class="post-inline-date"><i>November 9, 2023</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>Picture this: you're sitting there, writing a compiler, when all of a sudden
+you have to generate assembly. You have some intermediate representation (IR)
+but now you have to turn virtual registers into machine registers. This is
+called register allocation.</p>
+<p>Register allocation is tricky. It's also slow. Even very fast register
+allocators like linear scan can dominate compile time. So let's skip it. Let's
+write a silly compiler in Python and see if we can improve the generated code
+without going full regalloc.</p>
+<p>We will use a small math language that supports constant integers, addition,
+and multiplication:</p>
+<div class="highlight"><pre><span></span><span class="c1"># Ignore the @ir decorator. It&#39;s not important except for some dataclasses</span>
+<span class="c1"># shenanigans.</span>
+<span class="nd">@ir</span>
+<span class="k">class</span> <span class="nc">Instr</span><span class="p">:</span>
+    <span class="c1"># ...</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@ir</span>
+<span class="k">class</span> <span class="nc">Const</span><span class="p">(</span><span class="n">Instr</span><span class="p">):</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">var</span><span class="p">()</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="nd">@ir</span>
+<span class="k">class</span> <span class="nc">Binary</span><span class="p">(</span><span class="n">Instr</span><span class="p">):</span>
+    <span class="n">left</span><span class="p">:</span> <span class="n">Instr</span>
+    <span class="n">right</span><span class="p">:</span> <span class="n">Instr</span>
+
+    <span class="k">def</span> <span class="nf">operands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+
+
+<span class="nd">@ir</span>
+<span class="k">class</span> <span class="nc">Add</span><span class="p">(</span><span class="n">Binary</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@ir</span>
+<span class="k">class</span> <span class="nc">Mul</span><span class="p">(</span><span class="n">Binary</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+
+<p>We're going to pretend that we can't constant-fold these expressions to one
+number because that's not the point of this post.</p>
+<p>The IR's text form will look like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v0 = 2
+v1 = 3
+v2 = Add v0, v1
+</code></pre></div></div>
+
+<p>Nothing too fancy. No control-flow. No function calls. No data structures.</p>
+<p>We can write a recursive tree-walking evaluator for this IR in a couple lines
+of code:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">eval_exp</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">Const</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">exp</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">Add</span><span class="p">):</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">eval_exp</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">eval_exp</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">left</span> <span class="o">+</span> <span class="n">right</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">Mul</span><span class="p">):</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">eval_exp</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">eval_exp</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">left</span> <span class="o">*</span> <span class="n">right</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unexpected exp </span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+<p>And the corresponding tree-walking compiler to x86-64 looks similar enough if
+you squint:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">naive_compile</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">RCX</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">Const</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">X86</span><span class="o">.</span><span class="n">Mov</span><span class="p">(</span><span class="n">RAX</span><span class="p">,</span> <span class="n">Imm</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">value</span><span class="p">))]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">Add</span><span class="p">):</span>
+        <span class="n">right_code</span> <span class="o">=</span> <span class="n">naive_compile</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">left_code</span> <span class="o">=</span> <span class="n">naive_compile</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="o">*</span><span class="n">right_code</span><span class="p">,</span>
+            <span class="n">X86</span><span class="o">.</span><span class="n">Push</span><span class="p">(</span><span class="n">RAX</span><span class="p">),</span>
+            <span class="o">*</span><span class="n">left_code</span><span class="p">,</span>
+            <span class="n">X86</span><span class="o">.</span><span class="n">Pop</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span>
+            <span class="n">X86</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RAX</span><span class="p">,</span> <span class="n">tmp</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">Mul</span><span class="p">):</span>
+        <span class="n">right_code</span> <span class="o">=</span> <span class="n">naive_compile</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">left_code</span> <span class="o">=</span> <span class="n">naive_compile</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="o">*</span><span class="n">right_code</span><span class="p">,</span>
+            <span class="n">X86</span><span class="o">.</span><span class="n">Push</span><span class="p">(</span><span class="n">RAX</span><span class="p">),</span>
+            <span class="o">*</span><span class="n">left_code</span><span class="p">,</span>
+            <span class="n">X86</span><span class="o">.</span><span class="n">Pop</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span>
+            <span class="n">X86</span><span class="o">.</span><span class="n">Mul</span><span class="p">(</span><span class="n">RAX</span><span class="p">,</span> <span class="n">tmp</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unexpected exp </span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+<p>(I wrote some datatypes for a small set of x86-64 instructions and operands so
+we can construct them in our compiler without slinging a bunch of strings.)</p>
+<p>With each case, our goal is to get the result into the register RAX. In the
+constant case, we emit one instruction to move the value—the immediate—into
+RAX.</p>
+<p>In the recursive binary cases, we generate code for the left and right side of
+the expression. We put the compiled code for the right hand side first, then
+for the left hand side.</p>
+<p>Since both cases will try to put the result in RAX (and intermediate calls to
+the compiler could trash any register we haven't specifically set aside), we
+have to stash the result from the right hand side in a temporary location: the
+stack. Then, when it comes time to add it, we can fetch it from the stack into
+a register.</p>
+<p>This works because we maintain two invariants:</p>
+<ul>
+<li>Within a compiler case, we have the same stack pointer before and after a
+recursive call. That is, recursive calls to the compiler may change it about
+but the code should eventually restore the stack to what we gave it.</li>
+<li>All cases only use our temporary, RCX, as a temporary and don't try to stick
+anything long-lived in it.</li>
+</ul>
+<p>So what does the generated code look like? I will answer in the form of unit
+tests.</p>
+<p>Let's look at <code class="language-plaintext highlighter-rouge">Const</code> first:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NaiveCompilerTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_alloc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+        <span class="n">x86</span> <span class="o">=</span> <span class="n">naive_compile</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">x86</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">test_const</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span><span class="s2">&quot;X86.Mov(dst=rax, src=Imm(2))&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+</pre></div>
+
+<p>Right. Nice. Just about what we expected.</p>
+<p>And now the binary cases:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NaiveCompilerTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+    <span class="k">def</span> <span class="nf">test_add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=rax)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_mul</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Mul</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=rax)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mul(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+</pre></div>
+
+<p>Hmm. You know, now that I look at it, maybe moving everything to RAX was not
+the right answer. It kind of looks like there is a lot of data movement going
+on. I guess it can't be helped.</p>
+<p>And some more tests with deeper nesting, for good measure:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NaiveCompilerTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+    <span class="k">def</span> <span class="nf">test_mul_add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Mul</span><span class="p">(</span>
+            <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span>
+            <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">4</span><span class="p">)),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(4))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=rax)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=rax)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=rax)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(1))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mul(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_add_deep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">5</span><span class="p">))))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(5))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=rax)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(4))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=rax)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=rax)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+</pre></div>
+
+<p>Actually, yikes, I take it back. We have to do something about this. The code
+exploded. So what's to be done?</p>
+<p>We could write a full register allocator like linear scan or graph
+coloring<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup>, but that sounds like a lot of work. Also, sometimes
+(like in a baseline compiler) your code generation needs to be really fast and
+those don't fit the performance budget.</p>
+<p>Thankfully, Dybvig and the gang are back with some cool idea called
+destination-driven code generation (DDCG).</p>
+<h2 id="destination-driven-code-generation">Destination-driven code generation</h2>
+
+<p>The <a href="/assets/img/ddcg.pdf">paper</a> (PDF) is approachable enough, but if you want
+an even more approachable introduction, there's a <a href="/assets/img/46b-codegeneration-in-V8.pdf">great
+talk</a> (PDF) by Kevin Millikin
+explaining how V8 implemented it in one of their first compilers. I implemented
+<a href="https://github.com/tekknolagi/ddcg">a small programming language in C++</a> using
+this technique some time ago (and even wrote part of a blog post) but never got
+around to finishing it.</p>
+<p>The key insight is that in a recursive code generator, the caller of the
+recursive compilation step knows where it wants the result of the callee to
+go—so we should not be copying everything around through some result register
+like RAX. We should instead pass the destination we want as a parameter.</p>
+<p>For this post<sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup>, there are two kinds of destinations: the stack and
+the accumulator (RAX).</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Dest</span><span class="p">:</span>
+    <span class="n">STACK</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ACCUM</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+
+<p>We can take these destinations and thread them through the compiler, starting
+with the top-level function requesting its result end up in RAX.</p>
+<p>The destination-driven compiler looks <em>suspiciously similar</em> to the normal
+tree-walking one:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ddcg_compile</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_ddcg_compile</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">Dest</span><span class="o">.</span><span class="n">ACCUM</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_ddcg_compile</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">dst</span><span class="p">):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">RCX</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">Const</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_plug_imm</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">Add</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="o">*</span><span class="n">_ddcg_compile</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">Dest</span><span class="o">.</span><span class="n">STACK</span><span class="p">),</span>
+            <span class="o">*</span><span class="n">_ddcg_compile</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">Dest</span><span class="o">.</span><span class="n">ACCUM</span><span class="p">),</span>
+            <span class="n">X86</span><span class="o">.</span><span class="n">Pop</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span>
+            <span class="n">X86</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RAX</span><span class="p">,</span> <span class="n">tmp</span><span class="p">),</span>
+            <span class="o">*</span><span class="n">_plug_reg</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">RAX</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">Mul</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="o">*</span><span class="n">_ddcg_compile</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">Dest</span><span class="o">.</span><span class="n">STACK</span><span class="p">),</span>
+            <span class="o">*</span><span class="n">_ddcg_compile</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">Dest</span><span class="o">.</span><span class="n">ACCUM</span><span class="p">),</span>
+            <span class="n">X86</span><span class="o">.</span><span class="n">Pop</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span>
+            <span class="n">X86</span><span class="o">.</span><span class="n">Mul</span><span class="p">(</span><span class="n">RAX</span><span class="p">,</span> <span class="n">tmp</span><span class="p">),</span>
+            <span class="o">*</span><span class="n">_plug_reg</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">RAX</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+</pre></div>
+
+<p>It also does recursive compilation of the left and right cases. It does push
+(via passing the stack destination) and pop. But it has these funny-looking
+plug functions.</p>
+<p>The plug functions are responsible for doing most of the data movement. They
+can be <code class="language-plaintext highlighter-rouge">push</code>es or <code class="language-plaintext highlighter-rouge">mov</code>s or—sometimes—nothing at all, if the register is
+already in the right place.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_plug_imm</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dst</span> <span class="o">==</span> <span class="n">Dest</span><span class="o">.</span><span class="n">STACK</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">X86</span><span class="o">.</span><span class="n">Push</span><span class="p">(</span><span class="n">Imm</span><span class="p">(</span><span class="n">value</span><span class="p">))]</span>
+    <span class="k">elif</span> <span class="n">dst</span> <span class="o">==</span> <span class="n">Dest</span><span class="o">.</span><span class="n">ACCUM</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">X86</span><span class="o">.</span><span class="n">Mov</span><span class="p">(</span><span class="n">RAX</span><span class="p">,</span> <span class="n">Imm</span><span class="p">(</span><span class="n">value</span><span class="p">))]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_plug_reg</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">reg</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dst</span> <span class="o">==</span> <span class="n">Dest</span><span class="o">.</span><span class="n">STACK</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">X86</span><span class="o">.</span><span class="n">Push</span><span class="p">(</span><span class="n">reg</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">dst</span> <span class="o">==</span> <span class="n">Dest</span><span class="o">.</span><span class="n">ACCUM</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">reg</span> <span class="o">==</span> <span class="n">RAX</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">X86</span><span class="o">.</span><span class="n">Mov</span><span class="p">(</span><span class="n">RAX</span><span class="p">,</span> <span class="n">reg</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span>
+</pre></div>
+
+<p>Not so bad. I wonder why the accumulator was isolated in the original paper
+instead of allowing for arbitrary destination registers. Perhaps something to
+look at in the future.</p>
+<p>So what does the generated code look like? Again, some tests:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DDCGTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_alloc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+        <span class="n">x86</span> <span class="o">=</span> <span class="n">ddcg_compile</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">x86</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">test_const</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span><span class="s2">&quot;X86.Mov(dst=rax, src=Imm(2))&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Push(src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_mul</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Mul</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Push(src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mul(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_mul_add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Mul</span><span class="p">(</span>
+            <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span>
+            <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">4</span><span class="p">)),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Push(src=Imm(1))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=rax)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(4))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mul(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_add_deep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">5</span><span class="p">))))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Push(src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=Imm(4))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(5))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+</pre></div>
+
+<p>If you look at the tests side-by-side with the naive compiler, you should see a
+major difference: there are way fewer <code class="language-plaintext highlighter-rouge">mov</code>s because everything does not have
+to go through RAX all the time.</p>
+<p>But there are still some pushes. Can we do better? Yes, but after a brief
+detour.</p>
+<h3 id="adding-control-destinations">Adding control destinations</h3>
+
+<p>The original paper has a notion of <em>control destinations</em> which helps generate
+better code for conditionals and loops. Since this post is really only a tiny
+demo and does not have control flow, it does not make sense to implement here.
+But I recommend checking out the original paper, getting confused, then
+checking the V8 presentation, getting confused, then checking out <a href="https://github.com/tekknolagi/ddcg">my
+implementation</a>.</p>
+<p>Back to our scheduled programming.</p>
+<h3 id="adding-a-virtual-stack">Adding a virtual stack</h3>
+
+<p>I saw this <a href="https://github.com/k0kubun/ruby-jit-challenge">cool JIT challenge</a>
+by Takashi Kokubun to do simple native code generation for Ruby bytecode.
+Buried in it is a very cool trick: use a "stack" of registers instead of your
+actual stack. (EDIT: I also apparently saw this in <a href="https://redvice.org/2023/template-jits/">JIT Compilers
+102</a> by Charlie Cummings but forgot!)
+That is, instead of generating <code class="language-plaintext highlighter-rouge">push</code> and <code class="language-plaintext highlighter-rouge">pop</code> instructions, move to
+registers. I translated some of his sample Ruby code to Python:</p>
+<div class="highlight"><pre><span></span><span class="n">STACK</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r8&quot;</span><span class="p">,</span> <span class="s2">&quot;r9&quot;</span><span class="p">]</span>
+<span class="n">stack_size</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">code</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">X86</span><span class="o">.</span><span class="n">Mov</span><span class="p">(</span><span class="n">STACK</span><span class="p">[</span><span class="n">stack_size</span><span class="p">],</span> <span class="n">src</span><span class="p">)</span>
+    <span class="n">stack_size</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">code</span>
+
+<span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="n">dst</span><span class="p">):</span>
+    <span class="n">stack_size</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">X86</span><span class="o">.</span><span class="n">Mov</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">STACK</span><span class="p">[</span><span class="n">stack_size</span><span class="p">])</span>
+</pre></div>
+
+<p>His code assumes (because it is a tiny demo) that the temporaries all fit in
+our virtual stack. They may not always fit, so it is possible to extend <code class="language-plaintext highlighter-rouge">push</code>
+and <code class="language-plaintext highlighter-rouge">pop</code> to fall back to using the system stack.</p>
+<p>Adding this strategy to the existing destination-driven code generator requires
+some state—the <code class="language-plaintext highlighter-rouge">stack_size</code>—so I turned it into a class. The code it
+generates looks similar enough but has fewer <code class="language-plaintext highlighter-rouge">push</code>es and <code class="language-plaintext highlighter-rouge">pop</code>s.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DDCGStackTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_alloc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+        <span class="n">gen</span> <span class="o">=</span> <span class="n">DDCGStack</span><span class="p">()</span>
+        <span class="n">gen</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">gen</span><span class="o">.</span><span class="n">code</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">test_const</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span><span class="s2">&quot;X86.Mov(dst=rax, src=Imm(2))&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Mov(dst=r8, src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=r8)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_mul</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Mul</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Mov(dst=r8, src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mul(dst=rax, src=r8)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_mul_add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Mul</span><span class="p">(</span>
+            <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span>
+            <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">4</span><span class="p">)),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Mov(dst=r8, src=Imm(1))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=r8)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=r8, src=rax)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=r9, src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(4))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=r9)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mul(dst=rax, src=r8)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_add_deep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This tests pushing and popping beyond the limits of our virtual</span>
+        <span class="c1"># stack.</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">STACK_REGS</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Add</span><span class="p">(</span><span class="n">Const</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">Const</span><span class="p">(</span><span class="mi">5</span><span class="p">))))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alloc</span><span class="p">(</span><span class="n">exp</span><span class="p">),</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;X86.Mov(dst=r8, src=Imm(2))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=r9, src=Imm(3))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Push(src=Imm(4))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Mov(dst=rax, src=Imm(5))&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Pop(dst=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=rcx)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=r9)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;X86.Add(dst=rax, src=r8)&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+</pre></div>
+
+<p>(In fact, the tests you are seeing here is me taking it one step further with
+yet another trick: if the top of the stack is in a register when you need to
+use it, don't move it to another register. So we completely eliminate virtual
+stack <code class="language-plaintext highlighter-rouge">pop</code>s!)</p>
+<p>Turning <code class="language-plaintext highlighter-rouge">push</code> and <code class="language-plaintext highlighter-rouge">pop</code> into inter-register <code class="language-plaintext highlighter-rouge">mov</code>s hypothetically saves on
+latency but at the expense of code size. The <code class="language-plaintext highlighter-rouge">push imm</code> opcode can be as few as
+two bytes whereas the <code class="language-plaintext highlighter-rouge">mov reg, imm</code> form is seven bytes. I haven't measured a
+darn thing, though.</p>
+<p>I don't know what this register-stack trick is called or if anyone has tried
+this combination of compilation techniques before.</p>
+<h2 id="testing">Testing</h2>
+
+<p>So we can generate these funky-looking x86-64 instructions and check that we
+have generated what we expect. Great—we have characterization tests. But do
+they run? I'm glad you asked, because I wrote a little x86-64
+emulator<sup class="footnote-ref" id="fnref-3"><a href="#fn-3">3</a></sup>.</p>
+<p>With this emulator, I can do both compilation tests <em>and</em> execution tests. I
+can also make sure that the value returned from the emulator matches our
+tree-walking interpreter. How cool is that?</p>
+<p>But do the instructions work in real life? Maybe! I suppose the next step would
+be to <code class="language-plaintext highlighter-rouge">mmap</code> a buffer, assemble the instructions in, and use <code class="language-plaintext highlighter-rouge">ctypes</code> to call
+our expression from Python or something. But we don't really have parameters,
+so I am not sure how that would work. In my <a href="https://github.com/tekknolagi/ddcg">C++
+implementation</a>, I do execute the code for
+real.</p>
+<h2 id="next-steps-and-conclusion">Next steps and conclusion</h2>
+
+<p>In an ideal world I would have implemented the whole paper in this little
+Python implementation, but I don't have that kind of time right now. The paper
+even has some more ideas in its conclusion that I did not mention here. As a
+reminder, I did implement a much bigger language and control destinations in my
+<a href="https://github.com/tekknolagi/ddcg">C++ implementation</a>, which comes with a
+half-baked write-up in
+<a href="https://github.com/tekknolagi/ddcg/blob/trunk/post.md">post.md</a>.</p>
+<p>I also wonder if this can be applied to static single assignment (SSA) IRs that
+have phi nodes. I've never written a pass to lower from SSA, but I've heard the
+parallel copy is really hard to get right.</p>
+<p>Also, could this be extended to support arbitrary registers as data
+destinations? Allowing only the accumulator is kind of limiting.</p>
+<p>I wonder if we could prove the generated code correct using Chris Fallin's
+<a href="https://cfallin.org/blog/2021/03/15/cranelift-isel-3/">register allocation symbolic
+checker</a>.</p>
+<p>Can we combine this with delayed code generation?</p>
+<p>Last, how easy is it to do DDCG straight from stack-based bytecode? I think the
+implicit tree-like lifetimes don't exist anymore, which might make it harder.</p>
+<p>The full code is available <a href="https://github.com/tekknolagi/pyddcg">on GitHub</a>.</p>
+<h2 id="further-reading">Further reading</h2>
+
+<p>Check out the V8 implementation of DDCG:</p>
+<ul>
+<li><a href="https://github.com/v8/v8/blob/1528bf7240586d876d2deef18d1e1b4302866c0b/src/x64/codegen-x64.h">codegen-x64.h</a></li>
+<li><a href="https://github.com/v8/v8/blob/1528bf7240586d876d2deef18d1e1b4302866c0b/src/x64/codegen-x64.cc">codegen-x64.cc</a></li>
+</ul>
+<p>Also check out
+<a href="https://fredrikbk.com/publications/copy-and-patch.pdf">copy-and-patch</a> (PDF),
+another very fast compilation technique that results in good codegen. It
+leverages the host compiler to generate code so it is (somewhat) architecture
+independent.</p>
+<p>Also check out the LuaJIT register allocator / <a href="https://www.mattkeeter.com/blog/2022-10-04-ssra/">solid-state register
+allocator</a>, which only works
+on straight-line code but is very fast.</p>
+<!-- TODO: check out delayed code generation, as recommended by Per -->
+
+<!-- TODO: make a fuzzer that generates ASTs and compares compile+sim with eval -->
+
+
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p>Fun fact, despite optimal graph coloring normally being
+NP-complete, apparently <a href="https://compilers.cs.uni-saarland.de/projects/ssara/">interference graphs of SSA programs are
+chordal</a>. And graph
+coloring of chordal graphs can be done in polynomial time. So since we have
+a SSA IR, we could do a "reasonably fast" graph coloring allocator. Maybe
+another time. <a href="#fnref-1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-2">
+<p>The paper has a third kind of destination for data that is only
+used for its effect and need not be materialized. We don't hit that case in
+this blog post because there are no side-effecting instructions and no
+control-flow. <a href="#fnref-2" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-3">
+<p>You didn't ask, but yes, I did write separate tests for the
+emulator. <a href="#fnref-3" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2023-11-09-ddcg.md" title="Help improve _posts/2023-11-09-ddcg.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

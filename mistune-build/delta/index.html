@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Delta debugging | Max Bernstein</title>
+    <meta property="og:title" content="Delta debugging | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/delta/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+  </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="page-title">Delta debugging</h1>
+        <div class="container">
+            <p>This page is meant to hold a collection of delta debugging tools and assorted
+commentary because I am mentioning them in multiple places.</p>
+<ul>
+<li>I factored the non-JIT parts of Cinder's delta debugging implementation into
+a tiny drop-in <a href="https://github.com/tekknolagi/omegastar">snippet of Python code</a>.<ul>
+<li>ZJIT now has a <a href="https://github.com/ruby/ruby/blob/2a6345e957c01f4495323723c7a3d7ac0d4ac339/tool/zjit_bisect.rb">JIT bisect script</a></li>
+</ul>
+</li>
+<li>Andrew Chambers wrote <a href="https://github.com/andrewchambers/ddmin-python">a
+small implementation</a> that
+also includes a nice CLI</li>
+<li><a href="https://research.swtch.com/bisect">Hash-Based Bisect Debugging in Compilers and
+Runtimes</a> by Russ Cox</li>
+</ul>
+<p>Other implementations of/similar to C-Reduce:</p>
+<ul>
+<li><a href="https://github.com/dsw/delta">delta</a> assists you in minimizing &quot;interesting&quot;
+files subject to a test of their interestingness</li>
+<li><a href="https://github.com/marxin/cvise">cvise</a>, a super-parallel Python port of C-Reduce</li>
+<li><a href="https://github.com/DRMacIver/shrinkray">Shrink Ray</a>, a modern multi-format test-case reducer</li>
+<li><a href="https://langston-barrett.github.io/treereduce/">treereduce</a>, a fast,
+parallel, syntax-aware test case reducer based on tree-sitter grammars</li>
+<li><a href="https://github.com/googleprojectzero/halfempty">halfempty</a></li>
+<li><a href="https://manpages.ubuntu.com/manpages/bionic/man1/multidelta.1.html">multidelta</a></li>
+</ul>
+<p>I saw somewhere (but can no longer find the link to) someone's implementation
+of delta debugging on commit logs (more advanced than <code class="language-plaintext highlighter-rouge">git bisect</code>). If you
+find this, please send it my way.</p>
+<p><a href="https://blog.waleedkhan.name/">Waleed Khan</a> showed me his <a href="https://blog.waleedkhan.name/searching-source-control-graphs/">cool
+project</a> but I
+don't think that was what I originally saw.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/delta.md" title="Help improve delta.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

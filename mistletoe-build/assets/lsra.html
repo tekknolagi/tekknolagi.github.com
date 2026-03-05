@@ -1,0 +1,218 @@
+<html>
+  <head>
+    <style>
+.regalloc td {
+  height: 20px;
+}
+.regalloc th {
+  text-align: left;
+}
+body {
+  font-family: monospace;
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #dfdfdf;
+    background: #101010;
+  }
+  a[href] {
+    color: #9e9eff;
+  }
+  a[href]:visited {
+    color: #bebedf;
+  }
+}
+    </style>
+    <script>
+      var idx = 0;
+      function slide(idx) {
+        return document.getElementById("frame"+idx);
+      }
+      function show_next() {
+        if (slide(idx+1) === null) return;
+        slide(idx).style.display = "none";
+        idx += 1;
+        slide(idx).style.display = "inherit";
+      }
+      function show_prev() {
+        if (slide(idx-1) === null) return;
+        slide(idx).style.display = "none";
+        idx -= 1;
+        slide(idx).style.display = "inherit";
+      }
+    </script>
+  </head>
+  <body width="800px">
+    <button onclick="show_prev()">&larr;</button>
+    <button onclick="show_next()">&rarr;</button>
+    <div id='frame0' style='display: inherit;'><table><tr><td>active</td><td>[]</td></tr><tr><td>free registers</td><td>[P0, P1]</td></tr><tr><td>assignments</td><td>
+<table>
+  <tr>
+    <th>vreg</th>
+    <th>interval</th>
+    <th>location</th>
+  </tr><tr><td>R10</td><td>Range(16, 36)</td><td></td></tr><tr><td>R11</td><td>Range(16, 20)</td><td></td></tr><tr><td>R12</td><td>Range(20, 36)</td><td></td></tr><tr><td>R13</td><td>Range(20, 30)</td><td></td></tr><tr><td>R14</td><td>Range(28, 34)</td><td></td></tr><tr><td>R15</td><td>Range(30, 34)</td><td></td></tr><tr><td>R16</td><td>Range(36, 38)</td><td></td></tr></table></td></tr></table>      <table class="regalloc">
+      <tr>
+        <th></th>
+        <th>idx</th>
+        <th>insn</th>
+      </tr>
+<tr><td>&rarr;</td><td>16</td><td>B1(R10, R11):</tr><tr><td></td><td>18</td><td>jump →B2($1, R11)
+</td></tr><tr><td></td><td>20</td><td>B2(R12, R13):</tr><tr><td></td><td>22</td><td>cmp R13, $1
+</td></tr><tr><td></td><td>24</td><td>blt iftrue: →B4, iffalse: →B3
+</td></tr><tr><td></td><td>26</td><td>B3:</tr><tr><td></td><td>28</td><td>R14 = mul R12, R13
+</td></tr><tr><td></td><td>30</td><td>R15 = sub R13, $1
+</td></tr><tr><td></td><td>32</td><td>jump →B2(R14, R15)
+</td></tr><tr><td></td><td>34</td><td>B4:</tr><tr><td></td><td>36</td><td>R16 = add R10, R12
+</td></tr><tr><td></td><td>38</td><td>ret R16
+</td></tr></table></div>
+<div id='frame1' style='display: none;'><table><tr><td>active</td><td>[Range(16, 36)]</td></tr><tr><td>free registers</td><td>[P1]</td></tr><tr><td>assignments</td><td>
+<table>
+  <tr>
+    <th>vreg</th>
+    <th>interval</th>
+    <th>location</th>
+  </tr><tr><td>R10</td><td>Range(16, 36)</td><td>P0</td></tr><tr><td>R11</td><td>Range(16, 20)</td><td></td></tr><tr><td>R12</td><td>Range(20, 36)</td><td></td></tr><tr><td>R13</td><td>Range(20, 30)</td><td></td></tr><tr><td>R14</td><td>Range(28, 34)</td><td></td></tr><tr><td>R15</td><td>Range(30, 34)</td><td></td></tr><tr><td>R16</td><td>Range(36, 38)</td><td></td></tr></table></td></tr></table>      <table class="regalloc">
+      <tr>
+        <th></th>
+        <th>idx</th>
+        <th>insn</th>
+      </tr>
+<tr><td>&rarr;</td><td>16</td><td>B1(R10, R11):</tr><tr><td></td><td>18</td><td>jump →B2($1, R11)
+</td></tr><tr><td></td><td>20</td><td>B2(R12, R13):</tr><tr><td></td><td>22</td><td>cmp R13, $1
+</td></tr><tr><td></td><td>24</td><td>blt iftrue: →B4, iffalse: →B3
+</td></tr><tr><td></td><td>26</td><td>B3:</tr><tr><td></td><td>28</td><td>R14 = mul R12, R13
+</td></tr><tr><td></td><td>30</td><td>R15 = sub R13, $1
+</td></tr><tr><td></td><td>32</td><td>jump →B2(R14, R15)
+</td></tr><tr><td></td><td>34</td><td>B4:</tr><tr><td></td><td>36</td><td>R16 = add R10, R12
+</td></tr><tr><td></td><td>38</td><td>ret R16
+</td></tr></table></div>
+<div id='frame2' style='display: none;'><table><tr><td>active</td><td>[Range(16, 20), Range(16, 36)]</td></tr><tr><td>free registers</td><td>[]</td></tr><tr><td>assignments</td><td>
+<table>
+  <tr>
+    <th>vreg</th>
+    <th>interval</th>
+    <th>location</th>
+  </tr><tr><td>R10</td><td>Range(16, 36)</td><td>P0</td></tr><tr><td>R11</td><td>Range(16, 20)</td><td>P1</td></tr><tr><td>R12</td><td>Range(20, 36)</td><td></td></tr><tr><td>R13</td><td>Range(20, 30)</td><td></td></tr><tr><td>R14</td><td>Range(28, 34)</td><td></td></tr><tr><td>R15</td><td>Range(30, 34)</td><td></td></tr><tr><td>R16</td><td>Range(36, 38)</td><td></td></tr></table></td></tr></table>      <table class="regalloc">
+      <tr>
+        <th></th>
+        <th>idx</th>
+        <th>insn</th>
+      </tr>
+<tr><td>&rarr;</td><td>16</td><td>B1(R10, R11):</tr><tr><td></td><td>18</td><td>jump →B2($1, R11)
+</td></tr><tr><td></td><td>20</td><td>B2(R12, R13):</tr><tr><td></td><td>22</td><td>cmp R13, $1
+</td></tr><tr><td></td><td>24</td><td>blt iftrue: →B4, iffalse: →B3
+</td></tr><tr><td></td><td>26</td><td>B3:</tr><tr><td></td><td>28</td><td>R14 = mul R12, R13
+</td></tr><tr><td></td><td>30</td><td>R15 = sub R13, $1
+</td></tr><tr><td></td><td>32</td><td>jump →B2(R14, R15)
+</td></tr><tr><td></td><td>34</td><td>B4:</tr><tr><td></td><td>36</td><td>R16 = add R10, R12
+</td></tr><tr><td></td><td>38</td><td>ret R16
+</td></tr></table></div>
+<div id='frame3' style='display: none;'><table><tr><td>active</td><td>[Range(16, 36), Range(20, 36)]</td></tr><tr><td>free registers</td><td>[]</td></tr><tr><td>assignments</td><td>
+<table>
+  <tr>
+    <th>vreg</th>
+    <th>interval</th>
+    <th>location</th>
+  </tr><tr><td>R10</td><td>Range(16, 36)</td><td>P0</td></tr><tr><td>R11</td><td>Range(16, 20)</td><td>P1</td></tr><tr><td>R12</td><td>Range(20, 36)</td><td>P1</td></tr><tr><td>R13</td><td>Range(20, 30)</td><td></td></tr><tr><td>R14</td><td>Range(28, 34)</td><td></td></tr><tr><td>R15</td><td>Range(30, 34)</td><td></td></tr><tr><td>R16</td><td>Range(36, 38)</td><td></td></tr></table></td></tr></table>      <table class="regalloc">
+      <tr>
+        <th></th>
+        <th>idx</th>
+        <th>insn</th>
+      </tr>
+<tr><td></td><td>16</td><td>B1(R10, R11):</tr><tr><td></td><td>18</td><td>jump →B2($1, R11)
+</td></tr><tr><td>&rarr;</td><td>20</td><td>B2(R12, R13):</tr><tr><td></td><td>22</td><td>cmp R13, $1
+</td></tr><tr><td></td><td>24</td><td>blt iftrue: →B4, iffalse: →B3
+</td></tr><tr><td></td><td>26</td><td>B3:</tr><tr><td></td><td>28</td><td>R14 = mul R12, R13
+</td></tr><tr><td></td><td>30</td><td>R15 = sub R13, $1
+</td></tr><tr><td></td><td>32</td><td>jump →B2(R14, R15)
+</td></tr><tr><td></td><td>34</td><td>B4:</tr><tr><td></td><td>36</td><td>R16 = add R10, R12
+</td></tr><tr><td></td><td>38</td><td>ret R16
+</td></tr></table></div>
+<div id='frame4' style='display: none;'><table><tr><td>active</td><td>[Range(20, 30), Range(20, 36)]</td></tr><tr><td>free registers</td><td>[]</td></tr><tr><td>assignments</td><td>
+<table>
+  <tr>
+    <th>vreg</th>
+    <th>interval</th>
+    <th>location</th>
+  </tr><tr><td>R10</td><td>Range(16, 36)</td><td>Stack[0]</td></tr><tr><td>R11</td><td>Range(16, 20)</td><td>P1</td></tr><tr><td>R12</td><td>Range(20, 36)</td><td>P1</td></tr><tr><td>R13</td><td>Range(20, 30)</td><td>P0</td></tr><tr><td>R14</td><td>Range(28, 34)</td><td></td></tr><tr><td>R15</td><td>Range(30, 34)</td><td></td></tr><tr><td>R16</td><td>Range(36, 38)</td><td></td></tr></table></td></tr></table>      <table class="regalloc">
+      <tr>
+        <th></th>
+        <th>idx</th>
+        <th>insn</th>
+      </tr>
+<tr><td></td><td>16</td><td>B1(R10, R11):</tr><tr><td></td><td>18</td><td>jump →B2($1, R11)
+</td></tr><tr><td>&rarr;</td><td>20</td><td>B2(R12, R13):</tr><tr><td></td><td>22</td><td>cmp R13, $1
+</td></tr><tr><td></td><td>24</td><td>blt iftrue: →B4, iffalse: →B3
+</td></tr><tr><td></td><td>26</td><td>B3:</tr><tr><td></td><td>28</td><td>R14 = mul R12, R13
+</td></tr><tr><td></td><td>30</td><td>R15 = sub R13, $1
+</td></tr><tr><td></td><td>32</td><td>jump →B2(R14, R15)
+</td></tr><tr><td></td><td>34</td><td>B4:</tr><tr><td></td><td>36</td><td>R16 = add R10, R12
+</td></tr><tr><td></td><td>38</td><td>ret R16
+</td></tr></table></div>
+<div id='frame5' style='display: none;'><table><tr><td>active</td><td>[Range(20, 30), Range(28, 34)]</td></tr><tr><td>free registers</td><td>[]</td></tr><tr><td>assignments</td><td>
+<table>
+  <tr>
+    <th>vreg</th>
+    <th>interval</th>
+    <th>location</th>
+  </tr><tr><td>R10</td><td>Range(16, 36)</td><td>Stack[0]</td></tr><tr><td>R11</td><td>Range(16, 20)</td><td>P1</td></tr><tr><td>R12</td><td>Range(20, 36)</td><td>Stack[1]</td></tr><tr><td>R13</td><td>Range(20, 30)</td><td>P0</td></tr><tr><td>R14</td><td>Range(28, 34)</td><td>P1</td></tr><tr><td>R15</td><td>Range(30, 34)</td><td></td></tr><tr><td>R16</td><td>Range(36, 38)</td><td></td></tr></table></td></tr></table>      <table class="regalloc">
+      <tr>
+        <th></th>
+        <th>idx</th>
+        <th>insn</th>
+      </tr>
+<tr><td></td><td>16</td><td>B1(R10, R11):</tr><tr><td></td><td>18</td><td>jump →B2($1, R11)
+</td></tr><tr><td></td><td>20</td><td>B2(R12, R13):</tr><tr><td></td><td>22</td><td>cmp R13, $1
+</td></tr><tr><td></td><td>24</td><td>blt iftrue: →B4, iffalse: →B3
+</td></tr><tr><td></td><td>26</td><td>B3:</tr><tr><td>&rarr;</td><td>28</td><td>R14 = mul R12, R13
+</td></tr><tr><td></td><td>30</td><td>R15 = sub R13, $1
+</td></tr><tr><td></td><td>32</td><td>jump →B2(R14, R15)
+</td></tr><tr><td></td><td>34</td><td>B4:</tr><tr><td></td><td>36</td><td>R16 = add R10, R12
+</td></tr><tr><td></td><td>38</td><td>ret R16
+</td></tr></table></div>
+<div id='frame6' style='display: none;'><table><tr><td>active</td><td>[Range(28, 34), Range(30, 34)]</td></tr><tr><td>free registers</td><td>[]</td></tr><tr><td>assignments</td><td>
+<table>
+  <tr>
+    <th>vreg</th>
+    <th>interval</th>
+    <th>location</th>
+  </tr><tr><td>R10</td><td>Range(16, 36)</td><td>Stack[0]</td></tr><tr><td>R11</td><td>Range(16, 20)</td><td>P1</td></tr><tr><td>R12</td><td>Range(20, 36)</td><td>Stack[1]</td></tr><tr><td>R13</td><td>Range(20, 30)</td><td>P0</td></tr><tr><td>R14</td><td>Range(28, 34)</td><td>P1</td></tr><tr><td>R15</td><td>Range(30, 34)</td><td>P0</td></tr><tr><td>R16</td><td>Range(36, 38)</td><td></td></tr></table></td></tr></table>      <table class="regalloc">
+      <tr>
+        <th></th>
+        <th>idx</th>
+        <th>insn</th>
+      </tr>
+<tr><td></td><td>16</td><td>B1(R10, R11):</tr><tr><td></td><td>18</td><td>jump →B2($1, R11)
+</td></tr><tr><td></td><td>20</td><td>B2(R12, R13):</tr><tr><td></td><td>22</td><td>cmp R13, $1
+</td></tr><tr><td></td><td>24</td><td>blt iftrue: →B4, iffalse: →B3
+</td></tr><tr><td></td><td>26</td><td>B3:</tr><tr><td></td><td>28</td><td>R14 = mul R12, R13
+</td></tr><tr><td>&rarr;</td><td>30</td><td>R15 = sub R13, $1
+</td></tr><tr><td></td><td>32</td><td>jump →B2(R14, R15)
+</td></tr><tr><td></td><td>34</td><td>B4:</tr><tr><td></td><td>36</td><td>R16 = add R10, R12
+</td></tr><tr><td></td><td>38</td><td>ret R16
+</td></tr></table></div>
+<div id='frame7' style='display: none;'><table><tr><td>active</td><td>[Range(36, 38)]</td></tr><tr><td>free registers</td><td>[P1]</td></tr><tr><td>assignments</td><td>
+<table>
+  <tr>
+    <th>vreg</th>
+    <th>interval</th>
+    <th>location</th>
+  </tr><tr><td>R10</td><td>Range(16, 36)</td><td>Stack[0]</td></tr><tr><td>R11</td><td>Range(16, 20)</td><td>P1</td></tr><tr><td>R12</td><td>Range(20, 36)</td><td>Stack[1]</td></tr><tr><td>R13</td><td>Range(20, 30)</td><td>P0</td></tr><tr><td>R14</td><td>Range(28, 34)</td><td>P1</td></tr><tr><td>R15</td><td>Range(30, 34)</td><td>P0</td></tr><tr><td>R16</td><td>Range(36, 38)</td><td>P0</td></tr></table></td></tr></table>      <table class="regalloc">
+      <tr>
+        <th></th>
+        <th>idx</th>
+        <th>insn</th>
+      </tr>
+<tr><td></td><td>16</td><td>B1(R10, R11):</tr><tr><td></td><td>18</td><td>jump →B2($1, R11)
+</td></tr><tr><td></td><td>20</td><td>B2(R12, R13):</tr><tr><td></td><td>22</td><td>cmp R13, $1
+</td></tr><tr><td></td><td>24</td><td>blt iftrue: →B4, iffalse: →B3
+</td></tr><tr><td></td><td>26</td><td>B3:</tr><tr><td></td><td>28</td><td>R14 = mul R12, R13
+</td></tr><tr><td></td><td>30</td><td>R15 = sub R13, $1
+</td></tr><tr><td></td><td>32</td><td>jump →B2(R14, R15)
+</td></tr><tr><td></td><td>34</td><td>B4:</tr><tr><td>&rarr;</td><td>36</td><td>R16 = add R10, R12
+</td></tr><tr><td></td><td>38</td><td>ret R16
+</td></tr></table></div>
+
+  </body>
+</html>

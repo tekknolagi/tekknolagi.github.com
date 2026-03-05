@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/assets/img/prisoners.png" />
+    <title>Understanding the 100 prisoners problem | Max Bernstein</title>
+    <meta property="og:title" content="Understanding the 100 prisoners problem | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/understanding-the-100-prisoners-problem/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Understanding the 100 prisoners problem</h1>
+        
+        <div class="post-inline-date"><i>March 11, 2019</i></div>
+        
+        <div class="post-co-authors">
+        
+            
+            
+            
+                With co-authors <i>Chris Gregory, Yuki Zaninovich</i>!
+            
+        
+        </div>
+        <div class="container">
+            <p>I visited my friends <a href="https://chrisgregory.me">Chris</a> and Yuki in Seattle.
+After lunch, Chris threw us a brainteaser: the 100 prisoners problem. For
+those not familiar, Minute Physics has a <a href="https://www.youtube.com/watch?v=eivGlBKlK6M">great YouTube video</a>
+about it.</p>
+<p>For those who would prefer not to watch a video, a snippet from the <a href="https://en.wikipedia.org/wiki/100_prisoners_problem">Wikipedia
+page</a> is attached here:</p>
+<blockquote>
+<p>In this problem, 100 numbered prisoners must find their own numbers in one of
+100 drawers in order to survive. The rules state that each prisoner may open
+only 50 drawers and cannot communicate with other prisoners. At first glance,
+the situation appears hopeless, but a clever strategy offers the prisoners a
+realistic chance of survival.</p>
+</blockquote>
+<p>and for some reason that snippet sounds like the voice-over to a movie trailer.</p>
+<p>Since we did not have a good intuitive grasp of the solution and reasoning, we
+decided to simulate the experiment and run some numbers. When in doubt,
+implement it yourself, right?</p>
+<p>The Minute Physics video has <code class="language-plaintext highlighter-rouge">100</code> boxes, but we should generalize to <code class="language-plaintext highlighter-rouge">n</code>.
+Since the boxes in the room are shuffled at the beginning of each experiment,
+we start by shuffling a list of numbers from <code class="language-plaintext highlighter-rouge">1</code> to <code class="language-plaintext highlighter-rouge">n</code>:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+
+<span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+    <span class="n">boxes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">boxes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">try_find_self</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">person</span><span class="p">,</span> <span class="n">limit</span><span class="p">)</span> <span class="k">for</span> <span class="n">person</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+</pre></div>
+<p>Then, for each person (which is the same as &quot;for each box&quot; in this case),
+attempt to find their hidden box using the method described in the video. Since
+<code class="language-plaintext highlighter-rouge">try_find_self</code> yields a success (<code class="language-plaintext highlighter-rouge">True</code>) or a failure (<code class="language-plaintext highlighter-rouge">False</code>), summing
+should give the number of people who found their boxes.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">try_find_self</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">limit</span><span class="p">):</span>
+    <span class="n">next_box</span> <span class="o">=</span> <span class="n">boxes</span><span class="p">[</span><span class="n">start</span><span class="p">]</span>
+    <span class="n">num_opened</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">next_box</span> <span class="o">!=</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">num_opened</span> <span class="o">&lt;</span> <span class="n">limit</span><span class="p">:</span>
+        <span class="n">next_box</span> <span class="o">=</span> <span class="n">boxes</span><span class="p">[</span><span class="n">next_box</span><span class="p">]</span>
+        <span class="n">num_opened</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">next_box</span> <span class="o">==</span> <span class="n">start</span>
+</pre></div>
+<p>The <code class="language-plaintext highlighter-rouge">try_find_self</code> function implements the strategy described in the video:
+start at the box indexed by your number (not necessarily containing your
+number) and follow that linked list of boxes until you either hit the limit or
+find your number. If the next box at the end is yours, you have found your box!</p>
+<p>Now, this isn't very interesting on its own. We can run an experiment, sure,
+but we still have to analyze the results of the data over multiple samples and
+varying parameters.</p>
+<p>In order to do that, we made some visualizations. We start off by importing all
+of the usual suspects:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">simulate</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+<p>Then, in order to get reproducible results, seed the random number generator.
+This was essential for improving our implementations of both the visualizations
+and the simulations while verifying that the end results did not change.</p>
+<div class="highlight"><pre><span></span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+<p>In order to get a feel for the effect of different parameters on the
+probability of a group of people winning, we varied the number of boxes and the
+maximum number of tries. It's a good thing we tried this, since our intuition
+about how the results scale with the ratio was very wrong.</p>
+<div class="highlight"><pre><span></span><span class="n">num_samples</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">max_tries_options</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">num_box_options</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+<p>Since our sampler only takes one parameter pair at once, we have to vectorize
+our function. Note that we specify <code class="language-plaintext highlighter-rouge">otypes</code>, because otherwise <code class="language-plaintext highlighter-rouge">vectorize</code> has
+to run the <code class="language-plaintext highlighter-rouge">sample</code> function with the first input multiple times in order to
+determine the type of the output. This is a <a href="https://github.com/numpy/numpy/issues/8758">known issue</a> and
+was very annoying to debug, given the randomness.</p>
+<div class="highlight"><pre><span></span><span class="n">vsample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">simulate</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span>
+</pre></div>
+<p>Now we take samples at all combinations of the parameter, <code class="language-plaintext highlighter-rouge">num_samples</code> number
+of times. This returns a large NumPy array with dimensions like
+<code class="language-plaintext highlighter-rouge">results[sample_num][max_tries][num_boxes]</code>. For each sample, all of the
+combinations of parameters are tried and returned in a 2D grid.</p>
+<div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">num_box_options</span><span class="p">,</span> <span class="n">max_tries_options</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">vsample</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)])</span>
+</pre></div>
+<p>This produces some nice data, like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[[[10  2  0 ...  1  7  6]
+  [10  4 30 ... 32  7  1]
+  [10 20 30 ...  1 11 35]
+  [10 20 30 ... 70 41 40]
+  [10 20 30 ...  3 29 30]]
+
+ ...
+
+ [[ 4 13 18 ...  3  2  3]
+  [10  0 30 ... 31 11 47]
+  [10 20 30 ... 43  0 34]
+  [10 20 30 ... 29 80 45]
+  [10 20 30 ... 70 80 90]]]
+</code></pre></div></div>
+<p>While it's all nice and good to know how many people in each sample found their
+boxes, we want to visualize the probability of a <i>group</i> winning. Remember
+that a group winning is defined by all of the <code class="language-plaintext highlighter-rouge">n</code> people finding their number
+in a box. To calculate that probability, we binarize the results and get the
+mean success rate across all the samples.</p>
+<div class="highlight"><pre><span></span><span class="n">results_bin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">results</span> <span class="o">==</span> <span class="n">num_box_options</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_samples</span>
+</pre></div>
+<p>This turns the <code class="language-plaintext highlighter-rouge">results</code> from above into an array like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[[0.337 0.012 0.    0.    0.    0.    0.    0.    0.   ]
+ [1.    0.699 0.338 0.127 0.029 0.007 0.003 0.    0.   ]
+ [1.    1.    0.836 0.545 0.304 0.181 0.072 0.038 0.012]
+ [1.    1.    1.    0.871 0.662 0.462 0.316 0.197 0.093]
+ [1.    1.    1.    1.    0.907 0.694 0.54  0.429 0.313]]
+</code></pre></div></div>
+<p>which has dimensions <code class="language-plaintext highlighter-rouge">results_bin[max_tries][num_boxes]</code>.</p>
+<blockquote>
+<p>If you are unfamiliar with the term <em>binarize</em>, I was too until last night.
+It means <em>reduce to a success/failure value</em>.</p>
+</blockquote>
+<p>There are three interesting regions of this data, identifiable even before
+plotting:</p>
+<ol>
+<li>The bottom left field of <code class="language-plaintext highlighter-rouge">1</code>s, which comes from allowing many tries compared
+to the number of boxes in the room.</li>
+<li>The top right field of <code class="language-plaintext highlighter-rouge">0</code>s, which comes from allowing not many tries
+compared to the number of boxes in the room. They really shouldn't be zero,
+but winning is so rare that we would need to have <i>a lot</i> of samples.</li>
+<li>The middle &quot;normal&quot; numbers.</li>
+</ol>
+<p>Let's chart the data and see what this looks like in beautiful shades of
+purple:</p>
+<div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="s1">&#39;Purples&#39;</span><span class="p">)</span>
+<span class="n">contour</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">,</span> <span class="n">results_bin</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;num boxes&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;max tries allowed&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;probability of group win&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contour</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<p><a href="/assets/img/prisoners.png"><img src="/assets/img/prisoners.png" alt="" /></a></p>
+<blockquote>
+<p>Note that this graph was generated with <code class="language-plaintext highlighter-rouge">1000</code> samples, and intervals of <code class="language-plaintext highlighter-rouge">1</code>
+for <code class="language-plaintext highlighter-rouge">max_tries_options</code> and <code class="language-plaintext highlighter-rouge">num_box_options</code>, which is different than the
+above code snippets.  It took a while to generate the data.</p>
+</blockquote>
+<p>On the x-axis we have the total number of both people and boxes and on the
+y-axis we have the maximum number of tries that each person is given to find
+their box. This confirms Minute Physics' conclusion about the probability of
+everyone winning using the strategy. It also provides a handy way of testing
+your own strategy against the proposed one and seeing how often you lead your
+group to success! Feel free to send any interesting ones in.</p>
+<p>If Chris, Yuki, and I have time, we'll update this post with a more efficient
+simulation so it doesn't take so dang long to generate the data. We also have
+another visualization lying around that contains the different probability
+distributions for all the configuration settings, but haven't written about
+it... yet.</p>
+<p>There's some sample code in <a href="https://github.com/tekknolagi/100prisoners/">the repo</a> — check it out and let us know
+what you think. We found that re-writing the simulation as a Python C-extension
+improved speeds 20x, so there's also a small C++ program in there.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2019-03-11-understanding-the-100-prisoners-problem.md" title="Help improve _posts/2019-03-11-understanding-the-100-prisoners-problem.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

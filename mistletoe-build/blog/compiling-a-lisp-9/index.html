@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/assets/img/compiling-a-lisp-og-image.png" />
+    <title>Compiling a Lisp: Heap allocation | Max Bernstein</title>
+    <meta name="description" content="Compiling Lisp cons, car, and cdr to x86-64" />
+    <meta property="og:title" content="Compiling a Lisp: Heap allocation | Max Bernstein" />
+    <meta property="og:description" content="Compiling Lisp cons, car, and cdr to x86-64" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/compiling-a-lisp-9/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Compiling a Lisp: Heap allocation</h1>
+        
+        <div class="post-inline-date"><i>October 11, 2020</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p><span data-nosnippet><em><a href="/blog/compiling-a-lisp-0/">first</a></em> – <em><a href="/blog/compiling-a-lisp-8/">previous</a></em></span></p>
+<p>Welcome back to the "Compiling a Lisp" series. Last time we added support for
+<code class="language-plaintext highlighter-rouge">if</code> expressions. This time we're going add support for basic heap allocation.</p>
+<p>Heap allocation comes in a couple of forms, but the one we care about right now
+is the <code class="language-plaintext highlighter-rouge">cons</code> primitive. Much like <code class="language-plaintext highlighter-rouge">AST_new_pair</code> in the compiler, <code class="language-plaintext highlighter-rouge">cons</code>
+should:</p>
+<ul>
+<li>allocate some space on the heap,</li>
+<li>set the <code class="language-plaintext highlighter-rouge">car</code> and <code class="language-plaintext highlighter-rouge">cdr</code>, and</li>
+<li>tag the pointer appropriately.</li>
+</ul>
+<p>Once we have that pair, we'll want to poke at its data. This means we should
+probably also implement <code class="language-plaintext highlighter-rouge">car</code> and <code class="language-plaintext highlighter-rouge">cdr</code> primitive functions today.</p>
+<h3 id="what-a-pair-looks-like-in-memory">What a pair looks like in memory</h3>
+
+<p>In order to generate code for packing and pulling apart pairs, we should
+probably know how they are laid out in memory.</p>
+<p>Pairs contain two elements, side by side — kind of like a two-element array.
+The first element (<code class="language-plaintext highlighter-rouge">pair[0]</code>) is the <code class="language-plaintext highlighter-rouge">car</code> and the second one (<code class="language-plaintext highlighter-rouge">pair[1]</code>) is
+the <code class="language-plaintext highlighter-rouge">cdr</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   +-----+-----+
+...| car | cdr |...
+   +-----+-----+
+   ^
+   pointer
+</code></pre></div></div>
+
+<p>The untagged pointer points to the address of the first element, and the tagged
+pointer has some extra information (<code class="language-plaintext highlighter-rouge">kPairTag</code> == <code class="language-plaintext highlighter-rouge">1</code>) that we need to get rid
+of to inspect the elements. If we don't, we'll try and read from one byte after
+the pointer, somewhere in the middle of the <code class="language-plaintext highlighter-rouge">car</code>. This will give us bad data.</p>
+<p>To make things more concrete, imagine our pair is allocated at <code class="language-plaintext highlighter-rouge">0x10000</code>. Our
+<code class="language-plaintext highlighter-rouge">car</code> lives at <code class="language-plaintext highlighter-rouge">*(0x10000)</code> (using C notation) and our <code class="language-plaintext highlighter-rouge">cdr</code> lives at
+<code class="language-plaintext highlighter-rouge">*(0x10000 + kWordSize)</code>. The tagged pointer in this case would be <code class="language-plaintext highlighter-rouge">0x10001</code>
+and <code class="language-plaintext highlighter-rouge">kWordSize</code> is 8.</p>
+<h3 id="allocating-some-memory">Allocating some memory</h3>
+
+<p>We <em>could</em> make a call to <code class="language-plaintext highlighter-rouge">malloc</code> whenever we need a new object. This has a
+couple of downfalls, notably that <code class="language-plaintext highlighter-rouge">malloc</code> does a lot of internal bookkeeping
+that we really don't need, and that there's no good way to keep track of what
+memory we have allocated and needs garbage collecting (which we'll handle
+later). It also has the unfortunate property of requiring C functional call
+infrastructure, which we don't have yet.</p>
+<p>What we're going to do instead is allocate a big slab of memory at the
+beginning of our process. That will be our heap. Then, to keep track of what
+memory we have used so far, we're going to bump the pointer every time we
+allocate. So here's what the heap looks like before we allocate a pair:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+-----+-----+-----+-----+-----+-----+-----+-----+
+|     |     |     |     |     |     |     |     |...
++-----+-----+-----+-----+-----+-----+-----+-----+
+^
+heap
+</code></pre></div></div>
+
+<p>The empty cells aren't necessarily empty, but they are unused and they are
+garbage data.</p>
+<p>Here is what it looks like after we allocate a pair:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+-----+-----+-----+-----+-----+-----+-----+-----+
+| car | cdr |     |     |     |     |     |     |...
++-----+-----+-----+-----+-----+-----+-----+-----+
+^           ^
+pair        heap
+</code></pre></div></div>
+
+<p>Notice how the <code class="language-plaintext highlighter-rouge">heap</code> pointer has been moved over 2 words, and the <code class="language-plaintext highlighter-rouge">pair</code>
+pointer is the returned cons cell. Although we'll tag the <code class="language-plaintext highlighter-rouge">pair</code> pointer, I am
+pointing it at the beginning of the <code class="language-plaintext highlighter-rouge">car</code> for clarity in the diagram.</p>
+<p>In order to get this big slab of memory in the first place, we'll have the
+outside C code (right now, that's our test handler) call <code class="language-plaintext highlighter-rouge">malloc</code>.</p>
+<p>You're probably wondering what we're going to do when we run out of memory. At
+some point in this series we'll have a garbage collector that can reclaim some
+space for us. Right now, though, we're just going to do ... nothing. That's
+right, we won't even raise some kind of "out of memory" error. Remember, we
+don't yet have error reporting facilities! Instead, we'll use tools like
+Valgrind and AddressSanitizer to make sure we're not overrunning our allocated
+buffer.</p>
+<h3 id="implementation-strategy">Implementation strategy</h3>
+
+<p>In order to make allocation from that big buffer fast and easy, we're going to
+keep the heap pointer in a register. Our compiler emits instructions that use
+<code class="language-plaintext highlighter-rouge">rbp</code>, <code class="language-plaintext highlighter-rouge">rsp</code>, and <code class="language-plaintext highlighter-rouge">rax</code>, so we'll have to pick another one. Ghuloum uses <code class="language-plaintext highlighter-rouge">rsi</code>,
+so we'll use that as well.</p>
+<p>In order to get the heap pointer in <code class="language-plaintext highlighter-rouge">rsi</code> in the first place, we'll have to
+capture it from the outside C code. To do this, we'll add a parameter to our
+<em>entrypoint</em> by modifying the function prologue.</p>
+<p>Remember <code class="language-plaintext highlighter-rouge">JitFunction</code>? This is what the C code uses to understand how to call
+our <code class="language-plaintext highlighter-rouge">mmap</code>-ed function. We're going to need to modify this first.</p>
+<div class="highlight"><pre><span></span><span class="c1">// Before:</span>
+<span class="k">typedef</span><span class="w"> </span><span class="n">uword</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">JitFunction</span><span class="p">)();</span>
+
+<span class="c1">// After:</span>
+<span class="k">typedef</span><span class="w"> </span><span class="n">uword</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">JitFunction</span><span class="p">)(</span><span class="n">uword</span><span class="w"> </span><span class="o">*</span><span class="n">heap</span><span class="p">);</span>
+</pre></div>
+
+<p>That's going to need to take a new parameter now — a pointer to the heap.
+This means that our <code class="language-plaintext highlighter-rouge">kFunctionPrologue</code> will need to expect that in the first
+parameter register in the calling convention, and store it somewhere safe. This
+register is <code class="language-plaintext highlighter-rouge">rdi</code>, so we can emit a <code class="language-plaintext highlighter-rouge">mov rsi, rdi</code> to store our heap pointer
+away.</p>
+<p>Now, for the lifetime of the Lisp entrypoint, we can refer to the heap by the
+name <code class="language-plaintext highlighter-rouge">rsi</code> and modify it accordingly. We'll keep an internal convention that
+<code class="language-plaintext highlighter-rouge">rsi</code> <em>always</em> points to the next available chunk of memory.</p>
+<p>Want to allocate memory? Copy the current heap pointer into <code class="language-plaintext highlighter-rouge">rax</code> and update
+the heap pointer with <code class="language-plaintext highlighter-rouge">add rsi, AllocationSize</code>. We'll need to add a new
+instruction for moving data between registers. Honestly, I am kind of surprised
+we haven't needed that yet.</p>
+<p>Want to store your <code class="language-plaintext highlighter-rouge">car</code> and <code class="language-plaintext highlighter-rouge">cdr</code> in your new pair? Write to offset <code class="language-plaintext highlighter-rouge">0</code> and
+<code class="language-plaintext highlighter-rouge">kWordSize</code> of <code class="language-plaintext highlighter-rouge">rax</code>, respectively. We'll reuse our indirect store instruction.</p>
+<p>Want to tag your pointer? <code class="language-plaintext highlighter-rouge">add rax, Tag</code> or <code class="language-plaintext highlighter-rouge">or rax, Tag</code>. These two
+instructions are equivalent because all the three taggable bits in a heap
+object will be zero.</p>
+<blockquote>
+<p>This word-alignment is easy to maintain now because all pairs will be size
+16, which is a multiple of 8. Later on, when we add symbols and strings and
+other data types that have non-object data in them, we'll have to insert
+padding between allocations to keep the alignment invariant.</p>
+</blockquote>
+<p>Once we have pairs allocated, it's kind of useless unless we can also poke at
+their elements.</p>
+<p>To implement <code class="language-plaintext highlighter-rouge">car</code>, we'll remove the tag from the pointer and read from the
+memory pointed to by the register: <code class="language-plaintext highlighter-rouge">mov rax, [Ptr+Car-Tag]</code>. You can also do
+this with a <code class="language-plaintext highlighter-rouge">sub rax, Tag</code> and then a <code class="language-plaintext highlighter-rouge">mov</code>.</p>
+<p>Implementing <code class="language-plaintext highlighter-rouge">cdr</code> is very similar, except we'll be doing <code class="language-plaintext highlighter-rouge">mov rax, [Ptr+Cdr-Tag]</code>.</p>
+<h3 id="brass-tacks">Brass tacks</h3>
+
+<p>Now that we've gotten our minds around the abstract solution to the problem, we
+should write some code.</p>
+<p>First off, here is the addition to the prologue I mentioned earlier:</p>
+<div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">kEntryPrologue</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Save the heap in rsi, our global heap pointer</span>
+<span class="w">  </span><span class="c1">// mov rsi, rdi</span>
+<span class="w">  </span><span class="n">kRexPrefix</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">,</span><span class="w"> </span><span class="mh">0xfe</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+
+<p>Let's once more add an entry to <code class="language-plaintext highlighter-rouge">Compile_call</code>.</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">Compile_call</span><span class="p">(</span><span class="n">Buffer</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">ASTNode</span><span class="w"> </span><span class="o">*</span><span class="n">callable</span><span class="p">,</span><span class="w"> </span><span class="n">ASTNode</span><span class="w"> </span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">word</span><span class="w"> </span><span class="n">stack_index</span><span class="p">,</span><span class="w"> </span><span class="n">Env</span><span class="w"> </span><span class="o">*</span><span class="n">varenv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">AST_is_symbol</span><span class="p">(</span><span class="n">callable</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">AST_symbol_matches</span><span class="p">(</span><span class="n">callable</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cons&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">Compile_cons</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="cm">/*car=*/</span><span class="n">operand1</span><span class="p">(</span><span class="n">args</span><span class="p">),</span><span class="w"> </span><span class="cm">/*cdr=*/</span><span class="n">operand2</span><span class="p">(</span><span class="n">args</span><span class="p">),</span>
+<span class="w">                          </span><span class="n">stack_index</span><span class="p">,</span><span class="w"> </span><span class="n">varenv</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>We don't <em>really</em> need to add a whole new function for <code class="language-plaintext highlighter-rouge">cons</code> since we're not
+doing structural recursion on the parameters or anything, but <code class="language-plaintext highlighter-rouge">Compile_call</code>
+just keeps getting bigger and this helps keep it smaller.</p>
+<p><code class="language-plaintext highlighter-rouge">Compile_cons</code> is pretty much exactly what I described above. I pulled out
+<code class="language-plaintext highlighter-rouge">rsi</code> into <code class="language-plaintext highlighter-rouge">kHeapPointer</code> so that we can change it later if we need to.</p>
+<div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">Register</span><span class="w"> </span><span class="n">kHeapPointer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kRsi</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">Compile_cons</span><span class="p">(</span><span class="n">Buffer</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">ASTNode</span><span class="w"> </span><span class="o">*</span><span class="n">car</span><span class="p">,</span><span class="w"> </span><span class="n">ASTNode</span><span class="w"> </span><span class="o">*</span><span class="n">cdr</span><span class="p">,</span>
+<span class="w">                 </span><span class="kt">int</span><span class="w"> </span><span class="n">stack_index</span><span class="p">,</span><span class="w"> </span><span class="n">Env</span><span class="w"> </span><span class="o">*</span><span class="n">varenv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Compile and store car on the stack</span>
+<span class="w">  </span><span class="n">_</span><span class="p">(</span><span class="n">Compile_expr</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">car</span><span class="p">,</span><span class="w"> </span><span class="n">stack_index</span><span class="p">,</span><span class="w"> </span><span class="n">varenv</span><span class="p">));</span>
+<span class="w">  </span><span class="n">Emit_store_reg_indirect</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span>
+<span class="w">                          </span><span class="cm">/*dst=*/</span><span class="n">Ind</span><span class="p">(</span><span class="n">kRbp</span><span class="p">,</span><span class="w"> </span><span class="n">stack_index</span><span class="p">),</span>
+<span class="w">                          </span><span class="cm">/*src=*/</span><span class="n">kRax</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// Compile and store cdr</span>
+<span class="w">  </span><span class="n">_</span><span class="p">(</span><span class="n">Compile_expr</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">cdr</span><span class="p">,</span><span class="w"> </span><span class="n">stack_index</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">kWordSize</span><span class="p">,</span><span class="w"> </span><span class="n">varenv</span><span class="p">));</span>
+<span class="w">  </span><span class="n">Emit_store_reg_indirect</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="cm">/*dst=*/</span><span class="n">Ind</span><span class="p">(</span><span class="n">kHeapPointer</span><span class="p">,</span><span class="w"> </span><span class="n">kCdrOffset</span><span class="p">),</span>
+<span class="w">                          </span><span class="cm">/*src=*/</span><span class="n">kRax</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// Fetch car and store in the heap</span>
+<span class="w">  </span><span class="n">Emit_load_reg_indirect</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="cm">/*dst=*/</span><span class="n">kRax</span><span class="p">,</span><span class="w"> </span><span class="cm">/*src=*/</span><span class="n">Ind</span><span class="p">(</span><span class="n">kRbp</span><span class="p">,</span><span class="w"> </span><span class="n">stack_index</span><span class="p">));</span>
+<span class="w">  </span><span class="n">Emit_store_reg_indirect</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="cm">/*dst=*/</span><span class="n">Ind</span><span class="p">(</span><span class="n">kHeapPointer</span><span class="p">,</span><span class="w"> </span><span class="n">kCarOffset</span><span class="p">),</span>
+<span class="w">                          </span><span class="cm">/*src=*/</span><span class="n">kRax</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// Store tagged pointer in rax</span>
+<span class="w">  </span><span class="n">Emit_mov_reg_reg</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="cm">/*dst=*/</span><span class="n">kRax</span><span class="p">,</span><span class="w"> </span><span class="cm">/*src=*/</span><span class="n">kHeapPointer</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Emit_or_reg_imm8</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="cm">/*dst=*/</span><span class="n">kRax</span><span class="p">,</span><span class="w"> </span><span class="n">kPairTag</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// Bump the heap pointer</span>
+<span class="w">  </span><span class="n">Emit_add_reg_imm32</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="cm">/*dst=*/</span><span class="n">kHeapPointer</span><span class="p">,</span><span class="w"> </span><span class="n">kPairSize</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><del>Note that even though we're compiling two expressions one right after another,
+we don't need to bump <code class="language-plaintext highlighter-rouge">stack_index</code> or anything. This is because we're storing
+the results not on the stack but in the pair</del>.</p>
+<p>As it turns out, we <em>do</em> need to store one of the intermediates on the stack
+because otherwise we risk overwriting random data in the heap. As <a href="https://github.com/KCreate">Leonard
+Schütz</a> pointed out to me, the previous
+version of this code would fail if either the <code class="language-plaintext highlighter-rouge">car</code> or <code class="language-plaintext highlighter-rouge">cdr</code> expressions
+modified the heap pointer. Thank you for the correction!</p>
+<p>As promised, here is the new instruction to move data between registers:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Emit_mov_reg_reg</span><span class="p">(</span><span class="n">Buffer</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">Register</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">Register</span><span class="w"> </span><span class="n">src</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Buffer_write8</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">kRexPrefix</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Buffer_write8</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Buffer_write8</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dst</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Alright, that's <code class="language-plaintext highlighter-rouge">cons</code>. Let's implement <code class="language-plaintext highlighter-rouge">car</code> and <code class="language-plaintext highlighter-rouge">cdr</code>. These are
+extraordinarily short implementations:</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">Compile_call</span><span class="p">(</span><span class="n">Buffer</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">ASTNode</span><span class="w"> </span><span class="o">*</span><span class="n">callable</span><span class="p">,</span><span class="w"> </span><span class="n">ASTNode</span><span class="w"> </span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">word</span><span class="w"> </span><span class="n">stack_index</span><span class="p">,</span><span class="w"> </span><span class="n">Env</span><span class="w"> </span><span class="o">*</span><span class="n">varenv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">AST_is_symbol</span><span class="p">(</span><span class="n">callable</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">AST_symbol_matches</span><span class="p">(</span><span class="n">callable</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;car&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">_</span><span class="p">(</span><span class="n">Compile_expr</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">operand1</span><span class="p">(</span><span class="n">args</span><span class="p">),</span><span class="w"> </span><span class="n">stack_index</span><span class="p">,</span><span class="w"> </span><span class="n">varenv</span><span class="p">));</span>
+<span class="w">      </span><span class="n">Emit_load_reg_indirect</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="cm">/*dst=*/</span><span class="n">kRax</span><span class="p">,</span>
+<span class="w">                             </span><span class="cm">/*src=*/</span><span class="n">Ind</span><span class="p">(</span><span class="n">kRax</span><span class="p">,</span><span class="w"> </span><span class="n">kCarOffset</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">kPairTag</span><span class="p">));</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">AST_symbol_matches</span><span class="p">(</span><span class="n">callable</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cdr&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">_</span><span class="p">(</span><span class="n">Compile_expr</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">operand1</span><span class="p">(</span><span class="n">args</span><span class="p">),</span><span class="w"> </span><span class="n">stack_index</span><span class="p">,</span><span class="w"> </span><span class="n">varenv</span><span class="p">));</span>
+<span class="w">      </span><span class="n">Emit_load_reg_indirect</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="cm">/*dst=*/</span><span class="n">kRax</span><span class="p">,</span>
+<span class="w">                             </span><span class="cm">/*src=*/</span><span class="n">Ind</span><span class="p">(</span><span class="n">kRax</span><span class="p">,</span><span class="w"> </span><span class="n">kCdrOffset</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">kPairTag</span><span class="p">));</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Both <code class="language-plaintext highlighter-rouge">car</code> and <code class="language-plaintext highlighter-rouge">cdr</code> compile their argument and then load from the resulting
+address.</p>
+<p>That's it. That's the whole implementation! It's kind of nice that now we have
+these building blocks, adding new features is not so hard.</p>
+<h3 id="testing">Testing</h3>
+
+<p>I've written a couple of tests for this implementation. In order to make this
+testing painless, I've also added a new type of test harness that passes the
+tests a buffer <em>and</em> a heap. I call it — wait for it — <code class="language-plaintext highlighter-rouge">RUN_HEAP_TEST</code>.</p>
+<p>Anyway, here's a test that we can allocate pairs. To fully test it, I've added
+some helpers for poking at object internals: <code class="language-plaintext highlighter-rouge">Object_pair_car</code> and
+<code class="language-plaintext highlighter-rouge">Object_pair_cdr</code>. Note that these may be the same as but are not necessarily
+the same as the corresponding AST functions. <del>The C compiler could
+hypothetically re-order struct elements, I think</del>. <em>Joker_vD</em> on Hacker News
+points out that C compilers are not permitted to re-order elements, but may
+insert padding for alignment.</p>
+<div class="highlight"><pre><span></span><span class="n">TEST</span><span class="w"> </span><span class="nf">compile_cons</span><span class="p">(</span><span class="n">Buffer</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">uword</span><span class="w"> </span><span class="o">*</span><span class="n">heap</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">ASTNode</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Reader_read</span><span class="p">(</span><span class="s">&quot;(cons 1 2)&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">compile_result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compile_entry</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">node</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ASSERT_EQ</span><span class="p">(</span><span class="n">compile_result</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// clang-format off</span>
+<span class="w">  </span><span class="n">byte</span><span class="w"> </span><span class="n">expected</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// mov rax, 0x2</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc7</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x04</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov [rbp-8], rax</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">,</span><span class="w"> </span><span class="mh">0x45</span><span class="p">,</span><span class="w"> </span><span class="mh">0xf8</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov rax, 0x4</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc7</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x08</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov [rsi+Cdr], rax</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">,</span><span class="w"> </span><span class="mh">0x46</span><span class="p">,</span><span class="w"> </span><span class="mh">0x08</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov rax, [rbp-8]</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x8b</span><span class="p">,</span><span class="w"> </span><span class="mh">0x45</span><span class="p">,</span><span class="w"> </span><span class="mh">0xf8</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov [rsi+Car], rax</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">,</span><span class="w"> </span><span class="mh">0x46</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov rax, rsi</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">,</span><span class="w"> </span><span class="mh">0xf0</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// or rax, kPairTag</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x83</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc8</span><span class="p">,</span><span class="w"> </span><span class="mh">0x01</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// add rsi, 2*kWordSize</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x81</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc6</span><span class="p">,</span><span class="w"> </span><span class="mh">0x10</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="w">  </span><span class="c1">// clang-format on</span>
+<span class="w">  </span><span class="n">EXPECT_ENTRY_CONTAINS_CODE</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">expected</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Buffer_make_executable</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+<span class="w">  </span><span class="n">uword</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Testing_execute_entry</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">heap</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ASSERT</span><span class="p">(</span><span class="n">Object_is_pair</span><span class="p">(</span><span class="n">result</span><span class="p">));</span>
+<span class="w">  </span><span class="n">ASSERT_EQ_FMT</span><span class="p">(</span><span class="n">Object_encode_integer</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">Object_pair_car</span><span class="p">(</span><span class="n">result</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;0x%lx&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ASSERT_EQ_FMT</span><span class="p">(</span><span class="n">Object_encode_integer</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">Object_pair_cdr</span><span class="p">(</span><span class="n">result</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;0x%lx&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">AST_heap_free</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
+<span class="w">  </span><span class="n">PASS</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Here is a test for that tricky nested <code class="language-plaintext highlighter-rouge">cons</code> case that messed me up originally:</p>
+<div class="highlight"><pre><span></span><span class="n">TEST</span><span class="w"> </span><span class="nf">compile_nested_cons</span><span class="p">(</span><span class="n">Buffer</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">uword</span><span class="w"> </span><span class="o">*</span><span class="n">heap</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">ASTNode</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Reader_read</span><span class="p">(</span><span class="s">&quot;(cons (cons 1 2) (cons 3 4))&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">compile_result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compile_entry</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">node</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ASSERT_EQ</span><span class="p">(</span><span class="n">compile_result</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Buffer_make_executable</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+<span class="w">  </span><span class="n">uword</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Testing_execute_entry</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">heap</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ASSERT</span><span class="p">(</span><span class="n">Object_is_pair</span><span class="p">(</span><span class="n">result</span><span class="p">));</span>
+<span class="w">  </span><span class="n">ASSERT</span><span class="p">(</span><span class="n">Object_is_pair</span><span class="p">(</span><span class="n">Object_pair_car</span><span class="p">(</span><span class="n">result</span><span class="p">)));</span>
+<span class="w">  </span><span class="n">ASSERT_EQ_FMT</span><span class="p">(</span><span class="n">Object_encode_integer</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">                </span><span class="n">Object_pair_car</span><span class="p">(</span><span class="n">Object_pair_car</span><span class="p">(</span><span class="n">result</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;0x%lx&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ASSERT_EQ_FMT</span><span class="p">(</span><span class="n">Object_encode_integer</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="w">                </span><span class="n">Object_pair_cdr</span><span class="p">(</span><span class="n">Object_pair_car</span><span class="p">(</span><span class="n">result</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;0x%lx&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ASSERT</span><span class="p">(</span><span class="n">Object_is_pair</span><span class="p">(</span><span class="n">Object_pair_cdr</span><span class="p">(</span><span class="n">result</span><span class="p">)));</span>
+<span class="w">  </span><span class="n">ASSERT_EQ_FMT</span><span class="p">(</span><span class="n">Object_encode_integer</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+<span class="w">                </span><span class="n">Object_pair_car</span><span class="p">(</span><span class="n">Object_pair_cdr</span><span class="p">(</span><span class="n">result</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;0x%lx&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ASSERT_EQ_FMT</span><span class="p">(</span><span class="n">Object_encode_integer</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+<span class="w">                </span><span class="n">Object_pair_cdr</span><span class="p">(</span><span class="n">Object_pair_cdr</span><span class="p">(</span><span class="n">result</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;0x%lx&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">AST_heap_free</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
+<span class="w">  </span><span class="n">PASS</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Here's a test for reading the <code class="language-plaintext highlighter-rouge">car</code> of a pair. The test for <code class="language-plaintext highlighter-rouge">cdr</code> is so similar
+I will not include it here.</p>
+<div class="highlight"><pre><span></span><span class="n">TEST</span><span class="w"> </span><span class="nf">compile_car</span><span class="p">(</span><span class="n">Buffer</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">uword</span><span class="w"> </span><span class="o">*</span><span class="n">heap</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">ASTNode</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Reader_read</span><span class="p">(</span><span class="s">&quot;(car (cons 1 2))&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">compile_result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compile_entry</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">node</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ASSERT_EQ</span><span class="p">(</span><span class="n">compile_result</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// clang-format off</span>
+<span class="w">  </span><span class="n">byte</span><span class="w"> </span><span class="n">expected</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// mov rax, 0x2</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc7</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x04</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov [rbp-8], rax</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">,</span><span class="w"> </span><span class="mh">0x45</span><span class="p">,</span><span class="w"> </span><span class="mh">0xf8</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov rax, 0x4</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc7</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x08</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov [rsi+Cdr], rax</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">,</span><span class="w"> </span><span class="mh">0x46</span><span class="p">,</span><span class="w"> </span><span class="mh">0x08</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov rax, [rbp-8]</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x8b</span><span class="p">,</span><span class="w"> </span><span class="mh">0x45</span><span class="p">,</span><span class="w"> </span><span class="mh">0xf8</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov [rsi+Car], rax</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">,</span><span class="w"> </span><span class="mh">0x46</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov rax, rsi</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">,</span><span class="w"> </span><span class="mh">0xf0</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// or rax, kPairTag</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x83</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc8</span><span class="p">,</span><span class="w"> </span><span class="mh">0x01</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// add rsi, 2*kWordSize</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x81</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc6</span><span class="p">,</span><span class="w"> </span><span class="mh">0x10</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// mov rax, [rax-1]</span>
+<span class="w">      </span><span class="mh">0x48</span><span class="p">,</span><span class="w"> </span><span class="mh">0x8b</span><span class="p">,</span><span class="w"> </span><span class="mh">0x40</span><span class="p">,</span><span class="w"> </span><span class="mh">0xff</span><span class="p">,</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="w">  </span><span class="c1">// clang-format on</span>
+<span class="w">  </span><span class="n">EXPECT_ENTRY_CONTAINS_CODE</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">expected</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Buffer_make_executable</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+<span class="w">  </span><span class="n">uword</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Testing_execute_entry</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">heap</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ASSERT_EQ_FMT</span><span class="p">(</span><span class="n">Object_encode_integer</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;0x%lx&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">AST_heap_free</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
+<span class="w">  </span><span class="n">PASS</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3 id="other-objects">Other objects</h3>
+
+<p>I didn't cover variable-length objects in this post because I wanted to focus
+on the basics of allocating and poking at allocated data structures. Next time,
+<del>we'll add symbols and strings</del> we'll <a href="/blog/compiling-a-lisp-10/">learn about instruction encoding</a>.</p>
+<h4 id="mini-table-of-contents">Mini Table of Contents</h4>
+
+<ul>
+    <li>
+        <a href="/blog/compiling-a-lisp-0/"><span>Overture</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-1/"><span>The smallest program</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-2/"><span>Integers</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-3/"><span>Booleans, characters, nil</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-4/"><span>Primitive unary functions</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-5/"><span>Primitive binary functions</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-6/"><span>Reader</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-7/"><span>Let</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-8/"><span>If</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-9/"><span>Heap allocation</span></a>
+         <span style="color: red"><i>(this page)</i></span> 
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-10/"><span>Instruction encoding interlude</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-11/"><span>Labelled procedure calls</span></a>
+    </li>
+    <li>
+        <a href="/blog/compiling-a-lisp-12/"><span>Closure conversion</span></a>
+    </li>
+</ul>
+
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2020-10-11-compiling-a-lisp-9.md" title="Help improve _posts/2020-10-11-compiling-a-lisp-9.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

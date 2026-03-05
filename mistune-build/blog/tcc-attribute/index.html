@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>TCC does support __attribute__(section(...)), actually | Max Bernstein</title>
+    <meta property="og:title" content="TCC does support __attribute__(section(...)), actually | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/tcc-attribute/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">TCC does support __attribute__(section(...)), actually</h1>
+        
+        <div class="post-inline-date"><i>June 19, 2024</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>If you are using TCC/TinyCC and you are trying to get it to place code or data
+in a specific section with <code class="language-plaintext highlighter-rouge">__attribute__((section(&quot;...&quot;)))</code> and it is not
+creating the section, or if you are trying to get the start/end of the section
+with <code class="language-plaintext highlighter-rouge">__start_SECTION</code> and <code class="language-plaintext highlighter-rouge">__stop_SECTION</code> and you are getting linker errors
+about undefined symbols, don't worry. It's not you. And it's not exactly TCC,
+either.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc const.c &amp;&amp; ./a.out
+f: 0x5c97a966d020, g: 0x5c97a966d030
+start: 0x5c97a966d048, end 0x5c97a966d050
+$ clang const.c &amp;&amp; ./a.out
+f: 0x574924409030, g: 0x574924409040
+start: 0x574924409068, end 0x574924409070
+$ tcc const.c
+tcc: error: undefined symbol '__stop_const_heap'
+tcc: error: undefined symbol '__start_const_heap'
+$
+</code></pre></div></div>
+<p>The fix is to add this snippet to the top of your code (after including the
+glibc headers):</p>
+<div class="highlight"><pre><span></span><span class="cp">#ifdef __TINYC__</span>
+<span class="cp">#undef __attribute__</span>
+<span class="cp">#endif</span>
+</pre></div>
+<p>and then it will magically start working.</p>
+<p>It turns out that this is because glibc headers define <code class="language-plaintext highlighter-rouge">__attribute__</code> to <em>do
+nothing</em> if the compiler either does not pretend to be GCC with <code class="language-plaintext highlighter-rouge">__GNUC__</code> or
+if it is an old version of GCC. This means it gets stripped out by the
+preprocessor, so the compiler never sees it. To undo that, we <code class="language-plaintext highlighter-rouge">#undef __attribute__</code>, which passes through <code class="language-plaintext highlighter-rouge">__attribute__</code> annotations to the
+compiler.</p>
+<p>I found this out from <a href="https://stackoverflow.com/a/78639523/569183">Allan
+Wind</a>, who found it out from the
+<a href="https://lists.nongnu.org/archive/html/tinycc-devel/2018-04/msg00008.html">tcc-devel mailing list</a>.</p>
+<p>I found no mention of this in my searches, so hopefully this post will help
+anyone who runs into this in the future. Perhaps they can avoid scrolling
+through TCC source code, downloading TCC, instrumenting it, running GDB on
+it... and of course, calling in <a href="https://tchebb.me/">Tom Hebb</a>.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2024-06-19-tcc-attribute.md" title="Help improve _posts/2024-06-19-tcc-attribute.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

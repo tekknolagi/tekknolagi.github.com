@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Writing a Lisp, Part 0: Fundamentals | Max Bernstein</title>
+    <meta property="og:title" content="Writing a Lisp, Part 0: Fundamentals | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/lisp/00_fundamentals/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Writing a Lisp, Part 0: Fundamentals</h1>
+        
+        <div class="post-inline-date"><i>October 27, 2016</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>So you want to write a <a href="https://en.wikipedia.org/wiki/Lisp_(programming_language)">Lisp
+interpreter</a>. I did
+too, and then I wanted to write about it, so here we are with this post series.</p>
+<p>I initially wanted to write a Lisp interpreter as an exercise. I decided to
+write V1 in C (based on these two series of <a href="http://www.lwh.jp/lisp/">blog</a>
+<a href="http://peter.michaux.ca/articles/scheme-from-scratch-introduction">posts</a>).<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup>
+After much pointer shenanigans and an unholy
+amount of curly braces later, it worked — but was significantly longer
+and harder to read than a Lisp interpreter should be. So I decided to write V2
+in <a href="https://www.ocaml.org/">OCaml</a>, a functional programming language descended
+from <a href="https://en.wikipedia.org/wiki/Standard_ML">SML</a>. The SML family of
+languages has some features like pattern matching and an extensive type system
+that make writing interpreters and compilers an absolute dream.</p>
+<p>I'm going to walk through writing a fully-functional Lisp interpreter in OCaml.
+If you're following along with the OCaml, great. If you want to try and build
+it in SML or Haskell or whatever, it shouldn't be too hard to translate. If
+you want to follow along in C... well, good luck. It'll be a lot more code.</p>
+<p>I'm going to build up the interpreter in stages, starting with symbols and
+other literals, then moving to simple math, then finally writing the features
+to support a metacircular evaluator (meaning that you can write <em>another</em> Lisp
+interpreter in the Lisp you just wrote!).</p>
+<p>Let's begin!</p>
+<p>We probably want our interaction with the interpreter to look something like
+this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./repl
+&gt; 4
+4
+&gt; ^D
+$
+</code></pre></div></div>
+
+<p>So it seems reasonable to have our main file consist of a function that can
+read an expression, evaluate it, print it, and continue. A <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">Read-Eval-Print-Loop
+(REPL)</a>.</p>
+<p>I found OCaml rather lacking in stream features, so I looked around the
+internet and found this <a href="http://troydm.github.io/blog/2014/03/29/writing-micro-compiler-in-ocaml/">lovely blog
+post</a>
+that has a file stream implementation. I decided to improve on that.</p>
+<p>Our file stream feature will carry a line number, have a char buffer, and also
+have an OCaml <code class="language-plaintext highlighter-rouge">in_channel</code>, which is more or less a glorified <code class="language-plaintext highlighter-rouge">FILE *</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">type</span> <span class="n">stream</span> <span class="o">=</span>
+  <span class="o">{</span> <span class="k">mutable</span> <span class="n">line_num</span><span class="o">:</span> <span class="kt">int</span><span class="o">;</span> <span class="k">mutable</span> <span class="n">chr</span><span class="o">:</span> <span class="kt">char</span> <span class="kt">list</span><span class="o">;</span> <span class="n">chan</span><span class="o">:</span> <span class="n">in_channel</span> <span class="o">};;</span>
+</pre></div>
+
+<p>Let's start with a function that can read in a character:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="n">read_char</span> <span class="n">stm</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">stm</span><span class="o">.</span><span class="n">chr</span> <span class="k">with</span>
+      <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span>
+              <span class="k">let</span> <span class="n">c</span> <span class="o">=</span> <span class="n">input_char</span> <span class="n">stm</span><span class="o">.</span><span class="n">chan</span> <span class="k">in</span>
+              <span class="k">if</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">&#39;\n&#39;</span> <span class="k">then</span> <span class="k">let</span> <span class="o">_</span> <span class="o">=</span> <span class="n">stm</span><span class="o">.</span><span class="n">line_num</span> <span class="o">&lt;-</span> <span class="n">stm</span><span class="o">.</span><span class="n">line_num</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">in</span> <span class="n">c</span>
+              <span class="k">else</span> <span class="n">c</span>
+      <span class="o">|</span> <span class="n">c</span><span class="o">::</span><span class="n">rest</span> <span class="o">-&gt;</span>
+              <span class="k">let</span> <span class="o">_</span> <span class="o">=</span> <span class="n">stm</span><span class="o">.</span><span class="n">chr</span> <span class="o">&lt;-</span> <span class="n">rest</span> <span class="k">in</span> <span class="n">c</span>
+</pre></div>
+
+<p>Let's take a look at that. There are two initial states that <code class="language-plaintext highlighter-rouge">stm</code> could be in
+when we want to read a character — either it has characters in the
+buffer, or it doesn't.</p>
+<p>If there are no characters in the buffer, we should read one character from the
+file stream. If it's a newline, we should increment the line number. If there
+<em>are</em> characters in the buffer, we can pattern match against the list to get
+the first character, then remove it from the buffer.</p>
+<p>Neat! But now we should probably have our corresponding <code class="language-plaintext highlighter-rouge">unread_char</code> function
+that we can use later for backtracking:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="n">unread_char</span> <span class="n">stm</span> <span class="n">c</span> <span class="o">=</span>
+  <span class="n">stm</span><span class="o">.</span><span class="n">chr</span> <span class="o">&lt;-</span> <span class="n">c</span> <span class="o">::</span> <span class="n">stm</span><span class="o">.</span><span class="n">chr</span><span class="o">;;</span>
+</pre></div>
+
+<p>This one will just concatenate the given character to the front of our char
+buffer.</p>
+<p>Next up, we should have a function that trims all the leading whitespace before
+the text that we care about. We need this because Lisp is not
+whitespace-sensitive.</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="n">is_white</span> <span class="n">c</span> <span class="o">=</span>
+  <span class="n">c</span> <span class="o">=</span> <span class="sc">&#39; &#39;</span> <span class="o">||</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">&#39;\t&#39;</span> <span class="o">||</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">&#39;\n&#39;</span><span class="o">;;</span>
+
+<span class="k">let</span> <span class="k">rec</span> <span class="n">eat_whitespace</span> <span class="n">stm</span> <span class="o">=</span>
+  <span class="k">let</span> <span class="n">c</span> <span class="o">=</span> <span class="n">read_char</span> <span class="n">stm</span> <span class="k">in</span>
+  <span class="k">if</span> <span class="n">is_white</span> <span class="n">c</span> <span class="k">then</span>
+    <span class="n">eat_whitespace</span> <span class="n">stm</span>
+  <span class="k">else</span>
+    <span class="n">unread_char</span> <span class="n">stm</span> <span class="n">c</span><span class="o">;</span>
+    <span class="bp">()</span><span class="o">;;</span>
+</pre></div>
+
+<p>This will read whitespace characters and ignore them until it hits a
+non-whitespace character, at which point it will push it back on the buffer.
+See, told you it would be useful.</p>
+<p>One last thing: we'll want a type system to keep all of our different types of
+<a href="https://www.cs.sfu.ca/CourseCentral/310/pwfong/Lisp/1/tutorial1.html">expressions</a>
+straight. Right now we only have numbers, but we'll add more later.</p>
+<div class="highlight"><pre><span></span><span class="k">type</span> <span class="n">lobject</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Fixnum</span> <span class="k">of</span> <span class="kt">int</span>
+</pre></div>
+
+<p>I think we're ready to get started! Let's read in a whole number:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">read_sexp</span> <span class="n">stm</span> <span class="o">=</span>
+  <span class="k">let</span> <span class="n">is_digit</span> <span class="n">c</span> <span class="o">=</span>
+    <span class="k">let</span> <span class="n">code</span> <span class="o">=</span> <span class="nn">Char</span><span class="p">.</span><span class="n">code</span> <span class="n">c</span> <span class="k">in</span>
+    <span class="n">code</span> <span class="o">&gt;=</span> <span class="nn">Char</span><span class="p">.</span><span class="n">code</span><span class="o">(</span><span class="sc">&#39;0&#39;</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">code</span> <span class="o">&lt;=</span> <span class="nn">Char</span><span class="p">.</span><span class="n">code</span><span class="o">(</span><span class="sc">&#39;9&#39;</span><span class="o">)</span>
+  <span class="k">in</span>
+  <span class="k">let</span> <span class="k">rec</span> <span class="n">read_fixnum</span> <span class="n">acc</span> <span class="o">=</span>
+    <span class="k">let</span> <span class="n">nc</span> <span class="o">=</span> <span class="n">read_char</span> <span class="n">stm</span> <span class="k">in</span>
+    <span class="k">if</span> <span class="n">is_digit</span> <span class="n">nc</span>
+    <span class="k">then</span> <span class="n">read_fixnum</span> <span class="o">(</span><span class="n">acc</span> <span class="o">^</span> <span class="o">(</span><span class="nn">Char</span><span class="p">.</span><span class="n">escaped</span> <span class="n">nc</span><span class="o">))</span>
+    <span class="k">else</span>
+      <span class="k">let</span> <span class="o">_</span> <span class="o">=</span> <span class="n">unread_char</span> <span class="n">stm</span> <span class="n">nc</span> <span class="k">in</span>
+      <span class="nc">Fixnum</span><span class="o">(</span><span class="n">int_of_string</span> <span class="n">acc</span><span class="o">)</span>
+  <span class="k">in</span>
+  <span class="n">eat_whitespace</span> <span class="n">stm</span><span class="o">;</span>
+  <span class="k">let</span> <span class="n">c</span> <span class="o">=</span> <span class="n">read_char</span> <span class="n">stm</span> <span class="k">in</span>
+  <span class="k">if</span> <span class="n">is_digit</span> <span class="n">c</span>
+  <span class="k">then</span> <span class="n">read_fixnum</span> <span class="o">(</span><span class="nn">Char</span><span class="p">.</span><span class="n">escaped</span> <span class="n">c</span><span class="o">)</span>
+  <span class="k">else</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">SyntaxError</span> <span class="o">(</span><span class="s2">&quot;Unexpected char &quot;</span> <span class="o">^</span> <span class="o">(</span><span class="nn">Char</span><span class="p">.</span><span class="n">escaped</span> <span class="n">c</span><span class="o">)));;</span>
+</pre></div>
+
+<p>where <code class="language-plaintext highlighter-rouge">Char.escaped</code> turns a character into a string consisting of only that
+character.</p>
+<p>That was a lot at once. Let's break it down.</p>
+<p>I defined several helper functions (<code class="language-plaintext highlighter-rouge">is_digit</code>, <code class="language-plaintext highlighter-rouge">read_fixnum</code>) <em>inside of</em>
+<code class="language-plaintext highlighter-rouge">read_sexp</code> because they'll only really be useful there.</p>
+<p>After the definitions we eat whitespace, then try and read in a number. If it
+fails, we just raise a <code class="language-plaintext highlighter-rouge">SyntaxError</code>. Oh well!</p>
+<p>Speaking of <code class="language-plaintext highlighter-rouge">SyntaxError</code>s, it's really easy to define your own
+<a href="https://en.wikipedia.org/wiki/Exception_handling">exceptions</a>:</p>
+<div class="highlight"><pre><span></span><span class="k">exception</span> <span class="nc">SyntaxError</span> <span class="k">of</span> <span class="kt">string</span><span class="o">;;</span>
+</pre></div>
+
+<p>For those unfamiliar with exceptions, they are a construct that changes the
+flow of execution in a program. When <code class="language-plaintext highlighter-rouge">raise</code>d, they halt the program flow and
+go "up the chain" in function calls until they find a place that specifically
+looks out for them. If they don't find one (as in this case), OCaml just stops.</p>
+<p>Let's give our program a whirl! Write a main function to be called on program
+start, and have it call <code class="language-plaintext highlighter-rouge">read_sexp</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="n">main</span> <span class="o">=</span>
+  <span class="k">let</span> <span class="n">stm</span> <span class="o">=</span> <span class="o">{</span> <span class="n">chr</span><span class="o">=</span><span class="bp">[]</span><span class="o">;</span> <span class="n">line_num</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span> <span class="n">chan</span><span class="o">=</span><span class="n">stdin</span> <span class="o">}</span> <span class="k">in</span>
+  <span class="n">print_string</span> <span class="s2">&quot;&gt; &quot;</span><span class="o">;</span>
+  <span class="n">flush</span> <span class="n">stdout</span><span class="o">;</span>
+  <span class="k">let</span> <span class="nc">Fixnum</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">=</span> <span class="n">read_sexp</span> <span class="n">stm</span> <span class="k">in</span>
+  <span class="n">print_string</span> <span class="s2">&quot;Your int: &quot;</span><span class="o">;</span>
+  <span class="n">print_int</span> <span class="n">v</span><span class="o">;</span>
+  <span class="n">print_newline</span> <span class="bp">()</span><span class="o">;;</span>
+</pre></div>
+
+<p>You have to do this annoying thing <code class="language-plaintext highlighter-rouge">flush stdout</code> because otherwise the <code class="language-plaintext highlighter-rouge">&gt; </code>
+prompt will appear <em>after</em> you type your number in.</p>
+<p>And let's run it!</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 00_fundamentals.ml
+&gt; 4
+Your int: 4
+$
+</code></pre></div></div>
+
+<p>Cool! Looks like it works. But what happens if we try and enter a non-number?</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 00_fundamentals.ml
+&gt; k
+Exception: SyntaxError &quot;Unexpected char k&quot;.
+$
+</code></pre></div></div>
+
+<p>And what happens if we try and enter a negative number?</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 00_fundamentals.ml
+&gt; -123
+Exception: SyntaxError &quot;Unexpected char -&quot;.
+$
+</code></pre></div></div>
+
+<p>Well, we don't actually handle negative numbers right now. That's definitely
+something that can be improved in the future.</p>
+<p>Now let's make it a REPL! How do we loop in OCaml? Recursion, of course!</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">repl</span> <span class="n">stm</span> <span class="o">=</span>
+  <span class="n">print_string</span> <span class="s2">&quot;&gt; &quot;</span><span class="o">;</span>
+  <span class="n">flush</span> <span class="n">stdout</span><span class="o">;</span>
+  <span class="k">let</span> <span class="nc">Fixnum</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">=</span> <span class="n">read_sexp</span> <span class="n">stm</span> <span class="k">in</span>
+  <span class="n">print_int</span> <span class="n">v</span><span class="o">;</span>
+  <span class="n">print_newline</span> <span class="bp">()</span><span class="o">;</span>
+  <span class="n">repl</span> <span class="n">stm</span><span class="o">;;</span>
+
+<span class="k">let</span> <span class="n">main</span> <span class="o">=</span>
+  <span class="k">let</span> <span class="n">stm</span> <span class="o">=</span> <span class="o">{</span> <span class="n">chr</span><span class="o">=</span><span class="bp">[]</span><span class="o">;</span> <span class="n">line_num</span><span class="o">=</span><span class="mi">1</span><span class="o">;</span> <span class="n">chan</span><span class="o">=</span><span class="n">stdin</span> <span class="o">}</span> <span class="k">in</span>
+  <span class="n">repl</span> <span class="n">stm</span><span class="o">;;</span>
+</pre></div>
+
+<p>And that seems to work just fine:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 00_fundamentals.ml
+&gt; 4
+4
+&gt; 5
+5
+&gt; Exception: End_of_file.
+$
+</code></pre></div></div>
+
+<p>It looks like OCaml's I/O functions raise the <code class="language-plaintext highlighter-rouge">End_of_file</code> exception if it
+encounters EOF (aka me hitting <code class="language-plaintext highlighter-rouge">^D</code> or trying to pipe in a file), which we
+could handle if we wanted. But I think this is fine for now.</p>
+<p>Download the code <a href="/resources/lisp/00_fundamentals.ml">here</a> if you want to mess
+with it.</p>
+<p>Next up, <a href="/blog/lisp/01_booleans/">booleans</a>.</p>
+
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p>Here are some other resources or series you may find helpful in writing a
+Lisp interpreter.</p>
+<ul>
+<li><a href="https://www.lwh.jp/lisp/">lwh.jp</a> (C)</li>
+<li><a href="http://peter.michaux.ca/articles/scheme-from-scratch-introduction"><em>Scheme from Scratch</em> by Peter Michaux</a> (C)</li>
+<li><a href="http://buildyourownlisp.com/contents"><em>Build Your Own Lisp</em> by Daniel Holden</a> (C)</li>
+<li><a href="http://howtowriteaprogram.blogspot.com/2010/11/lisp-interpreter-in-90-lines-of-c.html"><em>Lisp interpreter in 90 lines of C++</em> by Anthony C. Hay</a></li>
+<li><a href="https://github.com/kanaka/mal/blob/master/process/guide.md"><em>mal</em> by kanaka</a></li>
+</ul> <a href="#fnref-1" class="footnote-backref">↩</a>
+</li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_blog_lisp/00_fundamentals.md" title="Help improve _blog_lisp/00_fundamentals.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

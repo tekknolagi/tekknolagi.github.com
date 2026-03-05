@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Interprocedural sparse conditional type propagation | Max Bernstein</title>
+    <meta name="description" content="We prototyped an interprocedural static analysis tool using sparse conditional constant propagation." />
+    <meta property="og:title" content="Interprocedural sparse conditional type propagation | Max Bernstein" />
+    <meta property="og:description" content="We prototyped an interprocedural static analysis tool using sparse conditional constant propagation." />
+    <link rel="canonical" href="https://railsatscale.com/2025-02-24-interprocedural-sparse-conditional-type-propagation/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Interprocedural sparse conditional type propagation</h1>
+        
+        <div class="post-inline-date"><i>February 24, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+            
+            
+            
+                With co-author <i>Maxime Chevalier-Boisvert</i>!
+            
+        
+        </div>
+        <div class="container">
+            <p><em>Originally published on <a href="https://railsatscale.com/2025-02-24-interprocedural-sparse-conditional-type-propagation/">Rails At Scale</a>.</em></p>
+<p>It's 11 o'clock. Do you know where your variables are pointing?</p>
+<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">shout</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+<span class="w">  </span><span class="n">obj</span><span class="o">.</span><span class="n">to_s</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;!&quot;</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>It's hard to tell just looking at the code what type <code class="language-plaintext highlighter-rouge">obj</code> is. We assume it
+has a <code class="language-plaintext highlighter-rouge">to_s</code> method, but many classes define methods named <code class="language-plaintext highlighter-rouge">to_s</code>. Which <code class="language-plaintext highlighter-rouge">to_s</code> method are we calling?
+What is the return type of <code class="language-plaintext highlighter-rouge">shout</code>? If <code class="language-plaintext highlighter-rouge">to_s</code> doesn't return a <code class="language-plaintext highlighter-rouge">String</code>, it's
+really hard to say.</p>
+<p>Adding type annotations would help... a little. With types, it looks like we have
+full knowledge about what each thing is but we actually don't. Ruby, like many
+other object-oriented languages, has this thing called inheritance which means that type
+signatures like <code class="language-plaintext highlighter-rouge">Integer</code> and <code class="language-plaintext highlighter-rouge">String</code> mean an instance of that class... or an
+instance of a subclass of that class.</p>
+<p>Additionally, gradual type checkers such as Sorbet (for example) have features
+such as <code class="language-plaintext highlighter-rouge">T.unsafe</code> and <code class="language-plaintext highlighter-rouge">T.untyped</code> which make it possible to <a href="https://sorbet.org/docs/troubleshooting#escape-hatches">lie</a>
+to the type checker. These annotations unfortunately render the type system
+<a href="https://langdev.stackexchange.com/a/3377"><em>unsound</em></a> without run-time type checks, which makes it a poor basis for something we
+would like to use in program optimization. (For more information, see <a href="/blog/typed-python/">this
+blog post</a> for how it affects Python in a similar way.)</p>
+<p>In order to build an effective compiler for a dynamic language such as Ruby,
+the compiler needs precise type information. This means that as compiler
+designers, we have to take things into our own hands and track the types
+ourselves.</p>
+<p>In this post, we show an interprocedural type analysis over a very small Ruby
+subset. Such analysis could be used for program optimization by a sufficiently
+advanced compiler. This is not something Shopify is working on but we are
+sharing this post and attached analysis code because we think you will find it
+interesting.</p>
+<p>Note that this analysis is <em>not</em> what people usually refer to as a type inference
+engine or type checker; unlike <a href="https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system">Hindley-Milner</a> (see also <a href="/blog/type-inference/">previous
+writing</a>) or similar constraint-based type systems, this type analysis
+tracks dataflow across functions.</p>
+<p>This analysis might be able to identify all of the callers to <code class="language-plaintext highlighter-rouge">shout</code>,
+determine that the <code class="language-plaintext highlighter-rouge">to_s</code> of all the arguments return <code class="language-plaintext highlighter-rouge">String</code>, and therefore
+conclude that the return type is <code class="language-plaintext highlighter-rouge">String</code>. All from an un-annotated program.</p>
+<p>The examples after the intro in this post will use more parentheses than the typical Ruby
+program because we also wrote a mini-Ruby parser and it does not support method
+calls without parentheses.</p>
+<h2 id="static-analysis">Static analysis</h2>
+
+<p>Let's start from the top. We'll go over some examples and then continue on into
+code and some benchmarks.</p>
+<p>Do you know what type this program returns?</p>
+<div class="highlight"><pre><span></span><span class="mi">1</span>
+</pre></div>
+
+<p>That's right, it's <code class="language-plaintext highlighter-rouge">Integer[1]</code>. Not only is it an <code class="language-plaintext highlighter-rouge">Integer</code>, but we have
+additional information about its exact value available at analysis time. That will
+come in handy later.</p>
+<p>What about this variable? What type is <code class="language-plaintext highlighter-rouge">a</code>?</p>
+<div class="highlight"><pre><span></span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+</pre></div>
+
+<p>Not a trick question, at least not yet. It's still <code class="language-plaintext highlighter-rouge">Integer[1]</code>. But what if we
+assign to it twice?</p>
+<div class="highlight"><pre><span></span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hello&quot;</span>
+</pre></div>
+
+<p>Ah. Tricky. Things get a little complicated. If we split our program into
+segments based on logical execution "time", we can say that <code class="language-plaintext highlighter-rouge">a</code> starts off as
+<code class="language-plaintext highlighter-rouge">Integer[1]</code> and then becomes <code class="language-plaintext highlighter-rouge">String[&quot;hello&quot;]</code>. This is not super pleasant
+because it means that when analyzing the code, you have to carry around some
+notion of "time" state in your analysis. It would be much nicer if instead
+something rewrote the input code to look more like this:</p>
+<div class="highlight"><pre><span></span><span class="n">a0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">a1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hello&quot;</span>
+</pre></div>
+
+<p>Then we could easily tell the two variables apart at any time because they have
+different names. This is where <a href="/blog/ssa/">static single assignment</a> (SSA) form comes
+in. Automatically converting your input program to SSA introduces some
+complexity but gives you the guarantee that every variable has a single unchanging type. This is why we analyze SSA instead of some other form of intermediate
+representation (IR). Assume for the rest of this post that we are working with
+SSA.</p>
+<p>Let's continue with our analysis.</p>
+<p>What types do the variables have in the below program?</p>
+<div class="highlight"><pre><span></span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span>
+</pre></div>
+
+<p>We know <code class="language-plaintext highlighter-rouge">a</code> and <code class="language-plaintext highlighter-rouge">b</code> because they are constants, so can we constant-fold <code class="language-plaintext highlighter-rouge">a+b</code>
+into <code class="language-plaintext highlighter-rouge">3</code>? Kind of. Sort of. In Ruby, without global knowledge that someone has
+not and will not patch the <code class="language-plaintext highlighter-rouge">Integer</code> class or do a variety of other nasty
+things, no.</p>
+<p>But let's pretend for the duration of this post that we live in a world where
+it's not possible to redefine the meaning of existing classes (remember, we're
+looking at a Ruby-like language with different semantics but similar syntax) or
+add new classes at run-time (this is called a closed-world assumption). In that
+case, it is absolutely possible to fold those constants. So <code class="language-plaintext highlighter-rouge">c</code> has type
+<code class="language-plaintext highlighter-rouge">Integer[3]</code>.</p>
+<p>Let's complicate things.</p>
+<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="n">condition</span>
+<span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<span class="k">else</span>
+<span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>We said that each variable would only be assigned once, but SSA can represent
+such a program using Φ (phi) nodes. Phi nodes are special pseudo-instructions that
+track dataflow when it could come from multiple places. In this case, SSA would
+place one after the <code class="language-plaintext highlighter-rouge">if</code> to merge two differently named variables into a third
+one.</p>
+<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="n">condition</span>
+<span class="w">  </span><span class="n">a0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<span class="k">else</span>
+<span class="w">  </span><span class="n">a1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span>
+<span class="k">end</span>
+<span class="n">a2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">phi</span><span class="p">(</span><span class="n">a0</span><span class="p">,</span><span class="w"> </span><span class="n">a1</span><span class="p">)</span>
+</pre></div>
+
+<p>This also happens when using the returned value of an <code class="language-plaintext highlighter-rouge">if</code> expression:</p>
+<div class="highlight"><pre><span></span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">condition</span>
+<span class="w">      </span><span class="mi">3</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">      </span><span class="mi">4</span>
+<span class="w">    </span><span class="k">end</span>
+</pre></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">phi</code> function exists to merge multiple input values.</p>
+<p>For our analysis, the phi node does not do anything other than compute the type
+union of its inputs. We do this because we are treating a type as a set of all
+possible values that it could represent. For example <code class="language-plaintext highlighter-rouge">Integer[3]</code> is the set
+<code class="language-plaintext highlighter-rouge">{3}</code>. And <code class="language-plaintext highlighter-rouge">Integer</code> is the infinite and difficult to fit into memory set
+<code class="language-plaintext highlighter-rouge">{..., -2, -1, 0, 1, 2, ...}</code>.</p>
+<p>This makes the type of <code class="language-plaintext highlighter-rouge">a</code> (<code class="language-plaintext highlighter-rouge">a2</code>) some type like <code class="language-plaintext highlighter-rouge">Integer[3 or 4]</code>, but as we
+saw, that set could grow potentially without bound. In order to use a
+reasonable amount of memory and make sure our analysis runs in a reasonable
+amount of time, we have to limit our set size. This is where the notion of a
+finite-height lattice comes in. Wait, don't click away! It's going to be okay!</p>
+<p>We're using a lattice as a set with a little more structure to it. Instead of
+having a <code class="language-plaintext highlighter-rouge">union</code> operation that just expands and expands and expands, we give
+each level of set a limited amount of entries before it overflows to the next,
+less-specific level. It's kind of like a finite state machine. This is a
+diagram of a subset of our type lattice:</p>
+<!--
+digraph G {
+    rankdir="BT";
+    empty -> const_int;
+    empty -> const_str;
+    const_int -> int;
+    const_str -> str;
+    int -> class_union;
+    str -> class_union;
+    class_union -> any;
+
+    empty [label="Empty"];
+    any [label="Any"];
+    int [label="Integer"];
+    str [label="String"];
+    const_str [label="String[N]"];
+    const_int [label="Integer[N]"];
+    class_union [label="Class[A, B, C, ...]"];
+}
+-->
+
+<figure style="display: block; margin: 0 auto;">
+  <img src="/assets/img/typelattice.svg" alt="A diagram of multiple labeled sets: Empty,
+  <img src="/assets/img/typelattice.svg" alt="A diagram of multiple labeled sets: Empty,
+  known Integer constants, Integer, known String constants, String, a set of
+  classes, and the topmost set of all objects, Any. The diagram is vertical, with
+  arrows going from bottom to top with decreasing specificity." />
+  <figcaption>An example lattice similar to the one we use in our demo static
+  analysis. At the bottom are the more specific types and at the top are the
+  less specific types. Arrows indicate that results can only become less
+  precise as more merging happens.</figcaption>
+</figure>
+
+<p>All lattice elements in our program analysis start at <code class="language-plaintext highlighter-rouge">Empty</code> (unreachable) and incrementally
+add elements, following the state transition arrows as they grow. If we see one
+constant integer, we can go into the <code class="language-plaintext highlighter-rouge">Integer[N]</code> state. If we see another,
+<em>different</em> integer, we have to lose some information and transition to the
+<code class="language-plaintext highlighter-rouge">Integer</code> state. This state symbolically represents all instances of the <code class="language-plaintext highlighter-rouge">Integer</code>
+class. Losing information like this is a tradeoff between precision and analysis time.</p>
+<p>To bring this back to our example, this means that <code class="language-plaintext highlighter-rouge">a</code> (which merges
+<code class="language-plaintext highlighter-rouge">Integer[3]</code> and <code class="language-plaintext highlighter-rouge">Integer[4]</code>)  would have the type <code class="language-plaintext highlighter-rouge">Integer</code> in our lattice.</p>
+<p>Let's complicate things further. Let's say we know somehow at analysis time
+that the condition is truthy, perhaps because it's an inline constant:</p>
+<div class="highlight"><pre><span></span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="kp">true</span>
+<span class="w">      </span><span class="mi">3</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">      </span><span class="mi">4</span>
+<span class="w">    </span><span class="k">end</span>
+</pre></div>
+
+<p>Many analyses looking at this program would see two inputs to <code class="language-plaintext highlighter-rouge">a</code> with
+different values and therefore continue to conclude that the type of <code class="language-plaintext highlighter-rouge">a</code> is
+still <code class="language-plaintext highlighter-rouge">Integer</code>—even though as humans looking at it, we know that the <code class="language-plaintext highlighter-rouge">else</code>
+branch never happens. It's possible to do a simplification in another analysis
+that deletes the <code class="language-plaintext highlighter-rouge">else</code> branch, but instead we're going to use some excellent
+work by Zadeck and co called <a href="https://dl.acm.org/doi/10.1145/103135.103136">Sparse Conditional Constant Propagation
+(SCCP)</a>.</p>
+<h2 id="sparse-conditional-constant-propagation">Sparse conditional constant propagation</h2>
+
+<p>Unlike many abstract interpretation based analyses, SCCP uses type information
+to inform its worklist-based exploration of the control-flow graph (CFG). If it
+knows from other information that the condition of a branch instruction is a
+constant, it does not explore both branches of the conditional. Instead, it
+only pushes the relevant branch onto the worklist.</p>
+<p>Because we're working inside an SSA (CFG), we separate control-flow into basic
+blocks as our unit of granularity. These basic blocks are chunks of
+instructions where the only control-flow allowed is the last instruction.</p>
+<div class="highlight"><pre><span></span><span class="k">fn</span> <span class="nf">sctp</span><span class="p">(</span><span class="n">prog</span>: <span class="kp">&amp;</span><span class="nc">Program</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">AnalysisResult</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="n">block_worklist</span><span class="p">.</span><span class="n">len</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">insn_worklist</span><span class="p">.</span><span class="n">len</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Read an instruction from the instruction worklist</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">insn_id</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insn_worklist</span><span class="p">.</span><span class="n">pop_front</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">Insn</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">op</span><span class="p">,</span><span class="w"> </span><span class="n">block_id</span><span class="p">,</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">prog</span><span class="p">.</span><span class="n">insns</span><span class="p">[</span><span class="n">insn_id</span><span class="p">.</span><span class="mi">0</span><span class="p">];</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="n">Op</span>::<span class="n">IfTrue</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="n">then_block</span><span class="p">,</span><span class="w"> </span><span class="n">else_block</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">op</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">// If we know statically we won&#39;t execute a branch, don&#39;t</span>
+<span class="w">                </span><span class="c1">// analyze it</span>
+<span class="w">                </span><span class="k">match</span><span class="w"> </span><span class="n">type_of</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">// Empty represents code that is not (yet) reachable;</span>
+<span class="w">                    </span><span class="c1">// it has no value at run-time.</span>
+<span class="w">                    </span><span class="n">Type</span>::<span class="n">Empty</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">                    </span><span class="n">Type</span>::<span class="n">Const</span><span class="p">(</span><span class="n">Value</span>::<span class="n">Bool</span><span class="p">(</span><span class="kc">false</span><span class="p">))</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">block_worklist</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="o">*</span><span class="n">else_block</span><span class="p">),</span>
+<span class="w">                    </span><span class="n">Type</span>::<span class="n">Const</span><span class="p">(</span><span class="n">Value</span>::<span class="n">Bool</span><span class="p">(</span><span class="kc">true</span><span class="p">))</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">block_worklist</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="o">*</span><span class="n">then_block</span><span class="p">),</span>
+<span class="w">                    </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="n">block_worklist</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="o">*</span><span class="n">then_block</span><span class="p">);</span>
+<span class="w">                        </span><span class="n">block_worklist</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="o">*</span><span class="n">else_block</span><span class="p">);</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">            </span><span class="p">};</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>This leaves us with a phi node that only sees one input operand, <code class="language-plaintext highlighter-rouge">Integer[3]</code>,
+which gives us more precision to work with in later parts of the program. The
+original SCCP paper stops here (papers have page limits, after all) but we took
+it a little further. Instead of just reasoning about constants, we use our full
+type lattice. And we do it interprocedurally.</p>
+<p>Let's look at a small example of why interprocedural analysis matters before we
+move on to trickier snippets. Here we have a function <code class="language-plaintext highlighter-rouge">decisions</code> with one
+visible call site and that call site passes in <code class="language-plaintext highlighter-rouge">true</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">decisions</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="n">condition</span>
+<span class="w">    </span><span class="mi">3</span>
+<span class="w">  </span><span class="k">else</span>
+<span class="w">    </span><span class="mi">4</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">decisions</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</pre></div>
+
+<p>If we were just looking at <code class="language-plaintext highlighter-rouge">decisions</code> in isolation, we would still think the
+return type is <code class="language-plaintext highlighter-rouge">Integer</code>. However, if we let information from all the call
+sites flow into the function, we can see that all (one) of the call sites pass
+<code class="language-plaintext highlighter-rouge">true</code> to the function... and therefore we should only look at one branch of
+the <code class="language-plaintext highlighter-rouge">if</code>.</p>
+<p>Now, a reader familiar with SCCP might be wondering how this works
+interprocedurally. SCCP by definition requires knowing in advance what
+instructions use what other instructions: if you learn new facts about
+the output instruction <code class="language-plaintext highlighter-rouge">A</code>, you have to propagate this new information to all
+of the uses. In a single function's control-flow graph, this isn't so bad; we
+have full visibility into definitions and uses. It gets harder when we expand
+to multiple functions. In this example, we have to mark the <code class="language-plaintext highlighter-rouge">condition</code>
+parameter as a use of all of the (currently constant) actual arguments being
+passed in.</p>
+<p>But how do we know the callers?</p>
+<h2 id="interprocedural-sccp">Interprocedural SCCP</h2>
+
+<p>Let's start at the entrypoint for an application. That's normally a <code class="language-plaintext highlighter-rouge">main</code>
+function somewhere that allocates some objects and calls a couple of other
+functions. These functions might in turn call other functions, and so on and so
+forth, until the application terminates.</p>
+<p>These calls and returns form a graph, but we don't know it statically—we
+don't know it at the start of the analysis. Instead, we have to incrementally
+build it as we discover call edges.</p>
+<p>In the following code snippet, we would begin analysis at the entrypoint, which
+in this snippet is the <code class="language-plaintext highlighter-rouge">main</code> function. In it, we see a direct call to the
+<code class="language-plaintext highlighter-rouge">foo</code> function. We mark that <code class="language-plaintext highlighter-rouge">foo</code> is called by <code class="language-plaintext highlighter-rouge">main</code>—and not just by
+<code class="language-plaintext highlighter-rouge">main</code>, but by the specific call site inside <code class="language-plaintext highlighter-rouge">main</code>. Then we enqueue the start
+of the <code class="language-plaintext highlighter-rouge">bar</code> function—its entry basic block—onto the block worklist.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">bar</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span>
+<span class="k">end</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">foo</span><span class="p">()</span>
+<span class="w">  </span><span class="n">bar</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">bar</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="w">  </span><span class="n">foo</span><span class="p">()</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>At some point, the analysis will pop the entry basic block of <code class="language-plaintext highlighter-rouge">foo</code> off the
+worklist and analyze <code class="language-plaintext highlighter-rouge">foo</code>. For each of the direct calls to <code class="language-plaintext highlighter-rouge">bar</code>, it will
+create a call edge. In addition, because we are passing arguments, it will wire
+up <code class="language-plaintext highlighter-rouge">1</code> and <code class="language-plaintext highlighter-rouge">3</code> to the <code class="language-plaintext highlighter-rouge">a</code> parameter and <code class="language-plaintext highlighter-rouge">2</code> and <code class="language-plaintext highlighter-rouge">4</code> to the <code class="language-plaintext highlighter-rouge">b</code> parameter. It
+will enqueue <code class="language-plaintext highlighter-rouge">bar</code>'s entry block.</p>
+<p>At this point, we're merging <code class="language-plaintext highlighter-rouge">Integer[1]</code> and <code class="language-plaintext highlighter-rouge">Integer[3]</code> at the <code class="language-plaintext highlighter-rouge">a</code> parameter
+(and similarly at <code class="language-plaintext highlighter-rouge">b</code>). This is kind of like an interprocedural phi node and we
+have to do the same union operation on our type lattice.</p>
+<p>This means that we won't be able to fold <code class="language-plaintext highlighter-rouge">a+b</code> for either call to <code class="language-plaintext highlighter-rouge">bar</code>,
+unfortunately, but we will still get a return type of <code class="language-plaintext highlighter-rouge">Integer</code>, because we
+know that <code class="language-plaintext highlighter-rouge">Integer+Integer=Integer</code>.</p>
+<p>Now, if there were a third call to <code class="language-plaintext highlighter-rouge">bar</code> that passed it <code class="language-plaintext highlighter-rouge">String</code>s, every call
+site would lose. We would end up with <code class="language-plaintext highlighter-rouge">ClassUnion[String, Integer]</code> at each
+parameter and, worse, <code class="language-plaintext highlighter-rouge">Any</code> as the function result. We wouldn't even get
+<code class="language-plaintext highlighter-rouge">ClassUnion[String, Integer]</code> because we don't keep each call site separate, so
+from the perspective of the analysis, we could be looking at <code class="language-plaintext highlighter-rouge">String+Integer</code>,
+which doesn't have a known type (in fact, it probably raises an exception or
+something).</p>
+<p>But what if we kept each call site separate?</p>
+<h3 id="sensitivity">Sensitivity</h3>
+
+<p>This kind of thing is generally called <em>something</em>-sensitivity, where the
+<em>something</em> depends on what your strategy is to partition your analysis. One
+example of sensitivity is <em>call-site sensitivity</em>.</p>
+<p>In particular, we might want to extend our current analysis with
+<em>1-call-site-sensitivity</em>. The number, the <em>k</em> variable that we can dial for
+more precision and slower analysis, is the number of "call frames" we want to
+keep track of in the analysis. This stuff is good for very commonly used
+library functions such as <code class="language-plaintext highlighter-rouge">to_s</code> and <code class="language-plaintext highlighter-rouge">each</code>, where each caller might be quite
+different.</p>
+<p>In the above very not-representative example, 1-call-site-sensitivity would
+allow us to completely constant fold the entire program into <code class="language-plaintext highlighter-rouge">Integer[10]</code> (as
+<code class="language-plaintext highlighter-rouge">1 + 2 + 3 + 4 = 10</code>). Wow! But it would slow down the analysis because it
+requires duplicating analysis work. To side-by-side the rough steps:</p>
+<p>Without call-site sensitivity / 0-call-site-sensitive (what we currently have):</p>
+<ul>
+<li>See call to <code class="language-plaintext highlighter-rouge">bar</code> with arguments 1 and 2</li>
+<li>Mark <code class="language-plaintext highlighter-rouge">bar</code>s parameters as being <code class="language-plaintext highlighter-rouge">Integer[1]</code> and <code class="language-plaintext highlighter-rouge">Integer[2]</code></li>
+<li>See <code class="language-plaintext highlighter-rouge">bar</code> add node with constant left and right operands</li>
+<li>Mark <code class="language-plaintext highlighter-rouge">bar</code> add result as <code class="language-plaintext highlighter-rouge">Integer[3]</code></li>
+<li>Mark <code class="language-plaintext highlighter-rouge">bar</code> return as <code class="language-plaintext highlighter-rouge">Integer[3]</code></li>
+<li>Mark result of <code class="language-plaintext highlighter-rouge">bar(1, 2)</code> as <code class="language-plaintext highlighter-rouge">Integer[3]</code></li>
+<li>See call to <code class="language-plaintext highlighter-rouge">bar</code> with arguments 3 and 4</li>
+<li>Mark <code class="language-plaintext highlighter-rouge">bar</code>s parameters as being <code class="language-plaintext highlighter-rouge">Integer</code> and <code class="language-plaintext highlighter-rouge">Integer</code> (we have to union)</li>
+<li>Mark <code class="language-plaintext highlighter-rouge">bar</code> add result as <code class="language-plaintext highlighter-rouge">Integer</code> (the arguments are not constant)</li>
+<li>Mark <code class="language-plaintext highlighter-rouge">bar</code> return as <code class="language-plaintext highlighter-rouge">Integer</code></li>
+<li>See <code class="language-plaintext highlighter-rouge">foo</code>'s own add with operands <code class="language-plaintext highlighter-rouge">Integer</code> and <code class="language-plaintext highlighter-rouge">Integer</code></li>
+<li>Mark <code class="language-plaintext highlighter-rouge">foo</code>'s add as returning <code class="language-plaintext highlighter-rouge">Integer</code></li>
+</ul>
+<p>With 1-call-site-sensitive:</p>
+<ul>
+<li>See call to <code class="language-plaintext highlighter-rouge">bar</code> from function <code class="language-plaintext highlighter-rouge">foo</code> with arguments 1 and 2</li>
+<li>Make a new call context from <code class="language-plaintext highlighter-rouge">foo</code></li>
+<li>Mark <code class="language-plaintext highlighter-rouge">foo0-&gt;bar</code> parameters as being <code class="language-plaintext highlighter-rouge">Integer[1]</code> and <code class="language-plaintext highlighter-rouge">Integer[2]</code></li>
+<li>See <code class="language-plaintext highlighter-rouge">foo0-&gt;bar</code> add node with constant left and right operands</li>
+<li>Mark <code class="language-plaintext highlighter-rouge">foo0-&gt;bar</code> add result as <code class="language-plaintext highlighter-rouge">Integer[3]</code></li>
+<li>Mark <code class="language-plaintext highlighter-rouge">foo0-&gt;bar</code> return as <code class="language-plaintext highlighter-rouge">Integer[3]</code></li>
+<li>Mark result of <code class="language-plaintext highlighter-rouge">bar(1, 2)</code> as <code class="language-plaintext highlighter-rouge">Integer[3]</code></li>
+<li>See call to <code class="language-plaintext highlighter-rouge">bar</code> with arguments 3 and 4</li>
+<li>Make a new call context from <code class="language-plaintext highlighter-rouge">foo</code></li>
+<li>Mark <code class="language-plaintext highlighter-rouge">foo1-&gt;bar</code> parameters as being <code class="language-plaintext highlighter-rouge">Integer[3]</code> and <code class="language-plaintext highlighter-rouge">Integer[4]</code></li>
+<li>Mark <code class="language-plaintext highlighter-rouge">foo1-&gt;bar</code> add result as <code class="language-plaintext highlighter-rouge">Integer[7]</code></li>
+<li>Mark <code class="language-plaintext highlighter-rouge">foo1-&gt;bar</code> return as <code class="language-plaintext highlighter-rouge">Integer[7]</code></li>
+<li>See <code class="language-plaintext highlighter-rouge">foo</code>'s own add with constant operands <code class="language-plaintext highlighter-rouge">Integer[3]</code> and <code class="language-plaintext highlighter-rouge">Integer[7]</code></li>
+<li>Mark <code class="language-plaintext highlighter-rouge">foo</code> add as returning <code class="language-plaintext highlighter-rouge">Integer[10]</code></li>
+</ul>
+<p>See how we had to analyze <code class="language-plaintext highlighter-rouge">bar</code> once per call-site instead of merging call
+inputs and returns and moving up the lattice? That slows the analysis down.</p>
+<p>There is also <em>context sensitivity</em>, which is about partitioning calls based
+on some computed property of a given call site instead of where it is in the
+program. Maybe it's the tuple of argument types, or the tuple of argument types
+with any constant values removed, or something else entirely. Ideally it should
+be fast to generate and compare between different other call sites.</p>
+<p>There are other kinds of sensitivity like <em>object sensitivity</em>, <em>field
+sensitivity</em>, and so on—but since this is a bit of a detour in the main
+article and we did not implement any of them, we instead leave them as
+breadcrumbs for you to follow and read about.</p>
+<p>Let's go back to the main interprocedural SCCP and add some more trickiness
+into the mix: objects.</p>
+<h2 id="objects-and-method-lookup">Objects and method lookup</h2>
+
+<p>Ruby doesn't just deal with integers and strings. Those are special cases of a
+larger object system where objects have instance variables, methods, etc and
+are instances of user-defined classes.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Point</span>
+<span class="w">  </span><span class="kp">attr_accessor</span><span class="w"> </span><span class="ss">:x</span>
+<span class="w">  </span><span class="kp">attr_accessor</span><span class="w"> </span><span class="ss">:y</span>
+
+<span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="w">    </span><span class="vi">@x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span>
+<span class="w">    </span><span class="vi">@y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="k">end</span>
+
+<span class="nb">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Point</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="nb">puts</span><span class="p">(</span><span class="nb">p</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="nb">p</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+<p>This means that we have to start tracking all classes in our static analysis or
+we will have a hard time being precise when answering questions such as "what
+type is the variable <code class="language-plaintext highlighter-rouge">p</code>?"</p>
+<p>Knowing the type of <code class="language-plaintext highlighter-rouge">p</code> is nice—maybe we can fold some <code class="language-plaintext highlighter-rouge">is_a?</code> branches in
+SCCP—but the analysis becomes even more useful if we can keep track of the
+types of instance variables on objects. That would let us answer the question
+"what type is <code class="language-plaintext highlighter-rouge">p.x</code>?"</p>
+<p>Per <a href="https://www.bodden.de/pubs/lsb+15access-path.pdf">this paper</a> (PDF), there
+are at least two ways to think about how we might store that kind of
+information. One, which the paper calls <em>field-based</em>, unifies the storage of
+field types based on their name. So in this case, all potential writes to any
+field <code class="language-plaintext highlighter-rouge">x</code> might fall into the same bucket and get <code class="language-plaintext highlighter-rouge">union</code>ed together.</p>
+<p>Another, which the paper calls <em>field-sensitive</em>, unifies the storage of field
+types based on the receiver (object holding the field) class. In this case, we
+would differentiate all possible types of <code class="language-plaintext highlighter-rouge">p</code> at a given program point when
+writing to and reading from <code class="language-plaintext highlighter-rouge">p.x</code>.</p>
+<p>We chose to do the latter approach in our static analysis: we made it field
+sensitive.</p>
+<div class="highlight"><pre><span></span><span class="k">fn</span> <span class="nf">sctp</span><span class="p">(</span><span class="n">prog</span>: <span class="kp">&amp;</span><span class="nc">Program</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">AnalysisResult</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="n">block_worklist</span><span class="p">.</span><span class="n">len</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">insn_worklist</span><span class="p">.</span><span class="n">len</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Read an instruction from the instruction worklist</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">insn_id</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insn_worklist</span><span class="p">.</span><span class="n">pop_front</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">Insn</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">op</span><span class="p">,</span><span class="w"> </span><span class="n">block_id</span><span class="p">,</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">prog</span><span class="p">.</span><span class="n">insns</span><span class="p">[</span><span class="n">insn_id</span><span class="p">.</span><span class="mi">0</span><span class="p">];</span>
+<span class="w">            </span><span class="c1">// ...</span>
+<span class="w">            </span><span class="k">match</span><span class="w"> </span><span class="n">op</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">Op</span>::<span class="n">GetIvar</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">self_val</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="n">type_of</span><span class="p">(</span><span class="n">self_val</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="n">Type</span>::<span class="n">Object</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                            </span><span class="c1">// ...</span>
+<span class="w">                            </span><span class="n">classes</span><span class="p">.</span><span class="n">iter</span><span class="p">().</span><span class="n">fold</span><span class="p">(</span><span class="n">Type</span>::<span class="n">Empty</span><span class="p">,</span><span class="w"> </span><span class="o">|</span><span class="n">acc</span><span class="p">,</span><span class="w"> </span><span class="n">class_id</span><span class="o">|</span><span class="w"> </span><span class="k">union</span><span class="p">(</span><span class="o">&amp;</span><span class="n">acc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ivar_types</span><span class="p">[</span><span class="n">class_id</span><span class="p">][</span><span class="n">name</span><span class="p">]))</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                        </span><span class="n">ty</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">panic!</span><span class="p">(</span><span class="s">&quot;getivar on non-Object type {ty:?}&quot;</span><span class="p">),</span>
+<span class="w">                    </span><span class="p">};</span>
+<span class="w">                    </span><span class="n">result</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>This means that we have to do two things: 1) keep track of field types for each
+instance variable (ivar) of each class and then 2) at a given ivar read, union
+all of the field types from all of the potential classes of the receiver.</p>
+<p>Unfortunately, it also creates a complicated <em>uses</em> relationship: any <code class="language-plaintext highlighter-rouge">GetIvar</code>
+instruction is a use of all possible <code class="language-plaintext highlighter-rouge">SetIvar</code> instructions that could affect
+it. This means that if we see a <code class="language-plaintext highlighter-rouge">SetIvar</code> that writes to <code class="language-plaintext highlighter-rouge">T.X</code> for some class
+<code class="language-plaintext highlighter-rouge">T</code> and field name <code class="language-plaintext highlighter-rouge">X</code>, we have to go and re-analyze all of the <code class="language-plaintext highlighter-rouge">GetIvar</code>s that
+could read from that class (and propagate this information recursively to the
+other uses, as usual).</p>
+<p>All of this union-ing and reflowing and graph exploration sounds slow. Even
+with pretty efficient data structures, there's a lot of iteration going on. How
+slow is it really? To answer that, we build some "torture tests" to
+artificially create some worst-case benchmarks.</p>
+<h2 id="testing-how-it-scales-generating-torture-tests">Testing how it scales: generating torture tests</h2>
+
+<p>One of the big challenges when it comes to anything related to compiler design
+is that it's difficult to find large, representative benchmarks. There are
+multiple reasons for this. Large program tend to come with many dependencies
+which makes them hard to distribute, install and maintain. Some software is
+closed source or copyrighted. In our case, we're working with a mini language
+that we created to experiment, so there are simply no real-world programs
+written in that language, so what can we do?</p>
+<p>The first question to ask is: what are we trying to measure? One of our main
+concerns in implementing and testing this analysis was to know how well it
+performed in terms of execution time. We would like to be confident that the
+analysis can cope with large challenging programs. We know
+<a href="https://dl.acm.org/doi/10.1145/3617651.3622982">from experience</a>
+that YJIT compiles over 9000 methods when running Shopify's production code.
+If YJIT compiles 9000 "hot" methods, then one could guess that the full program
+might contain 10 times more code or more, so let's say 100,000 methods. As such,
+we figured that although we don't have human-crafted programs of that scale
+for our mini-language, we could generate some synthetic programs that have
+a similar scale. We figure that if our analysis can cope with a "torture test"
+that is designed to be large and inherently challenging, that gives us
+a good degree of confidence that it could cope with "real" programs.</p>
+<p>To generate synthetic test programs, we want to generate a call graph of
+functions that call each other. Although this isn't strictly necessary for
+our type analysis to work, we'd like to generate a program that isn't infinitely
+recursive and always terminates. That's not difficult to achieve
+because we can write a piece of code that directly generates a Directed Acyclic
+Graph (DAG). See the <code class="language-plaintext highlighter-rouge">random_dag</code> function in the loupe repository described at the end of this post. This function
+generates a directed graph that has a single "root" node with a number of
+interconnected child nodes such that there are no cycles between the nodes.</p>
+<p>For our first torture test (see <code class="language-plaintext highlighter-rouge">gen_torture_test</code>), we generated a graph of
+200,000 functions that call each other. Some functions have leaf nodes, meaning
+they don't call anybody, and these functions directly return a constant
+integer or <code class="language-plaintext highlighter-rouge">nil</code>. The functions that have callees will sum the return value of
+their children. If a child returns nil, it will add zero to the sum. This means
+that non-leaf functions contain dynamic branches that depend on type information.</p>
+<p>As a second torture test (see <code class="language-plaintext highlighter-rouge">gen_torture_test_2</code>), we wanted to evaluate how
+well our analysis could cope with polymorphic and megamorphic call sites. A
+polymorphic call site is a function call that has to handle more than one class.
+A megamorphic call site is one that has to handle a large number of classes, such
+as 5-10 or more. We started by generating a large number of synthetic classes, we
+went with 5000 classes because that seemed like a realistic figure for the number
+of classes that might be contained by a large real-world program. Each class has 10
+instance variables and 10 methods with the same name for the sake of convenience
+(that makes it easier to generate code).</p>
+<p>In order to generate polymorphic and megamorphic call sites, we generate an instance
+of each class, and then we sample a random number of class instances from that set.
+We use a <a href="https://en.wikipedia.org/wiki/Pareto_distribution">Pareto distribution</a> to
+sample the number of classes because we believe this is similar to how real programs
+are generally structured. That is, most call sites are monomorphic, but a small number
+of call sites are highly megamorphic. We generate 200 random DAGs with 750 nodes each,
+and call the root node of each DAG with a random number of class instances. Each DAG
+then passes the object it receives from the root node through all of its children. This
+creates a large number of polymorphic and megamorphic call sites. Our synthetic program
+contains call sites that receive as many as 144 different classes.</p>
+<p>The structure of each DAG in the second torture test is similar to the first one, with
+the difference that each function calls a randomly selected method of the object it
+receives as a parameter, and then calls it child functions in the DAG. Conveniently,
+since methods always have the same name for each class, it's easy to select a random
+method that we know by construction is defined on all of our classes. This creates more
+polymorphic call sites, which is what we wanted to stress-test. The methods of each
+class are all leaf methods that can either return <code class="language-plaintext highlighter-rouge">nil</code>, a random integer, or a randomly
+selected instance variable.</p>
+<h2 id="how-does-it-scale-really">How does it scale really?</h2>
+
+<p>Using the torture test generators, we generated two programs: one with classes
+and one without.</p>
+<p>The program with classes has 175,000 reachable functions of 205,000 total
+generated, 3 million instructions, and megamorphic (up to 144 classes) method
+lookups. We complete the analysis in 2.5 seconds on a single core.</p>
+<p>The program without classes has 200,000 functions and we analyze it in 1.3
+seconds on a single core.</p>
+<p>Now, these numbers don't mean much in absolute terms—people have different
+hardware, different codebases, etc—but in relative terms they mean that this
+kind of analysis is more tractable than not. It doesn't take <em>hours</em> to run.
+And our analysis is not even particularly well-optimized.
+We were actually surprised at how fast the analysis runs. Our initial hope was
+that the analysis could run on a program with 20,000 methods in less than 60
+seconds, but we can analyze programs about 10 times that size much faster than
+expected. This makes it seem likely that the analysis could work on large
+human-crafted software.</p>
+<p>Adding object sensitivity or increasing the <em>k</em> for
+<a href="https://dl.acm.org/doi/pdf/10.1145/3498720">call-site sensitivity</a> would
+probably slow things down quite a bit. However, because we know the analysis is
+so fast, it seems possible to imagine that we could selectively split/specialize
+call sites of built-in methods to add sensitivity in specific places without
+increasing the running time by much. For example, in a language with methods on
+an <code class="language-plaintext highlighter-rouge">Array</code> class, such as Ruby, we could do splitting on all <code class="language-plaintext highlighter-rouge">Array</code> method calls
+to increase precision for those highly polymorphic functions.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>Thanks for reading about our little big static type analysis prototype. We published
+<a href="https://github.com/Shopify/loupe">the code on GitHub</a> as a static companion
+artifact to go with this article and nothing more; it is an experiment that we built, but not a prelude to a
+bigger project nor is it a tool we expect others to contribute to.</p>
+<p>If you would like to read more about the big wide world of program analysis, we
+recommend searching for terms such as control-flow analysis (CFA) and points-to
+analysis. Here is an <a href="https://www.cs.uoregon.edu/research/summerschool/summer09/lectures/lhotak.pdf">excellent
+lecture</a>
+(PDF) by Ondřej Lhoták that gives a tour of the area.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-02-24-sctp.md" title="Help improve _posts/2025-02-24-sctp.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Visualizing big data | Max Bernstein</title>
+    <meta property="og:title" content="Visualizing big data | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/big-viz/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Visualizing big data</h1>
+        
+        <div class="post-inline-date"><i>March 21, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>I was trying to visualize a roughly seven thousand operation <a href="https://github.com/mkeeter/fidget/blob/a6b1f011bb88abc883d151dea671982dbf5d4ba0/models/prospero.vm">compiler IR
+trace</a> to get a feeling for how I might optimize it. I tried throwing
+it into Graphviz and after waiting for 15 minutes, I killed the <code class="language-plaintext highlighter-rouge">dot</code> process.</p>
+<p>The <code class="language-plaintext highlighter-rouge">@Graphviz</code> Twitter account recommended trying the <code class="language-plaintext highlighter-rouge">sfdp</code> tool, so I gave
+that a go. It terminated fairly quickly but I could not make much out of the
+mess:</p>
+<figure>
+<img src="/assets/img/big-graph-sfdp.png" />
+</figure>
+
+<p>They also recommended Gephi ForceAtlas2, so I gave that a go.</p>
+<figure>
+<img src="/assets/img/big-graph-forceatlas2.png" />
+<figcaption>ForceAtlas2 is nicely incremental instead of an opaque batch job,
+so I could stop and resume at my leisure. Unfortunately, it didn't help much.
+</figcaption>
+</figure>
+
+<p>Anyway, while Matt Keeter's project is very interesting, my <a href="https://github.com/tekknolagi/minifidget/">several hour
+interpreter foray</a> into it is not. This all reminded me, though, of
+a time many years ago when I was working as an intern for a transportation
+service.</p>
+<h2 id="a-scheduler">A scheduler</h2>
+
+<p>This transportation service had a bunch of Very Important Database Queries that
+had to periodically run or Bad Things would happen. As I remember it, they
+couldn't do all of them with cron because the big batch jobs were very resource
+intensive, had differing priorities, had unpredictable run time, and some could
+not run concurrently with others. So there was some kind of <em>wild</em> ad-hoc
+rotation of people getting up at odd hours of the night HQ time and manually
+running the jobs when fewer people were using the ETL cluster.</p>
+<p>I got tasked, kind of accidentally, with fixing this, so after much
+deliberation, I went off and wrote the world's worst scheduler. The goal was to
+schedule something like twenty thousand jobs per week (the small jobs and the
+Big Ones).</p>
+<figure>
+<img src="/assets/img/scheduler-whiteboard.jpg" />
+<figcaption>A snapshot of some of my scheduling thoughts. I had no idea what I
+was doing.</figcaption>
+</figure>
+
+<p>After writing a scheduler, I didn't really know what to do. I generated some
+sample jobs with different priorities, resource constraints, and time
+estimations based on fake historical data. I fed it into the scheduler. It
+output a big text file. I did not have a good intuition for how well it was
+doing. So I tried to visualize it.</p>
+<p>I did not find any good scheduler visualization tools. Then I remembered I had
+a calendar application. I learned that the ical format is a pretty
+straightforward open text format, so I had my scheduler generate ical files.
+They look like this (example Bastille Day event from Wikipedia):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:uid1@example.com
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+DTSTAMP:19970701T100000Z
+DTSTART:19970714T170000Z
+DTEND:19970715T040000Z
+SUMMARY:Bastille Day Party
+GEO:48.85299;2.36885
+END:VEVENT
+END:VCALENDAR
+</code></pre></div></div>
+
+<p>Amazingly, it worked. Apple Calendar handled it magnificently:</p>
+<figure>
+<img src="/assets/img/scheduler-ical.png" />
+<figcaption>I don't remember this noticeably slowing down the application.</figcaption>
+</figure>
+
+<p>I think the only problem was deleting the events. I could not figure out a way
+to do that at all.</p>
+<p>Also, the scheduler never made it into production. Someone else made something
+more usable after I went back to school. Ah well. I think my lasting
+contribution from that summer was <a href="https://github.com/mkleehammer/pyodbc/pull/70">a patch to the pyodbc
+project</a> to add a <code class="language-plaintext highlighter-rouge">Connection.closed</code> property. That
+adventure started with the first PR in July of 2015 and ended six years later
+in 2021 when I made a <a href="https://github.com/mkleehammer/pyodbc/pull/924">new PR</a> that finally got merged.</p>
+<h2 id="the-end">The end</h2>
+
+<p>I don't have any meaningful lessons from this other than visualization is hard
+and a skill on its own.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-03-21-big-viz.md" title="Help improve _posts/2025-03-21-big-viz.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

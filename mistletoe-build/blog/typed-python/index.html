@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Compiling typed Python | Max Bernstein</title>
+    <meta name="description" content="With a little effort, you can make your mypy-typed Python go zoom." />
+    <meta property="og:title" content="Compiling typed Python | Max Bernstein" />
+    <meta property="og:description" content="With a little effort, you can make your mypy-typed Python go zoom." />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/typed-python/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Compiling typed Python</h1>
+        
+        <div class="post-inline-date"><i>June 19, 2023</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>It's been nine whole years since <a href="https://peps.python.org/pep-0484/">PEP 484</a>
+landed and brought us types from on high. This has made a lot of people very
+angry and been widely regarded as a bad move<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup>. Since then, people on the
+internet have been clamoring to find out: <a href="https://discuss.python.org/t/cpython-optimizations-leveraging-type-hints-bachelor-thesis-topic/27264">does this mean we can now compile
+Python</a>
+<a href="https://stackoverflow.com/questions/40204951/python-3-type-hints-for-performance-optimizations">to native code for more speed</a>?
+It's a totally reasonable question. It was one of my first questions when I
+first started working on Python compilers. So can we do it?</p>
+<p>No. But also, kind of, yes. I'll explain. I'll explain in the context of
+"ahead-of-time" compiling within or adjacent to CPython, the predominant
+implementation of the Python language. Just-in-time (JIT) compilers are a
+different beast, and are described more below. None of the information in this
+post is novel; I hope only to clarify a bunch of existing academic and industry
+knowledge.</p>
+<p>The core thesis is: <em>types are very broad hints and they are sometimes lies</em>.</p>
+<h2 id="its-not-what-you-think">It's not what you think</h2>
+
+<p>A lot of people enjoy walking into discussions and saying things like "We have
+a 100% Mypy/Pyright/Pytype/Pyre typed codebase. I would simply use the types in
+compilation to generate better code." That was the original title of this
+article, even. "<em>I would simply use the types in the compiler.</em>" But it doesn't
+really work like that<sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup>. I'll show a couple examples that
+demonstrate why. The point is not to browbeat you with example after example;
+the point is to get people to stop saying "just" and "simply".</p>
+<p>For example, look at this lovely little Python function. It's short, typed, and
+obviously just adds integers. Easy: compiles right down to two machine
+instructions. Right?</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+
+<span class="n">add</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># =&gt; 7</span>
+</pre></div>
+
+<p>Unfortunately, no. Type annotations of the type <code class="language-plaintext highlighter-rouge">x: T</code> mean "<code class="language-plaintext highlighter-rouge">x</code> is an instance
+of <code class="language-plaintext highlighter-rouge">T</code> or an instance of a subclass of <code class="language-plaintext highlighter-rouge">T</code>."<sup class="footnote-ref" id="fnref-3"><a href="#fn-3">3</a></sup> This is pretty common in
+programming languages, and, thanks to <a href="https://en.wikipedia.org/wiki/Liskov_substitution_principle">Barbara
+Liskov</a>, makes
+semantic sense most of the time. But it doesn't help performance here. The
+dispatch for binary operators in Python is famously <a href="https://snarky.ca/unravelling-binary-arithmetic-operations-in-python/">not
+simple</a>
+because of subclasses. This means that there is a lot of code to be executed if
+<code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> could be any subclasses of <code class="language-plaintext highlighter-rouge">int</code>.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">send_a_nasty_email</span><span class="p">()</span>  <span class="c1"># sigh</span>
+        <span class="k">return</span> <span class="mi">42</span>
+</pre></div>
+
+<p>If this sounds familiar, you might have read the <a href="https://dl.acm.org/doi/10.1145/1534530.1534550">Ben-Asher and Rotem
+paper</a>, <a href="https://arxiv.org/abs/1306.6047">Falcon
+paper</a>, or <a href="https://dl.acm.org/doi/10.1145/2617548.2617552">Barany
+paper</a>, all of which discuss
+how everything in Python basically boils down to a function call and that makes
+it hard to statically analyze. This post is subtly different because we now
+have types, and people assume those make the analysis easier.</p>
+<p>Arbitrary code execution aside, it's also not obvious how the appropriate
+<code class="language-plaintext highlighter-rouge">__add__</code> function is selected in operator dispatch. <strong>You don't need to
+understand or really even read the big blob</strong> that explains it below. You just
+need to say "ooh" and "aah" and "wow, so many if-statements."</p>
+<div class="highlight"><pre><span></span><span class="n">_MISSING</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="n">lhs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="c1"># lhs.__sub__</span>
+        <span class="n">lhs_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">lhs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lhs_method</span> <span class="o">=</span> <span class="n">debuiltins</span><span class="o">.</span><span class="n">_mro_getattr</span><span class="p">(</span><span class="n">lhs_type</span><span class="p">,</span> <span class="s2">&quot;__sub__&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">lhs_method</span> <span class="o">=</span> <span class="n">_MISSING</span>
+
+        <span class="c1"># lhs.__rsub__ (for knowing if rhs.__rsub__ should be called first)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lhs_rmethod</span> <span class="o">=</span> <span class="n">debuiltins</span><span class="o">.</span><span class="n">_mro_getattr</span><span class="p">(</span><span class="n">lhs_type</span><span class="p">,</span> <span class="s2">&quot;__rsub__&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">lhs_rmethod</span> <span class="o">=</span> <span class="n">_MISSING</span>
+
+        <span class="c1"># rhs.__rsub__</span>
+        <span class="n">rhs_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rhs_method</span> <span class="o">=</span> <span class="n">debuiltins</span><span class="o">.</span><span class="n">_mro_getattr</span><span class="p">(</span><span class="n">rhs_type</span><span class="p">,</span> <span class="s2">&quot;__rsub__&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">rhs_method</span> <span class="o">=</span> <span class="n">_MISSING</span>
+
+        <span class="n">call_lhs</span> <span class="o">=</span> <span class="n">lhs</span><span class="p">,</span> <span class="n">lhs_method</span><span class="p">,</span> <span class="n">rhs</span>
+        <span class="n">call_rhs</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">rhs_method</span><span class="p">,</span> <span class="n">lhs</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">rhs_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_MISSING</span>  <span class="c1"># Do we care?</span>
+            <span class="ow">and</span> <span class="n">rhs_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">lhs_type</span>  <span class="c1"># Could RHS be a subclass?</span>
+            <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">rhs_type</span><span class="p">,</span> <span class="n">lhs_type</span><span class="p">)</span>  <span class="c1"># RHS is a subclass!</span>
+            <span class="ow">and</span> <span class="n">lhs_rmethod</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">rhs_method</span>  <span class="c1"># Is __r*__ actually different?</span>
+        <span class="p">):</span>
+            <span class="n">calls</span> <span class="o">=</span> <span class="n">call_rhs</span><span class="p">,</span> <span class="n">call_lhs</span>
+        <span class="k">elif</span> <span class="n">lhs_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">rhs_type</span><span class="p">:</span>
+            <span class="n">calls</span> <span class="o">=</span> <span class="n">call_lhs</span><span class="p">,</span> <span class="n">call_rhs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">calls</span> <span class="o">=</span> <span class="p">(</span><span class="n">call_lhs</span><span class="p">,)</span>
+
+        <span class="k">for</span> <span class="n">first_obj</span><span class="p">,</span> <span class="n">meth</span><span class="p">,</span> <span class="n">second_obj</span> <span class="ow">in</span> <span class="n">calls</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">meth</span> <span class="ow">is</span> <span class="n">_MISSING</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">meth</span><span class="p">(</span><span class="n">first_obj</span><span class="p">,</span> <span class="n">second_obj</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">NotImplemented</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;unsupported operand type(s) for -: </span><span class="si">{</span><span class="n">lhs_type</span><span class="si">!r}</span><span class="s2"> and </span><span class="si">{</span><span class="n">rhs_type</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+</pre></div>
+
+<p>This enormous code snippet is from Brett Cannon's linked post above. It
+demonstrates in Python "pseudocode" what happens in C under the hood when doing
+<code class="language-plaintext highlighter-rouge">lhs - rhs</code> in Python.</p>
+<p>But let's ignore this problem and pretend that it's not possible to subclass
+<code class="language-plaintext highlighter-rouge">int</code>. Problem solved, right? High performance math?</p>
+<p>Unfortunately, no. While we would have fast dispatch on binary operators and
+other methods, integers in Python are heap-allocated big integer objects. This
+means that every operation on them is a function call to <code class="language-plaintext highlighter-rouge">PyLong_Add</code> or
+similar. While these functions have been optimized for speed over the years,
+they are still slower than machine integers. But let's assume that a
+sufficiently smart compiler can auto-unbox small-enough big integers into
+machine words at the beginning of a function. We can do fast math with those.
+If we really want, we can even do fast floating point math, too. Problem
+solved? Hopefully?</p>
+<div class="highlight"><pre><span></span><span class="c1"># You can have fun making enormous numbers! This is part of the Python</span>
+<span class="c1"># language.</span>
+<span class="k">def</span> <span class="nf">big_pow</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="c1"># Even if you unbox `x` here, the result might still be enormous.</span>
+    <span class="k">return</span> <span class="mi">2</span><span class="o">**</span><span class="n">x</span>
+</pre></div>
+
+<p>Unfortunately, no. Most math kernels are not just using built-in functions and
+operators. They call out to external C libraries like NumPy or SciPy, and those
+functions expect heap-allocated <code class="language-plaintext highlighter-rouge">PyLongObject</code>s. The C-API is simply <strong>not
+ready</strong> to expose the underlying functions that operate on machine integers,
+and it is also <strong>not ready</strong> for <a href="/blog/small-objects/">tagged pointers</a>. This
+would be a huge breaking change in the API and ABI. But okay, let's assume for
+the sake of blog post that the compiler team has a magic wand and can do all of
+this.</p>
+<div class="highlight"><pre><span></span><span class="c1">// Store 63-bit integers inside the pointer itself.</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">kSmallIntTagBits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">kBits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">64</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">kSmallIntTagBits</span><span class="p">;</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">kMaxValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">long</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">kBits</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="n">PyObject</span><span class="o">*</span><span class="w"> </span><span class="nf">PyLong_FromLong</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">kMaxValue</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">PyObject</span><span class="o">*</span><span class="p">)((</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="p">)</span><span class="n">value</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">kSmallIntTagBits</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">MakeABigInt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">PyObject</span><span class="o">*</span><span class="w"> </span><span class="nf">PyLong_Add</span><span class="p">(</span><span class="n">PyObject</span><span class="o">*</span><span class="w"> </span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">PyObject</span><span class="o">*</span><span class="w"> </span><span class="n">right</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IsSmallInt</span><span class="p">(</span><span class="n">left</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">IsSmallInt</span><span class="p">(</span><span class="n">right</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Untag</span><span class="p">(</span><span class="n">left</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Untag</span><span class="p">(</span><span class="n">right</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PyLong_FromLong</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">BigIntAdd</span><span class="p">(</span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">right</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Then we're set, right?</p>
+<p>Unfortunately, there are still some other loose ends to tie up. While you may
+have a nice and neatly typed numeric kernel of Python code, it has to interact
+with the outside world. And the outside world is often not so well typed. Thank
+you to Jeremy Siek and Walid Taha for giving us <a href="https://wphomes.soic.indiana.edu/jsiek/what-is-gradual-typing/">gradual
+typing</a>—this is the reason anything gets typed at all in
+Python—but you can't do type-driven compilation of untyped code and expect it
+to be fast.</p>
+<p>This means that at the entry to your typed functions, you have to check the
+types of the input objects. Maybe you can engineer a system such that a
+function can have multiple entry points—one for untyped calls, one for typed
+calls, and maybe even one for unboxed calls—but this hypothetical system's
+complexity is growing, and fast. And there are a whole host of other
+complications and bits of dynamic behavior that I haven't even mentioned.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">typed_function_unboxed</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">int64</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">int64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">int64</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">int64_add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">typed_function</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">typed_function_unboxed</span><span class="p">(</span><span class="n">unbox</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">unbox</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">typed_function_shell</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">typed_function</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="n">cast</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">make_typed_function</span><span class="p">(</span><span class="n">typed_function_shell</span><span class="p">,</span> <span class="n">typed_function</span><span class="p">,</span> <span class="n">typed_function_unboxed</span><span class="p">)</span>
+<span class="n">f</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># The dispatch gets hairy</span>
+</pre></div>
+
+<p>And it's not just about types, either! For example, variable binding,
+especially global variable binding, is a performance impediment. Globals, even
+builtins, are almost always overwritable by any random Python code.</p>
+<p>"But Max," you say, "Python compiler libraries like Numba clearly work just
+fine. Just-in-time compilers have been doing this for years. What's the deal?"</p>
+<p>Just-in-time compilers can be so effective because they can speculate on things
+that are not compile-time constants. Then, if the assumption is no longer true,
+they can fall back on a (slower) interpreter. This is how
+<a href="https://pypy.org/">PyPy</a>, the successor of
+<a href="https://psyco.sourceforge.net/">Psyco</a>, does its amazing work specializing
+data structures; the JIT does not have to handle every case. This interpreter
+deoptimization is part of what makes JITs hard to understand and does not much
+help with compiling code ahead-of-time.</p>
+<!-- TODO: Address Brett's comments:
+
+I'm not sure how actionable this is, but there's nothing stopping an AOT
+compiler from having speculative fast paths. And when you collect and save
+profile data, you can blue the line between AOT and JIT compilation even more.
+
+TODO: apparently SubstrateVM supports this to some extent, too
+-->
+
+<p>This is what a PyPy trace might look like, taken from the 2011 paper <a href="https://dl.acm.org/doi/10.1145/2069172.2069181">Runtime
+Feedback in a Meta-Tracing JIT for Efficient Dynamic
+Languages</a>. Every <code class="language-plaintext highlighter-rouge">guard</code> is a
+potential exit from JITed code to the interpreter:</p>
+<div class="highlight"><pre><span></span><span class="c1"># inst1.getattr(&quot;a&quot;)</span>
+<span class="n">map1</span> <span class="o">=</span> <span class="n">inst1</span><span class="o">.</span><span class="n">map</span>
+<span class="n">guard</span><span class="p">(</span><span class="n">map1</span> <span class="o">==</span> <span class="mh">0xb74af4a8</span><span class="p">)</span>
+<span class="n">index1</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">getindex</span><span class="p">(</span><span class="n">map1</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="n">guard</span><span class="p">(</span><span class="n">index1</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">storage1</span> <span class="o">=</span> <span class="n">inst1</span><span class="o">.</span><span class="n">storage</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">storage1</span><span class="p">[</span><span class="n">index1</span><span class="p">]</span>
+</pre></div>
+
+<p>And the other thing is, unlike PyPy, Numba doesn't exactly compile <em>Python</em>...</p>
+<h2 id="dialects">Dialects</h2>
+
+<p>Numba is great! I cannot emphasize enough how much I am <strong>not</strong> trying to pick
+on Numba here. The team put in a lot of hard work and solid engineering and
+built a compiler that produces very fast numerical code.</p>
+<p>It's possible to do this because Numba compiles a superficially similar
+language that is much less dynamic and is focused on numerics. For people who
+work with data analytics and machine learning, this is incredible!
+Unfortunately, it doesn't generalize to arbitrary Python code.</p>
+<p>This is also true of many other type-driven compiler projects that optimize
+"Python" code:</p>
+<ul>
+<li><a href="https://github.com/cython/cython">Cython</a>/<a href="https://www.csse.canterbury.ac.nz/greg.ewing/python/Pyrex/">Pyrex</a></li>
+<li><a href="https://docs.micropython.org/en/v1.9.3/pyboard/reference/speed_python.html#the-viper-code-emitter">MicroPython Viper</a></li>
+<li><a href="https://www.modular.com/mojo">Mojo</a></li>
+<li><a href="https://github.com/mypyc/mypyc">Mypyc</a></li>
+<li><a href="https://github.com/shedskin/shedskin">Shed Skin</a></li>
+<li><a href="/assets/img/salib-thesis.pdf">Starkiller</a> (PDF)</li>
+<li><a href="https://github.com/facebookincubator/cinder/#static-python">Static Python</a></li>
+<li><a href="https://github.com/APrioriInvestments/typed_python/blob/dev/docs/introduction.md">Typed Python</a></li>
+</ul>
+<p>and in particular to optimize numerics:</p>
+<ul>
+<li><a href="https://github.com/exaloop/codon">Codon</a></li>
+<li><a href="https://github.com/numba/numba">Numba</a></li>
+<li><a href="https://github.com/lcompilers/lpython">LPython</a>
+(more info in <a href="https://lpython.org/blog/2023/07/lpython-novel-fast-retargetable-python-compiler/">blog post</a>)</li>
+<li><a href="https://github.com/pyccel/pyccel/blob/devel/docs/quickstart.md">Pyccel</a></li>
+<li><a href="https://pythran.readthedocs.io/en/latest/">Pythran</a></li>
+<li><a href="https://github.com/taichi-dev/taichi">Taichi</a></li>
+<li><a href="https://www.tensorflow.org/xla">TensorFlow JIT/XLA</a></li>
+<li><a href="https://pytorch.org/docs/stable/jit_language_reference.html">TorchScript</a></li>
+</ul>
+<p>and probably more that I forgot about or could not find (please feel free to
+submit a PR).</p>
+<p>It does raise an interesting question, though: what if you intentionally and
+explicitly eschew the more dynamic features? Can you get performance in return?
+It turns out, yes. Absolutely yes.</p>
+<h2 id="stronger-guarantees">Stronger guarantees</h2>
+
+<p>As people have continually rediscovered over the years, Python is hard to
+optimize statically. Functions like the following, which "only" do an attribute
+load, have no hope whatsoever of being optimized out of context:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_an_attr</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">value</span>
+</pre></div>
+
+<p>This is because <code class="language-plaintext highlighter-rouge">o</code> could be any object, types can define custom attribute
+resolution by defining a <code class="language-plaintext highlighter-rouge">__getattr__</code> function, and therefore attribute loads
+are equivalent to running opaque blobs of user code.</p>
+<p>Even if the function is typed, you still run into the subclass problem
+described earlier. You also have issues like instance attributes, deleting
+attributes, descriptor shadowing, and so on.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">C</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">5</span>
+
+
+<span class="k">def</span> <span class="nf">get_an_attr</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="n">C</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">value</span>
+</pre></div>
+
+<p><em>However</em>, if you intentionally opt out of a lot of that dynamism, things start
+getting interesting. The <a href="https://github.com/facebookincubator/cinder/#static-python">Static
+Python</a> compiler,
+for example, is part of the Cinder project, and lets you trade dynamism for
+speed. If a module is marked static with <code class="language-plaintext highlighter-rouge">import __static__</code>, Cinder will swap
+out the standard bytecode compiler for the Static Python bytecode compiler,
+which <em>compiles a different language</em>!</p>
+<p>By way of example, the SP compiler will automatically slotify all of the
+classes in a SP module and prohibit a <code class="language-plaintext highlighter-rouge">__dict__</code> slot. This means that features
+that used to work—dynamically creating and deleting attributes, etc—no
+longer do. But it also means that attribute loads from static classes are
+actually only three machine instructions now. This tradeoff makes the compiler
+transform <em>sound</em>. Most people like this tradeoff.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">__static__</span>
+
+<span class="k">class</span> <span class="nc">C</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="k">def</span> <span class="nf">get_an_attr</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="n">C</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">value</span>
+<span class="c1"># ...</span>
+<span class="c1"># mov rax,QWORD PTR [rsi+0x10]  # Load the field</span>
+<span class="c1"># test rax,rax                  # Check if null</span>
+<span class="c1"># je 0x7f823ba17283             # Maybe raise an exception</span>
+<span class="c1"># ...</span>
+</pre></div>
+
+<p>Static Python does this just with existing Python annotations. It has some more
+constraints than Mypy does (you can't <code class="language-plaintext highlighter-rouge">ignore</code> your type errors away, for
+example), but it does not change the syntax of Python. But it's important to
+know that this does not just immediately follow from a type-directed
+translation. It requires opting into stricter checking and different behavior
+for an entire typed core of a codebase—potentially gradually (SP can call
+untyped Python and vice versa). It requires changing the runtime representation
+of objects from header+dictionary to header+array of slots. For this reason it
+is (currently) implemented as a custom compiler, custom bytecode interpreter,
+and with support in the Cinder JIT. To learn more, check out the Static Python
+team's <a href="https://cs.brown.edu/~sk/Publications/Papers/Published/lgmvpk-static-python/">paper collaboration with Brown</a>,
+which explains a bit more about the gradual typing bits and soundness.</p>
+<p>I would be remiss if I did not also mention
+<a href="https://github.com/mypyc/mypyc">Mypyc</a> (the optimizer and code generator for
+Mypy). Mypyc is very similar to Static Python in that it takes something that
+looks like Python with types and generates type-optimized code. It is different
+in that it generates C extensions and does <a href="https://mypyc.readthedocs.io/en/latest/int_operations.html">tagged pointers for
+integers</a> by
+default. Depending on your use case—in particular, your deployment story—it
+may be the compiler that you want to use! The Black formatter, for example, has
+had <a href="https://ichard26.github.io/blog/2022/05/compiling-black-with-mypyc-part-1/">great
+success</a>
+using Mypyc<sup class="footnote-ref" id="fnref-4"><a href="#fn-4">4</a></sup>.</p>
+<p>I mentioned earlier that Static Python has some additional rules for typing
+that Mypy does not, and that Mypyc is based on Mypy. They both try to be
+correct compilers and optimizers, so how do they work around users lying to the
+type checker with <code class="language-plaintext highlighter-rouge">type: ignore</code>?</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+<span class="n">foo</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</pre></div>
+
+<p>In this example,</p>
+<ul>
+<li>CPython ignores the annotations completely in compilation and execution</li>
+<li>Mypy lets the type mismatch slide due to <code class="language-plaintext highlighter-rouge">type: ignore</code>
+<ul>
+<li>Which, interestingly enough, means Mypyc defers the problem to run-time by
+injecting an <code class="language-plaintext highlighter-rouge">unbox</code> that might cleanly raise a <code class="language-plaintext highlighter-rouge">TypeError</code></li>
+</ul>
+</li>
+<li>Static Python does not allow this code to compile
+<ul>
+<li>Note that non-Static Python code in the same project would not be
+compile-time checked and therefore would only get a run-time <code class="language-plaintext highlighter-rouge">TypeError</code> at
+the boundary if they called <code class="language-plaintext highlighter-rouge">foo</code> with a non-<code class="language-plaintext highlighter-rouge">int</code></li>
+</ul>
+</li>
+</ul>
+<p>All of these are reasonable behaviors because each project has different goals.</p>
+<p>In addition to the normal types available, both Static Python and Mypyc allow
+typing parameters and other variables as primitive ints like <code class="language-plaintext highlighter-rouge">int8</code> so you can
+get the unboxed arithmetic that people tend to expect on first reading of the
+first code snippet in this post<sup class="footnote-ref" id="fnref-5"><a href="#fn-5">5</a></sup>.</p>
+<p>Other projects take this further. The <a href="https://www.modular.com/mojo">Mojo</a>
+project, for example, aims to create a much bigger and more visibly different
+new language that is a proper superset of Python<sup class="footnote-ref" id="fnref-6"><a href="#fn-6">6</a></sup>. The Python code it
+runs should continue to work as advertised, but modules can opt into less
+dynamism by iteratively converting their Python code to something that looks a
+little different. They also do a bunch of other neat stuff, but that's outside
+the scope of this blog post.</p>
+<p>See for example this snippet defining a struct (a new feature) that reads like
+a Python class but has some stronger mutability and binding guarantees:</p>
+<div class="highlight"><pre><span></span><span class="nd">@value</span>
+<span class="n">struct</span> <span class="n">MyPair</span><span class="p">:</span>
+    <span class="n">var</span> <span class="n">first</span><span class="p">:</span> <span class="n">Int</span>
+    <span class="n">var</span> <span class="n">second</span><span class="p">:</span> <span class="n">Int</span>
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">MyPair</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">&lt;</span> <span class="n">rhs</span><span class="o">.</span><span class="n">first</span> <span class="ow">or</span>
+              <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">first</span> <span class="ow">and</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">second</span> <span class="o">&lt;</span> <span class="n">rhs</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
+</pre></div>
+
+<p>It even looks like the <code class="language-plaintext highlighter-rouge">@value</code> decorator gives you value semantics.</p>
+<p>Per the Mojo <a href="https://docs.modular.com/mojo/manual/structs/#structs-compared-to-classes">docs</a>,</p>
+<blockquote>
+<p>Mojo structs are static: they are bound at compile-time (you cannot add
+methods at runtime). Structs allow you to trade flexibility for performance
+while being safe and easy to use.</p>
+<p>[...]</p>
+<p>In Mojo, the structure and contents of a "struct" are set in advance and
+can't be changed while the program is running. Unlike in Python, where you
+can add, remove, or change attributes of an object on the fly, Mojo doesn't
+allow that for structs. This means you can't use <code class="language-plaintext highlighter-rouge">del</code> to remove a method or
+change its value in the middle of running the program.</p>
+</blockquote>
+<p>Seems neat. We'll see what it looks like more when it's open sourced.</p>
+<p>And finally, even if you are not trying to do optimized code generation,
+packaging up all the code at app bundle time can help save big on runtime
+startup. If you don't need to hit the disk at least once per imported module,
+you get some big wins in time and code locality. <em>ngoldbaum</em> on lobste.rs
+<a href="https://lobste.rs/s/lnyfm6/compiling_typed_python#c_kifkr4">notes</a> that
+<a href="https://github.com/indygreg/PyOxidizer">PyOxidizer</a> can bundle your code into
+the data segment of an executable.</p>
+<p>This already happens with the <a href="https://docs.python.org/3.11/whatsnew/3.11.html#faster-startup">frozen built-in
+modules</a> (was
+just <code class="language-plaintext highlighter-rouge">importlib</code> before 3.11) and has been tried before with entire
+applications
+(<a href="https://mail.python.org/pipermail/python-dev/2018-May/153367.html">one</a>,
+<a href="https://bugs.python.org/issue36839">two</a>,
+<a href="https://github.com/faster-cpython/ideas/discussions/150">three</a>
+(productionized <a href="https://github.com/alibaba/code-data-share-for-python">here</a>),
+and maybe others) with varying upstreaming success.</p>
+<h2 id="other-approaches">Other approaches</h2>
+
+<p><a href="https://github.com/Nuitka/Nuitka">Nuitka</a> (not mentioned above) is a
+whole-program compiler from Python to C. As far as I can tell, it does not use
+your type annotations in the compilation process. Instead it uses its own
+optimization pipeline, including function inlining, etc, to discover types.
+Please correct me if I am wrong!</p>
+<p>The <a href="http://www.oilshell.org/">Oils project</a> includes a shell written in Python
+that is accelerated by a Python-to-C++ compiler called
+<a href="https://www.oilshell.org/blog/2022/05/mycpp.html">mycpp</a>. This is not a
+general-purpose compiler; Andy's perspective on this is that they only ever
+intend to be able to compile and run <em>one codebase</em>. This lets them completely
+ignore very dynamic Python semantics (which the Oil shell does not use) as long
+as the singular end-user program has the same visible behavior.</p>
+<h3 id="in-other-languages">In other languages</h3>
+
+<p>If you don't like this whole "typed kernel" idea, other compilers like Graal's
+<a href="https://docs.oracle.com/en/graalvm/enterprise/20/docs/reference-manual/native-image/#native-image">SubstrateVM</a>
+do some advanced wizardry to analyze your whole program.</p>
+<p>SubstrateVM is an ahead-of-time compiler for Java that looks at your entire
+codebase as a unit. It does some intense inter-procedural static analysis to
+prove things about your code that can help with performance. It also subtly
+changes the language, though. In order to do this analysis, it prohibits
+arbitrary loading of classes at runtime. It also limits the amount of
+reflection to some known feature subset.</p>
+<h2 id="what-this-means-for-the-average-python-programmer">What this means for the average Python programmer</h2>
+
+<p>If you are working on a science thing or machine learning project, you most
+likely have a bunch of glue around some fast core of hardcore math. If you add
+types and use one of the excellent compilers listed above, you will probably
+get some performance benefits.</p>
+<p>If you are working on some other project, though, you may not have such a clear
+performance hotspot. Furthermore, you may not be working with objects that have
+fast primitive representations, like <code class="language-plaintext highlighter-rouge">int</code>. You probably have a bunch of data
+structures, etc. In that case, some of the projects above like Mypyc and
+Static Python and Nuitka can probably help you. But you will need to add types,
+probably fix some type errors, and then change how you build and run your
+application.</p>
+<p>Unfortunately for everybody who writes Python, a huge portion of code that
+needs to be fast is written as C extensions because of historical reasons. This
+means that you can optimize the Python portion of your application all you
+like, but the C extension will remain an opaque blob (unless your compiler
+understands it like Numba understands NumPy, that is). This means that you may
+need to eventually re-write your C code as Python to fully reap all the
+performance benefits. Or at least <a href="https://github.com/faster-cpython/ideas/issues/546">type the
+boundary</a>.</p>
+<h2 id="what-this-means-for-other-dynamic-languages">What this means for other dynamic languages</h2>
+
+<p>These questions about and issues with straightforward type-driven compilation
+are not unique to Python. The Sorbet team had to do <a href="https://sorbet.org/blog/2021/07/30/open-sourcing-sorbet-compiler">a lot of
+work</a> to make
+this possible for Ruby. People ask the same thing about typed JavaScript (like
+TypeScript) and probably other languages, too. People will have to work out
+similar solutions. I am looking forward to Tzvetan Mikov's talk on
+<a href="https://twitter.com/react_native_eu/status/1672143102662918144">Static Hermes</a> at
+React Native EU 2023 (slides are <a href="https://speakerdeck.com/tmikov2023/static-hermes-react-native-eu-2023-announcement">here</a>
+and blog post is <a href="https://tmikov.blogspot.com/2023/09/how-to-speed-up-micro-benchmark-300x.html">here</a>).</p>
+<p>There is also Manuel Serrano's whole-program <a href="https://www-sop.inria.fr/members/Manuel.Serrano/publi/serrano-dls18.pdf">AOT
+compiler</a>
+(PDF) for JS, called Hopc. It will ignore your type annotations and do its own
+analysis, though. Serrano notes:</p>
+<blockquote>
+<p>Hint types are unsound as they do not denote super sets of all the possible
+values variables can hold at runtime, neither they abstract all possible
+correct program executions.</p>
+<p>[...]</p>
+<p>Type information alone is not enough to generate fast code. For that, the
+compilation chain has to include all sorts of optimizations such as inline
+property caches, closure allocation, function inlining, data-flow analysis,
+register allocation, etc.</p>
+</blockquote>
+<p>Seems about right.</p>
+<!-- TODO: mention https://github.com/natalie-lang/natalie and how it handles
+types (if it does?) -->
+
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>Types are not ironclad guarantees of data layout. Changing the language you are
+compiling to prohibit certain kinds of dynamism can help you with performance.
+Several projects already do this and it seems to be growing in popularity.</p>
+<p>If nothing else, I hope you have more of an understanding of what types mean
+from a correctness perspective, from a performance perspective, and how they do
+not always overlap.</p>
+<p>I also hope you don't come away from this post feeling sad. I actually hope you
+feel hopeful! Tons of brilliant engineers are working tirelessly to make your
+code run faster.</p>
+<h3 id="further-reading">Further reading</h3>
+
+<p>After publishing this post I came across <a href="https://arxiv.org/abs/1902.07808">Optimizing and Evaluating Transient
+Gradual Typing</a> which adds type checks to
+CPython and erases redundant ones, and then realized that this was also cited
+in the Brown paper. The whole series of papers is really interesting. And
+apparently I was coworkers with Michael Vitousek for over four years. Neat!</p>
+<!-- TODO: mention argument clinic typing for FFI boundary?
+https://github.com/faster-cpython/ideas/issues/546 -->
+
+<!-- TODO jscomp? https://github.com/tmikov/jscomp -->
+
+<!-- TODO smalls https://github.com/tmikov/smalls -->
+
+<!-- TODO mention Julia and how it handles dispatch -->
+
+<!-- TODO: Address William comments about nominal vs structural typing -->
+
+<!-- TODO Carl Meyer feedback:
+
+I think it is technically true to say that SP compiler compiles a different
+language, but relative to some of the other projects on your list, I think you
+undersell how compatible that language is, and how smooth the fallback to
+dynamic behavior is in almost all cases
+
+ironically the one thing you call out (no __dict__) is really pretty minor: all
+you have to do is explicitly request a __dict__ slot and you get one, and it
+doesn't impact any other optimizations, it just costs you 64 bits per object
+
+if we wanted to trade off the extra memory for more compatibility (and if
+typechecked python didn't already discourage random extra attributes), we could
+make the __dict__ slot always there by default, with zero consequence to how SP
+works or its performance (other than the memory cost)
+
+the changes in behavior that are more relevant to achieving performance
+benefits are checked annotations and stuff related to inheritance (no multiple
+data inheritance, can't override a simple attribute with a dynamic property)
+-->
+
+
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p>According to Douglas Adams, anyway. <a href="#fnref-1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-2">
+<p>I'm not even going to address fancy type-level
+metaprogramming stuff, because I don't think people ever intended to use
+that for performance anyway. There are <a href="https://lukeplant.me.uk/blog/posts/the-different-uses-of-python-type-hints/">lots of
+uses</a>
+for Python type annotations. We'll just look at very simple bog-standard
+<code class="language-plaintext highlighter-rouge">x: SomeTypeName</code> annotations. <a href="#fnref-2" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-3">
+<p>The Static Python project sort of has an internal <code class="language-plaintext highlighter-rouge">Exact</code> type that
+can be used like <code class="language-plaintext highlighter-rouge">x: Exact[int]</code> to disallow subclasses, but it's not
+exposed. This is, as Carl Meyer explained to me, because Mypy, Pyre, and
+other type checkers don't have a good way to check this type; the Python
+type system does not support this. <a href="#fnref-3" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-4">
+<p>Dialects often have subtle and unexpected differences.
+The differences are not always necessarily related to type checks;
+sometimes they change how variables are bound. For example, Mypyc changes
+the behavior of imports and global variables. Consider these three files:</p>
+<div class="highlight"><pre><span></span><span class="c1"># a.py</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+  <span class="k">return</span> <span class="mi">123</span>
+
+<span class="k">def</span> <span class="nf">override</span><span class="p">():</span>
+  <span class="k">return</span> <span class="mi">456</span>
+
+<span class="n">foo</span> <span class="o">=</span> <span class="n">override</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># b.py</span>
+<span class="kn">from</span> <span class="nn">a</span> <span class="kn">import</span> <span class="n">foo</span>
+
+<span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+  <span class="k">return</span> <span class="n">foo</span><span class="p">()</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># main.py</span>
+<span class="kn">from</span> <span class="nn">b</span> <span class="kn">import</span> <span class="n">bar</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">bar</span><span class="p">())</span>
+</pre></div>
+
+<p>First run with <code class="language-plaintext highlighter-rouge">python3 main.py</code>. Then try running <code class="language-plaintext highlighter-rouge">python3 -m mypyc a.py b.py</code> (I have <code class="language-plaintext highlighter-rouge">mypy 1.4.0 (compiled: yes)</code>) and then <code class="language-plaintext highlighter-rouge">python3 main.py</code>
+again.</p>
+<p>In normal Python semantics, the result printed is 456. However, with Mypyc,
+the result is 123. Something about global variable binding for functions in
+Mypyc-Mypyc imports is different; with just two files (one Mypyc compiled,
+the other a main), the behavior is as expected.</p>
+<p>Maybe this is intended or at least documented behavior on the part of the
+Mypyc authors, and maybe it is not. Either way, faithfully reproducing the
+full Python semantics is very difficult. <a href="#fnref-4" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-5">
+<p>Implicit here is that these primitive int types are final, which
+means that annotations like <code class="language-plaintext highlighter-rouge">a: int8</code> can be trusted. There is no subclass
+of <code class="language-plaintext highlighter-rouge">int8</code> so we can optimize! <a href="#fnref-5" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-6">
+<p>Thank you to <a href="https://www.chrisgregory.me/">Chris Gregory</a> for
+pushing me to look more at it! <a href="#fnref-6" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2023-06-19-typed-python.md" title="Help improve _posts/2023-06-19-typed-python.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

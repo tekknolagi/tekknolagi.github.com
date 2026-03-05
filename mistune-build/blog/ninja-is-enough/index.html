@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Ninja is enough build system | Max Bernstein</title>
+    <meta name="description" content="For small projects, you can DIY Ninja files instead of using CMake or Meson!" />
+    <meta property="og:title" content="Ninja is enough build system | Max Bernstein" />
+    <meta property="og:description" content="For small projects, you can DIY Ninja files instead of using CMake or Meson!" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/ninja-is-enough/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Ninja is enough build system</h1>
+        
+        <div class="post-inline-date"><i>November 4, 2023</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>Sometimes, you have to write software. Sometimes, that software spans multiple
+files. And sometimes you just don't want to build that software with <code class="language-plaintext highlighter-rouge">cc *.c</code>.</p>
+<p>Some people write build scripts in shell or some other programming language to
+solve their problems. This is a lot of work to get right and get fast because
+you end up rewriting a lot of core features (dependency graphs, job servers,
+etc) by hand. So the other default choice is Make, which comes with a lot of
+features built-in. Nice! But it also comes with some problems that I won't get
+into here. Not so nice.</p>
+<p>Fortunately, I am here to tell you that there is an interesting alternative for
+small projects: Ninja. And you can even write a program to generate Ninja for
+you, if you want.</p>
+<h2 id="a-look-at-ninja">A look at Ninja</h2>
+<p>Ninja is meant to be a lower-level version of Make so that program builds,
+especially incremental rebuilds, can be as fast as possible. It was developed
+for use at Google building the Chrome browser. Its syntax looks like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># build.ninja
+cc = clang
+rule cc
+  command = $cc $cflags -c -o $out $in
+rule ld
+  command = $cc -o $out $in $ldflags
+build main: ld main.o lib.o
+build main.o: cc main.c
+build lib.o: cc lib.c | lib.h
+</code></pre></div></div>
+<p>In this example we have three main constructs: variable declarations (<code class="language-plaintext highlighter-rouge">cc = clang</code>), variable references (<code class="language-plaintext highlighter-rouge">$cc</code>), rule declarations (<code class="language-plaintext highlighter-rouge">rule cc</code> ...), and
+build target declarations (<code class="language-plaintext highlighter-rouge">build main:</code> ...). We also have some undefined
+variables like <code class="language-plaintext highlighter-rouge">cflags</code> and <code class="language-plaintext highlighter-rouge">ldflags</code>. They expand to the empty string.</p>
+<p>This Ninja file is enough to build a small project consisting of <code class="language-plaintext highlighter-rouge">lib.h</code>,
+<code class="language-plaintext highlighter-rouge">lib.c</code>, and <code class="language-plaintext highlighter-rouge">main.c</code>. Ninja will automatically parallelize as much of the
+build process as possible by default and produce minimal output when
+successful:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>ninja
+<span class="go">[3/3] clang -o main main.o lib.o</span>
+<span class="gp">$</span>
+</pre></div>
+<p>The <code class="language-plaintext highlighter-rouge">[3/3]</code> bit indicates that the third target of three has been built. The
+other output lines got erased, so my terminal is pretty clean.</p>
+<p>Speaking of clean, you don't even need to write your own <code class="language-plaintext highlighter-rouge">clean</code> rule like you
+would in a Makefile. Ninja has a built-in tool<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup> to remove all targets:
+<code class="language-plaintext highlighter-rouge">ninja -t clean</code>.</p>
+<p>Altogether, it looks like Ninja <em>alone</em> is useful enough to replace small
+Makefiles that do not do anything interesting. But what if we want to
+dynamically change the values of variables, use different files on different
+platforms, or potentially something more complicated? Well, we need to generate
+the Ninja file<sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup>.</p>
+<h2 id="generating-ninja">Generating Ninja</h2>
+<p>There are tools like CMake and Meson that can generate Ninja files for you if
+you use their languages. Google even wrote a whole tool called <code class="language-plaintext highlighter-rouge">gn</code> to generate
+Ninja to build Chrome. But their languages leave much to be desired. And why
+should you have to learn a whole new programming language just for your build
+tool?</p>
+<p>For medium-complexity projects, you don't have to. Ninja ships with a file
+called <code class="language-plaintext highlighter-rouge">ninja_syntax.py</code> (~200 lines of code) that you can download and check
+in alongside your project. It comes with some helper functions to generate
+Ninja files without doing all the string-slinging yourself. For example, we can
+replicate the above Ninja file in Python:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ninja_syntax</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<span class="n">writer</span> <span class="o">=</span> <span class="n">ninja_syntax</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="s2">&quot;cc&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;CC&quot;</span><span class="p">,</span> <span class="s2">&quot;clang&quot;</span><span class="p">))</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;cc&quot;</span><span class="p">,</span> <span class="s2">&quot;$cc $cflags -c -o $out $in&quot;</span><span class="p">)</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;ld&quot;</span><span class="p">,</span> <span class="s2">&quot;$cc -o $out $in $ldflags&quot;</span><span class="p">)</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="s2">&quot;ld&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;main.o&quot;</span><span class="p">,</span> <span class="s2">&quot;lib.o&quot;</span><span class="p">])</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;main.o&quot;</span><span class="p">,</span> <span class="s2">&quot;cc&quot;</span><span class="p">,</span> <span class="s2">&quot;main.c&quot;</span><span class="p">)</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;lib.o&quot;</span><span class="p">,</span> <span class="s2">&quot;cc&quot;</span><span class="p">,</span> <span class="s2">&quot;lib.c&quot;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;lib.h&quot;</span><span class="p">])</span>
+</pre></div>
+<p>And when you run it, the output looks identical to what we had hand-written
+before:</p>
+<div class="highlight"><pre><span></span><span class="gp"># </span>gen.py
+<span class="gp">$ </span>python3<span class="w"> </span>gen.py
+<span class="go">cc = clang</span>
+<span class="go">rule cc</span>
+<span class="go">  command = $cc $cflags -c -o $out $in</span>
+<span class="go">rule ld</span>
+<span class="go">  command = $cc -o $out $in $ldflags</span>
+<span class="go">build main: ld main.o lib.o</span>
+<span class="go">build main.o: cc main.c</span>
+<span class="go">build lib.o: cc lib.c | lib.h</span>
+<span class="gp">$</span>
+</pre></div>
+<p>You may be wondering what value this added over hand-writing the Ninja. If so,
+take a look at the Python again! I did something sneaky: we can now change what
+compiler we are using without manually modifying the Ninja file. Take a look:</p>
+<div class="highlight"><pre><span></span><span class="gp"># </span>gen.py
+<span class="gp">$ </span><span class="nv">CC</span><span class="o">=</span>tcc<span class="w"> </span>python3<span class="w"> </span>gen.py
+<span class="go">cc = tcc</span>
+<span class="go">rule cc</span>
+<span class="go">  command = $cc $cflags -c -o $out $in</span>
+<span class="go">rule ld</span>
+<span class="go">  command = $cc -o $out $in $ldflags</span>
+<span class="go">build main: ld main.o lib.o</span>
+<span class="go">build main.o: cc main.c</span>
+<span class="go">build lib.o: cc lib.c | lib.h</span>
+<span class="gp">$</span>
+</pre></div>
+<p>Wow!</p>
+<p>You can probably imagine more things to do at Ninja-generation time, like
+optionally using ccache or changing flags or using <code class="language-plaintext highlighter-rouge">pathlib.Path.rglob</code> or
+something<sup class="footnote-ref" id="fnref-3"><a href="#fn-3">3</a></sup>.</p>
+<p><strong>(a small update)</strong></p>
+<p>Andy Chu of <a href="https://www.oilshell.org/">Oils</a> fame noted that Ninja can use
+compiler-generated Make <code class="language-plaintext highlighter-rouge">.d</code> depfiles natively. This means that we can remove
+the manual <code class="language-plaintext highlighter-rouge">implicit=</code> header dependencies from the individual <code class="language-plaintext highlighter-rouge">.o</code> rules and
+instead generate them using <code class="language-plaintext highlighter-rouge">-MD -MF $out.d</code> and <code class="language-plaintext highlighter-rouge">depfile=</code> in the <code class="language-plaintext highlighter-rouge">cc</code> rule.</p>
+<div class="highlight"><pre><span></span><span class="c1"># ...</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;cc&quot;</span><span class="p">,</span> <span class="s2">&quot;$cc -MD -MF $out.d $cflags -c -o $out $in&quot;</span><span class="p">,</span> <span class="n">depfile</span><span class="o">=</span><span class="s2">&quot;$out.d&quot;</span><span class="p">)</span>
+<span class="c1"># ...</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;lib.o&quot;</span><span class="p">,</span> <span class="s2">&quot;cc&quot;</span><span class="p">,</span> <span class="s2">&quot;lib.c&quot;</span><span class="p">)</span>
+</pre></div>
+<p>For compilers such that support this (GCC and Clang both do), this is a very
+convenient option. It even adds dependencies on system headers in case those
+change.</p>
+<p>And, if you use GCC/Clang (and with some tweaking, MSVC), you can also add
+<code class="language-plaintext highlighter-rouge">deps=&quot;gcc&quot;</code> or <code class="language-plaintext highlighter-rouge">deps=&quot;msvc&quot;</code> to have Ninja internalize the <code class="language-plaintext highlighter-rouge">.d</code> file and
+delete it after it's been processed. According to the docs, this makes for
+faster builds on larger projects.</p>
+<div class="highlight"><pre><span></span><span class="c1"># ...</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;cc&quot;</span><span class="p">,</span> <span class="s2">&quot;$cc -MD -MF $out.d $cflags -c -o $out $in&quot;</span><span class="p">,</span> <span class="n">depfile</span><span class="o">=</span><span class="s2">&quot;$out.d&quot;</span><span class="p">,</span> <span class="n">deps</span><span class="o">=</span><span class="s2">&quot;gcc&quot;</span><span class="p">)</span>
+<span class="c1"># ...</span>
+</pre></div>
+<p>Enjoy.</p>
+<p><strong>(end update)</strong></p>
+<p>Another question you might have: do you have to manually add new files to this
+Ninja-generator and re-generate Ninja manually?</p>
+<h2 id="regenerating-ninja-when-we-change-the-ninja-generator">Regenerating Ninja when we change the Ninja generator</h2>
+<p>Nope. Systems like CMake and Meson do this automatically and so can we. Add
+these two lines to <code class="language-plaintext highlighter-rouge">gen.py</code>:</p>
+<div class="highlight"><pre><span></span><span class="c1"># gen.py</span>
+<span class="c1"># ...</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;regen_ninja&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="s2"> $in &gt; $out&quot;</span><span class="p">)</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;build.ninja&quot;</span><span class="p">,</span> <span class="s2">&quot;regen_ninja&quot;</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">)</span>
+</pre></div>
+<p>The first line adds a rule called <code class="language-plaintext highlighter-rouge">regen_ninja</code> that runs a command and pipes
+its output to a file. The second line adds a target called <code class="language-plaintext highlighter-rouge">build.ninja</code> that
+gets triggered whenever the <code class="language-plaintext highlighter-rouge">gen.py</code> changes. Try it out:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>ninja
+<span class="go">ninja: no work to do.</span>
+<span class="gp">$ </span>touch<span class="w"> </span>gen.py
+<span class="gp">$ </span>ninja
+<span class="go">[1/1] /usr/bin/python3 /path/to/gen.py &gt; build.ninja</span>
+<span class="go">ninja: no work to do.</span>
+<span class="gp">$</span>
+</pre></div>
+<p>And it doesn't even rebuild the native targets.</p>
+<h2 id="an-idea-i-havent-had-time-to-work-on">An idea I haven't had time to work on</h2>
+<p>At some point I wondered if we could replicate enough of Bazel or Buck syntax
+and semantics to be able to build small projects with this kind of hackery. I
+don't mean full hermeticity build farms or anything (although you might be able
+to get away with some tricks like <a href="https://justine.lol/make/">Landlock Make</a>
+does). That all sounds complicated<sup class="footnote-ref" id="fnref-4"><a href="#fn-4">4</a></sup>. I just mean having parallel
+builds, nice output, and a small library of functions like <code class="language-plaintext highlighter-rouge">cc_binary</code>.</p>
+<p>If you wanted the same kinds of guarantees about meta build system termination
+that Bazel and Buck provide, you probably can't use Python anymore. They don't
+use Python; they use a similar language called Starlark that is a <em>total</em>
+language. It's impossible to write a program that runs forever in Starlark.
+That's a cool property to have.</p>
+<p>I think the various Starlark implementations such as
+<a href="https://github.com/facebookexperimental/starlark-rust/">starlark-rust</a> are
+somewhat usable as libraries, so it may be possible to add some built-in
+functions to Starlark for generating Ninja, some wrapper functions like
+<code class="language-plaintext highlighter-rouge">cc_binary</code>, and then bundle that together as <code class="language-plaintext highlighter-rouge">bazel-lite</code>.</p>
+<h2 id="how-is-this-different-from-cmakemesonautotools">How is this different from CMake/Meson/autotools?</h2>
+<p>It's much <em>much</em> smaller. And you could use any meta-build programming language
+you like if you write the Ninja syntax file. And now hopefully you know a
+little more about what is going on under the hood.</p>
+<p>For comparison, let's take a look at a <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> for the same
+hypothetical C project:</p>
+<div class="highlight"><pre><span></span><span class="c"># CMakeLists.txt</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">demo</span><span class="p">)</span>
+
+<span class="nb">add_executable</span><span class="p">(</span><span class="s">main</span><span class="w"> </span><span class="s">main.c</span><span class="w"> </span><span class="s">lib.c</span><span class="p">)</span>
+</pre></div>
+<p>It's pretty terse, but does a lot. There is a lot of hidden behavior:</p>
+<ul>
+<li>Finding dependencies on <code class="language-plaintext highlighter-rouge">lib.h</code> by using the compiler</li>
+<li>Making intermediate <code class="language-plaintext highlighter-rouge">.o</code> files instead of compiling all the <code class="language-plaintext highlighter-rouge">.c</code></li>
+<li>Supporting different compilers with <code class="language-plaintext highlighter-rouge">CMAKE_C_COMPILER</code></li>
+<li>Supporting different optimization levels with <code class="language-plaintext highlighter-rouge">CMAKE_BUILD_TYPE</code></li>
+<li>and more...</li>
+</ul>
+<p>That's great stuff, sure. It's all kind of hidden behavior that you need to
+discover over time. And you need to install CMake.</p>
+<p>You may want to use CMake for your project. You may not. Both are fine.</p>
+<h2 id="why-i-wrote-this-post">Why I wrote this post</h2>
+<p>I was looking at Cliff Click's new <a href="https://github.com/SeaOfNodes/Simple">expository
+project</a> to teach the world about Sea of
+Nodes. I didn't know how to build it without running <code class="language-plaintext highlighter-rouge">javac $(find src/main -type f -name '*.java')</code>, which just did not seem like a good solution. So I
+wrote a little Ninja generator in about 40 lines of code. Then I thought I
+would write about it.</p>
+<h2 id="further-reading">Further reading</h2>
+<p>Check out Julia Evans' <a href="https://jvns.ca/blog/2020/10/26/ninja--a-simple-way-to-do-builds/">excellent
+post</a> about
+Ninja. This post is accidentally very similar for the first two thirds.</p>
+<h3 id="the-various-ninja-implementations">The various Ninja implementations</h3>
+<ul>
+<li><a href="https://github.com/ninja-build/ninja">Ninja</a></li>
+<li><a href="https://github.com/michaelforney/samurai">Samurai</a></li>
+<li><a href="https://github.com/evmar/n2">n2</a></li>
+<li><a href="https://github.com/raviqqe/turtle-build">Turtle</a><ul>
+<li>I knew about this before adding it to the post but only when adding a link
+to it did I understand that it might be a joke about Teenage Mutant Ninja
+Turtles.</li>
+</ul>
+</li>
+<li><a href="https://github.com/nikhilm/ninja-rs">ninja-rs</a></li>
+<li>This <a href="https://github.com/gkbrk/scripts/blob/master/ninja.py">tiny little implementation in Python</a>!</li>
+<li><a href="https://chromium.googlesource.com/infra/infra/+/refs/heads/main/go/src/infra/build/siso/">Siso</a>,
+which is meant to be a drop-in Ninja replacement with remote execution</li>
+<li><a href="https://shakebuild.com/">Shake</a>, a build system in its own right that can
+also execute Ninja files</li>
+</ul>
+<p>If you want to see a demo of <code class="language-plaintext highlighter-rouge">ninja_syntax.py</code> (from upstream Ninja) and
+<code class="language-plaintext highlighter-rouge">ninja.py</code> (from the wild) in action together, check out
+<a href="https://github.com/tekknolagi/ninja-demo">ninja-demo</a>.</p>
+<h3 id="other-ninja-adjacent-tools">Other Ninja-adjacent tools</h3>
+<p>Check out <a href="https://github.com/google/kati">Kati</a>, which is a Make
+implementation that generates Ninja.</p>
+<p>Check out <a href="https://github.com/maximuska/depslint">depslint</a>, which can tell you
+if you have some missing dependencies in your Ninja file.</p>
+<p>Check out <a href="https://github.com/google/bazel-to-cmake">bazel-to-cmake</a>, so you
+can write Bazel files that turn into CMake files that turn into Ninja files
+that build your code.</p>
+<p>Maybe you could even vendor <a href="https://github.com/pocketpy/pocketpy">PocketPy</a>
+with your code. This would mean you only depend on a C++ compiler to compile
+PocketPy, which can run your Python build system, which generates Ninja. It's
+not fully featured right now (I had to make some small modifications to
+<code class="language-plaintext highlighter-rouge">ninja_syntax.py</code> to get it to work) but with a little more time it could work
+really nicely.</p>
+<h3 id="build-systems-papers">Build systems papers</h3>
+<p>Check out <a href="https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf">Build Systems à la
+Carte</a>
+(PDF) if you are feeling adventurous.</p>
+<section class="footnotes">
+<ol>
+<li id="fn-1"><p>There are a couple other pretty useful builtin tools like <code class="language-plaintext highlighter-rouge">compdb</code>,
+which will generate a JSON compilation database that other tools can read
+and <code class="language-plaintext highlighter-rouge">graph</code>, which will generate a GraphViz representation of your build
+graph.<a href="#fnref-1" class="footnote">&#8617;</a></p></li>
+<li id="fn-2"><p>It might be useful to have a tool that translates
+raw/hand-written Ninja files into their equivalent Python programs to make
+the growth of the project a little easier. This means you can start off
+with a little bit of Ninja but as soon as you need to do some dynamic
+things, you have an escape hatch and don't need to re-write everything
+yourself.<a href="#fnref-2" class="footnote">&#8617;</a></p></li>
+<li id="fn-3"><p>Or support out-of-tree builds, different platforms, or maybe
+you could even do some kind of easily distributed build using Erlang, or...<a href="#fnref-3" class="footnote">&#8617;</a></p></li>
+<li id="fn-4"><p>Andreas Zwinkau seems to think this might not actually be that
+difficult and one could theoretically re-use the wrapper program that Bazel
+uses. See <a href="https://beza1e1.tuxen.de/hermetic_builds.html">his post</a> for
+more information. Or maybe we could use Nix like
+<a href="https://nix-bazel.build/">Nix-Bazel</a>.<a href="#fnref-4" class="footnote">&#8617;</a></p></li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2023-11-04-ninja-is-enough.md" title="Help improve _posts/2023-11-04-ninja-is-enough.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

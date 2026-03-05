@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Neat parallel output in Python | Max Bernstein</title>
+    <meta name="description" content="Make parallel tasks print nicely with zero dependencies." />
+    <meta property="og:title" content="Neat parallel output in Python | Max Bernstein" />
+    <meta property="og:description" content="Make parallel tasks print nicely with zero dependencies." />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/python-parallel-output/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Neat parallel output in Python</h1>
+        
+        <div class="post-inline-date"><i>February 22, 2024</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>Say you have a program that does some processing of a list (loosely based on a
+work-in-progress project):</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">repo_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">randsleep</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">random</span>
+    <span class="kn">import</span> <span class="nn">time</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">repo_name</span><span class="p">):</span>
+    <span class="n">log</span><span class="p">(</span><span class="n">repo_name</span><span class="p">,</span> <span class="s2">&quot;Starting&quot;</span><span class="p">)</span>
+    <span class="n">randsleep</span><span class="p">()</span>  <span class="c1"># Can be substituted for actual work</span>
+    <span class="n">log</span><span class="p">(</span><span class="n">repo_name</span><span class="p">,</span> <span class="s2">&quot;Installing&quot;</span><span class="p">)</span>
+    <span class="n">randsleep</span><span class="p">()</span>
+    <span class="n">log</span><span class="p">(</span><span class="n">repo_name</span><span class="p">,</span> <span class="s2">&quot;Building&quot;</span><span class="p">)</span>
+    <span class="n">randsleep</span><span class="p">()</span>
+    <span class="n">log</span><span class="p">(</span><span class="n">repo_name</span><span class="p">,</span> <span class="s2">&quot;Instrumenting&quot;</span><span class="p">)</span>
+    <span class="n">randsleep</span><span class="p">()</span>
+    <span class="n">log</span><span class="p">(</span><span class="n">repo_name</span><span class="p">,</span> <span class="s2">&quot;Running tests&quot;</span><span class="p">)</span>
+    <span class="n">randsleep</span><span class="p">()</span>
+    <span class="n">log</span><span class="p">(</span><span class="n">repo_name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Result in </span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
+
+<span class="n">repos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;repoA&quot;</span><span class="p">,</span> <span class="s2">&quot;repoB&quot;</span><span class="p">,</span> <span class="s2">&quot;repoC&quot;</span><span class="p">,</span> <span class="s2">&quot;repoD&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">repo</span> <span class="ow">in</span> <span class="n">repos</span><span class="p">:</span>
+    <span class="n">func</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
+</pre></div>
+
+<p>This is fine. It works. It's a little noisy, but it works. But then you
+discover something great: your problem is data parallel. That is, you can
+process as many repos as your system allows in parallel. Hoorah! You rewrite
+using <code class="language-plaintext highlighter-rouge">multiprocessing</code>:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">multiprocessing</span>
+
+<span class="c1"># ...</span>
+
+<span class="k">with</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">repos</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+<p>Unfortunately, the output is a little unwieldy. While each line is still nicely
+attributed to a repo, it's spewing lines left and right and the lines are
+intermingled. Don't you miss all the beautiful parallel output from tools such
+as Buck and Bazel and Cargo?</p>
+<p>Fortunately, StackOverflow user <a href="https://stackoverflow.com/questions/6840420/rewrite-multiple-lines-in-the-console/59147732#59147732">Leedehai</a> is a terminal pro user and
+knows how to rewrite multiple lines at a time in the console. We can adapt that
+answer for our needs:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fill_output</span><span class="p">():</span>
+    <span class="n">to_fill</span> <span class="o">=</span> <span class="n">num_lines</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">last_output_per_process</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">to_fill</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">clean_up</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_lines</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[1A</span><span class="se">\x1b</span><span class="s2">[2K&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># move up cursor and delete whole line</span>
+
+<span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">repo_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">terminal_lock</span><span class="p">:</span>
+        <span class="n">last_output_per_process</span><span class="p">[</span><span class="n">repo_name</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
+        <span class="n">clean_up</span><span class="p">()</span>
+        <span class="n">sorted_lines</span> <span class="o">=</span> <span class="n">last_output_per_process</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">repo_name</span><span class="p">,</span> <span class="n">last_line</span> <span class="ow">in</span> <span class="n">sorted_lines</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">last_line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">fill_output</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">repo_name</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+    <span class="k">with</span> <span class="n">terminal_lock</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">last_output_per_process</span><span class="p">[</span><span class="n">repo_name</span><span class="p">]</span>
+
+<span class="c1"># ...</span>
+
+<span class="n">repos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;repoA&quot;</span><span class="p">,</span> <span class="s2">&quot;repoB&quot;</span><span class="p">,</span> <span class="s2">&quot;repoC&quot;</span><span class="p">,</span> <span class="s2">&quot;repoD&quot;</span><span class="p">]</span>
+<span class="n">num_procs</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+<span class="n">num_lines</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">repos</span><span class="p">),</span> <span class="n">num_procs</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span> <span class="k">as</span> <span class="n">manager</span><span class="p">:</span>
+    <span class="n">last_output_per_process</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+    <span class="n">terminal_lock</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+    <span class="n">fill_output</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+        <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">repos</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">clean_up</span><span class="p">()</span>
+</pre></div>
+
+<p>This will print each item's status, one line at a time, to the terminal. It
+will print in the order that the item is added to <code class="language-plaintext highlighter-rouge">last_output_per_process</code>,
+but you can change that by (for example), sorting alphanumerically:
+<code class="language-plaintext highlighter-rouge">sorted(last_output_per_process.items())</code>.</p>
+<p>Note that we have to lock both the data structure and the terminal output to
+avoid things getting mangled; they are shared (pickled, via <code class="language-plaintext highlighter-rouge">Manager</code>) between
+processes.</p>
+<p>I'm not sure what this does if the log output is multiple lines long or if
+someone else is mucking with <code class="language-plaintext highlighter-rouge">stdout</code>/<code class="language-plaintext highlighter-rouge">stderr</code> (a stray <code class="language-plaintext highlighter-rouge">print</code>, perhaps).
+Please write in if you find out or have neat solutions.</p>
+<p>This technique is probably fairly portable to any programming language that has
+threads and locks. The key difference is those implementations should use
+threads instead of processes; I did processes because it's Python.</p>
+<p>Check out the expanded version <a href="https://gist.github.com/tekknolagi/4bee494a6e4483e4d849559ba53d067b">in this
+Gist</a>.</p>
+<h2 id="a-demo-for-you">A demo for you</h2>
+
+<p>Since you read this far, here is a demo of the program:</p>
+<script async id="asciicast-6xC2Q720qD5xpjNiVRhApzVRx" src="https://asciinema.org/a/6xC2Q720qD5xpjNiVRhApzVRx.js"></script>
+
+<p>Enjoy your newfound fun output!</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2024-02-22-python-parallel-output.md" title="Help improve _posts/2024-02-22-python-parallel-output.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

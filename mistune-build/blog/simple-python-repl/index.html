@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Building a small REPL in Python | Max Bernstein</title>
+    <meta name="description" content="Don&#x27;t go it alone. Take this!" />
+    <meta property="og:title" content="Building a small REPL in Python | Max Bernstein" />
+    <meta property="og:description" content="Don&#x27;t go it alone. Take this!" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/simple-python-repl/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Building a small REPL in Python</h1>
+        
+        <div class="post-inline-date"><i>November 27, 2023</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>In a lot of my previous interpreter/compiler projects written in Python I
+hand-rolled a REPL (read-eval-print-loop). It turns out that Python comes with
+a bunch of batteries included and this is totally unnecessary—you get a lot
+of goodies for free. Let's take a look at how to use them, starting from
+embedding a normal Python REPL in your project.</p>
+<p>I wrote this post as I finally figured all this stuff out for an unreleased
+runtime for a new content-addressable language. Keep an eye on this space...</p>
+<p>Take a look at the <a href="https://docs.python.org/3/library/code.html"><code class="language-plaintext highlighter-rouge">code</code></a> docs
+as you follow along.</p>
+<!-- TODO: define REPL -->
+
+<h2 id="programmatic-control-of-python-repl">Programmatic control of Python REPL</h2>
+<p>The bare minimum is controlling a Python REPL from inside Python. It's only a
+couple of lines:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># repl.py</span>
+<span class="kn">import</span> <span class="nn">code</span>
+
+
+<span class="n">repl</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">InteractiveConsole</span><span class="p">()</span>
+<span class="n">repl</span><span class="o">.</span><span class="n">interact</span><span class="p">()</span>
+</pre></div>
+<p>If you (<code class="language-plaintext highlighter-rouge">chmod +x repl.py</code> and) run this, you get what looks like a normal
+Python REPL, plus a little extra output:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>./repl.py
+<span class="go">Python 3.10.12 (main, Jun 11 2023, 05:26:28) [GCC 11.4.0] on linux</span>
+<span class="go">Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.</span>
+<span class="gp gp-VirtualEnv">(InteractiveConsole)</span>
+<span class="go">&gt;&gt;&gt; 1 + 2</span>
+<span class="go">3</span>
+<span class="go">&gt;&gt;&gt; ^D</span>
+<span class="go">now exiting InteractiveConsole...</span>
+<span class="gp">$</span>
+</pre></div>
+<p>(I hit Control-D to exit.)</p>
+<p>Let's say we don't want the output. We can squash that first by specifying the
+banner, which is the topmost bit:</p>
+<div class="highlight"><pre><span></span><span class="c1"># repl.py</span>
+<span class="kn">import</span> <span class="nn">code</span>
+
+
+<span class="n">repl</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">InteractiveConsole</span><span class="p">()</span>
+<span class="n">repl</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+<p>This removes all of the usual Python preamble.</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>./repl.py
+<span class="go">&gt;&gt;&gt; ^D</span>
+<span class="go">now exiting InteractiveConsole...</span>
+<span class="gp">$</span>
+</pre></div>
+<p>We can also specify the exit message or completely silence it:</p>
+<div class="highlight"><pre><span></span><span class="c1"># repl.py</span>
+<span class="kn">import</span> <span class="nn">code</span>
+
+
+<span class="n">repl</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">InteractiveConsole</span><span class="p">()</span>
+<span class="n">repl</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exitmsg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+<p>And now we have a much quieter experience:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>./repl.py
+<span class="go">&gt;&gt;&gt; ^D</span>
+<span class="gp">$</span>
+</pre></div>
+<p>Right. But that's not very interesting. Let's remove the Python bits so we can
+enter code written in our own programming language.</p>
+<h2 id="making-it-your-own">Making it your own</h2>
+<p>To integrate our own interpreter or compiler, we subclass <code class="language-plaintext highlighter-rouge">InteractiveConsole</code>
+and override the <code class="language-plaintext highlighter-rouge">runsource</code> method. We are just printing whatever input we
+receive, but you could wire it up to your lexer/parser/... at this point:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">code</span>
+
+
+<span class="k">class</span> <span class="nc">Repl</span><span class="p">(</span><span class="n">code</span><span class="o">.</span><span class="n">InteractiveConsole</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">runsource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&lt;input&gt;&quot;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;single&quot;</span><span class="p">):</span>
+        <span class="c1"># TODO: Integrate your compiler/interpreter</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;source:&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+
+
+<span class="n">repl</span> <span class="o">=</span> <span class="n">Repl</span><span class="p">()</span>
+<span class="n">repl</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exitmsg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+<p>Take a look:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>./repl.py
+<span class="go">&gt;&gt;&gt; 1 + 2</span>
+<span class="go">source: 1 + 2</span>
+<span class="go">&gt;&gt;&gt; ^D</span>
+<span class="gp">$</span>
+</pre></div>
+<p>It works! You could stop here. But you might want input over multiple lines,
+and what we have now just operates over single lines.</p>
+<h2 id="adding-continuations">Adding continuations</h2>
+<p>To indicate to the caller of <code class="language-plaintext highlighter-rouge">runsource</code> that you are waiting for more input,
+perhaps until a statement-ending semicolon (for example), <code class="language-plaintext highlighter-rouge">return True</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Repl</span><span class="p">(</span><span class="n">code</span><span class="o">.</span><span class="n">InteractiveConsole</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">runsource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&lt;input&gt;&quot;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;single&quot;</span><span class="p">):</span>
+        <span class="c1"># TODO: Integrate your compiler/interpreter</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">source</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;source:&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+</pre></div>
+<p>This will bring up the familiar &quot;ps2&quot; prompt until your input ends with a
+semicolon:</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>./repl.py
+<span class="go">&gt;&gt;&gt; 1 +</span>
+<span class="go">... 2;</span>
+<span class="go">source: 1 +</span>
+<span class="go">2;</span>
+<span class="go">&gt;&gt;&gt; </span>
+<span class="gp">$</span>
+</pre></div>
+<p>Very nice. You might do this by having your parser drive your lexer, or
+detecting &quot;Unexpected EOF&quot; errors in your parser, or something else entirely.</p>
+<p>This is another perfectly fine cut point. But you might be wondering: how hard
+is it to add line editing support? The arrow keys do not work right now. It's
+not hard at all!</p>
+<h2 id="adding-readline-support">Adding readline support</h2>
+<p>Just import <code class="language-plaintext highlighter-rouge">readline</code>.</p>
+<p>This gives you up/down navigation, Emacs-like line navigation, etc.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">code</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+
+<span class="n">readline</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModuleType</span><span class="p">]</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">readline</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">readline</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="c1"># ...</span>
+</pre></div>
+<p>If you don't care about types, you can drop all the machinery and just <code class="language-plaintext highlighter-rouge">import readline</code>.</p>
+<h2 id="adding-history">Adding history</h2>
+<p>We already have <code class="language-plaintext highlighter-rouge">readline</code> and that supports reading/writing history files if
+we wire it up. So wire it up.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># ...</span>
+
+<span class="n">REPL_HISTFILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;.myreplname-history&quot;</span><span class="p">)</span>  <span class="c1"># arbitrary name</span>
+<span class="n">REPL_HISTFILE_SIZE</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="k">if</span> <span class="n">readline</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">REPL_HISTFILE</span><span class="p">):</span>
+    <span class="n">readline</span><span class="o">.</span><span class="n">read_history_file</span><span class="p">(</span><span class="n">REPL_HISTFILE</span><span class="p">)</span>
+
+<span class="n">repl</span> <span class="o">=</span> <span class="n">Repl</span><span class="p">()</span>
+<span class="n">repl</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exitmsg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">readline</span><span class="p">:</span>
+    <span class="n">readline</span><span class="o">.</span><span class="n">set_history_length</span><span class="p">(</span><span class="n">REPL_HISTFILE_SIZE</span><span class="p">)</span>
+    <span class="n">readline</span><span class="o">.</span><span class="n">write_history_file</span><span class="p">(</span><span class="n">REPL_HISTFILE</span><span class="p">)</span>
+</pre></div>
+<p>Now you should be able to use the up arrow key in a new session to see what
+your previous session contained. Or Control-R, even.</p>
+<p>And now for the most exciting thing, maybe: tab completion.</p>
+<h2 id="adding-tab-completion">Adding tab completion</h2>
+<p>It's helpful for learning about new tools and it can make you more efficient.
+So let's add tab completion.</p>
+<p>The <code class="language-plaintext highlighter-rouge">readline</code> API expects to be able given a state machine function that it
+can call multiple times in a row with different states. Most implementations I
+have seen of this online use a class, but you could also use nested functions
+or something like that.</p>
+<p>We'll make a <code class="language-plaintext highlighter-rouge">Completer</code> class that has a <code class="language-plaintext highlighter-rouge">complete</code> method. <code class="language-plaintext highlighter-rouge">readline</code> calls
+this with increasing <code class="language-plaintext highlighter-rouge">state</code>s, starting at 0. So if we are in state 0, we
+initialize our potential matches before returning the current match. If we are
+in any other state, we can just return the current match.</p>
+<!-- TODO: atexit?? -->
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="c1"># ...</span>
+
+<span class="k">class</span> <span class="nc">Completer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="n">env</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matches</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Some implementations check if text.strip() is empty but I can&#39;t</span>
+            <span class="c1"># figure out how to get text to start or end with whitespace.</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">(</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">matches</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="n">state</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;add&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;abs&quot;</span><span class="p">:</span> <span class="nb">abs</span><span class="p">}</span>  <span class="c1"># some builtins or something</span>
+<span class="k">if</span> <span class="n">readline</span><span class="p">:</span>
+    <span class="n">readline</span><span class="o">.</span><span class="n">set_completer</span><span class="p">(</span><span class="n">Completer</span><span class="p">(</span><span class="n">env</span><span class="p">)</span><span class="o">.</span><span class="n">complete</span><span class="p">)</span>
+    <span class="n">readline</span><span class="o">.</span><span class="n">parse_and_bind</span><span class="p">(</span><span class="s2">&quot;tab: complete&quot;</span><span class="p">)</span>  <span class="c1"># or menu-complete</span>
+
+<span class="n">repl</span> <span class="o">=</span> <span class="n">Repl</span><span class="p">()</span>
+<span class="n">repl</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exitmsg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+<p>Let's play around with it.</p>
+<div class="highlight"><pre><span></span><span class="go">hickory% /tmp/repl.py</span>
+<span class="go">&gt;&gt;&gt; [^tab]</span>
+<span class="go">abs  add</span>
+<span class="go">&gt;&gt;&gt; a[^tab]</span>
+<span class="go">abs  add</span>
+<span class="go">&gt;&gt;&gt; a</span>
+</pre></div>
+<p>Nice.</p>
+<p>An important note: it seems like <code class="language-plaintext highlighter-rouge">readline</code> swallows any exceptions raised in
+your <code class="language-plaintext highlighter-rouge">complete</code> function, so this makes debugging a little tricky (bugs just
+result in autocomplete failing!). To combat this, I added a bunch of <code class="language-plaintext highlighter-rouge">print</code>s
+in development.</p>
+<h3 id="what-is-a-name">What is a name?</h3>
+<p>The <code class="language-plaintext highlighter-rouge">readline</code> library comes with a default notion of what constitutes
+delimiters in the input. If you have a funky programming language that does not
+share the same notion of identifiers as C, you may need to change the
+delimiters. In my case, I wanted <code class="language-plaintext highlighter-rouge">$</code> to be a valid part of identifiers, so I
+went a little nuts and said &quot;just try and complete until whitespace&quot;.</p>
+<div class="highlight"><pre><span></span><span class="c1"># what determines the end of a word; need to set so $ can be part of a</span>
+<span class="c1"># variable name</span>
+<span class="n">readline</span><span class="o">.</span><span class="n">set_completer_delims</span><span class="p">(</span><span class="s2">&quot; </span><span class="se">\t\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+<p>I am not sure if this is ideal. I think it only matters for the names you say
+are matches in your completion function. You may want a stricter set to exclude
+(for example) quotation marks, etc.</p>
+<h2 id="changing-the-prompt">Changing the prompt</h2>
+<p>In order to change the prompt, we need to modify globals in the <code class="language-plaintext highlighter-rouge">sys</code> module.
+<code class="language-plaintext highlighter-rouge">ps1</code> is for the normal prompt, and <code class="language-plaintext highlighter-rouge">ps2</code> is for the continuation prompt.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># ...</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">ps1</span> <span class="o">=</span> <span class="s2">&quot;&gt; &quot;</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">ps2</span> <span class="o">=</span> <span class="s2">&quot;. &quot;</span>
+
+<span class="n">repl</span> <span class="o">=</span> <span class="n">Repl</span><span class="p">()</span>
+<span class="n">repl</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exitmsg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+<p>This is a little gross but it's the only way to customize the prompt, as
+<code class="language-plaintext highlighter-rouge">InteractiveConsole.interact</code> directly reads from <code class="language-plaintext highlighter-rouge">sys</code><sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup>. And
+overriding <code class="language-plaintext highlighter-rouge">interact</code> defeats the purpose of the exercise since it has a fair
+bit of helpful logic in it. Maybe one day I will submit a pull request to allow
+custom prompts via parameters or something.</p>
+<!-- TODO atexit history
+https://stackoverflow.com/questions/9468435/how-to-fix-column-calculation-in-python-readline-if-using-color-prompt/9468954#9468954
+-->
+
+<!-- TODO color prompts
+https://stackoverflow.com/questions/9468435/how-to-fix-column-calculation-in-python-readline-if-using-color-prompt/9468954#9468954
+-->
+
+<h2 id="now-what">Now what</h2>
+<p>Go forth and either integrate this into your existing interpreter/compiler or
+write a little interpreter just for fun.</p>
+<h2 id="other-ideas">Other ideas</h2>
+<p>What about syntax highlighting as you type? That's become a popular thing to do
+these days.</p>
+<p>Add <a href="https://ballingt.com/interactive-interpreter-undo/">undo support</a> with
+<code class="language-plaintext highlighter-rouge">fork</code>!</p>
+<p>Do something else <a href="https://stackoverflow.com/a/36868625/569183">after the REPL
+exits</a>.</p>
+<h2 id="why-not-use-cmd">Why not use cmd</h2>
+<p>I found the <a href="https://docs.python.org/3/library/cmd.html"><code class="language-plaintext highlighter-rouge">cmd</code></a> module
+midway through this post and thought I might be reinventing the wheel again.
+But it turns out that <code class="language-plaintext highlighter-rouge">cmd.Cmd</code>, while it does provide you with some niceties,
+does not give anywhere near the same amount of flexibility and also generally
+requires a static list of commands—the expectation is that you write a bunch
+of <code class="language-plaintext highlighter-rouge">do_X</code> methods. You can sidestep that by overriding <code class="language-plaintext highlighter-rouge">onecmd</code> but then you
+still don't get multi-line editing out of the box. You can customize the prompt
+more neatly that overwriting <code class="language-plaintext highlighter-rouge">sys.ps1</code>, though.</p>
+<!-- TODO add tests for repl with mocking stdin/stdout
+https://news.ycombinator.com/item?id=38449933 -->
+
+<section class="footnotes">
+<ol>
+<li id="fn-1"><p>I wonder if it's possible to make a custom <code class="language-plaintext highlighter-rouge">interact</code> in
+our subclass which is just a copy of <code class="language-plaintext highlighter-rouge">InteractiveConsole.interact</code> with its
+<code class="language-plaintext highlighter-rouge">__globals__</code> replaced to point to hacked-up <code class="language-plaintext highlighter-rouge">sys</code> that contains our <code class="language-plaintext highlighter-rouge">ps1</code>
+and <code class="language-plaintext highlighter-rouge">ps2</code>. This is <em>not</em> nice-looking either, but avoids the global
+patching.</p>
+<p>(...some time later...)</p>
+<p>Turns out, yes, it's possible. You can use <code class="language-plaintext highlighter-rouge">copy_func</code> from <a href="https://stackoverflow.com/a/49077211/569183">this
+StackOverflow answer</a> to get
+this monstrosity:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+
+
+<span class="k">def</span> <span class="nf">copy_func</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">globals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot;Based on https://stackoverflow.com/a/13503277/2988730 (@unutbu)&quot;&quot;&quot;</span>
+<span class="k">if</span> <span class="nb">globals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="nb">globals</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__globals__</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="p">,</span> <span class="nb">globals</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+<span class="n">argdefs</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="vm">__defaults__</span><span class="p">,</span> <span class="n">closure</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="vm">__closure__</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">update_wrapper</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="n">g</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">=</span> <span class="n">module</span>
+<span class="n">g</span><span class="o">.</span><span class="vm">__kwdefaults__</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="vm">__kwdefaults__</span><span class="p">)</span>
+<span class="k">return</span> <span class="n">g</span>
+
+
+<span class="k">class</span> <span class="nc">MySys</span><span class="p">:</span>
+<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">ps1</span> <span class="o">=</span> <span class="s2">&quot;&gt; &quot;</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">ps2</span> <span class="o">=</span> <span class="s2">&quot;. &quot;</span>
+
+
+<span class="k">class</span> <span class="nc">Repl</span><span class="p">(</span><span class="n">code</span><span class="o">.</span><span class="n">InteractiveConsole</span><span class="p">):</span>
+<span class="c1"># ...</span>
+<span class="n">interact</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">code</span><span class="o">.</span><span class="n">InteractiveConsole</span><span class="o">.</span><span class="n">interact</span><span class="p">,</span> <span class="nb">globals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;sys&quot;</span><span class="p">:</span> <span class="n">MySys</span><span class="p">()})</span>
+</pre></div>
+<p>Neat? I guess?<a href="#fnref-1" class="footnote">&#8617;</a></p></li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2023-11-27-simple-python-repl.md" title="Help improve _posts/2023-11-27-simple-python-repl.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

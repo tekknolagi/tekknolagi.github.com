@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Liveness analysis with Datalog | Max Bernstein</title>
+    <meta property="og:title" content="Liveness analysis with Datalog | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/liveness-datalog/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Liveness analysis with Datalog</h1>
+        
+        <div class="post-inline-date"><i>August 13, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+            
+            
+            
+                With co-author <i>Waleed Khan</i>!
+            
+        
+        </div>
+        <div class="container">
+            <p>After publishing <a href="/blog/linear-scan">Linear scan register allocation on SSA</a>, I
+had a nice call with <a href="https://waleedkhan.name">Waleed Khan</a> where he showed me
+how to Datalog. He thought it might be useful to try implementing liveness
+analysis as a Datalog problem.</p>
+<p>We started off with the Wimmer2010 CFG example from that post, sketching out
+manually which variables were live out of each block: R10 out of B1, R12 out of
+B2, etc.</p>
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/wimmer-lsra-cfg.svg"></object>
+<figcaption markdown=1>
+The graph from Wimmer2010 has come back! Remember, we're using block arguments
+instead of phis, so `B1(R10, R11)` defines R10 and R11 before the first
+instruction in B1.
+</figcaption>
+</figure>
+
+<p>Then we tried to formulate liveness as a Datalog relation.</p>
+<p>Liveness is normally (at least for me) defined in terms of two relations:
+live-in and live-out. Live-out is "what is needed" from all of the successors
+of a block and live-in is the "what is needed" summary for a block. So, in
+fake math notation:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>live-out(b) = union(live-in(s) for each successor s of b)
+live-in(b) = (live-out(b) + used(b)) - defined(b)
+</code></pre></div></div>
+
+<p>where each of the component parts of that expression represent sets of
+variables:</p>
+<ul>
+<li><em>used(b)</em> is the set of variables referenced as in-operands to instructions in
+a block</li>
+<li><em>defined(b)</em> is the set of variables defined by instructions in a block</li>
+</ul>
+<p>We ended up computing the live-in sets for blocks in the register allocator
+post but then using the live-out sets instead. So today let's compute both
+live-in and live-out sets with Datalog!</p>
+<h2 id="datalog">Datalog</h2>
+
+<p>Datalog is a logic programming language. It probably looks and feels different
+from every other programming language you have used... except for maybe SQL. It
+might feel similar to SQL, except SQL has a certain order to it that Datalog
+does not.</p>
+<p>We'll be using Souffle here because Waleed mentioned it and also I learned a
+bit about it in my databases class.</p>
+<p>The thing you do first is define your relations, which is what Datalog calls a
+table.</p>
+<p>In this case, if we want to compute liveness information, we have to know
+information about what a block uses, defines, and what successors it has.</p>
+<p>First, the thing you have to know about Datalog, is that it's kind of like
+the opposite of array programming. We're going to express things about sets by
+expressing facts about individual items in a set.</p>
+<p>For example, we're not going to say "this block B4 uses [R10, R12, R16]". We're
+going to say three separate facts: "B4 uses R10", "B4 uses R12", "B4 uses R16".
+You can think about it like each relation being a database table where each
+parameter is a column name.</p>
+<p>Here are the relations for block uses, block defs, and which blocks follow
+other blocks:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// liveness.dl
+.decl block_use(block:symbol, var:symbol)
+.decl block_def(block:symbol, var:symbol)
+.decl block_succ(succ:symbol, pred:symbol)
+</code></pre></div></div>
+
+<p>Where <code class="language-plaintext highlighter-rouge">symbol</code> here means string.</p>
+<p>We can then embed some facts inline. For example, this says "A defines R0 and
+R1 and uses R0":</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>block_def(&quot;A&quot;, &quot;R0&quot;).
+block_def(&quot;A&quot;, &quot;R1&quot;).
+block_use(&quot;A&quot;, &quot;R0&quot;).
+</code></pre></div></div>
+
+<p>You can also provide facts as a TSV but this file format is so irritating to
+construct manually and has given me silently wrong answers in Souffle before so
+I am not doing that for this example.</p>
+<p>You can, for your edification, manually encode all the use/def/successor facts
+from the previous post into Souffle—or you can copy this chunk into your file:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// liveness.dl
+// ...
+block_def(&quot;B1&quot;, &quot;R10&quot;).
+block_def(&quot;B1&quot;, &quot;R11&quot;).
+block_use(&quot;B1&quot;, &quot;R11&quot;).
+
+block_def(&quot;B2&quot;, &quot;R12&quot;).
+block_def(&quot;B2&quot;, &quot;R13&quot;).
+block_use(&quot;B2&quot;, &quot;R13&quot;).
+
+block_def(&quot;B3&quot;, &quot;R14&quot;).
+block_def(&quot;B3&quot;, &quot;R15&quot;).
+block_use(&quot;B3&quot;, &quot;R12&quot;).
+block_use(&quot;B3&quot;, &quot;R13&quot;).
+block_use(&quot;B3&quot;, &quot;R14&quot;).
+block_use(&quot;B3&quot;, &quot;R15&quot;).
+
+block_def(&quot;B4&quot;, &quot;R16&quot;).
+block_use(&quot;B4&quot;, &quot;R16&quot;).
+block_use(&quot;B4&quot;, &quot;R10&quot;).
+block_use(&quot;B4&quot;, &quot;R12&quot;).
+
+block_succ(&quot;B2&quot;, &quot;B1&quot;).
+block_succ(&quot;B3&quot;, &quot;B2&quot;).
+block_succ(&quot;B2&quot;, &quot;B3&quot;).
+block_succ(&quot;B4&quot;, &quot;B2&quot;).
+</code></pre></div></div>
+
+<p>We can declare our live-in and live-out relations similarly to our use/def/succ
+relations. We mark them as being <code class="language-plaintext highlighter-rouge">.output</code> so that Souffle presents us with the
+results.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// liveness.dl
+// ...
+.decl live_out(block:symbol, var:symbol)
+.output live_out
+.decl live_in(block:symbol, var:symbol)
+.output live_in
+</code></pre></div></div>
+
+<p>Now it's time to define our relations. You may notice that the Souffle
+definitions look very similar to our earlier definitions. This is no mistake;
+Datalog was created for dataflow and graph problems.</p>
+<p>We'll start with live-out:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// liveness.dl
+// ...
+live_out(b, v) :- block_succ(s, b), live_in(s, v).
+</code></pre></div></div>
+
+<p>We read this left to right as "a variable <code class="language-plaintext highlighter-rouge">v</code> is live-out of block <code class="language-plaintext highlighter-rouge">b</code> if block
+<code class="language-plaintext highlighter-rouge">s</code> is a successor of <code class="language-plaintext highlighter-rouge">b</code> and <code class="language-plaintext highlighter-rouge">v</code> is live-in to <code class="language-plaintext highlighter-rouge">s</code>". The <code class="language-plaintext highlighter-rouge">:-</code> defines the left
+side in terms of the right side. The comma between <code class="language-plaintext highlighter-rouge">block_succ</code> and <code class="language-plaintext highlighter-rouge">live_in</code>
+means it's a conjunction—<em>and</em>.</p>
+<p>Where's the union? Well, remember what I said about array programming? We're
+not thinking in terms of sets. We're thinking one program variable at a time.
+As Souffle executes our relations, <code class="language-plaintext highlighter-rouge">live_out</code> will incrementally build up a
+table.</p>
+<p>It's also a little weird to program in this style because <code class="language-plaintext highlighter-rouge">s</code> wasn't textually
+defined anywhere like a parameter or a variable. You kind of have to think of
+<code class="language-plaintext highlighter-rouge">s</code> as connector, a binder, a foreign key—what have you. It's a placeholder.
+(I don't know how to explain this well. Sorry.)</p>
+<p>Then we can define live-in. This on the surface looks more complicated but I
+think that is only because of Souffle's choice of syntax.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// liveness.dl
+// ...
+live_in(b, v) :- (live_out(b, v) ; block_use(b, v)), !block_def(b, v).
+</code></pre></div></div>
+
+<p>It reads as "a variable <code class="language-plaintext highlighter-rouge">v</code> is live-in to <code class="language-plaintext highlighter-rouge">b</code> if it is either live-out of <code class="language-plaintext highlighter-rouge">b</code>
+or used in <code class="language-plaintext highlighter-rouge">b</code>, and <em>not</em> defined in <code class="language-plaintext highlighter-rouge">b</code>. The semicolons are
+disjunctions—<em>or</em>—and the exclamation points negations—<em>not</em>.</p>
+<p>These relations look endlessly mutually recursive but you have to keep in mind
+that we're not running functions on data, exactly. We're declaratively
+expressing definitions of rules—relations. <code class="language-plaintext highlighter-rouge">block_use(b, v)</code> in the body of
+<code class="language-plaintext highlighter-rouge">live_in</code> is not calling a function but instead making a query—is the row
+<code class="language-plaintext highlighter-rouge">(b, v)</code> in the table <code class="language-plaintext highlighter-rouge">block_use</code>? Datalog builds the tables until saturation.</p>
+<p>Now we can run Souffle! We tell it to dump to standard output with <code class="language-plaintext highlighter-rouge">-D-</code> but
+you could just as easily have it dump each output relation in its own separate
+file in the current directory by specifying <code class="language-plaintext highlighter-rouge">-D.</code>.</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>souffle<span class="w"> </span>-D-<span class="w"> </span>liveness.dl
+<span class="go">---------------</span>
+<span class="go">live_in</span>
+<span class="go">block   var</span>
+<span class="go">===============</span>
+<span class="go">B2      R10</span>
+<span class="go">B3      R10</span>
+<span class="go">B3      R12</span>
+<span class="go">B3      R13</span>
+<span class="go">B4      R10</span>
+<span class="go">B4      R12</span>
+<span class="go">===============</span>
+<span class="go">---------------</span>
+<span class="go">live_out</span>
+<span class="go">block   var</span>
+<span class="go">===============</span>
+<span class="go">B1      R10</span>
+<span class="go">B2      R10</span>
+<span class="go">B2      R12</span>
+<span class="go">B2      R13</span>
+<span class="go">B3      R10</span>
+<span class="go">===============</span>
+<span class="gp">$</span>
+</pre></div>
+
+<p>That's neat. We got nicely formatted tables and it only took us two lines of
+code! Let's compare to our Ruby code from the previous post to underscore the
+point:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">analyze_liveness</span>
+<span class="w">  </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">post_order</span>
+<span class="w">  </span><span class="n">gen</span><span class="p">,</span><span class="w"> </span><span class="n">kill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_initial_liveness_sets</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+<span class="w">  </span><span class="n">live_in</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kp">true</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="n">changed</span>
+<span class="w">    </span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kp">false</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">order</span>
+<span class="w">      </span><span class="n">block_live</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">block</span><span class="o">.</span><span class="n">successors</span><span class="o">.</span><span class="n">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">succ</span><span class="o">|</span><span class="w"> </span><span class="n">live_in</span><span class="o">[</span><span class="n">succ</span><span class="o">]</span><span class="w"> </span><span class="p">}</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="ss">:|</span><span class="p">)</span>
+<span class="w">      </span><span class="n">block_live</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">gen</span><span class="o">[</span><span class="n">block</span><span class="o">]</span>
+<span class="w">      </span><span class="n">block_live</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="n">kill</span><span class="o">[</span><span class="n">block</span><span class="o">]</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="n">live_in</span><span class="o">[</span><span class="n">block</span><span class="o">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">block_live</span>
+<span class="w">        </span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kp">true</span>
+<span class="w">        </span><span class="n">live_in</span><span class="o">[</span><span class="n">block</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">block_live</span>
+<span class="w">      </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">end</span>
+<span class="w">  </span><span class="n">live_in</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>This is because we have separated the iteration-to-fixpoint bit from the main
+bit of the dataflow analysis: the equation. If we let Datalog do the data
+movement for us, we can work on defining the rules—and only the rules.</p>
+<blockquote>
+<p>This is probably why, in the fullness of time, many static analysis and
+compiler tools end up growing some kind of embedded (partial) Datalog engine.
+Call it Scholz's tenth rule.</p>
+</blockquote>
+<p>Souffle also has the ability to compile to C++, which gives you two nice
+things:</p>
+<ol>
+<li>you can probably get faster execution</li>
+<li>you can use it from an existing C++ program</li>
+</ol>
+<p>I don't have any experience with this API.</p>
+<p>This is when Waleed mentioned offhandedly that he had heard about some embedded
+Rust datalog called <a href="https://s-arash.github.io/ascent/">Ascent</a>.</p>
+<h2 id="rust">Rust</h2>
+
+<p>The front page of the Ascent website is a really great sell if you show up
+thinking "gee, I wish I had Datalog to use in my Rust program". Right out the
+gate, you get reasonable-enough Datalog syntax via a proc macro.</p>
+<p>For example, here is the canonical path example for Souffle:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.decl edge(x:number, y:number)
+.decl path(x:number, y:number)
+
+path(x, y) :- edge(x, y).
+path(x, y) :- path(x, z), edge(z, y).
+</code></pre></div></div>
+
+<p>and in Ascent:</p>
+<div class="highlight"><pre><span></span><span class="n">ascent</span><span class="o">!</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="n">relation</span><span class="w"> </span><span class="n">edge</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="kt">i32</span><span class="p">);</span>
+<span class="w">   </span><span class="n">relation</span><span class="w"> </span><span class="n">path</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="kt">i32</span><span class="p">);</span>
+
+<span class="w">   </span><span class="n">path</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;--</span><span class="w"> </span><span class="n">edge</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">);</span>
+<span class="w">   </span><span class="n">path</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;--</span><span class="w"> </span><span class="n">edge</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">path</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Super.</p>
+<p>We weren't sure if the Souffle liveness would port cleanly to Rust, but it sure
+did! It even lets you use your own datatypes instead of just <code class="language-plaintext highlighter-rouge">i32</code> (which the
+front-page example uses).</p>
+<div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">ascent</span>::<span class="n">ascent</span><span class="p">;</span>
+
+<span class="cp">#[derive(Clone, PartialEq, Eq, Hash, Copy)]</span>
+<span class="k">struct</span> <span class="nc">BlockId</span><span class="p">(</span><span class="kt">i32</span><span class="p">);</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">std</span>::<span class="n">fmt</span>::<span class="n">Debug</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">BlockId</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">fmt</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">f</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">std</span>::<span class="n">fmt</span>::<span class="n">Formatter</span><span class="o">&lt;&#39;</span><span class="nb">_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">std</span>::<span class="n">fmt</span>::<span class="nb">Result</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;B{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cp">#[derive(Clone, PartialEq, Eq, Hash, Copy)]</span>
+<span class="k">struct</span> <span class="nc">VarId</span><span class="p">(</span><span class="kt">i32</span><span class="p">);</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">std</span>::<span class="n">fmt</span>::<span class="n">Debug</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">VarId</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">fmt</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">f</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">std</span>::<span class="n">fmt</span>::<span class="n">Formatter</span><span class="o">&lt;&#39;</span><span class="nb">_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">std</span>::<span class="n">fmt</span>::<span class="nb">Result</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;R{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">ascent</span><span class="o">!</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">relation</span><span class="w"> </span><span class="n">block_use</span><span class="p">(</span><span class="n">BlockId</span><span class="p">,</span><span class="w"> </span><span class="n">VarId</span><span class="p">);</span>
+<span class="w">    </span><span class="n">relation</span><span class="w"> </span><span class="n">block_def</span><span class="p">(</span><span class="n">BlockId</span><span class="p">,</span><span class="w"> </span><span class="n">VarId</span><span class="p">);</span>
+<span class="w">    </span><span class="n">relation</span><span class="w"> </span><span class="n">block_succ</span><span class="p">(</span><span class="n">BlockId</span><span class="p">,</span><span class="w"> </span><span class="n">BlockId</span><span class="p">);</span><span class="w">  </span><span class="c1">// (succ, pred)</span>
+<span class="w">    </span><span class="n">relation</span><span class="w"> </span><span class="n">live_out</span><span class="p">(</span><span class="n">BlockId</span><span class="p">,</span><span class="w"> </span><span class="n">VarId</span><span class="p">);</span>
+<span class="w">    </span><span class="n">relation</span><span class="w"> </span><span class="n">live_in</span><span class="p">(</span><span class="n">BlockId</span><span class="p">,</span><span class="w"> </span><span class="n">VarId</span><span class="p">);</span>
+<span class="w">    </span><span class="n">live_out</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;--</span><span class="w"> </span><span class="n">block_succ</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="n">live_in</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
+<span class="w">    </span><span class="n">live_in</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;--</span><span class="w"> </span><span class="p">(</span><span class="n">live_out</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">block_use</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)),</span><span class="w"> </span><span class="o">!</span><span class="n">block_def</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Notice how we don't have an <code class="language-plaintext highlighter-rouge">input</code> or <code class="language-plaintext highlighter-rouge">output</code> annotation like we did in
+Datalog. That's because this is designed to be embedded in an existing program,
+which probably doesn't to deal with the disk (or at least wants to read/write
+in its own format).</p>
+<p>Ascent lets us give it some vectors of data and then at the end lets us read
+some vectors of data too.</p>
+<div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">prog</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AscentProgram</span>::<span class="n">default</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">b1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlockId</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">b2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlockId</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">b3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlockId</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">b4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlockId</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">r10</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VarId</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">r11</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VarId</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">r12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VarId</span><span class="p">(</span><span class="mi">12</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">r13</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VarId</span><span class="p">(</span><span class="mi">13</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">r14</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VarId</span><span class="p">(</span><span class="mi">14</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">r15</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VarId</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">r16</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VarId</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+<span class="w">    </span><span class="n">prog</span><span class="p">.</span><span class="n">block_def</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b1</span><span class="p">,</span><span class="w"> </span><span class="n">r10</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b1</span><span class="p">,</span><span class="w"> </span><span class="n">r11</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b2</span><span class="p">,</span><span class="w"> </span><span class="n">r12</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b2</span><span class="p">,</span><span class="w"> </span><span class="n">r13</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b3</span><span class="p">,</span><span class="w"> </span><span class="n">r14</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b3</span><span class="p">,</span><span class="w"> </span><span class="n">r15</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b4</span><span class="p">,</span><span class="w"> </span><span class="n">r16</span><span class="p">),</span>
+<span class="w">    </span><span class="p">];</span>
+<span class="w">    </span><span class="n">prog</span><span class="p">.</span><span class="n">block_succ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b2</span><span class="p">,</span><span class="w"> </span><span class="n">b1</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b3</span><span class="p">,</span><span class="w"> </span><span class="n">b2</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b2</span><span class="p">,</span><span class="w"> </span><span class="n">b3</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b4</span><span class="p">,</span><span class="w"> </span><span class="n">b2</span><span class="p">),</span>
+<span class="w">    </span><span class="p">];</span>
+<span class="w">    </span><span class="n">prog</span><span class="p">.</span><span class="n">block_use</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b1</span><span class="p">,</span><span class="w"> </span><span class="n">r11</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b2</span><span class="p">,</span><span class="w"> </span><span class="n">r13</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b3</span><span class="p">,</span><span class="w"> </span><span class="n">r12</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b3</span><span class="p">,</span><span class="w"> </span><span class="n">r13</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b3</span><span class="p">,</span><span class="w"> </span><span class="n">r14</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b3</span><span class="p">,</span><span class="w"> </span><span class="n">r15</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b4</span><span class="p">,</span><span class="w"> </span><span class="n">r10</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b4</span><span class="p">,</span><span class="w"> </span><span class="n">r12</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">b4</span><span class="p">,</span><span class="w"> </span><span class="n">r16</span><span class="p">),</span>
+<span class="w">    </span><span class="p">];</span>
+<span class="w">    </span><span class="n">prog</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;live out: {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">prog</span><span class="p">.</span><span class="n">live_out</span><span class="p">);</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;live in: {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">prog</span><span class="p">.</span><span class="n">live_in</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Then we need only run <code class="language-plaintext highlighter-rouge">cargo add ascent</code> and <code class="language-plaintext highlighter-rouge">cargo run</code>—both of which worked
+with zero issues—and see the results.</p>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>cargo<span class="w"> </span>run
+<span class="go">    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s</span>
+<span class="go">     Running `target/debug/liveness`</span>
+<span class="go">live out: [(B2, R12), (B2, R13), (B2, R10), (B1, R10), (B3, R10)]</span>
+<span class="go">live in: [(B3, R12), (B3, R13), (B4, R10), (B4, R12), (B2, R10), (B3, R10)]</span>
+<span class="gp">$</span>
+</pre></div>
+
+<p>It's not a fancy looking table, but it's very close to my program, which is
+neat.</p>
+<p>This is similar to embedding Souffle in C++ and then calling the C++. One
+difference, though, is the Souffle process has two steps. It's a slight build
+system complication. But this isn't meant to be a Datalog comparison post!</p>
+<h2 id="more">More?</h2>
+
+<p>Can we model all of linear scan this way? Maybe. I'm new to all this stuff.</p>
+<p>Ascent also seems to support lattices, which means we can use it to do abstract
+interpretation on some cool domains.</p>
+<p><a href="https://pointersgonewild.com/">Maxime Chevalier-Boisvert</a> and I prototyped
+<a href="https://github.com/shopify/loupe">loupe</a>, an interprocedural type analysis in
+Rust. We had to build our own iterate-to-fixpoint engine, which was
+non-trivial. I wonder how it would look to build something similar on top of
+Ascent.</p>
+<p>I kind of want to check out <a href="https://github.com/frankmcsherry/">Frank
+McSherry</a>'s
+<a href="https://github.com/frankmcsherry/blog/blob/master/posts/2025-06-03.md">datatoad</a>.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>That's all for now, folks. Just a couple Datalog snippets. Happy hacking.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-08-13-liveness-datalog.md" title="Help improve _posts/2025-08-13-liveness-datalog.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

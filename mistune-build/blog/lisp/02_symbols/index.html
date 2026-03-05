@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Writing a Lisp, Part 2: Symbols | Max Bernstein</title>
+    <meta property="og:title" content="Writing a Lisp, Part 2: Symbols | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/lisp/02_symbols/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Writing a Lisp, Part 2: Symbols</h1>
+        
+        <div class="post-inline-date"><i>November 1, 2016</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>Last time we added booleans and negative numbers to our interpreter. But
+booleans and negatives are kind of boring and we'll certainly need more
+features for a full Lisp. So that brings us to
+<a href="http://stackoverflow.com/questions/8846628/what-exactly-is-a-symbol-in-lisp-scheme">symbols</a>.</p>
+<p>What is a symbol in Lisp? Well, it's anything that can be used as a name. So
+things like <code class="language-plaintext highlighter-rouge">hello</code>, <code class="language-plaintext highlighter-rouge">+</code>, and <code class="language-plaintext highlighter-rouge">my-god-you've-gotten-fat</code> all work. Yes, with
+the quote.</p>
+<p><img class="post-inline-image" src="/assets/img/lisp/edna.gif" /></p>
+<p>I suppose we should add a new type constructor to <code class="language-plaintext highlighter-rouge">lobject</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">type</span> <span class="n">lobject</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Fixnum</span> <span class="k">of</span> <span class="kt">int</span>
+  <span class="o">|</span> <span class="nc">Boolean</span> <span class="k">of</span> <span class="kt">bool</span>
+  <span class="o">|</span> <span class="nc">Symbol</span> <span class="k">of</span> <span class="kt">string</span>
+</pre></div>
+<p>And should probably handle reading it too:</p>
+<div class="highlight"><pre><span></span><span class="c">(* This is slightly faster than Char.escaped and easier to read. *)</span>
+<span class="k">let</span> <span class="n">stringOfChar</span> <span class="n">c</span> <span class="o">=</span>
+    <span class="nn">String</span><span class="p">.</span><span class="n">make</span> <span class="mi">1</span> <span class="n">c</span><span class="o">;;</span>
+
+<span class="k">let</span> <span class="k">rec</span> <span class="n">read_sexp</span> <span class="n">stm</span> <span class="o">=</span>
+  <span class="o">[...]</span>
+  <span class="k">let</span> <span class="n">is_symstartchar</span> <span class="o">=</span>
+      <span class="k">let</span> <span class="n">isalpha</span> <span class="o">=</span> <span class="k">function</span> <span class="o">|</span> <span class="sc">&#39;A&#39;</span><span class="o">..</span><span class="sc">&#39;Z&#39;</span><span class="o">|</span><span class="sc">&#39;a&#39;</span><span class="o">..</span><span class="sc">&#39;z&#39;</span> <span class="o">-&gt;</span> <span class="bp">true</span>
+                             <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="bp">false</span>
+      <span class="k">in</span>
+      <span class="k">function</span> <span class="o">|</span> <span class="sc">&#39;*&#39;</span><span class="o">|</span><span class="sc">&#39;/&#39;</span><span class="o">|</span><span class="sc">&#39;&gt;&#39;</span><span class="o">|</span><span class="sc">&#39;&lt;&#39;</span><span class="o">|</span><span class="sc">&#39;=&#39;</span><span class="o">|</span><span class="sc">&#39;?&#39;</span><span class="o">|</span><span class="sc">&#39;!&#39;</span><span class="o">|</span><span class="sc">&#39;-&#39;</span><span class="o">|</span><span class="sc">&#39;+&#39;</span> <span class="o">-&gt;</span> <span class="bp">true</span>
+               <span class="o">|</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="n">isalpha</span> <span class="n">c</span>
+  <span class="k">in</span>
+  <span class="k">let</span> <span class="k">rec</span> <span class="n">read_symbol</span> <span class="bp">()</span> <span class="o">=</span>
+      <span class="c">(* Not necessary, but it otherwise messes up highlighting *)</span>
+      <span class="k">let</span> <span class="n">literalQuote</span> <span class="o">=</span> <span class="nn">String</span><span class="p">.</span><span class="n">get</span> <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span> <span class="mi">0</span> <span class="k">in</span>
+      <span class="k">let</span> <span class="n">is_delimiter</span> <span class="o">=</span> <span class="k">function</span> <span class="o">|</span> <span class="sc">&#39;(&#39;</span><span class="o">|</span><span class="sc">&#39;)&#39;</span><span class="o">|</span><span class="sc">&#39;{&#39;</span><span class="o">|</span><span class="sc">&#39;}&#39;</span><span class="o">|</span><span class="sc">&#39;;&#39;</span> <span class="o">-&gt;</span> <span class="bp">true</span>
+                                  <span class="o">|</span> <span class="n">c</span> <span class="k">when</span> <span class="n">c</span><span class="o">=</span><span class="n">literalQuote</span> <span class="o">-&gt;</span> <span class="bp">true</span>
+                                  <span class="o">|</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="n">is_white</span> <span class="n">c</span>
+      <span class="k">in</span>
+      <span class="k">let</span> <span class="n">nc</span> <span class="o">=</span> <span class="n">read_char</span> <span class="n">stm</span> <span class="k">in</span>
+      <span class="k">if</span> <span class="n">is_delimiter</span> <span class="n">nc</span>
+      <span class="k">then</span> <span class="k">let</span> <span class="o">_</span> <span class="o">=</span> <span class="n">unread_char</span> <span class="n">stm</span> <span class="n">nc</span> <span class="k">in</span> <span class="s2">&quot;&quot;</span>
+      <span class="k">else</span> <span class="n">stringOfChar</span> <span class="n">nc</span> <span class="o">^</span> <span class="n">read_symbol</span> <span class="bp">()</span>
+  <span class="k">in</span>
+  <span class="n">eat_whitespace</span> <span class="n">stm</span><span class="o">;</span>
+  <span class="k">let</span> <span class="n">c</span> <span class="o">=</span> <span class="n">read_char</span> <span class="n">stm</span> <span class="k">in</span>
+  <span class="k">if</span> <span class="n">is_symstartchar</span> <span class="n">c</span>
+  <span class="k">then</span> <span class="nc">Symbol</span><span class="o">(</span><span class="n">stringOfChar</span> <span class="n">c</span> <span class="o">^</span> <span class="n">read_symbol</span> <span class="bp">()</span><span class="o">)</span>
+  <span class="o">[...]</span>
+</pre></div>
+<p>It's unfortunately a little bit more complicated because we would like to read
+a symbol until the next delimiter, without perhaps a specific pattern for what
+is in the symbol. So we should check for a valid symbol-starting character with
+<code class="language-plaintext highlighter-rouge">is_symstartchar</code>, then read a symbol with <code class="language-plaintext highlighter-rouge">read_symbol</code>.</p>
+<p><code class="language-plaintext highlighter-rouge">read_symbol</code> just concatenates characters until it hits a delimiter, then
+backs up one. And then we construct a new <code class="language-plaintext highlighter-rouge">Symbol</code>! Not so terrible.</p>
+<p>Of course, if you try and run it like so:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 02_symbols.ml
+File &quot;02_symbols.ml&quot;, line 87, characters 4-107:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+Symbol _
+&gt; hello
+Exception: Match_failure (&quot;02_symbols.ml&quot;, 87, 4).
+$
+</code></pre></div></div>
+<p>OCaml will complain because it doesn't know how to <code class="language-plaintext highlighter-rouge">print_sexp</code> on a symbol. So
+it will try its best but when it encounters that case, the program crashes. We
+don't want to crash on symbols (they will after all be vital), so let's add a
+case to <code class="language-plaintext highlighter-rouge">print_sexp</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">print_sexp</span> <span class="n">e</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">e</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Fixnum</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_int</span> <span class="n">v</span>
+    <span class="o">|</span> <span class="nc">Boolean</span><span class="o">(</span><span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_string</span> <span class="o">(</span><span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s2">&quot;#t&quot;</span> <span class="k">else</span> <span class="s2">&quot;#f&quot;</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Symbol</span><span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print_string</span> <span class="n">s</span>
+</pre></div>
+<p>And that should work!</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 02_symbols.ml
+&gt; hello
+hello
+&gt; +
++
+&gt; my-god-you've-gotten-fat
+my-god-you've-gotten-fat
+&gt; ^C
+$
+</code></pre></div></div>
+<p>Great – It prints everything out all nicely. Now that we have symbols,
+booleans, and ints, we can finally build up to collections of all of the above!</p>
+<p>Download the code <a href="/resources/lisp/02_symbols.ml">here</a> if you want to mess
+with it.</p>
+<p>Next up, <a href="/blog/lisp/03_lists/">lists</a>.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_blog_lisp/02_symbols.md" title="Help improve _blog_lisp/02_symbols.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

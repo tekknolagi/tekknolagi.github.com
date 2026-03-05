@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Vectorizing ML models for fun | Max Bernstein</title>
+    <meta name="description" content="Auto-vectorizing ML models using union-find." />
+    <meta property="og:title" content="Vectorizing ML models for fun | Max Bernstein" />
+    <meta property="og:description" content="Auto-vectorizing ML models using union-find." />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/vectorizing-ml-models/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Vectorizing ML models for fun</h1>
+        
+        <div class="post-inline-date"><i>February 18, 2024</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <blockquote>
+<p><em>NOTE: This post is going to be a compiler post, not a machine learning
+tutorial, so please treat it as such. Less ML than the last post, even.</em></p>
+</blockquote>
+<p>Hello everyone! I'm back. I wasn't satisfied with adding a <code class="language-plaintext highlighter-rouge">Dot</code> operator to
+micrograd and manually using it in the MLP implementation from the <a href="/blog/compiling-ml-models">last
+post</a> (read that first if you want more context, but
+it's not super necessary). I kept wondering if it was possible to turn all the
+<code class="language-plaintext highlighter-rouge">+</code>/<code class="language-plaintext highlighter-rouge">*</code> nodes in the graph to <code class="language-plaintext highlighter-rouge">Dot</code> nodes automatically using an optimizer. So
+I did just that.</p>
+<p>Forget about all my changes to micrograd: we're going to start from a clean
+micrograd and talk about autovectorization. The idea isn't new, but this seems
+to be a simple enough and small enough language that it is easy instead of very
+difficult.</p>
+<p>Remember the <code class="language-plaintext highlighter-rouge">Value</code> class? That was the main node type in the graph
+intermediate representation. It works on scalars (numbers) instead of bigger
+structures like vectors. But Andrej is doing tensor math—dot products, matrix
+multiplications. He's just encoding it at the lowest level—the scalar level.
+We're going to try and find that high-level structure and lift it out.</p>
+<h2 id="union-find">Union-find</h2>
+<p>To do that we're going to use the union-find/disjoint-set data structure,
+which, if you don't think about it too hard, is really simple (proving it fast
+is a different matter entirely). If you are a programming languages person and
+haven't used it much, I recommend taking a look at CF's <a href="https://pypy.org/posts/2022/07/toy-optimizer.html">Implementing a Toy
+Optimizer</a>. That was
+what a) made it stick, b) made it simple, and c) got me hooked. I also
+recommend <a href="https://www.cs.usfca.edu/~galles/visualization/DisjointSets.html">this visualization
+tool</a> by
+David Galles at USF. His other visualizations are excellent too.</p>
+<p>This is, regrettably, an invasive change we will have to make to the <code class="language-plaintext highlighter-rouge">Value</code>
+class. I think we could do it with a data structure on the side, but maybe I
+will leave that as an exercise for the reader.</p>
+<div class="highlight"><pre><span></span><span class="gh">diff --git a/micrograd/engine.py b/micrograd/engine.py</span>
+<span class="gh">index afd82cc..1c1863a 100644</span>
+<span class="gd">--- a/micrograd/engine.py</span>
+<span class="gi">+++ b/micrograd/engine.py</span>
+<span class="gu">@@ -7,8 +7,33 @@ class Value:</span>
+<span class="w"> </span>        self.grad = 0
+<span class="w"> </span>        # internal variables used for autograd graph construction
+<span class="w"> </span>        self._backward = lambda: None
+<span class="gd">-        self._prev = set(_children)</span>
+<span class="gi">+        self._prev = tuple(_children)</span>
+<span class="w"> </span>        self._op = _op # the op that produced this node
+<span class="gi">+        self.forwarded = None</span>
+<span class="gi">+</span>
+<span class="gi">+    def find(self):</span>
+<span class="gi">+        op = self</span>
+<span class="gi">+        while isinstance(op, Value):</span>
+<span class="gi">+            next = op.forwarded</span>
+<span class="gi">+            if next is None:</span>
+<span class="gi">+                return op</span>
+<span class="gi">+            op = next</span>
+<span class="gi">+        return op</span>
+<span class="gi">+</span>
+<span class="gi">+    def args(self):</span>
+<span class="gi">+        return [v.find() for v in self._prev]</span>
+<span class="gi">+</span>
+<span class="gi">+    def arg(self, idx):</span>
+<span class="gi">+        return self._prev[idx].find()</span>
+<span class="gi">+</span>
+<span class="gi">+    def make_equal_to(self, other):</span>
+<span class="gi">+        self.find().set_forwarded(other)</span>
+<span class="gi">+</span>
+<span class="gi">+    def set_forwarded(self, other):</span>
+<span class="gi">+        if self._op == &#39;&#39;:</span>
+<span class="gi">+            assert self.data == other.data</span>
+<span class="gi">+        else:</span>
+<span class="gi">+            self.forwarded = other</span>
+</pre></div>
+<p>The important parts are adding a <code class="language-plaintext highlighter-rouge">forwarded</code> field to the object, the <code class="language-plaintext highlighter-rouge">find</code>
+function, and the <code class="language-plaintext highlighter-rouge">make_equal_to</code> function. Forcing an order for the <code class="language-plaintext highlighter-rouge">_prev</code>
+isn't really necessary but it makes debugging easier.</p>
+<p>Union-find is a data structure with two operations:</p>
+<ul>
+<li>What set is this object in?</li>
+<li>Add this object to a set</li>
+</ul>
+<p>The funky part is that it's not exactly objects and sets. When you talk about
+an object, you also talk about the entire set it's a part of and you are
+implicitly speaking about the &quot;representative value&quot; for that set. So really,
+the two operations are:</p>
+<ul>
+<li>What set is this object in?</li>
+<li>Merge these two sets</li>
+</ul>
+<p>And when you think of the sets as equivalence classes for operations—ops
+that, when run, would produce the same value—you can start to see its value
+in optimizing an SSA/SSI IR. You can optimize a node in the graph without
+rewriting all its uses. So for an optimizer, the operations become:</p>
+<ul>
+<li>What is the most-optimized version of this object?</li>
+<li>Add a new most-optimized version of this object</li>
+</ul>
+<p>The main cognitive difference when using union-find in an optimizer is that
+when you are looking at an object, you need to make sure you are looking at the
+representative of the equivalence class—you need to call <code class="language-plaintext highlighter-rouge">.find()</code>.</p>
+<p>(And, by the way, if you want to hold multiple optimization versions of an
+object at once, you start getting into e-graphs. <a href="https://egraphs-good.github.io/">Fun
+stuff</a> awaits.)</p>
+<p>To get a feel for how union-find works, we can take a look at a small example.
+Let's say we have three nodes: a <code class="language-plaintext highlighter-rouge">+</code> and its two children:</p>
+<div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="n">r</span>
+</pre></div>
+<p>Right now, we have a three-node graph with the <code class="language-plaintext highlighter-rouge">+</code> being the root. If we find
+out that the <code class="language-plaintext highlighter-rouge">root</code> node is actually equivalent to the constant 3—say, via a
+constant folding pass—we can write <code class="language-plaintext highlighter-rouge">root.make_equal_to(Value(3))</code>. This
+doesn't delete anything from our graph. It actually adds to it. But when we
+later call <code class="language-plaintext highlighter-rouge">root.find()</code>, the representative is a constant instead of a plus
+node. So in some sense, the graph <em>has</em> shrunk, if you look at the graphs of
+only representatives.</p>
+<h2 id="current-state-of-scalar-math">Current state of scalar math</h2>
+<p>Remember that <code class="language-plaintext highlighter-rouge">dot(a, b) = a[0]*b[0] + ... + a[n]*b[n]</code>. Unfortunately, we
+don't have that kind of many-argument <code class="language-plaintext highlighter-rouge">+</code> explicitly encoded in the scalar IR.
+What we have looks more like:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v0 = input
+v3 = input
+v6 = * v0 v3
+v10 = + v6 0
+v1 = input
+v4 = input
+v7 = * v1 v4
+v11 = + v10 v7
+v2 = input
+v5 = input
+v8 = * v2 v5
+v12 = + v11 v8
+</code></pre></div></div>
+<p>It's this deeply-nested tree structure instead of a shallow one. Where's the
+dot product? I don't see anything that looks like a long series of adds...
+Ideally instead we would have:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v0 = input
+v3 = input
+v6 = * v0 v3
+v1 = input
+v4 = input
+v7 = * v1 v4
+v2 = input
+v5 = input
+v8 = * v2 v5
+v15 = + v6 v7 v8
+</code></pre></div></div>
+<p>Where all the <code class="language-plaintext highlighter-rouge">*</code> nodes have been brought together as siblings in the <code class="language-plaintext highlighter-rouge">+</code> node.
+Now finding a dot product looks a lot easier. You can see there's a wide <code class="language-plaintext highlighter-rouge">+</code>
+node where all the children are multiplications. Great.</p>
+<p>Let's think about how we would do this at the individual node level. In order
+to make one <code class="language-plaintext highlighter-rouge">+</code> out of multiple, the tree must look like:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v2 = v0 + v1
+v4 = v2 + v3
+</code></pre></div></div>
+<figure style="display: block; margin: 0 auto;">
+  <object class="svg" type="image/svg+xml" data="/assets/img/vectorizing-ml-models-before.svg">
+  </object>
+</figure>
+<!--
+digraph {
+    rankdir="TB"
+    v2 [label="v2: +"];
+    v2 -> v0;
+    v2 -> v1;
+    v4 [label="v4: +"];
+    v4 -> v2;
+    v4 -> v3;
+}
+-->
+
+<p>So, a plus made up of other nested plus nodes. If we take the children of <code class="language-plaintext highlighter-rouge">v2</code>
+(<code class="language-plaintext highlighter-rouge">v0</code> and <code class="language-plaintext highlighter-rouge">v1</code>) and bring them up to be children of <code class="language-plaintext highlighter-rouge">v4</code>, we get <code class="language-plaintext highlighter-rouge">v4 = v0 + v1 + v3</code>.
+Neat. And if <code class="language-plaintext highlighter-rouge">v4</code>'s children aren't all <code class="language-plaintext highlighter-rouge">+</code>, that's fine; we just leave the
+other operations as they are. Except that we have to make a new node because
+we're not modifying the graph, so we get <code class="language-plaintext highlighter-rouge">v5</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v5 = v0 + v1 + v3
+</code></pre></div></div>
+<figure style="display: block; margin: 0 auto;">
+  <object class="svg" type="image/svg+xml" data="/assets/img/vectorizing-ml-models-after.svg">
+  </object>
+</figure>
+<!–
+digraph {
+    rankdir="TB"
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v2 [label=&quot;v2: +&quot;, color=&quot;grey&quot;];
+v2 -&gt; v0 [color=&quot;grey&quot;];
+v2 -&gt; v1 [color=&quot;grey&quot;];
+
+v4 [label=&quot;v4: +&quot;, color=&quot;grey&quot;];
+v4 -&gt; v2 [color=&quot;grey&quot;];
+v4 -&gt; v3 [color=&quot;grey&quot;];
+
+v5 [label=&quot;v5: +&quot;];
+v5 -&gt; v0;
+v5 -&gt; v1;
+v5 -&gt; v3;
+
+v4 -&gt; v5 [style=&quot;dotted&quot;, color=&quot;grey&quot;];</code></pre></div></div>
+<p>}
+–&gt;</p>
+<p>In this graph diagram, I have kept around the old <code class="language-plaintext highlighter-rouge">v2</code> and <code class="language-plaintext highlighter-rouge">v4</code> because we
+never really delete them in our optimizer. The garbage collector might get to
+it eventually if nothing else uses them. It also illustrates (using a dotted
+line) that <code class="language-plaintext highlighter-rouge">v4</code> is <em>forwarded to</em> <code class="language-plaintext highlighter-rouge">v5</code>. That <code class="language-plaintext highlighter-rouge">v5</code> is now the representative for
+that equivalence class.</p>
+<p>To do this, we make a function to optimize one <code class="language-plaintext highlighter-rouge">Value</code> at a time:
+<code class="language-plaintext highlighter-rouge">optimize_one</code>. What we're looking for is a <code class="language-plaintext highlighter-rouge">+</code> made out of other <code class="language-plaintext highlighter-rouge">+</code> nodes—a
+many-argument <code class="language-plaintext highlighter-rouge">+</code>. If we find such a situation, we make a new, wider <code class="language-plaintext highlighter-rouge">+</code> node
+with the grandchildren added to it.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">optimize_one</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">_op</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">args</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_op</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">):</span>
+            <span class="n">new_args</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">_op</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+                    <span class="n">new_args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">args</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">make_equal_to</span><span class="p">(</span><span class="n">Value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">new_args</span><span class="p">),</span> <span class="s2">&quot;+&quot;</span><span class="p">))</span>
+</pre></div>
+<p>Remember that <code class="language-plaintext highlighter-rouge">v0</code> and <code class="language-plaintext highlighter-rouge">v1</code> might be entire graphs on their own, so this is
+only one step of a bigger loop. If <code class="language-plaintext highlighter-rouge">v0</code> and <code class="language-plaintext highlighter-rouge">v1</code> are also deeply nested plus
+trees, we want to flatten them as well. The &quot;normal&quot; way to do to this
+optimization in a functional style is to do a depth-first transformation and
+return a new copy of the graph. With union-find, we can avoid doing a bunch of
+those copies.</p>
+<p>We also already have an operation to traverse leaf-first: topological sort. A
+topological sort of a graph orders node dependencies before the node
+itself—children before parents. Bottom up.</p>
+<p>So here is one loop over each node in the graph, optimizing from the leaves on
+up, doing cascading squishing of <code class="language-plaintext highlighter-rouge">+</code> nodes:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_optimize_one</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">topo</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">topo</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">topo</span><span class="p">:</span>
+        <span class="n">optimize_one</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">find</span><span class="p">())</span>
+
+<span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">run_optimize_one</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</pre></div>
+<p>Let's check to see if this optimization works. To do that, I use a little
+<code class="language-plaintext highlighter-rouge">collections.Counter</code> to check the distribution of <code class="language-plaintext highlighter-rouge">Value</code> node types in the
+graph.</p>
+<div class="highlight"><pre><span></span><span class="c1"># Fake MNIST</span>
+<span class="n">dim_in</span> <span class="o">=</span> <span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">dim_in</span><span class="p">,</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">net</span><span class="p">([</span><span class="n">Value</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(),</span> <span class="s2">&quot;input&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_in</span><span class="p">)])</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>  <span class="c1"># fake &quot;loss&quot; function to turn the array into a scalar</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">find</span><span class="p">()))</span>
+<span class="n">optimize</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">find</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">find</span><span class="p">()))</span>
+</pre></div>
+<p>And now if we run it and cross our fingers...</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ time /usr/bin/pypy3.8 test.py
+  Counter({'': 39761, '+': 39710, '*': 39700, 'input': 784, 'ReLU': 50})
+  Counter({'': 39761, '*': 39700, 'input': 784, '+': 51, 'ReLU': 50})
+$
+</code></pre></div></div>
+<p>Alright, that worked extremely well. It looks like the number of <code class="language-plaintext highlighter-rouge">+</code> nodes went
+from 39,000 (39 <em>thousand</em>!) to just 51. Fifty-one! And it left all the other
+operations in the graph unchanged. Super.</p>
+<h2 id="finding-dot-products">Finding dot products</h2>
+<p>Now that we have all these big <code class="language-plaintext highlighter-rouge">+</code> nodes, we can turn all <code class="language-plaintext highlighter-rouge">+</code>-of-<code class="language-plaintext highlighter-rouge">*</code> patterns
+into <code class="language-plaintext highlighter-rouge">Dot</code>. Well, kinda. We have one more step first: <code class="language-plaintext highlighter-rouge">Array</code>.</p>
+<p>Since we're now making vector operations, it makes sense to add a first-class
+type for them.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Array</span><span class="p">(</span><span class="n">Value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="s1">&#39;array&#39;</span><span class="p">)</span>
+</pre></div>
+<p>Unlike the other node types, there is no transformation happening on the data.
+It's collecting other nodes together. So there is no forward or backward
+happening here.</p>
+<p>Alright, let's take a look at the pass to make <code class="language-plaintext highlighter-rouge">Dot</code>s:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">run_optimize_one</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">topo</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">find</span><span class="p">()</span><span class="o">.</span><span class="n">topo</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">topo</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">args</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">_op</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_op</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">):</span>
+            <span class="n">mul_args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">_op</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_prev</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">mul_args</span><span class="p">)</span>
+            <span class="n">mul_left</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">mul_args</span><span class="p">))</span>
+            <span class="n">mul_right</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">mul_args</span><span class="p">))</span>
+            <span class="n">other_args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">_op</span> <span class="o">!=</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
+            <span class="n">op</span><span class="o">.</span><span class="n">make_equal_to</span><span class="p">(</span><span class="n">Value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">Dot</span><span class="p">(</span><span class="n">mul_left</span><span class="p">,</span> <span class="n">mul_right</span><span class="p">),</span> <span class="o">*</span><span class="n">other_args</span><span class="p">),</span> <span class="s2">&quot;+&quot;</span><span class="p">))</span>
+</pre></div>
+<p>For each <code class="language-plaintext highlighter-rouge">+</code>, if it has <code class="language-plaintext highlighter-rouge">*</code> children, we can optimize. So if it has <code class="language-plaintext highlighter-rouge">*</code>
+children, we partition those out from the rest. Remember that since the MLP
+also adds the bias to the long scalarized dot products, we will have some
+data <code class="language-plaintext highlighter-rouge">Value</code> nodes in there too.</p>
+<p>We split all the <code class="language-plaintext highlighter-rouge">*</code> nodes—which are still all binary—into two <code class="language-plaintext highlighter-rouge">Array</code>s and
+make a <code class="language-plaintext highlighter-rouge">Dot</code> out of those. Then we add all the other non-<code class="language-plaintext highlighter-rouge">*</code> arguments to it in
+a new <code class="language-plaintext highlighter-rouge">+</code> node.</p>
+<p>Now, what we have right now will make a new array everytime someone does a dot
+product with <code class="language-plaintext highlighter-rouge">[v0, v1, v2]</code>. We probably don't want to make a new array for the
+same collection of objects; we can have some reusable storage. To do that, we
+memoize the array creation; if the tuple of arguments has been seen before,
+return the old <code class="language-plaintext highlighter-rouge">Array</code>.</p>
+<div class="highlight"><pre><span></span><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hashcons_array</span><span class="p">(</span><span class="n">vs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Array</span><span class="p">(</span><span class="n">vs</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">run_optimize_one</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">topo</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">find</span><span class="p">()</span><span class="o">.</span><span class="n">topo</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">topo</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">args</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">_op</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_op</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">):</span>
+            <span class="c1"># ...</span>
+            <span class="n">mul_left</span> <span class="o">=</span> <span class="n">hashcons_array</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">mul_args</span><span class="p">))</span>
+            <span class="n">mul_right</span> <span class="o">=</span> <span class="n">hashcons_array</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">mul_args</span><span class="p">))</span>
+            <span class="c1"># ...</span>
+</pre></div>
+<p>We should probably know what we're building, so let's take a look at the fancy
+new <code class="language-plaintext highlighter-rouge">Dot</code> operator:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Dot</span><span class="p">(</span><span class="n">Value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_prev</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="o">.</span><span class="n">_prev</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">),</span> <span class="s1">&#39;dot&#39;</span><span class="p">)</span>
+
+        <span class="c1"># TODO(max): Figure out a way to compute this automatically using chain</span>
+        <span class="c1"># rule.</span>
+        <span class="k">def</span> <span class="nf">_backward</span><span class="p">():</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_prev</span><span class="p">):</span>
+                <span class="n">left</span><span class="o">.</span><span class="n">_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">grad</span> <span class="o">+=</span> <span class="n">right</span><span class="o">.</span><span class="n">_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">grad</span>
+                <span class="n">right</span><span class="o">.</span><span class="n">_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">grad</span> <span class="o">+=</span> <span class="n">left</span><span class="o">.</span><span class="n">_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">grad</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_backward</span> <span class="o">=</span> <span class="n">_backward</span>
+</pre></div>
+<p>The only really notable thing is the hand-derived (hopefully correct)
+backpropagation function. You can see my little note about that, too. I think
+it's probably possible to use this same technique to build more complex
+backpropagation functions automatically as we optimize the graph. But I haven't
+figured that one out yet.</p>
+<p>Again, I ask: does it work? Great question.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ time /usr/bin/pypy3.8 test.py
+  Counter({'': 39761, '+': 39710, '*': 39700, 'input': 784, 'ReLU': 50})
+  Counter({'': 39761, 'input': 784, 'array': 53, 'dot': 51, '+': 51, 'ReLU': 50})
+$
+</code></pre></div></div>
+<p>All the <code class="language-plaintext highlighter-rouge">+</code> and <code class="language-plaintext highlighter-rouge">*</code> went away! 39,000 of each turned to just 51 dot products
+and handful of adds (for the bias).</p>
+<h2 id="a-note">A note</h2>
+<p>Remember to think very hard if your machine learning is actually going to help
+people instead of being a solution search of a problem, or worse, hurt people.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>Can we turn these <code class="language-plaintext highlighter-rouge">Dot</code> into <code class="language-plaintext highlighter-rouge">Matmul</code>s? What about automatically deriving
+<code class="language-plaintext highlighter-rouge">_backward</code> functions?</p>
+<p>What about scheduling? Sure, we have all these vector operations now, but no
+CPU actually supports that natively. We have to encode it as x86_64 <code class="language-plaintext highlighter-rouge">dppd</code>
+instructions or something. Maybe e-graphs would be fun here to optimally
+schedule them.</p>
+<p>I would like to see how much we can optimize, say,
+<a href="https://github.com/cthiriet/femtoGPT">femtoGPT</a> with this.</p>
+<p>For my version of the code in this post, check out the <a href="https://github.com/tekknolagi/micrograd/tree/mb-vectorize">mb-vectorize
+branch</a> of my fork
+of micrograd.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2024-02-18-vectorizing-ml-models.md" title="Help improve _posts/2024-02-18-vectorizing-ml-models.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

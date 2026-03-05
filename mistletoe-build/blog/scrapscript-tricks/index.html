@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Some tricks from the Scrapscript compiler | Max Bernstein</title>
+    <meta property="og:title" content="Some tricks from the Scrapscript compiler | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/scrapscript-tricks/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Some tricks from the Scrapscript compiler</h1>
+        
+        <div class="post-inline-date"><i>July 10, 2024</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p><a href="https://scrapscript.org/">Scrapscript</a> is a small, pure, functional,
+content-addressable, network-first programming language.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fact 5
+. fact =
+  | 0 -&gt; 1
+  | n -&gt; n * fact (n - 1)
+</code></pre></div></div>
+
+<p>My <a href="/blog/scrapscript-baseline/">previous post</a> talked about the compiler that
+Chris and I built. This post is about some optimization tricks that we've added
+since.</p>
+<p>Pretty much all of these tricks are standard operating procedure for language
+runtimes (OCaml, MicroPython, Objective-C, Skybison, etc). We didn't invent
+them.</p>
+<p>They're also somewhat limited in scope; the goal was to be able to add as much
+as possible to the baseline compiler without making it or the runtime notably
+more complicated. A fully-featured optimizing compiler is coming soon™
+but not ready yet.</p>
+<h2 id="immediate-objects">Immediate objects</h2>
+
+<p>In the <a href="/blog/scrapscript-baseline/">last post</a>, I mentioned that we can encode
+small integers and some other objects inside pointers so that we don't have to
+heap allocate them at all. In this post, I'll explain a little bit more how we
+encode small strings and also now certain kinds of variants!</p>
+<p>The compiler assumes we are compiling to a 64 bit machine<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup>. This means
+that with every pointer, we have 8 bytes to play with. We already use some of
+the low byte for tagging, and I showed these patterns in the previous post:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0bxxx...xx0  // small int
+0bxxx...001  // heap object
+</code></pre></div></div>
+
+<p>But there are more that we use in the compiler that I did not explain. So here
+are the rest of the bit patterns:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0b000...00101  // empty list
+0b000...00111  // hole
+0bxxx...01101  // small string
+0b000...01111  // immediate variant
+// and four more other, unused tags
+</code></pre></div></div>
+
+<p>Immediate patterns have two constraints:</p>
+<ol>
+<li>The bit pattern must have the low bit set (to avoid conflicting with small
+integers)</li>
+<li>The bit pattern must <em>not</em> have 001 as the low bits (to avoid conflicting
+with heap objects)</li>
+</ol>
+<p>Everything else is fair game. We technically could use as many of the high bits
+as we want and build in gigantic amounts of patterns but instead we are going
+to limit ourselves to eight kinds of immediates and reserve the high bits for
+use in those immediates<sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup>. For example, in <em>small strings</em>.</p>
+<h3 id="small-strings">Small strings</h3>
+
+<p>Small strings are pretty neat. The idea is to use 7 bytes for the string data
+and one byte for the tag. Since the tag is only 5 bits long, we have 3 bits
+left over of the final remaining byte to encode... the length!</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0bxxx...LLL01101  // small string
+</code></pre></div></div>
+
+<p>This all may sound kind of complicated and abstract but see if reading some
+Python code helps<sup class="footnote-ref" id="fnref-3"><a href="#fn-3">3</a></sup>. Instead of generating the full pointer value
+in Python code (which would mean the compiler has to have some magic constants
+in it), we generate a string of C code:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">small_string</span><span class="p">(</span><span class="n">value_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">value_str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">value_int</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(struct object*)((</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">value_int</span><span class="p">)</span><span class="si">}</span><span class="s2">ULL &lt;&lt; kBitsPerByte) | (</span><span class="si">{</span><span class="n">length</span><span class="si">}</span><span class="s2">ULL &lt;&lt; kImmediateTagBits) | (uword)kSmallStringTag /* </span><span class="si">{</span><span class="n">value_str</span><span class="si">!r}</span><span class="s2"> */)&quot;</span>
+
+<span class="n">small_string</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="c1"># (struct object*)((0x0ULL &lt;&lt; kBitsPerByte) | (0ULL &lt;&lt; kImmediateTagBits) | (uword)kSmallStringTag /* &#39;&#39; */)</span>
+<span class="n">small_string</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
+<span class="c1"># (struct object*)((0x636261ULL &lt;&lt; kBitsPerByte) | (3ULL &lt;&lt; kImmediateTagBits) | (uword)kSmallStringTag /* &#39;abc&#39; */)</span>
+</pre></div>
+
+<p>Because the encoded version is illegible without knowing ASCII tables in your
+head (0x63=="c", 0x62=="b", 0x61=="a", etc), we also helpfully print out the
+string representation to aid debugging.</p>
+<p>It's stored "backwards" if you print out the pointer MSB first but that's
+because we store it little-endian. This lets us shift byte-by-byte to read from
+the start of the string to the end.</p>
+<p>Here's the C code that the runtime uses to build non-constant strings:</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">object</span><span class="o">*</span><span class="w"> </span><span class="n">mksmallstring</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">uword</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">length</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">kMaxSmallStringLength</span><span class="p">);</span>
+<span class="w">  </span><span class="n">uword</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">word</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">--</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">kBitsPerByte</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">object</span><span class="o">*</span><span class="w"> </span><span class="n">result_obj</span><span class="w"> </span><span class="o">=</span>
+<span class="w">      </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">object</span><span class="o">*</span><span class="p">)((</span><span class="n">result</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">kBitsPerByte</span><span class="p">)</span><span class="w"> </span><span class="o">|</span>
+<span class="w">                       </span><span class="p">(</span><span class="n">length</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">kImmediateTagBits</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">kSmallStringTag</span><span class="p">);</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">is_heap_object</span><span class="p">(</span><span class="n">result_obj</span><span class="p">));</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">is_small_string</span><span class="p">(</span><span class="n">result_obj</span><span class="p">));</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">small_string_length</span><span class="p">(</span><span class="n">result_obj</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">length</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result_obj</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">object</span><span class="o">*</span><span class="w"> </span><span class="n">mkstring</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_heap</span><span class="o">*</span><span class="w"> </span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">uword</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">length</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">kMaxSmallStringLength</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">mksmallstring</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">object</span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mkstring_uninit_private</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">);</span>
+<span class="w">  </span><span class="n">memcpy</span><span class="p">(</span><span class="n">as_heap_string</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>See also <a href="https://mikeash.com/pyblog/friday-qa-2015-07-31-tagged-pointer-strings.html">Mike Ash's
+post</a>
+about small strings in Objective-C. They go way further with encoding tables
+and stuff.</p>
+<h3 id="variants">Variants</h3>
+
+<p>As a refresher, variants are kind of like a dynamically typed version of
+SML/OCaml variants. Whereas in OCaml and SML they are checked statically and
+(mostly) erased at compile-time, Scrapscript keeps the tags around at run-time.
+You can kind of think of it like adding one string's worth of metadata to an
+object that you can match on.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eval =
+| #int_lit x -&gt; x
+| #add [left, right] -&gt; eval left + eval right
+</code></pre></div></div>
+
+<p>Until this past weekend, variants were all heap-allocated pairs of tag and
+value.</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">variant</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="w"> </span><span class="n">HEAD</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">tag</span><span class="p">;</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">object</span><span class="o">*</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+
+<p>The tag is an index into the tag table which is generated at compile-time and
+contains all tags:</p>
+<div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Tag_foo</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Tag_bar</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// ...</span>
+<span class="p">};</span>
+</pre></div>
+
+<p>It's kind of unfortunate, because it means that writing something like
+<code class="language-plaintext highlighter-rouge">#some_tag [a, b]</code> allocates an object first for the list—several cons cells,
+in fact—and then <em>also</em> for the tagged wrapper object.</p>
+<p>But I vaguely recalled something about OCaml encoding variants with only a
+couple of bits so I checked out their <a href="https://ocaml.org/docs/memory-representation#blocks-and-values">page on data
+representations</a>.
+On it, they have something that says:</p>
+<blockquote>
+<p><code class="language-plaintext highlighter-rouge">Foo | Bar</code> variants are stored as ascending OCaml ints, starting from 0.</p>
+</blockquote>
+<p>I was initially worried that OCaml could only do this because they have type
+inference and therefore the compiler knows much more about what type every
+AST/IR node is. Then I thought about it some more and realized that we still
+have that information—just at run-time, with the pointer tagging. If we
+combine our low-bits pointer tagging with the existing tag enum stuff, we're
+set.</p>
+<p>So I added a new kind of immediate to the compiler: immediate variants. They
+don't support the full range of objects<sup class="footnote-ref" id="fnref-4"><a href="#fn-4">4</a></sup>, but they support any
+tagged <em>hole</em>...</p>
+<h3 id="true-and-false">True and false</h3>
+
+<p>...like <code class="language-plaintext highlighter-rouge">#true ()</code> and <code class="language-plaintext highlighter-rouge">#false ()</code>! These used to be heap-allocated, but now
+they are immediate objects, and with no compiler special-casing. It falls
+naturally out of the tag indexing and the pointer tagging.</p>
+<p>This is pretty great, because it makes pattern matching on booleans—or any
+similar tag—much faster. Look at the code that the compiler can now generate:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>| #true () -&gt; 123
+</code></pre></div></div>
+
+<p>turns into:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (tmp_0 != mk_immediate_variant(Tag_true)) { goto case_1; }
+    2301:	48 8b 54 24 08       	mov    rdx,QWORD PTR [rsp+0x8]
+    2306:	b8 f6 00 00 00       	mov    eax,0xf6
+    230b:	48 83 fa 0f          	cmp    rdx,0xf
+    230f:	74 0b                	je     231c &lt;fn_1+0x4c&gt;
+</code></pre></div></div>
+
+<p>(where <code class="language-plaintext highlighter-rouge">tmp_0</code>/<code class="language-plaintext highlighter-rouge">[rsp+0x8]</code>/<code class="language-plaintext highlighter-rouge">rdx</code> is the match argument, <code class="language-plaintext highlighter-rouge">0xf6</code> is the small int
+for <code class="language-plaintext highlighter-rouge">123</code>, and <code class="language-plaintext highlighter-rouge">0xf</code> is the tagged pointer for <code class="language-plaintext highlighter-rouge"># true ()</code>).</p>
+<p>I want to emphasize that these small strings, small ints, and other immediates
+are available <em>at run-time too</em>. They are not just limited to compiler
+constants. This means we have smart constructors such as <code class="language-plaintext highlighter-rouge">mkstring</code> that
+dynamically dispatch to either encoding a small string or heap-allocating a
+large one.</p>
+<p>This is great, but small strings and variants leave a lot still allocated.
+Sometimes in scraps there are entire constant data structures that get
+allocated at run-time, every time the parent closure is called. So we did
+something about that.</p>
+<h2 id="the-const-heap">The const heap</h2>
+
+<p>Consider the list <code class="language-plaintext highlighter-rouge">[1, 2, 3]</code>. The compiler and its runtime system represent it
+as three cons cells, <code class="language-plaintext highlighter-rouge">1 -&gt; 2 -&gt; 3 -&gt; nil</code>. All of the cells contain data that
+is known constant—integer literals—and point to other constant data. It
+turns out that if we detect this at compile-time, we can allocate all of the
+cons cells as constant C globals.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    def compile(self, env: Env, exp: Object) -&gt; str:
+        if self._is_const(exp):
+            return self._emit_const(exp)
+        # ...
+
+    def _emit_const(self, exp: Object) -&gt; str:
+        if isinstance(exp, Int):
+            # TODO(max): Bignum
+            return f&quot;_mksmallint({exp.value})&quot;
+        if isinstance(exp, List):
+            items = [self._emit_const(item) for item in exp.items]
+            result = &quot;empty_list()&quot;
+            for item in reversed(items):
+                result = self._const_cons(item, result)
+            return result
+        # ...
+
+    def _const_cons(self, first: str, rest: str) -&gt; str:
+        return self._const_obj(&quot;list&quot;, &quot;TAG_LIST&quot;, f&quot;.first={first}, .rest={rest}&quot;)
+
+    def _const_obj(self, type: str, tag: str, contents: str) -&gt; str:
+        result = self.gensym(f&quot;const_{type}&quot;)
+        self.const_heap.append(f&quot;CONST_HEAP struct {type} {result} = {{.HEAD.tag={tag}, {contents} }};&quot;)
+        return f&quot;ptrto({result})&quot;
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">const_heap</code> is a list of structs that we emit at the top-level after
+traversing the whole AST for normal compilation. It's meant to look similar to
+our garbage-collected heap, but without actually using any of the GC's API.
+Instead of calling <code class="language-plaintext highlighter-rouge">allocate</code>, we emit the structs directly. See the before,
+where every time the function is called, it allocates:</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">object</span><span class="o">*</span><span class="w"> </span><span class="n">scrap_main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">HANDLES</span><span class="p">();</span>
+<span class="w">  </span><span class="n">OBJECT_HANDLE</span><span class="p">(</span><span class="n">tmp_0</span><span class="p">,</span><span class="w"> </span><span class="n">empty_list</span><span class="p">());</span>
+<span class="w">  </span><span class="n">OBJECT_HANDLE</span><span class="p">(</span><span class="n">tmp_1</span><span class="p">,</span><span class="w"> </span><span class="n">list_cons</span><span class="p">(</span><span class="n">_mksmallint</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">tmp_0</span><span class="p">));</span>
+<span class="w">  </span><span class="n">OBJECT_HANDLE</span><span class="p">(</span><span class="n">tmp_2</span><span class="p">,</span><span class="w"> </span><span class="n">list_cons</span><span class="p">(</span><span class="n">_mksmallint</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">tmp_1</span><span class="p">));</span>
+<span class="w">  </span><span class="n">OBJECT_HANDLE</span><span class="p">(</span><span class="n">tmp_3</span><span class="p">,</span><span class="w"> </span><span class="n">list_cons</span><span class="p">(</span><span class="n">_mksmallint</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">tmp_2</span><span class="p">));</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">tmp_3</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>and after our const heap changes:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define CONST_HEAP const __attribute__((section(&quot;const_heap&quot;)))</span>
+<span class="n">CONST_HEAP</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">list</span><span class="w"> </span><span class="n">const_list_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">HEAD</span><span class="p">.</span><span class="n">tag</span><span class="o">=</span><span class="n">TAG_LIST</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">first</span><span class="o">=</span><span class="n">_mksmallint</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">rest</span><span class="o">=</span><span class="n">empty_list</span><span class="p">()</span><span class="w"> </span><span class="p">};</span>
+<span class="n">CONST_HEAP</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">list</span><span class="w"> </span><span class="n">const_list_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">HEAD</span><span class="p">.</span><span class="n">tag</span><span class="o">=</span><span class="n">TAG_LIST</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">first</span><span class="o">=</span><span class="n">_mksmallint</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">rest</span><span class="o">=</span><span class="n">ptrto</span><span class="p">(</span><span class="n">const_list_0</span><span class="p">)</span><span class="w"> </span><span class="p">};</span>
+<span class="n">CONST_HEAP</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">list</span><span class="w"> </span><span class="n">const_list_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">HEAD</span><span class="p">.</span><span class="n">tag</span><span class="o">=</span><span class="n">TAG_LIST</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">first</span><span class="o">=</span><span class="n">_mksmallint</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">rest</span><span class="o">=</span><span class="n">ptrto</span><span class="p">(</span><span class="n">const_list_1</span><span class="p">)</span><span class="w"> </span><span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">object</span><span class="o">*</span><span class="w"> </span><span class="n">scrap_main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">HANDLES</span><span class="p">();</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">ptrto</span><span class="p">(</span><span class="n">const_list_2</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Hey presto, the main function just returns a pointer to constant data instead
+of allocating anything at run-time.</p>
+<p>In order of appearance, here are some of the confusing parts of the code:</p>
+<p><code class="language-plaintext highlighter-rouge">CONST_HEAP</code> is macro that directs the linker to put the attached object into
+our custom section, <code class="language-plaintext highlighter-rouge">const_heap</code>. We also mark this data <code class="language-plaintext highlighter-rouge">const</code> so that the C
+compiler can optimize references to it. I should probably also mark it <code class="language-plaintext highlighter-rouge">static</code>
+and add some kind of <code class="language-plaintext highlighter-rouge">__attribute__((aligned(8)))</code> to make sure that we get the
+same heap object tagging support.</p>
+<p><code class="language-plaintext highlighter-rouge">_mksmallint</code> is a macro that generates a small integer by shifting it left 1
+bit.</p>
+<p><code class="language-plaintext highlighter-rouge">empty_list</code> is a macro that generates a tagged pointer to the empty list.</p>
+<p><code class="language-plaintext highlighter-rouge">ptrto</code> takes the address of constant data and then tags with <code class="language-plaintext highlighter-rouge">0b1</code> so that it
+looks like a normal heap object. This means that there might be a bunch of
+references to constant data flying around our garbage-collected heap. That's a
+big problem because our GC attempts to <em>write to the data</em> and then <em>update
+references to it</em>, so we have to be catch this:</p>
+<div class="highlight"><pre><span></span><span class="c1">// NEW</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__start_const_heap</span><span class="p">[];</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__stop_const_heap</span><span class="p">[];</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="nf">in_const_heap</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="w"> </span><span class="n">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">uword</span><span class="p">)</span><span class="n">obj</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">(</span><span class="n">uword</span><span class="p">)</span><span class="n">__start_const_heap</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="w">         </span><span class="p">(</span><span class="n">uword</span><span class="p">)</span><span class="n">obj</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">uword</span><span class="p">)</span><span class="n">__stop_const_heap</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// END NEW</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">visit_field</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">object</span><span class="o">**</span><span class="w"> </span><span class="n">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_heap</span><span class="o">*</span><span class="w"> </span><span class="n">heap</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">is_heap_object</span><span class="p">(</span><span class="o">*</span><span class="n">pointer</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as_heap_object</span><span class="p">(</span><span class="o">*</span><span class="n">pointer</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// NEW</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">in_const_heap</span><span class="p">(</span><span class="n">from</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// END NEW</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">gc_obj</span><span class="o">*</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">is_forwarded</span><span class="p">(</span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">forwarded</span><span class="p">(</span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">);</span>
+<span class="w">  </span><span class="o">*</span><span class="n">pointer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">heap_tag</span><span class="p">((</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">to</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>We do this by using the linker-provided symbols <code class="language-plaintext highlighter-rouge">__start_const_heap</code> and
+<code class="language-plaintext highlighter-rouge">__stop_const_heap</code> to get the bounds of the <code class="language-plaintext highlighter-rouge">const_heap</code> section. Then we can
+see if a pointer is within those bounds before trying to forward it.</p>
+<p>We support pretty much all constant versions of objects, including:</p>
+<ul>
+<li>Integers (currently only tagged small integers, but bignums would be similar)</li>
+<li>Strings</li>
+<li>Variants</li>
+<li>Lists</li>
+<li>Records</li>
+<li>Closures (!)</li>
+</ul>
+<p>Yes, we also support constant closures. For now, this is only available for
+closures that don't capture any variables. We could support closures that
+capture only constant data, but that would require a little bit of finessing to
+keep a record of which variables are constant and which aren't. I want to
+figure out a way to do this in only 1 or 2 extra lines of code if possible.</p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">. fact =</span>
+<span class="cm">| 0 -&gt; 1</span>
+<span class="cm">| n -&gt; n * fact (n - 1)</span>
+<span class="cm">*/</span>
+<span class="cp">#define ptrto(obj) ((struct object*)((uword)&amp;(obj) + 1))</span>
+<span class="n">CONST_HEAP</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">closure</span><span class="w"> </span><span class="n">const_closure_5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">HEAD</span><span class="p">.</span><span class="n">tag</span><span class="o">=</span><span class="n">TAG_CLOSURE</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">fn</span><span class="o">=</span><span class="n">fact_1</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">size</span><span class="o">=</span><span class="mi">0</span><span class="w"> </span><span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">object</span><span class="o">*</span><span class="w"> </span><span class="n">scrap_main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">HANDLES</span><span class="p">();</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">ptrto</span><span class="p">(</span><span class="n">const_closure_5</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Neat.</p>
+<h2 id="have-suggestions">Have suggestions?</h2>
+
+<p>I'm always interested in using Scrapscript as a compiler and runtime
+playground. Send ideas or full implementations my way please.</p>
+<p>I'm currently looking at immediate <code class="language-plaintext highlighter-rouge">double</code>s based on the
+<a href="https://clementbera.wordpress.com/2018/11/09/64-bits-immediate-floats/">OpenSmalltalk</a>.
+We don't use them often in Scrapscript but it could be fun. I'm also looking at
+how <a href="https://abchatra.github.io/TaggedFloat/">ChakraCore</a> did it.</p>
+<h2 id="playing-with-the-compiler">Playing with the compiler</h2>
+
+<p>Try running <code class="language-plaintext highlighter-rouge">./scrapscript.py compile --compile examples/0_home/factorial.scrap</code> which
+will produce both <code class="language-plaintext highlighter-rouge">output.c</code> and <code class="language-plaintext highlighter-rouge">a.out</code>. Then you can run <code class="language-plaintext highlighter-rouge">./a.out</code> to see the
+result of your program.</p>
+<p>We also now have a <a href="https://scrapscript.fly.dev/compilerepl">compiler web REPL</a>
+if you don't want to download anything.</p>
+<h2 id="thanks-for-reading">Thanks for reading</h2>
+
+<p>Want to learn more? Well first, play with <a href="https://scrapscript.fly.dev/repl">the web
+REPL</a>. Then take a look at <a href="https://github.com/tekknolagi/scrapscript">the
+repo</a> and start contributing! Since
+we don't have a huge backlog of well-scoped projects just yet, I recommend
+posting in the <a href="https://scrapscript.discourse.group/">discourse group</a> first to
+get an idea of what would be most useful and also interesting to you.</p>
+
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p>This isn't a hard constraint and we would only need to do a little
+bit of refactoring to support 32 bit architectures. To simplify the
+development process, though, we're sticking with 64 bits. <a href="#fnref-1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-2">
+<p>We could have an "escape hatch" where we have one low-bits
+encoding that says "look at the rest of the high bits to figure out what
+this is" but we're trying to avoid a two-step decoding situation. <a href="#fnref-2" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-3">
+<p>In fact, I used some similar code to obfuscate programs that
+I wrote for a malware course. Instead of encoding stack strings by hand, I
+wrote a <a href="https://gist.github.com/tekknolagi/3df691ad6f48e85e26bd995f6ec5c900">crappy
+program</a>
+to generate them for me for use in C programs.</p>
+<div class="highlight"><pre><span></span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">stack_strings</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="mh">0x202c6f6c6c6548</span><span class="p">,</span>
+<span class="mh">0x2073692073696874</span><span class="p">,</span>
+<span class="mh">0x67617373656d2061</span><span class="p">,</span>
+<span class="mh">0x206d6f72662065</span><span class="p">,</span>
+<span class="mh">0x6972662072756f79</span><span class="p">,</span>
+<span class="mh">0x635320796c646e65</span><span class="p">,</span>
+<span class="mh">0x7069726373706172</span><span class="p">,</span>
+<span class="mh">0x6d6165742074</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="n">stack_strings</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1337</span><span class="p">;</span>
+<span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">str_Hello__</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">stack_strings</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">str_this_is_a_message_from_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">stack_strings</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">str_your_friendly_Scrapscript_team</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">stack_strings</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+</pre></div>
+
+<p>That gross blob is the result of encoding three strings:</p>
+<ul>
+<li><code class="language-plaintext highlighter-rouge">&quot;Hello, &quot;,</code></li>
+<li><code class="language-plaintext highlighter-rouge">&quot;this is a message from &quot;,</code></li>
+<li><code class="language-plaintext highlighter-rouge">&quot;your friendly Scrapscript team&quot;,</code></li>
+</ul> <a href="#fnref-3" class="footnote-backref">↩</a>
+</li>
+<li id="fn-4">
+<p>I wonder if it would be possible to find a tagging scheme that
+supports immediate variants of <em>any</em> scrapscript object. Depending on the
+machine, we might run out of bits to encode the tag. <a href="#fnref-4" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2024-07-10-scrapscript-tricks.md" title="Help improve _posts/2024-07-10-scrapscript-tricks.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

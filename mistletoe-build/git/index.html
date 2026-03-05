@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Git | Max Bernstein</title>
+    <meta property="og:title" content="Git | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/git/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+  </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="page-title">Git</h1>
+        <div class="container">
+            <p>There are some aliases and Git addons that I use to make my life easier.</p>
+<h2 id="aliases">Aliases</h2>
+
+<p>I have a shell alias that maps <code class="language-plaintext highlighter-rouge">git</code> to <code class="language-plaintext highlighter-rouge">g</code>, but that's about as far as I go. I
+don't have <code class="language-plaintext highlighter-rouge">gco</code> or things like that because I feel like that would get
+confusing for me.</p>
+<p>I have an alias called <code class="language-plaintext highlighter-rouge">git recent</code> that pretty-prints the branches I have
+poked at most recently:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[alias]
+	recent = ! git branch --sort=-committerdate --format=\&quot;%(committerdate:relative)%09%(refname:short)\&quot; | head -10
+</code></pre></div></div>
+
+<p>which looks like:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ g recent
+45 minutes ago	at-listiter
+59 minutes ago	mb-mul-add
+61 minutes ago	mb-lshift
+2 hours ago	cinder/3.8
+$
+</code></pre></div></div>
+
+<p>I have an alias called <code class="language-plaintext highlighter-rouge">git smartlog</code> (and <code class="language-plaintext highlighter-rouge">git sl</code>) that emulates <a href="https://www.mercurial-scm.org/wiki/SmartlogExtension"><code class="language-plaintext highlighter-rouge">hg smartlog</code></a>, which I have
+gotten used to using at work.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[alias]
+	 smartlog = log --graph --pretty=format:&#x27;commit: %C(bold red)%h%Creset %C(red)[%H]%Creset %C(bold magenta)%d %Creset%ndate: %C(bold yellow)%cd %Creset%C(yellow)%cr%Creset%nauthor: %C(bold blue)%an%Creset %C(blue)[%ae]%Creset%n%C(cyan)%s%n%Creset&#x27;
+</code></pre></div></div>
+
+<h2 id="patterns">Patterns</h2>
+
+<p>I like to write descriptive commit summaries, especially explaining motivation
+or interesting debugging stories. They are helpful to come back to later when I
+inevitably <code class="language-plaintext highlighter-rouge">git blame</code> myself.</p>
+<p>I almost always stage changes with <code class="language-plaintext highlighter-rouge">add -p</code>. This way I can split out
+changes more finely than per-file. This helps me structure commits into neat
+little series instead of one giant blob.</p>
+<p>I almost always commit with <code class="language-plaintext highlighter-rouge">commit --verbose</code>. This way I can page through my
+changes when describing them.</p>
+<h2 id="configuration-options">Configuration options</h2>
+
+<p>In my global <code class="language-plaintext highlighter-rouge">.gitconfig</code> I have:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[commit]
+	template = /home/username/.gitmessage
+</code></pre></div></div>
+
+<p>This helps keep my commit messages consistent.</p>
+<h2 id="addons-and-cli-programs">Addons and CLI programs</h2>
+
+<p>I have <a href="https://github.com/tummychow/git-absorb"><code class="language-plaintext highlighter-rouge">git absorb</code></a>, which is an
+easier way to do <code class="language-plaintext highlighter-rouge">git commit --fixup</code> and <code class="language-plaintext highlighter-rouge">git rebase -i --autosquash</code>.</p>
+<p>I have <a href="https://github.com/jonas/tig"><code class="language-plaintext highlighter-rouge">tig</code></a> which I use to page through
+commits.</p>
+<p>I use <a href="https://github.com/newren/git-filter-repo"><code class="language-plaintext highlighter-rouge">git filter-repo</code></a> to rebase
+files and directories out of existence.</p>
+<p>I use <a href="https://github.com/arxanas/git-branchless"><code class="language-plaintext highlighter-rouge">git branchless</code></a>, which does
+in fact support branches. I use it primarily for <code class="language-plaintext highlighter-rouge">git next</code> and <code class="language-plaintext highlighter-rouge">git prev</code>. I
+have occasionally also used <code class="language-plaintext highlighter-rouge">git restack</code>, though these days I tend to use
+<code class="language-plaintext highlighter-rouge">rebase -i</code>, edit the commit (<code class="language-plaintext highlighter-rouge">edit</code>), and continue the rebase.</p>
+<p>In the past I used <a href="https://github.com/sitaramc/gitolite">gitolite</a> extensively
+to host my own Git server with multiple users and whatnot.</p>
+<h2 id="vim-plugins">Vim plugins</h2>
+
+<p>I have <a href="https://github.com/tpope/vim-fugitive"><code class="language-plaintext highlighter-rouge">vim-fugitive</code></a> installed and
+use it regularly.</p>
+<h2 id="in-repo-issue-trackers">In-repo issue trackers</h2>
+
+<ul>
+<li><a href="https://github.com/MichaelMure/git-bug">git-bug</a></li>
+<li><a href="https://github.com/google/git-appraise">git-appraise</a></li>
+<li><a href="https://github.com/dspinellis/git-issue">git-issue</a></li>
+</ul>
+<h2 id="other">Other</h2>
+
+<p>I think <a href="https://github.com/martinvonz/jj">Jujutsu/<code class="language-plaintext highlighter-rouge">jj</code></a> is very neat. Also
+<a href="https://gameoftrees.org/">Game of Trees</a>. Also
+<a href="https://github.com/tkellogg/dura">dura</a>. Also
+<a href="https://github.com/gitless-vcs/gitless">gitless</a>. Also
+<a href="https://sapling-scm.com/">Sapling</a>.</p>
+<p>Learn how to <a href="https://calebhearth.com/git-method-history">see the history of a
+method</a>.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/git.md" title="Help improve git.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

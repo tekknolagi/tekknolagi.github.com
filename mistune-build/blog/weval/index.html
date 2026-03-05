@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Compilers for free with weval | Max Bernstein</title>
+    <meta name="description" content="With some partial evaluation and specialization hints, it is possible to get pretty decent speedups on interpreters by turning them into compilers." />
+    <meta property="og:title" content="Compilers for free with weval | Max Bernstein" />
+    <meta property="og:description" content="With some partial evaluation and specialization hints, it is possible to get pretty decent speedups on interpreters by turning them into compilers." />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/weval/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Compilers for free with weval</h1>
+        
+        <div class="post-inline-date"><i>May 19, 2024</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p><a href="https://cfallin.org/">Chris Fallin</a> came and gave a talk to the Northeastern
+<a href="https://prl.khoury.northeastern.edu/">Programming Research Laboratory</a>
+last month. He talked about his work on a new project called
+<a href="https://github.com/cfallin/weval">weval</a>, a WebAssembly partial evaluator (and
+then helped me write this post!).</p>
+<p>Partial evaluation is neat. In short, it's all about taking an existing
+program, modifying it to hold some of its inputs as constants, and then letting
+the compiler/optimizer go hog wild on it. The result is still a program—not a
+value—and it's usually faster than the original program.</p>
+<p>The usual small example is the power function. If you have a function that takes
+two arguments, <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code>, and returns <code class="language-plaintext highlighter-rouge">x^y</code>:</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">power</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>If you partially evaluate this function with respect to <code class="language-plaintext highlighter-rouge">y</code> at <code class="language-plaintext highlighter-rouge">y = 5</code>, you get
+a new function that takes one argument, <code class="language-plaintext highlighter-rouge">x</code>, and returns <code class="language-plaintext highlighter-rouge">x^5</code>:</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">power_5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>Now, to you, this might not look that different from the original function. But
+to an optimizer, it is a new world of opportunity. The optimizer can unroll the
+loop and remove the conditional:</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">power_5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>weval does that for entire WebAssembly modules. WebAssembly modules that are
+normally much bigger than a small <code class="language-plaintext highlighter-rouge">power</code> function. You might want to use it
+if, for example, your WebAssembly module is an interpreter. Imagine a world
+where you have compiled a runtime such as SpiderMonkey or CPython to
+WebAssembly. You could then run your Python or JavaScript programs on the
+WebAssembly runtime, but they would be slower than if you had compiled them
+directly to WebAssembly. And even if you compiled the JS/Python directly to
+Wasm, it would probably be slow unless your compiler did some fancy static
+analysis. This is where weval comes in.</p>
+<h2 id="enter-weval">Enter weval</h2>
+<p>SpiderMonkey and CPython are both huge. Instead, we're going to do a little
+demo of a tiny interpreter that I wrote with Chris. Our interpreter doesn't do
+much—local variables, an accumulator, arithmetic, and branching. But it's
+enough to show off the performance boosts that come with weval.</p>
+<div class="highlight"><pre><span></span><span class="cp">#define FOR_EACH_INSTRUCTION(V)                                                \</span>
+<span class="cp">  V(LOAD_IMMEDIATE)                                                            \</span>
+<span class="cp">  V(STORE_LOCAL)                                                               \</span>
+<span class="cp">  V(LOAD_LOCAL)                                                                \</span>
+<span class="cp">  V(PRINT)                                                                     \</span>
+<span class="cp">  V(PRINTI)                                                                    \</span>
+<span class="cp">  V(JMPNZ)                                                                     \</span>
+<span class="cp">  V(INC)                                                                       \</span>
+<span class="cp">  V(DEC)                                                                       \</span>
+<span class="cp">  V(ADD)                                                                       \</span>
+<span class="cp">  V(HALT)</span>
+</pre></div>
+<p>It's designed as a little loop that reads the next instructions and dispatches
+with a <code class="language-plaintext highlighter-rouge">switch</code>. It's not the fastest design<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup>, but that's okay.</p>
+<div class="highlight"><pre><span></span><span class="n">uword</span><span class="w"> </span><span class="nf">Execute</span><span class="p">(</span><span class="n">uword</span><span class="w"> </span><span class="o">*</span><span class="n">program</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ...</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Instruction</span><span class="w"> </span><span class="n">op</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Instruction</span><span class="p">)</span><span class="n">program</span><span class="p">[</span><span class="n">pc</span><span class="o">++</span><span class="p">];</span>
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">op</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">LOAD_IMMEDIATE</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">uword</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">program</span><span class="p">[</span><span class="n">pc</span><span class="o">++</span><span class="p">];</span>
+<span class="w">      </span><span class="n">accumulator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Object</span><span class="p">)</span><span class="n">value</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">STORE_LOCAL</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">uword</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">program</span><span class="p">[</span><span class="n">pc</span><span class="o">++</span><span class="p">];</span>
+<span class="w">      </span><span class="n">LOCAL_AT_PUT</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">accumulator</span><span class="p">);</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">LOAD_LOCAL</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">uword</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">program</span><span class="p">[</span><span class="n">pc</span><span class="o">++</span><span class="p">];</span>
+<span class="w">      </span><span class="n">accumulator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LOCAL_AT</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">PRINT</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">program</span><span class="p">[</span><span class="n">pc</span><span class="o">++</span><span class="p">];</span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">PRINTI</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%&quot;</span><span class="w"> </span><span class="n">PRIu64</span><span class="p">,</span><span class="w"> </span><span class="n">accumulator</span><span class="p">);</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">HALT</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">accumulator</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JMPNZ</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">uword</span><span class="w"> </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">program</span><span class="p">[</span><span class="n">pc</span><span class="o">++</span><span class="p">];</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">accumulator</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">pc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">offset</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">INC</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">accumulator</span><span class="o">++</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DEC</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">accumulator</span><span class="o">--</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">ADD</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">uword</span><span class="w"> </span><span class="n">idx1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">program</span><span class="p">[</span><span class="n">pc</span><span class="o">++</span><span class="p">];</span>
+<span class="w">      </span><span class="n">uword</span><span class="w"> </span><span class="n">idx2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">program</span><span class="p">[</span><span class="n">pc</span><span class="o">++</span><span class="p">];</span>
+<span class="w">      </span><span class="n">accumulator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LOCAL_AT</span><span class="p">(</span><span class="n">idx1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">LOCAL_AT</span><span class="p">(</span><span class="n">idx2</span><span class="p">);</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>Using this bytecode, we can write a simple program that adds up all the numbers
+from 1 to 100 million:</p>
+<div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="n">loopc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="n">uword</span><span class="w"> </span><span class="n">program</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// result = 0</span>
+<span class="w">  </span><span class="n">LOAD_IMMEDIATE</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="n">STORE_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// loopc = 100_000_000</span>
+<span class="w">  </span><span class="n">LOAD_IMMEDIATE</span><span class="p">,</span><span class="w"> </span><span class="mi">100000000</span><span class="p">,</span>
+<span class="w">  </span><span class="n">STORE_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">loopc</span><span class="p">,</span>
+
+<span class="w">  </span><span class="c1">// loop:</span>
+<span class="w">  </span><span class="c1">// result += loopc</span>
+<span class="w">  </span><span class="n">ADD</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">loopc</span><span class="p">,</span>
+<span class="w">  </span><span class="n">STORE_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// loopc--</span>
+<span class="w">  </span><span class="n">LOAD_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">loopc</span><span class="p">,</span>
+<span class="w">  </span><span class="n">DEC</span><span class="p">,</span>
+<span class="w">  </span><span class="n">STORE_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">loopc</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// if loopc != 0, jump to loop</span>
+<span class="w">  </span><span class="n">JMPNZ</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+
+<span class="w">  </span><span class="c1">// print result</span>
+<span class="w">  </span><span class="n">PRINT</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">uword</span><span class="p">)</span><span class="s">&quot;Result: &quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">LOAD_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">,</span>
+<span class="w">  </span><span class="n">PRINTI</span><span class="p">,</span>
+<span class="w">  </span><span class="n">PRINT</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">uword</span><span class="p">)</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">HALT</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+<p>We can compile this interpreter program with any C or C++ compiler, feed the
+interpreter the bytecode, and it will print the result after about 350ms:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ c++ -O2 peval.cc -o peval.out
+$ ./peval.out
+Result: 5000000050000000
+$
+</code></pre></div></div>
+<p>But let's assume you want to sandbox this program with WebAssembly. Thankfully,
+there's this project called <a href="https://github.com/webAssembly/wasi-sdk">wasi-sdk</a>
+that provides near drop-in replacements for Clang that target WebAssembly. We
+can compile the interpreter with wasi-sdk and run it with <code class="language-plaintext highlighter-rouge">wasmtime</code> or any
+other WebAssembly runtime that provides a WASI polyfill<sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup>. This runs
+in about 530ms:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /opt/wasi-sdk/bin/clang++ -O2 peval.cc -o peval.normal.wasm
+$ wasmtime peval.normal.wasm
+Result: 5000000050000000
+$
+</code></pre></div></div>
+<p>But really what we wanted all along was to deploy the program—not the
+interpreter too, <em>just</em> the program—in the sandbox. We can do that by
+smushing the bytecode and the interpreter together with weval. This runs in
+about 40ms:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /opt/wasi-sdk/bin/clang++ -O2 -DDO_WEVAL -I include peval.cc -o peval.wasm
+$ weval weval -i peval.wasm -o peval.wevaled.wasm -w
+$ wasmtime peval.wevaled.wasm
+Result: 5000000050000000
+$
+</code></pre></div></div>
+<p>First of all: let's step back. We had an interpreter written in C++ that took
+350ms to run. We made it a little slower (530ms) by compiling it to
+WebAssembly. Then we got a <strong>8.5x speedup</strong> by using weval. That's nuts. That's
+probably close to what we would get if we hand-wrote a little compiler for our
+bytecode machine, but I did not have to write a compiler.</p>
+<table>
+<thead>
+<tr>
+  <th>Method</th>
+  <th>Time (ms)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>C++</td>
+  <td>350</td>
+</tr>
+<tr>
+  <td>WASI</td>
+  <td>530</td>
+</tr>
+<tr>
+  <td>WASI+weval</td>
+  <td><strong>40</strong>  (!!)</td>
+</tr>
+</tbody>
+</table>
+<p>Check out an <a href="https://asciinema.org/a/EesYdO0GFxkTKyAJu2vuVXjTS">asciicast</a> if
+you want to feel that difference.</p>
+<p>You might notice that I added some sneaky flags like <code class="language-plaintext highlighter-rouge">-DDO_WEVAL</code> and <code class="language-plaintext highlighter-rouge">-I include</code> in there. What's going on?</p>
+<h2 id="specializing-the-interpreter">Specializing the interpreter</h2>
+<p><strong>Big picture:</strong> give the interpreter function access to constant bytecode.</p>
+<p>Well, while weval works <em>correctly</em> on any combination of WebAssembly module
+and its input, it works <em>best</em> when you give it a little help and tell it what
+data is constant. In order to do that, we pre-initialize the WebAssembly module
+using a project called <a href="https://github.com/bytecodealliance/wizer">wizer</a>. It
+gives you, the programmer, hooks to set up some memory before turning the
+running state back into a WebAssembly module. Let's look at a diagram of the
+situation as it is right now:</p>
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/weval-fully-interp.svg">
+</object>
+<figcaption>This is too many levels of nesting</figcaption>
+</figure>
+
+<p>Right now, at run-time, the interpreter loads the bytecode and runs it. The
+bytecode is not known ahead of time, so the interpreter has to be general.</p>
+<p>In order to specialize the interpreter, we do three steps <em>at WebAssembly
+module initialization time</em>:</p>
+<ol>
+<li>Load the bytecode</li>
+<li>Create a specialized version of the interpreter function with constant
+arguments</li>
+<li>Run constant propagation and other compiler passes on the function</li>
+</ol>
+<p>In this example, we know the bytecode is constant. We can tell weval this by
+using one of its helper intrinsics. In this case, we create a copy of the
+<code class="language-plaintext highlighter-rouge">Execute</code> function with constant arguments (the <code class="language-plaintext highlighter-rouge">program</code>). Now we have two
+functions: <code class="language-plaintext highlighter-rouge">Execute</code> and <code class="language-plaintext highlighter-rouge">ExecuteSpecialized</code>. All of this happens in the
+<code class="language-plaintext highlighter-rouge">init</code> function:</p>
+<div class="highlight"><pre><span></span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="kt">bool</span><span class="w"> </span><span class="n">IsSpecialized</span><span class="o">&gt;</span>
+<span class="n">uword</span><span class="w"> </span><span class="n">Execute</span><span class="p">(</span><span class="n">uword</span><span class="w"> </span><span class="o">*</span><span class="n">program</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">}</span>
+
+
+<span class="n">Object</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">ExecuteSpecialized</span><span class="p">)(</span><span class="n">uword</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="cp">#ifdef DO_WEVAL</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">uword</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">uword</span><span class="w"> </span><span class="n">loopc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="n">weval</span><span class="o">::</span><span class="n">weval</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ExecuteSpecialized</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">Execute</span><span class="o">&lt;</span><span class="nb">true</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="cm">/*func_id=*/</span><span class="mi">123</span><span class="p">,</span>
+<span class="w">               </span><span class="n">weval</span><span class="o">::</span><span class="n">SpecializeMemory</span><span class="o">&lt;</span><span class="n">uword</span><span class="w"> </span><span class="o">*&gt;</span><span class="p">(</span><span class="n">program</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="w"> </span><span class="n">program</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="n">WIZER_INIT</span><span class="p">(</span><span class="n">init</span><span class="p">);</span>
+<span class="n">WEVAL_DEFINE_GLOBALS</span><span class="p">();</span>
+<span class="cp">#endif</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ExecuteSpecialized</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ExecuteSpecialized</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Execute</span><span class="o">&lt;</span><span class="nb">false</span><span class="o">&gt;</span><span class="p">(</span><span class="n">program</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>Now that the code has been loaded and marked constant, the picture looks more
+like this:</p>
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/weval-post-wizer.svg">
+</object>
+</figure>
+
+<p>While the code is constant, weval isn't magic. It won't modify control flow, by
+default, except simplifying branches that become constant (it doesn't even know
+what an interpreter is!).</p>
+<p>In order to start making <code class="language-plaintext highlighter-rouge">ExecuteSpecialized</code> faster, we have to drop little
+hints into the interpreter for weval to pick up. We want to actually specialize
+the control flow—make the control flow in the bytecode become control flow in
+the new function itself—so we tell weval about the PC to let it expand out
+the code.</p>
+<h2 id="modifying-the-interpreter">Modifying the interpreter</h2>
+<p><strong>Big picture:</strong> unroll the loop by specializing on the program counter.</p>
+<p>We can start off by telling weval what variable to use as a <em>specialization
+context</em>. In this case, since we know that the bytecode is constant, we can
+specialize on the <code class="language-plaintext highlighter-rouge">pc</code>—the program counter. This lets weval completely unroll
+the interpreter loop.</p>
+<div class="highlight"><pre><span></span><span class="n">uword</span><span class="w"> </span><span class="nf">Execute</span><span class="p">(</span><span class="n">uword</span><span class="w"> </span><span class="o">*</span><span class="n">program</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">op</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">weval</span><span class="o">::</span><span class="n">update_context</span><span class="p">(</span><span class="n">pc</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>After running weval on the bundled module, and letting weval unroll the loop,
+the picture looks like this:</p>
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/weval-post-weval.svg">
+</object>
+</figure>
+
+<p>This means that from this point forward, we have used weval to turn our
+interpreter into a compiler. There are only two optimizations so
+far—unrolling the loop and constant propagation—but they are very
+effective. The result is a fully WebAssembly module with no interpreter and no
+bytecode.</p>
+<p>Weval's compiler passes are not magic. They are the same passes that any
+compiler would run on your code. They can unroll the interpreter loop and turn
+bytecode into straight-line WebAssembly code. But that code still has local
+variable writes push and local variable reads and all the other overhead of the
+interpreter. So there's more to be done...</p>
+<h2 id="but-what-if-we-modified-it-more">But what if we modified it more?</h2>
+<p><strong>Big picture:</strong> unroll interpreter local variables into WebAssembly local
+variables by telling weval where they are.</p>
+<p>Memory can be hard to reason about in a compiler. Weval isn't a whole program
+optimizing compiler and might not be able to prove that a memory location (in
+this case, the locals array) never escapes or aliases something else. But we,
+the interpreter authors, know that. So we can add more hints.</p>
+<p>Right now, <code class="language-plaintext highlighter-rouge">LOCAL_AT</code> and <code class="language-plaintext highlighter-rouge">LOCAL_AT_PUT</code> are macros that read and write to the
+locals array:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define LOCAL_AT(idx) (locals[idx])</span>
+<span class="cp">#define LOCAL_AT_PUT(idx, val) (locals[idx] = val)</span>
+</pre></div>
+<p>That's all well and good for the interpreter, but it's not great for the
+compiled code. What we really want is to give weval the ability to reason about
+each memory location—each local index—separately as an SSA value.</p>
+<p>In order to do that, we use weval intrinsics: <code class="language-plaintext highlighter-rouge">weval_read_reg</code> and
+<code class="language-plaintext highlighter-rouge">weval_write_reg</code>. For maximum flexibility, we have a couple of macros that
+switch between the two:</p>
+<div class="highlight"><pre><span></span><span class="cp">#ifdef DO_WEVAL</span>
+<span class="cp">#define LOCAL_AT(idx) (IsSpecialized ? weval_read_reg(idx) : locals[idx])</span>
+<span class="cp">#define LOCAL_AT_PUT(idx, val)                                                 \</span>
+<span class="cp">  if (IsSpecialized) {                                                         \</span>
+<span class="cp">    weval_write_reg(idx, val);                                                 \</span>
+<span class="cp">  } else {                                                                     \</span>
+<span class="cp">    locals[idx] = val;                                                         \</span>
+<span class="cp">  }</span>
+<span class="cp">#else</span>
+<span class="cp">#define LOCAL_AT(idx) (locals[idx])</span>
+<span class="cp">#define LOCAL_AT_PUT(idx, val) (locals[idx] = val)</span>
+<span class="cp">#endif</span>
+</pre></div>
+<p>Now, weval can reason about each local variable separately and they get
+eventually compiled to normal WebAssembly locals.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+<p>The big idea here is that it's possible to incrementally unravel an interpreter
+into a compiler by specializing on constant data and then doing normal compiler
+passes. The more you can specialize at build-time, the faster the resulting
+generated code will be.</p>
+<p>Check out the code in my <a href="https://github.com/tekknolagi/weval">already old fork of
+weval</a>. It includes surprise benchmarks of
+Wasm JITs in different JS runtimes, too!</p>
+<h2 id="looking-forward">Looking forward</h2>
+<p>Chris gave some more detail about how weval works in <a href="/assets/img/weval_slides.pdf">this
+talk</a> (PDF), including a description of how the
+interpreter function is actually combined with the bytecode. The main idea is
+to use the PC values as a &quot;context&quot; in a context-sensitive dataflow analysis,
+so regular constant propagation will see the PC value and opcode for just one
+interpreter loop iteration, rather than the union of all of them (as a static
+analysis normally would). There are a bunch of fiddly details to make it work
+well, and Chris also plans to write a blog post covering weval and its
+application to SpiderMonkey soon.</p>
+<p>Also, our interpreter is tiny and not very interesting on its own. It's only
+useful to explain some weval concepts to you. But the same principles apply to
+much larger interpreters, too! There's SpiderMonkey, yes, and the same could
+also probably be done for CPython, the main Python runtime. CPython even has
+support for being compiled to WebAssembly already!</p>
+<p>Imagine compiling Python directly down to WebAssembly... maybe coming soon?</p>
+<h2 id="wilder-ideas">Wilder ideas</h2>
+<p>CPython already has support for vectorcall function pointers. This is a way to
+add a JIT compiler in a portable way. We could also maybe use this to turn
+weval into a Wasm JIT for CPython.</p>
+<h2 id="similar-projects">Similar projects</h2>
+<p><a href="https://github.com/BuildIt-lang/buildit">BuildIt</a> is a similar project for C++
+that takes a library approach.</p>
+<section class="footnotes">
+<ol>
+<li id="fn-1"><p>A lot of interpreters use a computed goto to dispatch
+instructions. This is a little faster than a switch statement, but it's
+also not portable. It's not even supported by all compilers (for example,
+WASI) because it's not legal C.<a href="#fnref-1" class="footnote">&#8617;</a></p></li>
+<li id="fn-2"><p>This is pretty straightforward and means the program can even be
+run in the browser. But it's not the focus of this post. See the repo for
+the little JS wrapper that makes this possible.<a href="#fnref-2" class="footnote">&#8617;</a></p></li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2024-05-19-weval.md" title="Help improve _posts/2024-05-19-weval.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

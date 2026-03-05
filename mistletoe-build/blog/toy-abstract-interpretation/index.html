@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Abstract interpretation in the Toy Optimizer | Max Bernstein</title>
+    <meta property="og:title" content="Abstract interpretation in the Toy Optimizer | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/toy-abstract-interpretation/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Abstract interpretation in the Toy Optimizer</h1>
+        
+        <div class="post-inline-date"><i>July 23, 2024</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>CF Bolz-Tereick wrote some excellent posts in which they <a href="https://pypy.org/posts/2022/07/toy-optimizer.html">introduce a small IR
+and optimizer</a> and <a href="https://pypy.org/posts/2022/10/toy-optimizer-allocation-removal.html">extend it with allocation
+removal</a>. We also did a live stream together in which
+we did <a href="https://www.youtube.com/watch?v=w-UHg0yOPSE">some more heap optimizations</a>.</p>
+<p>In this blog post, I'm going to write a small abtract interpreter for the Toy
+IR and then show how we can use it to do some simple optimizations. It assumes
+that you are familiar with the little IR, which I have reproduced unchanged in
+<a href="https://gist.github.com/tekknolagi/4425b28d5267e7bae8b0d7ef8fb4a671">a GitHub Gist</a>.</p>
+<p>Abstract interpretation is a general framework for efficiently computing
+properties that must be true for all possible executions of a program. It's a
+widely used approach both in compiler optimizations as well as offline static
+analysis for finding bugs. I'm writing this post to pave the way for CF's next
+post on proving abstract interpreters correct for range analysis and known bits
+analysis inside PyPy.</p>
+<p>Before we begin, I want to note a couple of things:</p>
+<ul>
+<li>The Toy IR is in SSA form, which means that every variable is defined exactly
+once. This means that abstract properties of each variable are easy to track.</li>
+<li>The Toy IR represents a linear trace without control flow, meaning we won't
+talk about meet/join or fixpoints. They only make sense if the IR has a
+notion of conditional branches or back edges (loops).</li>
+</ul>
+<p>Alright, let's get started.</p>
+<h2 id="welcome-to-abstract-interpretation">Welcome to abstract interpretation</h2>
+
+<p>Abstract interpretation means a couple different things to different people.
+There's rigorous mathematical formalism thanks to Patrick and Radhia Cousot,
+our favorite power couple, and there's also sketchy hand-wavy stuff like what
+will follow in this post. In the end, all people are trying to do is reason
+about program behavior without running it.</p>
+<p>In particular, abstract interpretation is an <em>over-approximation</em> of the
+behavior of a program. Correctly implemented abstract interpreters never lie,
+but they might be a little bit pessimistic. This is because instead of using
+real values and running the program—which would produce a concrete result and
+some real-world behavior—we "run" the program with a parallel universe of
+<em>abstract</em> values. This abstract run gives us information about all possible
+runs of the program.<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup></p>
+<p>Abstract values always represent sets of concrete values. Instead of literally
+storing a set (in the world of integers, for example, it could get pretty
+big...there are a lot of integers), we group them into a finite number of named
+subsets.<sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup></p>
+<p>Let's learn a little about abstract interpretation with an example program and
+example abstract domain. Here's the example program:</p>
+<div class="highlight"><pre><span></span><span class="n">v0</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">v2</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+</pre></div>
+
+<p>And our abstract domain is "is the number positive" (where "positive" means
+nonnegative, but I wanted to keep the words distinct):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       top
+    /       \
+positive    negative
+    \       /
+      bottom
+</code></pre></div></div>
+
+<p>The special <em>top</em> value means "I don't know" and the special <em>bottom</em> value
+means "empty set" or "unreachable". The <em>positive</em> and <em>negative</em> values
+represent the sets of all positive and negative numbers, respectively.</p>
+<p>We initialize all the variables <code class="language-plaintext highlighter-rouge">v0</code>, <code class="language-plaintext highlighter-rouge">v1</code>, and <code class="language-plaintext highlighter-rouge">v2</code> to <em>bottom</em> and then walk
+our IR, updating our knowledge as we go.</p>
+<div class="highlight"><pre><span></span><span class="c1"># here</span>
+<span class="n">v0</span><span class="p">:</span><span class="n">bottom</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">bottom</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">v2</span><span class="p">:</span><span class="n">bottom</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+</pre></div>
+
+<p>In order to do that, we have to have <em>transfer functions</em> for each operation.
+For constants, the transfer function is easy: determine if the constant is
+positive or negative. For other operations, we have to define a function that
+takes the abstract values of the operands and returns the abstract value of the
+result.</p>
+<p>In order to be correct, transfer functions for operations have to be compatible
+with the behavior of their corresponding concrete implementations. You can
+think of them having an implicit universal quantifier <em>forall</em> in front of
+them.</p>
+<p>Let's step through the constants at least:</p>
+<div class="highlight"><pre><span></span><span class="n">v0</span><span class="p">:</span><span class="n">positive</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">positive</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="c1"># here</span>
+<span class="n">v2</span><span class="p">:</span><span class="n">bottom</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+</pre></div>
+
+<p>Now we need to figure out the transfer function for <code class="language-plaintext highlighter-rouge">add</code>. It's kind of tricky
+right now because we haven't specified our abstract domain very well. I keep
+saying "numbers", but what kinds of numbers? Integers? Real numbers? Floating
+point? Some kind of fixed-width bit vector (<code class="language-plaintext highlighter-rouge">int8</code>, <code class="language-plaintext highlighter-rouge">uint32</code>, ...) like an
+actual machine "integer"?</p>
+<p>For this post, I am going to use the mathematical definition of integer, which
+means that the values are not bounded in size and therefore do not overflow.
+Actual hardware memory constraints aside, this is kind of like a Python <code class="language-plaintext highlighter-rouge">int</code>.</p>
+<p>So let's look at what happens when we add two abstract numbers:</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">top</th>
+<th align="left">positive</th>
+<th align="left">negative</th>
+<th align="left">bottom</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>top</strong></td>
+<td align="left">top</td>
+<td align="left">top</td>
+<td align="left">top</td>
+<td align="left">bottom</td>
+</tr>
+<tr>
+<td align="left"><strong>positive</strong></td>
+<td align="left">top</td>
+<td align="left">positive</td>
+<td align="left">top</td>
+<td align="left">bottom</td>
+</tr>
+<tr>
+<td align="left"><strong>negative</strong></td>
+<td align="left">top</td>
+<td align="left">top</td>
+<td align="left">negative</td>
+<td align="left">bottom</td>
+</tr>
+<tr>
+<td align="left"><strong>bottom</strong></td>
+<td align="left">bottom</td>
+<td align="left">bottom</td>
+<td align="left">bottom</td>
+<td align="left">bottom</td>
+</tr>
+</tbody>
+</table>
+<p>As an example, let's try to add two numbers <code class="language-plaintext highlighter-rouge">a</code> and <code class="language-plaintext highlighter-rouge">b</code>, where <code class="language-plaintext highlighter-rouge">a</code> is positive
+and <code class="language-plaintext highlighter-rouge">b</code> is negative. We don't know anything about their values other than their
+signs. They could be <code class="language-plaintext highlighter-rouge">5</code> and <code class="language-plaintext highlighter-rouge">-3</code>, where the result is <code class="language-plaintext highlighter-rouge">2</code>, or they could be
+<code class="language-plaintext highlighter-rouge">1</code> and <code class="language-plaintext highlighter-rouge">-100</code>, where the result is <code class="language-plaintext highlighter-rouge">-99</code>. This is why we can't say anything
+about the result of this operation and have to return <em>top</em>.</p>
+<p>The short of this table is that we only really know the result of an addition
+if both operands are positive or both operands are negative. Thankfully, in
+this example, both operands are known positive. So we can learn something about
+<code class="language-plaintext highlighter-rouge">v2</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">v0</span><span class="p">:</span><span class="n">positive</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">positive</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">v2</span><span class="p">:</span><span class="n">positive</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+<span class="c1"># here</span>
+</pre></div>
+
+<p>This may not seem useful in isolation, but analyzing more complex programs even
+with this simple domain may be able to remove checks such as <code class="language-plaintext highlighter-rouge">if (v2 &lt; 0) { ... }</code>.</p>
+<p>Let's take a look at another example using a sample <code class="language-plaintext highlighter-rouge">absval</code> (absolute value)
+IR operation:</p>
+<div class="highlight"><pre><span></span><span class="n">v0</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">v2</span> <span class="o">=</span> <span class="n">absval</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
+<span class="n">v3</span> <span class="o">=</span> <span class="n">absval</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+<span class="n">v4</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">)</span>
+<span class="n">v5</span> <span class="o">=</span> <span class="n">absval</span><span class="p">(</span><span class="n">v4</span><span class="p">)</span>
+</pre></div>
+
+<p>Even though we have no constant/concrete values, we can still learn something
+about the states of values throughout the program. Since we know that <code class="language-plaintext highlighter-rouge">absval</code>
+always returns a positive number, we learn that <code class="language-plaintext highlighter-rouge">v2</code>, <code class="language-plaintext highlighter-rouge">v3</code>, and <code class="language-plaintext highlighter-rouge">v4</code> are all
+positive. This means that we can optimize out the <code class="language-plaintext highlighter-rouge">absval</code> operation on <code class="language-plaintext highlighter-rouge">v5</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">v0</span><span class="p">:</span><span class="n">top</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">top</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">v2</span><span class="p">:</span><span class="n">positive</span> <span class="o">=</span> <span class="n">absval</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
+<span class="n">v3</span><span class="p">:</span><span class="n">positive</span> <span class="o">=</span> <span class="n">absval</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+<span class="n">v4</span><span class="p">:</span><span class="n">positive</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">)</span>
+<span class="n">v5</span><span class="p">:</span><span class="n">positive</span> <span class="o">=</span> <span class="n">v4</span>
+</pre></div>
+
+<p>Other interesting lattices include:</p>
+<ul>
+<li>Constants (where the middle row is pretty wide)</li>
+<li>Range analysis (bounds on min and max of a number)</li>
+<li>Known bits (using a bitvector representation of a number, which bits are
+always 0 or 1)</li>
+</ul>
+<p>For the rest of this blog post, we are going to do a very limited version of
+"known bits", called <em>parity</em>. This analysis only tracks the least significant
+bit of a number, which indicates if it is even or odd.</p>
+<h2 id="parity">Parity</h2>
+
+<p>The lattice is pretty similar to the positive/negative lattice:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    top
+  /     \
+even    odd
+  \     /
+   bottom
+</code></pre></div></div>
+
+<p>Let's define a data structure to represent this in Python code:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Parity</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+
+<p>And instantiate the members of the lattice:</p>
+<div class="highlight"><pre><span></span><span class="n">TOP</span> <span class="o">=</span> <span class="n">Parity</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">)</span>
+<span class="n">EVEN</span> <span class="o">=</span> <span class="n">Parity</span><span class="p">(</span><span class="s2">&quot;even&quot;</span><span class="p">)</span>
+<span class="n">ODD</span> <span class="o">=</span> <span class="n">Parity</span><span class="p">(</span><span class="s2">&quot;odd&quot;</span><span class="p">)</span>
+<span class="n">BOTTOM</span> <span class="o">=</span> <span class="n">Parity</span><span class="p">(</span><span class="s2">&quot;bottom&quot;</span><span class="p">)</span>
+</pre></div>
+
+<p>Now let's write a forward flow analysis of a basic block using this lattice.
+We'll do that by assuming that a method on <code class="language-plaintext highlighter-rouge">Parity</code> is defined for each IR
+operation. For example, <code class="language-plaintext highlighter-rouge">Parity.add</code>, <code class="language-plaintext highlighter-rouge">Parity.lshift</code>, etc.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">analyze</span><span class="p">(</span><span class="n">block</span><span class="p">:</span> <span class="n">Block</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">parity</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">BOTTOM</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">block</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">parity_of</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Constant</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Parity</span><span class="o">.</span><span class="n">const</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parity</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
+        <span class="n">transfer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Parity</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">parity_of</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">find</span><span class="p">())</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">args</span><span class="p">]</span>
+        <span class="n">parity</span><span class="p">[</span><span class="n">op</span><span class="p">]</span> <span class="o">=</span> <span class="n">transfer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+
+<p>For every operation, we compute the abstract value—the parity—of the
+arguments and then call the corresponding method on <code class="language-plaintext highlighter-rouge">Parity</code> to get the
+abstract result.</p>
+<!-- TODO maybe learn more about different IRs and how they do constants.
+apparently pypy/llvm are free-floating; cinder is not -->
+
+<p>We need to special case <code class="language-plaintext highlighter-rouge">Constant</code>s due to a quirk of how the Toy IR is
+constructed: the constants don't appear in the instruction stream and instead
+are free-floating.</p>
+<p>Let's start by looking at the abstraction function for concrete
+values—constants:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Parity</span><span class="p">:</span>
+    <span class="c1"># ...</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">const</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">EVEN</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ODD</span>
+</pre></div>
+
+<p>Seems reasonable enough. Let's pause on operations for a moment and consider an
+example program:</p>
+<div class="highlight"><pre><span></span><span class="n">v0</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">v2</span> <span class="o">=</span> <span class="n">lshift</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v3</span> <span class="o">=</span> <span class="n">lshift</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v4</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">)</span>
+<span class="n">v5</span> <span class="o">=</span> <span class="n">dummy</span><span class="p">(</span><span class="n">v4</span><span class="p">)</span>
+</pre></div>
+
+<p>This function (which is admittedly a little contrived) takes two inputs, shifts
+them left by one bit, adds the result, and then checks the least significant
+bit of the addition result. It then passes that result into a <code class="language-plaintext highlighter-rouge">dummy</code> function,
+which you can think of as "return" or "escape".</p>
+<p>To do some abstract interpretation on this program, we'll need to implement the
+transfer functions for <code class="language-plaintext highlighter-rouge">lshift</code> and <code class="language-plaintext highlighter-rouge">add</code> (<code class="language-plaintext highlighter-rouge">dummy</code> will just always return
+<code class="language-plaintext highlighter-rouge">TOP</code>). We'll start with <code class="language-plaintext highlighter-rouge">add</code>. Remember that adding two even numbers returns
+an even number, adding two odd numbers returns an even number, and mixing even
+and odd returns an odd number.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Parity</span><span class="p">:</span>
+    <span class="c1"># ...</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">BOTTOM</span> <span class="ow">or</span> <span class="n">other</span> <span class="ow">is</span> <span class="n">BOTTOM</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BOTTOM</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">TOP</span> <span class="ow">or</span> <span class="n">other</span> <span class="ow">is</span> <span class="n">TOP</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">TOP</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">EVEN</span> <span class="ow">and</span> <span class="n">other</span> <span class="ow">is</span> <span class="n">EVEN</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">EVEN</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">ODD</span> <span class="ow">and</span> <span class="n">other</span> <span class="ow">is</span> <span class="n">ODD</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">EVEN</span>
+        <span class="k">return</span> <span class="n">ODD</span>
+</pre></div>
+
+<p>We also need to fill in the other cases where the operands are <em>top</em> or
+<em>bottom</em>. In this case, they are both "contagious"; if either operand is
+bottom, the result is as well. If neither is bottom but either operand is top,
+the result is as well.</p>
+<p>Now let's look at <code class="language-plaintext highlighter-rouge">lshift</code>. Shifting any number left by a non-zero number of
+bits will always result in an even number, but we need to be careful about the
+zero case! Shifting by zero doesn't change the number at all. Unfortunately,
+since our lattice has no notion of zero, we have to over-approximate here:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Parity</span><span class="p">:</span>
+    <span class="c1"># ...</span>
+    <span class="k">def</span> <span class="nf">lshift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="c1"># self &lt;&lt; other</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="n">ODD</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">EVEN</span>
+        <span class="k">return</span> <span class="n">TOP</span>
+</pre></div>
+
+<p>This means that we will miss some opportunities to optimize, but it's a
+tradeoff that's just part of the game. (We could also add more elements to our
+lattice, but that's a topic for another day.)</p>
+<p>Now, if we run our abstract interpretation, we'll collect some interesting
+properties about the program. If we temporarily hack on the internals of
+<code class="language-plaintext highlighter-rouge">bb_to_str</code>, we can print out parity information alongside the IR operations:</p>
+<div class="highlight"><pre><span></span><span class="n">v0</span><span class="p">:</span><span class="n">top</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">top</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">v2</span><span class="p">:</span><span class="n">even</span> <span class="o">=</span> <span class="n">lshift</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v3</span><span class="p">:</span><span class="n">even</span> <span class="o">=</span> <span class="n">lshift</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v4</span><span class="p">:</span><span class="n">even</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">)</span>
+<span class="n">v5</span><span class="p">:</span><span class="n">top</span> <span class="o">=</span> <span class="n">dummy</span><span class="p">(</span><span class="n">v4</span><span class="p">)</span>
+</pre></div>
+
+<p>This is pretty awesome, because we can see that <code class="language-plaintext highlighter-rouge">v4</code>, the result of the
+addition, is <em>always</em> even. Maybe we can do something with that information.</p>
+<h2 id="optimization">Optimization</h2>
+
+<p>One way that a program might check if a number is odd is by checking the least
+significant bit. This is a common pattern in C code, where you might see code
+like <code class="language-plaintext highlighter-rouge">y = x &amp; 1</code>. Let's introduce a <code class="language-plaintext highlighter-rouge">bitand</code> IR operation that acts like the
+<code class="language-plaintext highlighter-rouge">&amp;</code> operator in C/Python. Here is an example of use of it in our program:</p>
+<div class="highlight"><pre><span></span><span class="n">v0</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">v2</span> <span class="o">=</span> <span class="n">lshift</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v3</span> <span class="o">=</span> <span class="n">lshift</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v4</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">)</span>
+<span class="n">v5</span> <span class="o">=</span> <span class="n">bitand</span><span class="p">(</span><span class="n">v4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># new!</span>
+<span class="n">v6</span> <span class="o">=</span> <span class="n">dummy</span><span class="p">(</span><span class="n">v5</span><span class="p">)</span>
+</pre></div>
+
+<p>We'll hold off on implementing the transfer function for it—that's left as an
+exercise for the reader—and instead do something different.</p>
+<p>Instead, we'll see if we can optimize operations of the form <code class="language-plaintext highlighter-rouge">bitand(X, 1)</code>. If
+we statically know the parity as a result of abstract interpretation, we can
+replace the <code class="language-plaintext highlighter-rouge">bitand</code> with a constant <code class="language-plaintext highlighter-rouge">0</code> or <code class="language-plaintext highlighter-rouge">1</code>.</p>
+<p>We'll first modify the <code class="language-plaintext highlighter-rouge">analyze</code> function (and rename it) to return a new
+<code class="language-plaintext highlighter-rouge">Block</code> containing optimized instructions:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="n">block</span><span class="p">:</span> <span class="n">Block</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Block</span><span class="p">:</span>
+    <span class="n">parity</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">BOTTOM</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">block</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">parity_of</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Constant</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Parity</span><span class="o">.</span><span class="n">const</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parity</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">Block</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
+        <span class="c1"># TODO: Optimize op</span>
+        <span class="c1"># Emit</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+        <span class="c1"># Analyze</span>
+        <span class="n">transfer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Parity</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">parity_of</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">find</span><span class="p">())</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">args</span><span class="p">]</span>
+        <span class="n">parity</span><span class="p">[</span><span class="n">op</span><span class="p">]</span> <span class="o">=</span> <span class="n">transfer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+
+<p>We're approaching this the way that PyPy does things under the hood, which is
+all in roughly a single pass. It tries to optimize an instruction away, and if
+it can't, it copies it into the new block.</p>
+<p>Now let's add in the <code class="language-plaintext highlighter-rouge">bitand</code> optimization. It's mostly some gross-looking
+pattern matching that checks if the right hand side of a bitwise <code class="language-plaintext highlighter-rouge">and</code>
+operation is <code class="language-plaintext highlighter-rouge">1</code> (TODO: the left hand side, too). CF had some neat ideas on how
+to make this more ergonomic, which I might save for later.<sup class="footnote-ref" id="fnref-3"><a href="#fn-3">3</a></sup></p>
+<p>Then, if we know the parity, optimize the <code class="language-plaintext highlighter-rouge">bitand</code> into a constant.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="n">block</span><span class="p">:</span> <span class="n">Block</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Block</span><span class="p">:</span>
+    <span class="n">parity</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">BOTTOM</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">block</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">parity_of</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Constant</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Parity</span><span class="o">.</span><span class="n">const</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parity</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">Block</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
+        <span class="c1"># Try to simplify</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">Operation</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;bitand&quot;</span><span class="p">:</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">Constant</span><span class="p">)</span> <span class="ow">and</span> <span class="n">mask</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">parity_of</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">is</span> <span class="n">EVEN</span><span class="p">:</span>
+                    <span class="n">op</span><span class="o">.</span><span class="n">make_equal_to</span><span class="p">(</span><span class="n">Constant</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="k">continue</span>
+                <span class="k">elif</span> <span class="n">parity_of</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">is</span> <span class="n">ODD</span><span class="p">:</span>
+                    <span class="n">op</span><span class="o">.</span><span class="n">make_equal_to</span><span class="p">(</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="k">continue</span>
+        <span class="c1"># Emit</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+        <span class="c1"># Analyze</span>
+        <span class="n">transfer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Parity</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">parity_of</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">find</span><span class="p">())</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">args</span><span class="p">]</span>
+        <span class="n">parity</span><span class="p">[</span><span class="n">op</span><span class="p">]</span> <span class="o">=</span> <span class="n">transfer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+
+<p>Remember: because we use union-find to rewrite instructions in the optimizer
+(<code class="language-plaintext highlighter-rouge">make_equal_to</code>), later uses of the same instruction get the new
+optimized version "for free" (<code class="language-plaintext highlighter-rouge">find</code>).</p>
+<p>Let's see how it works on our IR:</p>
+<div class="highlight"><pre><span></span><span class="n">v0</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="n">getarg</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">v2</span> <span class="o">=</span> <span class="n">lshift</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v3</span> <span class="o">=</span> <span class="n">lshift</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v4</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">)</span>
+<span class="n">v6</span> <span class="o">=</span> <span class="n">dummy</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+<p>Hey, neat! <code class="language-plaintext highlighter-rouge">bitand</code> disappeared and the argument to <code class="language-plaintext highlighter-rouge">dummy</code> is now the constant
+<code class="language-plaintext highlighter-rouge">0</code> because we know the lowest bit.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>Check out the code in the <a href="https://github.com/tekknolagi/toy/tree/90e1a48a8ef7f8ac42b77f83d04278ed3161e248">toy
+repository</a>.</p>
+<p>Hopefully you have gained a little bit of an intuitive understanding of
+abstract interpretation. Last year, being able to write some code made me more
+comfortable with the math. Now being more comfortable with the math is helping
+me write the code. It's nice upward spiral.</p>
+<p>The two abstract domains we used in this post are simple and not very useful in
+practice but it's possible to get very far using slightly more complicated
+abstract domains. Common domains include: constant propagation, type inference,
+range analysis, effect inference, liveness, etc. For example, here is a a
+sample lattice for constant propagation:</p>
+<figure style="display: block; margin: 0 auto;">
+<!--
+digraph G {
+    rankdir="BT";
+    top [shape=Msquare];
+    bottom [shape=Msquare];
+    bottom -> "-inf";
+    bottom -> "-2";
+    bottom -> "-1";
+    bottom -> 0;
+    bottom -> 1;
+    bottom -> 2;
+    bottom -> "+inf";
+    "-inf" -> negative;
+    "-2" -> negative;
+    "-1" -> negative;
+    0 -> top;
+    1 -> nonnegative;
+    2 -> nonnegative;
+    "+inf" -> nonnegative;
+    negative -> nonzero;
+    nonnegative -> nonzero;
+    nonzero->top;
+    {rank=same; "-inf"; "-2"; "-1"; 0; 1; 2; "+inf"}
+    {rank=same; nonnegative; negative;}
+}
+-->
+    <object class="svg" type="image/svg+xml" data="/assets/img/complex-lattice.svg">
+    </object>
+</figure>
+
+<p>It has multiple levels to indicate more and less precision. For example, you
+might learn that a variable is either <code class="language-plaintext highlighter-rouge">1</code> or <code class="language-plaintext highlighter-rouge">2</code> and be able to encode that as
+<code class="language-plaintext highlighter-rouge">nonnegative</code> instead of just going straight to <code class="language-plaintext highlighter-rouge">top</code>.</p>
+<p>Check out some real-world abstract interpretation in open source projects:</p>
+<ul>
+<li><a href="https://github.com/llvm/llvm-project/blob/main/llvm/lib/Support/KnownBits.cpp">Known bits in LLVM</a></li>
+<li><a href="https://github.com/llvm/llvm-project/blob/main/llvm/lib/IR/ConstantRange.cpp">Constant range in LLVM</a>
+<ul>
+<li>But I am told that the ranges don't form a lattice (see <a href="https://dl.acm.org/doi/10.1145/2651360">Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss</a>)</li>
+</ul>
+</li>
+<li><a href="https://github.com/torvalds/linux/blob/master/kernel/bpf/tnum.c">Tristate numbers for known bits in Linux eBPF</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/28bbe4ea686a023929d907cc168430b61094811c/kernel/bpf/verifier.c#L13335">Range analysis in Linux eBPF</a></li>
+<li><a href="https://github.com/bminor/binutils-gdb/blob/master/gdb/prologue-value.c">GDB prologue analysis</a>
+of assembly to understand the stack and find frame pointers without using
+DWARF (<a href="https://sourceware.org/gdb/wiki/Internals/Prologue%20Analysis">some
+docs</a>)</li>
+</ul>
+<p>If you have some readable examples, please share them so I can add.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+
+<p>Thank you to <a href="https://cfbolz.de/">CF Bolz-Tereick</a> for the toy optimizer and
+helping edit this post!</p>
+
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p>In the words of abstract interpretation researchers Vincent Laviron
+and Francesco Logozzo in their paper <em>Refining Abstract
+Interpretation-based Static Analyses with Hints</em> (APLAS 2009):</p>
+<blockquote>
+<p>The three main elements of an abstract interpretation are: (i) the
+abstract elements ("which properties am I interested in?"); (ii) the
+abstract transfer functions ("which is the abstract semantics of basic
+statements?"); and (iii) the abstract operations ("how do I combine the
+abstract elements?").</p>
+</blockquote>
+<p>We don't have any of these "abstract operations" in this post because
+there's no control flow but you can read about them elsewhere! <a href="#fnref-1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-2">
+<p>These abstract values are arranged in a <em>lattice</em>, which is a
+mathematical structure with some properties but the most important ones are
+that it has a top, a bottom, a partial order, a meet operation, and values
+can only move in one direction on the lattice.</p>
+<p>Using abstract values from a lattice promises two things:</p>
+<ul>
+<li>The analysis will terminate</li>
+<li>The analysis will be correct for <em>any</em> run of the program, not just one
+sample run</li>
+</ul> <a href="#fnref-2" class="footnote-backref">↩</a>
+</li>
+<li id="fn-3">
+<p>Something about <code class="language-plaintext highlighter-rouge">__match_args__</code> and <code class="language-plaintext highlighter-rouge">@property</code>... which
+(update) I think I got working in <a href="https://github.com/tekknolagi/toy/commit/1dd285af2a8f64863c350f32925b1ccd0a17c918">this
+commit</a>. <a href="#fnref-3" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2024-07-23-toy-abstract-interpretation.md" title="Help improve _posts/2024-07-23-toy-abstract-interpretation.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Heating water from afar | Max Bernstein</title>
+    <meta property="og:title" content="Heating water from afar | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/heating-water-from-afar/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Heating water from afar</h1>
+        
+        <div class="post-inline-date"><i>June 24, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p><b>Please do not take anything you read in any of my posts (but
+<i>especially</i> not this post) as engineering advice.</b></p>
+<p>My parents' house has an on-demand water heater for energy efficiency reasons.
+This has a small drawback: you have to press a button to prime the water heater
+and then wait 2-5 minutes before showering.</p>
+<p>This turns into a somewhat bigger drawback for the one room for which it's just
+Not Possible to wire up a button. The water heater company hypothetically sells
+a plug-and-play wireless solution for this sort of thing, but that is seemingly
+incompatible with my parents' walls (???).</p>
+<p>Thankfully, I have a <a href="/blog/wakeonlan/">have a playbook</a> for this.</p>
+<p>There's just one problem: how do I make a Raspberry Pi talk to the water
+heater? I investigated a couple of different approaches:</p>
+<ul>
+<li>analyze and replicate the water heater company's proprietary Bluetooth
+protocol</li>
+<li>install a physical button presser, inspired by the <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">Recurse
+Center</a>'s elevator-related shenanigans</li>
+</ul>
+<p>but after a couple of discussions with my dad and a support tech from the
+company, we determined that we should instead <em>emulate</em> a button press. To find
+out what that means, let's take a look at a very sketchy wiring diagram:</p>
+<figure>
+<object type="image/svg+xml" data="/assets/img/heater-button.svg"></object>
+<figcaption>The heater supplies 12V at 0.2A on the red wire. When the button is
+pressed, it connects the red and black wires, which the heater interprets as a
+signal to start heating. The wire nuts are there because several buttons are
+already joined together this way.</figcaption>
+</figure>
+
+<p>This means we would have to add a new "button" and have it briefly connect two
+wires. Because the last time I actually touched some wires was over 10 years
+ago in robotics and I don't want to start any fires, I reach out to the usual
+suspects: Tom and Logan. They inform me that the thing I am looking for is
+called a relay and that companies sell pre-built relay hats for the Pi. Super.</p>
+<p>I ended up buying:</p>
+<ul>
+<li>A Pi Zero 2W and accoutrements</li>
+<li>A relay hat with headers and stabilization posts</li>
+<li>Telephone wire from the hardware store, which already has bundled red/black
+wire</li>
+</ul>
+<p>At some point I sit down to build the thing and realize that I don't actually
+know how relays work. The relay I bought had three ports: NC, NO, COM. After
+some searching, I figure out that I want one wire in NO ("normally open") and
+one in COM ("common"). This means that the relay, when activated, will close
+the circuit.</p>
+<figure>
+<object type="image/svg+xml" data="/assets/img/heater-button-pi.svg"></object>
+</figure>
+
+<p>I downloaded the sample code from the company that sells the relay hats and
+realized that it is an extremely thin (~10 LOC) wrapper over the existing
+Python GPIO library provided and pre-installed by Raspberry Pi, so I just
+manually inlined it:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="kn">import</span> <span class="nn">RPi.GPIO</span> <span class="k">as</span> <span class="nn">GPIO</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">GPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">GPIO</span><span class="o">.</span><span class="n">BOARD</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">relay</span><span class="p">:</span>
+    <span class="n">relay_pins</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;R1&quot;</span><span class="p">:</span><span class="mi">31</span><span class="p">,</span><span class="s2">&quot;R2&quot;</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="s2">&quot;R3&quot;</span><span class="p">:</span><span class="mi">35</span><span class="p">,</span><span class="s2">&quot;R4&quot;</span><span class="p">:</span><span class="mi">37</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pins</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relay_pins</span><span class="p">[</span><span class="n">pins</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pins</span> <span class="o">=</span> <span class="n">pins</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pin</span><span class="p">,</span><span class="n">GPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pin</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">LOW</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pin</span><span class="p">,</span><span class="n">GPIO</span><span class="o">.</span><span class="n">HIGH</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pin</span><span class="p">,</span><span class="n">GPIO</span><span class="o">.</span><span class="n">LOW</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting water heater...&quot;</span><span class="p">)</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">relay</span><span class="p">(</span><span class="s2">&quot;R2&quot;</span><span class="p">)</span>
+<span class="c1"># time is in seconds, so turn on once for 4ms and then turn off again</span>
+<span class="n">TIME_IN_MS</span><span class="o">=</span><span class="mi">4</span>
+<span class="n">MS_PER_SEC</span><span class="o">=</span><span class="mi">1000</span>
+<span class="n">r2</span><span class="o">.</span><span class="n">on</span><span class="p">()</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">TIME_IN_MS</span><span class="o">/</span><span class="n">MS_PER_SEC</span><span class="p">)</span>
+<span class="n">r2</span><span class="o">.</span><span class="n">off</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...signal sent. Please wait 5 minutes before showering.&quot;</span><span class="p">)</span>
+</pre></div>
+
+<p>If you read my previous post (linked above), you will know that is is, of
+course, a CGI script that is triggered on a website button press:</p>
+<figure>
+<img src="/assets/img/heater-website.png" />
+<figcaption>The tagline under #justshowerthings is randomly selected on page
+load from a medium-long list I wrote. All the items are carefully designed to
+toe the line.</figcaption>
+</figure>
+
+<p>All of the rest of the software is the same as in the previous post. Very
+boring stuff: httpd, systemd. Hopefully nothing goes wrong. But if it does and
+I need to administer this device from afar, I also set up Tailscale (no, this
+is not an ad; just happy).</p>
+<p>The total bill for this came to ~$40 or so, which isn't half bad. It could
+probably be done for 35 cents using an old microcontroller and a paperclip or
+something but I wanted an exceptionally boring (to me) approach. That's all for
+now. Thanks for reading!</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-06-24-heating-water-from-afar.md" title="Help improve _posts/2025-06-24-heating-water-from-afar.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

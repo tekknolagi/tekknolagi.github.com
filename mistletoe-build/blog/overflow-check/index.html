@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Zero-overhead checks with fake stack overflows | Max Bernstein</title>
+    <meta property="og:title" content="Zero-overhead checks with fake stack overflows | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/overflow-check/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Zero-overhead checks with fake stack overflows</h1>
+        
+        <div class="post-inline-date"><i>May 28, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>Imagine you have a virtual machine for a dynamic language. It supports starting
+multiple threads from within the guest language via some API. This is
+immediately challenging right out the gate because it requires keeping some key
+runtime-internal state in sync:</p>
+<ul>
+<li>memory allocator / garbage collector</li>
+<li>compiler</li>
+<li>other bookkeeping</li>
+</ul>
+<p>Instead of locking these components so that only one thread can use those
+shared resources at a time, runtime implementors tend to shard them: each
+thread gets its own slice to work with privately.</p>
+<p>This means that each thread might have a separate mini-heap that it can use
+privately until exhaustion, and only then request a stop-the-world event. But
+how do we indicate that all threads should stop?</p>
+<p>We could do something like check for a flag every N instructions, but this
+introduces significant overhead in the interpreter and does not play well with
+a compiler. Instead, ideally, there would be no overhead in the fast and normal
+case.</p>
+<p>VM implementors have decided to solve this by folding the synchronization check
+into an existing check. <a href="https://github.com/tekknolagi/skybison">Skybison</a>, for example, folds this check into the
+stack overflow check.</p>
+<p>On frame push, we have to check for a stack overflow anyway, so we can re-use
+the slow path. If the main thread wants to synchronize the other
+threads—because the programmer hit Control-C in the REPL, for example,
+causing an interrupt—it can artificially shrink the maximum stack size of the
+other threads. Then, the next time the other threads call a function, they will
+hit this overflow check and go to the slow path. In the slow path, they can
+disambiguate by checking another flag somewhere else.</p>
+<div class="highlight"><pre><span></span><span class="n">Frame</span><span class="o">*</span><span class="w"> </span><span class="nf">Thread::pushNativeFrame</span><span class="p">(</span><span class="n">word</span><span class="w"> </span><span class="n">nargs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">word</span><span class="w"> </span><span class="n">locals_offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Frame</span><span class="o">::</span><span class="n">kSize</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nargs</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kPointerSize</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">UNLIKELY</span><span class="p">(</span><span class="n">wouldStackOverflow</span><span class="p">(</span><span class="n">Frame</span><span class="o">::</span><span class="n">kSize</span><span class="p">)))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">handleInterruptPushNativeFrame</span><span class="p">(</span><span class="n">locals_offset</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">pushNativeFrameImpl</span><span class="p">(</span><span class="n">locals_offset</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">NEVER_INLINE</span><span class="w"> </span><span class="n">Frame</span><span class="o">*</span><span class="w"> </span><span class="n">Thread</span><span class="o">::</span><span class="n">handleInterruptPushNativeFrame</span><span class="p">(</span><span class="n">word</span><span class="w"> </span><span class="n">locals_offset</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">handleInterrupt</span><span class="p">(</span><span class="n">Frame</span><span class="o">::</span><span class="n">kSize</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">Frame</span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pushNativeFrameImpl</span><span class="p">(</span><span class="n">locals_offset</span><span class="p">);</span>
+<span class="w">  </span><span class="n">handleInterruptWithFrame</span><span class="p">();</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>V8 does <a href="https://github.com/v8/v8/blob/3840a5c40c5ea1f44a8d9d534147e1d864e0bcf7/src/maglev/maglev-ir.cc#L1125">something very similar in Maglev</a> on function entry.</p>
+<p>But not all applications involve regular function calls. Sometimes it's
+possible to have a hot loop in which no frames are pushed to the call stack. In
+this case, it might make sense to check for interrupts (or do other thread
+synchronization checks) in loop back-edges. CPython <a href="https://github.com/python/cpython/blob/6322edd260e8cad4b09636e05ddfb794a96a0451/Python/ceval.c#L3846">does this</a>. PyPy
+does too. Ruby's YARV does this too.</p>
+<div class="highlight"><pre><span></span><span class="cm">/* set PC to (PC + dst). */</span>
+<span class="n">DEFINE_INSN</span>
+<span class="n">jump</span>
+<span class="p">(</span><span class="n">OFFSET</span><span class="w"> </span><span class="n">dst</span><span class="p">)</span>
+<span class="p">()</span>
+<span class="p">()</span>
+<span class="cm">/* Same discussion as leave. */</span>
+<span class="c1">// attr bool leaf = leafness_of_check_ints; /* has rb_threadptr_execute_interrupts() */</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">RUBY_VM_CHECK_INTS</span><span class="p">(</span><span class="n">ec</span><span class="p">);</span>
+<span class="w">    </span><span class="n">JUMP</span><span class="p">(</span><span class="n">dst</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>I'm writing this post because PyPy <a href="https://pypy.org/posts/2025/02/pypy-gc-sampling.html">published a post</a> about a new feature
+that uses a similar technique! For sampling profiling, they put their check
+(whether or not to sample) behind a check for exhaustion of the nursery (small
+heap).</p>
+<p>Maybe next time I will write about guard pages, which I recently added to
+RBS...</p>
+<p>Thank you to <a href="https://cfbolz.de/">CF Bolz-Tereick</a> for feedback on this post!</p>
+<h2 id="see-also">See also</h2>
+
+<p><a href="https://www.steveblackburn.org/pubs/papers/yieldpoint-ismm-2015.pdf">Stop and Go</a> (PDF), which benchmarks conditional checks, loads,
+and stores for polling yieldpoints. Thanks to Per Vognsen for sending me this.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-05-28-overflow-check.md" title="Help improve _posts/2025-05-28-overflow-check.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

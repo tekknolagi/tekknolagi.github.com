@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Adding row polymorphism to Damas-Hindley-Milner | Max Bernstein</title>
+    <meta property="og:title" content="Adding row polymorphism to Damas-Hindley-Milner | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/row-poly/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Adding row polymorphism to Damas-Hindley-Milner</h1>
+        
+        <div class="post-inline-date"><i>October 22, 2024</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <h2 id="intro-to-hm">Intro to HM</h2>
+
+<p>Damas-Hindley-Milner (HM) is a type system for Standard ML and the ML-family
+languages. River and I <a href="/blog/type-inference">wrote about it</a> earlier this
+month. Check out that post if you would like an introduction or refresher. In
+this post, we'll add <em>row polymorphism</em> to it. We'll do it in the context of
+<a href="/blog/scrapscript">scrapscript</a>'s implementation of Algorithm J, but the core
+ideas should be language and algorithm-independent.</p>
+<h2 id="records">Records</h2>
+
+<p>A record is an unordered collection of <em>name</em> to <em>value</em> mappings, like <code class="language-plaintext highlighter-rouge">{ x = 1, y = &quot;hello&quot; }</code>. Scrapscript has a very dynamic notion of records in the
+interpreter and the compiler: any record can have any number of fields, with
+any names, with any values. This makes code like the following possible:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>get_x { x=1, y=2 }
+. get_x =
+  | { x=x, ... } -&gt; x
+</code></pre></div></div>
+
+<p>At run-time, the pattern matching looks for a field named <code class="language-plaintext highlighter-rouge">x</code> in the record and
+ignores the rest. The spread (<code class="language-plaintext highlighter-rouge">...</code>) indicates that it's okay to also have
+other fields in the record. If the pattern were instead <code class="language-plaintext highlighter-rouge">{ x=x }</code>, then the
+match would fail at run-time due to excess fields.</p>
+<p>The following snippet also runs even though <code class="language-plaintext highlighter-rouge">left</code> and <code class="language-plaintext highlighter-rouge">right</code> have different
+leftover record parts:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>get_x left + get_x right
+. left  = { x = 1, y = 2 }
+. right = { x = 1, y = 2, z = 3 }
+. get_x = | { x = x, ... } -&gt; x
+</code></pre></div></div>
+
+<p>This "leftover" bit isn't straightforward to model in the type system. We'll
+need some special sauce there.</p>
+<p>Right now, in the type system, we don't support records at all. If we try to
+infer the type of one, it'll fail with "unsupported" or something. We need to
+model records in the type system.</p>
+<h2 id="rows">Rows</h2>
+
+<p>A lot of papers use a notion of <em>rows</em> to model records, kind of how you can
+use cons cells to model lists. A <em>row</em> is a mapping of names to types, like
+<code class="language-plaintext highlighter-rouge">{x=int, y=string}</code>. Rows also have a special field called <em>rest</em> which
+contains the type of the leftover fields. It's either a type variable or the
+<em>empty row</em>.</p>
+<p>Having the empty row means that the record has no leftover fields. In fact, the
+example row above (<code class="language-plaintext highlighter-rouge">{x=int, y=string}</code>) is assumed to have the empty row as its
+<em>rest</em> field because all of these papers love shorthand. If it were extensible,
+if it had a type variable as its <em>rest</em> field, then it would be written as
+<code class="language-plaintext highlighter-rouge">{x=int, y=string, ...&#x27;a}</code>.</p>
+<p>This does mean that it's possible to have nested rows like <code class="language-plaintext highlighter-rouge">{x=int, ...&#x27;a={y=string, ...&#x27;b}}</code>. This is normal but you'll never see it in notation
+because everybody <strong>implicitly flattens the rows</strong> because it looks nicer. Also
+because unification happens on the flattened rows, but we'll get there later.
+Now let's talk about the data structures we'll use to implement rows. We'll
+reuse some of the data structures from the intro-to-HM post.</p>
+<h2 id="the-data-structures">The data structures</h2>
+
+<p>It's as I said: a row is either an empty row (<code class="language-plaintext highlighter-rouge">TyEmptyRow</code>) or has fields and a
+leftover/rest field (<code class="language-plaintext highlighter-rouge">TyRow</code>).</p>
+<div class="highlight"><pre><span></span><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">TyEmptyRow</span><span class="p">(</span><span class="n">MonoType</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">TyRow</span><span class="p">(</span><span class="n">MonoType</span><span class="p">):</span>
+    <span class="n">fields</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MonoType</span><span class="p">]</span>
+    <span class="n">rest</span><span class="p">:</span> <span class="n">TyVar</span> <span class="o">|</span> <span class="n">TyEmptyRow</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">TyEmptyRow</span><span class="p">)</span>
+</pre></div>
+
+<p>In order to unify and print rows, we'll often deal with them in their flattened
+representation, which is a collapsed tuple of fields and a rest type. One key
+difference: because it is collapsed, the <em>rest</em> must be either the empty row or
+an <strong>unbound</strong> type variable.</p>
+<p>Also: not everybody uses the exact same representation. Some go for more
+cons-cell-like representations where every row has a <code class="language-plaintext highlighter-rouge">label</code> and a <code class="language-plaintext highlighter-rouge">type</code> and
+then a <code class="language-plaintext highlighter-rouge">rest</code>—no <code class="language-plaintext highlighter-rouge">fields</code> dict. They're equivalent.</p>
+<h2 id="inferring-record-literals">Inferring record literals</h2>
+
+<p>When we're inferring the type of a record literal, we infer the types of the
+values and then construct a row from them. We should never see a <code class="language-plaintext highlighter-rouge">...</code> in a
+record literal because we only support it in pattern matching.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">infer_type</span><span class="p">(</span><span class="n">expr</span><span class="p">:</span> <span class="n">Object</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MonoType</span><span class="p">:</span>
+    <span class="c1"># ...</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rest</span><span class="p">:</span> <span class="n">TyVar</span> <span class="o">|</span> <span class="n">TyEmptyRow</span> <span class="o">=</span> <span class="n">TyEmptyRow</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">expr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Spread</span><span class="p">)</span>
+            <span class="n">fields</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">infer_type</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">set_type</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">TyRow</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">rest</span><span class="p">))</span>
+    <span class="c1"># ...</span>
+</pre></div>
+
+<h2 id="pattern-matching-on-records">Pattern matching on records</h2>
+
+<p>Pattern matching inference changed a little bit since the last post but not
+enough to make a big deal out of it. We now use this kind-of-similar
+<code class="language-plaintext highlighter-rouge">infer_pattern_type</code> function to infer the type of a pattern. It looks similar
+to <code class="language-plaintext highlighter-rouge">infer_type</code> but it's a little more complicated because it has to invent
+fresh type variables for all variables in the pattern and it also has to deal
+with spread.</p>
+<p>In the case of records, we default to building a closed row. However, if we see
+a spread, we invent a fresh type variable and use that as the <em>rest</em> of the
+row.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">infer_pattern_type</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="n">Object</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MonoType</span><span class="p">:</span>
+    <span class="c1"># ...</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rest</span><span class="p">:</span> <span class="n">TyVar</span> <span class="o">|</span> <span class="n">TyEmptyRow</span> <span class="o">=</span> <span class="n">TyEmptyRow</span><span class="p">()</span>  <span class="c1"># Default closed row</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Spread</span><span class="p">):</span>
+                <span class="c1"># Open row</span>
+                <span class="n">rest</span> <span class="o">=</span> <span class="n">fresh_tyvar</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">ctx</span><span class="p">[</span><span class="n">value</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Forall</span><span class="p">([],</span> <span class="n">rest</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="n">fields</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">infer_pattern_type</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">set_type</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">TyRow</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">rest</span><span class="p">))</span>
+    <span class="c1"># ...</span>
+</pre></div>
+
+<p>We also bind the <em>rest</em> variable to the name of the spread, if it's named. This
+means we can do stuff like <code class="language-plaintext highlighter-rouge">| { x=x, ...rest } -&gt; something</code> and then use
+<code class="language-plaintext highlighter-rouge">rest</code> in the <code class="language-plaintext highlighter-rouge">something</code> expression.</p>
+<h2 id="unifying-rows-building-intuition">Unifying rows: building intuition</h2>
+
+<p>I don't want to get too into it yet, but I want to explain that rows aren't
+special in unification. I thought that there was some quirk or trick in the
+representation that enabled row polymorphism, but that's not the case <em>at all</em>
+(shout-out to <a href="https://osa1.net/">Sinan</a> and <a href="https://k-monk.org/">River</a> for making this clear).</p>
+<p>Unification is just unification. Whatever types it gets, it <em>will</em> make them
+equal. Permanently. If it can't, there's a type error. Let's look at some
+examples:</p>
+<ul>
+<li><code class="language-plaintext highlighter-rouge">{x=int}</code> unifies with <code class="language-plaintext highlighter-rouge">{x=int}</code></li>
+<li><code class="language-plaintext highlighter-rouge">{x=int}</code> <strong>does not</strong> unify with <code class="language-plaintext highlighter-rouge">{x=string}</code> because the types that
+correspond with <code class="language-plaintext highlighter-rouge">x</code> don't unify
+<ul>
+<li>Some type systems allow this by having a notion of "type sets" and I think
+this might be related to polymorphic variants but I'm not sure</li>
+</ul>
+</li>
+<li><code class="language-plaintext highlighter-rouge">{x=int}</code> <strong>does not</strong> unify with <code class="language-plaintext highlighter-rouge">{y=string}</code> because the fields don't match
+and they are not extensible</li>
+<li><code class="language-plaintext highlighter-rouge">{x=int, ...&#x27;a}</code> unifies with <code class="language-plaintext highlighter-rouge">{y=string, ...&#x27;b}</code>
+<ul>
+<li>unification will set <code class="language-plaintext highlighter-rouge">&#x27;a</code> equal to <code class="language-plaintext highlighter-rouge">{y=string, ...&#x27;c}</code> and <code class="language-plaintext highlighter-rouge">&#x27;b</code> equal to <code class="language-plaintext highlighter-rouge">{x=int, ...&#x27;c}</code></li>
+<li>note how they both get the same leftover row <code class="language-plaintext highlighter-rouge">&#x27;c</code> because they are
+<em>unified</em> and supposed to <em>stay that way</em></li>
+</ul>
+</li>
+</ul>
+<p>Okay, so that means that if you have a function that is meant to be generic
+over a single field, how does that work? How can you have <code class="language-plaintext highlighter-rouge">| {x=x, ...} -&gt; x</code>
+if for every call to that function, the type of <code class="language-plaintext highlighter-rouge">...</code> keeps expanding as it is
+unified? It might start as <code class="language-plaintext highlighter-rouge">{x=int, ...&#x27;a} -&gt; int</code> but over time <code class="language-plaintext highlighter-rouge">&#x27;a</code> will get bound
+to other row types and it might end up as <code class="language-plaintext highlighter-rouge">{x=int, y=int, z=int, ...&#x27;d}</code> and
+that will be too restrictive! <em>What's going on??</em></p>
+<h2 id="let-polymorphism">Let polymorphism</h2>
+
+<p>What's actually happening is boring: let polymorphism strikes once again. We
+talked about let polymorphism in the last post, but here's a refresher: if you
+have an unbound type variable in a let-bound function type, it will get
+generalized with a <code class="language-plaintext highlighter-rouge">forall</code>.</p>
+<p>Have a function <code class="language-plaintext highlighter-rouge">&#x27;a list -&gt; &#x27;a</code>? Well, the type in the context (the environment
+that deals in type variables) is actually <code class="language-plaintext highlighter-rouge">forall &#x27;a. &#x27;a list -&gt; &#x27;a</code>. Every use
+of that named function will <em>instantiate</em> that <code class="language-plaintext highlighter-rouge">forall</code> with a fresh type
+variable (maybe <code class="language-plaintext highlighter-rouge">&#x27;b</code> or <code class="language-plaintext highlighter-rouge">&#x27;t123</code> or whatever). This means that the same function
+can be generic over one or more type variables. Great.</p>
+<p>So that pattern match function above? The one with type <code class="language-plaintext highlighter-rouge">{x=int, ...&#x27;a} -&gt; int</code>? Well, if it's bound to a name, it will get generalized to <code class="language-plaintext highlighter-rouge">forall &#x27;a. {x=int, ...&#x27;a} -&gt; int</code>. So every call, well... you know the rest. That's row
+polymorphism.</p>
+<h2 id="unifying-rows-brass-tacks">Unifying rows: brass tacks</h2>
+
+<p>Alright, well, assuming we have what I thought was the hard part done already,
+let's go over unification in excruciating detail. We'll start with a neat
+little base case: empty rows can only unify with other empty rows:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">unify_type</span><span class="p">(</span><span class="n">ty1</span><span class="p">:</span> <span class="n">MonoType</span><span class="p">,</span> <span class="n">ty2</span><span class="p">:</span> <span class="n">MonoType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># ...</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ty1</span><span class="p">,</span> <span class="n">TyEmptyRow</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ty2</span><span class="p">,</span> <span class="n">TyEmptyRow</span><span class="p">):</span>
+        <span class="k">return</span>
+    <span class="c1"># ...</span>
+</pre></div>
+
+<p>Yay, nice. Let's continue. We'll start by flattening the rows.</p>
+<p>For every field name present in either row, we'll try to unify the types
+pairwise. But if it's missing in one of the rows, we have to add it to the
+other one. So we collect that in <code class="language-plaintext highlighter-rouge">ty1_missing</code> (missing from <code class="language-plaintext highlighter-rouge">ty1</code>) and
+<code class="language-plaintext highlighter-rouge">ty2_missing</code> (missing from <code class="language-plaintext highlighter-rouge">ty2</code>).</p>
+<p>This leaves us with four cases:</p>
+<ol>
+<li>Both rows have all the same fields. In that case, we unify the <em>rest</em>s so
+they stay the same.</li>
+<li>One row has all the same fields as the other and also some more. In that
+case, add the missing fields to the other (smaller) row. Note that they
+share a <em>rest</em>.</li>
+<li>The same, but flipped the other direction.</li>
+<li>They each have fields the other lacks. In that case, create new rows with
+the missing fields and share a <em>rest</em>.</li>
+</ol>
+<p>Now follow along in code:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">unify_type</span><span class="p">(</span><span class="n">ty1</span><span class="p">:</span> <span class="n">MonoType</span><span class="p">,</span> <span class="n">ty2</span><span class="p">:</span> <span class="n">MonoType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># ...</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ty1</span><span class="p">,</span> <span class="n">TyRow</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ty2</span><span class="p">,</span> <span class="n">TyRow</span><span class="p">):</span>
+        <span class="n">ty1_fields</span><span class="p">,</span> <span class="n">ty1_rest</span> <span class="o">=</span> <span class="n">row_flatten</span><span class="p">(</span><span class="n">ty1</span><span class="p">)</span>
+        <span class="n">ty2_fields</span><span class="p">,</span> <span class="n">ty2_rest</span> <span class="o">=</span> <span class="n">row_flatten</span><span class="p">(</span><span class="n">ty2</span><span class="p">)</span>
+        <span class="n">ty1_missing</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ty2_missing</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">all_field_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ty1_fields</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">ty2_fields</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_field_names</span><span class="p">):</span>  <span class="c1"># Sort for deterministic error messages</span>
+            <span class="n">ty1_val</span> <span class="o">=</span> <span class="n">ty1_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">ty2_val</span> <span class="o">=</span> <span class="n">ty2_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ty1_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ty2_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">unify_type</span><span class="p">(</span><span class="n">ty1_val</span><span class="p">,</span> <span class="n">ty2_val</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ty1_val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">ty2_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="n">ty1_missing</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ty2_val</span>
+            <span class="k">elif</span> <span class="n">ty2_val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">ty1_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="n">ty2_missing</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ty1_val</span>
+        <span class="c1"># In general, we want to:</span>
+        <span class="c1"># 1) Add missing fields from one row to the other row</span>
+        <span class="c1"># 2) &quot;Keep the rows unified&quot; by linking each row&#39;s rest to the other</span>
+        <span class="c1">#    row&#39;s rest</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ty1_missing</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ty2_missing</span><span class="p">:</span>
+            <span class="c1"># They both have the same fields for now, so make sure they have</span>
+            <span class="c1"># the same fields *forever* by unifying the rests.</span>
+            <span class="n">unify_type</span><span class="p">(</span><span class="n">ty1_rest</span><span class="p">,</span> <span class="n">ty2_rest</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ty1_missing</span><span class="p">:</span>
+            <span class="c1"># The first row has fields that the second row doesn&#39;t have; add</span>
+            <span class="c1"># them to the second row</span>
+            <span class="n">unify_type</span><span class="p">(</span><span class="n">ty2_rest</span><span class="p">,</span> <span class="n">TyRow</span><span class="p">(</span><span class="n">ty2_missing</span><span class="p">,</span> <span class="n">ty1_rest</span><span class="p">))</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ty2_missing</span><span class="p">:</span>
+            <span class="c1"># The second row has fields that the first row doesn&#39;t have; add</span>
+            <span class="c1"># them to the first row</span>
+            <span class="n">unify_type</span><span class="p">(</span><span class="n">ty1_rest</span><span class="p">,</span> <span class="n">TyRow</span><span class="p">(</span><span class="n">ty1_missing</span><span class="p">,</span> <span class="n">ty2_rest</span><span class="p">))</span>
+            <span class="k">return</span>
+        <span class="c1"># They each have fields the other lacks; create new rows sharing a rest</span>
+        <span class="c1"># and add the missing fields to each row</span>
+        <span class="n">rest</span> <span class="o">=</span> <span class="n">fresh_tyvar</span><span class="p">()</span>
+        <span class="n">unify_type</span><span class="p">(</span><span class="n">ty1_rest</span><span class="p">,</span> <span class="n">TyRow</span><span class="p">(</span><span class="n">ty1_missing</span><span class="p">,</span> <span class="n">rest</span><span class="p">))</span>
+        <span class="n">unify_type</span><span class="p">(</span><span class="n">ty2_rest</span><span class="p">,</span> <span class="n">TyRow</span><span class="p">(</span><span class="n">ty2_missing</span><span class="p">,</span> <span class="n">rest</span><span class="p">))</span>
+        <span class="k">return</span>
+    <span class="c1"># ...</span>
+</pre></div>
+
+<p>There's a lot of code but the important thing to know is that both rows are
+going to end up with the same fields and the same rest type.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>There you have it. That constitutes row polymorphism. There's some other stuff
+we don't need to get into because Scrapscript doesn't have some language
+features. For example, Daan Leijen of scoped labels fame <a href="https://news.ycombinator.com/item?id=41857230">jumped into the
+Hacker News thread</a> to explain
+why we might not need scoped/shadowed/duplicate labels:</p>
+<blockquote>
+<p>About duplicate labels.. one needs to retain the duplicate field at runtime
+<em>if</em> there is a "remove_l" or "mask_l" operation that drops a field "l". For
+example, <code class="language-plaintext highlighter-rouge">{x=2,x=True}.remove_x.x</code> == <code class="language-plaintext highlighter-rouge">True</code>. (Where the type of <code class="language-plaintext highlighter-rouge">remove_l</code>
+is <code class="language-plaintext highlighter-rouge">{l:a|r} -&gt; {r}</code>)</p>
+</blockquote>
+<p>Since we don't have such a masking operation, our lives are easier. Cool.</p>
+<p>We've heard that we can use rows to implement polymorphic variants, but haven't
+figured that part out yet...</p>
+<!--
+## Variants
+
+Scrapscript supports variants or tags similar to OCaml's notion of [polymorphic
+variants](https://ocaml.org/manual/5.2/polyvariant.html). We don't have any
+encoding in the type system for these right now.
+
+We're currently reading:
+
+* [Programming with Polymorphic Variants](https://caml.inria.fr/pub/papers/garrigue-polymorphic_variants-ml98.pdf) (PDF, 1998)
+* [Restrictable Variants: A Simple and Practical Alternative to Extensible Variants](https://drops.dagstuhl.de/storage/00lipics/lipics-vol263-ecoop2023/LIPIcs.ECOOP.2023.17/LIPIcs.ECOOP.2023.17.pdf) (PDF, 2003)
+
+Please recommend additional papers, blog posts, and implementations.
+-->
+
+<h2 id="see-also">See also</h2>
+
+<p>Check out the <a href="https://github.com/tekknolagi/scrapscript/pull/197">Scrapscript
+PR</a>.</p>
+<p>Our row polymorphism references are the same as last time, repeated here:</p>
+<ul>
+<li><a href="https://web.cecs.pdx.edu/~mpj/pubs/96-3.pdf">A Polymorphic Type System for Extensible Records and Variants</a> (PDF, 1996)</li>
+<li><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/scopedlabels.pdf">Extensible records with scoped labels</a> (PDF, 2005)</li>
+<li><a href="https://dl.acm.org/doi/pdf/10.1145/1159803.1159836">Extensible Programming with First-Class Cases</a> (PDF, 2006)</li>
+<li><a href="https://dl.acm.org/doi/10.1145/2951913.2951928">Set-Theoretic Types for Polymorphic Variants</a> (2016)</li>
+<li><a href="https://arxiv.org/pdf/1812.11665">Generic programming in OCaml</a> (PDF, 2018)</li>
+<li><a href="https://dl.acm.org/doi/pdf/10.1145/3290325">Abstracting extensible data types: or, rows by any other name</a> (PDF, 2019)
+<ul>
+<li>Incredible paper title</li>
+</ul>
+</li>
+<li><a href="https://dl.acm.org/doi/abs/10.1145/3622836">Structural Subtyping as Parametric Polymorphism</a> (PDF, 2023)</li>
+<li><a href="https://osa1.net/posts/2023-01-23-fast-polymorphic-record-access.html">Fast polymorphic record access</a> (2023)</li>
+</ul>
+<p>Please recommend additional papers, blog posts, and implementations.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2024-10-22-row-poly.md" title="Help improve _posts/2024-10-22-row-poly.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

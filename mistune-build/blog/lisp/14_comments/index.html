@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Writing a Lisp, Part 14: Comments | Max Bernstein</title>
+    <meta property="og:title" content="Writing a Lisp, Part 14: Comments | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/lisp/14_comments/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Writing a Lisp, Part 14: Comments</h1>
+        
+        <div class="post-inline-date"><i>March 15, 2017</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>It would be really nice if we could document our code in line. Right? I mean,
+look back at the <a href="../12_metacircular/">metacircular evaluator</a>. It had comments
+that made the functions so much clearer... but we couldn't actually use that
+code because our interpreter has no idea what a semicolon is. Turns out this is
+really easy to add to our reader, so this post will be fairly short.</p>
+<p>All we <em>really</em> need to do to add line comments is add the ability to say &quot;if
+we see a semicolon, ignore the rest of the line&quot;. That means we can do things
+like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ocaml 14_comments.ml
+&gt; ((lambda ; this is a lambda
+(x) (+ x 1)) 4)
+5
+&gt; Exception: End_of_file.
+$
+</code></pre></div></div>
+<p>While that comment is not at all useful, it <em>does</em> get ignored when evaluating
+the expression, which is what we want. But enough fluffing about. The
+implementation is a grand total of 4 lines:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">read_sexp</span> <span class="n">stm</span> <span class="o">=</span>
+  <span class="o">[...]</span>
+  <span class="k">let</span> <span class="k">rec</span> <span class="n">eat_comment</span> <span class="n">stm</span> <span class="o">=</span>                          <span class="c">(* NEW *)</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">read_char</span> <span class="n">stm</span><span class="o">)</span> <span class="o">=</span> <span class="sc">&#39;\n&#39;</span> <span class="k">then</span> <span class="bp">()</span> <span class="k">else</span> <span class="n">eat_comment</span> <span class="n">stm</span>
+  <span class="k">in</span>
+  <span class="n">eat_whitespace</span> <span class="n">stm</span><span class="o">;</span>
+  <span class="k">let</span> <span class="n">c</span> <span class="o">=</span> <span class="n">read_char</span> <span class="n">stm</span> <span class="k">in</span>
+  <span class="k">if</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">&#39;;&#39;</span> <span class="k">then</span> <span class="o">(</span><span class="n">eat_comment</span> <span class="n">stm</span><span class="o">;</span> <span class="n">read_sexp</span> <span class="n">stm</span><span class="o">)</span>   <span class="c">(* NEW *)</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="n">is_symstartchar</span> <span class="n">c</span>
+  <span class="o">[...]</span>
+</pre></div>
+<p>And the code reads pretty much the same as the English. If we wanted to, we
+could pre-emptively eat comments like we do whitespace, or we could have a
+separate preprocessing step entirely — but this is fine for now.</p>
+<p>Since we now support comments, I've transferred the comments from the
+metacircular evaluator post into the new-and-improved version with <code class="language-plaintext highlighter-rouge">letrec</code>!
+The results can be found <a href="/resources/lisp/14_comments.lsp">here (lisp)</a>.</p>
+<p>Download the code <a href="/resources/lisp/14_comments.ml">here (ml)</a> if you want to mess with it.</p>
+<p>Next up, <a href="/blog/lisp/15_io/">printing</a>. How else are we going to
+debug our code? /s</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_blog_lisp/14_comments.md" title="Help improve _blog_lisp/14_comments.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

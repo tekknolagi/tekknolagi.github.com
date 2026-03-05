@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>A simple search engine from scratch* | Max Bernstein</title>
+    <meta property="og:title" content="A simple search engine from scratch* | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/simple-search/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">A simple search engine from scratch*</h1>
+        
+        <div class="post-inline-date"><i>May 20, 2025</i></div>
+        
+        <div class="post-co-authors">
+        
+            
+            
+            
+                With co-author <i>Chris Gregory</i>!
+            
+        
+        </div>
+        <div class="container">
+            <p>*if you include word2vec.</p>
+<p><a href="https://www.chrisgregory.me/">Chris</a> and I spent a couple hours the other day
+creating a search engine for my blog from &quot;scratch&quot;. Mostly he walked me
+through it because I only vaguely knew what word2vec was before this experiment.</p>
+<p>The search engine we made is built on <em>word embeddings</em>. This refers to some
+function that takes a word and maps it onto N-dimensional space (in this case,
+N=300) where each dimension vaguely corresponds to some axis of meaning.
+<a href="https://jaketae.github.io/study/word2vec/">Word2vec from Scratch</a> is a nice
+blog post that shows how to train your own mini word2vec and explains the
+internals.</p>
+<p>The idea behind the search engine is to embed each of my posts into this domain
+by adding up the embeddings for the words in the post. For a given
+search, we'll embed the search the same way. Then we can rank all posts by
+their <a href="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarities</a>
+to the query.</p>
+<p>The equation below might look scary but it's saying that the cosine similarity,
+which is the cosine of the angle between the two vectors <code class="language-plaintext highlighter-rouge">cos(theta)</code>, is
+defined as the dot product divided by the product of the magnitudes of each
+vector. We'll walk through it all in detail.</p>
+<figure>
+<img src="/assets/img/cosine-similarity.svg" />
+<figcaption>Equation from Wikimedia's <a href="https://en.wikipedia.org/wiki/Cosine_similarity">Cosine similarity</a>
+page.</figcaption>
+</figure>
+
+<p>Cosine distance is probably the simplest method for comparing a query embedding
+to document embeddings to rank documents. Another intuitive choice might be
+euclidean distance, which would measure how far apart two vectors are in space
+(rather than the angle between them).</p>
+<p>We prefer cosine distance because it preserves our intuition that two vectors
+have similar meanings if they have the same proportion of each embedding
+dimension. If you have two vectors that point in the same direction, but one is
+very long and one very short, these should be considered the same meaning. (If
+two documents are about cats, but one says the word cat much more, they're
+still just both about cats).</p>
+<p>Let's open up word2vec and embed our first words.</p>
+<h2 id="embedding">Embedding</h2>
+<p>We take for granted this database of the top 10,000 most popular word
+embeddings, which is a 12MB pickle file that vaguely looks like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>couch  [0.23, 0.05, ..., 0.10]
+banana [0.01, 0.80, ..., 0.20]
+...
+</code></pre></div></div>
+<p>Chris sent it to me over the internet. If you unpickle it, it's actually a
+NumPy data structure: a dictionary mapping strings to <code class="language-plaintext highlighter-rouge">numpy.float32</code> arrays. I
+wrote a script to transform this pickle file into plain old Python floats and
+lists because I wanted to do this all by hand.</p>
+<p>The loading code is straighforward: use the <code class="language-plaintext highlighter-rouge">pickle</code> library. The usual
+security caveats apply, but I trust Chris.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">word2vec</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;word2vec.pkl&quot;</span><span class="p">)</span>
+</pre></div>
+<p>You can print out <code class="language-plaintext highlighter-rouge">word2vec</code> if you like, but it's going to be a lot of output.
+I learned that the hard way. Maybe print <code class="language-plaintext highlighter-rouge">word2vec[&quot;cat&quot;]</code> instead. That will
+print out the embedding.</p>
+<p>To embed a word, we need only look it up in the enormous dictionary. A nonsense
+or uncommon word might not be in there, though, so we return <code class="language-plaintext highlighter-rouge">None</code> in that
+case instead of raising an error.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">embed_word</span><span class="p">(</span><span class="n">word2vec</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">word2vec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</pre></div>
+<p>To embed multiple words, we embed each one individually and then add up the
+embeddings pairwise. If a given word is not embeddable, ignore it. It's only a
+problem if we can't understand any of the words.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">vec_add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)]</span>
+
+<span class="k">def</span> <span class="nf">embed_words</span><span class="p">(</span><span class="n">word2vec</span><span class="p">,</span> <span class="n">words</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">word2vec</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+    <span class="n">num_known</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+        <span class="n">embedding</span> <span class="o">=</span> <span class="n">word2vec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">embedding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">vec_add</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">embedding</span><span class="p">)</span>
+            <span class="n">num_known</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">num_known</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I can&#39;t understand any of </span><span class="si">{</span><span class="n">words</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+<p>That's the basics of embedding: it's a dictionary lookup and vector adds.</p>
+<div class="highlight"><pre><span></span><span class="n">embed_words</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">])</span> <span class="o">==</span> <span class="n">vec_add</span><span class="p">(</span><span class="n">embed_word</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">embed_word</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+</pre></div>
+<p>Now let's make our &quot;search engine index&quot;, or the embeddings for all of my
+posts.</p>
+<h2 id="embedding-all-of-the-posts">Embedding all of the posts</h2>
+<p>Embedding all of the posts is a recursive directory traversal where we build up
+a dictionary mapping path name to embedding.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">def</span> <span class="nf">load_post</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">normalize_text</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">load_posts</span><span class="p">():</span>
+    <span class="c1"># Walk _posts looking for *.md files</span>
+    <span class="n">posts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="s2">&quot;_posts&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.md&quot;</span><span class="p">):</span>
+                <span class="n">pathname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+                <span class="n">posts</span><span class="p">[</span><span class="n">pathname</span><span class="p">]</span> <span class="o">=</span> <span class="n">load_post</span><span class="p">(</span><span class="n">pathname</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">posts</span>
+
+<span class="n">post_embeddings</span> <span class="o">=</span> <span class="p">{</span><span class="n">pathname</span><span class="p">:</span> <span class="n">embed_words</span><span class="p">(</span><span class="n">word2vec</span><span class="p">,</span> <span class="n">words</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">pathname</span><span class="p">,</span> <span class="n">words</span> <span class="ow">in</span> <span class="n">posts</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;post_embeddings.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">post_embeddings</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+<p>We do this other thing, though: <code class="language-plaintext highlighter-rouge">normalize_text</code>. This is because blog posts
+are messy and contain punctuation, capital letters, and all other kinds of
+nonsense. In order to get the best match, we want to put things like &quot;CoMpIlEr&quot;
+and &quot;compiler&quot; in the same bucket.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+<span class="k">def</span> <span class="nf">normalize_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^a-zA-Z]&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</pre></div>
+<p>We'll do the same thing for each query, too. Speaking of, we should test this
+out. Let's make a little search REPL.</p>
+<h2 id="a-little-search-repl">A little search REPL</h2>
+<p>We'll start off by using some Python's built-in REPL creator library, <code class="language-plaintext highlighter-rouge">code</code>.
+We can make a subclass that defines a <code class="language-plaintext highlighter-rouge">runsource</code> method. All it really needs
+to do is process the <code class="language-plaintext highlighter-rouge">source</code> input and return a falsy value (otherwise it
+waits for more input).</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">code</span>
+
+<span class="k">class</span> <span class="nc">SearchRepl</span><span class="p">(</span><span class="n">code</span><span class="o">.</span><span class="n">InteractiveConsole</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word2vec</span><span class="p">,</span> <span class="n">post_embeddings</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word2vec</span> <span class="o">=</span> <span class="n">word2vec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_embeddings</span> <span class="o">=</span> <span class="n">post_embeddings</span>
+
+    <span class="k">def</span> <span class="nf">runsource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&lt;input&gt;&quot;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;single&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+<p>Then we can define a <code class="language-plaintext highlighter-rouge">search</code> function that pulls together our existing
+functions. Just like that, we have a search:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SearchRepl</span><span class="p">(</span><span class="n">code</span><span class="o">.</span><span class="n">InteractiveConsole</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_text</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="c1"># Embed query</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">normalize_text</span><span class="p">(</span><span class="n">query_text</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">query_embedding</span> <span class="o">=</span> <span class="n">embed_words</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word2vec</span><span class="p">,</span> <span class="n">words</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">SyntaxError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c1"># Cosine similarity</span>
+        <span class="n">post_ranks</span> <span class="o">=</span> <span class="p">{</span><span class="n">pathname</span><span class="p">:</span> <span class="n">vec_cosine_similarity</span><span class="p">(</span><span class="n">query_embedding</span><span class="p">,</span>
+                                                      <span class="n">embedding</span><span class="p">)</span> <span class="k">for</span> <span class="n">pathname</span><span class="p">,</span>
+                      <span class="n">embedding</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_embeddings</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">posts_by_rank</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">post_ranks</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+                               <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">entry</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">top_n_posts_by_rank</span> <span class="o">=</span> <span class="n">posts_by_rank</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">path</span> <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">top_n_posts_by_rank</span><span class="p">]</span>
+</pre></div>
+<p>Yes, we have to do a cosine similarity. Thankfully, the Wikipedia math snippet
+translates almost 1:1 to Python code:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+
+<span class="k">def</span> <span class="nf">vec_norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]))</span>
+
+<span class="k">def</span> <span class="nf">vec_cosine_similarity</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">a_norm</span> <span class="o">=</span> <span class="n">vec_norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">b_norm</span> <span class="o">=</span> <span class="n">vec_norm</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">dot_product</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ax</span><span class="o">*</span><span class="n">bx</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">bx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">dot_product</span><span class="o">/</span><span class="p">(</span><span class="n">a_norm</span><span class="o">*</span><span class="n">b_norm</span><span class="p">)</span>
+</pre></div>
+<p>Finally, we can create and run the REPL.</p>
+<div class="highlight"><pre><span></span><span class="n">sys</span><span class="o">.</span><span class="n">ps1</span> <span class="o">=</span> <span class="s2">&quot;QUERY. &quot;</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">ps2</span> <span class="o">=</span> <span class="s2">&quot;...... &quot;</span>
+
+<span class="n">repl</span> <span class="o">=</span> <span class="n">SearchRepl</span><span class="p">(</span><span class="n">word2vec</span><span class="p">,</span> <span class="n">post_embeddings</span><span class="p">)</span>
+<span class="n">repl</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exitmsg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+<p>This is what interacting with it looks like:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>QUERY. type inference
+_posts/2024-10-15-type-inference.md
+_posts/2025-03-10-lattice-bitset.md
+_posts/2025-02-24-sctp.md
+_posts/2022-11-07-inline-caches-in-skybison.md
+_posts/2021-01-14-inline-caching.md
+QUERY.
+</code></pre></div></div>
+<p>This is a sample query from a very small dataset (my blog). It's a pretty good
+search result, but it's probably not representative of the overall search
+quality. Chris says that I should cherry-pick &quot;because everyone in AI does&quot;.</p>
+<p>Okay, that's really neat. But most people who want to look for something on
+my website do not run for their terminals. Though my site is expressly designed
+to work well in terminal browsers such as Lynx, most people are already in a
+graphical web browser. So let's make a search front-end.</p>
+<h2 id="a-little-web-search">A little web search</h2>
+<p>So far we've been running from my local machine where I don't mind having a
+12MB file of weights sitting around. Now that we're moving to web, I would
+rather not burden casual browsers with an unexpected big download. So we need
+to get clever.</p>
+<p>Fortunately, Chris and I had both seen <a href="https://phiresky.github.io/blog/2021/hosting-sqlite-databases-on-github-pages/">this really cool blog post</a>
+that talks about hosting a SQLite database on GitHub Pages. The blog post
+details how the author:</p>
+<ul>
+<li>compiled SQLite to Wasm so it could run on the client,</li>
+<li>built a virtual filesystem so it could read database files from the web,</li>
+<li>did some smart page fetching using the existing SQLite indexes,</li>
+<li>built additional software to fetch only small chunks of the database using
+HTTP Range requests</li>
+</ul>
+<p>That's super cool, but again: SQLite, though small, is comparatively big for
+this project. We want to build things from scratch. Fortunately, we can emulate
+the main ideas.</p>
+<p>We can give the word2vec dict a stable order and split it into two files. One
+file can just have the embeddings, no names. Another file, the index, can map
+every word to the byte start and byte length of the weights for that word (we
+figure start&amp;length is probably smaller on the wire than start&amp;end).</p>
+<div class="highlight"><pre><span></span><span class="err">#</span><span class="w"> </span><span class="err">vecs.jso</span><span class="kc">nl</span>
+<span class="p">[</span><span class="mf">0.23</span><span class="p">,</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">,</span><span class="w"> </span><span class="mf">0.10</span><span class="p">]</span>
+<span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="mf">0.80</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">,</span><span class="w"> </span><span class="mf">0.20</span><span class="p">]</span>
+<span class="err">...</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="err">#</span><span class="w"> </span><span class="err">i</span><span class="kc">n</span><span class="err">dex.jso</span><span class="kc">n</span>
+<span class="p">{</span><span class="nt">&quot;couch&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;banana&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">],</span><span class="w"> </span><span class="err">...</span><span class="p">}</span>
+</pre></div>
+<p>The cool thing about this is that <code class="language-plaintext highlighter-rouge">index.json</code> is <em>dramatically</em> smaller than
+the word2vec blob, weighing in at 244KB. Since that won't change very often
+(how often does word2vec change?), I don't feel so bad about users eagerly
+downloading the entire index.  Similarly, the <code class="language-plaintext highlighter-rouge">post_embeddings.json</code> is only
+388KB. They're even cacheable. And automagically (de)compressed by the server
+and browser (to 84KB and 140KB, respectively). Both would be smaller if we
+chose a binary format, but we're punting on that for the purposes of this post.</p>
+<p>Then we can make HTTP Range requests to the server and only download the parts
+of the weights that we need. It's even possible to bundle all of the ranges
+into one request (it's called multipart range). Unfortunately, GitHub Pages
+does not appear to support multipart, so instead we download each word's range
+in a separate request.</p>
+<p>Here's the pertinent JS code, with (short, very familiar) vector functions
+omitted:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Download stuff</span>
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">get_index</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s2">&quot;index.json&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">get_post_embeddings</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s2">&quot;post_embeddings.json&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Map</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">get_index</span><span class="p">()));</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">post_embeddings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Map</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">get_post_embeddings</span><span class="p">()));</span>
+<span class="w">  </span><span class="c1">// Add search handler</span>
+<span class="w">  </span><span class="nx">search</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">debounce</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">search</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// TODO(max): Normalize query</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">words</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">query</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/\s+/</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">words</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// No words</span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">requests</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">words</span><span class="p">.</span><span class="nx">reduce</span><span class="p">((</span><span class="nx">acc</span><span class="p">,</span><span class="w"> </span><span class="nx">word</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">entry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">index</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">word</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">entry</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">undefined</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Word is not valid; skip it</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">acc</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">start</span><span class="p">,</span><span class="w"> </span><span class="nx">length</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">entry</span><span class="p">;</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">start</span><span class="o">+</span><span class="nx">length</span><span class="o">-</span><span class="mf">1</span><span class="p">;</span>
+<span class="w">      </span><span class="nx">acc</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">fetch</span><span class="p">(</span><span class="s2">&quot;vecs.jsonl&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Headers</span><span class="p">({</span>
+<span class="w">          </span><span class="s2">&quot;Range&quot;</span><span class="o">:</span><span class="w"> </span><span class="sb">`bytes=</span><span class="si">${</span><span class="nx">start</span><span class="si">}</span><span class="sb">-</span><span class="si">${</span><span class="nx">end</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span>
+<span class="w">        </span><span class="p">}),</span>
+<span class="w">      </span><span class="p">}));</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">acc</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">requests</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// None are valid words :(</span>
+<span class="w">      </span><span class="nx">search_results</span><span class="p">.</span><span class="nx">innerHTML</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;No results :(&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">responses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="nx">requests</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">embeddings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="nx">responses</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()));</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">query_embedding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">embeddings</span><span class="p">.</span><span class="nx">reduce</span><span class="p">((</span><span class="nx">acc</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">vec_add</span><span class="p">(</span><span class="nx">acc</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">));</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">post_ranks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="nx">embedding</span><span class="p">]</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">post_embeddings</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">post_ranks</span><span class="p">[</span><span class="nx">path</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vec_cosine_similarity</span><span class="p">(</span><span class="nx">embedding</span><span class="p">,</span><span class="w"> </span><span class="nx">query_embedding</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">sorted_ranks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="nx">post_ranks</span><span class="p">).</span><span class="nx">sort</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Decreasing</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">b</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span><span class="o">-</span><span class="nx">a</span><span class="p">[</span><span class="mf">1</span><span class="p">];</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">    </span><span class="c1">// Fun fact: HTML elements with an `id` attribute are accessible as JS</span>
+<span class="w">    </span><span class="c1">// globals by that same name.</span>
+<span class="w">    </span><span class="nx">search_results</span><span class="p">.</span><span class="nx">innerHTML</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">5</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">search_results</span><span class="p">.</span><span class="nx">innerHTML</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="sb">`&lt;li&gt;</span><span class="si">${</span><span class="nx">sorted_ranks</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span><span class="si">}</span><span class="sb">&lt;/li&gt;`</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}));</span>
+<span class="p">})();</span>
+</pre></div>
+<p>You can take a look at the live <a href="https://bernsteinbear.com/websearch/">search
+page</a>. In particular, open up the network
+requests tab of your browser's console. Marvel as it only downloads a couple
+4KB chunks of embeddings.</p>
+<p>So how well does our search technology work? Let's try to build an
+objective-ish evaluation.</p>
+<h2 id="evaluation">Evaluation</h2>
+<p>Let's evaluate our search engine and measure how often it returns posts in the top few results when we query with hand-crafted search keywords.</p>
+<p>We start by collecting an evaluation dataset of <code class="language-plaintext highlighter-rouge">(document, query)</code> pairs. Right from the start we're going to bias this evaluation by collecting this dataset ourselves, but hopefully it'll still help us get an intuition about the quality of the search. A query in this case is just a few search terms that we think should retrieve a document successfully.</p>
+<div class="highlight"><pre><span></span><span class="n">sample_documents</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">&quot;_posts/2024-10-27-on-the-universal-relation.md&quot;</span><span class="p">:</span> <span class="s2">&quot;database relation universal tuple function&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;_posts/2024-08-25-precedence-printing.md&quot;</span><span class="p">:</span> <span class="s2">&quot;operator precedence pretty print parenthesis&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;_posts/2019-03-11-understanding-the-100-prisoners-problem.md&quot;</span><span class="p">:</span> <span class="s2">&quot;probability strategy game visualization simulation&quot;</span><span class="p">,</span>
+  <span class="c1"># ...</span>
+<span class="p">}</span>
+</pre></div>
+<p>Now that we've collected our dataset, let's implement a top-k accuracy metric. This metric measures the percentage of the time a document appears in the top k search results given its corresponding query.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_top_k_accuracy</span><span class="p">(</span>
+    <span class="c1"># Mapping of post to sample search query (already normalized)</span>
+    <span class="c1"># See sample_documents above</span>
+    <span class="n">eval_set</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="n">max_n_keywords</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">max_top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">n_query_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">max_top_k</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_n_keywords</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">n_keywords</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_n_keywords</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">post_id</span><span class="p">,</span> <span class="n">keywords_str</span> <span class="ow">in</span> <span class="n">eval_set</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_query_samples</span><span class="p">):</span>
+                <span class="c1"># Construct a search query by sampling keywords</span>
+                <span class="n">keywords</span> <span class="o">=</span> <span class="n">keywords_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                <span class="n">sampled_keywords</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">n_keywords</span><span class="p">)</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sampled_keywords</span><span class="p">)</span>
+
+                <span class="c1"># Determine the rank of the target post in the search results</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">search</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">max_top_k</span><span class="p">)</span>
+                <span class="n">rank</span> <span class="o">=</span> <span class="n">safe_index</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">post_id</span><span class="p">)</span>
+
+                <span class="c1"># Increment the count of the rank</span>
+                <span class="k">if</span> <span class="n">rank</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="n">max_top_k</span><span class="p">:</span>
+                    <span class="n">counts</span><span class="p">[</span><span class="n">n_keywords</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">rank</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">accuracies</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">max_top_k</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_n_keywords</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_n_keywords</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_top_k</span><span class="p">):</span>
+            <span class="c1"># Divide by the number of samples to get the average across samples and</span>
+            <span class="c1"># divide by the size of the eval set to get accuracy over all posts.</span>
+            <span class="n">accuracies</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">n_query_samples</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">eval_set</span><span class="p">)</span>
+
+            <span class="c1"># Accumulate accuracies because if a post is retrieved at rank i,</span>
+            <span class="c1"># it was also successfully retrieved at all ranks j &gt; i.</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">accuracies</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">accuracies</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">accuracies</span>
+</pre></div>
+<p>Plotting top-k accuracy for various values of k gives us the following chart. Note that we get higher accuracy as we increase k – in the limit, as k approaches our number of documents we approach 100% accuracy. Also, accuracy increases as we increase the number of keywords. Finally, we can see the lines getting closer together as the number of keywords increases, which indicates there are diminishing marginal returns for each new keyword.</p>
+<figure>
+  <img src="/assets/img/search-top-k.png" />
+</figure>
+
+<p>Do these megabytes of word embeddings actually do anything to improve our search? We would have to compare to a baseline. Maybe that baseline is adding up the counts of all keywords in each document to rank them. We leave this as an exercise to the reader because we ran out of time :)</p>
+<p>It would also be interesting to see how a bigger word2vec helps accuracy. While
+sampling for top-k, there is a lot of error output (<code class="language-plaintext highlighter-rouge">I can't understand any of ['prank', ...]</code>). These unknown words get dropped from the search. A bigger
+word2vec (more than 10,000 words) might contain these less-common words and
+therefore search better.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+<p>You can build a small search engine from &quot;scratch&quot; with only a hundred or so
+lines of code. See <a href="https://github.com/tekknolagi/tekknolagi.github.com/blob/25d0f5bbe04db7a907409dd5a48648dc8bbd3307/search.py">the full
+search.py</a>,
+which includes some of the extras for evaluation and plotting.</p>
+<h2 id="future-ideas">Future ideas</h2>
+<p>We can get fancier than simple cosine similarity. Let's imagine that all of our
+documents talk about computers, but only one of them talks about compilers
+(wouldn't that be sad). If one of our search terms is &quot;computer&quot; that doesn't
+really help narrow down the search and is noise in our embeddings. To reduce
+noise we can employ a technique called <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">TF-IDF</a> (term frequency inverse
+document frequency) where we factor out common words across documents and pay
+closer attention to words that are more unique to each document.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2025-05-20-simple-search.md" title="Help improve _posts/2025-05-20-simple-search.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

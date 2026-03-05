@@ -1,0 +1,10 @@
+image: alpine/edge
+packages:
+- gcc
+tasks:
+- build: |
+   cd ghuloum
+   make
+- test: |
+   cd ghuloum
+   make test

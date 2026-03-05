@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>DNS tunneling, or, how to get around Gogo | Max Bernstein</title>
+    <meta property="og:title" content="DNS tunneling, or, how to get around Gogo | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/dns-tunneling/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">DNS tunneling, or, how to get around Gogo</h1>
+        
+        <div class="post-inline-date"><i>August 20, 2012</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>We all hate those paywalls that companies put up in airports, airplanes,
+lounges, or what have you. Fortunately (and thanks to
+<a href="http://kryo.se">kryo.se</a>), there is a tool that can get you around that. This
+is a concise and easy to follow tutorial on how to set a tool called <code class="language-plaintext highlighter-rouge">iodine</code>
+up.</p>
+<p>If you're familiar with the terminal, this should take about five minutes.</p>
+<p><strong>Requirements</strong></p>
+<ul>
+<li><p>1 computer on which you have root privileges</p>
+</li>
+<li><p>1 server (with ports you can open) on which you have root privileges Control
+over the DNS of your server's domain (or subdomain — see
+<a href="http://freedns.afraid.org/">freedns.afraid.org</a>)</p>
+</li>
+</ul>
+<p><strong>Steps</strong></p>
+<ol>
+<li><p>Visit <a href="http://code.kryo.se/iodine/">code.kryo.se/iodine</a>, and figure out
+what package you should install, based on your OS. I'm running Ubuntu
+12.04 on my server and Linux Mint 13 on my client, so on <em>both</em> I used:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install iodine
+</code></pre></div></div>
+</li>
+<li><p>Open up the zone file or DNS control panel for your server and set up an
+NS record like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>proxy		IN	NS	serv.mydomain.com.
+</code></pre></div></div>
+<p>Where <code class="language-plaintext highlighter-rouge">mydomain.com</code> is some domain you own, like <code class="language-plaintext highlighter-rouge">bernsteinbear.com</code>, and
+<code class="language-plaintext highlighter-rouge">serv</code> is the subdomain of your choice. It'll serve as your DNS server.</p>
+</li>
+<li><p>Set up an A record for <code class="language-plaintext highlighter-rouge">serv.mydomain.com</code> to point to your server's IP.</p>
+</li>
+<li><p>SSH into your server and run:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo iodined -cP YOUR_PASSWORD 10.0.1.1 proxy.mydomain.com
+</code></pre></div></div>
+<p>If it runs correctly, you'll see output like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Opened proxy0
+Setting IP of proxy0 to 10.0.1.1
+Setting MTU of proxy0 to 1130
+Opened UDP socket
+Listening to dns for domain proxy.mydomain.com
+Detaching from terminal...
+</code></pre></div></div>
+<p>This opens up <code class="language-plaintext highlighter-rouge">proxy.mydomain.com</code> to incoming requests from <code class="language-plaintext highlighter-rouge">iodine</code>.</p>
+</li>
+<li><p>Open up a terminal on your local box and run:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo iodine -r proxy.mydomain.com
+</code></pre></div></div>
+<p>You'll get first a root password prompt and then the <code class="language-plaintext highlighter-rouge">iodine</code> password
+prompt.</p>
+</li>
+</ol>
+<p>Now you'll have a fully functioning device willing to tunnel all your traffic
+via DNS. The IP you specified in step 4 is forwarded onto your local box, so
+accessing <code class="language-plaintext highlighter-rouge">10.0.1.1</code> should bring up the same page as accessing <code class="language-plaintext highlighter-rouge">mydomain.com</code>.
+In order to fully use this and tunnel your traffic, you can use this plain (not
+recommended, as it's totally insecure), or create a secondary tunnel through it
+(which I did).</p>
+<p>All you need to do is set up a SOCKS proxy through the host <code class="language-plaintext highlighter-rouge">10.0.1.1</code>, which
+will then forward your traffic through DNS requests to your server. Neat, huh?</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_posts/2012-08-20-dns-tunneling.md" title="Help improve _posts/2012-08-20-dns-tunneling.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>

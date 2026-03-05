@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Light mode by default -->
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="contact" content="max@bernsteinbear.com" />
+    <meta name="language" content="English" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://bernsteinbear.com/favicon.ico" />
+    <title>Writing a Lisp, Part 4: Environments | Max Bernstein</title>
+    <meta property="og:title" content="Writing a Lisp, Part 4: Environments | Max Bernstein" />
+    <link rel="canonical" href="https://bernsteinbear.com/blog/lisp/04_environments/" />
+    <meta property="og:url" content="https://bernsteinbear.com" />
+    <meta property="og:site_name" content="Max Bernstein" />
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <meta name="fediverse:creator" content="@tekknolagi@mastodon.social">
+    <link rel="preconnect" href="https://bernsteinbear.com">
+
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="https://bernsteinbear.com/feed.xml" />
+   </head>
+  <body>
+    <div class="pagecontents">
+        <div class="navbar">
+  <a href="/">home</a>
+  <span class="xsltspace"></span><a href="/blog/">blog</a>
+  <span class="xsltspace"></span><a href="/microblog/">microblog</a>
+  <span class="xsltspace"></span><a href="/favorites/">favorites</a>
+  <span class="xsltspace"></span><a href="/pl-resources/">pl resources</a>
+  <span class="xsltspace"></span><a href="/bread/">bread</a>
+  <span class="xsltspace"></span><a href="/recipes/">recipes</a>
+  <span class="xsltspace"></span><a href="/feed.xml">rss</a>
+</div>
+
+        <h1 class="post-title">Writing a Lisp, Part 4: Environments</h1>
+        
+        <div class="post-inline-date"><i>December 19, 2016</i></div>
+        
+        <div class="post-co-authors">
+        
+        </div>
+        <div class="container">
+            <p>Last time we added pairs (and therefore also lists) to our interpreter. That's
+great because we've built all of the data structures we need to implement a
+full Lisp. Let's put them to good use!</p>
+<p>Having data is one thing, but in most programming languages you can put that
+data somewhere like a variable or a register or something. Our Lisp is going
+to support variables. In order to do that, we're going to need to build
+something called an
+<a href="http://www.cs.cornell.edu/courses/cs312/2004fa/lectures/rec21.html">environment</a>.</p>
+<p>An environment is no more than a mapping of names to values:</p>
+<figure style="display: block; margin: 0 auto; max-width: 300px;" >
+  <img style="max-width: 300px;" src="/assets/img/lisp/04_environments_diagram.png" />
+  <figcaption>Fig. 1 - Environment mapping "hello" to "world" and "myvar" to 3.
+The dots are because I drew this in my dotted notebook.</figcaption>
+</figure>
+
+<p>In order to map a name to a value, use <code class="language-plaintext highlighter-rouge">bind</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">bind</span><span class="o">(</span><span class="s2">&quot;numOfCars&quot;</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span>       <span class="n">myIntEnv</span><span class="o">)</span>    <span class="c">(* Returns: myEnv{numOfCars-&gt;5} *)</span>
+<span class="n">bind</span><span class="o">(</span><span class="s2">&quot;name&quot;</span><span class="o">,</span>      <span class="s2">&quot;Alice&quot;</span><span class="o">,</span> <span class="n">myStringEnv</span><span class="o">)</span> <span class="c">(* Returns: myOtherEnv{name-&gt;Alice} *)</span>
+</pre></div>
+
+<p>It's important to note that <code class="language-plaintext highlighter-rouge">bind</code> does not <em>modify</em> the environment – it
+instead returns a new copy of it such that <code class="language-plaintext highlighter-rouge">lookup</code> will return the new value
+bound.</p>
+<p>If we were to, say, try and find the value of the variables, we could write
+code like so:</p>
+<div class="highlight"><pre><span></span><span class="n">lookup</span><span class="o">(</span><span class="s2">&quot;numOfCars&quot;</span><span class="o">,</span> <span class="n">myIntEnv</span><span class="o">)</span>    <span class="c">(* Returns: 5 *)</span>
+<span class="n">lookup</span><span class="o">(</span><span class="s2">&quot;name&quot;</span><span class="o">,</span>      <span class="n">myStringEnv</span><span class="o">)</span> <span class="c">(* Returns: &quot;Alice&quot; *)</span>
+</pre></div>
+
+<p>And that reads in English like "look up the value attached to the key 'name'".</p>
+<p>The only problem with this is that our environment has to have one single type.
+If we were to try and build an environment that can contain both <code class="language-plaintext highlighter-rouge">5</code> and
+<code class="language-plaintext highlighter-rouge">&quot;Alice&quot;</code>, we would have to wrap them in some kind of wrapper type. Good news
+— we have one!</p>
+<p>If we adapt <code class="language-plaintext highlighter-rouge">bind</code> and <code class="language-plaintext highlighter-rouge">lookup</code> to conform to OCaml's requirements, it would
+look something like this:</p>
+<div class="highlight"><pre><span></span><span class="n">bind</span><span class="o">(</span><span class="s2">&quot;numOfCars&quot;</span><span class="o">,</span> <span class="o">(</span><span class="nc">Fixnum</span> <span class="mi">5</span><span class="o">),</span> <span class="n">lispEnv</span><span class="o">)</span>
+  <span class="c">(* Returns: myLispEnv{numOfCars-&gt;Fixnum(5)} *)</span>
+<span class="n">bind</span><span class="o">(</span><span class="s2">&quot;name&quot;</span><span class="o">,</span> <span class="o">(</span><span class="nc">Symbol</span> <span class="s2">&quot;Alice&quot;</span><span class="o">),</span> <span class="n">lispEnv</span><span class="o">)</span>
+  <span class="c">(* Returns: myEnv{name-&gt;Symbol(&quot;Alice&quot;)} *)</span>
+
+<span class="n">lookup</span><span class="o">(</span><span class="s2">&quot;numOfCars&quot;</span><span class="o">,</span> <span class="n">lispEnv</span><span class="o">)</span> <span class="c">(* Returns: Fixnum(5) *)</span>
+<span class="n">lookup</span><span class="o">(</span><span class="s2">&quot;name&quot;</span><span class="o">,</span>      <span class="n">lispEnv</span><span class="o">)</span> <span class="c">(* Returns: Symbol(&quot;Alice&quot;) *)</span>
+</pre></div>
+
+<p>That way our environment can hold <code class="language-plaintext highlighter-rouge">lobject</code>s.</p>
+<p>So let's take a look at how we might represent this new type. I'd like to
+represent it in terms of the types that we already have, so we can print and
+manipulate them from inside the language. Makes our lives nice and easy. So how
+about if we just have a list of tuples? That way the empty environment is just
+<code class="language-plaintext highlighter-rouge">Nil</code> and our example environment would look like:</p>
+<div class="highlight"><pre><span></span><span class="nc">Pair</span><span class="o">(</span><span class="nc">Pair</span><span class="o">(</span><span class="nc">Symbol</span> <span class="s2">&quot;numOfCars&quot;</span><span class="o">,</span> <span class="nc">Fixnum</span> <span class="mi">5</span><span class="o">),</span>
+<span class="nc">Pair</span><span class="o">(</span><span class="nc">Pair</span><span class="o">(</span><span class="nc">Symbol</span> <span class="s2">&quot;name&quot;</span><span class="o">,</span>      <span class="nc">Symbol</span> <span class="s2">&quot;Alice&quot;</span><span class="o">),</span>
+     <span class="nc">Nil</span><span class="o">))</span>
+</pre></div>
+
+<p>In Lisp syntax, this looks like:</p>
+<div class="highlight"><pre><span></span><span class="p">((</span><span class="nf">numOfCars</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nf">name</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="nv">Alice</span><span class="p">))</span>
+</pre></div>
+
+<p>Okay, so the OCaml is kind of gross looking — I'll admit it. But let's write
+<code class="language-plaintext highlighter-rouge">lookup</code> and make our lives easier.</p>
+<p>In a <code class="language-plaintext highlighter-rouge">Nil</code> environment, nothing exists. So if we try and look something up, it
+should raise an error. How about a new exception?</p>
+<div class="highlight"><pre><span></span><span class="k">exception</span> <span class="nc">NotFound</span> <span class="k">of</span> <span class="kt">string</span><span class="o">;;</span>
+</pre></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">of string</code> bit allows us to attach a value (in this case, a variable name)
+to the error message. That will probably be helpful in the future.</p>
+<p>If we're not looking at a <code class="language-plaintext highlighter-rouge">Nil</code> environment, then there are two cases. Either
+we found what we're looking for in the current <code class="language-plaintext highlighter-rouge">Pair</code> or we need to keep
+looking:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">lookup</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">e</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">NotFound</span> <span class="n">n</span><span class="o">)</span>
+    <span class="o">|</span> <span class="nc">Pair</span><span class="o">(</span><span class="nc">Pair</span><span class="o">(</span><span class="nc">Symbol</span> <span class="n">n&#39;</span><span class="o">,</span> <span class="n">v</span><span class="o">),</span> <span class="n">rst</span><span class="o">)</span> <span class="o">-&gt;</span>
+            <span class="k">if</span> <span class="n">n</span><span class="o">=</span><span class="n">n&#39;</span> <span class="k">then</span> <span class="n">v</span> <span class="k">else</span> <span class="n">lookup</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">rst</span><span class="o">)</span>
+    <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="k">raise</span> <span class="nc">ThisCan&#39;tHappenError</span>
+</pre></div>
+
+<p>We use <code class="language-plaintext highlighter-rouge">ThisCan&#x27;tHappenError</code> to ensure that we always pass in well-formed
+environments. If <code class="language-plaintext highlighter-rouge">lookup</code> sees a poorly-formed environment (not one of the
+cases we handle), we'll know.</p>
+<p>Alright, time for <code class="language-plaintext highlighter-rouge">bind</code>. If we have the above behavior in <code class="language-plaintext highlighter-rouge">lookup</code>, we can do
+a simple O(1) append-at-front in <code class="language-plaintext highlighter-rouge">bind</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">let</span> <span class="n">bind</span> <span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">v</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">=</span> <span class="nc">Pair</span><span class="o">(</span><span class="nc">Pair</span><span class="o">(</span><span class="nc">Symbol</span> <span class="n">n</span><span class="o">,</span> <span class="n">v</span><span class="o">),</span> <span class="n">e</span><span class="o">)</span>
+</pre></div>
+
+<p><code class="language-plaintext highlighter-rouge">bind</code> doesn't validate its input to make sure it's a properly formed
+environment — it just puts a new key-value pair right at the front and moves
+along.</p>
+<p>So right now we've got a rather flat model for environments. Most traditional
+Lisps and other programming languages have environments as groups of
+<a href="http://web.archive.org/web/20160305071303/https://mitpress.mit.edu/sicp/full-text/book/book-Z-H-21.html">frames</a>,
+which themselves group variables together. That's really helpful when the
+programming language allows for variable mutation. In this Lisp, however, all
+variables will be immutable. This makes our jobs as language implementers
+easier but the jobs of the Lisp programmers harder.</p>
+<p>For now that's just fine! After we finish our bare-bones one-file
+implementation, we'll walk through modularizing and improving the interpreter.</p>
+<p>Download the code <a href="/resources/lisp/04_environments.ml">here</a> if you want to mess with it.</p>
+<p>Next up, <a href="/blog/lisp/05_if/">if-expressions</a>.</p>
+
+        </div>
+            <footer>
+      <hr />
+      This blog is <a href="https://github.com/tekknolagi/tekknolagi.github.com">open source</a>.
+      See an error? Go ahead and
+      <a href="https://github.com/tekknolagi/tekknolagi.github.com/edit/main/_blog_lisp/04_environments.md" title="Help improve _blog_lisp/04_environments.md">propose a change</a>.
+      <br />
+      <img style="padding-top: 5px;" src="/assets/img/banner.png" />
+      <a href="https://notbyai.fyi/"><img style="padding-top: 5px;" src="/assets/img/notbyai.svg" /></a>
+      <a href="https://www.recurse.com/scout/click?t=e8845120d0b98bbc3341fa6fa69539bb">
+        <span style="display: inline-block;">
+          <object data="/assets/img/rc-logo.svg" type="image/svg+xml" style="pointer-events: none; height: 42px; width: 33.6px;"></object>
+        </span>
+      </a>
+    </footer>
+    <!-- Workaround for FB MITM -->
+    <span id="iab-pcm-sdk"></span><span id="iab-autofill-sdk"></span>
+    
+
+
+    </div>
+  </body>
+</html>
