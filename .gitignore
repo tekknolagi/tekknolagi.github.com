@@ -6,8 +6,3 @@ _site
 .jekyll-cache
 .DS_Store
 __pycache__/
-mistune-build/
-mistletoe-build/
-jekyll-build/
-vendor/
-.bundle/

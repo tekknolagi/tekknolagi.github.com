@@ -14,10 +14,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-    - name: Install dependencies
-      run: pip install python-liquid2 mistletoe pyyaml pygments
+    - uses: astral-sh/setup-uv@v5
     - name: Build site
-      run: python3 build.py
+      run: uv run build.py
