@@ -1,4 +1,6 @@
 _site
+_build
+build.ninja
 .sass-cache
 *.swp
 *.swo
