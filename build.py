@@ -851,7 +851,8 @@ def render_content(env, item, site, layouts, is_markdown):
     body = item["body"]
 
     page_vars = dict(fm)
-    variables = {"site": site, "page": page_vars, "jekyll": {"environment": "development"}}
+    jekyll_env = os.environ.get("JEKYLL_ENV", "development")
+    variables = {"site": site, "page": page_vars, "jekyll": {"environment": jekyll_env}}
 
     # 1) Render Liquid in content body
     rendered_body = render_liquid(env, body, variables)

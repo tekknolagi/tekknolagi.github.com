@@ -24,7 +24,7 @@ RUN bundle exec jekyll build --future
 FROM ghcr.io/astral-sh/uv:python3.12-alpine as build_site_py
 COPY . /site
 WORKDIR /site
-RUN uv run build.py
+RUN JEKYLL_ENV=production uv run build.py
 
 FROM redbean as build_server
 COPY --from=build_site /site/_site/. _site
