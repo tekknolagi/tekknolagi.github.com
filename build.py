@@ -1013,27 +1013,23 @@ def main():
     nproc = os.cpu_count() or 1
     with multiprocessing.Pool(nproc, initializer=_init_worker,
                               initargs=(includes_dir, site_cfg, layouts)) as pool:
-        # --- Render posts (first pass: get content for post.content) ---
-        print(f"Rendering {len(posts)} posts...")
-        tasks = [(p, site, True, os.path.join(DEST, output_path_for_url(p["fm"]["url"])))
-                 for p in posts]
-        results = pool.map(_render_one, tasks)
-        for i, body_html in enumerate(results):
-            site["posts"][i]["content"] = body_html
-
-        # --- Render collections ---
+        # --- Render posts + collections (no interdependencies) ---
+        post_tasks = [(p, site, True, os.path.join(DEST, output_path_for_url(p["fm"]["url"])))
+                      for p in posts]
+        coll_tasks = []
         for coll_name, coll_items in collections.items():
-            coll_opts = collections_cfg.get(coll_name, {})
-            if not coll_opts.get("output", False):
+            if not collections_cfg.get(coll_name, {}).get("output", False):
                 continue
-            print(f"Rendering {len(coll_items)} {coll_name} items...")
-            tasks = [(item, site, True, os.path.join(DEST, output_path_for_url(item["fm"]["url"])))
-                     for item in coll_items]
-            results = pool.map(_render_one, tasks)
-            for i, body_html in enumerate(results):
-                site[coll_name][i]["content"] = body_html
+            for item in coll_items:
+                coll_tasks.append((item, site, True,
+                                   os.path.join(DEST, output_path_for_url(item["fm"]["url"]))))
+        print(f"Rendering {len(post_tasks)} posts + {len(coll_tasks)} collection items...")
+        results = pool.map(_render_one, post_tasks + coll_tasks)
+        # Store rendered post content (used by feed.xml in the pages pass)
+        for i in range(len(post_tasks)):
+            site["posts"][i]["content"] = results[i]
 
-        # --- Render pages ---
+        # --- Render pages (needs post.content for feed.xml) ---
         print(f"Rendering {len(pages)} pages...")
         tasks = [(p, site, p["ext"] == ".md", os.path.join(DEST, output_path_for_url(p["fm"]["url"])))
                  for p in pages]
