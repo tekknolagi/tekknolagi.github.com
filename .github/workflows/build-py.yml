@@ -1,0 +1,25 @@
+name: build.py CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install dependencies
+      run: pip install python-liquid2 mistune pyyaml pygments
+    - name: Build site
+      run: python3 build.py
+    - name: Run golden test
+      run: python3 test_golden.py

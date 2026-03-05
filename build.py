@@ -413,6 +413,9 @@ class _JekyllRenderer(mistune.HTMLRenderer):
                 pass
         return f"<pre><code>{mistune.escape(code)}</code></pre>\n"
 
+    def codespan(self, text):
+        return f'<code class="language-plaintext highlighter-rouge">{mistune.escape(text)}</code>'
+
     def block_html(self, html):
         """Pass through raw HTML blocks, applying smart-dash conversion.
 
