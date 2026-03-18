@@ -19,10 +19,10 @@
     "header": "https://mastodon.social/headers/original/missing.png",
     "header_static": "https://mastodon.social/headers/original/missing.png",
     "header_description": "",
-    "followers_count": 582,
+    "followers_count": 584,
     "following_count": 288,
     "statuses_count": 1440,
-    "last_status_at": "2026-03-10",
+    "last_status_at": "2026-03-18",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -72128,6 +72128,56 @@
       "application": null,
       "media_attachments": [],
       "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116247403140327837": {
+      "id": "116247403140327837",
+      "created_at": "2026-03-18T00:43:23.587Z",
+      "in_reply_to_id": "116247388769905598",
+      "in_reply_to_account_id": "523512",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116247403140327837",
+      "url": "https://mastodon.social/@tekknolagi/116247403140327837",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://f.duriansoftware.com/@joe\" class=\"u-url mention\">@<span>joe</span></a></span> tbf I used difflib a lot until very recently when I joined a ruby team</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        },
+        {
+          "id": "113156858670720602",
+          "username": "joe",
+          "url": "https://f.duriansoftware.com/@joe",
+          "acct": "joe@f.duriansoftware.com"
+        }
+      ],
       "tags": [],
       "emojis": [],
       "quote": null,
