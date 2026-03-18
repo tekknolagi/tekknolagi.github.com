@@ -3,7 +3,11 @@ title: "A fuzzer for the Toy Optimizer"
 layout: post
 ---
 
-It's hard to get optimizers right. Even if you build up a painstaking test
+*Another entry in the [Toy Optimizer series][series]*.
+
+[series]: https://pypy.org/categories/toy-optimizer.html
+
+It's hard to get compiler optimizers right. Even if you build up a painstaking test
 suite by hand, you will likely miss corner cases, especially corner cases at
 the interactions of multiple components or multiple optimization passes.
 
