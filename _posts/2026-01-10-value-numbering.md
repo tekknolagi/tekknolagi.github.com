@@ -266,6 +266,13 @@ already-computed `Add v0, 1` from `bb0` because it is still in the map.
 ...but this breaks as soon as you have control-flow splits. Consider the
 following shape graph:
 
+<!--
+digraph G {
+  node [shape=square];
+  A -> B;
+  A -> C;
+}
+-->
 <figure>
   <object class="svg" type="image/svg+xml" data="/assets/img/gvn-split.svg"></object>
 </figure>
@@ -284,6 +291,15 @@ join. In this diagram, we have two predecessor blocks B and C each flowing into
 D. In this diagram, B *always* flows into D and also C *always* flows into D.
 So the iterator order is fine, right?
 
+<!--
+digraph G {
+  node [shape=square];
+  A -> B;
+  A -> C;
+  B -> D;
+  C -> D;
+}
+-->
 <figure>
   <object class="svg" type="image/svg+xml" data="/assets/img/gvn-join.svg"></object>
 </figure>
