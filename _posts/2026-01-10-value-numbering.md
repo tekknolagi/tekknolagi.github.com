@@ -224,6 +224,44 @@ multiple basic blocks. What do you do then?
 
 ## Global value numbering
 
+Let's tackle control flow case by case.
+
+First is the simple case from above: one block. In this case, we can go top to
+bottom with our value numbering and do alright.
+
+<figure>
+  <object class="svg" type="image/svg+xml" data="/assets/img/gvn-one-block.svg"></object>
+</figure>
+
+Second is also reasonable to handle: one block flowing into another. In this
+case, we can still go top to bottom. We just have to find a way to iterate over
+the blocks.
+
+If we're not going to share value maps between blocks, the order doesn't
+matter. But since the point of global value numbering is to share values, we
+have to iterate them in topological order (reverse post order (RPO)). This
+ensures that predecessors get visited before successors. If you have `bb0 ->
+bb1`, we have to visit first `bb0` and then `bb1`.
+
+Because of how SSA works and how CFGs work, the second block can "look up" into
+the first block and use the values from it. To get global value numbering
+working, we have to copy `bb0`'s value map before we start processing `bb1` so
+we can re-use the instructions.
+
+<figure>
+  <object class="svg" type="image/svg+xml" data="/assets/img/gvn-two-blocks.svg"></object>
+</figure>
+
+Maybe something like:
+
+```python
+value_map = ValueMap()
+for block in function.reverse_post_order():
+    local_value_numbering(block, value_map)
+```
+
+Then the expressions can accrue across blocks.
+
 ```java
 public class GlobalValueNumberer {
     final HashMap<BlockBegin, ValueMap> valueMaps;
