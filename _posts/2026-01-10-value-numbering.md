@@ -61,7 +61,12 @@ v4 = do_something(v2, v3)
 This is kind of similar to the destructive union-find representation that
 JavaScriptCore and a couple other compilers use, where the optimizer doesn't
 eagerly re-write all uses but instead leaves a little breadcrumb
-`Identity`/`Assign` instruction.
+`Identity`/`Assign` instruction[^cinder].
+
+[^cinder]: Writing this post is roughly the time when I realized that the whole
+    time I was wondering why Cinder did not use union-find for rewriting, it
+    actually did! Optimizing instruction `X = A + 0` by replacing with `X =
+    Assign A` followed by copy propagation is equivalent to union-find.
 
 We could then run our copy propagation pass ("union-find cleanup"?) and get:
 
