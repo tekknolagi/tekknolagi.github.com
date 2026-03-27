@@ -323,7 +323,13 @@ post[^other-gvn].
 
 We can compute dominators a couple of ways, but that's a little bit out of
 scope for this blog post. If we assume that we have dominator information
-available in our CFG, we can use that for global value numbering.
+available in our CFG, we can use that for global value numbering. And that's
+just what---you guessed it---Maxine VM does.
+
+It iterates over all blocks in reverse post-order, doing local value numbering,
+threading through value maps from dominator blocks. In this case, their method
+`dominator` gets the *immediate dominator*: the "closest" dominator block of
+all the blocks that dominate the current one.
 
 ```java
 public class GlobalValueNumberer {
@@ -363,6 +369,14 @@ public class GlobalValueNumberer {
     }
 }
 ```
+
+And that's it! That's the core of Maxine's [GVN implementation][maxine-gvn]. I
+love how short it is. For not very much code, you can remove a lot of duplicate
+pure SSA instructions.
+
+[maxine-gvn]: https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/opt/GlobalValueNumberer.java
+
+But what if we want to handle impure instructions?
 
 ## State management and invalidation
 
