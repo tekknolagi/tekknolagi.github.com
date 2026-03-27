@@ -133,7 +133,8 @@ numbering. Why might an instruction opt-out of value numbering?
 
 Some instructions are not "pure". Purity is in the eye of the beholder, but in
 general it means that an instruction does not interact with the state of the
-outside world, except for trivial computation on its operands.
+outside world, except for trivial computation on its operands. (What does it
+mean to de-duplicate/cache/reuse `printf`?)
 
 A load from an array object is not a pure operation. The load operation
 implicitly relies on the state of the memory. In addition, in some runtime
