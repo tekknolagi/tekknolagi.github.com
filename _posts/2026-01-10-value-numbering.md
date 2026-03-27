@@ -392,6 +392,28 @@ But what if we want to handle impure instructions?
 
 ## State management and invalidation
 
+Languages such as Java allow for reading fields from the `this`/`self` object within
+methods as if the field were a variable name. This makes code like the
+following common:
+
+```java
+class CPU {
+    private void exec_adc() {
+        int result_int = regA + fetched_data + flagCARRY;
+        byte result = (byte) result_int;
+        // ...
+        int a = result_int ^ regA;
+        int b = result_int ^ fetched_data;
+        // ...
+        regA = result;
+    }
+}
+```
+
+Each of these reference to `regA` and `fetched_data` is an implicit reference
+to `this.regA` or `this.fetched_data`, which is semantically a field load off
+an object.
+
 MemoryMap and GraphBuilder
 
 ## Scoped?
