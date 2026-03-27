@@ -412,7 +412,7 @@ class CPU {
 
 Each of these reference to `regA` and `fetched_data` is an implicit reference
 to `this.regA` or `this.fetched_data`, which is semantically a field load off
-an object. You can see it in the bytecode (thanks, Matt Godbolt):
+an object. You can see it in the (trimmed) bytecode (thanks, Matt Godbolt):
 
 ```
 class CPU {
@@ -432,17 +432,7 @@ class CPU {
          0: aload_0
          1: getfield      #7                  // Field regA:I
          4: aload_0
-         5: getfield      #13                 // Field fetched_data:I
-         8: iadd
-         9: aload_0
-        10: getfield      #16                 // Field flagCARRY:I
-        13: iadd
-        14: istore_1
-        15: iload_1
-        16: i2b
-        17: istore_2
-        18: iload_1
-        19: aload_0
+         // ...
         20: getfield      #7                  // Field regA:I
         23: ixor
         24: istore_3
