@@ -311,7 +311,19 @@ came from B, we can re-use expressions from B. If we came from C, we can re-use
 expressions from C. But we cannot in general know which predecessor block we
 came from.
 
-The only block we know *for sure* that we executed before D is A.
+The only block we know *for sure* that we executed before D is A. This means we
+can re-use A's value map in D because we can guarantee that all execution paths
+that enter D have previously gone through A.
+
+This relationship is called a *dominator* relationship and this is the key to
+one style of global value numbering that we're going to talk about in this
+post[^other-gvn].
+
+[^other-gvn]: TODO write about equivalence class GVN and dataflow based GVN
+
+We can compute dominators a couple of ways, but that's a little bit out of
+scope for this blog post. If we assume that we have dominator information
+available in our CFG, we can use that for global value numbering.
 
 ```java
 public class GlobalValueNumberer {
