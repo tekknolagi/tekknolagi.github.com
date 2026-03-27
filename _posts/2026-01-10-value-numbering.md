@@ -154,6 +154,12 @@ Most compiler optimizations on control-flow graphs (CFGs) iterate over the
 instructions "top to bottom"[^order] and it seems like we can do the same thing
 here too.
 
+[^order]: The order is a little more complicated than that: [reverse
+    post-order](https://stackoverflow.com/questions/36131500/what-is-the-reverse-postorder)
+    (RPO). And there's a paper called "A Simple Algorithm for Global Data Flow
+    Analysis Problems" that I don't yet have a PDF for that claims that RPO is
+    optimal for solving dataflow problems.
+
 From what we've seen so far optimizing our made-up IR snippet, we can do
 something like this:
 
@@ -321,10 +327,13 @@ post[^other-gvn].
 
 [^other-gvn]: TODO write about equivalence class GVN and dataflow based GVN
 
-We can compute dominators a couple of ways, but that's a little bit out of
-scope for this blog post. If we assume that we have dominator information
-available in our CFG, we can use that for global value numbering. And that's
-just what---you guessed it---Maxine VM does.
+We can compute dominators a couple of ways[^compute-doms], but that's a little
+bit out of scope for this blog post. If we assume that we have dominator
+information available in our CFG, we can use that for global value numbering.
+And that's just what---you guessed it---Maxine VM does.
+
+[^compute-doms]: There's the iterative dataflow way, Lengauer-Tarjan, the
+    Engineered Algorithm, ...
 
 It iterates over all blocks in reverse post-order, doing local value numbering,
 threading through value maps from dominator blocks. In this case, their method
