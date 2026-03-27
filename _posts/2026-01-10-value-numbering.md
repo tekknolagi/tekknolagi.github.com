@@ -412,7 +412,73 @@ class CPU {
 
 Each of these reference to `regA` and `fetched_data` is an implicit reference
 to `this.regA` or `this.fetched_data`, which is semantically a field load off
-an object.
+an object. You can see it in the bytecode (thanks, Matt Godbolt):
+
+```
+class CPU {
+  int regA;
+
+  int fetched_data;
+
+  int flagCARRY;
+
+  CPU();
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+
+
+  private void exec_adc();
+         0: aload_0
+         1: getfield      #7                  // Field regA:I
+         4: aload_0
+         5: getfield      #13                 // Field fetched_data:I
+         8: iadd
+         9: aload_0
+        10: getfield      #16                 // Field flagCARRY:I
+        13: iadd
+        14: istore_1
+        15: iload_1
+        16: i2b
+        17: istore_2
+        18: iload_1
+        19: aload_0
+        20: getfield      #7                  // Field regA:I
+        23: ixor
+        24: istore_3
+        25: iload_1
+        26: aload_0
+        27: getfield      #13                 // Field fetched_data:I
+        30: ixor
+        31: istore        4
+        33: aload_0
+        34: iload_2
+        35: putfield      #7                  // Field regA:I
+        38: return
+}
+```
+
+When straightforwardly building an SSA IR from the JVM bytecode for this
+method, you will end up with a bunch of IR that looks like this:
+
+```
+v0 = LoadField self, :regA
+v1 = LoadField self, :fetched_data
+v2 = LoadField self, :flagCARRY
+v3 = IntAdd v0, v1
+v4 = IntAdd v3, v2
+// ...
+v7 = LoadField self, :regA
+v8 = IntXor v4, v7
+v9 = LoadField self, :fetched_data
+v10 = IntXor v4, v9
+// ...
+StoreField self, :regA, ...
+```
+
+Pretty much the same as the bytecode. Even though no code in the middle could
+modify the field `regA` (which would require a re-load), we still have a
+duplicate load. Bummer.
 
 MemoryMap and GraphBuilder
 
