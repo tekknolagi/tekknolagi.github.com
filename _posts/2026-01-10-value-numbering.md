@@ -304,10 +304,12 @@ digraph G {
   <object class="svg" type="image/svg+xml" data="/assets/img/gvn-join.svg"></object>
 </figure>
 
-Well, still no. We have the same sibling problem as before. We also have a
-weird question when we enter D: where did we come from? If we came from B, we
-can re-use expressions from B. If we came from C, we can re-use expressions
-from C. But we cannot in general know which predecessor block we came from.
+Well, still no. We have the same sibling problem as before.
+
+We also have a weird question when we enter D: where did we come from? If we
+came from B, we can re-use expressions from B. If we came from C, we can re-use
+expressions from C. But we cannot in general know which predecessor block we
+came from.
 
 The only block we know *for sure* that we executed before D is A.
 
