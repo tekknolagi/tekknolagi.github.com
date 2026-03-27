@@ -33,7 +33,9 @@ But what if we see two "textually" identical instructions in SSA? That sounds
 much more promising than non-SSA because we have removed (much of) the
 statefulness of it all. When can we re-use the result?
 
-## Local value numbering
+Identifying instructions that have the same value is called *value numbering*.
+
+## Eliminating common subexpressions
 
 Let's extend the above IR snippet with two more instructions, v3 and v4.
 
@@ -86,9 +88,11 @@ One popular solution is to compute a hash of each instruction. Then any
 instructions with the same hash (that also compare equal, in case of
 collisions) are considered equivalent.
 
-I particularly like the Maxine VM implementation. For example, here is the
+I particularly like the [Maxine VM][maxine] implementation. For example, here is the
 `valueNumber` implementation for most binary operations, slightly modified for
 clarity:
+
+[maxine]: https://maxine-vm.readthedocs.io/en/stable/
 
 ```java
 public abstract class Instruction extends Value { ... }
@@ -135,12 +139,57 @@ A load from an array object is not a pure operation. The load operation
 implicitly relies on the state of the memory. In addition, in some runtime
 systmes, the load might raise an exception. Changing the source location where
 an exception is raised is generally frowned upon. Languages such as Java often
-have this requirement codified in their specifications.
+have requirements about where exceptions are raised codified in their
+specifications.
 
 We'll work only on pure operations for now, but we'll come back to this later.
 We do often want to optimize impure operations as well!
 
 ## Local value numbering
+
+Let's build a small implementation of value numbering. We'll start with
+straight-line code---no branches or anything tricky.
+
+Most compiler optimizations on control-flow graphs (CFGs) iterate over the
+instructions "top to bottom"[^order] and it seems like we can do the same thing
+here too.
+
+From what we've seen so far optimizing our made-up IR snippet, we can do
+something like this:
+
+* initialize a map from instruction numbers to instruction pointers
+* for each instruction `i`
+  * if `i` wants to participate in value numbering
+    * if `i`'s value number is already in the map, replace all pointers to `i`
+      in the rest of the program with the corresponding value from the map
+    * otherwise, add `i` to the map
+
+The find-and-replace, remember, is not a literal find-and-replace, but instead
+something like:
+
+```python
+instr.opcode = "Assign"
+instr.operands[0] = replacement
+```
+
+or
+
+```python
+instr.make_equal_to(replacement)
+```
+
+(if you have been following along with the [toy optimizer][toy] series)
+
+[toy]: https://pypy.org/categories/toy-optimizer.html
+
+This several-line function (as long as you already have a hashmap and a
+union-find available to you) is enough to build local value numbering! And real
+compilers are built this way, too.
+
+If you don't believe me, take a look at this slightly edited snippet from
+[Maxine's][maxine] value numbering implementation. It has all of the components
+we just talked about: iterating over instructions, map lookup, and some
+substitution.
 
 ```java
 // Local value numbering
@@ -161,6 +210,13 @@ for (Instruction instr = block.next(); instr != null; instr = instr.next()) {
     }
 }
 ```
+
+This alone will get you pretty far. Code generators of all shapes tend to leave
+messy repeated computations all over their generated code and this will make
+short work of them.
+
+Sometimes, though, your computations are spread across control flow---over
+multiple basic blocks. What do you do then?
 
 <!--
 ## Equivalence classes
@@ -210,6 +266,8 @@ public class GlobalValueNumberer {
 ## State management and invalidation
 
 MemoryMap and GraphBuilder
+
+## DVNT and path back to dominator
 
 ## Acyclic e-graphs
 
