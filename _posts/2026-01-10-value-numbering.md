@@ -260,7 +260,8 @@ for block in function.reverse_post_order():
     local_value_numbering(block, value_map)
 ```
 
-Then the expressions can accrue across blocks.
+Then the expressions can accrue across blocks. `bb1` can re-use the
+already-computed `Add v0, 1` from `bb0` because it is still in the map.
 
 ...but this breaks as soon as you have control-flow splits. Consider the
 following shape graph:
@@ -273,6 +274,26 @@ We're going to iterate over that graph in one of two orders: A B C or A C B. In
 either case, we're going to be adding all this stuff into the value map from
 one block (say, A) that is not actually available to its sibling block (say,
 B).
+
+When I say "not available", I mean "would not have been computed before". This
+is because we execute either A then B or A then C. There's no world in which we
+execute B then C.
+
+But alright, look at a third case where there is such a world: a control-flow
+join. In this diagram, we have two predecessor blocks B and C each flowing into
+D. In this diagram, B *always* flows into D and also C *always* flows into D.
+So the iterator order is fine, right?
+
+<figure>
+  <object class="svg" type="image/svg+xml" data="/assets/img/gvn-join.svg"></object>
+</figure>
+
+Well, still no. We have the same sibling problem as before. We also have a
+weird question when we enter D: where did we come from? If we came from B, we
+can re-use expressions from B. If we came from C, we can re-use expressions
+from C. But we cannot in general know which predecessor block we came from.
+
+The only block we know *for sure* that we executed before D is A.
 
 ```java
 public class GlobalValueNumberer {
