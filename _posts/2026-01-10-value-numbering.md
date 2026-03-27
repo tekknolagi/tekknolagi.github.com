@@ -332,8 +332,10 @@ bit out of scope for this blog post. If we assume that we have dominator
 information available in our CFG, we can use that for global value numbering.
 And that's just what---you guessed it---Maxine VM does.
 
-[^compute-doms]: There's the iterative dataflow way, Lengauer-Tarjan, the
-    Engineered Algorithm, hybrid, ...
+[^compute-doms]: There's the iterative dataflow way,
+    [Lengauer-Tarjan](/assets/img/dominators-lengauer-tarjan.pdf) (PDF), the
+    [Engineered Algorithm](/assets/img/dominators-engineered.pdf) (PDF),
+    [hybrid](/assets/img/dominators-hybrid.pdf) (PDF), ...
 
 It iterates over all blocks in reverse post-order, doing local value numbering,
 threading through value maps from dominator blocks. In this case, their method
