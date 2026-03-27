@@ -394,6 +394,8 @@ But what if we want to handle impure instructions?
 
 MemoryMap and GraphBuilder
 
+## Scoped?
+
 ## DVNT and path back to dominator
 
 ## Acyclic e-graphs
