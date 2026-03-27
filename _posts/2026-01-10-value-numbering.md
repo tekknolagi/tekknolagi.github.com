@@ -472,6 +472,27 @@ Pretty much the same as the bytecode. Even though no code in the middle could
 modify the field `regA` (which would require a re-load), we still have a
 duplicate load. Bummer.
 
+```ruby
+module Psych
+  module Visitors
+    class YAMLTree < Psych::Visitors::Visitor
+      def initialize emitter, ss, options
+        # ...
+        @line_width = options[:line_width]
+        if @line_width && @line_width < 0
+          if @line_width == -1
+            # Treat -1 as unlimited line-width, same as libyaml does.
+            @line_width = nil
+          else
+            fail(...)
+          end
+        end
+        # ...
+    end
+  end
+end
+```
+
 MemoryMap and GraphBuilder
 
 ## Scoped?
