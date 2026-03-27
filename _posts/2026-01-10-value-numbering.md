@@ -412,7 +412,9 @@ class CPU {
 
 Each of these reference to `regA` and `fetched_data` is an implicit reference
 to `this.regA` or `this.fetched_data`, which is semantically a field load off
-an object. You can see it in the (trimmed) bytecode (thanks, Matt Godbolt):
+an object. You can see it in [the bytecode][cpu-bytecode] (thanks, Matt Godbolt):
+
+[cpu-bytecode]: https://godbolt.org/#g:!((g:!((g:!((h:codeEditor,i:(filename:'1',fontScale:14,fontUsePx:'0',j:1,lang:java,selection:(endColumn:19,endLineNumber:14,positionColumn:19,positionLineNumber:14,selectionStartColumn:19,selectionStartLineNumber:14,startColumn:19,startLineNumber:14),source:'class+CPU+%7B%0A++++private+void+exec_adc()+%7B%0A++++++++int+result_int+%3D+regA+%2B+fetched_data+%2B+flagCARRY%3B%0A++++++++byte+result+%3D+(byte)+result_int%3B%0A++++++++//+...%0A++++++++int+a+%3D+result_int+%5E+regA%3B%0A++++++++int+b+%3D+result_int+%5E+fetched_data%3B%0A++++++++//+...%0A++++++++regA+%3D+result%3B%0A++++%7D%0A%0A++++int+regA%3B%0A++++int+fetched_data%3B%0A++++int+flagCARRY%3B%0A%7D%0A'),l:'5',n:'0',o:'Java+source+%231',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:java2501,filters:(b:'0',binary:'1',binaryObject:'1',commentOnly:'0',debugCalls:'1',demangle:'0',directives:'0',execute:'1',intel:'0',libraryCode:'0',trim:'1',verboseDemangling:'0'),flagsViewOpen:'1',fontScale:14,fontUsePx:'0',j:1,lang:java,libs:!(),options:'',overrides:!(),selection:(endColumn:19,endLineNumber:40,positionColumn:1,positionLineNumber:1,selectionStartColumn:19,selectionStartLineNumber:40,startColumn:1,startLineNumber:1),source:1),l:'5',n:'0',o:'+jdk+25.0.1+(Editor+%231)',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4
 
 ```
 class CPU {
