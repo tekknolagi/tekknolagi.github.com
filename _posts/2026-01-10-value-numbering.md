@@ -326,6 +326,7 @@ one style of global value numbering that we're going to talk about in this
 post[^other-gvn].
 
 [^other-gvn]: TODO write about equivalence class GVN and dataflow based GVN
+    see [paper](/assets/img/briggs-gvn.pdF) (PDF)
 
 We can compute dominators a couple of ways[^compute-doms], but that's a little
 bit out of scope for this blog post. If we assume that we have dominator
