@@ -3,8 +3,6 @@ title: "Value numbering"
 layout: post
 ---
 
-Or, *But my values. They already have numbers!*
-
 Static single assignment (SSA) gives names to values: every expression has a
 name, and each name corresponds to exactly one expression. It transforms
 programs like this:
