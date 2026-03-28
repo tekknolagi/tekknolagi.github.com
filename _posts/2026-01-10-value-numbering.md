@@ -3,6 +3,8 @@ title: "Value numbering"
 layout: post
 ---
 
+Welcome back to compiler land.
+
 Static single assignment (SSA) gives names to values: every expression has a
 name, and each name corresponds to exactly one expression. It transforms
 programs like this:
