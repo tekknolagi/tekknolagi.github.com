@@ -530,6 +530,7 @@ end
 [MemoryMap]: https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/graph/MemoryMap.java
 [GraphBuilder]: https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/graph/GraphBuilder.java#L871
 
+<!--
 ## Scoped?
 
 ## DVNT and path back to dominator
@@ -537,3 +538,4 @@ end
 ## Acyclic e-graphs
 
 https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/global-value-numbering/
+-->
