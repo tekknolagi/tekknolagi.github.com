@@ -38,6 +38,7 @@ much more promising than non-SSA because we have removed (much of) the
 statefulness of it all. When can we re-use the result?
 
 Identifying instructions that have the same value is called *value numbering*.
+Computing this for an entire function is called *global value numbering* (GVN).
 
 ## Eliminating common subexpressions
 
