@@ -38,7 +38,6 @@ much more promising than non-SSA because we have removed (much of) the
 statefulness of it all. When can we re-use the result?
 
 Identifying instructions that have the same value is called *value numbering*.
-Computing this for an entire function is called *global value numbering* (GVN).
 
 ## Eliminating common subexpressions
 
@@ -153,7 +152,7 @@ We do often want to optimize impure operations as well!
 
 ## Local value numbering
 
-Let's build a small implementation of value numbering. We'll start with
+Let's build a small implementation of local value numbering (LVN). We'll start with
 straight-line code---no branches or anything tricky.
 
 Most compiler optimizations on control-flow graphs (CFGs) iterate over the
@@ -235,6 +234,9 @@ multiple basic blocks. What do you do then?
 -->
 
 ## Global value numbering
+
+Computing value numbers for an entire function is called *global value
+numbering* (GVN) and it requires dealing with control-flow.
 
 Let's tackle control flow case by case.
 
