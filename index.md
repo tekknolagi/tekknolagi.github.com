@@ -8,8 +8,8 @@ layout: page
 # I'm Max Bernstein.
 
 I am a human and [programmer](https://github.com/tekknolagi). I like to read
-books, take photos, and ride bikes in the hills near my house. I [tweet
-things](https://twitter.com/tekknolagi) (and [toot
+books, take photos, and ride bikes in the hills near my house. I [post
+things](https://bsky.app/profile/bernsteinbear.com) (and [toot
 things](https://mastodon.social/@tekknolagi)) about bread, legumes, and
 compilers. Right now, I am a software engineer working on compilers at Shopify
 and a Hacker in Residence at the Dartmouth College computer science department.
