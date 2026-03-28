@@ -15,13 +15,17 @@ x = x + 1
 x = x + 1
 ```
 
-into
+where the variable `x` is assigned more than once in the program text, into
+programs like this:
 
 ```python
 v0 = 0
 v1 = v0 + 1
 v2 = v1 + 1
 ```
+
+where each assignment to `x` has been replaced with an assignment to a new
+fresh name.
 
 It's great because it makes clear the differences between the two `x + 1`
 expressions. Though they textually look similar, they compute different values.
