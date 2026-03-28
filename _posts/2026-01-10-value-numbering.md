@@ -480,6 +480,31 @@ Pretty much the same as the bytecode. Even though no code in the middle could
 modify the field `regA` (which would require a re-load), we still have a
 duplicate load. Bummer.
 
+I don't want to re-hash this too much but it's possible to fold [Load and store
+forwarding](/blog/toy-load-store/) into your GVN implementation by either:
+
+* doing load-store forwarding as part of local value numbering and clearing
+  memory information from the value map at the end of each block, or
+* keeping track of effects across blocks
+
+See, there's nothing fundamentally stopping you from tracking the state of your
+heap at compile-time across blocks. You just have to do a little more
+bookkeeping. In our dominator-based GVN implementation, for example, you can:
+
+1. track heap write effects for each block
+1. at the start of each block B, union all of the "kill" sets for every block
+   back to its immediate dominator
+1. finally, remove the stuff that got killed from the dominator's value map
+
+Not so bad.
+
+Maxine doesn't do this, but they do a limited form of load-store forwarding
+while building their HIR from bytecode.
+
+See for example [GraphBuilder] which uses the [MemoryMap] to help track this
+stuff.
+
+<!--
 ```ruby
 module Psych
   module Visitors
@@ -500,8 +525,10 @@ module Psych
   end
 end
 ```
+-->
 
-MemoryMap and GraphBuilder
+[MemoryMap]: https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/graph/MemoryMap.java
+[GraphBuilder]: https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/graph/GraphBuilder.java#L871
 
 ## Scoped?
 
