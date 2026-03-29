@@ -562,5 +562,7 @@ Seeding alternative representations into the GVN
 
 Aegraphs and union-find during GVN
 
+## PRE
+
 https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/global-value-numbering/
 -->
