@@ -148,7 +148,7 @@ general it means that an instruction does not interact with the state of the
 outside world, except for trivial computation on its operands. (What does it
 mean to de-duplicate/cache/reuse `printf`?)
 
-A load from an array object is not a pure operation. The load operation
+A load from an array object is also not a pure operation. The load operation
 implicitly relies on the state of the memory. In addition, in some runtime
 systmes, the load might raise an exception. Changing the source location where
 an exception is raised is generally frowned upon. Languages such as Java often
