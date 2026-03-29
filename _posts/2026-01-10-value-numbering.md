@@ -149,8 +149,8 @@ outside world, except for trivial computation on its operands. (What does it
 mean to de-duplicate/cache/reuse `printf`?)
 
 A load from an array object is also not a pure operation. The load operation
-implicitly relies on the state of the memory. In addition, in some runtime
-systmes, the load might raise an exception. Changing the source location where
+implicitly relies on the state of the memory. Also, in some runtime
+systems, the load might raise an exception. Changing the source location where
 an exception is raised is generally frowned upon. Languages such as Java often
 have requirements about where exceptions are raised codified in their
 specifications.
