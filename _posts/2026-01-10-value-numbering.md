@@ -3,7 +3,8 @@ title: "Value numbering"
 layout: post
 ---
 
-Welcome back to compiler land.
+Welcome back to compiler land. Today we're going to talk about *value
+numbering*, which is like SSA, but more.
 
 Static single assignment (SSA) gives names to values: every expression has a
 name, and each name corresponds to exactly one expression. It transforms
@@ -34,11 +35,13 @@ possible to substitute in a variable and re-use the value of `x + 1`, because
 the `x`s are different.
 
 But what if we see two "textually" identical instructions in SSA? That sounds
-much more promising than non-SSA because we have removed (much of) the
-statefulness of it all. When can we re-use the result?
+much more promising than non-SSA because the transformation into SSA form has
+removed (much of) the statefulness of it all. When can we re-use the result?
 
-Identifying instructions that are known at compile-time to always produce same
-value is called *value numbering*.
+Identifying instructions that are known at compile-time to always produce the
+same value at run-time is called *value numbering*. This is also called common
+subexpression elimination (CSE), even though for some reason the two mean
+slightly different things to different groups of people.
 
 ## Eliminating common subexpressions
 
