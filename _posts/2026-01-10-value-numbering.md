@@ -542,6 +542,13 @@ end
 [MemoryMap]: https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/graph/MemoryMap.java
 [GraphBuilder]: https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/graph/GraphBuilder.java#L871
 
+We've now looked at one kind of value numbering and one implementation of it.
+What else is out there?
+
+## Out in the world
+
+## Wrapping up
+
 <!--
 ## Scoped?
 
