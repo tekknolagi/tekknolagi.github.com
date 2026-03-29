@@ -550,7 +550,8 @@ What else is out there?
 Unified hash table (p9 of [Briggs GVN](/assets/img/briggs-gvn.pdf))
 TODO What do you do in the second pass for available expressions?
 
-Value partitioning??? (p12)
+Value partitioning??? (p12 of Briggs GVN)
+https://www.cs.cornell.edu/courses/cs6120/2025sp/blog/global-value-numbering/
 
 Forward dataflow with worklist is slower but gets you more available
 expressions than just looking to dominator:
