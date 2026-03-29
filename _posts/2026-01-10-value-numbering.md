@@ -547,6 +547,10 @@ What else is out there?
 
 ## Out in the world
 
+Forward dataflow with worklist is slower but gets you more available
+expressions than just looking to dominator:
+https://www.cs.cmu.edu/~411/slides/s25-24-gvn-inlining.pdf
+
 ## Wrapping up
 
 <!--
