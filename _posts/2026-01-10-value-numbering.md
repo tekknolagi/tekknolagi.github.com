@@ -159,6 +159,9 @@ specifications.
 We'll work only on pure operations for now, but we'll come back to this later.
 We do often want to optimize impure operations as well!
 
+We'll start off with the simplest form of value numbering, which operates only
+on linear sequences of instructions, like basic blocks or traces.
+
 ## Local value numbering
 
 Let's build a small implementation of local value numbering (LVN). We'll start with
