@@ -556,5 +556,11 @@ What else is out there?
 
 ## Acyclic e-graphs
 
+Commutativity
+
+Seeding alternative representations into the GVN
+
+Aegraphs and union-find during GVN
+
 https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/global-value-numbering/
 -->
