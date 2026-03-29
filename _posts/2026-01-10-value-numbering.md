@@ -135,7 +135,7 @@ public abstract class Op2 extends Instruction {
 }
 ```
 
-The value numbering implementation assumes that if a `valueNumber`
+The rest of the value numbering implementation assumes that if a `valueNumber`
 function returns 0, it does not wish to be considered for value
 numbering. Why might an instruction opt-out of value numbering?
 
