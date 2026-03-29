@@ -97,9 +97,10 @@ One popular solution is to compute a hash of each instruction. Then any
 instructions with the same hash (that also compare equal, in case of
 collisions) are considered equivalent.
 
-I particularly like the [Maxine VM][maxine] implementation. For example, here is the
-`valueNumber` implementation for most binary operations, slightly modified for
-clarity:
+When trying to figure all this out, I read through a couple of different
+implementations. I particularly like the [Maxine VM][maxine] implementation.
+For example, here is the `valueNumber` (in this case, just the hashing)
+function for most binary operations, slightly modified for clarity:
 
 [maxine]: https://maxine-vm.readthedocs.io/en/stable/
 
