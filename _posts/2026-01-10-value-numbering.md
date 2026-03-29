@@ -500,7 +500,9 @@ Not so bad.
 
 Maxine doesn't do global memory tracking, but they do a limited form of
 load-store forwarding while building their HIR from bytecode: see
-[GraphBuilder] which uses the [MemoryMap] to help track this stuff.
+[GraphBuilder] which uses the [MemoryMap] to help track this stuff. At least
+they would not have the same duplicate `LoadField` instructions in the example
+above!
 
 <!--
 ```ruby
