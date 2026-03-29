@@ -498,11 +498,9 @@ bookkeeping. In our dominator-based GVN implementation, for example, you can:
 
 Not so bad.
 
-Maxine doesn't do this, but they do a limited form of load-store forwarding
-while building their HIR from bytecode.
-
-See for example [GraphBuilder] which uses the [MemoryMap] to help track this
-stuff.
+Maxine doesn't do global memory tracking, but they do a limited form of
+load-store forwarding while building their HIR from bytecode: see
+[GraphBuilder] which uses the [MemoryMap] to help track this stuff.
 
 <!--
 ```ruby
