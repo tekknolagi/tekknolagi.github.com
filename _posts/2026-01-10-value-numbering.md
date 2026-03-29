@@ -45,14 +45,15 @@ slightly different things to different groups of people.
 
 ## Eliminating common subexpressions
 
-Let's extend the above IR snippet with two more instructions, v3 and v4.
+To understand value numbering, let's extend the above IR snippet with two more
+instructions, v3 and v4.
 
 ```python
 v0 = 0
 v1 = v0 + 1
 v2 = v1 + 1
 v3 = v0 + 1  # new
-v4 = do_something(v2, v3)
+v4 = do_something(v2, v3)  # new
 ```
 
 In this new snippet, v3 looks the same as v1: adding v0 and 1. Assuming our
