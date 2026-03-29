@@ -37,7 +37,8 @@ But what if we see two "textually" identical instructions in SSA? That sounds
 much more promising than non-SSA because we have removed (much of) the
 statefulness of it all. When can we re-use the result?
 
-Identifying instructions that have the same value is called *value numbering*.
+Identifying instructions that are known at compile-time to always produce same
+value is called *value numbering*.
 
 ## Eliminating common subexpressions
 
