@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 587,
     "following_count": 288,
-    "statuses_count": 1442,
-    "last_status_at": "2026-03-28",
+    "statuses_count": 1443,
+    "last_status_at": "2026-03-29",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -72295,6 +72295,126 @@
         "published_at": "2026-03-27T00:00:00.000Z",
         "authors": []
       },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116313979721487081": {
+      "id": "116313979721487081",
+      "created_at": "2026-03-29T18:54:41.594Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116313979721487081/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/116313979721487081/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "116313654614673869",
+        "created_at": "2026-03-29T17:31:52.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://f.duriansoftware.com/users/joe/statuses/116313654068261525",
+        "url": "https://f.duriansoftware.com/@joe/116313654068261525",
+        "replies_count": 2,
+        "reblogs_count": 5,
+        "favourites_count": 20,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>when the dumpling has 64 pleats, it\u2019s a xiao long long bao</p>",
+        "reblog": null,
+        "account": {
+          "id": "113156858670720602",
+          "username": "joe",
+          "acct": "joe@f.duriansoftware.com",
+          "display_name": "Joe Groff (1M Context)",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": false,
+          "group": false,
+          "created_at": "2024-09-18T00:00:00.000Z",
+          "note": "<p>Doing my best to be a good boy\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26</p>",
+          "url": "https://f.duriansoftware.com/@joe",
+          "uri": "https://f.duriansoftware.com/users/joe",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/113/156/858/670/720/602/original/ca0cc87f8661adc7.jpeg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/113/156/858/670/720/602/original/ca0cc87f8661adc7.jpeg",
+          "avatar_description": "",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "header_description": "",
+          "followers_count": 1869,
+          "following_count": 1176,
+          "statuses_count": 5951,
+          "last_status_at": "2026-03-29",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "pronouns",
+              "value": "he/him\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26",
+              "verified_at": null
+            },
+            {
+              "name": "webzone",
+              "value": "<a href=\"https://duriansoftware.com/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">duriansoftware.com/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "rss",
+              "value": "<a href=\"https://duriansoftware.com/joe/index.rss\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">duriansoftware.com/joe/index.r</span><span class=\"invisible\">ss</span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "dei",
+              "value": "white male privilege\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
       "poll": null,
       "quote_approval": {
         "automatic": [
