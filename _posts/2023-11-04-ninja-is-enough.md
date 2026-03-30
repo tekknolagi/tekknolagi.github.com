@@ -304,6 +304,7 @@ Ninja. This post is accidentally very similar for the first two thirds.
   also execute Ninja files
 * [reninja](https://github.com/buildbuddy-io/reninja)
 * [llbuild](https://github.com/swiftlang/swift-llbuild)
+* [nin](go install github.com/maruel/nin/cmd/nin@latest)
 
 If you want to see a demo of `ninja_syntax.py` (from upstream Ninja) and
 `ninja.py` (from the wild) in action together, check out
