@@ -302,6 +302,7 @@ Ninja. This post is accidentally very similar for the first two thirds.
   which is meant to be a drop-in Ninja replacement with remote execution
 * [Shake](https://shakebuild.com/), a build system in its own right that can
   also execute Ninja files
+* [reninja](https://github.com/buildbuddy-io/reninja)
 
 If you want to see a demo of `ninja_syntax.py` (from upstream Ninja) and
 `ninja.py` (from the wild) in action together, check out
