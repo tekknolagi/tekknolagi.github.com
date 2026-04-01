@@ -2,10 +2,11 @@
 title: Using Perfetto in ZJIT
 canonical_url: "https://railsatscale.com/2026-03-27-using-perfetto-in-zjit/"
 layout: post
-description: We added Perfetto tracing support to ZJIT so we could visualize and
-  > query slow events. Take a look at the pretty colors and see how you can add
-  > this to your
-  > system too.
+description: >
+  We added Perfetto tracing support to ZJIT so we could visualize and
+  query slow events. Take a look at the pretty colors and see how you can add
+  this to your
+  system too.
 ---
 
 *Originally published on [Rails At Scale]({{ page.canonical_url }}).*
@@ -236,18 +237,18 @@ event_name = ...
 timestamp = ...
 duration = ...
 f = open('trace.json','a')
-f.print("[")
+f.write("[\n")
 
 # ... emit some events here ...
 
 # Log a single event
-f.print('{"name": "%s", "ts": %d, "dur": %d, "cat": "hi", "ph": "X", "pid": 1, "tid": 1, "args": {}},\n' %
+f.write('{"name": "%s", "ts": %d, "dur": %d, "cat": "hi", "ph": "X", "pid": 1, "tid": 1, "args": {}},\n' %
   (event_name, timestamp, duration))
 
 # ... emit some events here ...
 
 # ... at process exit, close the file ...
-f.print("]") # this closing ] isn't actually required
+f.write("]") # this closing ] isn't actually required
 f.close()
 ```
 
