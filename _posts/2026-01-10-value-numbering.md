@@ -252,7 +252,10 @@ multiple basic blocks. What do you do then?
 ## Global value numbering
 
 Computing value numbers for an entire function is called *global value
-numbering* (GVN) and it requires dealing with control flow (if, loops, etc).
+numbering* (GVN) and it requires dealing with control flow (if, loops, etc). I
+don't just mean that for an entire function, we run local value numbering
+block-by-block. Global value numbering implies that expressions can be
+de-duplicated and shared across blocks.
 
 Let's tackle control flow case by case.
 
