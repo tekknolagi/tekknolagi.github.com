@@ -95,7 +95,7 @@ IR](https://pointersgonewild.com/2011/10/07/optimizing-global-value-numbering/).
 
 One popular solution is to compute a hash of each instruction. Then any
 instructions with the same hash (that also compare equal, in case of
-collisions) are considered equivalent.
+collisions) are considered equivalent. This is called *hash-consing*.
 
 When trying to figure all this out, I read through a couple of different
 implementations. I particularly like the [Maxine VM][maxine] implementation.
