@@ -334,8 +334,15 @@ same number, there are no effects. There is no one `Empty` value, but any empty
 range could be normalized to `HeapRange { start: 0, end: 0 }`.
 
 Maybe this was obvious to you, dear reader, but this pre-order/post-order thing
-is about nested ranges! Seeing the output of the generator laid out clearly
+is about nested ranges[^dominance]! Seeing the output of the generator laid out clearly
 like this made it make a lot more sense for me.
+
+[^dominance]: Update: After reading [Amanieu's
+    comment](https://github.com/bytecodealliance/wasmtime/issues/4371#issuecomment-1255956651)
+    while writing my post on [value numbering](/blog/value-numbering/), I
+    realized that heap-range-subtype is literally the same as checking dominance with
+    pre-order-post-order comparison. This in retrospect makes a lot of sense.
+    It's just a tree.
 
 <!--
 So how do we compute subtyping relationships with `HeapRange`s? We check range
