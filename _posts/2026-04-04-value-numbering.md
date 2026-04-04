@@ -427,6 +427,10 @@ This does still work with loops, but with some caveats. From p7 of [Briggs GVN](
 > analyze the φ-function, and it must assign a unique, new value number to the
 > result.
 
+It also talks about eliminating useless phis, which is optional, but would
+the strengthen global value numbering pass: it makes more information
+transparent.
+
 But what if we want to handle impure instructions?
 
 ## State management and invalidation
