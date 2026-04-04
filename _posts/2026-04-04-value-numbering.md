@@ -602,8 +602,9 @@ there are also compilers such as Cranelift that use
 to track this information more efficiently. (Though [Amanieu
 notes](https://github.com/bytecodealliance/wasmtime/issues/4371#issuecomment-1255956651) that you may
 not need a scoped hash map and instead can tag values in your value map with the
-block they came from, ignoring non-dominating values with a quick check. I
-haven't internalized this yet.)
+block they came from, ignoring non-dominating values with a quick check. The
+dominance check makes sense but I haven't internalized how this affects the set
+of available expressions yet.)
 
 You may be wondering if this kind of algorithm even helps at all in a dynamic
 language JIT context. Surely everything is too dynamic, right? Actually, no!
