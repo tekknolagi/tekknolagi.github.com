@@ -588,10 +588,12 @@ haven't internalized this yet.)
 
 ## Wrapping up
 
+Go forth and give your values more numbers.
+
 <!--
 ## Acyclic e-graphs
 
-Commutativity
+Commutativity; canonicalization
 
 Seeding alternative representations into the GVN
 
