@@ -99,8 +99,8 @@ collisions) are considered equivalent.
 
 When trying to figure all this out, I read through a couple of different
 implementations. I particularly like the [Maxine VM][maxine] implementation.
-For example, here is the `valueNumber` (in this case, just the hashing)
-function for most binary operations, slightly modified for clarity:
+For example, here is the `valueNumber` (hashing) and `valueEqual`
+functions for most binary operations, slightly modified for clarity:
 
 [maxine]: https://maxine-vm.readthedocs.io/en/stable/
 
