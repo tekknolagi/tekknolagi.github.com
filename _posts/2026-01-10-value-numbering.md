@@ -312,8 +312,8 @@ digraph G {
 
 We're going to iterate over that graph in one of two orders: A B C or A C B. In
 either case, we're going to be adding all this stuff into the value map from
-one block (say, A) that is not actually available to its sibling block (say,
-B).
+one block (say, B) that is not actually available to its sibling block (say,
+C).
 
 When I say "not available", I mean "would not have been computed before". This
 is because we execute either A then B or A then C. There's no world in which we
