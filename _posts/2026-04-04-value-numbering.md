@@ -594,12 +594,14 @@ reductions often leave behind a lot of repeated instructions. Just the other
 day, Kokubun filed a [value-numbering-like
 PR](https://github.com/ruby/ruby/pull/16654) to clean up some of the waste.
 
-## Wrapping up
+## Wrapping up; bits and bobbles
 
 Go forth and give your values more numbers.
 
-<!--
-## Acyclic e-graphs
+There's been an ongoing discussion with Phil Zucker on SSI, GVN, acyclic
+egraphs, and scoped union-find. TODO summarize
+
+### Acyclic e-graphs
 
 Commutativity; canonicalization
 
@@ -611,7 +613,4 @@ https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md
 https://github.com/bytecodealliance/wasmtime/issues/9049
 https://github.com/bytecodealliance/wasmtime/issues/4371
 
-## PRE
-
-https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/global-value-numbering/
--->
+### Partial redundancy elimination
