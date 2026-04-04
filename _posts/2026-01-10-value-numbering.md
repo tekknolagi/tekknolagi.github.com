@@ -39,9 +39,9 @@ much more promising than non-SSA because the transformation into SSA form has
 removed (much of) the statefulness of it all. When can we re-use the result?
 
 Identifying instructions that are known at compile-time to always produce the
-same value at run-time is called *value numbering*. This is also called common
-subexpression elimination (CSE), even though for some reason the two mean
-slightly different things to different groups of people.
+same value at run-time is called *value numbering*. <!-- This is also called common
+subexpression elimination (CSE), though for some reason the two mean slightly
+different things to different groups of people. -->
 
 ## Eliminating common subexpressions
 
