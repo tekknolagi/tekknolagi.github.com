@@ -357,6 +357,9 @@ that dominates it.
 [^other-gvn]: TODO write about equivalence class GVN and dataflow based GVN
     see [paper](/assets/img/briggs-gvn.pdF) (PDF)
 
+For completeness' sake, in the diamond diagram, A dominates each of B and C,
+too.
+
 We can compute dominators a couple of ways[^compute-doms], but that's a little
 bit out of scope for this blog post. If we assume that we have dominator
 information available in our CFG, we can use that for global value numbering.
