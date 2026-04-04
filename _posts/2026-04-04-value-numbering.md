@@ -416,6 +416,17 @@ pure SSA instructions.
 
 [maxine-gvn]: https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/opt/GlobalValueNumberer.java
 
+This does still work with loops, but with some caveats. From p7 of [Briggs GVN](/assets/img/briggs-gvn.pdf):
+
+> The φ-functions require special treatment. Before the compiler can analyze
+> the φ-functions in a block, it must previously have assigned value numbers to
+> all of the inputs. This is not possible in all cases; specifically, any
+> φ-function input whose value flows along a back edge (with respect to the
+> dominator tree) cannot have a value number. If any of the parameters of a
+> φ-function have not been assigned a value number, then the compiler cannot
+> analyze the φ-function, and it must assign a unique, new value number to the
+> result.
+
 But what if we want to handle impure instructions?
 
 ## State management and invalidation
