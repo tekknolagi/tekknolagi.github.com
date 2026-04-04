@@ -148,13 +148,17 @@ general it means that an instruction does not interact with the state of the
 outside world, except for trivial computation on its operands. (What does it
 mean to de-duplicate/cache/reuse `printf`?)
 
-A load from an array object is also not a pure operation. The load operation
+A load from an array object is also not a pure operation[^heap-ssa]. The load operation
 implicitly relies on the state of the memory. Also, even if the array was
 known-constant, in some runtime
 systems, the load might raise an exception. Changing the source location where
 an exception is raised is generally frowned upon. Languages such as Java often
 have requirements about where exceptions are raised codified in their
 specifications.
+
+[^heap-ssa]: In some forms of SSA, like heap-array SSA or sea of nodes, it's
+    possible to more easily de-duplicate loads because the memory
+    representation has been folded into (modeled in) the IR.
 
 We'll work only on pure operations for now, but we'll come back to this later.
 We do often want to optimize impure operations as well!
