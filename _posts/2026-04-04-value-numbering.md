@@ -209,7 +209,7 @@ instr.make_equal_to(replacement)
 
 [toy]: https://pypy.org/categories/toy-optimizer.html
 
-This several-line function (as long as you already have a hashmap and a
+This several-line function (as long as you already have a hash map and a
 union-find available to you) is enough to build local value numbering! And real
 compilers are built this way, too.
 
@@ -580,7 +580,11 @@ how much it differs from dominator+unified hash table.
 While Maxine uses hash table cloning to copy value maps from dominator blocks,
 there are also compilers such as Cranelift that use
 [scoped hash maps](https://github.com/bytecodealliance/wasmtime/blob/main/cranelift/codegen/src/scoped_hash_map.rs)
-to track this information more efficiently.
+to track this information more efficiently. (Though [Amanieu
+notes](https://github.com/bytecodealliance/wasmtime/issues/4371#issuecomment-1255956651) that you may
+not need a scoped hash map and instead can tag values in your value map with the
+block they came from, ignoring non-dominating values with a quick check. I
+haven't internalized this yet.)
 
 ## Wrapping up
 
@@ -592,6 +596,10 @@ Commutativity
 Seeding alternative representations into the GVN
 
 Aegraphs and union-find during GVN
+
+https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md
+https://github.com/bytecodealliance/wasmtime/issues/9049
+https://github.com/bytecodealliance/wasmtime/issues/4371
 
 ## PRE
 
