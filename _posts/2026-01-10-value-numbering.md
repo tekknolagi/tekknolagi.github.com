@@ -263,7 +263,7 @@ bottom with our value numbering and do alright.
   <object class="svg" type="image/svg+xml" data="/assets/img/gvn-one-block.svg"></object>
 </figure>
 
-Second is also reasonable to handle: one block flowing into another. In this
+The second case is also reasonable to handle: one block flowing into another. In this
 case, we can still go top to bottom. We just have to find a way to iterate over
 the blocks.
 
