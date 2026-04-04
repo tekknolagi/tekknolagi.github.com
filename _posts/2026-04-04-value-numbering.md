@@ -360,7 +360,8 @@ bit out of scope for this blog post. If we assume that we have dominator
 information available in our CFG, we can use that for global value numbering.
 And that's just what---you guessed it---Maxine VM does.
 
-[^compute-doms]: There's the iterative dataflow way,
+[^compute-doms]: There's the iterative dataflow way (described in the [Cooper
+    paper](/assets/img/dominators-engineered.pdf) (PDF)),
     [Lengauer-Tarjan](/assets/img/dominators-lengauer-tarjan.pdf) (PDF), the
     [Engineered Algorithm](/assets/img/dominators-engineered.pdf) (PDF),
     [hybrid/Semi-NCA approach](/assets/img/dominators-practice.pdf) (PDF), ...
