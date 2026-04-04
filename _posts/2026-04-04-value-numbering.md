@@ -559,23 +559,32 @@ What else is out there?
 
 ## Out in the world
 
-Unified hash table (p9 of [Briggs GVN](/assets/img/briggs-gvn.pdf))
-TODO What do you do in the second pass for available expressions?
+Apparently, you can get better results by having a unified hash table (p9 of
+[Briggs GVN](/assets/img/briggs-gvn.pdf)) of expressions, not limiting the
+value map to dominator-available expressions. Not 100% on how this works yet.
+<!-- TODO What do you do in the second pass for available expressions? -->
 
-Value partitioning??? (p12 of Briggs GVN)
-https://www.cs.cornell.edu/courses/cs6120/2025sp/blog/global-value-numbering/
+There's also a totally different kind of value numbering called value
+partitioning (p12 of [Briggs GVN](/assets/img/briggs-gvn.pdf)). See also a nice
+blog post about this by Allen Wang from the [Cornell compiler
+course](https://www.cs.cornell.edu/courses/cs6120/2025sp/blog/global-value-numbering/).
+I think this mostly replaces the hashing bit, and you still need some other
+thing for the available expressions bit.
 
-Forward dataflow with worklist is slower but gets you more available
-expressions than just looking to dominator:
-https://www.cs.cmu.edu/~411/slides/s25-24-gvn-inlining.pdf
+Ben Titzer and Seth Goldstein have some good [slides from
+CMU](https://www.cs.cmu.edu/~411/slides/s25-24-gvn-inlining.pdf). Where they
+talk about the worklist dataflow approach. Apparently this is slower but gets
+you more available expressions than just looking to dominator blocks. I wonder
+how much it differs from dominator+unified hash table.
+
+While Maxine uses hash table cloning to copy value maps from dominator blocks,
+there are also compilers such as Cranelift that use
+[scoped hash maps](https://github.com/bytecodealliance/wasmtime/blob/main/cranelift/codegen/src/scoped_hash_map.rs)
+to track this information more efficiently.
 
 ## Wrapping up
 
 <!--
-## Scoped?
-
-## DVNT and path back to dominator
-
 ## Acyclic e-graphs
 
 Commutativity
