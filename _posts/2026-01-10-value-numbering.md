@@ -360,7 +360,7 @@ And that's just what---you guessed it---Maxine VM does.
 [^compute-doms]: There's the iterative dataflow way,
     [Lengauer-Tarjan](/assets/img/dominators-lengauer-tarjan.pdf) (PDF), the
     [Engineered Algorithm](/assets/img/dominators-engineered.pdf) (PDF),
-    [hybrid](/assets/img/dominators-hybrid.pdf) (PDF), ...
+    [hybrid/Semi-NCA approach](/assets/img/dominators-practice.pdf) (PDF), ...
 
 It iterates over all blocks in reverse post-order, doing local value numbering,
 threading through value maps from dominator blocks. In this case, their method
