@@ -614,6 +614,10 @@ reductions often leave behind a lot of repeated instructions. Just the other
 day, Kokubun filed a [value-numbering-like
 PR](https://github.com/ruby/ruby/pull/16654) to clean up some of the waste.
 
+ART has a recent [blog
+post](https://android-developers.googleblog.com/2025/12/18-faster-compiles-0-compromises.html)
+about speeding up GVN.
+
 ## Wrapping up; bits and bobbles
 
 Go forth and give your values more numbers.
