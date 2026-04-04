@@ -618,6 +618,13 @@ ART has a recent [blog
 post](https://android-developers.googleblog.com/2025/12/18-faster-compiles-0-compromises.html)
 about speeding up GVN.
 
+### Implementations
+
+* [ART](https://android.googlesource.com/platform/art/+/refs/heads/main/compiler/optimizing/gvn.cc)
+* [V8 Hydrogen](https://github.com/tekknolagi/v8/blob/f030838700a83cde6992cb8ebcb3facc6a8fc1f1/src/crankshaft/hydrogen-gvn.cc)
+* [HHVM](https://github.com/facebook/hhvm/blob/1a885fae7421c759d70a8ed85aab1defcf5cc68f/hphp/runtime/vm/jit/gvn.cpp)
+* [HotSpot C1](https://github.com/openjdk/jdk/blob/f21e47db805b56d5bf183d7a2cfba076f380612a/src/hotspot/share/c1/c1_ValueMap.cpp#L517)
+
 ## Wrapping up; bits and bobbles
 
 Go forth and give your values more numbers.
