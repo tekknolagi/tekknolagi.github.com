@@ -351,7 +351,8 @@ that enter D have previously gone through A.
 
 This relationship is called a *dominator* relationship and this is the key to
 one style of global value numbering that we're going to talk about in this
-post[^other-gvn].
+post[^other-gvn]. A block can always use the value map from any other block
+that dominates it.
 
 [^other-gvn]: TODO write about equivalence class GVN and dataflow based GVN
     see [paper](/assets/img/briggs-gvn.pdF) (PDF)
