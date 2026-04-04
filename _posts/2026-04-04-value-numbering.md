@@ -586,6 +586,14 @@ not need a scoped hash map and instead can tag values in your value map with the
 block they came from, ignoring non-dominating values with a quick check. I
 haven't internalized this yet.)
 
+You may be wondering if this kind of algorithm even helps at all in a dynamic
+language JIT context. Surely everything is too dynamic, right? Actually, no!
+The JIT hopes to eliminate a lot of method calls and dynamic behaviors,
+replacing them with guards, assumptions, and simpler operations. These strength
+reductions often leave behind a lot of repeated instructions. Just the other
+day, Kokubun filed a [value-numbering-like
+PR](https://github.com/ruby/ruby/pull/16654) to clean up some of the waste.
+
 ## Wrapping up
 
 Go forth and give your values more numbers.
