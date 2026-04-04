@@ -574,6 +574,14 @@ Apparently, you can get better results by having a unified hash table (p9 of
 [Briggs GVN](/assets/img/briggs-gvn.pdf)) of expressions, not limiting the
 value map to dominator-available expressions. Not 100% on how this works yet.
 <!-- TODO What do you do in the second pass for available expressions? -->
+They note:
+
+> Using a unified hash-table has one important algorithmic consequence.
+> Replacements cannot be performed on-line because the table no longer reflects
+> availability.
+
+Which is the first time that it occurred to me that hash-based value numbering
+with dominators was an approximation of available expression analysis.
 
 There's also a totally different kind of value numbering called value
 partitioning (p12 of [Briggs GVN](/assets/img/briggs-gvn.pdf)). See also a nice
