@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 591,
     "following_count": 288,
-    "statuses_count": 1446,
-    "last_status_at": "2026-04-11",
+    "statuses_count": 1447,
+    "last_status_at": "2026-04-18",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -72805,6 +72805,70 @@
           "acct": "swetland@chaos.social"
         }
       ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116423785301566635": {
+      "id": "116423785301566635",
+      "created_at": "2026-04-18T04:19:41.775Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116423785301566635",
+      "url": "https://mastodon.social/@tekknolagi/116423785301566635",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>First &quot;perfect week&quot; since December 2024 :)</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [
+        {
+          "id": "116423783498542011",
+          "type": "image",
+          "url": "https://files.mastodon.social/media_attachments/files/116/423/783/498/542/011/original/abeacd92d6909d6b.png",
+          "preview_url": "https://files.mastodon.social/media_attachments/files/116/423/783/498/542/011/small/abeacd92d6909d6b.png",
+          "remote_url": null,
+          "preview_remote_url": null,
+          "text_url": null,
+          "meta": {
+            "original": {
+              "width": 659,
+              "height": 783,
+              "size": "659x783",
+              "aspect": 0.8416347381864623
+            },
+            "small": {
+              "width": 440,
+              "height": 523,
+              "size": "440x523",
+              "aspect": 0.8413001912045889
+            }
+          },
+          "description": "GitHub contribution chart showing zero contributions at all this past week",
+          "blurhash": "ULM*?4Fo?IAS?If7IUnm~ExIIBa2-EaLNYtQ"
+        }
+      ],
+      "mentions": [],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
