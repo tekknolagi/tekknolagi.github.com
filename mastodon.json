@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 591,
     "following_count": 288,
-    "statuses_count": 1450,
-    "last_status_at": "2026-04-20",
+    "statuses_count": 1451,
+    "last_status_at": "2026-04-22",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -73254,6 +73254,153 @@
             }
           ]
         },
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116446817350633722": {
+      "id": "116446817350633722",
+      "created_at": "2026-04-22T05:57:02.956Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116446817350633722/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/116446817350633722/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "116441339389700646",
+        "created_at": "2026-04-21T06:43:54.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://front-end.social/users/stefan/statuses/116441339289854563",
+        "url": "https://front-end.social/@stefan/116441339289854563",
+        "replies_count": 10,
+        "reblogs_count": 168,
+        "favourites_count": 193,
+        "quotes_count": 2,
+        "edited_at": null,
+        "content": "<p>A new Git version just dropped and it comes with a new experimental `history` command! </p><p>`reword` can be used to change commit messages and `split` can untangle a single commit into multiple ones. </p><p>No more interactive rebase. \ud83c\udf89</p><p><a href=\"https://github.blog/open-source/git/highlights-from-git-2-54/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">github.blog/open-source/git/hi</span><span class=\"invisible\">ghlights-from-git-2-54/</span></a></p>",
+        "reblog": null,
+        "account": {
+          "id": "109293089823137204",
+          "username": "stefan",
+          "acct": "stefan@front-end.social",
+          "display_name": "Stefan Judis",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": false,
+          "group": false,
+          "created_at": "2022-11-05T00:00:00.000Z",
+          "note": "<p>Sharing web dev tricks with 6k people at webweekly.email</p><p>Today I learned Blogger</p><p>Maintaining tiny-helpers.dev</p><p>Pronouns: he/him</p>",
+          "url": "https://front-end.social/@stefan",
+          "uri": "https://front-end.social/users/stefan",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/109/293/089/823/137/204/original/a45962af74df9ffe.png",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/293/089/823/137/204/original/a45962af74df9ffe.png",
+          "avatar_description": "",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "header_description": "",
+          "followers_count": 2393,
+          "following_count": 251,
+          "statuses_count": 1173,
+          "last_status_at": "2026-04-21",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Newsletter",
+              "value": "<a href=\"https://webweekly.email\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">webweekly.email</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2026-04-22T02:19:35.190+00:00"
+            },
+            {
+              "name": "Blog",
+              "value": "<a href=\"https://www.stefanjudis.com\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">stefanjudis.com</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2026-04-22T02:19:35.509+00:00"
+            },
+            {
+              "name": "GitHub",
+              "value": "<a href=\"https://github.com/stefanjudis\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/stefanjudis</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2026-04-22T02:19:36.054+00:00"
+            },
+            {
+              "name": "Twitter",
+              "value": "<a href=\"https://twitter.com/stefanjudis\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">twitter.com/stefanjudis</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [
+          {
+            "id": "116441339336574603",
+            "type": "gifv",
+            "url": "https://files.mastodon.social/cache/media_attachments/files/116/441/339/336/574/603/original/9ade3d2d9b507899.mp4",
+            "preview_url": "https://files.mastodon.social/cache/media_attachments/files/116/441/339/336/574/603/small/9ade3d2d9b507899.png",
+            "remote_url": "https://cdn.masto.host/frontendsocial/media_attachments/files/116/441/339/042/774/184/original/2e415d9258f77bd8.mp4",
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "original": {
+                "width": 1064,
+                "height": 720,
+                "frame_rate": "60/1",
+                "duration": 26.683333,
+                "bitrate": 718830
+              },
+              "small": {
+                "width": 640,
+                "height": 433,
+                "size": "640x433",
+                "aspect": 1.4780600461893765
+              }
+            },
+            "description": "Renaming of a commit using `git history reword`.",
+            "blurhash": "U04V8uxwDj9F?c%Mn$RPVts9xutRVZVsofo|"
+          }
+        ],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": null,
         "poll": null,
         "quote_approval": {
           "automatic": [
