@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 592,
     "following_count": 288,
-    "statuses_count": 1452,
+    "statuses_count": 1455,
     "last_status_at": "2026-04-23",
     "hide_collections": false,
     "show_media": true,
@@ -73444,6 +73444,120 @@
       "quotes_count": 0,
       "edited_at": null,
       "content": "<p>I have somehow accidentally substantially broken the laundry machine in this very nice hotel by feeding it a 50 Yen coin. Two men are currently arguing about how to fix it. :(</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116451314299484645": {
+      "id": "116451314299484645",
+      "created_at": "2026-04-23T01:00:40.946Z",
+      "in_reply_to_id": "116451267493666502",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116451314299484645",
+      "url": "https://mastodon.social/@tekknolagi/116451314299484645",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>More percussive maintenance and a fourth employee running in. He arrived just in time for the first three to fix it!</p><p>My laundry is now in. Thank you for following along.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116451267493666502": {
+      "id": "116451267493666502",
+      "created_at": "2026-04-23T00:48:46.745Z",
+      "in_reply_to_id": "116451264152820689",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116451267493666502",
+      "url": "https://mastodon.social/@tekknolagi/116451267493666502",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Some percussive maintenance is happening.</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116451264152820689": {
+      "id": "116451264152820689",
+      "created_at": "2026-04-23T00:47:55.767Z",
+      "in_reply_to_id": "116451254774809972",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116451264152820689",
+      "url": "https://mastodon.social/@tekknolagi/116451264152820689",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>A third has arrived to help.</p>",
       "reblog": null,
       "application": {
         "name": "Mastodon for Android",
