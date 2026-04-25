@@ -27,7 +27,7 @@ fn um_run(program: Vec<Data>) {
     let mut program_counter = 0;
     let mut free_segment_ids: Vec<Data> = vec![];
     loop {
-        let program: &[u32] = &segments[PROGRAM_SEGMENT];
+        let program: &[Data] = &segments[PROGRAM_SEGMENT];
         let instruction = program[program_counter as usize] as usize;
         program_counter += 1;
         let c: usize = instruction & 0b111;
@@ -65,9 +65,9 @@ fn um_run(program: Vec<Data>) {
                 use std::io::Read;
                 let mut byte = [0u8; 1];
                 registers[c] = if let Err(_) = std::io::stdin().read_exact(&mut byte) {
-                    u32::MAX
+                    Data::MAX
                 } else {
-                    byte[0] as u32
+                    byte[0] as Data
                 };
             }
             OP_LOAD_PROGRAM => {
@@ -81,7 +81,7 @@ fn um_run(program: Vec<Data>) {
             }
             OP_LOAD_VALUE => {
                 let a = (instruction >> LOAD_VALUE_NUM_BITS) & 0b111;
-                registers[a as usize] = (instruction & LOAD_VALUE_MASK) as u32;
+                registers[a as usize] = (instruction & LOAD_VALUE_MASK) as Data;
             }
             _ => panic!("Unhandled opcode {}", opcode),
         }
@@ -95,7 +95,7 @@ fn main() {
         .map(|chunk| {
             use std::convert::TryInto;
             let bytes: [u8; 4] = chunk.try_into().expect("Chunk is not 4 bytes");
-            u32::from_be_bytes(bytes)
+            Data::from_be_bytes(bytes)
         })
         .collect();
     um_run(program);
