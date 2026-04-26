@@ -19,11 +19,11 @@ OP_LOAD_PROGRAM = 12
 OP_LOAD_VALUE = 13
 
 def um_run(program)
-  segments = {}
-  segments[PROGRAM_SEGMENT] = program
+  segments = [program]
   registers = [0] * NUM_REGISTERS
   next_segment_id = 1
   program_counter = 0
+  free_segment_ids = []
   while true
     instruction = program[program_counter]
     program_counter += 1
@@ -37,9 +37,9 @@ def um_run(program)
         registers[a] = registers[b]
       end
     when OP_SEGMENTED_LOAD
-      registers[a] = segments.fetch(registers[b]).fetch(registers[c])
+      registers[a] = segments[registers[b]][registers[c]]
     when OP_SEGMENTED_STORE
-      segment = segments.fetch(registers[a])
+      segment = segments[registers[a]]
       raise "Location out of bounds" if registers[b] >= segment.length
       segment[registers[b]] = registers[c]
     when OP_ADDITION
@@ -54,13 +54,17 @@ def um_run(program)
     when OP_HALT
       break
     when OP_MAP_SEGMENT
-      segment = [0] * registers[c]
-      registers[b] = segment_id = next_segment_id
-      next_segment_id += 1
-      segments[segment_id] = segment
+      size = registers[c]
+      if free_segment_ids.empty?
+        segments << [0] * size
+        registers[b] = segment_id = next_segment_id
+        next_segment_id += 1
+      else
+        registers[b] = segment_id = free_segment_ids.pop
+        segments[segment_id].fill(0, 0, size)
+      end
     when OP_UNMAP_SEGMENT
-      raise "Unmapping segment #{registers[c]}, which is not currently mapped" unless segments.include?(registers[c])
-      segments.delete(registers[c])
+      free_segment_ids << registers[c]
     when OP_OUTPUT
       char = registers[c]
       raise "Char too small" if char < 0
@@ -75,7 +79,9 @@ def um_run(program)
       end
     when OP_LOAD_PROGRAM
       if registers[b] != 0
-        program = segments[PROGRAM_SEGMENT] = segments[registers[b]].dup
+        program = segments[PROGRAM_SEGMENT]
+        program.clear
+        program.concat(segments[registers[b]])
       end
       program_counter = registers[c]
     when OP_LOAD_VALUE
