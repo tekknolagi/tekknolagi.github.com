@@ -37,9 +37,7 @@ fn um_run(program: Vec<Data>) {
         match opcode {
             OP_CONDITIONAL_MOVE => if registers[c] != 0 { registers[a] = registers[b] },
             OP_SEGMENTED_LOAD => registers[a] = segments[registers[b] as usize][registers[c] as usize],
-            OP_SEGMENTED_STORE => {
-                segments[registers[a] as usize][registers[b] as usize] = registers[c];
-            }
+            OP_SEGMENTED_STORE => segments[registers[a] as usize][registers[b] as usize] = registers[c],
             OP_ADDITION => registers[a] = registers[b].wrapping_add(registers[c]),
             OP_MULTIPLICATION => registers[a] = registers[b].wrapping_mul(registers[c]),
             OP_DIVISION => registers[a] = registers[b] / registers[c],
