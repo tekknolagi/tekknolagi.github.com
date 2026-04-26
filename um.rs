@@ -72,10 +72,7 @@ fn um_run(program: Vec<Data>) {
                 }
                 program_counter = registers[c];
             }
-            OP_LOAD_VALUE => {
-                let a = (instruction >> LOAD_VALUE_NUM_BITS) & 0b111;
-                registers[a as usize] = (instruction & LOAD_VALUE_MASK) as Data;
-            }
+            OP_LOAD_VALUE => registers[(instruction >> LOAD_VALUE_NUM_BITS) & 0b111] = (instruction & LOAD_VALUE_MASK) as Data,
             _ => panic!("Unhandled opcode {}", opcode),
         }
     }
