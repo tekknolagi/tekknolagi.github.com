@@ -61,12 +61,7 @@ fn um_run(program: Vec<Data>) {
             OP_OUTPUT => print!("{}", (registers[c] & 0xff) as u8 as char),
             OP_INPUT => {
                 use std::io::Read;
-                let mut byte = [0u8; 1];
-                registers[c] = if let Err(_) = std::io::stdin().read_exact(&mut byte) {
-                    Data::MAX
-                } else {
-                    byte[0] as Data
-                };
+                registers[c] = std::io::stdin().bytes().nth(0).map_or(Data::MAX, |b| b.unwrap() as Data);
             }
             OP_LOAD_PROGRAM => {
                 if registers[b] != 0 {
