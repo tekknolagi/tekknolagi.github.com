@@ -23,7 +23,6 @@ type Data = u32;
 fn um_run(program: Vec<Data>) {
     let mut segments = vec![program];
     let mut registers: [Data; NUM_REGISTERS] = [0, 0, 0, 0, 0, 0, 0, 0];
-    let mut next_segment_id: Data = 1;
     let mut program_counter = 0;
     let mut free_segment_ids: Vec<Data> = vec![];
     loop {
@@ -47,8 +46,7 @@ fn um_run(program: Vec<Data>) {
                 let size = registers[c] as usize;
                 let segment = free_segment_ids.pop().unwrap_or_else(|| {
                     segments.push(vec![]);
-                    next_segment_id += 1;
-                    next_segment_id - 1
+                    (segments.len() - 1) as u32
                 });
                 segments[segment as usize].resize(size, 0);
                 registers[b] = segment;
