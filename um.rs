@@ -1,22 +1,22 @@
 const PROGRAM_SEGMENT: usize = 0;
 const NUM_REGISTERS: usize = 8;
-const LOAD_VALUE_NUM_BITS: usize = 25;
-const LOAD_VALUE_MASK: usize = (1 << LOAD_VALUE_NUM_BITS) - 1;
+const LOAD_VALUE_NUM_BITS: u32 = 25;
+const LOAD_VALUE_MASK: u32 = (1 << LOAD_VALUE_NUM_BITS) - 1;
 
-const OP_CONDITIONAL_MOVE: usize = 0;
-const OP_SEGMENTED_LOAD: usize = 1;
-const OP_SEGMENTED_STORE: usize = 2;
-const OP_ADDITION: usize = 3;
-const OP_MULTIPLICATION: usize = 4;
-const OP_DIVISION: usize = 5;
-const OP_BITWISE_NAND: usize = 6;
-const OP_HALT: usize = 7;
-const OP_MAP_SEGMENT: usize = 8;
-const OP_UNMAP_SEGMENT: usize = 9;
-const OP_OUTPUT: usize = 10;
-const OP_INPUT: usize = 11;
-const OP_LOAD_PROGRAM: usize = 12;
-const OP_LOAD_VALUE: usize = 13;
+const OP_CONDITIONAL_MOVE: u32 = 0;
+const OP_SEGMENTED_LOAD: u32 = 1;
+const OP_SEGMENTED_STORE: u32 = 2;
+const OP_ADDITION: u32 = 3;
+const OP_MULTIPLICATION: u32 = 4;
+const OP_DIVISION: u32 = 5;
+const OP_BITWISE_NAND: u32 = 6;
+const OP_HALT: u32 = 7;
+const OP_MAP_SEGMENT: u32 = 8;
+const OP_UNMAP_SEGMENT: u32 = 9;
+const OP_OUTPUT: u32 = 10;
+const OP_INPUT: u32 = 11;
+const OP_LOAD_PROGRAM: u32 = 12;
+const OP_LOAD_VALUE: u32 = 13;
 
 type Data = u32;
 
@@ -27,11 +27,11 @@ fn um_run(program: Vec<Data>) {
     let mut free_segment_ids: Vec<Data> = vec![];
     loop {
         let program: &[Data] = &segments[PROGRAM_SEGMENT];
-        let instruction = program[program_counter as usize] as usize;
+        let instruction = program[program_counter as usize];
         program_counter += 1;
-        let c: usize = instruction & 0b111;
-        let b: usize = (instruction >> 3) & 0b111;
-        let a: usize = (instruction >> 6) & 0b111;
+        let c: usize = (instruction & 0b111) as usize;
+        let b: usize = ((instruction >> 3) & 0b111) as usize;
+        let a: usize = ((instruction >> 6) & 0b111) as usize;
         let opcode = (instruction >> 28) & 0xff;
         match opcode {
             OP_CONDITIONAL_MOVE => if registers[c] != 0 { registers[a] = registers[b] },
@@ -70,7 +70,7 @@ fn um_run(program: Vec<Data>) {
                 }
                 program_counter = registers[c];
             }
-            OP_LOAD_VALUE => registers[(instruction >> LOAD_VALUE_NUM_BITS) & 0b111] = (instruction & LOAD_VALUE_MASK) as Data,
+            OP_LOAD_VALUE => registers[((instruction >> LOAD_VALUE_NUM_BITS) & 0b111) as usize] = (instruction & LOAD_VALUE_MASK) as Data,
             _ => panic!("Unhandled opcode {}", opcode),
         }
     }
