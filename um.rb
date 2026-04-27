@@ -21,7 +21,6 @@ OP_LOAD_VALUE = 13
 def um_run(program)
   segments = [program]
   registers = [0] * NUM_REGISTERS
-  next_segment_id = 1
   program_counter = 0
   free_segment_ids = []
   while true
@@ -57,8 +56,7 @@ def um_run(program)
       size = registers[c]
       if free_segment_ids.empty?
         segments << [0] * size
-        registers[b] = segment_id = next_segment_id
-        next_segment_id += 1
+        registers[b] = segment_id = segments.length - 1
       else
         registers[b] = segment_id = free_segment_ids.pop
         segments[segment_id].fill(0, 0, size)
