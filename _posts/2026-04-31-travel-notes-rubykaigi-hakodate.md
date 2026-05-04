@@ -25,6 +25,8 @@ layout: post
   * Tokyo
 
 Vegetarian food
+  * MENSHO
+  * T's Tantan
 Computering
 Nikko mountain hike
   * Windy road
