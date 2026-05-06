@@ -98,7 +98,8 @@ I have a blog and now I also have some academic papers!
 
 ## I will happily talk in front of people.
 
-* I will be speaking at [RubyKaigi](https://rubykaigi.org/2026/) this coming April, 2026!
+* [*The design and implementation of ZJIT &amp; the next five years*](https://rubykaigi.org/2026/presentations/tekknolagi.html) at [RubyKaigi](https://rubykaigi.org/2026/), April 2026
+  * Video and slides coming soon
 * Invited talk for Brown PL on the past and future of compiler engineering, April 2026
 * Invited guest lecture for Dartmouth [CS 59](https://cosc59.gitlab.io/) on dynamic language runtimes at scale, November 2025
 * *Dynamic Language Runtimes in the Large (and small)* for [Low Resource Computing](https://lrc.cs.dartmouth.edu/), August 2025
