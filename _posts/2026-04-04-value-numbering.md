@@ -638,7 +638,8 @@ Commutativity; canonicalization
 
 Seeding alternative representations into the GVN
 
-Aegraphs and union-find during GVN
+Aegraphs and union-find during GVN https://cfallin.org/blog/2026/04/09/aegraph/
+`canonicalize`
 
 https://github.com/bytecodealliance/rfcs/blob/main/accepted/cranelift-egraph.md
 https://github.com/bytecodealliance/wasmtime/issues/9049
