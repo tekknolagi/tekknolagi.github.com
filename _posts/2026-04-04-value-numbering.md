@@ -620,6 +620,7 @@ about speeding up GVN.
 
 ### Implementations
 
+* [Maxine](https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/opt/GlobalValueNumberer.java)
 * [ART](https://android.googlesource.com/platform/art/+/refs/heads/main/compiler/optimizing/gvn.cc)
 * [V8 Hydrogen](https://github.com/tekknolagi/v8/blob/f030838700a83cde6992cb8ebcb3facc6a8fc1f1/src/crankshaft/hydrogen-gvn.cc)
 * [HHVM](https://github.com/facebook/hhvm/blob/1a885fae7421c759d70a8ed85aab1defcf5cc68f/hphp/runtime/vm/jit/gvn.cpp)
