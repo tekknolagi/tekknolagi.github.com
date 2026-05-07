@@ -52,3 +52,21 @@ But a couple of questions remain, at least for me:
 1. Where/when in the compiler pipeline do we insert and remove these type
    refinements?
 1. Do we need to refine after *every* conditional?
+
+## When to insert type refinements
+
+* When building SSA: easy, let the SSA-building do the heavy lifting
+* When optimizing SSA: need some mechanism to do the operand-use rewrites for you
+  * Why not "just" use union-find?
+
+## Complicated-looking papers
+
+## Which conditionals
+
+## In other compilers
+
+* Cinder
+* ZJIT
+* Graal
+
+## Aside: "separation logic" for e.g. HeapObject upgrade
