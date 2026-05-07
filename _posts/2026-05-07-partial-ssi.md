@@ -161,8 +161,7 @@ def canonicalize(bb)
     i.map_operands! do |o|
       rewrite_map[o] || o
     end
-    case i.opcode
-    when :guardtype
+    if i.opcode == :guardtype
       rewrite_map[i.operands[0]] = i
     end
     i
