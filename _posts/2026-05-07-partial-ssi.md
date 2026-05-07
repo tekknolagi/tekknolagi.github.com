@@ -81,8 +81,9 @@ non-SSA IR. In any case, this is an excellent shortcut for two reasons:
 This is pretty compelling. We can learn from the bytecode with a very small
 amount of marginal new complexity. See [my implementation in
 ZJIT][zjit-partial-ssi], for example. All it really does is modify the abstract
-interpreter state when building SSA to take into account the new type
-refinement instructions.
+interpreter state when building SSA out of `branchnil`, `branchif`, and
+`branchunless` bytecode instructions to take into account the new refined
+values.
 
 [zjit-partial-ssi]: https://github.com/ruby/ruby/pull/15915/changes#diff-a3cbeb79bf318b2aa8cc979260ba03b0204b436f745dd199a0e0c8ea5c871058
 
