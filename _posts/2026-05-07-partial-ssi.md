@@ -94,6 +94,8 @@ existing infrastructure?
 
 ### During SSA optimization
 
+* canonicalize / GVN
+
 * When optimizing SSA: need some mechanism to do the operand-use rewrites for you
   * Why not "just" use union-find?
 
