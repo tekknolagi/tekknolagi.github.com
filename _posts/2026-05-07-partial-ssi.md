@@ -137,10 +137,38 @@ instructions littered around the IR now because our optimizer worked on each
 instruction individually. Kind of a "template optimizer" situation. Now we need
 some pass to clean up the detritus.
 
-We could use GVN which wires blah blah but only de-duplicates instructions.
-Need to also canonicalize
+Global value numbering (GVN) will do a good job of de-duplicating instructions.
+It should notice that we already have an instruction that looks like
+`GuardHeapObject x` called `v0` and rewrite `v3` into `v3 = v0`. That's great
+because we have de-duplicated the guard. GVN may not get everything, though; if
+some instructions later use `x`, they will not get rewritten to instead use the
+output of these new guard instructions. To do that, we need to add some kind of
+`canonicalize` pass or augment GVN with some canonicalization feature. That
+canonicalization would handle rewriting operands to use the "latest version" of
+some value, so to speak. See the canonicalization section of Chris Fallin's
+[excellent aegraphs blog post](https://cfallin.org/blog/2026/04/09/aegraph/)
+for more.
 
-* canonicalize / GVN
+Where I'm going with all of this, though, is that you may already have some
+dominance-based instruction rewriting mechanism in your compiler, either as
+part of GVN or separately! And you can use this to do a very low code
+into-partial-SSI in the middle of your optimizer.
+
+```ruby
+def canonicalize(bb)
+  rewrite_map = {}
+  bb.map do |i|
+    i.map! do |o|
+      rewrite_map[o] || o
+    end
+    case i.opcode
+    when :guardtype
+      rewrite_map[i.operands[0]] = i
+    end
+    i
+  end
+end
+```
 
 * When optimizing SSA: need some mechanism to do the operand-use rewrites for you
   * Why not "just" use union-find?
