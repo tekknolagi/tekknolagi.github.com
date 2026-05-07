@@ -95,6 +95,10 @@ existing infrastructure?
 
 ### During SSA optimization
 
+Implicit in this "can we do it" is the assumption that your IR tracks data
+dependencies from use to corresponding def, but *not* from def to uses. Sea of
+Nodes, is an IR that tracks both directions
+
 * canonicalize / GVN
 
 * When optimizing SSA: need some mechanism to do the operand-use rewrites for you
@@ -111,6 +115,8 @@ existing infrastructure?
 * Cinder
 * ZJIT
 * Graal
+  * https://chrisseaton.com/truffleruby/stamping-out-overflow-checks/
+  * `replaceAtUsagesAndDelete` is doing a lot of heavy lifting
 
 ## Aside: "separation logic" for e.g. HeapObject upgrade
 
