@@ -203,6 +203,17 @@ compiled code and entered the interpreter.
 I keep calling this "separation logic" and I think that's not the right term
 but I don't know what is.
 
+<!--
+local reasoning
+O'Hearn
+
+Analogue in classical compilers where there is a fast path for parameters not
+aliasing
+
+Or that there is some UB-related time travel thing in LLVM+C with null pointer
+checks
+-->
+
 ## Conclusion
 
 Uhh I guess that you don't have to do full SSI and partial SSI is available and
