@@ -11,7 +11,7 @@ static single assignment form (SSA). It was introduced by C. Scott Ananian in
     [revisited in 2009](/assets/img/ssi-revisited.pdf) (PDF), [investigated in
     2017 for abstract compilation](/assets/img/ssi-abstract-compilation.pdf)
     (PDF), and probably more. The 2009 paper by Boissinot, Brisk, Darte, and
-    Rastello even show that both Ananian and Singer's papers have bugs, while
+    Rastello even shows that both Ananian and Singer's papers have bugs, while
     perhaps unintentionally also making an *excellent* pun about the literature
     being "sparse".
 
