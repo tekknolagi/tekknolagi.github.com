@@ -99,6 +99,36 @@ Implicit in this "can we do it" is the assumption that your IR tracks data
 dependencies from use to corresponding def, but *not* from def to uses. Sea of
 Nodes, is an IR that tracks both directions
 
+JIT optimization of dynamic language compilers often adds synthetic `Guard`
+instructions to the IR that enforce pre-conditions. These guards allow
+optimizing happy/fast path cases in JIT code while leaving the interpreter as a
+fallback. For example, we might be able to optimize two back-to-back
+`setinstancevariable` instructions (a very dynamic operation in the world of
+ideas, but fast when concretely implemented using object shapes) from:
+
+```
+x = ...
+setinstancevariable x, :@a, 1
+setinstancevariable x, :@b, 2
+```
+
+which is very generic and involves calling into C code that might raise an
+exception, to something more like:
+
+```
+x = ...
+v0 = GuardHeapObject x
+v1 = GuardShape v0, 0xcafe
+v2 = Const 1
+StoreField v1, 0x8, v2
+v3 = GuardHeapObject x
+v4 = GuardShape v3, 0xcafe
+v5 = Const 2
+StoreField v4, 0x10, v5
+```
+
+which is *much faster* (assuming shape stability).
+
 * canonicalize / GVN
 
 * When optimizing SSA: need some mechanism to do the operand-use rewrites for you
