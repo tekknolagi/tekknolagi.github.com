@@ -11,7 +11,10 @@ static single assignment form (SSA). It was introduced by C. Scott Ananian in
     2002](/assets/img/singer-ssi.pdf) (PDF), [revisited in
     2009](/assets/img/ssi-revisited.pdf) (PDF), investigated [in 2017 for
     abstract compilation](/assets/img/ssi-abstract-compilation.pdf) (PDF), and
-    probably more.
+    probably more. The 2009 paper by Boissinot, Brisk, Darte, and Rastello even
+    show that both Ananian and Singer's papers have bugs, while perhaps
+    unintentionally also making an *excellent* pun about the literature being
+    "sparse".
 
 SSI extends your existing SSA intermediate representation by discovering facts
 from your existing program and reifying them as path-dependent/flow-sensitive
