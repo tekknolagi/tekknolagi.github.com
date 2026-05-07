@@ -78,7 +78,7 @@ We'll go through them.
 ## Aside: "separation logic" for e.g. HeapObject upgrade
 
 In ZJIT, we currently insert `RefineType`s opportunistically in "easy" cases
-when building our HIR.
+when building our HIR from the interpreter bytecode.
 
 For example, if in the bytecode there is a branch that compares some value `x`
 with `nil`, it will have two outgoing control-flow edges: one block where `x`
