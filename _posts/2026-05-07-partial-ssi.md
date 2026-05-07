@@ -170,8 +170,13 @@ def canonicalize(bb)
 end
 ```
 
-* When optimizing SSA: need some mechanism to do the operand-use rewrites for you
+This means you could very well get away with inserting `RefineType`
+instructions in successor blocks of conditionals and get the into-SSI "for
+free".
+
+<!--
   * Why not "just" use union-find?
+-->
 
 ## Which regions
 
