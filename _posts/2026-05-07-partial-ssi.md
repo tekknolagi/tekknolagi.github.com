@@ -112,7 +112,7 @@ ideas, but fast when concretely implemented using object shapes) from:
 x = ...
 setinstancevariable x, :@a, 1
 setinstancevariable x, :@b, 2
-# ...
+# ... use x somewhere ...
 ```
 
 which is very generic and involves calling into C code that might raise an
@@ -128,13 +128,14 @@ v3 = GuardHeapObject x
 v4 = GuardShape v3, 0xcafe
 v5 = Const 2
 StoreField v4, 0x10, v5
-# ...
+# ... use x somewhere ...
 ```
 
 which is *much faster* (assuming shape stability at run-time). There's an
 irritating problem, though, which is that we have a bunch of duplicate
 instructions littered around the IR now because our optimizer worked on each
-instruction individually.
+instruction individually. Kind of a "template optimizer" situation. Now we need
+some pass to clean up the detritus.
 
 We could use GVN which wires blah blah but only de-duplicates instructions.
 Need to also canonicalize
