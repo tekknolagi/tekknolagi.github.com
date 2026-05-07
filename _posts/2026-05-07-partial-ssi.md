@@ -86,6 +86,14 @@ refinement instructions.
 
 [zjit-partial-ssi]: https://github.com/ruby/ruby/pull/15915/changes#diff-a3cbeb79bf318b2aa8cc979260ba03b0204b436f745dd199a0e0c8ea5c871058
 
+This is fine for branches that are already in the user's source program but
+sometimes optimization, especially of dynamic languages, adds new branches that
+were not there before. And sometimes these branches get added much later, long
+after SSA construction. What then? Can we do something similar and rely on
+existing infrastructure?
+
+### During SSA optimization
+
 * When optimizing SSA: need some mechanism to do the operand-use rewrites for you
   * Why not "just" use union-find?
 
