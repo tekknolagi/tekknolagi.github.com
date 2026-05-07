@@ -158,7 +158,7 @@ into-partial-SSI in the middle of your optimizer.
 def canonicalize(bb)
   rewrite_map = {}
   bb.map do |i|
-    i.map! do |o|
+    i.map_operands! do |o|
       rewrite_map[o] || o
     end
     case i.opcode
