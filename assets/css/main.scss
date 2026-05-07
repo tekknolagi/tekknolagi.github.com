@@ -25,6 +25,12 @@ li.post-item {
     display: table;
     width: 100%;
 }
+ul:has(> li.post-item) {
+    list-style-type: none;
+    list-style-position: inside;
+    /* margin: 0; */
+    padding: 0;
+}
 a.post-title span {
     float: left;
 }
