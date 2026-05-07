@@ -76,3 +76,39 @@ We'll go through them.
 * Graal
 
 ## Aside: "separation logic" for e.g. HeapObject upgrade
+
+In ZJIT, we currently insert `RefineType`s opportunistically in "easy" cases
+when building our HIR.
+
+For example, if in the bytecode there is a branch that compares some value `x`
+with `nil`, it will have two outgoing control-flow edges: one block where `x`
+is definitely `nil`, and one block where `x` is definitely *not* `nil`. In each
+of these control-flow edges, we can insert corresponding type refinement hints.
+That's pretty standard. But we can also do weirder stuff.
+
+CRuby has a notion of heap objects vs immediate objects. Many (most?) objects
+are heap objects. However, integer `5`, for example is not allocated on the
+heap but instead represented by a [tagged bit pattern](/blog/small-objects/)
+that pretends to be an address: the whole value is encoded in the pointer
+itself.
+
+We encode this knowledge in the HIR's type system: "heapness" and
+"immediateness" each get a bit in the [type lattice](/blog/lattice-bitset/).
+
+On most heap objects, with only a few exceptions, you can write instance
+variables (fields, attributes, whatever you want to call them). You can *never*
+write an instance variable to an immediate. This means that if we observe the
+following pattern in the bytecode:
+
+```
+x: BasicObject = ...
+setinstancevariable x, :@abc, 1
+```
+
+Then after building and emitting HIR for the `setinstancevariable` opcode, we
+can upgrade the type of `x` from a `BasicObject` to a `HeapBasicObject`. We can
+do this because if it *weren't* a heap-allocated object, we would have left the
+compiled code and entered the interpreter.
+
+I keep calling this "separation logic" and I think that's not the right term
+but I don't know what is.
