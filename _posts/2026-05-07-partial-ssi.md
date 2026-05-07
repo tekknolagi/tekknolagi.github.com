@@ -123,7 +123,12 @@ We encode this knowledge in the HIR's type system: "heapness" and
 use this in the optimizer to reason about [effects](/blog/compiler-effects/),
 among other things.
 
-On most heap objects, with only a few exceptions, you can write instance
+We can't know a lot of the time what type a thing is, so we pessimistically
+type most objects flowing through bytecode as `BasicObject`. This type
+encapsulates the entire world of possible values that could go on the stack or
+in a local variable.
+
+On most *heap* objects, with only a few exceptions, you can write instance
 variables (fields, attributes, whatever you want to call them). You can *never*
 write an instance variable to an immediate. This means that if we observe the
 following pattern in the bytecode:
