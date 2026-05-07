@@ -48,11 +48,16 @@ invocation of `AbsoluteValue`. Yay, optimization!
 
 But a couple of questions remain, at least for me:
 
+1. What region can we insert these type refinements?
 1. Do we need to implement the whole into-SSI and out-of-SSI algorithms from
    all the complicated-looking papers?
 1. Where/when in the compiler pipeline do we insert and remove these type
    refinements?
 1. Do we need to refine after *every* conditional?
+
+We'll go through them.
+
+## Which regions
 
 ## When to insert type refinements
 
