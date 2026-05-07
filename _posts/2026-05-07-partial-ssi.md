@@ -93,7 +93,9 @@ that pretends to be an address: the whole value is encoded in the pointer
 itself.
 
 We encode this knowledge in the HIR's type system: "heapness" and
-"immediateness" each get a bit in the [type lattice](/blog/lattice-bitset/).
+"immediateness" each get a bit in the [type lattice](/blog/lattice-bitset/). We
+use this in the optimizer to reason about [effects](/blog/compiler-effects/),
+among other things.
 
 On most heap objects, with only a few exceptions, you can write instance
 variables (fields, attributes, whatever you want to call them). You can *never*
