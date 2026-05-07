@@ -17,8 +17,8 @@ SSI extends your existing SSA intermediate representation by discovering facts
 from your existing program and reifying them as path-dependent/flow-sensitive
 IR nodes. That might sound complicated, but at least the basic idea is pretty
 natural. I talk a little bit about it in [What I talk about when I talk about
-IRs](/blog/irs/) but I'll rehash here with some motivating examples. Consider
-this admittedly contrived example:
+IRs](/blog/irs/) but I'll rehash here in more depth, starting with some
+motivating examples. Consider this admittedly contrived example:
 
 ```python
 v0: Integer = ...
