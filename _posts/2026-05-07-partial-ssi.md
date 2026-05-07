@@ -55,11 +55,37 @@ But a couple of questions remain, at least for me:
    all the complicated-looking papers?
 1. Do we need to refine after *every* conditional?
 
-We'll go through them.
+We'll go through them, starting with the compiler pipeline.
 
 ## When to insert type refinements
 
-* When building SSA: easy, let the SSA-building do the heavy lifting
+The original SSI paper starts with (TODO: I think?) SSA form and places some
+number of new refinement nodes based on conditionals. I have admittedly not
+tried very hard, but the into-SSI algorithms look complicated and kind of
+heavyweight. As a reward, you get "linear" into-SSI time complexity.
+
+But I am a humble compiler engineer, and I don't have the time to go through
+and load all of this into my head. Instead what I have seen done and have been
+doing is to take a shortcut: build *partial SSI* during SSA construction.
+
+Most of the time this is from bytecode, but it could also be from some other
+non-SSA IR. In any case, this is an excellent shortcut for two reasons:
+
+1. It lets me cleanly separate adding the type refinements (pretty
+   straightforward) from the hard part of doing all of the operand rewriting
+   and phi placement and marking and all manner of other nonsense. 
+2. In addition to separating the concerns, the hard part is *already done* by
+   SSA construction. We can actually just skip it! SSA construction handles phi
+   placement, operand rewriting, all of it.
+
+This is pretty compelling. We can learn from the bytecode with a very small
+amount of marginal new complexity. See [my implementation in
+ZJIT][zjit-partial-ssi], for example. All it really does is modify the abstract
+interpreter state when building SSA to take into account the new type
+refinement instructions.
+
+[zjit-partial-ssi]: https://github.com/ruby/ruby/pull/15915/changes#diff-a3cbeb79bf318b2aa8cc979260ba03b0204b436f745dd199a0e0c8ea5c871058
+
 * When optimizing SSA: need some mechanism to do the operand-use rewrites for you
   * Why not "just" use union-find?
 
