@@ -15,12 +15,9 @@ static single assignment form (SSA). It was introduced by C. Scott Ananian in
 
 SSI extends your existing SSA program by discovering facts from your existing
 program and reifying them as path-dependent/flow-sensitive IR nodes. That might
-sound complicated, but it's pretty natural.
-
-I talk a little bit about it in [What I talk about when I talk about
-IRs](/blog/irs/) but I'll rehash here with some motivating examples.
-
-Consider this admittedly contrived example:
+sound complicated, but it's pretty natural. I talk a little bit about it in
+[What I talk about when I talk about IRs](/blog/irs/) but I'll rehash here with
+some motivating examples. Consider this admittedly contrived example:
 
 ```python
 v0: Integer = ...
