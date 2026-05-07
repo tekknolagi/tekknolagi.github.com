@@ -202,3 +202,8 @@ compiled code and entered the interpreter.
 
 I keep calling this "separation logic" and I think that's not the right term
 but I don't know what is.
+
+## Conclusion
+
+Uhh I guess that you don't have to do full SSI and partial SSI is available and
+not scary
