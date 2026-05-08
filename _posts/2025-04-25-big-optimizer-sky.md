@@ -78,4 +78,39 @@ frequently switching version control branches, this stuff kind of falls apart.
 Changing m-times causes frequent invalidation, requiring re-builds of stuff
 that you just compiled three minutes ago. That is, unless you use
 [ccache](https://github.com/ccache/ccache), which caches compilation artifacts
-by *file contents* in one well-known location on your computer. I love ccache.
+by *file contents* and *compiler flags* (instead of m-time) in one well-known
+location on your computer. I love ccache. It even comes with a drop-in wrapper
+that you can use to replace your compiler invocation, even in some existing
+build system.
+
+At some point, though, you hit the limit of your local machine. When a project
+gets big enough, probably most parts of it will ossify and you will only change
+a couple small components at a time. But your colleague might be changing a
+different set of components, so you start to wonder if it's possible to share
+work with your colleagues. This is where [distcc]() and [icecc]() and
+[icecream]() come in.
+
+Google and Facebook have their internal build systems (Blaze and Buck,
+respectively),
+
+But still, *still*, these all seem like very coarse-grained approaches. At the
+end of the day, each of the tools described above is some abstraction over
+avoid re-compiling a single file. If something in that file changes, the whole
+file must be re-compiled. Furthermore, if some code is shared between files in
+the same project---even something like inlined code from a header file---then
+that code will get re-optimized and re-compiled for each instance.
+
+Maybe that's desirable---after all, context makes optimizers go round---but
+maybe it's not. Perhaps we actually want to start sharing work across
+compilation units. Or across projects. Or even across programming languages.
+What would that even mean?
+
+## Sharing results
+
+Dependencies, graphs
+
+## Incremental improvements
+
+## Trust and verification
+
+But first, an aside about e-graphs.
