@@ -111,6 +111,10 @@ Dependencies, graphs
 
 ## Incremental improvements
 
+But first, an aside about e-graphs.
+
+Egraphs and rebuild
+
 ## Trust and verification
 
-But first, an aside about e-graphs.
+## Ownership and maintainership
