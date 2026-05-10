@@ -376,7 +376,9 @@ let rec evalexp exp env =
   [...]
 ```
 
-<img class="post-inline-image" src="/assets/img/lisp/bob-ross.gif" />
+<figure style="display: block; margin: 0 auto; max-width: 80%;">
+  <img src="/assets/img/lisp/bob-ross.gif" />
+</figure>
 
 ...and get crackalackin' on `letrec`. First let's modify `mkloc` so that it can
 take any argument and just returns a new empty ("unspecified") reference:
