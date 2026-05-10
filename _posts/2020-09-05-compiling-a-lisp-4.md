@@ -106,7 +106,7 @@ lists in Lisp are comprised of a `car` holding an object and the `cdr` holding
 another list. Eventually the last `cdr` holds `nil`, signifying the end of the
 list. Take a look at this handy diagram.
 
-<figure style="display: block; margin: 0 auto; max-width: 400px;">
+<figure style="margin: 0 auto; max-width: 400px;">
   <img class="svg" style="max-width: 400px;" src="/assets/img/lisp/03_lists_cons.svg" />
   <figcaption>Cons cell list, courtesy of Wikipedia.</figcaption>
 </figure>

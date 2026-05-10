@@ -40,7 +40,7 @@ C API code, it has to allocate a `PyObject`, make it point into the PyPy heap,
 call the C API function, and then (potentially) free the `PyObject`. (This
 ignores GIL stuff and exception checking, which is also an issue.)
 
-<figure style="display: block; margin: 0 auto;">
+<figure style="margin: 0 auto;">
     <object class="svg" type="image/svg+xml" data="/assets/img/python-capi-box.svg">
     </object>
   <figcaption markdown="1">
@@ -93,7 +93,7 @@ PyObject* inc(PyObject* obj) {
 In this example, the `PyObject*` code `inc` is only a wrapper around another
 function `inc_impl` that works directly on C integers.
 
-<figure style="display: block; margin: 0 auto;">
+<figure style="margin: 0 auto;">
   <object class="svg" type="image/svg+xml" data="/assets/img/python-capi-box-unbox.svg">
   </object>
   <figcaption markdown="1">
@@ -230,7 +230,7 @@ GetTypedSignature(PyMethodDef* def)
 And here's a diagram to illustrate this because it's really weird and
 confusing.
 
-<figure style="display: block; margin: 0 auto;">
+<figure style="margin: 0 auto;">
   <object class="svg" type="image/svg+xml" data="/assets/img/python-capi-type-metadata.svg">
   </object>
 </figure>

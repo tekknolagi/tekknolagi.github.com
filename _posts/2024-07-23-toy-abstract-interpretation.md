@@ -496,7 +496,7 @@ abstract domains. Common domains include: constant propagation, type inference,
 range analysis, effect inference, liveness, etc. For example, here is a a
 sample lattice for constant propagation:
 
-<figure style="display: block; margin: 0 auto;">
+<figure style="margin: 0 auto;">
 <!--
 digraph G {
     rankdir="BT";

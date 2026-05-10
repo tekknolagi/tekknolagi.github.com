@@ -18,7 +18,7 @@ something called an
 
 An environment is no more than a mapping of names to values:
 
-<figure style="display: block; margin: 0 auto; max-width: 300px;" >
+<figure style="margin: 0 auto; max-width: 300px;" >
   <img style="max-width: 300px;" src="/assets/img/lisp/04_environments_diagram.png" />
   <figcaption>Fig. 1 - Environment mapping "hello" to "world" and "myvar" to 3.
 The dots are because I drew this in my dotted notebook.</figcaption>

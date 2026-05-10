@@ -263,7 +263,7 @@ Radare2 has a tool called [Cutter](https://cutter.re/) for reverse engineering
 and binary analysis. I decided to use it on the compiled output of a function
 containing an `if` expression. It produced this pretty graph!
 
-<figure style="display: block; margin: 0 auto; max-width: 600px;">
+<figure style="margin: 0 auto; max-width: 600px;">
   <img style="max-width: 600px;" src="/assets/img/lisp/callgraph.svg" />
   <figcaption>Call graph as produced by Cutter.</figcaption>
 </figure>

@@ -28,7 +28,7 @@ of elements. The fun part about Lisp: they're stored nearly identically.
 The fun part about Lisp: lists don't technically exist. Instead what we
 have are called [cons cells](https://en.wikipedia.org/wiki/Cons):
 
-<figure style="display: block; margin: 0 auto; max-width: 450px;" >
+<figure style="margin: 0 auto; max-width: 450px;" >
   <img class="svg" style="max-width: 450px;" src="/assets/img/lisp/03_lists_cons.svg" />
   <figcaption>Fig. 1 - Cons cell diagram of our above list, courtesy of
               Wikipedia.</figcaption>

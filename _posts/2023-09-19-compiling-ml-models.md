@@ -87,7 +87,7 @@ in the upstream repository, micrograd only supports MLPs.
 
 In case visual learning is your thing, here is a small diagram:
 
-<figure style="display: block; margin: 0 auto; max-width: 400px;">
+<figure style="margin: 0 auto; max-width: 400px;">
   <object class="svg" type="image/svg+xml" data="/assets/img/nn.svg">
   If you're seeing this text, it means your browser cannot render SVG.
   </object>
@@ -256,7 +256,7 @@ Value(data=9, grad=0)
 Here `x` and `y` both use `w` and then are both used by `z`, forming a diamond
 pattern.
 
-<figure style="display: block; margin: 0 auto; max-width: 400px;">
+<figure style="margin: 0 auto; max-width: 400px;">
 <svg width="204pt" height="188pt"
  viewBox="0.00 0.00 203.57 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
@@ -654,7 +654,7 @@ pass!
 
 Here is a diagram I made to explain "adding loss on top" to someone:
 
-<figure style="display: block; margin: 0 auto; max-width: 600px;">
+<figure style="margin: 0 auto; max-width: 600px;">
   <object class="svg" type="image/svg+xml" data="/assets/img/nn-loss.svg">
   If you're seeing this text, it means your browser cannot render SVG.
   </object>
@@ -728,7 +728,7 @@ with profiling information.
 
 I ran Scalene on our little micrograd MNIST and this is what it looks like.
 
-<figure style="display: block; margin: 0 auto; max-width: 600px;">
+<figure style="margin: 0 auto; max-width: 600px;">
   <a href="/assets/img/scalene-nn.png"><img style="max-width: 600px;" src="/assets/img/scalene-nn.png" /></a>
   <figcaption markdown="1">
   A screenshot of the Scalene profiler's view of micrograd. It looks

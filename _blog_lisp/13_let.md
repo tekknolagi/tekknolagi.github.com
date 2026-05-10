@@ -376,7 +376,7 @@ let rec evalexp exp env =
   [...]
 ```
 
-<figure style="display: block; margin: 0 auto; max-width: 80%;">
+<figure style="margin: 0 auto; max-width: 80%;">
   <img src="/assets/img/lisp/bob-ross.gif" />
 </figure>
 

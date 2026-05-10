@@ -15,7 +15,7 @@ What is a symbol in Lisp? Well, it's anything that can be used as a name. So
 things like `hello`, `+`, and `my-god-you've-gotten-fat` all work. Yes, with
 the quote.
 
-<figure style="display: block; margin: 0 auto; max-width: 80%;">
+<figure style="margin: 0 auto; max-width: 80%;">
   <img src="/assets/img/lisp/edna.gif" />
 </figure>
 

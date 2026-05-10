@@ -181,7 +181,7 @@ v2 = v0 + v1
 v4 = v2 + v3
 ```
 
-<figure style="display: block; margin: 0 auto;">
+<figure style="margin: 0 auto;">
   <object class="svg" type="image/svg+xml" data="/assets/img/vectorizing-ml-models-before.svg">
   </object>
 </figure>
@@ -207,7 +207,7 @@ we're not modifying the graph, so we get `v5`:
 v5 = v0 + v1 + v3
 ```
 
-<figure style="display: block; margin: 0 auto;">
+<figure style="margin: 0 auto;">
   <object class="svg" type="image/svg+xml" data="/assets/img/vectorizing-ml-models-after.svg">
   </object>
 </figure>

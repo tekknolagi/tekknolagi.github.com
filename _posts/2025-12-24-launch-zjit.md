@@ -275,7 +275,7 @@ interpreter and the X axis is time. Higher is better:
 
 [rubybench]: https://rubybench.github.io/
 
-<figure style="display: block; margin: 0 auto; max-width: 80%;">
+<figure style="margin: 0 auto; max-width: 80%;">
   <img src="/assets/img/zjit-benchmark.png" />
   <figcaption>A line chart of ZJIT performance on railsbench&mdash;represented as a
   speedup multiplier when compared to the interpreter&mdash;improving over
