@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 595,
     "following_count": 288,
-    "statuses_count": 1459,
-    "last_status_at": "2026-05-08",
+    "statuses_count": 1461,
+    "last_status_at": "2026-05-11",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -73834,6 +73834,82 @@
           "acct": "burakemir@discuss.systems"
         }
       ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116556987122935451": {
+      "id": "116556987122935451",
+      "created_at": "2026-05-11T16:54:40.269Z",
+      "in_reply_to_id": "116556986677116410",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116556987122935451",
+      "url": "https://mastodon.social/@tekknolagi/116556987122935451",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Like &quot;you are clearly enjoying this, so here is more&quot; and there&#39;s just one problem, which is that the other food is unreasonably good and also with huge portions?? So what am I to do except stuff myself *and then* still bring leftovers home?? Unreal. You must go. You must. 2/2</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116556986677116410": {
+      "id": "116556986677116410",
+      "created_at": "2026-05-11T16:54:33.470Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116556986677116410",
+      "url": "https://mastodon.social/@tekknolagi/116556986677116410",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>If you have not been to The Helmand in Cambridge, you simply must go at once. Their food is always spectacular but I was there again last night and the guy who makes their fresh bread just kept delivering us fresh bread straight from the oven with a huge smile every time. 1/</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
