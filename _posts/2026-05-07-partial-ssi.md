@@ -32,8 +32,8 @@ if v0 > 0:
 
 We should be able to learn from the comparison that in some branches in the IR,
 `v0` is positive. In that region, we can add a new IR instruction `v2` that
-attaches that knowledge right in the type field (yay, sparseness!) and then
-rewrite uses of `v0` to now use `v2`.
+attaches that knowledge right in the instruction's type field (yay,
+sparseness!) and then rewrite uses of `v0` to now use `v2`.
 
 ```python
 v0: Integer = ...
@@ -52,19 +52,18 @@ But a couple of questions remain, at least for me:
 
 1. Where/when in the compiler pipeline do we insert and remove these type
    refinements?
-1. Which regions can we insert these type refinements?
+1. Do we need to refine after *every* conditional?
 1. Do we need to implement the whole into-SSI and out-of-SSI algorithms from
    all the complicated-looking papers?
-1. Do we need to refine after *every* conditional?
 
 We'll go through them, starting with the compiler pipeline.
 
-## When to insert type refinements
+## When do we insert type refinements?
 
-The original SSI paper starts with (TODO: I think?) SSA form and places some
-number of new refinement nodes based on conditionals. I have admittedly not
-tried very hard, but the into-SSI algorithms look complicated and kind of
-heavyweight. As a reward, you get "linear" into-SSI time complexity.
+The original SSI paper starts with (I think?) SSA form and places some number
+of new refinement nodes based on conditionals. I have admittedly not tried very
+hard, but the into-SSI algorithms look complicated and kind of heavyweight. As
+a reward, you get "linear" into-SSI time complexity.
 
 But I am a humble compiler engineer, and I don't have the time to go through
 and load all of this into my head. Instead what I have seen done and have been
@@ -75,10 +74,11 @@ non-SSA IR. In any case, this is an excellent shortcut for two reasons:
 
 1. It lets me cleanly separate adding the type refinements (pretty
    straightforward) from the hard part of doing all of the operand rewriting
-   and phi placement and marking and all manner of other nonsense. 
+   and phi placement and marking and all manner of other nonsense.
 2. In addition to separating the concerns, the hard part is *already done* by
    SSA construction. We can actually just skip it! SSA construction handles phi
-   placement, operand rewriting, all of it.
+   placement, operand rewriting, all of it. It probably fits neatly into a
+   naive or a [Braun-style](/assets/img/braun13cc.pdf) (PDF) construction.
 
 This is pretty compelling. We can learn from the bytecode with a very small
 amount of marginal new complexity. See [my implementation in
@@ -99,7 +99,10 @@ existing infrastructure?
 
 Implicit in this "can we do it" is the assumption that your IR tracks data
 dependencies from use to corresponding def, but *not* from def to uses. Sea of
-Nodes, is an IR that tracks both directions
+Nodes (at least the [Simple](https://github.com/SeaOfNodes/Simple)
+implementation), is an IR that tracks both directions all the time for easier
+rewriting. Many IRs do not do this, so we will continue assuming that there's
+no "easy way out".
 
 JIT optimization of dynamic language compilers often adds synthetic `Guard`
 instructions to the IR that enforce pre-conditions. These guards allow
@@ -147,12 +150,10 @@ output of these new guard instructions. To do that, we need to add some kind of
 canonicalization would handle rewriting operands to use the "latest version" of
 some value, so to speak. See the canonicalization section of Chris Fallin's
 [excellent aegraphs blog post](https://cfallin.org/blog/2026/04/09/aegraph/)
-for more.
+for more (and of course the (currently block-local) [implementation in
+ZJIT][zjit-canonicalize]).
 
-Where I'm going with all of this, though, is that you may already have some
-dominance-based instruction rewriting mechanism in your compiler, either as
-part of GVN or separately! And you can use this to do a very low code
-into-partial-SSI in the middle of your optimizer.
+[zjit-canonicalize]: https://github.com/ruby/ruby/commit/ece14b61f505eea1ebefb3b8295df0fcf4d22567
 
 ```ruby
 def canonicalize(bb)
@@ -169,6 +170,11 @@ def canonicalize(bb)
 end
 ```
 
+Where I'm going with all of this, though, is that you may already have some
+dominance-based instruction rewriting mechanism in your compiler, either as
+part of GVN or separately! And you can use this to do a very low code
+into-partial-SSI in the middle of your optimizer.
+
 This means you could very well get away with inserting `RefineType`
 instructions in successor blocks of conditionals and get the into-SSI "for
 free".
@@ -177,21 +183,39 @@ free".
   * Why not "just" use union-find?
 -->
 
-## Which regions
+## After which conditionals do we refine?
 
-## Complicated-looking papers
+That's up to you. There's a trade-off between compile-time and run-time,
+especially in JITs. Inserting more instructions and rewriting more times may
+slow down your compiler. It's a cheap lunch, not a free one.
 
-## Which conditionals
+## How does this compare to the complicated looking papers?
+
+I don't know. I don't have a good grasp of how this "partial SSI" compares to
+the "full SSI". I don't plan on implementing full SSI in the near future.
 
 ## In other compilers
 
-* Cinder
-* ZJIT
-* Graal
-  * https://chrisseaton.com/truffleruby/stamping-out-overflow-checks/
-  * `replaceAtUsagesAndDelete` is doing a lot of heavy lifting
+Like Simple, [TruffleRuby](https://truffleruby.dev/) is built on a Sea of Nodes
+IR (Graal). Chris Seaton has an [excellent blog
+post](https://chrisseaton.com/truffleruby/stamping-out-overflow-checks/) about
+TruffleRuby's use of "stamp nodes". The `replaceAtUsagesAndDelete` function
+does a lot of heavy lifting, I think because Graal tracks uses.
 
-## Aside: "separation logic" for e.g. HeapObject upgrade
+[Cinder](https://github.com/facebookincubator/cinderx) mostly inserts
+`RefineType` instructions in the HIR builder, before into-SSA, and then lets
+the SSA construction take care of things. That's where I learned this trick,
+actually. Here is [one
+example](https://github.com/facebookincubator/cinderx/blob/38c0a17d71df4fddf39ca10d9fdf48d7bcafc1d9/cinderx/Jit/hir/builder.cpp#L4745)
+of refining the type of the matched operand when building IR for pattern
+matching.
+
+## Aside: logic for e.g. HeapObject upgrade
+
+Last, I want to talk a little bit about some interesting reasoning you can do
+when you have two implementations of something that you can switch between. For
+example, JIT (+ interpreter), or aliasing and non-aliasing cases in C code, or
+the weirdo NULL-UB reasoning LLVM can do to C code, things like that.
 
 In ZJIT, we currently insert `RefineType`s opportunistically in "easy" cases
 when building our HIR from the interpreter bytecode.
@@ -233,21 +257,10 @@ can upgrade the type of `x` from a `BasicObject` to a `HeapBasicObject`. We can
 do this because if it *weren't* a heap-allocated object, we would have left the
 compiled code and entered the interpreter.
 
-I keep calling this "separation logic" and I think that's not the right term
-but I don't know what is.
-
-<!--
-local reasoning
-O'Hearn
-
-Analogue in classical compilers where there is a fast path for parameters not
-aliasing
-
-Or that there is some UB-related time travel thing in LLVM+C with null pointer
-checks
--->
+This is another SSI-type thing you can do in your compiler.
 
 ## Conclusion
 
-Uhh I guess that you don't have to do full SSI and partial SSI is available and
-not scary
+Uhh I guess the conclusion is that you don't have to do full SSI and partial
+SSI is available and not too scary? Does your compiler do this? Reader, please
+write in.
