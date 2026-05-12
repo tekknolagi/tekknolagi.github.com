@@ -194,6 +194,15 @@ slow down your compiler. It's a cheap lunch, not a free one.
 I don't know. I don't have a good grasp of how this "partial SSI" compares to
 the "full SSI". I don't plan on implementing full SSI in the near future.
 
+I will note that this partial SSI approach doesn't do two things:
+
+1. It doesn't split variables with a new sigma node, and it generally inserts
+   the refine node within the target block rather than above the branch
+1. It doesn't insert new phi nodes; it just leaves both IR nodes available and,
+   instead of re-merging, drops them
+
+I can't tell what impact this has.
+
 ## In other compilers
 
 Like Simple, [TruffleRuby](https://truffleruby.dev/) is built on a Sea of Nodes
