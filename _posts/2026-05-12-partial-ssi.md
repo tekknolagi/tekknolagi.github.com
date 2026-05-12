@@ -208,8 +208,12 @@ I can't tell what impact this has.
 Like Simple, [TruffleRuby](https://truffleruby.dev/) is built on a Sea of Nodes
 IR (Graal). Chris Seaton has an [excellent blog
 post](https://chrisseaton.com/truffleruby/stamping-out-overflow-checks/) about
-TruffleRuby's use of "stamp nodes". The `replaceAtUsagesAndDelete` function
-does a lot of heavy lifting, I think because Graal tracks uses.
+TruffleRuby's use of "stamp nodes" ("Pi nodes"[^pi-nodes]). The
+`replaceAtUsagesAndDelete` function does a lot of heavy lifting, I think
+because Graal tracks uses.
+
+[^pi-nodes]: Today I learned that this terminology comes from the [ABCD
+    paper](/assets/img/abcd.pdf) (PDF).
 
 [Cinder](https://github.com/facebookincubator/cinderx) mostly inserts
 `RefineType` instructions in the HIR builder, before into-SSA, and then lets
