@@ -68,7 +68,12 @@ a reward, you get "linear" into-SSI time complexity.
 
 But I am a humble compiler engineer, and I don't have the time to go through
 and load all of this into my head. Instead what I have seen done and have been
-doing is to take a shortcut: build *partial SSI* during SSA construction.
+doing is to take a shortcut: build *partial SSI* during SSA
+construction[^llvm-partial-ssi].
+
+[^llvm-partial-ssi]: This blog post is different than the what the [LLVM
+    paper](/assets/img/efficient-ssi.pdf) (PDF) calls partial SSI. Partial for
+    different reasons. Maybe it's not even single information anymore.
 
 Most of the time this is from bytecode, but it could also be from some other
 non-SSA IR. In any case, this is an excellent shortcut for two reasons:
