@@ -227,6 +227,8 @@ matching.
 but for their type checker. Chatting with someone on their team is actually
 part of the reason I got motivated to write this post.
 
+<!-- LLVM PredicateInfo -->
+
 ## Aside: logic for e.g. HeapObject upgrade
 
 Last, I want to talk a little bit about some interesting reasoning you can do
