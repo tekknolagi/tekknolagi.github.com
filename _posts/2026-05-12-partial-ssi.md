@@ -223,6 +223,10 @@ example](https://github.com/facebookincubator/cinderx/blob/38c0a17d71df4fddf39ca
 of refining the type of the matched operand when building IR for pattern
 matching.
 
+[Luau](https://github.com/luau-lang/luau) is working on something like this,
+but for their type checker. Chatting with someone on their team is actually
+part of the reason I got motivated to write this post.
+
 ## Aside: logic for e.g. HeapObject upgrade
 
 Last, I want to talk a little bit about some interesting reasoning you can do
