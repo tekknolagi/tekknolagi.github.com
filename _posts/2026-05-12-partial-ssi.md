@@ -236,6 +236,11 @@ and inserts them [in reference type
 propagation](https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/reference_type_propagation.cc#L194).
 This handles class checks, null checks, and instanceof checks.
 
+<!-- Dart
+https://github.com/dart-lang/sdk/blob/1c947dd88acd6e4b282e445b56e62eb631e87bd8/runtime/vm/compiler/backend/flow_graph.cc#L2012
+RedefinitionInstr
+-->
+
 ## Aside: logic for e.g. HeapObject upgrade
 
 Last, I want to talk a little bit about some interesting reasoning you can do
