@@ -198,8 +198,8 @@ I will note that this partial SSI approach doesn't do two things:
 
 1. It doesn't split variables with a new sigma node, and it generally inserts
    the refine node within the target block rather than above the branch
-1. It doesn't insert new phi nodes; it just leaves both IR nodes available and,
-   instead of re-merging, drops them
+1. (For `canonicalize` only) It doesn't insert new phi nodes; it just leaves
+   both IR nodes available and, instead of re-merging, drops them
 
 I can't tell what impact this has.
 
