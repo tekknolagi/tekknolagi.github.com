@@ -19,10 +19,10 @@
     "header": "https://mastodon.social/headers/original/missing.png",
     "header_static": "https://mastodon.social/headers/original/missing.png",
     "header_description": "",
-    "followers_count": 595,
+    "followers_count": 597,
     "following_count": 288,
-    "statuses_count": 1461,
-    "last_status_at": "2026-05-11",
+    "statuses_count": 1462,
+    "last_status_at": "2026-05-13",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -73915,6 +73915,124 @@
       "tagged_collections": [],
       "quote": null,
       "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116564993182122952": {
+      "id": "116564993182122952",
+      "created_at": "2026-05-13T02:50:43.038Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116564993182122952",
+      "url": "https://mastodon.social/@tekknolagi/116564993182122952",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>I finally wrote a little thing about a compiler thing that I don&#39;t really have a name for but lots of people do</p><p><a href=\"https://bernsteinbear.com/blog/partial-ssi/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bernsteinbear.com/blog/partial</span><span class=\"invisible\">-ssi/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": {
+        "url": "https://bernsteinbear.com/blog/partial-ssi/",
+        "title": "Partial static single information form",
+        "description": "In compilers, static single information form (SSI) is a common extension to static single assignment form (SSA). It was introduced by C. Scott Ananian in 1999 in his MS thesis (PDF) 1. \u2026and optimized in 2002 (PDF),\u00a0\u21a9",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Max Bernstein",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": "2026-05-12T00:00:00.000Z",
+        "authors": [
+          {
+            "name": "",
+            "url": "",
+            "account": {
+              "id": "1300106",
+              "username": "tekknolagi",
+              "acct": "tekknolagi",
+              "display_name": "Max B",
+              "locked": false,
+              "bot": false,
+              "discoverable": true,
+              "indexable": true,
+              "group": false,
+              "created_at": "2020-10-20T00:00:00.000Z",
+              "note": "<p>Let&#39;s chat about compilers</p>",
+              "url": "https://mastodon.social/@tekknolagi",
+              "uri": "https://mastodon.social/users/tekknolagi",
+              "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "avatar_description": "",
+              "header": "https://mastodon.social/headers/original/missing.png",
+              "header_static": "https://mastodon.social/headers/original/missing.png",
+              "header_description": "",
+              "followers_count": 597,
+              "following_count": 288,
+              "statuses_count": 1462,
+              "last_status_at": "2026-05-13",
+              "hide_collections": false,
+              "show_media": true,
+              "show_media_replies": true,
+              "show_featured": true,
+              "noindex": false,
+              "feature_approval": {
+                "automatic": [
+                  "public"
+                ],
+                "manual": [],
+                "current_user": "denied"
+              },
+              "emojis": [],
+              "roles": [],
+              "fields": [
+                {
+                  "name": "website",
+                  "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2022-12-07T01:44:28.737+00:00"
+                },
+                {
+                  "name": "github",
+                  "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2023-07-26T16:28:07.403+00:00"
+                },
+                {
+                  "name": "bsky",
+                  "value": "<a href=\"https://bsky.app/profile/bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bsky.app/profile/bernsteinbear</span><span class=\"invisible\">.com</span></a>",
+                  "verified_at": null
+                }
+              ]
+            }
+          }
+        ]
+      },
       "poll": null,
       "quote_approval": {
         "automatic": [
