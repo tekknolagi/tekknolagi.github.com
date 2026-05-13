@@ -230,6 +230,12 @@ part of the reason I got motivated to write this post.
 <!-- LLVM PredicateInfo -->
 <!-- HHVM AssertType -->
 
+Android ART looks like it has
+[HBoundType](https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/nodes.h#L7759)
+and inserts them [in reference type
+propagation](https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/reference_type_propagation.cc#L194).
+This handles class checks, null checks, and instanceof checks.
+
 ## Aside: logic for e.g. HeapObject upgrade
 
 Last, I want to talk a little bit about some interesting reasoning you can do
