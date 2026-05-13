@@ -8,7 +8,8 @@ static single assignment form (SSA). It was introduced by C. Scott Ananian in
 1999 in his [MS thesis](/assets/img/ananian-thesis.pdf) (PDF) [^et-al].
 
 [^et-al]: ...and [optimized in 2002](/assets/img/singer-ssi.pdf) (PDF),
-    [revisited in 2009](/assets/img/ssi-revisited.pdf) (PDF), [investigated in
+    [revisited in 2009](/assets/img/ssi-revisited.pdf) (PDF), [implemented in
+    LLVM in 2010](/assets/img/efficient-ssi.pdf) (PDF), [investigated in
     2017 for abstract compilation](/assets/img/ssi-abstract-compilation.pdf)
     (PDF), and probably more. The 2009 paper by Boissinot, Brisk, Darte, and
     Rastello even shows that both Ananian and Singer's papers have bugs, while
