@@ -228,6 +228,7 @@ but for their type checker. Chatting with someone on their team is actually
 part of the reason I got motivated to write this post.
 
 <!-- LLVM PredicateInfo -->
+<!-- HHVM AssertType -->
 
 ## Aside: logic for e.g. HeapObject upgrade
 
