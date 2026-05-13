@@ -1,0 +1,297 @@
+---
+title: "Partial static single information form"
+layout: post
+---
+
+In compilers, static single information form (SSI) is a common extension to
+static single assignment form (SSA). It was introduced by C. Scott Ananian in
+1999 in his [MS thesis](/assets/img/ananian-thesis.pdf) (PDF) [^et-al].
+
+[^et-al]: ...and [optimized in 2002](/assets/img/singer-ssi.pdf) (PDF),
+    [revisited in 2009](/assets/img/ssi-revisited.pdf) (PDF), [investigated in
+    2017 for abstract compilation](/assets/img/ssi-abstract-compilation.pdf)
+    (PDF), and probably more. The 2009 paper by Boissinot, Brisk, Darte, and
+    Rastello even shows that both Ananian and Singer's papers have bugs, while
+    perhaps unintentionally also making an *excellent* pun about the literature
+    being "sparse".
+
+SSI extends your existing SSA intermediate representation by discovering facts
+from your existing program and reifying them as path-dependent/flow-sensitive
+IR nodes. That might sound complicated, but at least the basic idea is pretty
+natural. I talk a little bit about it in [What I talk about when I talk about
+IRs](/blog/irs/) and I'll rehash here in more depth, starting with some
+motivating examples. Consider this admittedly contrived example:
+
+```python
+v0: Integer = ...
+if v0 > 0:
+    # ...
+    v1: PositiveInteger = AbsoluteValue v0
+    # ...
+```
+
+We should be able to learn from the comparison that in some branches in the IR,
+`v0` is positive. In that region, we can add a new IR instruction `v2` that
+attaches that knowledge right in the instruction's type field (yay,
+sparseness!) and then rewrite uses of `v0` to now use `v2`.
+
+```python
+v0: Integer = ...
+if v0 > 0:
+    v2: PositiveInteger = RefineType v0, Positive
+    # ...
+    v1: PositiveInteger = AbsoluteValue v2
+    # ...
+```
+
+Because we've done that, our (imaginary) optimization rule that gets rid of
+`AbsoluteValue` on known-positive integers can kick in, and we can delete the
+invocation of `AbsoluteValue`. Yay, optimization!
+
+But a couple of questions remain, at least for me:
+
+1. Where/when in the compiler pipeline do we insert and remove these type
+   refinements?
+1. Do we need to refine after *every* conditional?
+1. Do we need to implement the whole into-SSI and out-of-SSI algorithms from
+   all the complicated-looking papers?
+
+We'll go through them, starting with the compiler pipeline.
+
+## When do we insert type refinements?
+
+The original SSI paper starts with (I think?) SSA form and places some number
+of new refinement nodes based on conditionals. I have admittedly not tried very
+hard, but the into-SSI algorithms look complicated and kind of heavyweight. As
+a reward, you get "linear" into-SSI time complexity.
+
+But I am a humble compiler engineer, and I don't have the time to go through
+and load all of this into my head. Instead what I have seen done and have been
+doing is to take a shortcut: build *partial SSI* during SSA construction.
+
+Most of the time this is from bytecode, but it could also be from some other
+non-SSA IR. In any case, this is an excellent shortcut for two reasons:
+
+1. It lets me cleanly separate adding the type refinements (pretty
+   straightforward) from the hard part of doing all of the operand rewriting
+   and phi placement and marking and all manner of other nonsense.
+2. In addition to separating the concerns, the hard part is *already done* by
+   SSA construction. We can actually just skip it! SSA construction handles phi
+   placement, operand rewriting, all of it. It probably fits neatly into a
+   naive or a [Braun-style](/assets/img/braun13cc.pdf) (PDF) construction.
+
+This is pretty compelling. We can learn from the bytecode with a very small
+amount of marginal new complexity. See [my implementation in
+ZJIT][zjit-partial-ssi], for example. All it really does is modify the abstract
+interpreter state when building SSA out of `branchnil`, `branchif`, and
+`branchunless` bytecode instructions to take into account the new refined
+values.
+
+[zjit-partial-ssi]: https://github.com/ruby/ruby/pull/15915/changes#diff-a3cbeb79bf318b2aa8cc979260ba03b0204b436f745dd199a0e0c8ea5c871058
+
+This is fine for branches that are already in the user's source program but
+sometimes optimization, especially of dynamic languages, adds new branches that
+were not there before. And sometimes these branches get added much later, long
+after SSA construction. What then? Can we do something similar and rely on
+existing infrastructure?
+
+### During SSA optimization
+
+Implicit in this "can we do it" is the assumption that your IR tracks data
+dependencies from use to corresponding def, but *not* from def to uses. Sea of
+Nodes (at least the [Simple](https://github.com/SeaOfNodes/Simple)
+implementation), is an IR that tracks both directions all the time for easier
+rewriting. Many IRs do not do this, so we will continue assuming that there's
+no "easy way out".
+
+JIT optimization of dynamic language compilers often adds synthetic `Guard`
+instructions to the IR that enforce pre-conditions. These guards allow
+optimizing happy/fast path cases in JIT code while leaving the interpreter as a
+fallback. For example, we might be able to optimize two back-to-back
+`setinstancevariable` instructions (a very dynamic operation in the world of
+ideas, but fast when concretely implemented using object shapes) from:
+
+```
+x = ...
+setinstancevariable x, :@a, 1
+setinstancevariable x, :@b, 2
+# ... use x somewhere ...
+```
+
+which is very generic and involves calling into C code that might raise an
+exception, to something more like:
+
+```
+x = ...
+v0 = GuardHeapObject x
+v1 = GuardShape v0, 0xcafe
+v2 = Const 1
+StoreField v1, 0x8, v2
+v3 = GuardHeapObject x
+v4 = GuardShape v3, 0xcafe
+v5 = Const 2
+StoreField v4, 0x10, v5
+# ... use x somewhere ...
+```
+
+which is *much faster* (assuming shape stability at run-time). There's an
+irritating problem, though, which is that we have a bunch of duplicate
+instructions littered around the IR now because our optimizer worked on each
+instruction individually. Kind of a "template optimizer" situation. Now we need
+some pass to clean up the detritus.
+
+Global value numbering (GVN) will do a good job of de-duplicating instructions.
+It should notice that we already have an instruction that looks like
+`GuardHeapObject x` called `v0` and rewrite `v3` into `v3 = v0`. That's great
+because we have de-duplicated the guard. GVN may not get everything, though; if
+some instructions later use `x`, they will not get rewritten to instead use the
+output of these new guard instructions. To do that, we need to add some kind of
+`canonicalize` pass or augment GVN with some canonicalization feature. That
+canonicalization would handle rewriting operands to use the "latest version" of
+some value, so to speak. See the canonicalization section of Chris Fallin's
+[excellent aegraphs blog post](https://cfallin.org/blog/2026/04/09/aegraph/)
+for more (and of course the (currently block-local) [implementation in
+ZJIT][zjit-canonicalize]).
+
+[zjit-canonicalize]: https://github.com/ruby/ruby/commit/ece14b61f505eea1ebefb3b8295df0fcf4d22567
+
+```ruby
+def canonicalize(bb)
+  rewrite_map = {}
+  bb.map do |i|
+    i.map_operands! do |o|
+      rewrite_map[o] || o
+    end
+    if i.opcode == :guardtype
+      rewrite_map[i.operands[0]] = i
+    end
+    i
+  end
+end
+```
+
+Where I'm going with all of this, though, is that you may already have some
+dominance-based instruction rewriting mechanism in your compiler, either as
+part of GVN or separately! And you can use this to do a very low code
+into-partial-SSI in the middle of your optimizer.
+
+This means you could very well get away with inserting `RefineType`
+instructions in successor blocks of conditionals and get the into-SSI "for
+free".
+
+<!--
+  * Why not "just" use union-find?
+-->
+
+## After which conditionals do we refine?
+
+That's up to you. There's a trade-off between compile-time and run-time,
+especially in JITs. Inserting more instructions and rewriting more times may
+slow down your compiler. It's a cheap lunch, not a free one.
+
+## How does this compare to the complicated looking papers?
+
+I don't know. I don't have a good grasp of how this "partial SSI" compares to
+the "full SSI". I don't plan on implementing full SSI in the near future.
+
+I will note that this partial SSI approach doesn't do two things:
+
+1. It doesn't split variables with a new sigma node, and it generally inserts
+   the refine node within the target block rather than above the branch
+1. (For `canonicalize` only) It doesn't insert new phi nodes; it just leaves
+   both IR nodes available and, instead of re-merging, drops them
+
+I can't tell what impact this has.
+
+## In other compilers
+
+Like Simple, [TruffleRuby](https://truffleruby.dev/) is built on a Sea of Nodes
+IR (Graal). Chris Seaton has an [excellent blog
+post](https://chrisseaton.com/truffleruby/stamping-out-overflow-checks/) about
+TruffleRuby's use of "stamp nodes" ("Pi nodes"[^pi-nodes]). The
+`replaceAtUsagesAndDelete` function does a lot of heavy lifting, I think
+because Graal tracks uses.
+
+[^pi-nodes]: Today I learned that this terminology comes from the [ABCD
+    paper](/assets/img/abcd.pdf) (PDF).
+
+[Cinder](https://github.com/facebookincubator/cinderx) mostly inserts
+`RefineType` instructions in the HIR builder, before into-SSA, and then lets
+the SSA construction take care of things. That's where I learned this trick,
+actually. Here is [one
+example](https://github.com/facebookincubator/cinderx/blob/38c0a17d71df4fddf39ca10d9fdf48d7bcafc1d9/cinderx/Jit/hir/builder.cpp#L4745)
+of refining the type of the matched operand when building IR for pattern
+matching.
+
+[Luau](https://github.com/luau-lang/luau) is working on something like this,
+but for their type checker. Chatting with someone on their team is actually
+part of the reason I got motivated to write this post.
+
+<!-- LLVM PredicateInfo -->
+<!-- HHVM AssertType -->
+
+Android ART looks like it has
+[HBoundType](https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/nodes.h#L7759)
+and inserts them [in reference type
+propagation](https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/reference_type_propagation.cc#L194).
+This handles class checks, null checks, and instanceof checks.
+
+<!-- Dart
+https://github.com/dart-lang/sdk/blob/1c947dd88acd6e4b282e445b56e62eb631e87bd8/runtime/vm/compiler/backend/flow_graph.cc#L2012
+RedefinitionInstr
+-->
+
+## Aside: logic for e.g. HeapObject upgrade
+
+Last, I want to talk a little bit about some interesting reasoning you can do
+when you have two implementations of something that you can switch between. For
+example, JIT (+ interpreter), or aliasing and non-aliasing cases in C code, or
+the weirdo NULL-UB reasoning LLVM can do to C code, things like that.
+
+In ZJIT, we currently insert `RefineType`s opportunistically in "easy" cases
+when building our HIR from the interpreter bytecode.
+
+For example, if in the bytecode there is a branch that compares some value `x`
+with `nil`, it will have two outgoing control-flow edges: one block where `x`
+is definitely `nil`, and one block where `x` is definitely *not* `nil`. In each
+of these control-flow edges, we can insert corresponding type refinement hints.
+That's pretty standard. But we can also do weirder stuff.
+
+CRuby has a notion of heap objects vs immediate objects. Many (most?) objects
+are heap objects. However, integer `5`, for example is not allocated on the
+heap but instead represented by a [tagged bit pattern](/blog/small-objects/)
+that pretends to be an address: the whole value is encoded in the pointer
+itself.
+
+We encode this knowledge in the HIR's type system: "heapness" and
+"immediateness" each get a bit in the [type lattice](/blog/lattice-bitset/). We
+use this in the optimizer to reason about [effects](/blog/compiler-effects/),
+among other things.
+
+We can't know a lot of the time what type a thing is, so we pessimistically
+type most objects flowing through bytecode as `BasicObject`. This type
+encapsulates the entire world of possible values that could go on the stack or
+in a local variable.
+
+On most *heap* objects, with only a few exceptions, you can write instance
+variables (fields, attributes, whatever you want to call them). You can *never*
+write an instance variable to an immediate. This means that if we observe the
+following pattern in the bytecode:
+
+```
+x: BasicObject = ...
+setinstancevariable x, :@abc, 1
+```
+
+Then after building and emitting HIR for the `setinstancevariable` opcode, we
+can upgrade the type of `x` from a `BasicObject` to a `HeapBasicObject`. We can
+do this because if it *weren't* a heap-allocated object, we would have left the
+compiled code and entered the interpreter.
+
+This is another SSI-type thing you can do in your compiler.
+
+## Conclusion
+
+Uhh I guess the conclusion is that you don't have to do full SSI and partial
+SSI is available and not too scary? Does your compiler do this? Reader, please
+write in.

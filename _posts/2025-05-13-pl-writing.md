@@ -88,6 +88,7 @@ Here are some of those posts in no particular order:
   Optimizations][cranelift-aegraph] by Chris Fallin showed that e-graphs are
   workable and remarkably effective in a production compiler, even if you don't
   do the "full shebang".
+  * See also [The acyclic e-graph: Cranelift's mid-end optimizer](https://cfallin.org/blog/2026/04/09/aegraph/), a 2026 blog post
 * [Acyclic Egraphs and Smart Constructors][phil-aegraph] by Phil Zucker further
   explores acyclic egraphs in the small. This one was a slow burn: I read it
   when it came out, didn't really get it, and then months later it clicked
