@@ -115,7 +115,8 @@ those folks had to say. I wonder if they agree.
 This post was a long time coming. I started working on it about five years ago
 but then when I quit working at Facebook I accidentally left behind all of the
 inliner research I did for Cinder's inliner. So then I kind of just thought
-about it aimlessly for a while. Anyway, here's wonderwall.
+about it aimlessly for a while before redoing it this year. Anyway, here's
+wonderwall.
 
 ## The survey
 
