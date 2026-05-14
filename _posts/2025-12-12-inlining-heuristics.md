@@ -102,7 +102,10 @@ never get to inline B, which is the key to unlocking the performance of the
 method you are trying to optimize.
 
 You have to write your compiler to reason about all of this stuff but also have
-really bounded compile times. So you have heuristics.
+really bounded compile times. So you have heuristics. For example, here is
+Michael Pollan's inliner heuristic:
+
+> *Inline methods. Mostly small. Not too many.*
 
 I did a survey of a bunch of compilers, mostly JIT compilers, to see what their
 inlining heuristics look like. I also read (skimmed) some papers to see what
