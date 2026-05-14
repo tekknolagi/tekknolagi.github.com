@@ -248,6 +248,21 @@ TODO get more details here
 
 ### V8
 
+V8 is a JS engine and it has over the years had many execution approaches.
+We'll look at three of them since they all have or had their place in the
+history:
+
+* Hydrogen was the first real SSA IR and it looks very familiar to me, having
+  worked on Cinder and now ZJIT.
+* TurboFan was the replacement, going full Sea of Nodes. In the grand scheme of
+  things it is a pretty fast compiler, but it is not hold back from doing some
+  expensive rewrites.
+* Maglev is (maybe?) the replacement for that, preferring to speculate a little
+  more eagerly and do fewer incremental rewrites in the name of compile time.
+
+They also each inline at different times in the pipeline, which made for a fun
+time trying to understand the different codebases.
+
 #### V8 Hydrogen
 
 Inlining happens during Hydrogen graph building
