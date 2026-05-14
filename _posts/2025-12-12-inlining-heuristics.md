@@ -255,7 +255,7 @@ We'll look at three of them since they all have or had their place in the
 history:
 
 * Hydrogen was the first real SSA IR and it looks very familiar to me, having
-  worked on Cinder and now ZJIT.
+  worked on Cinder and now ZJIT. It is now defunct.
 * TurboFan was the replacement, going full Sea of Nodes. In the grand scheme of
   things it is a pretty fast compiler, but it is not hold back from doing some
   expensive rewrites.
