@@ -111,11 +111,16 @@ I did a survey of a bunch of compilers, mostly JIT compilers, to see what their
 inlining heuristics look like. I also read (skimmed) some papers to see what
 those folks had to say. I wonder if they agree.
 
+This post was a long time coming. I started working on it about five years ago
+but then when I quit working at Facebook I accidentally left behind all of the
+inliner research I did for Cinder's inliner. So then I kind of just thought
+about it aimlessly for a while. Anyway, here's wonderwall.
+
 ## The survey
 
-We'll start with [Cinder][cinder], because when I wrote it I added only the
-simplest heuristics, mostly "don't inline" signals. Over time, after I left,
-people tuned it a bit more.
+We'll start with [Cinder][cinder], because when I wrote Cinder's inliner I
+added only the simplest heuristics, mostly "don't inline" signals. Over time,
+after I left, people tuned it a bit more.
 
 [cinder]: https://github.com/facebookincubator/cinderx
 
