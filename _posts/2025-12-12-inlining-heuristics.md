@@ -368,6 +368,12 @@ Unclear how `inlineable_calls` is populated... jk it's in `MaybeReduceResult Mag
 
 ### JavaScriptCore
 
+JavaScriptCore is funky! Unlike these other compilers that do inlining in their
+neat little SSA IRs, JSC inlines *at the bytecode level*. This is their way of
+making sure that they get at least one level of call context into their
+interpreter inline caches, which will eventually give better information to the
+compiler.
+
 * Bytecode inlining
   * https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/Source/JavaScriptCore/bytecode/CodeBlock.cpp#L2453
 * DFG
@@ -382,6 +388,12 @@ https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/S
 -->
 
 ### SpiderMonkey
+
+SpiderMonkey has another way of getting that call contet without doing bytecode
+inlining: they add call context to their inline caches. Methods can pass down
+an *ICScript* to their callees where the callee writes its inline cache
+information. Then, when compiling, the callee is more likely to be
+monomorphized.
 
 Wasm
 https://github.com/mozilla-firefox/firefox/blob/438a3ce10eb77fb50d968463b7741117aec5bb4a/js/src/wasm/WasmHeuristics.h#L213
