@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 598,
     "following_count": 288,
-    "statuses_count": 1464,
-    "last_status_at": "2026-05-14",
+    "statuses_count": 1465,
+    "last_status_at": "2026-05-15",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -74205,6 +74205,251 @@
         "automatic": [
           "public"
         ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116578660336621420": {
+      "id": "116578660336621420",
+      "created_at": "2026-05-15T12:46:27.271Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116578660336621420/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/116578660336621420/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "116526525193403433",
+        "created_at": "2026-05-06T07:47:40.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://social.flufftech.net/users/rail/statuses/01KQY43FN12S7C7NVTGVEA83E0",
+        "url": "https://social.flufftech.net/@rail/statuses/01KQY43FN12S7C7NVTGVEA83E0",
+        "replies_count": 8,
+        "reblogs_count": 80,
+        "favourites_count": 7,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>If you are interested in photography i seriously recommend you look into the works and life of Sergey Prokudin-Gorsky<br><br>He was a pioneer of color film photography in early 20th century and created some absolute bangers<br><br>It feels so weird and out of place to see sharp high-detail color photography and think \"damn that looks reasonably modern, maybe a few decades old?\" and then you're like \"oh shit it's imperial russia\" xd<br><br><a href=\"https://en.wikipedia.org/wiki/Sergey_Prokudin-Gorsky#Gallery\" rel=\"nofollow noopener\" target=\"_blank\">https://en.wikipedia.org/wiki/Sergey_Prokudin-Gorsky#Gallery</a></p>",
+        "reblog": null,
+        "account": {
+          "id": "114500473160426984",
+          "username": "rail",
+          "acct": "rail@flufftech.net",
+          "display_name": "rail \ud83e\udd8a",
+          "locked": true,
+          "bot": false,
+          "discoverable": false,
+          "indexable": false,
+          "group": false,
+          "created_at": "2025-05-13T00:00:00.000Z",
+          "note": "<p>hiiiii~! rail here :neofox:</p><p>i'm a fox-{enby, girl, boy} with a love for trains, photography, and various other things that may change a lot.<br>gender creature of the poly flavor ^.^ shitposting believer, most definitely actively practicing</p><p>hey did you know that this is my own instance?! i am steering it myself, with my own paws!</p><p><a href=\"https://flufftech.net/about/#disclaimers\" rel=\"nofollow noopener\" target=\"_blank\">\"Opinions my own\" etc.</a></p> <p>\"maybe my posts aren't that bad after all\" ~ <span class=\"h-card\"><a href=\"https://shitpost.trade/@xyla\" class=\"u-url mention\" rel=\"nofollow noopener\" target=\"_blank\">@<span>xyla</span></a></span><br>\"rail kurwa\" ~ <span class=\"h-card\"><a href=\"https://social.treehouse.systems/@ptrc\" class=\"u-url mention\" rel=\"nofollow noopener\" target=\"_blank\">@<span>ptrc</span></a></span></p>",
+          "url": "https://social.flufftech.net/@rail",
+          "uri": "https://social.flufftech.net/users/rail",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/114/500/473/160/426/984/original/b728e80d1372ffa8.png",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/114/500/473/160/426/984/original/b728e80d1372ffa8.png",
+          "avatar_description": "",
+          "header": "https://files.mastodon.social/cache/accounts/headers/114/500/473/160/426/984/original/076fb3e1b8e117fd.webp",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/114/500/473/160/426/984/original/076fb3e1b8e117fd.webp",
+          "header_description": "Photograph of a road sign consiting of a warning icon with an exclamation mark, a bicycle icon and a text reading \"Pr\u00e9sence de rails\"",
+          "followers_count": 46,
+          "following_count": 5,
+          "statuses_count": 28552,
+          "last_status_at": "2026-05-15",
+          "hide_collections": true,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "feature_approval": {
+            "automatic": [],
+            "manual": [],
+            "current_user": "denied"
+          },
+          "emojis": [
+            {
+              "shortcode": "neofox",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/001/183/336/original/b2f0ac4cce15e4e5.png",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/001/183/336/static/b2f0ac4cce15e4e5.png",
+              "visible_in_picker": true
+            },
+            {
+              "shortcode": "neofox_flag_trans",
+              "url": "https://files.mastodon.social/cache/custom_emojis/images/001/183/273/original/5c05cbe60490e085.png",
+              "static_url": "https://files.mastodon.social/cache/custom_emojis/images/001/183/273/static/5c05cbe60490e085.png",
+              "visible_in_picker": true
+            }
+          ],
+          "fields": [
+            {
+              "name": "Pronouns",
+              "value": "they/it :neofox_flag_trans:",
+              "verified_at": null
+            },
+            {
+              "name": "Languages",
+              "value": "Polish, English",
+              "verified_at": null
+            },
+            {
+              "name": "Age",
+              "value": "/^2[0-5]$/",
+              "verified_at": null
+            },
+            {
+              "name": "Website",
+              "value": "<a href=\"https://flufftech.net\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">flufftech.net</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2026-05-14T16:13:55.048+00:00"
+            },
+            {
+              "name": "Map of trains taken",
+              "value": "<a href=\"https://viaduct.world/share/m/NjhQh2MN-IEJQd3C\" rel=\"nofollow noopener\" target=\"_blank\">https://viaduct.world/share/m/NjhQh2MN-IEJQd3C</a>",
+              "verified_at": null
+            },
+            {
+              "name": "Photography account",
+              "value": "<a href=\"https://vernissage.photos/@rail\" rel=\"nofollow noopener\" target=\"_blank\">https://vernissage.photos/@rail</a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [
+          {
+            "id": "116526524943207785",
+            "type": "image",
+            "url": "https://files.mastodon.social/cache/media_attachments/files/116/526/524/943/207/785/original/dac92532834ee164.png",
+            "preview_url": "https://files.mastodon.social/cache/media_attachments/files/116/526/524/943/207/785/small/dac92532834ee164.png",
+            "remote_url": "https://social.flufftech.net/fileserver/01F0N4H15C1SAJNR3NDN8P6DE3/attachment/original/01KQY3Y4THEAV8T4WCNCQR5GWS.png",
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "original": {
+                "width": 1280,
+                "height": 979,
+                "size": "1280x979",
+                "aspect": 1.3074565883554647
+              },
+              "small": {
+                "width": 549,
+                "height": 420,
+                "size": "549x420",
+                "aspect": 1.3071428571428572
+              }
+            },
+            "description": "Prokudin-Gorsky's photo: Bridge on the Kama river near Perm, 1910",
+            "blurhash": "UjL;$?4ns:M{?^M{M{t7%gjYM_M{o#x]RjRi"
+          },
+          {
+            "id": "116526525002631347",
+            "type": "image",
+            "url": "https://files.mastodon.social/cache/media_attachments/files/116/526/525/002/631/347/original/c1da024cbd91b471.png",
+            "preview_url": "https://files.mastodon.social/cache/media_attachments/files/116/526/525/002/631/347/small/c1da024cbd91b471.png",
+            "remote_url": "https://social.flufftech.net/fileserver/01F0N4H15C1SAJNR3NDN8P6DE3/attachment/original/01KQY3Z6CTSXFJSXJV7WF33S8W.png",
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "original": {
+                "width": 1280,
+                "height": 1025,
+                "size": "1280x1025",
+                "aspect": 1.248780487804878
+              },
+              "small": {
+                "width": 536,
+                "height": 429,
+                "size": "536x429",
+                "aspect": 1.2494172494172495
+              }
+            },
+            "description": "Prokudin-Gorsky's photo: Dagestani muslim, 1904",
+            "blurhash": "UNJ[IhM{~ot7_3oIWFRj-;RiM~t7IDs=%LkC"
+          },
+          {
+            "id": "116526525049392430",
+            "type": "image",
+            "url": "https://files.mastodon.social/cache/media_attachments/files/116/526/525/049/392/430/original/4fcd45a477488a86.png",
+            "preview_url": "https://files.mastodon.social/cache/media_attachments/files/116/526/525/049/392/430/small/4fcd45a477488a86.png",
+            "remote_url": "https://social.flufftech.net/fileserver/01F0N4H15C1SAJNR3NDN8P6DE3/attachment/original/01KQY406F8K0FDNCM1Q83CGTB1.png",
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "original": {
+                "width": 1280,
+                "height": 1097,
+                "size": "1280x1097",
+                "aspect": 1.1668185961713764
+              },
+              "small": {
+                "width": 518,
+                "height": 444,
+                "size": "518x444",
+                "aspect": 1.1666666666666667
+              }
+            },
+            "description": "Prokudin-Gorsky's photo: city of Perm, 1910",
+            "blurhash": "U#HCM^IWk9j[?doyWBbH%gWYjsazR-ofj[ay"
+          },
+          {
+            "id": "116526525091176142",
+            "type": "image",
+            "url": "https://files.mastodon.social/cache/media_attachments/files/116/526/525/091/176/142/original/d690bfbf30015748.png",
+            "preview_url": "https://files.mastodon.social/cache/media_attachments/files/116/526/525/091/176/142/small/d690bfbf30015748.png",
+            "remote_url": "https://social.flufftech.net/fileserver/01F0N4H15C1SAJNR3NDN8P6DE3/attachment/original/01KQY40K632W946WCTKZ958EBH.png",
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "original": {
+                "width": 1280,
+                "height": 1108,
+                "size": "1280x1108",
+                "aspect": 1.1552346570397112
+              },
+              "small": {
+                "width": 516,
+                "height": 447,
+                "size": "516x447",
+                "aspect": 1.1543624161073827
+              }
+            },
+            "description": "Prokudin-Gorsky's photo: Russian peasant girls in a rural area along the Sheksna River near Kirillov, 1909",
+            "blurhash": "UFJtYXIpP1IT_4i_Mzai%vInMzWZ0hxwt1M_"
+          }
+        ],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [],
         "manual": [],
         "current_user": "denied"
       }
