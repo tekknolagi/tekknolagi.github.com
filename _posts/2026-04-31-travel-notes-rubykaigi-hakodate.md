@@ -102,7 +102,6 @@ blossoms.
 
 Vegetarian food
   * MENSHO
-  * T's Tantan
 Computering
 Nikko mountain hike
   * Windy road
@@ -127,9 +126,6 @@ Mashiko pottery fair
     (though now we do know a little about kintsugi...)
 Edo Wonderland?
 CoCo Curry
-
-Restaurants:
-* 
 
 Hotels:
 * Kanaya was kind of like Grand Budapest Hotel. I'm sure it was once magical
