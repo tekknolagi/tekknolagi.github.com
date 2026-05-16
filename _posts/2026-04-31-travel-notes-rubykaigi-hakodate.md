@@ -87,21 +87,13 @@ blossoms.
 
 ## Part three
 
-* Family trip
-  * Tokyo
-    * Kintsugi
-    * Tsukiji
-  * Toyama
-  * Kanazawa
-  * Uda
-  * Ito
 * Conference
   * Hakodate
   * J &amp; J
-  * Goryokaku
   * Solenoid
   * Bear king?
   * Yasai Bar
+  * The vegetarian friendly ramen place
 * Sarah trip
   * Nikko
   * Moka + Mashiko
