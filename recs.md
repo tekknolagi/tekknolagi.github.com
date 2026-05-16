@@ -100,6 +100,15 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="drinks" data-location="GPR2+CC San Mateo">Fieldwork Brewing Company</li>
         </ul>
     </div>
+    <div class="city:tokyo area:japan">
+        <h2>Tokyo</h2>
+        <ul>
+            <li class="food" data-location="MMQX+QW Shinjuku City, Tokyo, Japan">Taiyo no Tomato men with Cheese</li>
+            <li class="food" data-location="MQH8+WQ Chiyoda City, Tokyo, Japan">T's Tantan Tokyo Station</li>
+            <li class="food" data-location="MM6X+RG Shibuya, Tokyo, Japan">Jikasei MENSHO</li>
+            <li class="food" data-location="MQ88+P3 Chuo City, Tokyo, Japan">Hyoki Shabu-shabu Ginza</li>
+        </ul>
+    </div>
     <div class="city:misc">
         <h2>Miscellaneous</h2>
         <ul>
@@ -114,7 +123,6 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="food" data-location="G3C4+G6 Tübingen, Germany">Vegi</li>
             <li class="coffee" data-location="GCF3+P2 Berlin, Germany">Café Cinema</li>
             <li class="food" data-location="MJV5+F7 Copenhagen, Denmark">Reffen</li>
-            <li class="food" data-location="MMQX+QW Shinjuku City, Tokyo, Japan">Taiyo no Tomato men with Cheese</li>
             <li class="food" data-location="FH7C+X8 Half Moon Bay">San Benito Deli</li>
             <li class="hotel" data-location="MXVC+WJ Playa del Carmen, Quintana Roo, Mexico">Andaz Mayakoba</li>
             <li class="drinks" data-location="G394+X4 Tübingen, Germany">Blauer Salon</li>
