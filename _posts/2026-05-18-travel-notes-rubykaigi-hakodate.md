@@ -229,6 +229,9 @@ enjoyed a (vegetarian!! friendly!!) kaiseki meal at [Hyoki Shabu-shabu
 Ginza](https://maps.app.goo.gl/NCwQk2ReXdgKndRJ7) before enjoying some live
 music at [Rocky Top](https://maps.app.goo.gl/Cw3vvo2vpYFbWpAHA).
 
+We also recommend [Jikasei MENSHO](https://maps.app.goo.gl/bNNgFjMXytKacC5U9)
+for vegetarian ramen.
+
 Bakery checklist:
 
 * BOUL'ANGE NIHONBASHI (check! good croissants)
@@ -244,11 +247,7 @@ Bakery checklist:
 * The Little BAKERY
 <!--
 * https://www.jocjapantravel.com/kanto-tokyo-bakeries/
--->
 
-Vegetarian food
-  * MENSHO
-Computering
 Nikko mountain hike
   * Leeches??
 
@@ -257,7 +256,6 @@ Hotels:
   and resplendent
 
 Yamato moved our luggage
+-->
 
-## Post
-
-dak2
+We had an uneventful and reasonably easy trip home.
