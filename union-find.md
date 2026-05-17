@@ -204,6 +204,7 @@ are due to having other fields, or alignment, or something.
 ## Extensions
 
 * [microegg](https://github.com/mwillsey/microegg)
+<!-- https://github.com/philzook58/microegg/blob/main/src/lib.rs -->
 * ae-graphs (phil zucker and chris fallin; see the end of [my e-graph
   post](/blog/whats-in-an-egraph/))
 * e-graphs (see [my e-graph post](/blog/whats-in-an-egraph/))
