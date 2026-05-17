@@ -145,7 +145,7 @@ we will make something happen.
 We had a nice small dinner at *Yasai Bar Miruya*, which was vegan (!) and had
 some nice sake. The host was very friendly, too.
 
-I nerd-sni John and J into implementing a VM for the [Universal
+I nerd-sniped John and J into implementing a VM for the [Universal
 Machine](https://www.boundvariable.org/task.shtml). This was a daunting
 homework assignment back in undergrad but it was a fun project later in life.
 
