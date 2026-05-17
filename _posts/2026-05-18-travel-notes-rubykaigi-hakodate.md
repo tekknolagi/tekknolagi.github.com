@@ -69,12 +69,14 @@ I also recommend the Akame 48 waterfalls walk/hike, which has some exquisite
 falls, and Murou Art Forest. They had some really wonderful installations.
 
 My brother and I parted ways from the rest of my family in Osaka: they headed
-further west and we headed north to Itō on the Izu peninsula. It's beautiful
-there. They don't seem to welcome foreigners in a lot of their restaurants (we
-were turned away several times) but one place had a guy who enthusiastically
-welcomed us in. We ended that evening enjoying a some food and a beer while
-also being stared at by a 300lb completely tattooed guy. It was a little
-unsettling but we left without incident.
+further west and we headed north to Itō on the Izu peninsula. We got a surprise
+perfectly clear view of Fuji along the way.
+
+It's beautiful there. They don't seem to welcome foreigners in a lot of their
+restaurants (we were turned away several times) but one place had a guy who
+enthusiastically welcomed us in. We ended that evening enjoying a some food and
+a beer while also being stared at by a 300lb completely tattooed guy. It was a
+little unsettling but we left without incident.
 
 My brother and I made our way to Tokyo for the day before his flight and before
 my train north to Hakodate for RubyKaigi. I once again did that thing where I
