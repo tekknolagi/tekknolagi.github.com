@@ -51,6 +51,31 @@ could also be any other type that can be hashed and compared. I think most
 people end up using a dense representation---an array---with indices, though.
 Or maybe the inline embedded pointers approach (see below).
 
+CF and some other people have also suggested that singleton sets should point
+at themselves, which makes it more "fixpointy":
+
+```python
+uf = {}
+
+def makeset(x):
+    assert x not in uf
+    uf[x] = x
+    return x
+
+def find(x):
+    assert x in uf
+    result = x
+    while uf[result] is not result:
+        result = uf[result]
+    return result
+
+def union(x, y):
+    x = find(x)
+    y = find(y)
+    if x is not y:  # just to avoid an extra store; not necessary
+        uf[y] = x
+```
+
 ### Tricky bits
 
 You should always refer to the set representative when using union-find. This
