@@ -77,24 +77,83 @@ also being stared at by a 300lb completely tattooed guy. It was a little
 unsettling but we left without incident.
 
 My brother and I made our way to Tokyo for the day before his flight and before
-my train north to Hakodate for RubyKaigi.
+my train north to Hakodate for RubyKaigi. I once again did that thing where I
+walked around in humid 80F heat with a large backpack and pants and was
+extraordinarily warm toward the end of the day. After about a liter of Aquarius
+on the train north I felt better.
 
 ## Part two
 
 Hakodate is *beautiful* in the spring. I arrived at peak cherry blossom season
 and Goryokaku, their star shaped fort, is absolutely decked out in cherry
-blossoms.
+blossoms. It is also moderately swarmed by tourists (in this case, three cruise
+ships). It didn't feel over-crowded though. I enjoyed eating at *The Bear King*
+which had a vegetarian friendly option.
+
+The next day was the committer meeting. I don't remember a ton from it other
+than people talking at length about the semantics of deep freezing an object
+(do you freeze its class? its class's superclass? ...?). I picked up my badge
+and also got to check out my colleague Chris Salzberg's bar
+[SOLENOID](https://maps.app.goo.gl/AE48wZopJB16VBta9)! It's a neat spot. I
+headed out to go find some dinner.
+
+This is about when I got a message on my phone that there was going to be an
+earthquake, so I walked back into the bar and said "hey, did you get this?"
+just before everything started shaking. It was the biggest earthquake I've
+experienced, but I was metaphorically not too shaken up. Then we got the
+tsunami warning.
+
+Chris's bar is already something like 8 meters above sea level and at the foot
+of Mt Hakodate. With the city sirens going off and the police directing traffic
+with batons, though, I decided my best bet was just to march directly up the
+mountain to get more elevation. Since the tsunami wasn't scheduled to arrive
+for about 20 or 30 minutes and my hotel was across the sea-level part of town,
+I parked myself on a little concrete post. Chris found me eventually.
+Someone told us that there was a middle school offering refuge, so we went and
+hung out on the side of the gymnasium. They were really nice about it.
+
+On Wednesday, the conference started. It was really well signed and organized.
+My usual complaint with conferences is that there's nothing to eat for
+vegetarians (or that we get mashed with the gluten-free people and each group
+only gets a salad and bad bread) but that did not happen! They had really
+stellar vegetarian bento. They had a lot of leftovers toward the end of lunch
+so I even went and got a second. This was about when I started freaking out
+because my speaking slot was approaching and I wasn't yet feeling my talk.
+
+Normally when I give a talk, I get up in front of people and I pace and
+gesticulate and productively complain and throw in some fun anecdotes and the
+audience, one way or another, ends up learning about JITs at scale, or Scheme
+semantics, or something. It's what I'd done for my little lunch talk at Brown
+two weeks prior. I even titled my talk *One must imagine compiler engineers
+happy* so there was plenty of room for educational complaining. But this
+RubyKaigi talk was in front of an enormous crowd and toward a more general
+audience than I was used to addressing. The slides did not feel like they were
+flowing until about twenty minutes before my talk.
+
+In the end it went alright. I realized about 40 seconds in that I had way
+too much content so I ended up speaking rapidly for 30 minutes straight,
+completely unaware of the audience (which you can't see anyway because of the
+lights). I only really noticed people when I made a dumb six-seven joke and
+Aaron laughed.
+
+The rest of the conference I was able to relax and enjoy other people's talks.
+I got some good hallway track in, too. I think there's a good group of people
+who are interested in Ruby tracing (for example, [Perfetto in
+ZJIT](https://railsatscale.com/2026-03-27-using-perfetto-in-zjit/)) so maybe
+we will make something happen.
+
+We had a nice small dinner at *Yasai Bar Miruya*, which was vegan (!) and had
+some nice sake. The host was very friendly, too.
+
+S joined toward the end of the conference. She's also vegetarian so we got some
+really excellent vegetarian ramen at [MAIDO
+Ramen](https://maps.app.goo.gl/JNqiB6aH9sStnZ5UA).
+
+Finally, S and I headed south on the shinkansen for Nikko.
 
 ## Part three
 
-* Conference
-  * Hakodate
-  * J &amp; J
-  * Solenoid
-  * Bear king?
-  * Yasai Bar
-  * The vegetarian friendly ramen place
-* Sarah trip
+* S trip
   * Nikko
   * Moka + Mashiko
   * Karuizawa
@@ -132,3 +191,7 @@ Hotels:
   and resplendent
 
 Yamato moved our luggage
+
+## Post
+
+dak2
