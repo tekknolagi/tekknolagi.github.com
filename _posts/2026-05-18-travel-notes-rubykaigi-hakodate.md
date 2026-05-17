@@ -84,6 +84,12 @@ on the train north I felt better.
 
 ## Part two
 
+I stayed at [Yunokawa Prince Hotel
+Nagisatei](https://maps.app.goo.gl/fQaP6XfCQMUGA7Zx8) which I would like to
+especially call out for having an enormous, diverse, and very vegetarian
+friendly breakfast. Every morning I got to try new and tasty things and even
+feel full after. It was great.
+
 Hakodate is *beautiful* in the spring. I arrived at peak cherry blossom season
 and Goryokaku, their star shaped fort, is absolutely decked out in cherry
 blossoms. It is also moderately swarmed by tourists (in this case, three cruise
