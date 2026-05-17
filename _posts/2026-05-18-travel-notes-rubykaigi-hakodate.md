@@ -253,15 +253,6 @@ Bakery checklist:
 * The Little BAKERY
 <!--
 * https://www.jocjapantravel.com/kanto-tokyo-bakeries/
-
-Nikko mountain hike
-  * Leeches??
-
-Hotels:
-* Kanaya was kind of like Grand Budapest Hotel. I'm sure it was once magical
-  and resplendent
-
-Yamato moved our luggage
 -->
 
 We had an uneventful and reasonably easy trip home. Whew. Long post for a long
