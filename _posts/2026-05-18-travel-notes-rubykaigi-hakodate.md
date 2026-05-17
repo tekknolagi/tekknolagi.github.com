@@ -256,4 +256,4 @@ Bakery checklist:
 -->
 
 We had an uneventful and reasonably easy trip home. Whew. Long post for a long
-trip. See you next hear in Miyazaki!
+trip. See you next year in Miyazaki!
