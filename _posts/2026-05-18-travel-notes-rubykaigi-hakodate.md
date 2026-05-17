@@ -265,4 +265,4 @@ Yamato moved our luggage
 -->
 
 We had an uneventful and reasonably easy trip home. Whew. Long post for a long
-trip.
+trip. See you next hear in Miyazaki!
