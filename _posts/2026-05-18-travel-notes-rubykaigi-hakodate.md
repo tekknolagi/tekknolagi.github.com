@@ -258,4 +258,5 @@ Hotels:
 Yamato moved our luggage
 -->
 
-We had an uneventful and reasonably easy trip home.
+We had an uneventful and reasonably easy trip home. Whew. Long post for a long
+trip.
