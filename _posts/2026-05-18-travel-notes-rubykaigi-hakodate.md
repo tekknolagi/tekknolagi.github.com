@@ -124,7 +124,7 @@ Normally when I give a talk, I get up in front of people and I pace and
 gesticulate and productively complain and throw in some fun anecdotes and the
 audience, one way or another, ends up learning about JITs at scale, or Scheme
 semantics, or something. It's what I'd done for my little lunch talk at Brown
-two weeks prior. I even titled my talk *One must imagine compiler engineers
+two weeks prior. I even titled that talk *One must imagine compiler engineers
 happy* so there was plenty of room for educational complaining. But this
 RubyKaigi talk was in front of an enormous crowd and toward a more general
 audience than I was used to addressing. The slides did not feel like they were
