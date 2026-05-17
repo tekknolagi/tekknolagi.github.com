@@ -171,12 +171,12 @@ S and I, along with J and J, took the bus up from Nikko, up the windiest
 switchbacks, to the Kegon Falls. We were going to take a boat across the lake,
 but the water level was too low for the dock on the other side, so we ended up
 half hiking and half taking a bus. Then we continued our hike through the
-marshland (beautiful), to a waterfall (lovely), which also had a surprise
-restaurant and ice cream shop at the base! I would share it with you but it's
-not listed on Google Maps and I don't know the name. After some great (vegetarian
-friendly!! wow!!) udon, we marched up the waterfall and around the lake at the
-top to the onsen. In order to make the last reasonable bus back to town, we
-just enjoyed putting our feet in the foot bath.
+Senjōgahara Marshland (beautiful), to the Yudaki Cascades (lovely), which also
+had a surprise restaurant and ice cream shop at the base! It's called [Yutaki
+Rest House](https://maps.app.goo.gl/G5tNK46WamixEUJp8). After some great
+(vegetarian friendly!! wow!!) udon, we marched up the waterfall and around Yuno
+Lake at the top to Yumoto Onsen. In order to make the last reasonable bus back
+to town, we just enjoyed putting our feet in the foot bath.
 
 One day was rainy. In the evening, J and I thought it would be fun to continue
 our Universal Machine implementations. As Norman Ramsey would say, "my
