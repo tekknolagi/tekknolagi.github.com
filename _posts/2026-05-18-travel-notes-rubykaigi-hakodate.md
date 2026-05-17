@@ -145,6 +145,10 @@ we will make something happen.
 We had a nice small dinner at *Yasai Bar Miruya*, which was vegan (!) and had
 some nice sake. The host was very friendly, too.
 
+I nerd-sni John and J into implementing a VM for the [Universal
+Machine](https://www.boundvariable.org/task.shtml). This was a daunting
+homework assignment back in undergrad but it was a fun project later in life.
+
 S joined toward the end of the conference. She's also vegetarian so we got some
 really excellent vegetarian ramen at [MAIDO
 Ramen](https://maps.app.goo.gl/JNqiB6aH9sStnZ5UA).
@@ -164,12 +168,19 @@ half hiking and half taking a bus. Then we continued our hike through the
 marshland (beautiful), to a waterfall (lovely), which also had a surprise
 restaurant and ice cream shop at the base! I would share it with you but it's
 not listed on Google Maps and I don't know the name. After some great (vegetarian
-friendly!! wow!!) food, we marched up the waterfall and around the lake at the
+friendly!! wow!!) udon, we marched up the waterfall and around the lake at the
 top to the onsen. In order to make the last reasonable bus back to town, we
 just enjoyed putting our feet in the foot bath.
 
+One day was rainy. In the evening, J and I thought it would be fun to continue
+our Universal Machine implementations. As Norman Ramsey would say, "my
+implementation is 92 lines long and runs sandmark in six seconds."
+
 We also enjoyed doing a tour of the shrines right above Nikko. The shrines are
 resplendent against the backdrop of forest.
+
+> Pro bus tip: you can either pay by IC card or credit card. No need to grab a
+> ticket if you do that.
 
 S and I shipped our bags (thanks, Yamato) before continuing on to the small
 town of Moka, the staging area for our big pottery festival day. Unfortunately,
@@ -184,37 +195,62 @@ riders. Very nice of him.
 Upon arrival, S introduced me to CoCo ICHIBANYA, which is also super vegetarian
 friendly. I loved it. We ate really well before walking to our tiny hotel.
 
-* S trip
-  * Moka + Mashiko
-  * Karuizawa
-  * Tokyo
+We did not really know what to expect from the Mashiko pottery festival. The
+internet said it would be crowded and to arrive early, so we got up at 6:30am
+for estimated 7am departure on the tiny train from Moka to Mashiko. On most
+trains you can pay with an IC card but we were out in the sticks so we asked
+the only other guy on the platform how to pay for the train. He said he had no
+idea and that this was his first time here. When the train showed up completely
+packed to the gills and we had to (politely) push onto it, we started to
+realize that this was The Event and it was going to be mayhem.
+
+> Also, fun fact: the way the Moka train payment works is that you grab a
+> little ticket from the train, and, upon arrival, wait in line to present your
+> ticket to two very overwhelmed looking people at a table, who charge you, and
+> you pay in cash.
+
+Onto Mashiko: the festival was *packed*. There's pottery everywhere the eye can
+see. There are tents and there are full buildings. It varies in quality and
+artistry from fine to jaw-droppingly spectacular. You could completely stock
+your kitchen from this fair alone and it would even be cost-effective. The main
+bummer for us is that we had to get pottery safely back home. We limited
+ourselves to a reasonable assortment but we really wanted to buy a beautiful
+painted 20 inch plate with a bird on a branch.
+
+After a ton of walking around, we took another long long bus back to Utsonomiya
+and continued onto Karuizawa. We didn't know what to expect from Karuizawa but,
+having been, I could probably concisely describe it as "Aspen for people from
+Tokyo". It was... fine. We loved our hotel, Tsuruya Ryokan. The manager was
+very excited when we borrowed a Studio Ghibli DVD from their collection.
+
+We continued on to Tokyo, our final stop. We our usual tour of stationery
+stores and bakeries---the bread was something to write home about (har har). We
+enjoyed a (vegetarian!! friendly!!) kaiseki meal at [Hyoki Shabu-shabu
+Ginza](https://maps.app.goo.gl/NCwQk2ReXdgKndRJ7) before enjoying some live
+music at [Rocky Top](https://maps.app.goo.gl/Cw3vvo2vpYFbWpAHA).
+
+Bakery checklist:
+
+* BOUL'ANGE NIHONBASHI (check! good croissants)
+* Bricolage bread &amp; co (check! good everything)
+* Brasserie Viron Marunouchi
+* Beaver Bread
+* Bricolage bread & co.
+* Bartizan Bread Factory
+* Gontran Cherrier Tokyo Aoyama Shop
+* Comme'N Tokyo
+* Shiomi Bakery
+* BRØD
+* The Little BAKERY
+<!--
+* https://www.jocjapantravel.com/kanto-tokyo-bakeries/
+-->
 
 Vegetarian food
   * MENSHO
 Computering
 Nikko mountain hike
-  * Windy road
-  * Lake (but water level too low for boat)
-  * Bus EZPZ with IC card or cash
-  * Marsh
   * Leeches??
-  * Waterfall with great vegetarian-friendly udon place
-  * Upper lake and walk around it
-  * Free foot bath
-Nikko shrine hike
-  * Gorgeous trees
-  * Shogun resting place
-  * Monkeys
-Mashiko pottery fair
-  * It is so crowded
-  * Moka Tetsudo Pull ticket and pay at station at a tiny table?
-  * So many tiny stalls/tents and also many buildings
-  * You could do very well stocking all of your dishes from this fair alone and
-    it would even be cost effective. The bummer is that we, as tourists, have
-    to manage luggage and generally getting things back home in one piece
-    (though now we do know a little about kintsugi...)
-Edo Wonderland?
-CoCo Curry
 
 Hotels:
 * Kanaya was kind of like Grand Budapest Hotel. I'm sure it was once magical

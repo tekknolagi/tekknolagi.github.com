@@ -107,6 +107,7 @@ The food establishments tend to be vegetarian friendly, since I don't eat meat o
             <li class="food" data-location="MQH8+WQ Chiyoda City, Tokyo, Japan">T's Tantan Tokyo Station</li>
             <li class="food" data-location="MM6X+RG Shibuya, Tokyo, Japan">Jikasei MENSHO</li>
             <li class="food" data-location="MQ88+P3 Chuo City, Tokyo, Japan">Hyoki Shabu-shabu Ginza</li>
+            <li class="drinks" data-location="MQ97+Q2 Chuo City, Tokyo, Japan">Rocky Top</li>
         </ul>
     </div>
     <div class="city:misc">
