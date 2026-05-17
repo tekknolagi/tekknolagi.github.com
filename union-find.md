@@ -203,6 +203,7 @@ are due to having other fields, or alignment, or something.
 
 ## Extensions
 
+* [microegg](https://github.com/mwillsey/microegg)
 * ae-graphs (phil zucker and chris fallin; see the end of [my e-graph
   post](/blog/whats-in-an-egraph/))
 * e-graphs (see [my e-graph post](/blog/whats-in-an-egraph/))
