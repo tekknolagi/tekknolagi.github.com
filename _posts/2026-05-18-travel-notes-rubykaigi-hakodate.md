@@ -180,7 +180,7 @@ to town, we just enjoyed putting our feet in the foot bath.
 
 One day was rainy. In the evening, J and I thought it would be fun to continue
 our Universal Machine implementations. As Norman Ramsey would say, "my
-implementation is 92 lines long and runs sandmark in six seconds."
+implementation is 92 lines long and runs sandmark in under six seconds."
 
 We also enjoyed doing a tour of the shrines right above Nikko. The shrines are
 resplendent against the backdrop of forest.
