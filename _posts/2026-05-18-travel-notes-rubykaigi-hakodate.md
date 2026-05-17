@@ -153,8 +153,38 @@ Finally, S and I headed south on the shinkansen for Nikko.
 
 ## Part three
 
+Nikko is small, beautiful, and a tourist day-trip town. Dinner closes early.
+Shops close earlier. Since we were staying there we had to make sure to track
+down and visit the one or two vegetarian places before they shuttered.
+
+S and I, along with J and J, took the bus up from Nikko, up the windiest
+switchbacks, to the Kegon Falls. We were going to take a boat across the lake,
+but the water level was too low for the dock on the other side, so we ended up
+half hiking and half taking a bus. Then we continued our hike through the
+marshland (beautiful), to a waterfall (lovely), which also had a surprise
+restaurant and ice cream shop at the base! I would share it with you but it's
+not listed on Google Maps and I don't know the name. After some great (vegetarian
+friendly!! wow!!) food, we marched up the waterfall and around the lake at the
+top to the onsen. In order to make the last reasonable bus back to town, we
+just enjoyed putting our feet in the foot bath.
+
+We also enjoyed doing a tour of the shrines right above Nikko. The shrines are
+resplendent against the backdrop of forest.
+
+S and I shipped our bags (thanks, Yamato) before continuing on to the small
+town of Moka, the staging area for our big pottery festival day. Unfortunately,
+there was no good way to get there: there was no reasonable series of trains
+and no taxi would take us. Ultimately we ended up taking the train to
+Utsonomiya and catching the long local bus to Moka. About twenty minutes into
+this ride, in the middle of nowhere, bus nearly empty, the bus driver pulled
+over and ran over to us looking kind of panicked. He asked where we were going
+and was visibly relieved when we said Moka. I suppose we are not the usual
+riders. Very nice of him.
+
+Upon arrival, S introduced me to CoCo ICHIBANYA, which is also super vegetarian
+friendly. I loved it. We ate really well before walking to our tiny hotel.
+
 * S trip
-  * Nikko
   * Moka + Mashiko
   * Karuizawa
   * Tokyo
