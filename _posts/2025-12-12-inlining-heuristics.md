@@ -322,10 +322,13 @@ https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/magle
 
 Unlike for example Cinder, Maglev looks like it does not have a lot of
 restrictions about what can get inlined into what, so its "can inline" signal
-is about budget.
+is about budget. Actually two budgets: small budget and normal budget.
 
 ```c++
 bool MaglevInliner::CanInlineCall() {
+  // We stop inlining entirely if the small budget is exhausted.
+  // Inlining decisions after that become bad if we stop inlining small
+  // functions, but keep inlining large ones.
   return !graph_->inlineable_calls().empty() &&
          (graph_->total_inlined_bytecode_size() <
               max_inlined_bytecode_size_cumulative() ||
