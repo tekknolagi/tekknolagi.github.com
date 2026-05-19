@@ -289,7 +289,37 @@ https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compi
 
 #### V8 Maglev
 
+When optimizing, add call instructions to the inline candidates list: https://github.com/v8/v8/blob/1a391f98cc7a9196369f2d6cab7df35ffbe92c08/src/maglev/maglev-graph-optimizer.cc#L1271
+
+```c++
+ProcessResult MaglevGraphOptimizer::VisitCall(Call* node,
+                                              const ProcessingState& state) {
+  // ...
+  int bytecode_length = shared.GetBytecodeArray(broker()).length();
+  float score =
+      (call_frequency / bytecode_length) * (loop_depth_ > 0 ? 1.5 : 1.0);
+
+  bool is_small_function =
+      bytecode_length <
+      reducer_.graph()->compilation_info()->flags().max_eager_inlined_bytecode;
+  // ...
+  MaglevCallSiteInfo* call_site = reducer_.zone()->New<MaglevCallSiteInfo>(
+      MaglevCallerDetails{
+          ...
+          is_small_function, call_frequency,
+          ...
+      },
+      score, bytecode_length);
+  reducer_.PushInlineCandidate(call_site);
+  // ...
+}
+```
+
 https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/maglev/maglev-inlining.h#L36
+
+Unlike for example Cinder, Maglev looks like it does not have a lot of
+restrictions about what can get inlined into what, so its "can inline" signal
+is about budget.
 
 ```c++
 bool MaglevInliner::CanInlineCall() {
@@ -301,10 +331,14 @@ bool MaglevInliner::CanInlineCall() {
 }
 ```
 
+Then its inlining loop is a greedy walk of the to-inline queue checking
+candidate sizes.
+
 ```c++
 bool MaglevInliner::InlineCallSites() {
   DCHECK(CanInlineCall());
   while (!graph_->inlineable_calls().empty()) {
+    // pop from inlineable_calls
     MaglevCallSiteInfo* call_site = ChooseNextCallSite();
 
     bool is_small_with_heapnum_input_outputs =
@@ -330,18 +364,14 @@ bool MaglevInliner::InlineCallSites() {
 
     InliningResult result =
         BuildInlineFunction(call_site, is_small_with_heapnum_input_outputs);
-    if (result == InliningResult::kAbort) return false;
-    if (result == InliningResult::kFail) continue;
-    DCHECK_EQ(result, InliningResult::kDone);
-
-    // Remove unreachable blocks if we have any.
-    if (graph_->may_have_unreachable_blocks()) {
-      graph_->RemoveUnreachableBlocks();
-    }
+    // ...
   }
   return true;
 }
 ```
+
+It runs this loop (which drains the queue) interleaved with the optimizer
+(which populates the queue).
 
 ```c++
 bool MaglevInliner::Run() {
@@ -351,20 +381,22 @@ bool MaglevInliner::Run() {
     if (!InlineCallSites()) return false;
     RunOptimizer();
   }
-
-  // Clear conversion, identities and ReturnedValues uses from deopt frames.
   // ...
-  return true;
 }
 ```
 
-`bool MaglevGraphBuilder::CanInlineCall(compiler::SharedFunctionInfoRef shared, float call_frequency) {`
+Confusingly, though, the optimizer also calls another function called
+`CanInlineCall` which checks if it legally can inline:
+* skip recursion
+* https://github.com/v8/v8/blob/1a391f98cc7a9196369f2d6cab7df35ffbe92c08/src/objects/shared-function-info-inl.h#L421
+* not called enough (min call frequency)
+* bytecode too big
 
-`bool MaglevGraphBuilder::ShouldEagerInlineCall(`
+`bool MaglevGraphBuilder::ShouldEagerInlineCall(` appears unused? / dead
+declaration?
 
-`MaybeReduceResult MaglevGraphBuilder::TryBuildCallKnownJSFunction(`
-
-Unclear how `inlineable_calls` is populated... jk it's in `MaybeReduceResult MaglevGraphBuilder::TryBuildInlineCall(`
+`MaybeReduceResult MaglevGraphBuilder::TryBuildCallKnownJSFunction(` also
+unused / dead declaration
 
 ### JavaScriptCore
 
