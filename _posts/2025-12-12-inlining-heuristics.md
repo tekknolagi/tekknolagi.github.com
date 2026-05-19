@@ -140,7 +140,8 @@ Most of the "can't handle this" checks are related to argument handling. Python
 has a pretty complex calling convention, so if the caller/callee have not
 agreed on how the arguments should be passed through, the inliner doesn't care
 to try and figure it out on its own. That is the responsibility of [other parts
-of the compiler][cinder-resolve-args].
+of the compiler][cinder-resolve-args]. Things in this `canInline`
+function could be considered "TODO".
 
 [cinder-resolve-args]: https://github.com/facebookincubator/cinderx/blob/88189ebf4bfd196ac7578c5076efa39bfa11f211/cinderx/Jit/hir/simplify.cpp#L1765
 
@@ -162,12 +163,6 @@ bool canInline(Function& caller, AbstractCall* call_instr) {
 
   if (code->co_kwonlyargcount > 0) {
     return fail(InlineFailureType::kHasKwOnlyArgs);
-  }
-  if (code->co_flags & CO_VARARGS) {
-    return fail(InlineFailureType::kHasVarargs);
-  }
-  if (code->co_flags & CO_VARKEYWORDS) {
-    return fail(InlineFailureType::kHasVarkwargs);
   }
   // ...
 }
