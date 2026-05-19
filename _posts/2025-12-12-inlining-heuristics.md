@@ -118,15 +118,6 @@ inliner research I did for Cinder's inliner. So then I kind of just thought
 about it aimlessly for a while before redoing it this year. Anyway, here's
 wonderwall.
 
-## Call context: the other harder part
-
-Profile information
-
-* ICScript
-* Inline bytecode
-* Inline in earlier tier with profile/branch counters
-* Inline and branch prune, maybe, kinda
-
 ## The survey
 
 We'll start with [Cinder][cinder], because when I wrote Cinder's inliner I
@@ -796,3 +787,12 @@ https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/co
 GVN
 https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/DominatorBasedGlobalValueNumberingPhase.java#L132
 -->
+
+## Call context: the other harder part
+
+Profile information
+
+* ICScript
+* Inline bytecode
+* Inline in earlier tier with profile/branch counters
+* Inline and branch prune, maybe, kinda
