@@ -260,7 +260,11 @@ history:
   things it is a pretty fast compiler, but it is not hold back from doing some
   expensive rewrites.
 * Maglev is (maybe?) the replacement for that, preferring to speculate a little
-  more eagerly and do fewer incremental rewrites in the name of compile time.
+  more eagerly and do fewer incremental rewrites in the name of compile
+  time.[^turbolev]
+
+[^turbolev]: See also "Turbolev", which seems to merge Maglev (CFG) with
+    Turbofan (Sea of Nodes)... somehow.
 
 They also each inline at different times in the pipeline, which made for a fun
 time trying to understand the different codebases.
@@ -280,7 +284,6 @@ Heuristics https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a
 * don't inline recursive functions
 * check current cumulative method size (as tracked by AST node count) against
   configurable limit
-*
 
 #### V8 TurboFan
 
