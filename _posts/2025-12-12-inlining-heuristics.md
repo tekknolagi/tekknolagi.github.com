@@ -395,11 +395,12 @@ Confusingly, though, the optimizer also calls another function called
 * not called enough (min call frequency)
 * bytecode too big
 
-`bool MaglevGraphBuilder::ShouldEagerInlineCall(` appears unused? / dead
-declaration?
+`bool MaglevGraphBuilder::ShouldEagerInlineCall(` ~~appears unused? / dead
+declaration?~~ maybe src/maglev/maglev-graph-builder.cc is just not working on
+github search
 
-`MaybeReduceResult MaglevGraphBuilder::TryBuildCallKnownJSFunction(` also
-unused / dead declaration
+`MaybeReduceResult MaglevGraphBuilder::TryBuildCallKnownJSFunction(` ~~also
+unused / dead declaration~~ same
 
 ### JavaScriptCore
 
