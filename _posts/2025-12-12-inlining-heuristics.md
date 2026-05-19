@@ -118,6 +118,15 @@ inliner research I did for Cinder's inliner. So then I kind of just thought
 about it aimlessly for a while before redoing it this year. Anyway, here's
 wonderwall.
 
+## Call context: the other harder part
+
+Profile information
+
+* ICScript
+* Inline bytecode
+* Inline in earlier tier with profile/branch counters
+* Inline and branch prune, maybe, kinda
+
 ## The survey
 
 We'll start with [Cinder][cinder], because when I wrote Cinder's inliner I
