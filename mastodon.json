@@ -19,10 +19,10 @@
     "header": "https://mastodon.social/headers/original/missing.png",
     "header_static": "https://mastodon.social/headers/original/missing.png",
     "header_description": "",
-    "followers_count": 603,
+    "followers_count": 604,
     "following_count": 288,
-    "statuses_count": 1468,
-    "last_status_at": "2026-05-27",
+    "statuses_count": 1469,
+    "last_status_at": "2026-05-29",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -74585,6 +74585,150 @@
         "published_at": "2026-05-27T00:00:00.000Z",
         "authors": []
       },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116655650603683857": {
+      "id": "116655650603683857",
+      "created_at": "2026-05-29T03:06:05.519Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116655650603683857/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/116655650603683857/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "116654556319961247",
+        "created_at": "2026-05-28T22:27:27.000Z",
+        "in_reply_to_id": "116654376767450920",
+        "in_reply_to_account_id": "113156858670720602",
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://f.duriansoftware.com/users/joe/statuses/116654554941738914",
+        "url": "https://f.duriansoftware.com/@joe/116654554941738914",
+        "replies_count": 1,
+        "reblogs_count": 15,
+        "favourites_count": 16,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>the Swift Performance team is also hiring another engineer, to work on optimization, code generation, and performance-oriented language features for the Swift compiler: <a href=\"https://jobs.apple.com/en-us/details/200661730-3401/swift-compiler-backend-engineer-languages-runtimes?team=SFTWR\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">jobs.apple.com/en-us/details/2</span><span class=\"invisible\">00661730-3401/swift-compiler-backend-engineer-languages-runtimes?team=SFTWR</span></a></p>",
+        "reblog": null,
+        "account": {
+          "id": "113156858670720602",
+          "username": "joe",
+          "acct": "joe@f.duriansoftware.com",
+          "display_name": "disregard Joe Groff",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": false,
+          "group": false,
+          "created_at": "2024-09-18T00:00:00.000Z",
+          "note": "<p>Doing my best to be a good boy\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26</p>",
+          "url": "https://f.duriansoftware.com/@joe",
+          "uri": "https://f.duriansoftware.com/users/joe",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/113/156/858/670/720/602/original/ca0cc87f8661adc7.jpeg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/113/156/858/670/720/602/original/ca0cc87f8661adc7.jpeg",
+          "avatar_description": "",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "header_description": "",
+          "followers_count": 1931,
+          "following_count": 1239,
+          "statuses_count": 6819,
+          "last_status_at": "2026-05-28",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "feature_approval": {
+            "automatic": [],
+            "manual": [],
+            "current_user": "denied"
+          },
+          "emojis": [],
+          "fields": [
+            {
+              "name": "pronouns",
+              "value": "he/him\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26",
+              "verified_at": null
+            },
+            {
+              "name": "webzone",
+              "value": "<a href=\"https://duriansoftware.com/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">duriansoftware.com/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "rss",
+              "value": "<a href=\"https://duriansoftware.com/joe/index.rss\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">duriansoftware.com/joe/index.r</span><span class=\"invisible\">ss</span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "dei",
+              "value": "white male privilege\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": {
+          "url": "https://jobs.apple.com/en-us/details/200661730-3401/swift-compiler-backend-engineer-languages-runtimes?team=SFTWR",
+          "title": "Swift Compiler Backend Engineer, Languages & Runtimes - Jobs - Careers at Apple",
+          "description": "Apply for a Swift Compiler Backend Engineer, Languages & Runtimes job at Apple. Read about the role and find out if it\u2019s right for you.",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "",
+          "provider_url": "",
+          "html": "",
+          "width": 662,
+          "height": 348,
+          "image": "https://files.mastodon.social/cache/preview_cards/images/194/593/223/original/bcbed3008736385e.png",
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": "UA6Hy7j[00WBt7j[Rjay9Fay?bofIUay%Mof",
+          "published_at": null,
+          "authors": []
+        },
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
       "poll": null,
       "quote_approval": {
         "automatic": [
