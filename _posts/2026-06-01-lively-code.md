@@ -4,6 +4,7 @@ layout: post
 ---
 
 TODO(on: date(...), to: '#slack-channel')
+https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/expiring-todo-comments.md
 
 TODO(username)
 
