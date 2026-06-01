@@ -17,4 +17,4 @@ LINT.IfChange https://github.com/simonepri/ifttt-lint
 https://filiph.net/text/ifchange-thenchange.html
 https://www.chromium.org/chromium-os/developer-library/guides/development/keep-files-in-sync/
 
-doc comments
+doctests
