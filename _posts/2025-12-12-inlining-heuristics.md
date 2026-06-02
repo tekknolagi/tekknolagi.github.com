@@ -141,6 +141,13 @@ Spoiler alert: all in all, people tend to look at:
 
 And also have different interesting ways to pipe in profile information.
 
+Last, some newer papers do some wild stuff:
+
+* Train neural networks to make inlining decisions
+* Let inlining drive the entire optimization pipeline, treating it as a search
+  heuristic over a BFS walk of the call graph
+* Use AOT-gathered information to aid in JIT heuristics
+
 We'll start with [Cinder][cinder], because when I wrote Cinder's inliner I
 added only the simplest heuristics, mostly "don't inline" signals. Over time,
 after I left, people tuned it a bit more.
@@ -309,6 +316,7 @@ Heuristics https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a
 #### V8 TurboFan
 
 https://docs.google.com/document/d/1VoYBhpDhJC4VlqMXCKvae-8IGuheBGxy32EOgC2LnT8/edit
+
 https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.h#L14
 
 * Find candidates https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.cc#L134
@@ -461,6 +469,7 @@ information. Then, when compiling, the callee is more likely to be
 monomorphized.
 
 Wasm
+
 https://github.com/mozilla-firefox/firefox/blob/438a3ce10eb77fb50d968463b7741117aec5bb4a/js/src/wasm/WasmHeuristics.h#L213
 
 SpiderMonkey ICScript
@@ -476,9 +485,13 @@ profile branch counts; tier up to C2, which copies C1 inlining decisions in
 bytecode parser
 
 HotSpot C2
+
 https://github.com/openjdk/jdk/blob/a05d5d2514c835f2bfeaf7a8c7df0ac241f0177f/src/hotspot/share/opto/bytecodeInfo.cpp#L116
+
 https://github.com/openjdk/jdk/blob/497dca2549a9829530670576115bf4b8fab386b3/src/hotspot/share/opto/bytecodeInfo.cpp#L197
+
 https://github.com/openjdk/jdk/blob/497dca2549a9829530670576115bf4b8fab386b3/src/hotspot/share/opto/parse.hpp#L42
+
 https://github.com/openjdk/jdk/blob/497dca2549a9829530670576115bf4b8fab386b3/src/hotspot/share/opto/doCall.cpp#L185
 
 Not too small
@@ -490,8 +503,11 @@ want to compile `foo`, inline each, inline block, not compile block separately
 (probably)
 
 HotSpot C1
+
 https://bernsteinbear.com/assets/img/design-hotspot-client-compiler.pdf
+
 https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L755
+
 https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L3854
 
 * skip callees with exception handlers (unless explicitly allowed with a CLI flag)
@@ -524,11 +540,16 @@ https://ieeexplore.ieee.org/document/8661171
 ### .NET
 
 https://github.com/dotnet/runtime/blob/2d638dc1179164a08d9387cbe6354fe2b7e4d823/docs/design/coreclr/jit/inlining-plans.md
+
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inline.def#L94
+
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inlinepolicy.cpp
+
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/docs/design/coreclr/jit/inline-size-estimates.md?plain=1#L5
 https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/fginline.cpp
+
 https://github.com/dotnet/runtime/issues/10303
+
 https://github.com/AndyAyersMS/PerformanceExplorer/blob/master/notes/notes-aug-2016.md
 <!--
 LSRA heuristics
@@ -538,7 +559,9 @@ https://github.com/dotnet/runtime/blob/2d638dc1179164a08d9387cbe6354fe2b7e4d823/
 ### Dart
 
 https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L49
+
 https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L1023
+
 https://web.archive.org/web/20170830093403id_/https://link.springer.com/content/pdf/10.1007/978-3-540-78791-4_5.pdf
 
 ```c++
@@ -799,28 +822,37 @@ https://github.com/JikesRVM/JikesRVM/blob/5072f19761115d987b6ee162f49a03522d36c6
 
 Partial inlining
 
-"optimal inlining"
-https://ethz.ch/content/dam/ethz/special-interest/infk/ast-dam/documents/Theodoridis-ASPLOS22-Inlining-Paper.pdf
+[Understanding and Exploiting Optimal Function Inlining](https://ethz.ch/content/dam/ethz/special-interest/infk/ast-dam/documents/Theodoridis-ASPLOS22-Inlining-Paper.pdf) (PDF)
 
 machine learning
-https://ieeexplore.ieee.org/document/6495004
-https://ssw.jku.at/Teaching/PhDTheses/Mosaner/Dissertation%20Mosaner.pdf
 
-Other
-https://webdocs.cs.ualberta.ca/~amaral/thesis/ErickOchoaMSc.pdf
-https://karimali.ca/resources/papers/ourinliner.pdf
-https://dl.acm.org/doi/10.1145/182409.182489
-https://github.com/chrisseaton/rhizome/blob/main/doc/inlining.md
-http://aleksandar-prokopec.com/resources/docs/prio-inliner-final.pdf
-https://www.cresco.enea.it/SC05/schedule/pdf/pap274.pdf
-https://dl.acm.org/doi/pdf/10.1145/3563838.3567677
-clusters from https://llvm.org/devmtg/2022-05/slides/2022EuroLLVM-CustomBenefitDrivenInliner-in-FalconJIT.pdf
+[Automatic construction of inlining heuristics using machine learning](https://ieeexplore.ieee.org/document/6495004)
+
+[Machine-Learning-Based Optimization Heuristics in Dynamic Compilers](https://ssw.jku.at/Teaching/PhDTheses/Mosaner/Dissertation%20Mosaner.pdf) (PDF)
+
+[Guiding Inlining Decisions Using Post-Inlining Transformations](https://webdocs.cs.ualberta.ca/~amaral/thesis/ErickOchoaMSc.pdf) (PDF)
+
+[U Can’t Inline This!](https://karimali.ca/resources/papers/ourinliner.pdf) (PDF)
+
+[Towards better inlining decisions using inlining trials](https://dl.acm.org/doi/10.1145/182409.182489)
+
+[RhizomeRuby inlining](https://github.com/chrisseaton/rhizome/blob/main/doc/inlining.md)
+
+[An Optimization-Driven Incremental Inline Substitution Algorithm for Just-in-Time Compilers](http://aleksandar-prokopec.com/resources/docs/prio-inliner-final.pdf) (PDF)
+
+[Automatic Tuning of Inlining Heuristics](https://www.cresco.enea.it/SC05/schedule/pdf/pap274.pdf) (PDF)
+
+[Inlining-Benefit Prediction with Interprocedural Partial Escape Analysis](https://dl.acm.org/doi/pdf/10.1145/3563838.3567677) (PDF)
+
+clusters from [Custom benefit-driven inliner inFalcon JIT](https://llvm.org/devmtg/2022-05/slides/2022EuroLLVM-CustomBenefitDrivenInliner-in-FalconJIT.pdf) (PDF)
 
 
 ### Graal
 
 https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/inlining/policy/GreedyInliningPolicy.java
+
 https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/inlining/InliningPhase.java
+
 https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/inlining/info/elem/InlineableGraph.java#L148
 <!--
 GVN
