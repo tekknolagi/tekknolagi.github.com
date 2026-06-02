@@ -137,7 +137,7 @@ The [inliner][cinder-inliner] starts from the caller CFG, walking it to find
 suitable inlining candidates. Inlining candidates are only for call targets
 that are known---in Cinder's case, only for monomorphic call targets---and pass
 some checks. The callee is only known by it's function object, which includes
-its bytecode. There is no IR available for the callee.
+its bytecode. There is no IR available for the callee until we decide to inline.
 
 [cinder-inliner]: https://github.com/facebookincubator/cinderx/blob/88189ebf4bfd196ac7578c5076efa39bfa11f211/cinderx/Jit/hir/inliner.cpp#L341
 
