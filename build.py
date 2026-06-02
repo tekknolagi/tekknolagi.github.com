@@ -10,7 +10,10 @@
 # ///
 """Minimal Jekyll-compatible static site builder (mistletoe edition).
 
-Usage: uv run build.py
+Usage: uv run build.py [--future]
+
+Options:
+  --future   Include posts dated in the future (overrides `future` in _config.yml).
 """
 
 import datetime
@@ -19,6 +22,7 @@ import multiprocessing
 import os
 import re
 import shutil
+import sys
 
 from mistletoe import Document
 from mistletoe.html_renderer import HtmlRenderer
@@ -980,6 +984,9 @@ def main():
     # Load config
     cfg_path = os.path.join(SRC, "_config.yml")
     site_cfg = yaml.safe_load(read_file(cfg_path)) if os.path.isfile(cfg_path) else {}
+    # CLI overrides: --future includes posts dated in the future
+    if "--future" in sys.argv:
+        site_cfg["future"] = True
     permalink = site_cfg.get("permalink", "/blog/:slug/")
 
     # Load layouts ({% link %} tags resolved once here)
