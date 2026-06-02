@@ -123,7 +123,7 @@ inliner research I did for Cinder's inliner. So then I kind of just thought
 about it aimlessly for a while before redoing it this year. Anyway, here's
 wonderwall.
 
-## The survey
+## The heuristics
 
 Spoiler alert: all in all, people tend to look at:
 
@@ -146,6 +146,11 @@ added only the simplest heuristics, mostly "don't inline" signals. Over time,
 after I left, people tuned it a bit more.
 
 [cinder]: https://github.com/facebookincubator/cinderx
+
+## The survey: bits and bobbles
+
+What follows is mostly a "bits and bobbles" section a la [Phil
+Zucker](https://www.philipzucker.com/).
 
 ### Cinder
 
