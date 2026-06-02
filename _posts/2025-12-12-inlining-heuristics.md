@@ -885,6 +885,16 @@ This gives each callee function (at least?) one level of call context.
 Later, when inlining the callee into the caller, we don't have other callers'
 type information polluting the IR builder (or whatever reads the profiles).
 
-* Inline bytecode
+### Bytecode inlining
+
+JavaScriptCore handles this by inlining bytecode into other bytecode. This is a
+gnarly transformation but gives the interpreter, even (!) access to call
+context. On tier-up to the compiler, all the inlining decisions have been made
+already.
+
+### Early tier with counters
+
+### Inline and analyze and hope
+
 * Inline in earlier tier with profile/branch counters
 * Inline and branch prune, maybe, kinda
