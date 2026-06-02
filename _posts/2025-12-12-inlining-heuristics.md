@@ -69,16 +69,17 @@ I wrote about the design and implementation of Cinder's inliner ([FB
 link](https://engineering.fb.com/2022/05/02/open-source/cinder-jits-instagram/),
 [personal blog link](/blog/cinder-jit-inliner/)) a couple of years ago. I wrote
 about arguably the simplest part, which is copying the callee body into the
-caller. It took me at least a week to get working. In February during a small
-hackathon, I watched my colleague [k0kubun](https://github.com/k0kubun)
+caller. It took me at least a week to get working. Probably closer to months if
+you consider all the plumbing through the rest of the JIT. In February during a
+small hackathon, I watched my colleague [k0kubun](https://github.com/k0kubun)
 prototype that bit of the inliner inside ZJIT in about 30 minutes.
 
 There is more to do when pretty much every part of the VM is observable from
 the guest language: both Python and Ruby allow inspecting the state of the
 locals, the call stack, etc from user code. Sampling profilers also expect some
-amount of breadcrumbs to work with to inspect the stack. So there's some more machinery
-still required to pretend like the function was not inlined. I talk about this
-a little bit in the Cinder blog post.
+amount of breadcrumbs to work with to inspect the stack. So there's some more
+machinery still required to pretend like the callee function was not inlined. I
+talk about this a little bit in the Cinder blog post.
 
 Even so, all of that can probably be designed and wired together in a couple
 of months. Then you will find yourself tuning the inliner for the next 10
@@ -88,11 +89,15 @@ years. This is much harder.
 
 The thing that makes inlining difficult, especially in a method JIT, is that
 you are trying to make an entire (dynamic!) system faster but you are only
-looking through a microscope and only capable of local reasoning. Whereas other
+looking through a microscope and only capable of local reasoning[^aot-split]. Whereas other
 optimizations such as strength reduction, inline caches, and value numbering
 are an un-alloyed good for the generated code, inlining can have *negative
 effects*. It is also perhaps the first optimization people add that has
 non-local impact.
+
+[^aot-split]: There are some newer papers, especially in Java land, that try to
+    do a lot of analysis ahead-of-time and bundle the resulting information in
+    .class files. Then the JIT can read it and see more than local context.
 
 If you inline wrong, your code size might blow up. This might thrash your CPU's
 caches. Bummer, but happens to the best of us.
