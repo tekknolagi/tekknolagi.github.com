@@ -252,7 +252,7 @@ history:
 * Hydrogen was the first real SSA IR and it looks very familiar to me, having
   worked on Cinder and now ZJIT. It is now defunct.
 * TurboFan was the replacement, going full Sea of Nodes. In the grand scheme of
-  things it is a pretty fast compiler, but it is not hold back from doing some
+  things it is a pretty fast compiler, but it does not hold back from doing some
   expensive rewrites.
 * Maglev is (maybe?) the replacement for that, preferring to speculate a little
   more eagerly and do fewer incremental rewrites in the name of compile
