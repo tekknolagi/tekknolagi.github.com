@@ -867,12 +867,24 @@ out this call context relationship. There are a couple of common ways to do it.
 ### Splitting
 
 YJIT, for example, though it does not inline, splits methods based on the types
-of the arguments going in. This does not give call context ("A calls B") but
-gives type context ("B is called with integers, B' is called with strings").
+of the arguments going in. This means that it clones the compiled code,
+generating a new version for each context. This does not give *call* context
+("A calls B") but gives type context ("B is called with integers, B' is called
+with strings").
 
 A compiler could do type-based splitting in the interpreter or a baseline tier.
 
-* ICScript
+### Profile splitting
+
+If you don't fancy duplicating the code, you can instead duplicate the
+profiles. You could either do this using type context (as above) or using call
+context. SpiderMonkey, for example, has a feature called ICScript that allows
+callers to pass down a bit of memory for callees to record their inline caches.
+This gives each callee function (at least?) one level of call context.
+
+Later, when inlining the callee into the caller, we don't have other callers'
+type information polluting the IR builder (or whatever reads the profiles).
+
 * Inline bytecode
 * Inline in earlier tier with profile/branch counters
 * Inline and branch prune, maybe, kinda
