@@ -15,8 +15,8 @@ lookups, they are *small*. And everywhere.
 
 This makes the compiler sad. If we are to continue to anthropomorphize them,
 compilers like having more context so they can optimize better. Consider the
-following silly-looking example that is actually representative of a lot of
-real-world code:
+following silly-looking example that is actually representative of a surprising
+amount of real-world code:
 
 ```ruby
 class Point
