@@ -148,16 +148,98 @@ Last, some newer papers do some wild stuff:
   heuristic over a BFS walk of the call graph
 * Use AOT-gathered information to aid in JIT heuristics
 
+Another thing to consider in inlining is how you gather and interpret profiles.
+
+## Call context and profiles: the other harder part
+
+When you compile a function, you tend to specialize it based on the input it
+has historically been given. For a monomorphic input, maybe you guard that the
+type is still the same and otherwise jump into the interpreter. For a
+polymorphic input, maybe you check the top K (~4) common cases and otherwise
+jump into the interpreter. Fine.
+
+But sometimes you can be compiling a polymorphic method `bar` that is actually
+monomorphic in its caller `foo`. That is, `foo` might only ever pass one kind
+of input to `bar`, but other callers pass all kinds of stuff. For example, here
+is a bit of a silly example:
+
+```ruby
+class HashWithIndifferentAccess
+  def initialize
+    @hash = {}
+  end
+
+  # Allow reading from the Hash with either a String or a Symbol
+  def [](key) = @hash[key.to_sym]
+
+  # ...
+end
+
+some_hash = HashWithIndifferentAccess.new
+# some method...
+some_hash["abc"]
+# some other method...
+some_hash[:xyz]
+```
+
+Just kidding, not so silly at all. It's a super common pattern [in
+Rails][hwia]. It makes `key` polymorphic in `HashWithIndifferentAccess#[]` even
+though for many of its callers, it may well be monomorphic (or even a
+constant).
+
+[hwia]: https://github.com/rails/rails/blob/6c75e6d5663afa4278ee593c2d6c20c1ee396e32/activesupport/lib/active_support/hash_with_indifferent_access.rb#L55
+
+In order to plumb this information through to the compiler, you have to figure
+out this call context relationship. There are a couple of common ways to do it.
+
+### Splitting
+
+YJIT, for example, though it does not inline, splits methods based on the types
+of the arguments going in. This means that it clones the compiled code,
+generating a new version for each context. This does not give *call* context
+("A calls B") but gives type context ("B is called with integers, B' is called
+with strings").
+
+A compiler could do type-based splitting in the interpreter or a baseline tier.
+
+### Profile splitting
+
+If you don't fancy duplicating the code, you can instead duplicate the
+profiles. You could either do this using type context (as above) or using call
+context. SpiderMonkey, for example, has a feature called ICScript that allows
+callers to pass down a bit of memory for callees to record their inline caches.
+This gives each callee function (at least?) one level of call context.
+
+Later, when inlining the callee into the caller, we don't have other callers'
+type information polluting the IR builder (or whatever reads the profiles).
+
+### Bytecode inlining
+
+JavaScriptCore handles this by inlining bytecode into other bytecode. This is a
+gnarly transformation but gives the interpreter, even (!) access to call
+context. On tier-up to the compiler, all the inlining decisions have been made
+already.
+
+### Early tier with counters
+
+### Inline and analyze and hope
+
+* Inline in earlier tier with profile/branch counters
+* Inline and branch prune, maybe, kinda
+
+Okay, onto the collected notes and half-baked commentary.
+
+## The survey: bits and bobbles
+
+What follows is mostly a "bits and bobbles" section a la [Phil
+Zucker](https://www.philipzucker.com/).
+
 We'll start with [Cinder][cinder], because when I wrote Cinder's inliner I
 added only the simplest heuristics, mostly "don't inline" signals. Over time,
 after I left, people tuned it a bit more.
 
 [cinder]: https://github.com/facebookincubator/cinderx
 
-## The survey: bits and bobbles
-
-What follows is mostly a "bits and bobbles" section a la [Phil
-Zucker](https://www.philipzucker.com/).
 
 ### Cinder
 
@@ -858,80 +940,3 @@ https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/co
 GVN
 https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/DominatorBasedGlobalValueNumberingPhase.java#L132
 -->
-
-## Call context: the other harder part
-
-When you compile a function, you tend to specialize it based on the input it
-has historically been given. For a monomorphic input, maybe you guard that the
-type is still the same and otherwise jump into the interpreter. For a
-polymorphic input, maybe you check the top K (~4) common cases and otherwise
-jump into the interpreter. Fine.
-
-But sometimes you can be compiling a polymorphic method `bar` that is actually
-monomorphic in its caller `foo`. That is, `foo` might only ever pass one kind
-of input to `bar`, but other callers pass all kinds of stuff. For example, here
-is a bit of a silly example:
-
-```ruby
-class HashWithIndifferentAccess
-  def initialize
-    @hash = {}
-  end
-
-  # Allow reading from the Hash with either a String or a Symbol
-  def [](key) = @hash[key.to_sym]
-
-  # ...
-end
-
-some_hash = HashWithIndifferentAccess.new
-# some method...
-some_hash["abc"]
-# some other method...
-some_hash[:xyz]
-```
-
-Just kidding, not so silly at all. It's a super common pattern [in
-Rails][hwia]. It makes `key` polymorphic in `HashWithIndifferentAccess#[]` even
-though for many of its callers, it may well be monomorphic (or even a
-constant).
-
-[hwia]: https://github.com/rails/rails/blob/6c75e6d5663afa4278ee593c2d6c20c1ee396e32/activesupport/lib/active_support/hash_with_indifferent_access.rb#L55
-
-In order to plumb this information through to the compiler, you have to figure
-out this call context relationship. There are a couple of common ways to do it.
-
-### Splitting
-
-YJIT, for example, though it does not inline, splits methods based on the types
-of the arguments going in. This means that it clones the compiled code,
-generating a new version for each context. This does not give *call* context
-("A calls B") but gives type context ("B is called with integers, B' is called
-with strings").
-
-A compiler could do type-based splitting in the interpreter or a baseline tier.
-
-### Profile splitting
-
-If you don't fancy duplicating the code, you can instead duplicate the
-profiles. You could either do this using type context (as above) or using call
-context. SpiderMonkey, for example, has a feature called ICScript that allows
-callers to pass down a bit of memory for callees to record their inline caches.
-This gives each callee function (at least?) one level of call context.
-
-Later, when inlining the callee into the caller, we don't have other callers'
-type information polluting the IR builder (or whatever reads the profiles).
-
-### Bytecode inlining
-
-JavaScriptCore handles this by inlining bytecode into other bytecode. This is a
-gnarly transformation but gives the interpreter, even (!) access to call
-context. On tier-up to the compiler, all the inlining decisions have been made
-already.
-
-### Early tier with counters
-
-### Inline and analyze and hope
-
-* Inline in earlier tier with profile/branch counters
-* Inline and branch prune, maybe, kinda
