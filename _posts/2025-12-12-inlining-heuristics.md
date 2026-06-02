@@ -125,6 +125,22 @@ wonderwall.
 
 ## The survey
 
+Spoiler alert: all in all, people tend to look at:
+
+* Cumulative caller size (increasing as callees get inlined)
+* Callee size
+* Inline depth
+* Number of inlined calls at a certain depth
+* If recursion is present
+* Callee/caller call count ratio (if callee only called less than K% of calls
+  to caller, don't inline callee)
+* Callee stack usage
+* Polymorphism in callee
+* What mode the compiler is in (baseline vs more aggressive)
+* If the callee looks like it always raises/throws
+
+And also have different interesting ways to pipe in profile information.
+
 We'll start with [Cinder][cinder], because when I wrote Cinder's inliner I
 added only the simplest heuristics, mostly "don't inline" signals. Over time,
 after I left, people tuned it a bit more.
