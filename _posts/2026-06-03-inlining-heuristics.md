@@ -175,11 +175,15 @@ class HashWithIndifferentAccess
   # ...
 end
 
-some_hash = HashWithIndifferentAccess.new
 # some method...
+some_hash = HashWithIndifferentAccess.new
+# ...
 some_hash["abc"]
+
 # some other method...
-some_hash[:xyz]
+another_hash = HashWithIndifferentAccess.new
+# ...
+another_hash[:xyz]
 ```
 
 Just kidding, not so silly at all. It's a super common pattern [in
