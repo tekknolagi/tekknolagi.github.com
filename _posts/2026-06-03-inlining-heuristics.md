@@ -89,15 +89,19 @@ years. This is much harder.
 
 The thing that makes inlining difficult, especially in a method JIT, is that
 you are trying to make an entire (dynamic!) system faster but you are only
-looking through a microscope and only capable of local reasoning[^aot-split]. Whereas other
-optimizations such as strength reduction, inline caches, and value numbering
-are an un-alloyed good for the generated code, inlining can have *negative
-effects*. It is also perhaps the first optimization people add that has
-non-local impact.
+looking through a microscope and only capable of local reasoning[^aot-split].
+Whereas other optimizations such as strength reduction, inline caches, and
+value numbering are an un-alloyed good for the generated code, inlining can
+have *negative effects*. It is also perhaps the first optimization people add
+that has non-local impact.
 
 [^aot-split]: There are some newer papers, especially in Java land, that try to
     do a lot of analysis ahead-of-time and bundle the resulting information in
     .class files. Then the JIT can read it and see more than local context.
+
+    Or, if you are an AOT compiler, you can probably do a lot more whole system
+    reasoning---both for time budget reasons and also because you can see more
+    functions at once.
 
 If you inline wrong, your code size might blow up. This might thrash your CPU's
 caches. Bummer, but happens to the best of us.
@@ -234,9 +238,18 @@ profiles via inlining.
 
 ### Inline and analyze and hope
 
-* Inline and branch prune, maybe, kinda
+One last thing you could do is just trust your type inference and branch
+folding in the optimizer. You could inline and do polymorphic specialization in
+the callee when building the IR, then hope that your branch pruning
+monomorphizes the inlined callee. It's a little wasteful because the
+polymorphic code is built "for nothing", but it might work fine?
 
-Okay, onto the collected notes and half-baked commentary.
+<!--
+### Inline and merge profiles
+-->
+
+Okay, onto the collected notes and half-baked commentary. Here's a survey of a
+bunch of JIT compilers and how they reason about inlining heuristics.
 
 ## The survey: bits and bobbles
 
