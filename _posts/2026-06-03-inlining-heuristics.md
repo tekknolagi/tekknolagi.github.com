@@ -226,9 +226,10 @@ already.
 
 ### Early tier with counters
 
+* Inline in earlier tier with profile/branch counters
+
 ### Inline and analyze and hope
 
-* Inline in earlier tier with profile/branch counters
 * Inline and branch prune, maybe, kinda
 
 Okay, onto the collected notes and half-baked commentary.
