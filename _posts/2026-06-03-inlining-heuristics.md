@@ -226,7 +226,11 @@ already.
 
 ### Early tier with counters
 
-* Inline in earlier tier with profile/branch counters
+HotSpot handles this with multiple tiers. The interpreter tiers up to the
+client compiler, C1. C1 profiles branch and call targets in compiled code. C1
+may eventually recompile based on this new information. C1 may eventually tier
+up to C2, which copies C1 inlining decisions. This way, we get call context in
+profiles via inlining.
 
 ### Inline and analyze and hope
 
