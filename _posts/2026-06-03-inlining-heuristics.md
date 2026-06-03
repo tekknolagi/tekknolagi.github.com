@@ -974,6 +974,8 @@ machine learning
 
 [A Study of Type Analysis for Speculative Method Inlining in a JIT Environment](/assets/img/sable-inlining.pdf) (PDF)
 
+[A Comparative Study of Static and Profile-Based Heuristics for Inlining](https://dl.acm.org/doi/epdf/10.1145/351403.351416) (PDF)
+
 clusters from [Custom benefit-driven inliner in Falcon JIT](https://llvm.org/devmtg/2022-05/slides/2022EuroLLVM-CustomBenefitDrivenInliner-in-FalconJIT.pdf) (PDF)
 
 
