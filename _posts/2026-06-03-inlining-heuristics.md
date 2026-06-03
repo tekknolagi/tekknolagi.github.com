@@ -559,10 +559,13 @@ unused / dead declaration~~ same
 ### JavaScriptCore
 
 JavaScriptCore is funky! Unlike these other compilers that do inlining in their
-neat little SSA IRs, JSC inlines *at the bytecode level*. This is their way of
+neat little SSA IRs, JSC inlines *at the bytecode level*[^fil]. This is their way of
 making sure that they get at least one level of call context into their
 interpreter inline caches, which will eventually give better information to the
 compiler.
+
+[^fil]: Potentially a misunderstanding based on a private conversation. I'm
+    working on tracking down the implementation...
 
 * Bytecode inlining
   * https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/Source/JavaScriptCore/bytecode/CodeBlock.cpp#L2453
