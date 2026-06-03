@@ -170,8 +170,8 @@ jump into the interpreter. Fine.
 
 But sometimes you can be compiling a polymorphic method `bar` that is actually
 monomorphic in its caller `foo`. That is, `foo` might only ever pass one kind
-of input to `bar`, but other callers pass all kinds of stuff. For example, here
-is a bit of a silly example:
+of input to `bar`, but other callers pass all kinds of stuff. Here is a bit of
+a silly example to show what I mean:
 
 ```ruby
 class HashWithIndifferentAccess
