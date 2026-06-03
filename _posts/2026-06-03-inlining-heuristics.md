@@ -970,6 +970,8 @@ machine learning
 
 [Inlining-Benefit Prediction with Interprocedural Partial Escape Analysis](https://dl.acm.org/doi/pdf/10.1145/3563838.3567677) (PDF)
 
+[Inlining of Virtual Methods](/assets/img/virtual-inlining.pdf) (PDF)
+
 clusters from [Custom benefit-driven inliner in Falcon JIT](https://llvm.org/devmtg/2022-05/slides/2022EuroLLVM-CustomBenefitDrivenInliner-in-FalconJIT.pdf) (PDF)
 
 
