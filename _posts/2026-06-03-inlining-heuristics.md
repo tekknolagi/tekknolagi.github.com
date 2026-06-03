@@ -972,6 +972,8 @@ machine learning
 
 [Inlining of Virtual Methods](/assets/img/virtual-inlining.pdf) (PDF)
 
+[A Study of Type Analysis for Speculative Method Inlining in a JIT Environment](/assets/img/sable-inlining.pdf) (PDF)
+
 clusters from [Custom benefit-driven inliner in Falcon JIT](https://llvm.org/devmtg/2022-05/slides/2022EuroLLVM-CustomBenefitDrivenInliner-in-FalconJIT.pdf) (PDF)
 
 
