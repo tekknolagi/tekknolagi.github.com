@@ -417,12 +417,12 @@ time trying to understand the different codebases.
 #### V8 Hydrogen
 
 Inlining happens during Hydrogen graph building
-* https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L9236
+* <https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L9236>
 
 Don't store function bytecode of all functions; need to re-parse callee *text
 source* to inline
 
-Heuristics https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807
+Heuristics <https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a772890c64/src/crankshaft/hydrogen.cc#L7807>
 * something about native context
 * check callee AST size against configurable limit
 * check inlining depth against configurable limit
@@ -432,18 +432,18 @@ Heuristics https://github.com/tekknolagi/v8/blob/a969ab67f8e1e7475d9b26468225c3a
 
 #### V8 TurboFan
 
-https://docs.google.com/document/d/1VoYBhpDhJC4VlqMXCKvae-8IGuheBGxy32EOgC2LnT8/edit
+<https://docs.google.com/document/d/1VoYBhpDhJC4VlqMXCKvae-8IGuheBGxy32EOgC2LnT8/edit>
 
-https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.h#L14
+<https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.h#L14>
 
-* Find candidates https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.cc#L134
-* Can inline https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.cc#L75
-* Force inline small functions https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.cc#L309
-* Loop over sorted (by comparator) list https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.cc#L847
+* Find candidates <https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.cc#L134>
+* Can inline <https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.cc#L75>
+* Force inline small functions <https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.cc#L309>
+* Loop over sorted (by comparator) list <https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/compiler/js-inlining-heuristic.cc#L847>
 
 #### V8 Maglev
 
-When optimizing, add call instructions to the inline candidates list: https://github.com/v8/v8/blob/1a391f98cc7a9196369f2d6cab7df35ffbe92c08/src/maglev/maglev-graph-optimizer.cc#L1271
+When optimizing, add call instructions to the inline candidates list: <https://github.com/v8/v8/blob/1a391f98cc7a9196369f2d6cab7df35ffbe92c08/src/maglev/maglev-graph-optimizer.cc#L1271>
 
 ```c++
 ProcessResult MaglevGraphOptimizer::VisitCall(Call* node,
@@ -469,7 +469,7 @@ ProcessResult MaglevGraphOptimizer::VisitCall(Call* node,
 }
 ```
 
-https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/maglev/maglev-inlining.h#L36
+<https://github.com/v8/v8/blob/036842f4841326130a40adfcff38f85a9b4cd30a/src/maglev/maglev-inlining.h#L36>
 
 Unlike for example Cinder, Maglev looks like it does not have a lot of
 restrictions about what can get inlined into what, so its "can inline" signal
@@ -545,7 +545,7 @@ bool MaglevInliner::Run() {
 Confusingly, though, the optimizer also calls another function called
 `CanInlineCall` which checks if it legally can inline:
 * skip recursion
-* https://github.com/v8/v8/blob/1a391f98cc7a9196369f2d6cab7df35ffbe92c08/src/objects/shared-function-info-inl.h#L421
+* <https://github.com/v8/v8/blob/1a391f98cc7a9196369f2d6cab7df35ffbe92c08/src/objects/shared-function-info-inl.h#L421>
 * not called enough (min call frequency)
 * bytecode too big
 
@@ -568,12 +568,12 @@ compiler.
     working on tracking down the implementation...
 
 * Bytecode inlining
-  * https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/Source/JavaScriptCore/bytecode/CodeBlock.cpp#L2453
+  * <https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/Source/JavaScriptCore/bytecode/CodeBlock.cpp#L2453>
 * DFG
-  * https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/Source/JavaScriptCore/dfg/DFGCapabilities.cpp#L76
-  * https://github.com/WebKit/WebKit/blob/917854a9c245b87b333e23ed4b195505d574a333/Source/JavaScriptCore/dfg/DFGByteCodeParser.cpp#L1703
-  * https://github.com/WebKit/WebKit/blob/917854a9c245b87b333e23ed4b195505d574a333/Source/JavaScriptCore/bytecode/CallLinkStatus.cpp#L294
-  * https://github.com/WebKit/WebKit/blob/d919344236c47b610930636d3310f00380624d43/Source/JavaScriptCore/bytecode/InlineCallFrame.h
+  * <https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/Source/JavaScriptCore/dfg/DFGCapabilities.cpp#L76>
+  * <https://github.com/WebKit/WebKit/blob/917854a9c245b87b333e23ed4b195505d574a333/Source/JavaScriptCore/dfg/DFGByteCodeParser.cpp#L1703>
+  * <https://github.com/WebKit/WebKit/blob/917854a9c245b87b333e23ed4b195505d574a333/Source/JavaScriptCore/bytecode/CallLinkStatus.cpp#L294>
+  * <https://github.com/WebKit/WebKit/blob/d919344236c47b610930636d3310f00380624d43/Source/JavaScriptCore/bytecode/InlineCallFrame.h>
 
 JSC only inlines based on bytecode profile information, and only inlines
 bytecode??
@@ -595,13 +595,13 @@ monomorphized.
 
 Wasm
 
-https://github.com/mozilla-firefox/firefox/blob/438a3ce10eb77fb50d968463b7741117aec5bb4a/js/src/wasm/WasmHeuristics.h#L213
+<https://github.com/mozilla-firefox/firefox/blob/438a3ce10eb77fb50d968463b7741117aec5bb4a/js/src/wasm/WasmHeuristics.h#L213>
 
 SpiderMonkey ICScript
 
 ### Wasmtime and Cranelift
 
-https://fitzgen.com/2025/11/19/inliner.html
+<https://fitzgen.com/2025/11/19/inliner.html>
 
 ### HotSpot
 
@@ -611,13 +611,13 @@ bytecode parser
 
 HotSpot C2
 
-https://github.com/openjdk/jdk/blob/a05d5d2514c835f2bfeaf7a8c7df0ac241f0177f/src/hotspot/share/opto/bytecodeInfo.cpp#L116
+<https://github.com/openjdk/jdk/blob/a05d5d2514c835f2bfeaf7a8c7df0ac241f0177f/src/hotspot/share/opto/bytecodeInfo.cpp#L116>
 
-https://github.com/openjdk/jdk/blob/497dca2549a9829530670576115bf4b8fab386b3/src/hotspot/share/opto/bytecodeInfo.cpp#L197
+<https://github.com/openjdk/jdk/blob/497dca2549a9829530670576115bf4b8fab386b3/src/hotspot/share/opto/bytecodeInfo.cpp#L197>
 
-https://github.com/openjdk/jdk/blob/497dca2549a9829530670576115bf4b8fab386b3/src/hotspot/share/opto/parse.hpp#L42
+<https://github.com/openjdk/jdk/blob/497dca2549a9829530670576115bf4b8fab386b3/src/hotspot/share/opto/parse.hpp#L42>
 
-https://github.com/openjdk/jdk/blob/497dca2549a9829530670576115bf4b8fab386b3/src/hotspot/share/opto/doCall.cpp#L185
+<https://github.com/openjdk/jdk/blob/497dca2549a9829530670576115bf4b8fab386b3/src/hotspot/share/opto/doCall.cpp#L185>
 
 Not too small
 
@@ -629,11 +629,11 @@ want to compile `foo`, inline each, inline block, not compile block separately
 
 HotSpot C1
 
-https://bernsteinbear.com/assets/img/design-hotspot-client-compiler.pdf
+<https://bernsteinbear.com/assets/img/design-hotspot-client-compiler.pdf>
 
-https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L755
+<https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L755>
 
-https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L3854
+<https://github.com/openjdk/jdk/blob/d854a04231a437a6af36ae65780961f40f336343/src/hotspot/share/c1/c1_GraphBuilder.cpp#L3854>
 
 * skip callees with exception handlers (unless explicitly allowed with a CLI flag)
 * skip synchronized callees (unless explicitly allowed with a CLI flag)
@@ -660,22 +660,22 @@ heuristics:
 TruffleRuby uses weighted compile queue
 
 Graal
-https://ieeexplore.ieee.org/document/8661171
+<https://ieeexplore.ieee.org/document/8661171>
 
 ### .NET
 
-https://github.com/dotnet/runtime/blob/2d638dc1179164a08d9387cbe6354fe2b7e4d823/docs/design/coreclr/jit/inlining-plans.md
+<https://github.com/dotnet/runtime/blob/2d638dc1179164a08d9387cbe6354fe2b7e4d823/docs/design/coreclr/jit/inlining-plans.md>
 
-https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inline.def#L94
+<https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inline.def#L94>
 
-https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inlinepolicy.cpp
+<https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/inlinepolicy.cpp>
 
-https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/docs/design/coreclr/jit/inline-size-estimates.md?plain=1#L5
-https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/fginline.cpp
+<https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/docs/design/coreclr/jit/inline-size-estimates.md?plain=1#L5>
+<https://github.com/dotnet/runtime/blob/0b3f3ab1ecf4de06459e5f0e2b7cb3baf70ef981/src/coreclr/jit/fginline.cpp>
 
-https://github.com/dotnet/runtime/issues/10303
+<https://github.com/dotnet/runtime/issues/10303>
 
-https://github.com/AndyAyersMS/PerformanceExplorer/blob/master/notes/notes-aug-2016.md
+<https://github.com/AndyAyersMS/PerformanceExplorer/blob/master/notes/notes-aug-2016.md>
 <!--
 LSRA heuristics
 https://github.com/dotnet/runtime/blob/2d638dc1179164a08d9387cbe6354fe2b7e4d823/docs/design/coreclr/jit/lsra-heuristic-tuning.md
@@ -683,11 +683,11 @@ https://github.com/dotnet/runtime/blob/2d638dc1179164a08d9387cbe6354fe2b7e4d823/
 
 ### Dart
 
-https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L49
+<https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L49>
 
-https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L1023
+<https://github.com/dart-lang/sdk/blob/391212f3da8cc0790fc532d367549042216bd5ca/runtime/vm/compiler/backend/inliner.cc#L1023>
 
-https://web.archive.org/web/20170830093403id_/https://link.springer.com/content/pdf/10.1007/978-3-540-78791-4_5.pdf
+<https://web.archive.org/web/20170830093403id_/https://link.springer.com/content/pdf/10.1007/978-3-540-78791-4_5.pdf>
 
 ```c++
 DEFINE_FLAG(int,
@@ -794,7 +794,7 @@ https://github.com/dart-lang/sdk/blob/d3c0a3768bd4be4a92886e136811b5f748b63ddd/r
 
 tracelet based
 
-https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/hphp/runtime/vm/jit/inlining-decider.h#L89
+<https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/hphp/runtime/vm/jit/inlining-decider.h#L89>
 
 ```c++
   // Refuse if the cost exceeds our thresholds.
@@ -836,7 +836,7 @@ https://github.com/facebook/hhvm/blob/eeba7ad1ffa372a9b8cc9d1ec7f5295d45627009/h
 
 ### ART
 
-https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/inliner.h
+<https://github.com/LineageOS/android_art/blob/8ce603e0c68899bdfbc9cd4c50dcc65bbf777982/compiler/optimizing/inliner.h>
 
 ```c++
 // Instruction limit to control memory.
@@ -941,7 +941,7 @@ if (outermost_graph_->IsCompilingBaseline() &&
 
 ### JikesRVM
 
-https://github.com/JikesRVM/JikesRVM/blob/5072f19761115d987b6ee162f49a03522d36c697/rvm/src/org/jikesrvm/compilers/opt/inlining/DefaultInlineOracle.java#L55
+<https://github.com/JikesRVM/JikesRVM/blob/5072f19761115d987b6ee162f49a03522d36c697/rvm/src/org/jikesrvm/compilers/opt/inlining/DefaultInlineOracle.java#L55>
 
 ### Other/research
 
@@ -974,11 +974,11 @@ clusters from [Custom benefit-driven inliner in Falcon JIT](https://llvm.org/dev
 
 ### Graal
 
-https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/inlining/policy/GreedyInliningPolicy.java
+<https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/inlining/policy/GreedyInliningPolicy.java>
 
-https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/inlining/InliningPhase.java
+<https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/inlining/InliningPhase.java>
 
-https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/inlining/info/elem/InlineableGraph.java#L148
+<https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/inlining/info/elem/InlineableGraph.java#L148>
 <!--
 GVN
 https://github.com/oracle/graal/blob/5dde777cba22a99ebe3f19745d03ddfbc35c563c/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/phases/common/DominatorBasedGlobalValueNumberingPhase.java#L132
