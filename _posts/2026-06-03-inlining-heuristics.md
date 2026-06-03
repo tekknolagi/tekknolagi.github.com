@@ -742,7 +742,7 @@ DEFINE_FLAG(int,
             "Max. number of inlined calls per depth");
 ```
 
-"An adaptive strategy for inline substitution"
+[An adaptive strategy for inline substitution](/assets/img/adaptive-inline.pdf) (PDF)
 
 ```c++
   // Inlining heuristics based on Cooper et al. 2008.
