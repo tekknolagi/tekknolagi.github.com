@@ -111,9 +111,14 @@ optimizations: if you hit some size limit after inlining method A, you might
 never get to inline B, which is the key to unlocking the performance of the
 method you are trying to optimize.
 
-You have to write your compiler to reason about all of this stuff but also have
-really bounded compile times. So you have heuristics. For example, here is
-Michael Pollan's inliner heuristic:
+Last, inlining might hurt compile time. In situations where latency is
+paramount (think: interactive client JavaScript), adding tons more code into
+the fray might add noticeable hiccups, even if the long-term throughput
+improves. As always, in-band compilation is a trade-off because any time you
+spend compiling, you are *not executing code*.
+
+You have to write your compiler to reason about all of this stuff. So you have
+heuristics. For example, here is Michael Pollan's inliner heuristic:
 
 > *Inline methods. Mostly small. Not too many.*
 
@@ -214,9 +219,11 @@ A compiler could do type-based splitting in the interpreter or a baseline tier.
 
 If you don't fancy duplicating the code, you can instead duplicate the
 profiles. You could either do this using type context (as above) or using call
-context. SpiderMonkey, for example, has a feature called ICScript that allows
-callers to pass down a bit of memory for callees to record their inline caches.
-This gives each callee function (at least?) one level of call context.
+context. SpiderMonkey, for example, does "trial inlining" that allows callers
+to pass down a bit of memory for potential inline candidate callees to record
+their inline caches. Instead of each function holding its own ICScript, the
+caller allocates a unique ICScript for that potential-inline call-site. This
+gives each callee function (at least?) one level of call context.
 
 Later, when inlining the callee into the caller, we don't have other callers'
 type information polluting the IR builder (or whatever reads the profiles).
@@ -393,10 +400,11 @@ history:
 
 * Hydrogen was the first real SSA IR and it looks very familiar to me, having
   worked on Cinder and now ZJIT. It is now defunct.
-* TurboFan was the replacement, going full Sea of Nodes. In the grand scheme of
+* Turbofan was the replacement, going full Sea of Nodes. In the grand scheme of
   things it is a pretty fast compiler, but it does not hold back from doing some
-  expensive rewrites.
-* Maglev is (maybe?) the replacement for that, preferring to speculate a little
+  expensive rewrites. This was recently rewritten from Sea of Nodes to a mode
+  traditional CFG and nicknamed Turboshaft.
+* Maglev is meant to coexist alongside Turbofan, preferring to speculate a little
   more eagerly and do fewer incremental rewrites in the name of compile
   time.[^turbolev]
 
@@ -563,6 +571,8 @@ compiler.
 
 JSC only inlines based on bytecode profile information, and only inlines
 bytecode??
+
+TODO find better sources for bytecode inlining
 
 <!--
 Compile plan
