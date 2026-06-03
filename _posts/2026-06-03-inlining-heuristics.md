@@ -136,6 +136,7 @@ wonderwall.
 
 Spoiler alert: all in all, people tend to look at:
 
+* Profiles of call target
 * Cumulative caller size (increasing as callees get inlined)
 * Callee size
 * Inline depth
