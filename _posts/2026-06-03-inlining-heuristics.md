@@ -251,6 +251,11 @@ polymorphic code is built "for nothing", but it might work fine?
 Okay, onto the collected notes and half-baked commentary. Here's a survey of a
 bunch of JIT compilers and how they reason about inlining heuristics.
 
+### Thanks
+
+But before we get into that, thanks to Iain Ireland and CF Bolz-Tereick for
+feedback on this blog post!
+
 ## The survey: bits and bobbles
 
 What follows is mostly a "bits and bobbles" section a la [Phil
