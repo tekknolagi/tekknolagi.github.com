@@ -261,8 +261,8 @@ bunch of JIT compilers and how they reason about inlining heuristics.
 
 ### Thanks
 
-But before we get into that, thanks to Iain Ireland and CF Bolz-Tereick for
-feedback on this blog post!
+But before we get into that, thanks to Iain Ireland, CF Bolz-Tereick, and Ian
+Rogers for feedback on this blog post!
 
 ## The survey: bits and bobbles
 
