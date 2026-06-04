@@ -1404,3 +1404,5 @@ writing the interpreter in RPython, but it does require writing a compiler from
 
 I wrote a [second post](/blog/vectorizing-ml-models/) about compiling ML! It's
 about automatically vectorizing the scalar IR.
+
+See also [Differentiable Programming from Scratch](https://thenumb.at/Autodiff/).
