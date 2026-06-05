@@ -591,7 +591,7 @@ https://github.com/WebKit/WebKit/blob/709c3895afd71e0836f8c8be7393e44d41fab7e1/S
 
 ### SpiderMonkey
 
-SpiderMonkey has another way of getting that call contet without doing bytecode
+SpiderMonkey has another way of getting that call context without doing bytecode
 inlining: they add call context to their inline caches. Methods can pass down
 an *ICScript* to their callees where the callee writes its inline cache
 information. Then, when compiling, the callee is more likely to be
