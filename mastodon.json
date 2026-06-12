@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 606,
     "following_count": 288,
-    "statuses_count": 1479,
-    "last_status_at": "2026-06-11",
+    "statuses_count": 1480,
+    "last_status_at": "2026-06-12",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -75627,6 +75627,150 @@
         "tagged_collections": [],
         "quote": null,
         "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116738802471875026": {
+      "id": "116738802471875026",
+      "created_at": "2026-06-12T19:32:42.334Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116738802471875026/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/116738802471875026/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "116735857811318226",
+        "created_at": "2026-06-12T07:03:50.376Z",
+        "in_reply_to_id": "116704797143303444",
+        "in_reply_to_account_id": "64048",
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.social/users/cfbolz/statuses/116735857811318226",
+        "url": "https://mastodon.social/@cfbolz/116735857811318226",
+        "replies_count": 0,
+        "reblogs_count": 2,
+        "favourites_count": 5,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>Thoughtful post by <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@tekknolagi\" class=\"u-url mention\">@<span>tekknolagi</span></a></span> etal about the interactions of Yjit/Zjit with the rest of CRuby <a href=\"https://discuss.python.org/t/an-announcement-from-the-steering-council-regarding-the-jit-project/107638/35\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">discuss.python.org/t/an-announ</span><span class=\"invisible\">cement-from-the-steering-council-regarding-the-jit-project/107638/35</span></a></p>",
+        "reblog": null,
+        "application": {
+          "name": "Megalodon",
+          "website": "https://sk22.github.io/megalodon"
+        },
+        "account": {
+          "id": "64048",
+          "username": "cfbolz",
+          "acct": "cfbolz",
+          "display_name": "CF Bolz-Tereick",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2017-04-08T00:00:00.000Z",
+          "note": "<p>PyPy/RPython contributor. Half time teaching at Uni D\u00fcsseldorf. Works on dynamic language implementations. Vegan. Love street art and art in public spaces, hiking, reading.<br />they/them</p>",
+          "url": "https://mastodon.social/@cfbolz",
+          "uri": "https://mastodon.social/users/cfbolz",
+          "avatar": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "avatar_description": "",
+          "header": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "header_static": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "header_description": "",
+          "followers_count": 1180,
+          "following_count": 1336,
+          "statuses_count": 3208,
+          "last_status_at": "2026-06-12",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "noindex": false,
+          "feature_approval": {
+            "automatic": [
+              "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+          },
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "website",
+              "value": "<a href=\"https://www.cfbolz.de\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">cfbolz.de</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2022-12-26T10:32:06.422+00:00"
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [
+          {
+            "id": "1300106",
+            "username": "tekknolagi",
+            "url": "https://mastodon.social/@tekknolagi",
+            "acct": "tekknolagi"
+          }
+        ],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": {
+          "url": "https://discuss.python.org/t/an-announcement-from-the-steering-council-regarding-the-jit-project/107638/35",
+          "title": "An announcement from the Steering Council regarding the JIT project",
+          "description": "PEP Talk Hi,  The following is co-written with Aaron Patterson but written mostly in the first person. It represents only our personal viewpoints, not those of our employer or other CRuby developers.  My name is Max. I work on ZJIT at Shopify. I used to work on Cinder at Facebook and before that on Skybison at Facebook. I thought it would be helpful to give perspective about how the YJIT/ZJIT team addressed the following concerns from the CRuby perspective (though keep in mind that CRuby\u2019s devel...",
+          "language": "en",
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "Discussions on Python.org",
+          "provider_url": "",
+          "html": "",
+          "width": 480,
+          "height": 480,
+          "image": "https://files.mastodon.social/cache/preview_cards/images/196/331/316/original/781e8d528a625099.png",
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": "UvL:lGoL0;bHoca#a#oJ0;a|NLWXj[a#WXj@",
+          "published_at": "2026-06-11T21:38:55.000Z",
+          "authors": []
+        },
         "poll": null,
         "quote_approval": {
           "automatic": [
