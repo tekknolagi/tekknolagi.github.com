@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 606,
     "following_count": 288,
-    "statuses_count": 1483,
+    "statuses_count": 1484,
     "last_status_at": "2026-06-14",
     "hide_collections": false,
     "show_media": true,
@@ -75921,6 +75921,131 @@
         "name": "Mastodon for Android",
         "website": "https://app.joinmastodon.org/android"
       },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116749788518174095": {
+      "id": "116749788518174095",
+      "created_at": "2026-06-14T18:06:36.098Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116749788518174095/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/116749788518174095/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "116749729737766997",
+        "created_at": "2026-06-14T17:51:34.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://f.duriansoftware.com/users/joe/statuses/116749729426787913",
+        "url": "https://f.duriansoftware.com/@joe/116749729426787913",
+        "replies_count": 3,
+        "reblogs_count": 2,
+        "favourites_count": 4,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>Product types? Boring. Sum types? Old hat. Quotients? Seen \u2018em. Where are the cube root types. The Euler totient types. The elliptic types</p>",
+        "reblog": null,
+        "account": {
+          "id": "113156858670720602",
+          "username": "joe",
+          "acct": "joe@f.duriansoftware.com",
+          "display_name": "disregard Joe Groff",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": false,
+          "group": false,
+          "created_at": "2024-09-18T00:00:00.000Z",
+          "note": "<p>Doing my best to be a good boy\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26</p>",
+          "url": "https://f.duriansoftware.com/@joe",
+          "uri": "https://f.duriansoftware.com/users/joe",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/113/156/858/670/720/602/original/ca0cc87f8661adc7.jpeg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/113/156/858/670/720/602/original/ca0cc87f8661adc7.jpeg",
+          "avatar_description": "",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "header_description": "",
+          "followers_count": 1954,
+          "following_count": 1257,
+          "statuses_count": 7132,
+          "last_status_at": "2026-06-14",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "feature_approval": {
+            "automatic": [],
+            "manual": [],
+            "current_user": "denied"
+          },
+          "emojis": [],
+          "fields": [
+            {
+              "name": "pronouns",
+              "value": "he/him\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26",
+              "verified_at": null
+            },
+            {
+              "name": "webzone",
+              "value": "<a href=\"https://duriansoftware.com/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">duriansoftware.com/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "rss",
+              "value": "<a href=\"https://duriansoftware.com/joe/index.rss\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">duriansoftware.com/joe/index.r</span><span class=\"invisible\">ss</span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "dei",
+              "value": "white male privilege\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
       "media_attachments": [],
       "mentions": [],
       "tags": [],
