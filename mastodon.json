@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 606,
     "following_count": 288,
-    "statuses_count": 1480,
-    "last_status_at": "2026-06-12",
+    "statuses_count": 1483,
+    "last_status_at": "2026-06-14",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -75781,6 +75781,146 @@
         }
       },
       "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116747522445135580": {
+      "id": "116747522445135580",
+      "created_at": "2026-06-14T08:30:18.564Z",
+      "in_reply_to_id": "116747437957106635",
+      "in_reply_to_account_id": "108086029420379206",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "unlisted",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116747522445135580",
+      "url": "https://mastodon.social/@tekknolagi/116747522445135580",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://social.treehouse.systems/@dysfun\" class=\"u-url mention\">@<span>dysfun</span></a></span> interesting, say more?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108086029420379206",
+          "username": "dysfun",
+          "url": "https://social.treehouse.systems/@dysfun",
+          "acct": "dysfun@treehouse.systems"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116747480588554177": {
+      "id": "116747480588554177",
+      "created_at": "2026-06-14T08:19:39.877Z",
+      "in_reply_to_id": "112047264721802329",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116747480588554177",
+      "url": "https://mastodon.social/@tekknolagi/116747480588554177",
+      "replies_count": 1,
+      "reblogs_count": 1,
+      "favourites_count": 2,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><a href=\"http://cocoamine.net/blog/2015/03/20/replacing-photoshop-with-nsstring/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">http://</span><span class=\"ellipsis\">cocoamine.net/blog/2015/03/20/</span><span class=\"invisible\">replacing-photoshop-with-nsstring/</span></a></p><p>It was this</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": {
+        "url": "http://cocoamine.net/blog/2015/03/20/replacing-photoshop-with-nsstring/",
+        "title": "Replacing Photoshop With NSString - The Guinea Pig in the Cocoa Mine",
+        "description": "Hello! This post somehow got a lot of attention. Thanks for visiting! If you like it, it would be awesome if you\u2019d check my app Findings, a \u2026",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116747419236305054": {
+      "id": "116747419236305054",
+      "created_at": "2026-06-14T08:04:03.717Z",
+      "in_reply_to_id": "113109593468511971",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116747419236305054",
+      "url": "https://mastodon.social/@tekknolagi/116747419236305054",
+      "replies_count": 2,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Going to throw another one in and say Lamport clocks maybe</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
       "media_attachments": [],
       "mentions": [],
       "tags": [],
