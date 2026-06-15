@@ -50,7 +50,7 @@ and also a <a class="newlink" href="https://www.zazzle.com/jit_compiler_t_shirt-
 * Anthony C. Hay's fairly readable [Lisp interpreter in 90 lines of C++](http://howtowriteaprogram.blogspot.com/2010/11/lisp-interpreter-in-90-lines-of-c.html)
 * My own [Writing a Lisp](https://bernsteinbear.com/blog/lisp/) blog post
   series
-* carld's [Lisp in less than 200 lines of C](https://carld.github.io/2017/06/20/lisp-in-less-than-200-lines-of-c.html)
+* carld's [Lisp in less than 200 lines of C](https://web.archive.org/web/20201109031531/https://carld.github.io/2017/06/20/lisp-in-less-than-200-lines-of-c.html)
 * UTexas's [A simple scheme compiler](https://www.cs.utexas.edu/ftp/garbage/cs345/schintro-v14/schintro_142.html#SEC271)
 * Rui Ueyama's [minilisp](https://github.com/rui314/minilisp)
 * The [Bones](http://www.call-with-current-continuation.org/bones/) Scheme
