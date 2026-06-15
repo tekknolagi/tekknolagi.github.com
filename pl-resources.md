@@ -230,7 +230,7 @@ And here are runtime optimization resources that I wrote!
 Resources on representing small values efficiently.
 
 * nikic's [Pointer magic...](https://nikic.github.io/2012/02/02/Pointer-magic-for-efficient-dynamic-value-representations.html)
-* Sean's [NaN-Boxing](https://sean.cm/a/nan-boxing)
+* Sean's [NaN-Boxing](https://web.archive.org/web/20240223224706/https://sean.cm/a/nan-boxing)
 * zuiderkwast's [nanbox](https://github.com/zuiderkwast/nanbox)
 * albertnetymk's [NaN Boxing](http://albertnetymk.github.io/2016/08/06/nan_boxing/)
 * Ghuloum's [Incremental approach](/assets/img/11-ghuloum.pdf)
@@ -367,7 +367,7 @@ write about:
 
 ### Papers I want to read
 
-* [Destination-Driven Code Generation](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.53.3605&rep=rep1&type=pdf) (PDF)
+* [Destination-Driven Code Generation](/assets/img/ddcg.pdf) (PDF)
 * [Destination-Passing Style](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/dps-fhpc17.pdf) (PDF)
 * [Yesterday, my program worked. Today, it does not. Why?](http://www.cs.columbia.edu/~junfeng/17sp-e6121/papers/delta-debug.pdf) (PDF)
 * [Interaction nets](https://dl.acm.org/doi/pdf/10.1145/96709.96718) (PDF)
@@ -424,7 +424,7 @@ language implementation.
 * [Blinkenlights](https://justine.lol/blinkenlights/index.html), a visual
   x86-64 emulator
 * [Cosmopolitan libc](https://justine.lol/cosmopolitan/index.html)
-* [Cosmopolitan ftrace](https://justine.lol/ftrace/)
+* [Cosmopolitan ftrace](https://web.archive.org/web/20220520040110/https://justine.lol/ftrace/)
 
 (wow, this is turning into a Justine Section)
 
