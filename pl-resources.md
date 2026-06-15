@@ -32,7 +32,7 @@ and also a <a class="newlink" href="https://www.zazzle.com/jit_compiler_t_shirt-
     [Thorsten Ball tweet](https://twitter.com/thorstenball/status/1526788333761863680/photo/1))
 * I've heard good things about [Engineering a Compiler](https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-088478-0)
   ([3rd edition](https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-815412-0) coming soon!)
-* [Destination-driven code generation](https://legacy.cs.indiana.edu/~dyb/pubs/ddcg.pdf) (PDF)
+* [Destination-driven code generation](/assets/img/ddcg.pdf) (PDF)
   * [My implementation](https://github.com/tekknolagi/ddcg)
   * And [One-pass Code Generation in V8](/assets/img/46b-codegeneration-in-V8.pdf) (PDF)
 * [JavaScript AOT compilation](https://dl.acm.org/doi/10.1145/3276945.3276950)
@@ -362,7 +362,7 @@ write about:
   * [In V8](https://github.com/v8/v8/blob/ad655dc0435b02f40b19dd9b091c2dcbc3aed5f2/src/compiler/types.h)
   * [In Cinder](https://github.com/facebookincubator/cinder/blob/e54717062f1a0ab5698bd1abc484fb449b759499/Jit/hir/type.h)
   * [In iv](https://github.com/Constellation/iv/blob/64c3a9c7c517063f29d90d449180ea8f6f4d946f/iv/lv5/breaker/type.h#L4)
-* [Destination-driven code generation](https://legacy.cs.indiana.edu/~dyb/pubs/ddcg.pdf) (PDF)
+* [Destination-driven code generation](/assets/img/ddcg.pdf) (PDF)
   * [My implementation](https://github.com/tekknolagi/ddcg)
 
 ### Papers I want to read
