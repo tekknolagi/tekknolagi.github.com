@@ -28,7 +28,7 @@ evaluate whatever the user wants, whether that be a REPL or a file reader.
 It seems to me like this would be a good use case for OCaml's built-in `Stream`
 module, and a good time to refactor some of our s-expression reading code.
 
-The [Stream module](https://caml.inria.fr/pub/docs/manual-ocaml/libref/Stream.html)
+The [Stream module](https://ocaml.org/manual/4.14/api/Stream.html)
 has a pretty slick interface:
 
 ```ocaml
