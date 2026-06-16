@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 606,
     "following_count": 288,
-    "statuses_count": 1484,
-    "last_status_at": "2026-06-14",
+    "statuses_count": 1485,
+    "last_status_at": "2026-06-16",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -76046,6 +76046,44 @@
         }
       },
       "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116758128528198760": {
+      "id": "116758128528198760",
+      "created_at": "2026-06-16T05:27:34.547Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116758128528198760",
+      "url": "https://mastodon.social/@tekknolagi/116758128528198760",
+      "replies_count": 0,
+      "reblogs_count": 2,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Back in my day it was an Ocean of Nodes. Now because of global warming it&#39;s a Sea of Nodes</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
       "media_attachments": [],
       "mentions": [],
       "tags": [],
