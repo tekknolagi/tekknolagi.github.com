@@ -211,7 +211,7 @@ are due to having other fields, or alignment, or something.
 * annotating edges (groupoids, lesbre/lemerre paper)
 * persistence (undo)
 * parallelism (win wang)
-* cheap enumeration
+* cheap enumeration: see [commit](https://github.com/tekknolagi/tekknolagi.github.com/commit/403c64a5e935023b6aea480ba58fd9b5f965cb7c)
   * keep a second pointer for each element
   * each element points to the *next* element in the same set
   * when linking two (definitely disjoint) sets together, swap the next
