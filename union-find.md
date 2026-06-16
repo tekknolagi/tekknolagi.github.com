@@ -100,10 +100,6 @@ sequence of m ≥ n find and n – 1 union operations in O(m α(m, n)) time.
 
 -->
 
-### Sentinels and fixpoints
-
-...todo about setting representative to self
-
 ## Path splitting
 
 (from Wikipedia)
