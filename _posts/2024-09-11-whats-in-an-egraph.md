@@ -4,6 +4,8 @@ layout: post
 date: 2024-09-11
 ---
 
+<!-- TODO(max): Write about interning/hash-consing/canonization -->
+
 *This post follows from several conversations with [CF
 Bolz-Tereick](https://cfbolz.de/), [Philip
 Zucker](https://www.philipzucker.com/), [Chris Fallin](https://cfallin.org/),
