@@ -211,10 +211,81 @@ are due to having other fields, or alignment, or something.
 * cheap enumeration: see [commit](https://github.com/tekknolagi/tekknolagi.github.com/commit/403c64a5e935023b6aea480ba58fd9b5f965cb7c)
   * keep a second pointer for each element
   * each element points to the *next* element in the same set
+  * this *next* chain forms a cycle
   * when linking two (definitely disjoint) sets together, swap the next
     pointers
-  * to enumerate, start at the representative and follow the next pointers until you get
-    back to the representative
+  * to enumerate, start at the any set element and follow the next pointers
+    until you get back to the element
+
+<script src="//d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/@hpcc-js/wasm@2.20.0/dist/graphviz.umd.js"></script>
+<script src="https://unpkg.com/d3-graphviz@5.6.0/build/d3-graphviz.js"></script>
+<div id="uf-graph" style="text-align: center;"></div>
+<script>
+var dotIndex = 0;
+var graphviz = d3.select("#uf-graph").graphviz()
+    .transition(function () {
+        return d3.transition("main")
+            .ease(d3.easeLinear)
+            .delay(500)
+            .duration(1500);
+    })
+    .logEvents(true)
+    .on("initEnd", render);
+
+function render() {
+    var dotLines = dots[dotIndex];
+    var dot = dotLines.join('');
+    graphviz
+        .renderDot(dot)
+        .on("end", function () {
+            if (dotIndex < dots.length) {
+                dotIndex++;
+            }
+            render();
+        });
+}
+
+var dots = [
+    [
+        'digraph  {',
+        '    a -> a [label="forwarded"]',
+        '    a -> a [label="next"]',
+        '    b -> b [label="forwarded"]',
+        '    b -> b [label="next"]',
+        '    c -> c [label="forwarded"]',
+        '    c -> c [label="next"]',
+        '}'
+    ],
+    [
+        'digraph  {',
+        '    a -> b [label="forwarded"]',
+        '    a -> b [label="next"]',
+        '    b -> b [label="forwarded"]',
+        '    b -> a [label="next"]',
+        '    c -> c [label="forwarded"]',
+        '    c -> c [label="next"]',
+        '    label="Union a and b";',
+        '    labelloc=top;',
+        '    labeljust=left;',
+        '}'
+    ],
+    [
+        'digraph  {',
+        '    a -> b [label="forwarded"]',
+        '    a -> b [label="next"]',
+        '    b -> c [label="forwarded"]',
+        '    b -> c [label="next"]',
+        '    c -> c [label="forwarded"]',
+        '    c -> a [label="next"]',
+        '    label="Union a and c";',
+        '    labelloc=top;',
+        '    labeljust=left;',
+        '}'
+    ],
+];
+
+</script>
 
 <!--
 https://mastodon.social/@harold@mastodon.gamedev.place/114599334552539997
