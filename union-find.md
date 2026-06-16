@@ -212,6 +212,12 @@ are due to having other fields, or alignment, or something.
 * persistence (undo)
 * parallelism (win wang)
 * cheap enumeration
+  * keep a second pointer for each element
+  * each element points to the *next* element in the same set
+  * when linking two (definitely disjoint) sets together, swap the next
+    pointers
+  * to enumerate, start at the representative and follow the next pointers until you get
+    back to the representative
 
 <!--
 https://mastodon.social/@harold@mastodon.gamedev.place/114599334552539997
