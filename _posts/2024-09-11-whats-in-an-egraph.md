@@ -303,7 +303,7 @@ constructed by the union-find structure. Let's write a function to do that.
 
 To build such a function, we'll need to iterate over all operations created. I
 chose to explicitly keep track of every operation in a list, but you could also
-write a function to walk the `forwarded` chains of all reachable operations.
+use the "cheap enumeration" trick from the [union find page](/union-find/).
 
 ```python
 every_op = []
