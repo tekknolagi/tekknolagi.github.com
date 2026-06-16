@@ -13,6 +13,7 @@ stores equivalence classes quickly and compactly. It has a bunch of uses:
 * [register allocation](/assets/img/linear-scan-ra-context-ssa.pdf) (PDF)
 * pointer analysis (see Steensgaard's algorithm)
 * into-SSA ([Bebenita's algorithm](/assets/img/bebenita-ssa.pdf) (PDF))
+* e-graphs
 * probably more
 
 I think about it mostly in from a compilers perspective because that's all I do
