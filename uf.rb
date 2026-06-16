@@ -1,11 +1,13 @@
 class UnionFind
   def initialize
     @forwarded = {}
+    @next = {}
   end
 
   def makeset(x)
     raise "Already exists" if @forwarded.key?(x)
     @forwarded[x] = x
+    @next[x] = x
   end
 
   def find(x)
@@ -21,7 +23,21 @@ class UnionFind
     y = find(y)
     if x != y
       @forwarded[y] = x
+      x_next = @next[x]
+      @next[x] = y
+      @next[y] = x_next
     end
+  end
+
+  def enumerate(x)
+    raise "Element does not exist" unless @forwarded.key?(x)
+    result = [x]
+    current = x
+    while @next[current] != x
+      current = @next[current]
+      result << current
+    end
+    result
   end
 end
 
@@ -61,5 +77,18 @@ class TestUnionFind < Minitest::Test
     uf = UnionFind.new
     uf.makeset(1)
     assert_raises(RuntimeError) { uf.makeset(1) }
+  end
+
+  def test_enumerate_returns_all_elements_in_set
+    uf = UnionFind.new
+    uf.makeset(1)
+    uf.makeset(2)
+    uf.makeset(3)
+    uf.union(1, 2)
+    assert_equal([1, 2], uf.enumerate(1).sort)
+    assert_equal([1, 2], uf.enumerate(2).sort)
+    assert_equal([3], uf.enumerate(3).sort)
+    uf.union(2, 3)
+    assert_equal([1, 2, 3], uf.enumerate(1).sort)
   end
 end
