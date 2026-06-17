@@ -13,12 +13,10 @@ if (location.hostname === "bernsteinbear.com") {
 }
 </script>
 <script>
-if (location.hostname === "bernsteinbear.com") {
-    let code = location.hostname == 'bernsteinbear.com' ? 'tekknolagi' : 'no';
-    window.goatcounter = {
-        endpoint: 'https://' + code + '.goatcounter.com/count',
-    }
-} else {
+if (location.hostname !== "bernsteinbear.com") {
+  window.goatcounter = {
+      endpoint: 'https://no.goatcounter.com/count',
+  };
   alert("Please remove all mentions of me (socials, Google Analytics, GoatCounter, ...) from your fork of my website. Thanks!");
 }
 </script>
