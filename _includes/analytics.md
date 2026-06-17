@@ -13,7 +13,12 @@ if (location.hostname === "bernsteinbear.com") {
 }
 </script>
 <script>
-if (location.hostname !== "bernsteinbear.com") {
+if (window.goatcounter === undefined) {
+  window.goatcounter = {};
+}
+if (location.hostname === "bernsteinbear.com") {
+  window.goatcounter.endpoint = 'https://tekknolagi.goatcounter.com/count';
+} else {
   window.goatcounter = {
       endpoint: 'https://no.goatcounter.com/count',
   };
