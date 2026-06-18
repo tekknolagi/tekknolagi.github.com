@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 607,
     "following_count": 288,
-    "statuses_count": 1489,
+    "statuses_count": 1490,
     "last_status_at": "2026-06-18",
     "hide_collections": false,
     "show_media": true,
@@ -76245,6 +76245,44 @@
       "quotes_count": 0,
       "edited_at": null,
       "content": "<p>Is formal methods for LLMs &quot;model checking&quot;?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116769289459300011": {
+      "id": "116769289459300011",
+      "created_at": "2026-06-18T04:45:56.841Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116769289459300011",
+      "url": "https://mastodon.social/@tekknolagi/116769289459300011",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 4,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Is PLDI going well? Well, I convinced someone to implement linear scan register allocation in datalog,</p>",
       "reblog": null,
       "application": {
         "name": "Mastodon for Android",
