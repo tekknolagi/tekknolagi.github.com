@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 607,
     "following_count": 288,
-    "statuses_count": 1491,
+    "statuses_count": 1492,
     "last_status_at": "2026-06-18",
     "hide_collections": false,
     "show_media": true,
@@ -76359,6 +76359,131 @@
         "published_at": null,
         "authors": []
       },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116771965876478567": {
+      "id": "116771965876478567",
+      "created_at": "2026-06-18T16:06:35.726Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116771965876478567/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/116771965876478567/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "116771693843705019",
+        "created_at": "2026-06-18T14:57:23.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mathstodon.xyz/users/slava/statuses/116771693755052732",
+        "url": "https://mathstodon.xyz/@slava/116771693755052732",
+        "replies_count": 0,
+        "reblogs_count": 1,
+        "favourites_count": 5,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>Tokenmaxxing is a new technique for writing efficient lexers</p>",
+        "reblog": null,
+        "account": {
+          "id": "113986692103221705",
+          "username": "slava",
+          "acct": "slava@mathstodon.xyz",
+          "display_name": "Slava Pestov",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": false,
+          "group": false,
+          "created_at": "2025-02-11T00:00:00.000Z",
+          "note": "<p>Programming languages, finitely-presented monoids, horses</p>",
+          "url": "https://mathstodon.xyz/@slava",
+          "uri": "https://mathstodon.xyz/users/slava",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/113/986/692/103/221/705/original/167f0d4db49c330d.png",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/113/986/692/103/221/705/original/167f0d4db49c330d.png",
+          "avatar_description": "",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "header_description": "",
+          "followers_count": 665,
+          "following_count": 283,
+          "statuses_count": 1051,
+          "last_status_at": "2026-06-18",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "feature_approval": {
+            "automatic": [],
+            "manual": [],
+            "current_user": "denied"
+          },
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Pronouns",
+              "value": "he/him",
+              "verified_at": null
+            },
+            {
+              "name": "Homepage",
+              "value": "<a href=\"https://factorcode.org/slava\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">factorcode.org/slava</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "Generics",
+              "value": "<a href=\"https://download.swift.org/docs/assets/generics.pdf\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">download.swift.org/docs/assets</span><span class=\"invisible\">/generics.pdf</span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "Monoids",
+              "value": "<a href=\"https://monoids.net\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">monoids.net</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
       "poll": null,
       "quote_approval": {
         "automatic": [
