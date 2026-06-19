@@ -163,9 +163,9 @@ Since we complicated our input data a bit (variables are no longer def-ed in
 blocks but instead def-ed in their own instruction indices), we had to expand
 out liveness. Now we do a lot more in Datalog:
 
-* compute block boundaries
-* compute what instructions are in what block
-* compute the control-flow graph structure
+* compute block boundaries (omitted in this post for length)
+* compute what instructions are in what block (omitted in this post for length)
+* compute the control-flow graph structure (omitted in this post for length)
 * compute live-in and live-out for each instruction (not block!)
 * and finally, compute liveness intervals
 
