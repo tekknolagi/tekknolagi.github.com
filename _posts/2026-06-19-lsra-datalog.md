@@ -96,8 +96,8 @@ def-ed which registers.
 
 #define NUM_REGS 2
 
-// Facts: maintain the property that defs use a unique instruction so that liveness intervals end
-// before the def
+// Facts: maintain the property that defs use a unique instruction so that
+// liveness intervals end before the def
 var_def(0, "R10").
 var_def(1, "R11").
 
