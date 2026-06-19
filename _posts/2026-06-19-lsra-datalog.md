@@ -95,3 +95,5 @@ other instruction only defines one SSA value at an index.
 ## Multisets and stratification
 
 ## Extensions
+
+[Implementation](https://gist.github.com/yanniss/c04e75faf8dc395a5055cdabe7c6e3d4)
