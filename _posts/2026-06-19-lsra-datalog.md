@@ -136,6 +136,8 @@ jump(12, 3).
 ret(16).
 ```
 
+TODO explain `min_instruction`, `max_instruction`
+
 One difference from the original paper and also the blog post, which will be
 explained later, is that we modeled each block parameter as having its own
 instruction index. This difference only appears in phis/block parameters: every
