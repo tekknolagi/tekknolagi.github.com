@@ -223,9 +223,18 @@ variables[^intervals].
     implementation of linear scan, they are the same thing: a variable has only
     one location for its entire lifetime.
 
+## Register assignment
+
 The difficult part of the computation is the linear scan register allocation
 itself. We encode this using a predicate `reg_assignment` which simulates what
-the algorithm does at every step, with a linear scan of instructions. At every
+the algorithm does at every step, with a linear scan of instructions.
+
+```
+// after instruction, this is the register assignment. Var = "none" is a possibility
+.decl reg_assignment(insn:Instruction, reg:Register, var:Var)
+```
+
+At every
 instruction, the algorithm keeps the current contents of registers that we are
 allocating. Registers that are not currently encoding a variable are instead
 holding a pseudo-variable that corresponds to the register's name. E.g., when
@@ -261,20 +270,55 @@ the current best victim variable. When we reach the final variable, we have the
 overall best victim.
 
 Returning to the core algorithm, if the victim variable is the def-ed var
-itself, then all registers get carried over--the def-ed var does not receive a
+itself, then all registers get carried over---the def-ed var does not receive a
 register.
 
 If, however, the best victim is a variable that is currently held in a register
 then that register now gets assigned to the def-ed var, with all other
 registers copied over to the next instruction.
 
-## Spill decisions
 
-## Free sets
 
-## Multisets and stratification
 
-## Extensions
+
+
+
+Forall emulation is an advanced Datalog coding pattern. It arises in all cases
+when a forall cannot be simply emulated as a "not exists", because the
+predicates involved are defined in mutual recursion. From a complexity theory
+standpoint, the forall emulation pattern is essential for Datalog to be able to
+encode all PTIME algorithms. (Although realistic Datalog implementations
+include arithmetic and tuples, and hence are Turing-complete.) Without a
+forall-emulation, which is possible only via an underlying ordering of values,
+Datalog without extra features only expresses a subset of polynomial-time
+algorithms.
+
+
+
+
+
+
+
+
+
+
+The final step of the algorithm just assigns a register to a variable if the
+variable can be held by the register for its entire lifetime. This is the
+simplest implementation of linear scan---one could also extend it to allow
+registers to hold a variable for a part of its lifetime.
+
+Accordingly, there are many improvements to the implementation that one can
+perform, especially for efficiency. Currently iteration is done over all
+instructions, whereas it could instead jump from "interesting" to "interesting"
+instruction, i.e., defs and interval expirations, ignoring instructions that
+only copy over the register assignment. Additionally, the comparison between
+two variables to find the best victim can be done on demand, instead of
+calculating the result for all possible variable pairs up front. This would
+require a request-response programming pattern, where the current rules only
+fire in response to a request, i.e., only for variable pairs that truly need to
+be compared in the course of execution.
+
+## Conclusion
 
 [Implementation](https://gist.github.com/yanniss/c04e75faf8dc395a5055cdabe7c6e3d4)
 
