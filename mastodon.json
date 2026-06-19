@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 609,
     "following_count": 288,
-    "statuses_count": 1495,
+    "statuses_count": 1497,
     "last_status_at": "2026-06-19",
     "hide_collections": false,
     "show_media": true,
@@ -76611,6 +76611,101 @@
       "tagged_collections": [],
       "quote": null,
       "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116777735478477573": {
+      "id": "116777735478477573",
+      "created_at": "2026-06-19T16:33:52.864Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116777735478477573",
+      "url": "https://mastodon.social/@tekknolagi/116777735478477573",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Is a module system &quot;export control&quot;?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116777625899692084": {
+      "id": "116777625899692084",
+      "created_at": "2026-06-19T16:06:00.820Z",
+      "in_reply_to_id": "116134964265007007",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116777625899692084",
+      "url": "https://mastodon.social/@tekknolagi/116777625899692084",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>There was a neat paper about streaming BPE at PLDI!</p><p><a href=\"https://al.radbox.org/doi/10.1145/3779212.3790227\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">al.radbox.org/doi/10.1145/3779</span><span class=\"invisible\">212.3790227</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": {
+        "url": "https://al.radbox.org/doi/10.1145/3779212.3790227",
+        "title": "Static Analysis for Efficient Streaming Tokenization",
+        "description": "Tokenization, also referred to as lexing or scanning, is the computational task of partitioning an input text into a sequence of substrings called tokens. Tokenization is one of the first stages of program compilation, it is used in natural language processing, and it is also useful for processing unstructured text or semi-structured data such as JSON, CSV, and XML. A tokenizer is typically specified as a list of regular expressions, which is called a tokenization grammar. Each regular expression describes a class of tokens (e.g., integer, floating-point number, variable identifier, string literal). The semantics of tokenization employs the longest match policy to disambiguate among the possible choices. This policy says that we should prefer a longer token over a shorter one. It is also known as the maximal munch policy. Tokenization is an important computational task when processing semi-structured data, as it often precedes parsing, querying, or data transformations. Due to the abundance of large-scale semi-structured data, which can be too large to load in memory, it is desirable to perform tokenization in a streaming fashion with a small memory footprint. First, we observe that some tokenization grammars are inherently more difficult to deal with than others, and we provide a static analysis algorithm for recognizing them. We continue to propose the StreamTok algorithm, which relies on this analysis to enable efficient tokenization. StreamTok is asymptotically better than the standard algorithm of flex. Our experimental results show that our implementation of StreamTok outperforms state-of-the-art tools for tokenization.",
+        "language": null,
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": "2026-03-22T00:00:00.000Z",
+        "authors": []
+      },
       "poll": null,
       "quote_approval": {
         "automatic": [
