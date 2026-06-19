@@ -140,7 +140,8 @@ TODO explain `min_instruction`, `max_instruction`
 
 We also model the control-flow in terms of instructions: we have jumps between
 instructions from which we (in Datalog!) recover the basic block boundaries and
-control-flow graph (omitted for brevity).
+control-flow graph (omitted for brevity). This is why we have `jump(2, 3)`,
+etc.
 
 One difference from the original paper and also the blog post, which will be
 explained later, is that we modeled each block parameter as having its own
