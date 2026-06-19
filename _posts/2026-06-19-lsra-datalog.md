@@ -65,6 +65,11 @@ Additionally, we have numbered the instructions in the graph. For each
 instruction that defines a value, we have also given it two separate numbers:
 one number N at which it uses its inputs and one number N+1 at which it defines
 its output.
+
+We do this so that the logic can process one event at a time: the end of a
+liveness interval happens before the need to possibly allocate a register
+because a variable gets assigned. (This is visible in labels 8,9 as well as
+14,15.)
 </figcaption>
 </figure>
 
