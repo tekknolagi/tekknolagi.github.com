@@ -235,6 +235,39 @@ variable to spill, for instance, always prefers a "none" variable over a real
 one, and then between real variables it implements the usual linear scan
 policy: the spilled variable is the one whose liveness interval ends last.
 
+
+
+
+
+
+Comments in the code explain all the cases that the algorithm needs to handle.
+
+* The assignment of values to registers is propagated if there is no liveness
+  interval that ends and no new variable that is def-ed (i.e., assigned).
+* When a liveness interval expires, the register holding the variable (if any)
+  gets reset to a "none" variable.
+* The interesting case is when we encounter a new variable def. We then need to
+  decide which variable to spill, i.e., which register (if any) should best
+  hold the def-ed variable. The policy for deciding on a victim variable is
+  entirely self-contained and modular, captured by predicate
+  `better_victim_var`, which pre-calculates the result of all possible variable
+  comparisons.
+
+However, the interesting part is the forall emulation encoded in the rules for
+predicates `best_victim_up_to_reg` and `all_reg_best_victim`. (The latter is
+trivial to inline, but it's kept for making the concept explicit.) The forall
+emulation iterates over all registers and keeps at every point in the iteration
+the current best victim variable. When we reach the final variable, we have the
+overall best victim.
+
+Returning to the core algorithm, if the victim variable is the def-ed var
+itself, then all registers get carried over--the def-ed var does not receive a
+register.
+
+If, however, the best victim is a variable that is currently held in a register
+then that register now gets assigned to the def-ed var, with all other
+registers copied over to the next instruction.
+
 ## Spill decisions
 
 ## Free sets
