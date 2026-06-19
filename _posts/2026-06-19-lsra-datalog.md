@@ -68,8 +68,12 @@ its output.
 
 We do this so that the logic can process one event at a time: the end of a
 liveness interval happens before the need to possibly allocate a register
-because a variable gets assigned. (This is visible in labels 8,9 as well as
-14,15.)
+because a variable gets assigned. This is visible in labels 8 and 9 as well as
+14 and 15.
+
+We have similarly modified block parameters: we sequentialize assignment by
+picking different instruction indices for each block parameter in a block. This
+is visible in labels 0 and 1.
 </figcaption>
 </figure>
 
