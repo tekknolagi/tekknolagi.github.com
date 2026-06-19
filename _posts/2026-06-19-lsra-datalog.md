@@ -195,6 +195,14 @@ live_out(insn, var) :-
   next_in_block(insn, next).
 ```
 
+This looks similar enough to the liveness implementation that Waleed and I did,
+but (as mentioned) handles instructions, not just blocks.
+
+This only gives us the per-instruction sets, so to get the intervals, we need
+to extract the full extents of the interval for every variable: the earliest
+place it was known live and the latest place it was known live. We can use a
+`max` and `min` here because we compute this *only after* the mutually
+recursive dataflow has settled.
 
 ```
 // Liveness starts right after start, ends right before end
