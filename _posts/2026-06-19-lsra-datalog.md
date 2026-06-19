@@ -81,6 +81,61 @@ This time, however, we encoded the program in terms of instructions instead of
 in terms of blocks: we modeled which instructions used which registers and
 def-ed which registers.
 
+```
+.type Block <: number
+.type Var <: symbol
+.type Instruction <: number
+
+// Input
+.decl var_use(insn:Instruction, var:Var)
+.decl var_def(insn:Instruction, var:Var)
+
+.decl jump(insn:Instruction, next:Instruction)
+.decl jumpi(insn:Instruction, next:Instruction, otherNext:Instruction)
+.decl ret(insn:Instruction)
+
+#define NUM_REGS 2
+
+// Facts: maintain the property that defs use a unique instruction so that liveness intervals end
+// before the def
+var_def(0, "R10").
+var_def(1, "R11").
+
+var_use(2, "R11").
+
+var_def(3, "R12").
+var_def(4, "R13").
+
+var_use(5, "R13").
+
+var_use(8, "R12").
+var_use(8, "R13").
+var_def(9, "R14").
+
+var_use(10, "R13").
+var_def(11, "R15").
+
+var_use(12, "R14").
+var_use(12, "R15").
+
+var_use(14, "R10").
+var_use(14, "R12").
+var_def(15, "R16").
+
+var_use(16, "R16").
+
+.decl min_instruction(insn:Instruction)
+min_instruction(-1).
+
+.decl max_instruction(insn:Instruction)
+max_instruction(16).
+
+jump(2, 3).
+jumpi(6, 7, 13).
+jump(12, 3).
+ret(16).
+```
+
 One difference from the original paper and also the blog post, which will be
 explained later, is that we modeled each block parameter as having its own
 instruction index. This difference only appears in phis/block parameters: every
