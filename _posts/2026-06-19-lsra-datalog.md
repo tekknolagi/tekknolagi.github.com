@@ -231,6 +231,8 @@ variables[^intervals].
 
 ## Register assignment
 
+TODO clean up
+
 The difficult part of the computation is the linear scan register allocation
 itself. We encode this using a predicate `reg_assignment` which simulates what
 the algorithm does at every step, with a linear scan of instructions.
