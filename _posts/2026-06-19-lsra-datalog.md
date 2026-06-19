@@ -112,6 +112,33 @@ out liveness. Now we do a lot more:
 * compute live-in and live-out for each instruction (not block!)
 * and finally, compute liveness intervals
 
+Still, liveness is the most straightforward part of the implementation. There
+are 4 rules defining `live_out` and `live_in` in mutual recursion. These
+correspond to the standard data-flow equations in textbook definitions of
+liveness. (The transfer function is encoded as two rules for explicitness, to
+capture that a variable is live-in if it is used by the instruction, or if it
+was live-out and is not def-ed.)
+
+```
+live_out(insn, var) :-
+  block_succ(prev, succ),
+  block_head(succ, headinsn),
+  live_in(headinsn, var),
+  block_tail(prev, insn).
+
+live_in(insn, var) :-
+  var_use(insn, var).
+
+live_in(insn, var) :-
+  live_out(insn, var),
+  !var_def(insn, var).
+
+live_out(insn, var) :-
+  live_in(next, var),
+  next_in_block(insn, next).
+```
+
+
 ```
 // Liveness starts right after start, ends right before end
 .decl liveness_interval(start:Instruction, end:Instruction, var:Var)
