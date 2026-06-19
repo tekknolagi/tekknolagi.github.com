@@ -19,9 +19,9 @@
     "header": "https://mastodon.social/headers/original/missing.png",
     "header_static": "https://mastodon.social/headers/original/missing.png",
     "header_description": "",
-    "followers_count": 608,
+    "followers_count": 609,
     "following_count": 288,
-    "statuses_count": 1494,
+    "statuses_count": 1495,
     "last_status_at": "2026-06-19",
     "hide_collections": false,
     "show_media": true,
@@ -76555,6 +76555,57 @@
       },
       "media_attachments": [],
       "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116777585140969803": {
+      "id": "116777585140969803",
+      "created_at": "2026-06-19T15:55:38.902Z",
+      "in_reply_to_id": "116652669811148176",
+      "in_reply_to_account_id": "485656",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116777585140969803",
+      "url": "https://mastodon.social/@tekknolagi/116777585140969803",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://ruby.social/@Schneems\" class=\"u-url mention\">@<span>Schneems</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@tenderlove\" class=\"u-url mention\">@<span>tenderlove</span></a></span> unfortunately no joining of blocks and no reoptimization. I don&#39;t think it&#39;s a fundamental limitation but I don&#39;t think it&#39;s been tried</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "485656",
+          "username": "Schneems",
+          "url": "https://ruby.social/@Schneems",
+          "acct": "Schneems@ruby.social"
+        },
+        {
+          "id": "35493",
+          "username": "tenderlove",
+          "url": "https://mastodon.social/@tenderlove",
+          "acct": "tenderlove"
+        }
+      ],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
