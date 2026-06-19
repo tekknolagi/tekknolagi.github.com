@@ -104,7 +104,7 @@ pattern, a forall emulation: iterating declaratively over a pre-determined set
 
 Since we complicated our input data a bit (variables are no longer def-ed in
 blocks but instead def-ed in their own instruction indices), we had to expand
-out liveness. Now we do a lot more:
+out liveness. Now we do a lot more in Datalog:
 
 * compute block boundaries
 * compute what instructions are in what block
@@ -148,6 +148,27 @@ liveness_interval(start, end, var) :-
   start = min b : { live_out(b, var) },
   end = max b : { live_in(b, var) }.
 ```
+
+Once we have intervals, we need to assign physical registers to the
+variables[^intervals].
+
+[^intervals]: In other register allocator implementations and in the
+    literature, we normally speak of assigning physical registers to
+    *intervals*, not to *variables*. However, in this one-interval-per-variable
+    implementation of linear scan, they are the same thing: a variable has only
+    one location for its entire lifetime.
+
+The difficult part of the computation is the linear scan register allocation
+itself. We encode this using a predicate `reg_assignment` which simulates what
+the algorithm does at every step, with a linear scan of instructions. At every
+instruction, the algorithm keeps the current contents of registers that we are
+allocating. Registers that are not currently encoding a variable are instead
+holding a pseudo-variable that corresponds to the register's name. E.g., when
+register 0 is empty, it contains variable `none_0`. This encoding lets us
+phrase every decision as a comparison between variables. The actual choice of
+variable to spill, for instance, always prefers a "none" variable over a real
+one, and then between real variables it implements the usual linear scan
+policy: the spilled variable is the one whose liveness interval ends last.
 
 ## Spill decisions
 
