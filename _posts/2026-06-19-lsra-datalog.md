@@ -86,7 +86,41 @@ explained later, is that we modeled each block parameter as having its own
 instruction index. This difference only appears in phis/block parameters: every
 other instruction only defines one SSA value at an index.
 
+Overall this is an excellent demonstration of programming in Datalog. It shows
+tasks that Datalog handles very elegantly, such as the basic block computation
+and the liveness analysis, which are just a handful of lines.
+
+At the same time, it shows how to do things that are complex to do in Datalog,
+namely the linear scan algorithm. The algorithm is very sequential,
+imperative-style. It has steps such as "remove an interval that expires",
+"update the stack of intervals to evict the one ending last", etc. All of these
+operations have to be simulated declaratively.
+
+The final result contains perhaps the most advanced Datalog programming
+pattern, a forall emulation: iterating declaratively over a pre-determined set
+(in this case, to select the interval corresponding to the variable to spill).
+
 ## Liveness
+
+Since we complicated our input data a bit (variables are no longer def-ed in
+blocks but instead def-ed in their own instruction indices), we had to expand
+out liveness. Now we do a lot more:
+
+* compute block boundaries
+* compute what instructions are in what block
+* compute the control-flow graph structure
+* compute live-in and live-out for each instruction (not block!)
+* and finally, compute liveness intervals
+
+```
+// Liveness starts right after start, ends right before end
+.decl liveness_interval(start:Instruction, end:Instruction, var:Var)
+
+liveness_interval(start, end, var) :-
+  live_out(_, var),
+  start = min b : { live_out(b, var) },
+  end = max b : { live_in(b, var) }.
+```
 
 ## Spill decisions
 
