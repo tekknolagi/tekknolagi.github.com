@@ -138,6 +138,10 @@ ret(16).
 
 TODO explain `min_instruction`, `max_instruction`
 
+We also model the control-flow in terms of instructions: we have jumps between
+instructions from which we (in Datalog!) recover the basic block boundaries and
+control-flow graph (omitted for brevity).
+
 One difference from the original paper and also the blog post, which will be
 explained later, is that we modeled each block parameter as having its own
 instruction index. This difference only appears in phis/block parameters: every
@@ -163,9 +167,9 @@ Since we complicated our input data a bit (variables are no longer def-ed in
 blocks but instead def-ed in their own instruction indices), we had to expand
 out liveness. Now we do a lot more in Datalog:
 
-* compute block boundaries (omitted in this post for length)
-* compute what instructions are in what block (omitted in this post for length)
-* compute the control-flow graph structure (omitted in this post for length)
+* compute block boundaries (omitted for brevity)
+* compute what instructions are in what block (omitted for brevity)
+* compute the control-flow graph structure (omitted for brevity)
 * compute live-in and live-out for each instruction (not block!)
 * and finally, compute liveness intervals
 
