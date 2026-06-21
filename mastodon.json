@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 609,
     "following_count": 288,
-    "statuses_count": 1497,
-    "last_status_at": "2026-06-19",
+    "statuses_count": 1499,
+    "last_status_at": "2026-06-21",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -76706,6 +76706,199 @@
         "published_at": "2026-03-22T00:00:00.000Z",
         "authors": []
       },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116790268951385741": {
+      "id": "116790268951385741",
+      "created_at": "2026-06-21T21:41:18.484Z",
+      "in_reply_to_id": "116715988078173088",
+      "in_reply_to_account_id": "64048",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116790268951385741",
+      "url": "https://mastodon.social/@tekknolagi/116790268951385741",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> oh no</p><p>TIL</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116790268121251031": {
+      "id": "116790268121251031",
+      "created_at": "2026-06-21T21:41:05.826Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116790268121251031/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/116790268121251031/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "116715988078173088",
+        "created_at": "2026-06-08T18:50:42.309Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mastodon.social/users/cfbolz/statuses/116715988078173088",
+        "url": "https://mastodon.social/@cfbolz/116715988078173088",
+        "replies_count": 1,
+        "reblogs_count": 14,
+        "favourites_count": 22,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>got very thoroughly nerd-sniped by <a href=\"https://github.com/adriancable/eternal\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/adriancable/eternal</span><span class=\"invisible\"></span></a> today.<br />I built a jitted rpython version of the VM, it nicely boots linux and runs doom! need to blog about it to get it out of my system</p>",
+        "reblog": null,
+        "application": {
+          "name": "Pinafore",
+          "website": "https://pinafore.social"
+        },
+        "account": {
+          "id": "64048",
+          "username": "cfbolz",
+          "acct": "cfbolz",
+          "display_name": "CF Bolz-Tereick",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2017-04-08T00:00:00.000Z",
+          "note": "<p>PyPy/RPython contributor. Half time teaching at Uni D\u00fcsseldorf. Works on dynamic language implementations. Vegan. Love street art and art in public spaces, hiking, reading.<br />they/them</p>",
+          "url": "https://mastodon.social/@cfbolz",
+          "uri": "https://mastodon.social/users/cfbolz",
+          "avatar": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "avatar_static": "https://files.mastodon.social/accounts/avatars/000/064/048/original/21e3195e88052ffd.jpg",
+          "avatar_description": "",
+          "header": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "header_static": "https://files.mastodon.social/accounts/headers/000/064/048/original/e4b8bab9fb5bd250.jpg",
+          "header_description": "",
+          "followers_count": 1185,
+          "following_count": 1339,
+          "statuses_count": 3215,
+          "last_status_at": "2026-06-20",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "noindex": false,
+          "feature_approval": {
+            "automatic": [
+              "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+          },
+          "emojis": [],
+          "roles": [],
+          "fields": [
+            {
+              "name": "website",
+              "value": "<a href=\"https://www.cfbolz.de\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">cfbolz.de</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2022-12-26T10:32:06.422+00:00"
+            }
+          ]
+        },
+        "media_attachments": [
+          {
+            "id": "116715974748820798",
+            "type": "image",
+            "url": "https://files.mastodon.social/media_attachments/files/116/715/974/748/820/798/original/69a2be2de0af1e09.jpeg",
+            "preview_url": "https://files.mastodon.social/media_attachments/files/116/715/974/748/820/798/small/69a2be2de0af1e09.jpeg",
+            "remote_url": null,
+            "preview_remote_url": null,
+            "text_url": null,
+            "meta": {
+              "original": {
+                "width": 1194,
+                "height": 823,
+                "size": "1194x823",
+                "aspect": 1.4507897934386391
+              },
+              "small": {
+                "width": 578,
+                "height": 398,
+                "size": "578x398",
+                "aspect": 1.4522613065326633
+              },
+              "focus": {
+                "x": 0.0,
+                "y": 0.0
+              }
+            },
+            "description": "screenshot of the rpython version of the eternal vm showing a booted linux, running doom",
+            "blurhash": "UG9G?loeNaog_Nfks:j?~qoMoej?~qoebHa$"
+          }
+        ],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
       "poll": null,
       "quote_approval": {
         "automatic": [
