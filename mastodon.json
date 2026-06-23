@@ -19,10 +19,10 @@
     "header": "https://mastodon.social/headers/original/missing.png",
     "header_static": "https://mastodon.social/headers/original/missing.png",
     "header_description": "",
-    "followers_count": 609,
+    "followers_count": 611,
     "following_count": 288,
-    "statuses_count": 1499,
-    "last_status_at": "2026-06-21",
+    "statuses_count": 1503,
+    "last_status_at": "2026-06-23",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -76894,6 +76894,205 @@
       "application": null,
       "media_attachments": [],
       "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116799172405999367": {
+      "id": "116799172405999367",
+      "created_at": "2026-06-23T11:25:34.431Z",
+      "in_reply_to_id": "116799165875774120",
+      "in_reply_to_account_id": "64048",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116799172405999367",
+      "url": "https://mastodon.social/@tekknolagi/116799172405999367",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> <a href=\"https://github.com/adriancable/eternal/blob/main/vm/vm.c\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">github.com/adriancable/eternal</span><span class=\"invisible\">/blob/main/vm/vm.c</span></a></p><p>Oh that is short</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": {
+        "url": "https://github.com/adriancable/eternal/blob/main/vm/vm.c",
+        "title": "eternal/vm/vm.c at main \u00b7 adriancable/eternal",
+        "description": "Eternal Software Initiative. Contribute to adriancable/eternal development by creating an account on GitHub.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "GitHub",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "Eternal Software Initiative. Contribute to adriancable/eternal development by creating an account on GitHub.",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": null,
+        "authors": []
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116799165875774120": {
+      "id": "116799165875774120",
+      "created_at": "2026-06-23T11:23:54.782Z",
+      "in_reply_to_id": "116799161041294337",
+      "in_reply_to_account_id": "64048",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116799165875774120",
+      "url": "https://mastodon.social/@tekknolagi/116799165875774120",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> huh is that maintained? </p><p>And I wanted to see what the isa looks like implemented</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116799155413205225": {
+      "id": "116799155413205225",
+      "created_at": "2026-06-23T11:21:15.153Z",
+      "in_reply_to_id": "116799131998266542",
+      "in_reply_to_account_id": "64048",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116799155413205225",
+      "url": "https://mastodon.social/@tekknolagi/116799155413205225",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> link to RPython JIT?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116799123536247251": {
+      "id": "116799123536247251",
+      "created_at": "2026-06-23T11:13:08.729Z",
+      "in_reply_to_id": "116797658969344563",
+      "in_reply_to_account_id": "64048",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116799123536247251",
+      "url": "https://mastodon.social/@tekknolagi/116799123536247251",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> OH NO</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        }
+      ],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
