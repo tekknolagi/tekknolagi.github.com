@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 611,
     "following_count": 288,
-    "statuses_count": 1503,
-    "last_status_at": "2026-06-23",
+    "statuses_count": 1504,
+    "last_status_at": "2026-06-27",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -77093,6 +77093,133 @@
           "acct": "cfbolz"
         }
       ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "116823082125570003": {
+      "id": "116823082125570003",
+      "created_at": "2026-06-27T16:46:07.789Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/116823082125570003/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/116823082125570003/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "116813870332134147",
+        "created_at": "2026-06-26T01:43:09.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://matthewbogart.com/users/matt/statuses/116813869191750371",
+        "url": "https://matthewbogart.com/@matt/116813869191750371",
+        "replies_count": 3,
+        "reblogs_count": 19,
+        "favourites_count": 60,
+        "quotes_count": 1,
+        "edited_at": null,
+        "content": "<p>I sure love having a web site.</p><p>A little spot on the web that I've been tending and poking at for over 15 years now. This internet can be fucked up place, but my website is just mine and has nothing on it that I didn't put there. It's home. </p><p>A freaking home page. </p><p>Hell yeah.</p>",
+        "reblog": null,
+        "account": {
+          "id": "109990648081585045",
+          "username": "matt",
+          "acct": "matt@matthewbogart.com",
+          "display_name": "Matthew Bogart",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": true,
+          "group": false,
+          "created_at": "2023-03-09T00:00:00.000Z",
+          "note": "<p>Cartoonist behind INCREDIBLE DOOM, a graphic novel series about 90s teens getting their lives turned upside down by the early internet. Vol. 1 &amp; 2 out now from Harper Alley\u2029.(He/him) <a href=\"https://matthewbogart.com/tags/comics\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>comics</span></a></p>",
+          "url": "https://matthewbogart.com/@matt",
+          "uri": "https://matthewbogart.com/users/matt",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/109/990/648/081/585/045/original/a4d1805e906485e3.jpg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/109/990/648/081/585/045/original/a4d1805e906485e3.jpg",
+          "avatar_description": "",
+          "header": "https://files.mastodon.social/cache/accounts/headers/109/990/648/081/585/045/original/a19cebbd6d65e86c.png",
+          "header_static": "https://files.mastodon.social/cache/accounts/headers/109/990/648/081/585/045/original/a19cebbd6d65e86c.png",
+          "header_description": "",
+          "followers_count": 1022,
+          "following_count": 554,
+          "statuses_count": 1760,
+          "last_status_at": "2026-06-27",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "feature_approval": {
+            "automatic": [
+              "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+          },
+          "emojis": [],
+          "fields": [
+            {
+              "name": "\ud83d\udcac Comic",
+              "value": "<a href=\"https://www.incredibledoom.com/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">incredibledoom.com/</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2026-06-27T03:10:30.722+00:00"
+            },
+            {
+              "name": "\ud83e\uddd1\ud83c\udffb\u200d\ud83d\udcbb Blog",
+              "value": "<a href=\"https://www.matthewbogart.net\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">matthewbogart.net</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2026-06-27T03:10:30.765+00:00"
+            },
+            {
+              "name": "\ud83e\udd1dPatreon",
+              "value": "<a href=\"https://www.patreon.com/matthewbogart\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"\">patreon.com/matthewbogart</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "\ud83d\udce7 Newsletter",
+              "value": "<a href=\"https://www.matthewbogart.net/signup/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://www.</span><span class=\"\">matthewbogart.net/signup/</span><span class=\"invisible\"></span></a>",
+              "verified_at": "2026-06-27T03:10:30.851+00:00"
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
