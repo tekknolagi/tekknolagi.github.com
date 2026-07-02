@@ -121,7 +121,7 @@ and went off to eat dinner. They had good lentils.
 
 ## Friday
 
-I ran into Thalia and John Regehr and we talked about (really, they talked
+I ran into Thalia Archibald and John Regehr and we talked about (really, they talked
 about and I tried to learn something) what it might mean to either port Alive2
 to another compiler than LLVM, or build "Alive3", or "Mini-Alive" for some
 other IR. John suggested fuzzing the hell out of the thing first, then doing
