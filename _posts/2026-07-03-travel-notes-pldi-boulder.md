@@ -13,6 +13,9 @@ Jacob PLDI and see them enjoy it. I missed hanging out with CF Bolz-Tereick and
 Chris Fallin, the usual suspects at conferences I attend. I'm looking forward
 to next year.
 
+This post is more about the conference than the town of Boulder (unlike the
+last PLDI post about Seoul) because I didn't do much Boulder exploring.
+
 ## Sunday
 
 I got in late on Sunday. Jacob offered to have a late dinner with me so we
