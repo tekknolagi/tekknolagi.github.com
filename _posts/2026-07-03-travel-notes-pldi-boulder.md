@@ -18,8 +18,12 @@ last PLDI post about Seoul) because I didn't do much Boulder exploring.
 
 ## Sunday
 
-I got in late on Sunday. Jacob offered to have a late dinner with me so we
-had a tasty meal at Gaia Masala and Burger. Shout out to Harry, our server.
+I got in late on Sunday. Then I had to take a long car ride from Denver airport
+to Boulder. I don't think I had ever flown into Denver with intent to go to
+Boulder before so it was a bit of a surprise.
+
+Jacob offered to have a late dinner with me so we had a tasty meal at Gaia
+Masala and Burger. Shout out to Harry, our server.
 
 ## Monday
 
