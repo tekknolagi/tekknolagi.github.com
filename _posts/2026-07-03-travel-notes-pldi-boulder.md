@@ -129,11 +129,15 @@ something more formal later... especially if it's a dynamic language IR where a
 lot of the opcodes end up being "function call that can do anything".
 
 I had a nice chat with Steven Holtzen and Zach Tatlock about research and grad
-student life. I got some good advice.
+student life. I got some good advice. I meant to talk to Zach about this thing
+we keep occasionally chatting about that I call "the big e-graph in the sky". I
+talked a bit about it to Max Willsey and he had some good probing questions
+about what would be slow, challenging, or somehow undefined given my problem
+statement.
 
-I continued struggling to implement Knuth-Bendix and I think eventually got
-*something* working. I had a really nasty bug due to string slicing semantics
-in Ruby.
+I continued struggling to implement Knuth-Bendix with significant assistance
+from Slava and I think eventually got *something* working. I had a really nasty
+bug due to string slicing semantics in Ruby.
 
 Aaron went off to learn about deep immutability in Python and then got to
 chatting with the authors of the paper. We got to compare notes about language
