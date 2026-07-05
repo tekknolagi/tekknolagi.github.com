@@ -150,10 +150,11 @@ bug due to string slicing semantics[^slicing] in Ruby.
     fit the thing I was trying to do: if we have two strings `a` and `b`, we
     want to find the index at which they start to overlap, `overlap`. Then we
     want to grab the bit of `a` that is to the left of `overlap`. I had
-    initially written that as `a[..overlap-1]`. However, if `a` and `b` overlap
-    at the start of `a`, `overlap` is 0. This generates the range `..-1`, which
-    means we'll slice until the end of `a`. Not what we want. Instead, the fix
-    in [the
+    initially written that as `a[..overlap-1]`.
+
+    However, if `a` and `b` overlap at the start of `a`, `overlap` is 0. This
+    generates the range `..-1`, which means we'll slice until the end of `a`.
+    Not what we want. Instead, the fix in [the
     commit](https://github.com/tekknolagi/knuth-bendix/commit/e46b0069767de44622dc116b0b7b51a4392c400d)
     shows how I had to add a special slice function called `string_upto` that
     handles the 0 case.
