@@ -4,8 +4,12 @@ layout: post
 ---
 
 I had another excellent [PLDI](https://www.sigplan.org/Conferences/PLDI/) this
-past June. It was my fourth. I continued to meet new people and learn new
-things!
+past June. It was my fourth[^fifth]. I continued to meet new people and learn
+new things!
+
+[^fifth]: Actually, it might be my fifth. I just remembered that I attended
+    PLMW in 2020 and also watched a few online talks at wild hours from my
+    living room.
 
 Overall: I got to meet a lot of new people, which was exciting. I had some good
 chats about research. I asked a question at a talk! I got to show Aaron and
