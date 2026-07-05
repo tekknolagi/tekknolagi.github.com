@@ -234,10 +234,13 @@ type information polluting the IR builder (or whatever reads the profiles).
 
 ### Bytecode inlining
 
-JavaScriptCore handles this by inlining bytecode into other bytecode. This is a
+~~JavaScriptCore handles this by inlining bytecode into other bytecode. This is a
 gnarly transformation but gives the interpreter, even (!) access to call
 context. On tier-up to the compiler, all the inlining decisions have been made
-already.
+already.~~
+
+EDIT: Upon reflection, I think think this is wrong and based on a misremembered
+conversation.
 
 ### Early tier with counters
 
