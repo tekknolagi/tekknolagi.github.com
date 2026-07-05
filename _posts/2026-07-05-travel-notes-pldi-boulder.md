@@ -158,6 +158,13 @@ bug due to string slicing semantics[^slicing] in Ruby.
 
     However, if `a` and `b` overlap at the start of `a`, `overlap` is 0. This
     generates the range `..-1`, which means we'll slice until the end of `a`.
+
+    ```
+    irb(main):001> "abc"[..-1]
+    => "abc"
+    irb(main):002>
+    ```
+
     Not what we want. Instead, the fix in [the
     commit](https://github.com/tekknolagi/knuth-bendix/commit/e46b0069767de44622dc116b0b7b51a4392c400d)
     shows how I had to add a special slice function called `string_upto` that
