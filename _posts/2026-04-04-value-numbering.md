@@ -427,8 +427,8 @@ This does still work with loops, but with some caveats. From p7 of [Briggs GVN](
 > analyze the φ-function, and it must assign a unique, new value number to the
 > result.
 
-So: we can treat phis as opaque and it works as-is. Otherwise we have to do a
-little more work.
+So: we can treat phis as opaque (not numberable) and it works as-is. Otherwise
+we have to do a little more work.
 
 It also talks about eliminating useless phis, which is optional, but would
 the strengthen global value numbering pass: it makes more information
