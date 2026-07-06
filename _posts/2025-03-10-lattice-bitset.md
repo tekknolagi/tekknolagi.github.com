@@ -425,6 +425,12 @@ a specialization. Its job is to keep track of what specific object an SSA value
 is. For example, if we know that `a = 5`, its type would be `Int` and its
 specialization would be `5`.
 
+> **UPDATE:** I have since learned that the broader term for this strategy of
+> joining two lattices A and B (in this case, A=class lattice and B=constant
+> lattice) is called a *product* and can has some interesting other
+> instantiations. For example, integer ranges and known bits [can help refine
+> one another](https://pypy.org/posts/2024/08/toy-knownbits.html).
+
 The specialization lattice is much simpler:
 
 ```c
