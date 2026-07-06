@@ -341,12 +341,12 @@ other technical post I write) for helping me with this. Here's what I did:
 This patch changes `zenity` so that if it notices the message contains the text
 "max" or "Max", it quietly does nothing.
 
-UPDATE: So far (end of March 2018), Chris has not noticed that I have modified
+Update: So far (end of March 2018), Chris has not noticed that I have modified
 the binary. Logan has also therefore not noticed any messages that include my
 name.  There is as of yet no end in sight to the prank, unless I decide to tell
 him when we graduate.
 
-UPDATE: We graduated and all parted ways. Though Logan and I will be living
+Update: We graduated and all parted ways. Though Logan and I will be living
 together again next year, we will likely not be in the house enough to carry on
 this prank. I decided to publish this post before attempting further
 shenanigans.

@@ -1499,7 +1499,7 @@ add features such as lifetime holes, interval splitting, and register hints.
 The full Ruby code listing is ~~not (yet?) public~~ [available under the Apache
 2 license](https://github.com/tenderworks/regalloc).
 
-UPDATE: See the post on [lifetime holes](/blog/linear-scan-lifetime-holes/).
+Update: See the post on [lifetime holes](/blog/linear-scan-lifetime-holes/).
 
 ## Thanks
 
