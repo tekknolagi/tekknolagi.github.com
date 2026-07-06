@@ -649,3 +649,5 @@ Aegraphs and union-find during GVN <https://cfallin.org/blog/2026/04/09/aegraph/
 <https://github.com/bytecodealliance/wasmtime/issues/4371>
 
 ### Partial redundancy elimination
+
+<https://cs.wheaton.edu/~tvandrun/writings/cc04.pdf>
