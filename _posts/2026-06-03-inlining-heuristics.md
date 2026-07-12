@@ -277,12 +277,40 @@ Zucker](https://www.philipzucker.com/).
 
 We'll start with [Cinder][cinder], because when I wrote Cinder's inliner I
 added only the simplest heuristics, mostly "don't inline" signals. Over time,
-after I left, people tuned it a bit more.
+after I left, people tuned more.
 
 [cinder]: https://github.com/facebookincubator/cinderx
 
+### Cinder: new
 
-### Cinder
+*Update:* Shortly after writing this post, and completely unrelated to my
+writing this post, Alex Malyshev reworked the inlining heuristincs in Cinder. I
+left the old section below as **Cinder: old** and this section covers the newer
+design as of July 2026.
+
+The two PRs: [the
+first](https://github.com/facebookincubator/cinderx/commit/069ed87f0771a2dac751afdae8993685792a3e5a)
+and [the
+second](https://github.com/facebookincubator/cinderx/commit/5c918e9d58b6350f6da2095324099a3293220079).
+
+The first PR ranks potential callees to inline by call count and avoids
+inlining callees that have 5% or less of the call count of the caller
+(`inliner_cold_call_threshold`). It also orders the callees by perceived
+importance using this metric: hotter callees get inlined first.
+
+The second PR starts inlining transitively. That is, if we inline function B
+into function A, the calls in function B themselves become considered inlining
+candidates. Furthermore, it begins ranking call-sites by cost (measured by
+bytecode count) and using a worklist to drive the inlining decision making. It
+prohibits recursive inlines, preventing an inline if the code is already found
+in the compile-time inline stack. Last, it adds a depth limit for the recursion
+(`inliner_depth_limit`).
+
+The old explicit sorting goes away; the new implementation uses
+`std::priority_queue` to order by cost and tie-break by the order in which a
+call was discovered.
+
+### Cinder: old
 
 The [inliner][cinder-inliner] starts from the caller CFG, walking it to find
 suitable inlining candidates. Inlining candidates are only for call targets
