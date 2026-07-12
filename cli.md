@@ -150,3 +150,7 @@ Evan Hahn wrote a [NATO alphabet script][nato], which I think will be useful
 every time I am on a phone call with customer support.
 
 [nato]: https://codeberg.org/EvanHahn/dotfiles/src/commit/843b9ee13d949d346a4a73ccee2a99351aed285b/home/bin/bin/nato
+
+## Other
+
+* [Assorted less(1) tips](https://blog.thechases.com/posts/assorted-less-tips/)
