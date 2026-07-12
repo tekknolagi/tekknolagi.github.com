@@ -308,8 +308,7 @@ in the compile-time inline stack. Last, it adds a depth limit for the recursion
 
 The old explicit sorting goes away; the new implementation uses
 `std::priority_queue` to order by cost and tie-break by the order in which a
-call was discovered. At some pre-configured cost limit, the caller stops the
-inlining process.
+call was discovered.
 
 ### Cinder: old
 
