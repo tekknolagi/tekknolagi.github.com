@@ -512,10 +512,16 @@ iterating over all blocks is fine for now.
 
 The Wimmer2010 paper skips this liveness analysis entirely by assuming some
 computed information about your CFG: where loops start and end. It also
-requires all loop blocks be contiguous. Then it makes variables defined before
+requires all loop blocks be contiguous[^special-rpo]. Then it makes variables defined before
 a loop and used at any point inside the loop live *for the whole loop*. By
 having this information available, it folds the liveness analysis into the live
 range building, which we'll instead do separately in a moment.
+
+[^special-rpo]: In a later conversation with Ben Titzer, he told me that V8
+    does this and calls it "Special RPO". I found some of the [relevant
+    code](https://github.com/v8/v8/blob/81b069e2bf3a9d1851391d73af6311c95e98cbed/src/compiler/scheduler.cc#L669).
+    I also found it in [a second
+    place](https://github.com/v8/v8/blob/81b069e2bf3a9d1851391d73af6311c95e98cbed/src/compiler/turboshaft/instruction-selection-phase.cc#L53) in Turboshaft.
 
 The Wimmer approach sounded complicated and finicky. Maybe it is, maybe it
 isn't. So I went with a dataflow liveness analysis instead. If it turns out to
