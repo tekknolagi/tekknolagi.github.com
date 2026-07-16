@@ -523,6 +523,8 @@ range building, which we'll instead do separately in a moment.
     I also found it in [a second
     place](https://github.com/v8/v8/blob/81b069e2bf3a9d1851391d73af6311c95e98cbed/src/compiler/turboshaft/instruction-selection-phase.cc#L53) in Turboshaft.
 
+    This is [maybe where it happens in HotSpot C1](https://github.com/openjdk/jdk/blob/80476532c0c5d4339128bd45dd85dc5cc70a6fe6/src/hotspot/share/c1/c1_IR.cpp#L453).
+
 The Wimmer approach sounded complicated and finicky. Maybe it is, maybe it
 isn't. So I went with a dataflow liveness analysis instead. If it turns out to
 be the slow part, maybe it will matter enough to learn about this loop tagging
