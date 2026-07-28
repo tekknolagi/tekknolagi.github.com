@@ -1,7 +1,7 @@
 ---
 title: The inliner is yielding benefits for ZJIT
 layout: post
-canonical_url: "https://railsatscale.com/2026-07-10-the-inliner-is-yielding-benefits/"
+canonical_url: "https://railsatscale.com/2026-07-28-the-inliner-is-yielding-benefits/"
 ---
 
 *Originally published on [Rails At Scale]({{ page.canonical_url }}).*
