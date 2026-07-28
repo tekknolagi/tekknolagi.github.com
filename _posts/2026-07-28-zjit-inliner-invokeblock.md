@@ -468,16 +468,20 @@ end
 Because we had previously optimized the body away, the result of the direct
 block invocation is a massive speedup:
 
-![The yellow line represents ZJIT speedup over the interpreter. Higher is
-better. 35x!](/assets/img/inliner_invokeblock_cfunc_itself_benchmark.png)
+<figure style="margin: 0 auto; max-width: 80%;">
+  <img src="/assets/img/inliner_invokeblock_cfunc_itself_benchmark.png" />
+  <figcaption>The yellow line represents ZJIT speedup over the interpreter. Higher is better. 35x!</figcaption>
+</figure>
 
 Other benchmarks also kind of stop making sense because of the amount of
 inlining. Our bmethod benchmark, which benchmarked how fast we can call methods
 defined with `define_method`, also stopped measuring anything of use. We're
 going to have to rework the benchmark to be more fair...
 
-![The yellow line represents ZJIT speedup over the interpreter. Higher is
-better. 139x!](/assets/img/inliner_invokeblock_send_bmethod_benchmark.png)
+<figure style="margin: 0 auto; max-width: 80%;">
+  <img src="/assets/img/inliner_invokeblock_send_bmethod_benchmark.png" />
+  <figcaption>The yellow line represents ZJIT speedup over the interpreter. Higher is better. 139x!</figcaption>
+</figure>
 
 As expected, larger Rails benchmarks don't see a ton of change; they exercise a
 diffuse set of features so optimizing any one feature bumps the big benchmarks
