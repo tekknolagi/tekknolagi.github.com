@@ -40,6 +40,11 @@ gotten used to using at work.
 	 smartlog = log --graph --pretty=format:'commit: %C(bold red)%h%Creset %C(red)[%H]%Creset %C(bold magenta)%d %Creset%ndate: %C(bold yellow)%cd %Creset%C(yellow)%cr%Creset%nauthor: %C(bold blue)%an%Creset %C(blue)[%ae]%Creset%n%C(cyan)%s%n%Creset'
 ```
 
+```
+# Show `dev` branch contents
+git diff $(git merge-base --fork-point master dev)..dev
+```
+
 ## Patterns
 
 I like to write descriptive commit summaries, especially explaining motivation
