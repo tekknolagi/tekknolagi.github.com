@@ -645,6 +645,10 @@ is equivalent (except that the RPO does a lot more allocating). This is because
 the shared property is that if block A dominates block B, A will be visited
 before B.
 
+<!--
+https://gist.github.com/glaebhoerl/d62d2b19365ae0d7c29102d0a5a6ab03
+-->
+
 ## Wrapping up; bits and bobbles
 
 Go forth and give your values more numbers.
