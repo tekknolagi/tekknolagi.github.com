@@ -629,6 +629,22 @@ about speeding up GVN.
 * [HHVM](https://github.com/facebook/hhvm/blob/1a885fae7421c759d70a8ed85aab1defcf5cc68f/hphp/runtime/vm/jit/gvn.cpp)
 * [HotSpot C1](https://github.com/openjdk/jdk/blob/f21e47db805b56d5bf183d7a2cfba076f380612a/src/hotspot/share/c1/c1_ValueMap.cpp#L517)
 
+Instead of iterating over the reverse post-order of the blocks in the CFG, some
+implementations build a top-down dominator tree (nodes pointing to blocks
+dominated by that node) and then walk that tree depth-first. This lets them
+[push and pop][push-and-pop] from a [scoped hash table][scoped], or use
+generations, or something else smart like a fast [pre-order/post-order
+dominance check][dominance-check].
+
+[push-and-pop]: https://github.com/bytecodealliance/waffle/blob/c0ce14354e1b86f53fcca4d90e3c80507f23df7f/src/passes/dom_pass.rs
+[scoped]: https://github.com/bytecodealliance/wasmtime/blob/d5657d4038b4aedda619ca8d9bd21c84ea2e2878/cranelift/codegen/src/scoped_hash_map.rs
+[dominance-check]: https://gist.github.com/Amanieu/c7d43dfdeebc094494cfdfcf55bc9c7a
+
+This iteration order is a different iteration order but the resulting algorithm
+is equivalent (except that the RPO does a lot more allocating). This is because
+the shared property is that if block A dominates block B, A will be visited
+before B.
+
 ## Wrapping up; bits and bobbles
 
 Go forth and give your values more numbers.
