@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 615,
     "following_count": 288,
-    "statuses_count": 1511,
-    "last_status_at": "2026-07-30",
+    "statuses_count": 1512,
+    "last_status_at": "2026-07-31",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -77809,6 +77809,44 @@
       "quotes_count": 0,
       "edited_at": null,
       "content": "<p>All that effort to implement sparse conditional constant propagation only to find out that fixpoint looping over RPO is faster</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117015828325395502": {
+      "id": "117015828325395502",
+      "created_at": "2026-07-31T17:44:01.392Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117015828325395502",
+      "url": "https://mastodon.social/@tekknolagi/117015828325395502",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Have you all ever had a Google workspace Group ever silently drop emails to its members?</p><p>I just discovered that we&#39;re missing emails left and right. They appear in the log on the admin console but not in our inboxes or spam.</p>",
       "reblog": null,
       "application": {
         "name": "Mastodon for Android",
