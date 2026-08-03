@@ -594,7 +594,7 @@ I think this mostly replaces the hashing bit, and you still need some other
 thing for the available expressions bit.
 
 Ben Titzer and Seth Goldstein have some good [slides from
-CMU](https://www.cs.cmu.edu/~411/slides/s25-24-gvn-inlining.pdf). Where they
+CMU](https://www.cs.cmu.edu/~411/slides/s25-24-gvn-inlining.pdf) where they
 talk about the worklist dataflow approach. Apparently this is slower but gets
 you more available expressions than just looking to dominator blocks. I wonder
 how much it differs from dominator+unified hash table.
