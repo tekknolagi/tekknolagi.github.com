@@ -4,7 +4,7 @@
 <div id="output">
     <button id="round">Run Round</button>
     <div id="graph"></div>
-    <ol></ol>
+    <ol reversed></ol>
 </div>
 
 <script type="module">
@@ -101,6 +101,12 @@ async function round(edges) {
         node.querySelector('text').style.fill = color ? 'white' : 'black';
     }
 
+    function logRound(msg) {
+        const item = document.createElement('li');
+        item.textContent = msg;
+        outputList.prepend(item);
+    }
+
     function clearColors() {
         for (const node of nodes) {
             paint(`node${node}`, null);
@@ -117,11 +123,11 @@ async function round(edges) {
             }
             const probability = 1 - Math.pow(1 - 1 / edges.length, i + 1);
             const msg = `Success. Confident ${(probability * 100).toFixed(2)}%`;
-            outputList.appendChild(document.createElement('li')).textContent = msg;
+            logRound(msg);
             console.log(`Round ${i + 1}:`, msg);
         } catch (error) {
             const msg = `Failure - ${error.message}`;
-            outputList.appendChild(document.createElement('li')).textContent = msg;
+            logRound(msg);
             console.error(`Round ${i + 1}:`, msg);
             throw error;
         }
