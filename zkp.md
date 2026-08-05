@@ -1,0 +1,90 @@
+---
+---
+
+<div id="output"><ol></ol></div>
+
+<script>
+const BASE_URL = 'http://localhost:8000';
+
+async function requestGraph() {
+    const responseText = await fetch(`${BASE_URL}/graph`);
+    return responseText.json();
+}
+
+var sha256;
+if (typeof window === 'undefined') {
+    const { createHash } = require('node:crypto');
+    sha256 = async function(content) {
+        return createHash('sha256').update(content).digest('hex');
+    }
+} else {
+    sha256 = async function(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+}
+
+async function requestBoxedEdges() {
+    const responseText = await fetch(`${BASE_URL}/boxes`);
+    return responseText.json();
+}
+
+async function requestUnboxedEdge(roundId, edgeIndex) {
+    const responseText = await fetch(`${BASE_URL}/edge?round_id=${roundId}&edge_index=${edgeIndex}`);
+    const response = await responseText.json();
+    if (typeof response !== 'object' || Array.isArray(response)) {
+        throw new Error('Invalid response format');
+    }
+    return response;
+}
+
+async function round(edges) {
+    const boxedEdges = await requestBoxedEdges();
+    const hashes = boxedEdges.boxes;
+    const roundId = boxedEdges.round_id;
+
+    const randomIndex = Math.floor(Math.random() * edges.length);
+    const response = await requestUnboxedEdge(roundId, randomIndex);
+    const openedBoxes = response.openings;
+    const edge = edges[randomIndex];
+    const edge0 = `${edge[0]}`;
+    const edge1 = `${edge[1]}`;
+    if (!openedBoxes.hasOwnProperty(edge0) || !openedBoxes.hasOwnProperty(edge1)) {
+        throw new Error('Response does not contain expected edge keys');
+    }
+    const {color: color0, nonce: nonce0} = openedBoxes[edge0];
+    const {color: color1, nonce: nonce1} = openedBoxes[edge1];
+    const hash0 = await sha256(`${color0}-${nonce0}`);
+    const hash1 = await sha256(`${color1}-${nonce1}`);
+    if (hash0 !== hashes[edge0] || hash1 !== hashes[edge1]) {
+        throw new Error('Hash mismatch for edge colors');
+    }
+    if (color0 === color1) {
+        throw new Error('Adjacent vertices have the same color');
+    }
+    return true;
+}
+
+(async function() {
+    const numRounds = 40;
+    const graph = await requestGraph();
+    const edges = graph.edges;
+    const outputList = document.querySelector('#output ol');
+    for (let i = 0; i < numRounds; i++) {
+        try {
+            await round(edges);
+            const probability = 1 - Math.pow(1 - 1 / edges.length, i + 1);
+            const msg = `Success. Confident ${(probability * 100).toFixed(2)}%`;
+            outputList.appendChild(document.createElement('li')).textContent = msg;
+            console.log(`Round ${i + 1}:`, msg);
+        } catch (error) {
+            const msg = `Failure - ${error.message}`;
+            outputList.appendChild(document.createElement('li')).textContent = msg;
+            console.error(`Round ${i + 1}:`, msg);
+            throw error;
+        }
+    }
+})();
+</script>
