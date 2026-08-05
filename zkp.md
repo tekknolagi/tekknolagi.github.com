@@ -95,9 +95,15 @@ async function round(edges) {
     const outputList = document.querySelector('#output ol');
     const roundButton = document.querySelector('#round');
 
+    function paint(nodeId, color) {
+        const node = document.querySelector(`#${nodeId}`);
+        node.querySelector('ellipse').style.fill = color ?? 'none';
+        node.querySelector('text').style.fill = color ? 'white' : 'black';
+    }
+
     function clearColors() {
         for (const node of nodes) {
-            document.querySelector(`#node${node} ellipse`).style.fill = 'none';
+            paint(`node${node}`, null);
         }
     }
 
@@ -107,7 +113,7 @@ async function round(edges) {
         try {
             const edgeColors = await round(edges);
             for (const [node, color] of Object.entries(edgeColors)) {
-                document.querySelector(`#${node} ellipse`).style.fill = color;
+                paint(node, color);
             }
             const probability = 1 - Math.pow(1 - 1 / edges.length, i + 1);
             const msg = `Success. Confident ${(probability * 100).toFixed(2)}%`;
