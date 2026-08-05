@@ -82,16 +82,32 @@ async function round(edges) {
     const outputGraph = document.querySelector('#graph');
     const graph = await requestGraph();
     const edges = graph.edges;
-    const dotString = `graph { ${edges.map(edge => `${edge[0]} -- ${edge[1]}`).join('; ')} }`;
+    // Graphviz numbers nodes node1, node2, ... in layout order, so give each
+    // one an explicit id matching its vertex name.
+    const nodes = [...new Set(edges.flat())];
+    const dotString = `graph {
+        ${nodes.map(node => `${node} [id="node${node}"]`).join('; ')};
+        ${edges.map(edge => `${edge[0]} -- ${edge[1]}`).join('; ')}
+    }`;
     const svgElement = viz.renderSVGElement(dotString);
     outputGraph.appendChild(svgElement);
 
     const outputList = document.querySelector('#output ol');
     const roundButton = document.querySelector('#round');
     let i = 0;
+    function clearColors() {
+        for (const node of nodes) {
+            document.querySelector(`#node${node} ellipse`).style.fill = 'none';
+        }
+    }
+
     roundButton.addEventListener('click', async () => {
+        clearColors();
         try {
-            await round(edges);
+            const edgeColors = await round(edges);
+            for (const [node, color] of Object.entries(edgeColors)) {
+                document.querySelector(`#${node} ellipse`).style.fill = color;
+            }
             const probability = 1 - Math.pow(1 - 1 / edges.length, i + 1);
             const msg = `Success. Confident ${(probability * 100).toFixed(2)}%`;
             outputList.appendChild(document.createElement('li')).textContent = msg;
