@@ -94,13 +94,14 @@ async function round(edges) {
 
     const outputList = document.querySelector('#output ol');
     const roundButton = document.querySelector('#round');
-    let i = 0;
+
     function clearColors() {
         for (const node of nodes) {
             document.querySelector(`#node${node} ellipse`).style.fill = 'none';
         }
     }
 
+    let i = 0;
     roundButton.addEventListener('click', async () => {
         clearColors();
         try {
