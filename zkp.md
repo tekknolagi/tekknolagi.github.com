@@ -1,9 +1,15 @@
 ---
 ---
 
-<div id="output"><ol></ol></div>
+<div id="output">
+    <button id="round">Run Round</button>
+    <div id="graph"></div>
+    <ol></ol>
+</div>
 
-<script>
+<script type="module">
+import * as Viz from "https://unpkg.com/@viz-js/viz";
+
 const BASE_URL = 'http://localhost:8000';
 
 async function requestGraph() {
@@ -64,15 +70,26 @@ async function round(edges) {
     if (color0 === color1) {
         throw new Error('Adjacent vertices have the same color');
     }
-    return true;
+    const result = {};
+    result[`node${edge0}`] = color0;
+    result[`node${edge1}`] = color1;
+    console.log(result);
+    return result;
 }
 
 (async function() {
-    const numRounds = 40;
+    const viz = await Viz.instance();
+    const outputGraph = document.querySelector('#graph');
     const graph = await requestGraph();
     const edges = graph.edges;
+    const dotString = `graph { ${edges.map(edge => `${edge[0]} -- ${edge[1]}`).join('; ')} }`;
+    const svgElement = viz.renderSVGElement(dotString);
+    outputGraph.appendChild(svgElement);
+
     const outputList = document.querySelector('#output ol');
-    for (let i = 0; i < numRounds; i++) {
+    const roundButton = document.querySelector('#round');
+    let i = 0;
+    roundButton.addEventListener('click', async () => {
         try {
             await round(edges);
             const probability = 1 - Math.pow(1 - 1 / edges.length, i + 1);
@@ -85,6 +102,7 @@ async function round(edges) {
             console.error(`Round ${i + 1}:`, msg);
             throw error;
         }
-    }
+        i += 1;
+    });
 })();
 </script>
