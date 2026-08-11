@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 616,
     "following_count": 288,
-    "statuses_count": 1521,
-    "last_status_at": "2026-08-09",
+    "statuses_count": 1523,
+    "last_status_at": "2026-08-11",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -78486,6 +78486,260 @@
         "name": "Mastodon for Android",
         "website": "https://app.joinmastodon.org/android"
       },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117074529465135035": {
+      "id": "117074529465135035",
+      "created_at": "2026-08-11T02:32:29.711Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117074529465135035/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/117074529465135035/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "117073493670033330",
+        "created_at": "2026-08-10T22:09:03.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://mathstodon.xyz/users/slava/statuses/117073493564641853",
+        "url": "https://mathstodon.xyz/@slava/117073493564641853",
+        "replies_count": 2,
+        "reblogs_count": 3,
+        "favourites_count": 15,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>I\u2019ve always felt that a major unsolved problem with systems languages is that they don\u2019t really have a well-defined feature set, in that there\u2019s no core language that everything desugars to. Instead you have a bunch of leaky abstractions that don\u2019t really compose well, and it all feels like an endless series of special cases that fall short of solving the general problem. Periodically the designers \u201cdiscover\u201d yet-another common programming task that cannot be expressed very well, and invariably the solution is to introduce some major new feature. Rinse, repeat. Having spent a significant amount of time working with both garbage-collected-everything-is-a-pointer-to-a-blob languages as well as systems languages, I now have a newfound appreciation for the former</p>",
+        "reblog": null,
+        "account": {
+          "id": "113986692103221705",
+          "username": "slava",
+          "acct": "slava@mathstodon.xyz",
+          "display_name": "Slava Pestov",
+          "locked": false,
+          "bot": false,
+          "discoverable": true,
+          "indexable": false,
+          "group": false,
+          "created_at": "2025-02-11T00:00:00.000Z",
+          "note": "<p>Programming languages, finitely-presented monoids, horses</p>",
+          "url": "https://mathstodon.xyz/@slava",
+          "uri": "https://mathstodon.xyz/users/slava",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/113/986/692/103/221/705/original/167f0d4db49c330d.png",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/113/986/692/103/221/705/original/167f0d4db49c330d.png",
+          "avatar_description": "",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "header_description": "",
+          "followers_count": 735,
+          "following_count": 302,
+          "statuses_count": 1300,
+          "last_status_at": "2026-08-11",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "feature_approval": {
+            "automatic": [
+              "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+          },
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Pronouns",
+              "value": "he/him",
+              "verified_at": null
+            },
+            {
+              "name": "Homepage",
+              "value": "<a href=\"https://factorcode.org/slava\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">factorcode.org/slava</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "Generics",
+              "value": "<a href=\"https://download.swift.org/docs/assets/generics.pdf\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">download.swift.org/docs/assets</span><span class=\"invisible\">/generics.pdf</span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "Monoids",
+              "value": "<a href=\"https://monoids.net\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">monoids.net</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117074523186657604": {
+      "id": "117074523186657604",
+      "created_at": "2026-08-11T02:30:53.905Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117074523186657604/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/117074523186657604/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "117074265290382618",
+        "created_at": "2026-08-11T01:25:13.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://f.duriansoftware.com/users/joe/statuses/117074264955499409",
+        "url": "https://f.duriansoftware.com/@joe/117074264955499409",
+        "replies_count": 0,
+        "reblogs_count": 3,
+        "favourites_count": 17,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>if your code<br>- has two code segments <br>- which call into each other<br>- without involving an interrupt<br>then it passes the Intel test</p>",
+        "reblog": null,
+        "account": {
+          "id": "113156858670720602",
+          "username": "joe",
+          "acct": "joe@f.duriansoftware.com",
+          "display_name": "Joe Groff",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": false,
+          "group": false,
+          "created_at": "2024-09-18T00:00:00.000Z",
+          "note": "<p>Doing my best to be a good boy\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26</p>",
+          "url": "https://f.duriansoftware.com/@joe",
+          "uri": "https://f.duriansoftware.com/users/joe",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/113/156/858/670/720/602/original/ca0cc87f8661adc7.jpeg",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/113/156/858/670/720/602/original/ca0cc87f8661adc7.jpeg",
+          "avatar_description": "A close-up of an orange Pomeranian's smiling face",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "header_description": "",
+          "followers_count": 2012,
+          "following_count": 1287,
+          "statuses_count": 7652,
+          "last_status_at": "2026-08-11",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "feature_approval": {
+            "automatic": [
+              "disabled"
+            ],
+            "manual": [],
+            "current_user": "denied"
+          },
+          "emojis": [],
+          "fields": [
+            {
+              "name": "pronouns",
+              "value": "he/him\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26",
+              "verified_at": null
+            },
+            {
+              "name": "webzone",
+              "value": "<a href=\"https://duriansoftware.com/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">duriansoftware.com/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "rss",
+              "value": "<a href=\"https://duriansoftware.com/joe/index.rss\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">duriansoftware.com/joe/index.r</span><span class=\"invisible\">ss</span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "dei",
+              "value": "white male privilege\udb40\udd31\udb40\udd3e\udb40\udd44\udb40\udd38\udb40\udd42\udb40\udd3f\udb40\udd40\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd3d\udb40\udd31\udb40\udd37\udb40\udd39\udb40\udd33\udb40\udd4f\udb40\udd43\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd3e\udb40\udd37\udb40\udd4f\udb40\udd44\udb40\udd42\udb40\udd39\udb40\udd37\udb40\udd37\udb40\udd35\udb40\udd42\udb40\udd4f\udb40\udd42\udb40\udd35\udb40\udd36\udb40\udd45\udb40\udd43\udb40\udd31\udb40\udd3c\udb40\udd4f\udb40\udd21\udb40\udd36\udb40\udd31\udb40\udd35\udb40\udd36\udb40\udd32\udb40\udd26\udb40\udd21\udb40\udd27\udb40\udd27\udb40\udd32\udb40\udd24\udb40\udd26\udb40\udd27\udb40\udd22\udb40\udd34\udb40\udd35\udb40\udd35\udb40\udd20\udb40\udd27\udb40\udd36\udb40\udd29\udb40\udd34\udb40\udd23\udb40\udd31\udb40\udd36\udb40\udd33\udb40\udd26\udb40\udd22\udb40\udd25\udb40\udd28\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd34\udb40\udd22\udb40\udd26\udb40\udd23\udb40\udd21\udb40\udd35\udb40\udd34\udb40\udd33\udb40\udd36\udb40\udd22\udb40\udd22\udb40\udd35\udb40\udd28\udb40\udd33\udb40\udd33\udb40\udd33\udb40\udd21\udb40\udd36\udb40\udd32\udb40\udd23\udb40\udd25\udb40\udd32\udb40\udd25\udb40\udd20\udb40\udd21\udb40\udd33\udb40\udd29\udb40\udd33\udb40\udd28\udb40\udd26",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
       "media_attachments": [],
       "mentions": [],
       "tags": [],
