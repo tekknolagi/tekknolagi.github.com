@@ -87,20 +87,11 @@ non-SSA IR. In any case, this is an excellent shortcut for two reasons:
    naive or a [Braun-style](/assets/img/braun13cc.pdf) (PDF) construction.
 
 This is pretty compelling. We can learn from the bytecode with a very small
-amount of marginal new complexity[^assumptions]. See [my implementation in
+amount of marginal new complexity. See [my implementation in
 ZJIT][zjit-partial-ssi], for example. All it really does is modify the abstract
 interpreter state when building SSA out of `branchnil`, `branchif`, and
 `branchunless` bytecode instructions to take into account the new refined
 values.
-
-[^assumptions]: This assumes, I think, that the block targets are different.
-    This will likely be the case for random bytecode generated from walking an
-    AST but it's possible (unless you forbid it) that you could have some weird
-    conditional where block B branches to block C two times... Or B&rarr;C,
-    B&rarr;D, D&rarr;C. You would have to figure out how to handle that. Our
-    maximal SSA generator handles this just fine, and I think a Braun-style
-    would too. I dunno. I am adding this footnote as an afterthought months
-    later.
 
 [zjit-partial-ssi]: https://github.com/ruby/ruby/pull/15915/changes#diff-a3cbeb79bf318b2aa8cc979260ba03b0204b436f745dd199a0e0c8ea5c871058
 
