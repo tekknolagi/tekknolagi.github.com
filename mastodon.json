@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 617,
     "following_count": 288,
-    "statuses_count": 1524,
+    "statuses_count": 1525,
     "last_status_at": "2026-08-13",
     "hide_collections": false,
     "show_media": true,
@@ -78806,6 +78806,51 @@
         }
       ],
       "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117089652760371988": {
+      "id": "117089652760371988",
+      "created_at": "2026-08-13T18:38:32.897Z",
+      "in_reply_to_id": "117089535427885280",
+      "in_reply_to_account_id": "111916518290472342",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117089652760371988",
+      "url": "https://mastodon.social/@tekknolagi/117089652760371988",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@ahelwer\" class=\"u-url mention\">@<span>ahelwer</span></a></span> nah it&#39;s fun</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "111916518290472342",
+          "username": "ahelwer",
+          "url": "https://discuss.systems/@ahelwer",
+          "acct": "ahelwer@discuss.systems"
+        }
+      ],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
