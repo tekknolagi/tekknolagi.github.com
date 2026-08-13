@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 617,
     "following_count": 288,
-    "statuses_count": 1526,
+    "statuses_count": 1528,
     "last_status_at": "2026-08-13",
     "hide_collections": false,
     "show_media": true,
@@ -78889,6 +78889,169 @@
       },
       "media_attachments": [],
       "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117090460745233634": {
+      "id": "117090460745233634",
+      "created_at": "2026-08-13T22:04:01.753Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117090460745233634",
+      "url": "https://mastodon.social/@tekknolagi/117090460745233634",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>More SSA fun!<br /><a href=\"https://bernsteinbear.com/blog/more-partial-ssi/\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bernsteinbear.com/blog/more-pa</span><span class=\"invisible\">rtial-ssi/</span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": {
+        "url": "https://bernsteinbear.com/blog/more-partial-ssi/",
+        "title": "Another partial SSI trick with canonicalize",
+        "description": "After reading Chris Fallin\u2019s aegraph post, new ZJIT contributor dak2 landed a block-local version of the canonicalize function in #16828.",
+        "language": "en",
+        "type": "link",
+        "author_name": "",
+        "author_url": "",
+        "provider_name": "Max Bernstein",
+        "provider_url": "",
+        "html": "",
+        "width": 0,
+        "height": 0,
+        "image": null,
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": null,
+        "published_at": "2026-08-13T00:00:00.000Z",
+        "authors": [
+          {
+            "name": "",
+            "url": "",
+            "account": {
+              "id": "1300106",
+              "username": "tekknolagi",
+              "acct": "tekknolagi",
+              "display_name": "Max B",
+              "locked": false,
+              "bot": false,
+              "discoverable": true,
+              "indexable": true,
+              "group": false,
+              "created_at": "2020-10-20T00:00:00.000Z",
+              "note": "<p>Let&#39;s chat about compilers</p>",
+              "url": "https://mastodon.social/@tekknolagi",
+              "uri": "https://mastodon.social/users/tekknolagi",
+              "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+              "avatar_description": "",
+              "header": "https://mastodon.social/headers/original/missing.png",
+              "header_static": "https://mastodon.social/headers/original/missing.png",
+              "header_description": "",
+              "followers_count": 617,
+              "following_count": 288,
+              "statuses_count": 1528,
+              "last_status_at": "2026-08-13",
+              "hide_collections": false,
+              "show_media": true,
+              "show_media_replies": true,
+              "show_featured": true,
+              "noindex": false,
+              "feature_approval": {
+                "automatic": [
+                  "public"
+                ],
+                "manual": [],
+                "current_user": "denied"
+              },
+              "emojis": [],
+              "roles": [],
+              "fields": [
+                {
+                  "name": "website",
+                  "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2022-12-07T01:44:28.737+00:00"
+                },
+                {
+                  "name": "github",
+                  "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+                  "verified_at": "2023-07-26T16:28:07.403+00:00"
+                },
+                {
+                  "name": "bsky",
+                  "value": "<a href=\"https://bsky.app/profile/bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bsky.app/profile/bernsteinbear</span><span class=\"invisible\">.com</span></a>",
+                  "verified_at": null
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117090243488355899": {
+      "id": "117090243488355899",
+      "created_at": "2026-08-13T21:08:46.670Z",
+      "in_reply_to_id": "117089877084071637",
+      "in_reply_to_account_id": "112590186815075119",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117090243488355899",
+      "url": "https://mastodon.social/@tekknolagi/117090243488355899",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.well.com/@rk\" class=\"u-url mention\">@<span>rk</span></a></span> not much! What&#39;s up with you?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "112590186815075119",
+          "username": "rk",
+          "url": "https://mastodon.well.com/@rk",
+          "acct": "rk@well.com"
+        }
+      ],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
