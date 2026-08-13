@@ -140,7 +140,7 @@ Well, this is another thing we can do in `canonicalize`!
 
 All we need to do is at the beginning of each block B:
 
-* Check if we have one incoming control edge E[^block-vs-edge]
+* Check if B has one incoming control edge E[^block-vs-edge]
 * Check if the terminator T for E.block is a conditional branch
 * If T.iftrue == B, seed the `rewrite_map` with `T.cond => Const(CBool[true])`
 * If T.iffalse == B, seed the `rewrite_map` with `T.cond => Const(CBool[false])`
