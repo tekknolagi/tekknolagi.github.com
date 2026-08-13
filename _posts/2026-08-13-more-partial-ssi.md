@@ -77,6 +77,10 @@ for block in function.reverse_post_order():
     rewrite_maps[block] = rewrite_map
 ```
 
+(Which you may or may not notice looks a lot like [Maxine's GVN
+implementation](https://github.com/beehive-lab/Maxine-VM/blob/e213a842f78983e2ba112ae46de8c64317bc206e/com.sun.c1x/src/com/sun/c1x/opt/GlobalValueNumberer.java).
+This is not a coincidence.)
+
 The core stays the same as the block-local version but now we can cascade
 rewrites along the dominator tree. I say that but we're not actually computing
 a dominator tree---we're only building a map of `idom` using [the engineered
