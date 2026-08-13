@@ -47,7 +47,9 @@ v1, Int` is *already an Int* and can therefore replace all uses of `v2` with
 `v1` and delete the guard.
 
 Because in this local version we make a new `rewrite_map` for each block, we
-don't carry any rewrites across blocks.
+don't carry any rewrites across blocks (but ZJIT still gained a lot because
+until recently its IR was in maximal SSA form, so a block-local pass had more
+global effects).
 
 About five days later, dak2 came back with a global version in
 [#17013](https://github.com/ruby/ruby/pull/17013)! This PR came with a bunch of
