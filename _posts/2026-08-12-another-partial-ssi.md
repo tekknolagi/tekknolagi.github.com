@@ -146,6 +146,35 @@ All we need to do is at the beginning of each block B:
     arguments of each edge. For this reason, we check the number of incoming
     edges, not the number of predecessor blocks.
 
-If terminator is CondBranch vNN, bbL, bbM, then we can:
-* Seed bbL with a rewrite of vNN to CBool(true)
-* Seed bbM with a rewrite of vNN to CBool(false)
+If you plan on running `canonicalize` multiple times, you may end up generating
+many constant instructions in your IR. To avoid this, you can intern them and,
+for example, place them in the entry block. This helps make the pass idempotent
+instead of always allocating new instructions.
+
+So what does this buy us?
+
+Well, I admit I was looking at the `30k_ifelse` benchmark on ruby-bench and
+wondering how to further collapse a bunch of IR that came out of my prototype
+value numbering implementation. The IR after value numbering looked like:
+
+```
+bb0:
+  v0: CBool = ...
+  CondBranch v0, bb1, bb2
+
+bb1:
+  ...
+  CondBranch v0, ...
+
+bb2:
+  ...
+  CondBranch v0, ...
+```
+
+and it felt a little silly that `bb1` and `bb2` didn't get more information
+about `v0` by being branch targets. This couple-line change managed to collapse
+a bunch of those branches.
+
+So, perhaps a bit contrived, but it feels like a useful tool to have.
+
+See you all next time!
