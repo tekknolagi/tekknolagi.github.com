@@ -83,10 +83,10 @@ This is not a coincidence.)
 
 The core stays the same as the block-local version but now we can cascade
 rewrites along the dominator tree. I say that but we're not actually computing
-a dominator tree---we're only building a map of `idom` using [the engineered
-algorithm](/assets/img/dominators-engineered.pdf) (PDF). The dominator tree
-cascades because this RPO-walk+idom-clone approach ends up being equivalent to
-actually walking a dominator tree.
+a (top-down walkable) dominator tree---we're only building a (bottom-up) map of
+`idom` using [the engineered algorithm](/assets/img/dominators-engineered.pdf)
+(PDF). The dominator tree cascades because this RPO-walk+idom-clone approach
+ends up being equivalent to actually walking a dominator tree.
 
 The block iteration order is different (RPO vs domtree pre-order) but the only
 property we care about maintaining is that we visit dominators before blocks
