@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 617,
     "following_count": 288,
-    "statuses_count": 1531,
+    "statuses_count": 1532,
     "last_status_at": "2026-08-14",
     "hide_collections": false,
     "show_media": true,
@@ -79222,6 +79222,51 @@
           "username": "aidenfoxivey",
           "url": "https://mastodon.social/@aidenfoxivey",
           "acct": "aidenfoxivey"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117093867204106853": {
+      "id": "117093867204106853",
+      "created_at": "2026-08-14T12:30:20.191Z",
+      "in_reply_to_id": "117093830796753488",
+      "in_reply_to_account_id": "109358316457799851",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117093867204106853",
+      "url": "https://mastodon.social/@tekknolagi/117093867204106853",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mendeddrum.org/@fanf\" class=\"u-url mention\">@<span>fanf</span></a></span> I&#39;m a bit of a language mercenary. I didn&#39;t know much python before I worked on python internals. I used a lot of Ruby 10 years ago but then it dropped off. Now I work on ruby internals</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109358316457799851",
+          "username": "fanf",
+          "url": "https://mendeddrum.org/@fanf",
+          "acct": "fanf@mendeddrum.org"
         }
       ],
       "tags": [],
