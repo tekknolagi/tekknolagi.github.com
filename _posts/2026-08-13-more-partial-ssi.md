@@ -3,6 +3,8 @@ title: "Another partial SSI trick with canonicalize"
 layout: post
 ---
 
+*See [the previous post](/blog/partial-ssi/) for context and explanation of SSI*.
+
 After reading [Chris Fallin's aegraph
 post](https://cfallin.org/blog/2026/04/09/aegraph/), new ZJIT contributor dak2
 landed a block-local version of the `canonicalize` function in
