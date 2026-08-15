@@ -366,7 +366,7 @@ the above example, it means copying the body of `Array#each` into each of
 mean the bytecode: I mean the HIR. ZJIT does this by building the HIR of the
 callee (`Array#each`) into the existing HIR of the caller (`method_a`, &hellip;).
 
-The illustrious [Kevin Menard](/authors/kevin-menard/) wrote ZJIT's inliner and
+The illustrious [Kevin Menard](https://railsatscale.com/authors/kevin-menard/) wrote ZJIT's inliner and
 he'll write a post about all the details soon. It's pretty interesting stuff.
 
 For now, we can take a look at the (lightly edited) result of `Array#each`
