@@ -521,7 +521,8 @@ range building, which we'll instead do separately in a moment.
     does this and calls it "Special RPO". I found some of the [relevant
     code](https://github.com/v8/v8/blob/81b069e2bf3a9d1851391d73af6311c95e98cbed/src/compiler/scheduler.cc#L669).
     I also found it in [a second
-    place](https://github.com/v8/v8/blob/81b069e2bf3a9d1851391d73af6311c95e98cbed/src/compiler/turboshaft/instruction-selection-phase.cc#L53) in Turboshaft.
+    place](https://github.com/v8/v8/blob/81b069e2bf3a9d1851391d73af6311c95e98cbed/src/compiler/turboshaft/instruction-selection-phase.cc#L53) in Turboshaft
+    and [a third place](https://github.com/LineageOS/android_art/blob/lineage-23.2/compiler/optimizing/linear_order.cc) in ART.
 
     This is [maybe where it happens in HotSpot C1](https://github.com/openjdk/jdk/blob/80476532c0c5d4339128bd45dd85dc5cc70a6fe6/src/hotspot/share/c1/c1_IR.cpp#L453).
 
