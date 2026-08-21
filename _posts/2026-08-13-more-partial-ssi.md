@@ -187,3 +187,7 @@ a bunch of those branches.
 So, perhaps a bit contrived, but it feels like a useful tool to have.
 
 See you all next time!
+
+## See also
+
+[Different implementation in ART](https://github.com/LineageOS/android_art/blob/1690c6912a7972c9e62c39b48c706de9b8b18b4a/compiler/optimizing/constant_folding.cc#L316)
