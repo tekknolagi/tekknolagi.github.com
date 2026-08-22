@@ -19,10 +19,10 @@
     "header": "https://mastodon.social/headers/original/missing.png",
     "header_static": "https://mastodon.social/headers/original/missing.png",
     "header_description": "",
-    "followers_count": 617,
+    "followers_count": 619,
     "following_count": 288,
-    "statuses_count": 1534,
-    "last_status_at": "2026-08-15",
+    "statuses_count": 1535,
+    "last_status_at": "2026-08-22",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -79546,6 +79546,172 @@
         "published_at": null,
         "authors": []
       },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117139849940034424": {
+      "id": "117139849940034424",
+      "created_at": "2026-08-22T15:24:21.210Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": null,
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117139849940034424/activity",
+      "url": "https://mastodon.social/users/tekknolagi/statuses/117139849940034424/activity",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "",
+      "reblog": {
+        "id": "116937421802191825",
+        "created_at": "2026-07-17T21:24:12.000Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "en",
+        "uri": "https://floss.social/users/mort/statuses/116937421772016298",
+        "url": "https://floss.social/@mort/116937421772016298",
+        "replies_count": 0,
+        "reblogs_count": 3,
+        "favourites_count": 8,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "<p>I just re-read my old blog post about bytecode VMs from 2023 and found it to be an interesting read. It's so long since I wrote it that I didn't remember all the things I covered. Would recommend:</p><p><a href=\"https://mort.coffee/home/fast-interpreters/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">mort.coffee/home/fast-interpre</span><span class=\"invisible\">ters/</span></a></p><p><a href=\"https://floss.social/tags/blogpost\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>blogpost</span></a> <a href=\"https://floss.social/tags/pldev\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>pldev</span></a> <a href=\"https://floss.social/tags/programming\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>programming</span></a> <a href=\"https://floss.social/tags/blog\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>blog</span></a> <a href=\"https://floss.social/tags/virtualmachine\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>virtualmachine</span></a> <a href=\"https://floss.social/tags/plt\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>plt</span></a></p>",
+        "reblog": null,
+        "account": {
+          "id": "114401032485075617",
+          "username": "mort",
+          "acct": "mort@floss.social",
+          "display_name": "mort",
+          "locked": false,
+          "bot": false,
+          "discoverable": false,
+          "indexable": false,
+          "group": false,
+          "created_at": "2025-04-25T00:00:00.000Z",
+          "note": "<p>I'm a computer nerd. I write software (some of it FOSS), I'm working on a game (also FOSS), and I sometimes make music.</p>",
+          "url": "https://floss.social/@mort",
+          "uri": "https://floss.social/users/mort",
+          "avatar": "https://files.mastodon.social/cache/accounts/avatars/114/401/032/485/075/617/original/4f02cecd8a8ca3a9.png",
+          "avatar_static": "https://files.mastodon.social/cache/accounts/avatars/114/401/032/485/075/617/original/4f02cecd8a8ca3a9.png",
+          "avatar_description": "",
+          "header": "https://mastodon.social/headers/original/missing.png",
+          "header_static": "https://mastodon.social/headers/original/missing.png",
+          "header_description": "",
+          "followers_count": 258,
+          "following_count": 78,
+          "statuses_count": 572,
+          "last_status_at": "2026-08-20",
+          "hide_collections": false,
+          "show_media": true,
+          "show_media_replies": true,
+          "show_featured": true,
+          "feature_approval": {
+            "automatic": [
+              "disabled"
+            ],
+            "manual": [],
+            "current_user": "denied"
+          },
+          "emojis": [],
+          "fields": [
+            {
+              "name": "Pronouns",
+              "value": "he/him",
+              "verified_at": null
+            },
+            {
+              "name": "Blog",
+              "value": "<a href=\"https://mort.coffee\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">mort.coffee</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            },
+            {
+              "name": "GitHub",
+              "value": "<a href=\"https://github.com/mortie/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">github.com/mortie/</span><span class=\"invisible\"></span></a>",
+              "verified_at": null
+            }
+          ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+          {
+            "name": "blogpost",
+            "url": "https://mastodon.social/tags/blogpost"
+          },
+          {
+            "name": "PLdev",
+            "url": "https://mastodon.social/tags/PLdev"
+          },
+          {
+            "name": "programming",
+            "url": "https://mastodon.social/tags/programming"
+          },
+          {
+            "name": "blog",
+            "url": "https://mastodon.social/tags/blog"
+          },
+          {
+            "name": "virtualmachine",
+            "url": "https://mastodon.social/tags/virtualmachine"
+          },
+          {
+            "name": "plt",
+            "url": "https://mastodon.social/tags/plt"
+          }
+        ],
+        "emojis": [],
+        "tagged_collections": [],
+        "quote": null,
+        "card": {
+          "url": "https://mort.coffee/home/fast-interpreters/",
+          "title": "Faster virtual machines: Speeding up programming language execution - Mort's Ramblings",
+          "description": "",
+          "language": null,
+          "type": "link",
+          "author_name": "",
+          "author_url": "",
+          "provider_name": "",
+          "provider_url": "",
+          "html": "",
+          "width": 0,
+          "height": 0,
+          "image": null,
+          "image_description": "",
+          "embed_url": "",
+          "blurhash": null,
+          "published_at": null,
+          "authors": []
+        },
+        "poll": null,
+        "quote_approval": {
+          "automatic": [
+            "public"
+          ],
+          "manual": [],
+          "current_user": "denied"
+        }
+      },
+      "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
       "poll": null,
       "quote_approval": {
         "automatic": [
