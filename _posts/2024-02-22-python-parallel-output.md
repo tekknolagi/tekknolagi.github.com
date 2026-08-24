@@ -120,6 +120,11 @@ threads instead of processes; I did processes because it's Python.
 Check out the expanded version [in this
 Gist](https://gist.github.com/tekknolagi/4bee494a6e4483e4d849559ba53d067b).
 
+**Update:** The Gist now contains what I think might be a more rubust version
+of this code that, instead of trusting the function to write output neatly,
+runs the function (or any command) in a subprocess and continuously prints each
+process's last line of stdout. It uses a thread pool to manage these processes.
+
 ## A demo for you
 
 Since you read this far, here is a demo of the program:
