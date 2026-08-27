@@ -246,4 +246,4 @@ https://github.com/adobe/avmplus/blob/858d034a3bd3a54d9b70909386435cf4aec81d21/h
   but their `Identity` is called `Assign`. See
   [copy_propagation.cpp](https://github.com/facebookincubator/cinderx/blob/dbeb911a535962677ea28c4bee733fffb9afb06e/cinderx/Jit/hir/copy_propagation.cpp)
   and [pass.cpp](https://github.com/facebookincubator/cinderx/blob/9f704553dd303600344952e6400364d8f3abb263/cinderx/Jit/hir/pass.cpp#L83)
-* V8's maglev. See for example the [`make_equal_to` equivalent](https://github.com/v8/v8/blob/6c9063bc8bb75507fbbc5b072df3114cf1490d04/src/maglev/maglev-ir-inl.h#L163) and [`find` equivalent](https://github.com/v8/v8/blob/6c9063bc8bb75507fbbc5b072df3114cf1490d04/src/maglev/maglev-ir.h#L2884)
+* V8's maglev. See for example the [`union` equivalent](https://github.com/v8/v8/blob/6c9063bc8bb75507fbbc5b072df3114cf1490d04/src/maglev/maglev-ir-inl.h#L163) and [`find` equivalent](https://github.com/v8/v8/blob/6c9063bc8bb75507fbbc5b072df3114cf1490d04/src/maglev/maglev-ir.h#L2884)
