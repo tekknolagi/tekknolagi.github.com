@@ -86,7 +86,7 @@ I have a blog and now I also have some academic papers!
 * *Support Local Variables* \
   **Maxwell Bernstein**, Takashi Kokubun, Kevin Menard, Aaron Patterson, Si Xing (Alan) Wu \
   in VMIL 2026 \
-  ... links coming soon ...
+  [[PDF](assets/img/support-local-variables.pdf)]
 * *Partial Evaluation, Whole-Program Compilation* \
   Chris Fallin, **Maxwell Bernstein** \
   in PLDI 2025 \
