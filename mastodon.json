@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 624,
     "following_count": 288,
-    "statuses_count": 1542,
+    "statuses_count": 1544,
     "last_status_at": "2026-09-09",
     "hide_collections": false,
     "show_media": true,
@@ -80012,6 +80012,129 @@
           {
             "name": "Gregory Barber",
             "url": "https://www.nytimes.com/by/gregory-barber",
+            "account": null
+          }
+        ]
+      },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117241455197820559": {
+      "id": "117241455197820559",
+      "created_at": "2026-09-09T14:03:54.249Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117241455197820559",
+      "url": "https://mastodon.social/@tekknolagi/117241455197820559",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Do you enjoy your beans al dente?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": {
+        "id": "1774738",
+        "expires_at": "2026-09-10T14:03:54.242Z",
+        "expired": false,
+        "multiple": false,
+        "votes_count": 3,
+        "voters_count": 3,
+        "options": [
+          {
+            "title": "Yes",
+            "votes_count": 1
+          },
+          {
+            "title": "No",
+            "votes_count": 2
+          },
+          {
+            "title": "What the fuck",
+            "votes_count": 0
+          }
+        ],
+        "emojis": []
+      },
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117241363326344026": {
+      "id": "117241363326344026",
+      "created_at": "2026-09-09T13:40:32.401Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117241363326344026",
+      "url": "https://mastodon.social/@tekknolagi/117241363326344026",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>My RubyKaigi 2026 talk about ZJIT is up! Unfortunately, they censored my memes :(</p><p><a href=\"https://youtube.com/watch?v=ypRKTCHnrtc\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">youtube.com/watch?v=ypRKTCHnrtc</span><span class=\"invisible\"></span></a></p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": {
+        "url": "https://youtube.com/watch?v=ypRKTCHnrtc",
+        "title": "[EN] The design and implementation of ZJIT & the next five years / Max Bernstein @tekknolagi",
+        "description": "",
+        "language": null,
+        "type": "video",
+        "author_name": "RubyKaigi",
+        "author_url": "https://www.youtube.com/@rubykaigi4884",
+        "provider_name": "YouTube",
+        "provider_url": "https://www.youtube.com/",
+        "html": "<iframe width=\"200\" height=\"113\" src=\"https://www.youtube.com/embed/ypRKTCHnrtc?feature=oembed\" frameborder=\"0\" allowfullscreen=\"\" sandbox=\"allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms\"></iframe>",
+        "width": 200,
+        "height": 113,
+        "image": "https://files.mastodon.social/cache/preview_cards/images/206/606/520/original/b96c012fcbbc083d.jpg",
+        "image_description": "",
+        "embed_url": "",
+        "blurhash": "U*L4j9-;IU%M%Mt7Rjt600M{xuRjRjWBj[WC",
+        "published_at": null,
+        "authors": [
+          {
+            "name": "RubyKaigi",
+            "url": "https://www.youtube.com/@rubykaigi4884",
             "account": null
           }
         ]
