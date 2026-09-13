@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 626,
     "following_count": 288,
-    "statuses_count": 1545,
-    "last_status_at": "2026-09-10",
+    "statuses_count": 1546,
+    "last_status_at": "2026-09-13",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -80259,6 +80259,44 @@
         }
       },
       "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117261931536502017": {
+      "id": "117261931536502017",
+      "created_at": "2026-09-13T04:51:18.380Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117261931536502017",
+      "url": "https://mastodon.social/@tekknolagi/117261931536502017",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Bin packing the cheapest way to buy lightbulbs from Home Depot, all to save $9</p><p>(4 individual in one order, 2 individual in another order. Don&#39;t touch the 2-4 packs)</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
       "media_attachments": [],
       "mentions": [],
       "tags": [],
