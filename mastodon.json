@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 626,
     "following_count": 288,
-    "statuses_count": 1547,
+    "statuses_count": 1549,
     "last_status_at": "2026-09-13",
     "hide_collections": false,
     "show_media": true,
@@ -80344,6 +80344,95 @@
           "acct": "shriramk"
         }
       ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117264668646960559": {
+      "id": "117264668646960559",
+      "created_at": "2026-09-13T16:27:23.385Z",
+      "in_reply_to_id": "117264566391036147",
+      "in_reply_to_account_id": "108262011720829669",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117264668646960559",
+      "url": "https://mastodon.social/@tekknolagi/117264668646960559",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": "2026-09-13T16:27:39.919Z",
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@shriramk\" class=\"u-url mention\">@<span>shriramk</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@wingo\" class=\"u-url mention\">@<span>wingo</span></a></span> counter point- markdown + Pandoc + text width 800. Fugly but not your fault</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "108262011720829669",
+          "username": "shriramk",
+          "url": "https://mastodon.social/@shriramk",
+          "acct": "shriramk"
+        },
+        {
+          "id": "30108",
+          "username": "wingo",
+          "url": "https://mastodon.social/@wingo",
+          "acct": "wingo"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117264665307741380": {
+      "id": "117264665307741380",
+      "created_at": "2026-09-13T16:26:32.413Z",
+      "in_reply_to_id": "117261931536502017",
+      "in_reply_to_account_id": "1300106",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117264665307741380",
+      "url": "https://mastodon.social/@tekknolagi/117264665307741380",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>They all arrived open box :(</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
