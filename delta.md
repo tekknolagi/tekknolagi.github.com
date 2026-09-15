@@ -35,3 +35,5 @@ project](https://blog.waleedkhan.name/searching-source-control-graphs/) but I
 don't think that was what I originally saw.
 
 https://github.com/nnunley/bonsai
+
+https://dl.acm.org/doi/pdf/10.1145/3180155.3180236
