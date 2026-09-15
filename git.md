@@ -109,3 +109,5 @@ I think [Jujutsu/`jj`](https://github.com/martinvonz/jj) is very neat. Also
 
 Learn how to [see the history of a
 method](https://calebhearth.com/git-method-history).
+
+https://runxiyu.org/comp/shallowbundle/
