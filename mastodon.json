@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 625,
     "following_count": 288,
-    "statuses_count": 1558,
+    "statuses_count": 1560,
     "last_status_at": "2026-09-20",
     "hide_collections": false,
     "show_media": true,
@@ -81006,6 +81006,96 @@
       },
       "media_attachments": [],
       "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117304114249304973": {
+      "id": "117304114249304973",
+      "created_at": "2026-09-20T15:38:55.601Z",
+      "in_reply_to_id": "117304032452695329",
+      "in_reply_to_account_id": "109306393408330356",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117304114249304973",
+      "url": "https://mastodon.social/@tekknolagi/117304114249304973",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 1,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@adrian\" class=\"u-url mention\">@<span>adrian</span></a></span> thank you :)</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109306393408330356",
+          "username": "adrian",
+          "url": "https://discuss.systems/@adrian",
+          "acct": "adrian@discuss.systems"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117304020920530378": {
+      "id": "117304020920530378",
+      "created_at": "2026-09-20T15:15:11.415Z",
+      "in_reply_to_id": "117304014364168994",
+      "in_reply_to_account_id": "109306393408330356",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117304020920530378",
+      "url": "https://mastodon.social/@tekknolagi/117304020920530378",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://discuss.systems/@adrian\" class=\"u-url mention\">@<span>adrian</span></a></span> how has it performed - any complaints? Some reviews are a little angry</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109306393408330356",
+          "username": "adrian",
+          "url": "https://discuss.systems/@adrian",
+          "acct": "adrian@discuss.systems"
+        }
+      ],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
