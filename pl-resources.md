@@ -8,8 +8,8 @@ This page is a collection of my favorite resources for people getting started
 writing programming languages. I hope to keep it updated as long as I continue
 to find great stuff.
 
-I made a <a class="newlink" href="https://www.zazzle.com/compiler_ampersand_2_t_shirt-235252907121889789">fun compilers t-shirt</a>
-and also a <a class="newlink" href="https://www.zazzle.com/jit_compiler_t_shirt-256576487744451029">fun JIT compilers t-shirt</a>
+I made a [fun compilers t-shirt](https://www.zazzle.com/compiler_ampersand_2_t_shirt-235252907121889789)
+and also a [fun JIT compilers t-shirt](https://www.zazzle.com/jit_compiler_t_shirt-256576487744451029)
 
 ## Compilers
 
@@ -30,8 +30,7 @@ and also a <a class="newlink" href="https://www.zazzle.com/jit_compiler_t_shirt-
   * [Sparse conditional constant propagation](https://en.wikipedia.org/wiki/Sparse_conditional_constant_propagation)
     ([Bril blog post](https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/sccp/) and
     [Thorsten Ball tweet](https://twitter.com/thorstenball/status/1526788333761863680/photo/1))
-* I've heard good things about [Engineering a Compiler](https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-088478-0)
-  ([3rd edition](https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-815412-0) coming soon!)
+* I've heard good things about [Engineering a Compiler](https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-815412-0)
 * [Destination-driven code generation](/assets/img/ddcg.pdf) (PDF)
   * [My implementation](https://github.com/tekknolagi/ddcg)
   * And [One-pass Code Generation in V8](/assets/img/46b-codegeneration-in-V8.pdf) (PDF)
