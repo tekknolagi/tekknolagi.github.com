@@ -181,6 +181,9 @@ here too.
     Analysis Problems" that I don't yet have a PDF for that claims that RPO is
     optimal for solving dataflow problems.
 
+    [This paper](/assets/img/rpo-analysis.pdf) (PDF) might be a draft/preprint
+    of it but I am not sure.
+
 From what we've seen so far optimizing our made-up IR snippet, we can do
 something like this:
 
