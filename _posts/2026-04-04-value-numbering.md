@@ -177,10 +177,9 @@ here too.
 
 [^order]: The order is a little more complicated than that: [reverse
     post-order](https://stackoverflow.com/questions/36131500/what-is-the-reverse-postorder)
-    (RPO). And there's a paper called [A Simple Algorithm for Global Data Flow
-    Analysis Problems](/assets/img/simple-dataflow.pdf) (PDF) that I have not
-    yet read that I have heard claims that RPO is optimal for solving dataflow
-    problems.
+    (RPO). And there's a paper called "A Simple Algorithm for Global Data Flow
+    Analysis Problems" that I don't yet have a PDF for that claims that RPO is
+    optimal for solving dataflow problems.
 
     [This paper](/assets/img/rpo-analysis.pdf) (PDF) might be a draft/preprint
     of it but I am not sure.
