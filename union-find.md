@@ -214,7 +214,7 @@ are due to having other fields, or alignment, or something.
   * this *next* chain forms a cycle
   * when linking two (definitely disjoint) sets together, swap the next
     pointers
-  * to enumerate, start at the any set element and follow the next pointers
+  * to enumerate, start at any set element and follow the next pointers
     until you get back to the element
 
 <!--
