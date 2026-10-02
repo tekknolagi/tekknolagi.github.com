@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 626,
     "following_count": 288,
-    "statuses_count": 1562,
+    "statuses_count": 1563,
     "last_status_at": "2026-10-02",
     "hide_collections": false,
     "show_media": true,
@@ -81298,6 +81298,165 @@
           }
         ]
       },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117371915040818783": {
+      "id": "117371915040818783",
+      "created_at": "2026-10-02T15:01:33.473Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117371915040818783",
+      "url": "https://mastodon.social/@tekknolagi/117371915040818783",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p class=\"quote-inline\">RE: <a href=\"https://mastodon.social/@tekknolagi/117371242587561948\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">mastodon.social/@tekknolagi/11</span><span class=\"invisible\">7371242587561948</span></a></p><p>See you in one hour \ud83d\udc40</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": {
+        "state": "accepted",
+        "quoted_status": {
+          "id": "117371242587561948",
+          "created_at": "2026-10-02T12:10:32.649Z",
+          "in_reply_to_id": null,
+          "in_reply_to_account_id": null,
+          "sensitive": false,
+          "spoiler_text": "",
+          "visibility": "public",
+          "language": "en",
+          "uri": "https://mastodon.social/users/tekknolagi/statuses/117371242587561948",
+          "url": "https://mastodon.social/@tekknolagi/117371242587561948",
+          "replies_count": 0,
+          "reblogs_count": 2,
+          "favourites_count": 2,
+          "quotes_count": 1,
+          "edited_at": null,
+          "content": "<p>Come see me and Aaron talk about ZJIT internals today at 9am PT / 12pm ET!</p><p><a href=\"https://youtube.com/live/h9_FyHYUhww?feature=share\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">youtube.com/live/h9_FyHYUhww?f</span><span class=\"invisible\">eature=share</span></a></p><p><a href=\"https://bsky.app/profile/tenderlove.dev/post/3mwtr6xi3ds2c\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bsky.app/profile/tenderlove.de</span><span class=\"invisible\">v/post/3mwtr6xi3ds2c</span></a></p>",
+          "reblog": null,
+          "application": {
+            "name": "Mastodon for Android",
+            "website": "https://app.joinmastodon.org/android"
+          },
+          "account": {
+            "id": "1300106",
+            "username": "tekknolagi",
+            "acct": "tekknolagi",
+            "display_name": "Max B",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2020-10-20T00:00:00.000Z",
+            "note": "<p>Let&#39;s chat about compilers</p>",
+            "url": "https://mastodon.social/@tekknolagi",
+            "uri": "https://mastodon.social/users/tekknolagi",
+            "avatar": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+            "avatar_static": "https://files.mastodon.social/accounts/avatars/001/300/106/original/9434f0128d2b9631.jpg",
+            "avatar_description": "",
+            "header": "https://mastodon.social/headers/original/missing.png",
+            "header_static": "https://mastodon.social/headers/original/missing.png",
+            "header_description": "",
+            "followers_count": 626,
+            "following_count": 288,
+            "statuses_count": 1563,
+            "last_status_at": "2026-10-02",
+            "hide_collections": false,
+            "show_media": true,
+            "show_media_replies": true,
+            "show_featured": true,
+            "noindex": false,
+            "feature_approval": {
+              "automatic": [
+                "public"
+              ],
+              "manual": [],
+              "current_user": "denied"
+            },
+            "emojis": [],
+            "roles": [],
+            "fields": [
+              {
+                "name": "website",
+                "value": "<a href=\"https://bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">bernsteinbear.com</span><span class=\"invisible\"></span></a>",
+                "verified_at": "2022-12-07T01:44:28.737+00:00"
+              },
+              {
+                "name": "github",
+                "value": "<a href=\"https://github.com/tekknolagi/\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/tekknolagi/</span><span class=\"invisible\"></span></a>",
+                "verified_at": "2023-07-26T16:28:07.403+00:00"
+              },
+              {
+                "name": "bsky",
+                "value": "<a href=\"https://bsky.app/profile/bernsteinbear.com\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">bsky.app/profile/bernsteinbear</span><span class=\"invisible\">.com</span></a>",
+                "verified_at": null
+              }
+            ]
+          },
+          "media_attachments": [],
+          "mentions": [],
+          "tags": [],
+          "emojis": [],
+          "tagged_collections": [],
+          "quote": null,
+          "card": {
+            "url": "https://youtube.com/live/h9_FyHYUhww?feature=share",
+            "title": "Pairin' with Aaron: ZJIT Internals",
+            "description": "",
+            "language": null,
+            "type": "video",
+            "author_name": "Tenderlove's Cool Stuff",
+            "author_url": "https://www.youtube.com/@TenderlovesCoolStuff",
+            "provider_name": "YouTube",
+            "provider_url": "https://www.youtube.com/",
+            "html": "<iframe width=\"200\" height=\"150\" src=\"https://www.youtube.com/embed/h9_FyHYUhww?feature=oembed\" frameborder=\"0\" allowfullscreen=\"\" sandbox=\"allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms\"></iframe>",
+            "width": 200,
+            "height": 150,
+            "image": "https://files.mastodon.social/cache/preview_cards/images/209/349/231/original/880153179e9eaefa.jpg",
+            "image_description": "",
+            "embed_url": "",
+            "blurhash": "UZE.br$ejFS1xHr=s.WV53S%a#jGR+SiRjog",
+            "published_at": null,
+            "authors": [
+              {
+                "name": "Tenderlove's Cool Stuff",
+                "url": "https://www.youtube.com/@TenderlovesCoolStuff",
+                "account": null
+              }
+            ]
+          },
+          "poll": null,
+          "quote_approval": {
+            "automatic": [
+              "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+          }
+        }
+      },
+      "card": null,
       "poll": null,
       "quote_approval": {
         "automatic": [
