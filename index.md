@@ -86,15 +86,15 @@ I have a blog and now I also have some academic papers!
 * *Support Local Variables* \
   **Maxwell Bernstein**, Takashi Kokubun, Kevin Menard, Aaron Patterson, Si Xing (Alan) Wu \
   in VMIL 2026 \
-  [[PDF](/assets/img/support-local-variables.pdf)] [[DOI](https://doi.org/10.1145/3840562.3844969)] [[ARX](https://arxiv.org/abs/2609.01502)]
+  [[PDF](/assets/img/support-local-variables.pdf)] [[DOI](https://doi.org/10.1145/3840562.3844969)] [[AL](https://al.radbox.org/doi/10.1145/3840562.3844969)] [[ARX](https://arxiv.org/abs/2609.01502)]
 * *Partial Evaluation, Whole-Program Compilation* \
   Chris Fallin, **Maxwell Bernstein** \
   in PLDI 2025 \
-  [[PDF](/assets/img/wasm-partial-eval.pdf)] [[DOI](https://doi.org/10.1145/3729259)] [[ARX](https://arxiv.org/abs/2411.10559)]
+  [[PDF](/assets/img/wasm-partial-eval.pdf)] [[DOI](https://doi.org/10.1145/3729259)] [[AL](https://al.radbox.org/doi/10.1145/3729259)] [[ARX](https://arxiv.org/abs/2411.10559)]
 * *Dr Wenowdis: Specializing dynamic language C extensions using type information* \
   **Maxwell Bernstein**, CF Bolz-Tereick \
   in PLDI SOAP 2024 \
-  [[PDF](/assets/img/dr-wenowdis.pdf)] [[DOI](https://doi.org/10.1145/3652588.3663316)] [[ARX](https://arxiv.org/abs/2403.02420)]
+  [[PDF](/assets/img/dr-wenowdis.pdf)] [[DOI](https://doi.org/10.1145/3652588.3663316)] [[AL](https://al.radbox.org/doi/10.1145/3652588.3663316)] [[ARX](https://arxiv.org/abs/2403.02420)]
 
 Also academically: I was on the program committee for [MoreVMs 2026][]!
 
