@@ -5,8 +5,12 @@
 # bernsteinbear.com uses.
 #
 # Hard dependencies: kramdown, kramdown-parser-gfm, rouge, liquid (4.x).
+#   Declared in Gemfile.minijekyll and vendored as .gem files in vendor/cache:
+#     BUNDLE_GEMFILE=Gemfile.minijekyll bundle install --local
+#     BUNDLE_GEMFILE=Gemfile.minijekyll bundle exec ruby minijekyll.rb
 # Optional: sass-embedded (or a `sass` binary on PATH) to compile .scss pages,
-#           addressable for Jekyll-identical URL normalization.
+#           addressable for Jekyll-identical URL normalization (a stdlib
+#           fallback gives the same output for this site).
 #
 # What it replicates:
 #   * _config.yml (url, permalink, collections, include/exclude, future,
@@ -29,6 +33,7 @@ require "date"
 require "json"
 require "cgi"
 require "fileutils"
+require "tmpdir"
 require "optparse"
 require "set"
 require "kramdown"
@@ -132,7 +137,10 @@ module MiniJekyll
       if defined?(::Addressable::URI)
         ::Addressable::URI.parse(str).normalize.to_s
       else
-        ::URI::DEFAULT_PARSER.escape(str)
+        # Unescape first so that normalizing an already-normalized URL (as
+        # absolute_url does with relative_url's result) is idempotent.
+        parser = ::URI::DEFAULT_PARSER
+        parser.escape(parser.unescape(str))
       end
     rescue StandardError
       str
@@ -1288,13 +1296,37 @@ module MiniJekyll
         map["sources"].map! { |src| src.start_with?("file:") ? src.delete_prefix(root) : src }
         add_extra_output(File.join(File.dirname(item.destination), "#{item.basename}.css.map"), JSON.generate(map))
         css + "#{style == "compressed" ? "" : "\n\n"}/*# sourceMappingURL=#{item.basename}.css.map */"
-      elsif (bin = ENV["PATH"].split(File::PATH_SEPARATOR).map { |d| File.join(d, "sass") }.find { |f| File.executable?(f) })
-        args = [bin, "--stdin", "--style=#{style}", "--no-source-map", "--load-path=#{load_paths.first}"]
-        args << "--indented" if item.ext == ".sass"
-        IO.popen(args, "r+") { |io| io.write(text); io.close_write; io.read }
+      elsif (bin = ENV["PATH"].split(File::PATH_SEPARATOR).map { |d| File.join(d, "sass") }.find { |f| File.executable?(f) }) &&
+            (out = compile_sass_cli(bin, item, text, style, load_paths))
+        out
       else
         warn "minijekyll: no Sass compiler found; copying #{item.relative_path} unmodified"
         text
+      end
+    end
+
+    # Fallback for when the sass-embedded gem is not loadable but a `sass`
+    # executable (dart-sass / npm sass-embedded) is on PATH. Mirrors the gem
+    # path above: compressed CSS + a source map whose sources are relative to
+    # the stylesheet's directory. Returns nil if the executable fails.
+    def compile_sass_cli(bin, item, text, style, load_paths)
+      Dir.mktmpdir("minijekyll-sass") do |tmp|
+        src = File.join(tmp, item.name)
+        out = File.join(tmp, "#{item.basename}.css")
+        File.write(src, text)
+        args = [bin, src, out, "--style=#{style}", "--source-map", "--embed-sources", "--load-path=#{load_paths.first}"]
+        err = IO.popen(args, err: [:child, :out], &:read)
+        unless $?.success? && File.exist?(out)
+          warn "minijekyll: `#{bin}` failed:\n#{err}"
+          return nil
+        end
+        css = File.read(out, encoding: "utf-8").sub(%r{\n?/\*# sourceMappingURL=.*\*/\s*\z}, "")
+        map = JSON.parse(File.read("#{out}.map"))
+        map.delete("file") # re-added last, matching jekyll-sass-converter's key order
+        map["file"] = "#{item.basename}.css"
+        map["sources"].map! { |s| s == item.name || s.end_with?("/#{item.name}") ? item.name : s }
+        add_extra_output(File.join(File.dirname(item.destination), "#{item.basename}.css.map"), JSON.generate(map))
+        css + "#{style == "compressed" ? "" : "\n\n"}/*# sourceMappingURL=#{item.basename}.css.map */"
       end
     end
 

@@ -1,0 +1,21 @@
+# Dependencies for minijekyll.rb. Vendored into vendor/cache with
+#   BUNDLE_GEMFILE=Gemfile.minijekyll bundle cache
+# and installed offline with
+#   BUNDLE_GEMFILE=Gemfile.minijekyll bundle install --local
+source "https://rubygems.org"
+
+# Pinned to the same versions as Gemfile.lock (the jekyll build) so the
+# generated HTML is byte-identical.
+gem "kramdown", "2.5.1"
+gem "kramdown-parser-gfm", "1.1.0"
+gem "rouge", "4.7.0"
+gem "liquid", "4.0.4"
+
+# liquid 4 requires bigdecimal, which is a bundled (not default) gem from
+# Ruby 3.4 on, so bundler needs it declared.
+gem "bigdecimal"
+
+# Optional: only needed to minify assets/css/main.scss (plain CSS). Native
+# binary, platform specific, so not vendored by default; a `sass` executable
+# on PATH works too.
+# gem "sass-embedded"
