@@ -638,7 +638,7 @@ implementations build a top-down dominator tree (nodes pointing to blocks
 dominated by that node) and then walk that tree depth-first. This lets them
 [push and pop][push-and-pop] from a [scoped hash table][scoped], or use
 generations, or something else smart like a fast [pre-order/post-order
-dominance check][dominance-check].
+dominance check][dominance-check] (now in [Waffle](https://github.com/bytecodealliance/waffle/pull/26) too!).
 
 [push-and-pop]: https://github.com/bytecodealliance/waffle/blob/c0ce14354e1b86f53fcca4d90e3c80507f23df7f/src/passes/dom_pass.rs
 [scoped]: https://github.com/bytecodealliance/wasmtime/blob/d5657d4038b4aedda619ca8d9bd21c84ea2e2878/cranelift/codegen/src/scoped_hash_map.rs
