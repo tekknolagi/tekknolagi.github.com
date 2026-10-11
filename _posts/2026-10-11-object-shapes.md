@@ -93,8 +93,8 @@ fragmentation.</figcaption>
 </figure>
 
 So runtime implementors tend to implement this thing called maps, or layouts,
-or shapes, or hidden classes, or probably a secret fifth name I don't know
-about, which optimizes reading, writing, and storage of attributes.
+or shapes, or hidden classes, or structures, or probably a secret sixth name I
+don't know about, which optimizes reading, writing, and storage of attributes.
 
 But what does this code look like? A lot of big production runtimes have pretty
 hairy code with domain-specific edge cases so they may not help get a handle on
@@ -113,9 +113,10 @@ Python object model is *really hairy*.
 
 But did I read it thoroughly this time? Well, no. This time I allowed myself to
 skim the class- and method-related parts and instead focus on the instance
-attribute and map parts. Inside CF's post is the core of a very clean
-map/layout/shape/hidden class system and I wanted to experiment with that, so I
-extracted it out.
+attribute and map parts. Inside CF's post is the core of a very clean map
+system and I wanted to experiment with that, so I extracted it out.
+
+CF's post starts off very similar to our own sketch
 
 <!-- A map by any other name would be as fleet -->
 
