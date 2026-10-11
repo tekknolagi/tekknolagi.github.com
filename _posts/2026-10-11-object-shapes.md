@@ -196,3 +196,7 @@ TODO: storage strategies
 TODO: Rails column optimization
 
 TODO: shape GC (because of classes?)
+
+TODO: IC
+
+TODO: JIT IC
