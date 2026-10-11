@@ -178,7 +178,8 @@ There's a bit of delegation going on in the `Base` class because the post
 already anticipates what we're about to do: swap out the `Instance`
 implementation for `_read_dict` and `_write_dict` for better performance. A
 `Class` is an object too and therefore should also be able to read and write
-attributes, but we're not going to give it the same performance.
+attributes, but we are for some reason not going to give it the same
+performance.
 
 <!-- A map by any other name would be as fleet -->
 
