@@ -298,6 +298,61 @@ storage as intended in an *inline cache*.
 
 ## Inline caches
 
+Let's start by looking at the string attribute API. We'll make a point class and
+read the `x` attribute.
+
+```python
+Point = Class(name="Point", base_class=OBJECT, fields={}, metaclass=TYPE)
+P = Instance(Point)
+P.write_attr("x", 5)
+P.write_attr("y", 6)
+
+# String API :(
+P.read_attr("x")
+# Always looking up index :(
+P.read_attr("x")
+# Every time :(
+P.read_attr("x")
+```
+
+Then we will make a trade-off. We will allocate space for the aforementioned
+*expected map* and the *cached index* mentioned earlier. This lets us do a
+really fast check followed by an indexed load in the (hopefully) common case.
+
+The logic is as follows:
+
+* If we have a matching map, great! Load from storage.
+* If we don't, look up the value and index by string name.
+* And then cache the map / index combo for next time.
+
+If the attribute is missing, we don't (for now?) cache the negative lookup.
+Hopefully this case is rare.
+
+```python
+class InlineCache:
+    def __init__(self):
+        self.map = None
+        self.idx = None
+
+    def read(self, obj, fieldname):
+        if obj.map is self.map:
+            return obj.storage[self.idx]
+        result = obj.read_attr(fieldname)
+        if result is MISSING:
+            return MISSING
+        self.map = obj.map
+        self.idx = obj.map.get_index(fieldname)
+        return result
+
+IC = InlineCache()
+# Looked up by string :(
+IC.read(P, "x")
+# Map hit! Looked up by index! :)
+IC.read(P, "x")
+# Map hit! Looked up by index! :)
+IC.read(P, "x")
+```
+
 <!-- A map by any other name would be as fleet -->
 
 TODO: remove indirection (C++ object allocator)
