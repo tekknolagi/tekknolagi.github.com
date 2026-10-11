@@ -157,9 +157,11 @@ OBJECT = Class(name="object", base_class=None, fields={}, metaclass=None)
 TYPE = Class(name="type", base_class=OBJECT, fields={}, metaclass=None)
 TYPE.cls = TYPE
 OBJECT.cls = TYPE
+```
 
-# Use it like this (test code taken from CF's post):
+Which you can use like this (test code also taken from CF's post):
 
+```python
 A = Class(name="A", base_class=OBJECT, fields={}, metaclass=TYPE)
 obj = Instance(A)
 obj.write_attr("a", 1)
