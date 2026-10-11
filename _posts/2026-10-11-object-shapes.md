@@ -183,7 +183,9 @@ performance.
 
 <!-- A map by any other name would be as fleet -->
 
-TODO: indirection (C++ object allocator)
+TODO: remove indirection (C++ object allocator)
+
+TODO: shape id in header
 
 TODO: storage strategies
 
