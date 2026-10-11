@@ -183,6 +183,121 @@ implementation for `_read_dict` and `_write_dict` for better performance. A
 attributes, but we are for some reason not going to give it the same
 performance.
 
+## Cartography
+
+OK, let's add on this "map" data structure. The purpose of the map is to do
+three things:
+
+1. Get out of the business of dealing with strings and hashing in the fast
+   path. We would like to instead do operations on small integers.
+2. Remove the hash table indirection. We would like to store the attributes
+   in-line in the object.
+3. Be/have a stable idenfier that describes a particular object layout.
+
+**For the former**, we can think of an object's map field as an (database) index or
+a write-through cache. It is responsible for reflecting on the layout of a
+given object:
+
+<figure>
+<object class="svg" type="image/svg+xml" data="/assets/img/hashtable-shape-memory.excalidraw.svg"></object>
+<figcaption>This model is <i>mostly</i> there...</figcaption>
+</figure>
+
+You can ask the map questions like "what attributes does this object have?" and
+"where is attribute `a` relative to the start of the object?"
+
+<!-- another invariant: compare by ID... -->
+
+Just looking at the diagram, it may seem silly: after all, we have exchanged
+one hash table for another. There's one big difference, though, which is that
+in the shape model, we don't *have* to always use the hash table. If we
+remember the offset since the last time we looked it up in the shape, we can
+re-use the offset.
+
+This brings us to **the second bit**: if we have the offset into the object, we
+can read right off of it. No need to go through another region of memory and
+hash a string. We have the object in hand. Load.
+
+...At least, until the map *changes*. Remember, these languages encourage this
+flexibility. An object could gain or lose an attribute at any time. What then?
+Ideally we have a very fast check that can tell us if the object's in-memory
+layout changed.
+
+This brings us to **the third bit**. We need to be able to rely on the map to
+be immutable, up-to-date, and a stable identifier for a given in-memory layout.
+This way we can do a very quick check ("is the map the same as last read?")
+before a load.
+
+This means that when we add a new attribute to an object, we need to give it a
+new map. Maps are actually *trees* (tries?) and are allocated like a persistent
+data structure. Every new object starts with an empty map. As the program adds
+attributes, it follows the edges in the tree to find or create its new map.
+
+<figure>
+<object class="png" data="/assets/img/maptransition.png"></object>
+<figcaption>Image from CF Bolz-Tereick, CC BY 3.0.</figcaption>
+</figure>
+
+I recommend reading [the section on
+maps](https://aosabook.org/en/500L/a-simple-object-model.html#instance-optimization)
+because it goes into a little more detail.
+
+Keeping all of that in mind, let's take a look at CF's Python implementation of
+objects with maps and maps themselves:
+
+```python
+class Instance(Instance):
+    def __init__(self, cls: "Class"):
+        super().__init__(cls)
+        self.map = EMPTY_MAP
+        self.storage = []
+
+    def _read_dict(self, fieldname):
+        index = self.map.get_index(fieldname)
+        if index == -1:
+            return MISSING
+        return self.storage[index]
+
+    def _write_dict(self, fieldname, value):
+        index = self.map.get_index(fieldname)
+        if index != -1:
+            self.storage[index] = value
+        else:
+            new_map = self.map.next_map(fieldname)
+            self.storage.append(value)
+            self.map = new_map
+
+class Map:
+    def __init__(self, attrs):
+        self.attrs = attrs
+        self.next_maps = {}
+
+    def get_index(self, fieldname):
+        return self.attrs.get(fieldname, -1)
+
+    def next_map(self, fieldname):
+        assert fieldname not in self.attrs
+        if fieldname in self.next_maps:
+            return self.next_maps[fieldname]
+        attrs = self.attrs.copy()
+        attrs[fieldname] = len(attrs)
+        result = self.next_maps[fieldname] = Map(attrs)
+        return result
+
+EMPTY_MAP = Map({})
+```
+
+You may notice that the storage is not in-line, as I had originally promised.
+This is because we don't have that kind of object layout control in Python.
+Attribute storage, when implemented in a language such as C++ or Rust, is
+typically in-line with the object header.
+
+Ignoring that, though, we can see that the common case still seems to read and
+write attributes using string names. What gives? Well, let's use the index
+storage as intended in an *inline cache*.
+
+## Inline caches
+
 <!-- A map by any other name would be as fleet -->
 
 TODO: remove indirection (C++ object allocator)
