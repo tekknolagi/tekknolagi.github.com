@@ -122,6 +122,8 @@ out earlier around classes. I'll copy my reduced implementation of it here so
 you can take a gander:
 
 ```python
+# The base object model code:
+
 class Base:
     def __init__(self, cls, fields):
         self.cls = cls
@@ -155,6 +157,21 @@ OBJECT = Class(name="object", base_class=None, fields={}, metaclass=None)
 TYPE = Class(name="type", base_class=OBJECT, fields={}, metaclass=None)
 TYPE.cls = TYPE
 OBJECT.cls = TYPE
+
+# Use it like this (test code taken from CF's post):
+
+A = Class(name="A", base_class=OBJECT, fields={}, metaclass=TYPE)
+obj = Instance(A)
+obj.write_attr("a", 1)
+assert obj.read_attr("a") == 1
+
+obj.write_attr("b", 5)
+assert obj.read_attr("a") == 1
+assert obj.read_attr("b") == 5
+
+obj.write_attr("a", 2)
+assert obj.read_attr("a") == 2
+assert obj.read_attr("b") == 5
 ```
 
 There's a bit of delegation going on in the `Base` class because the post
