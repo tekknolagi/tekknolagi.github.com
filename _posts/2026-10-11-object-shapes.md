@@ -353,6 +353,10 @@ IC.read(P, "x")
 IC.read(P, "x")
 ```
 
+You may note that I used `is` instead of `==`. This is intentional! Because we
+are guaranteeing the maps are immutable, we don't need to check equality on the
+fields of the map; just its pointer/numeric ID.
+
 <!-- A map by any other name would be as fleet -->
 
 TODO: remove indirection (C++ object allocator)
