@@ -116,7 +116,52 @@ skim the class- and method-related parts and instead focus on the instance
 attribute and map parts. Inside CF's post is the core of a very clean map
 system and I wanted to experiment with that, so I extracted it out.
 
-CF's post starts off very similar to our own sketch
+CF's post starts off very similar to our own sketch, modeling objects as bags
+unordered bags of attributes. It also fills in some of the TODO stuff I left
+out earlier around classes. I'll copy my reduced implementation of it here so
+you can take a gander:
+
+```python
+class Base:
+    def __init__(self, cls, fields):
+        self.cls = cls
+        self._fields = fields
+
+    def read_attr(self, fieldname):
+        return self._read_dict(fieldname)
+
+    def write_attr(self, fieldname, value):
+        return self._write_dict(fieldname, value)
+
+    def _read_dict(self, fieldname):
+        return self._fields.get(fieldname, MISSING)
+
+    def _write_dict(self, fieldname, value):
+        self._fields[fieldname] = value
+
+MISSING = object()
+
+class Instance(Base):
+    def __init__(self, cls: "Class"):
+        super().__init__(cls, {})
+
+class Class(Base):
+    def __init__(self, name, base_class, fields, metaclass):
+        super().__init__(metaclass, fields)
+        self.name = name
+        self.base_class = base_class
+
+OBJECT = Class(name="object", base_class=None, fields={}, metaclass=None)
+TYPE = Class(name="type", base_class=OBJECT, fields={}, metaclass=None)
+TYPE.cls = TYPE
+OBJECT.cls = TYPE
+```
+
+There's a bit of delegation going on in the `Base` class because the post
+already anticipates what we're about to do: swap out the `Instance`
+implementation for `_read_dict` and `_write_dict` for better performance. A
+`Class` is an object too and therefore should also be able to read and write
+attributes, but we're not going to give it the same performance.
 
 <!-- A map by any other name would be as fleet -->
 
@@ -125,3 +170,5 @@ TODO: indirection (C++ object allocator)
 TODO: storage strategies
 
 TODO: Rails column optimization
+
+TODO: shape GC (because of classes?)
