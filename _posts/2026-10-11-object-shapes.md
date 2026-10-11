@@ -357,6 +357,12 @@ You may note that I used `is` instead of `==`. This is intentional! Because we
 are guaranteeing the maps are immutable, we don't need to check equality on the
 fields of the map; just its pointer/numeric ID.
 
+Notice also that this cache is not specific to this object; any number of
+`Point` instances can get a cache hit. Actually, looking at it, an object need
+not even be a `Point`...
+
+## Class vs shape
+
 <!-- A map by any other name would be as fleet -->
 
 TODO: remove indirection (C++ object allocator)
