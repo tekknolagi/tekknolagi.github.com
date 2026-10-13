@@ -321,9 +321,10 @@ P.read_attr("x")
 P.read_attr("x")
 ```
 
-Then we will make a trade-off. We will allocate space for the aforementioned
-*expected map* and the *cached index* mentioned earlier. This lets us do a
-really fast check followed by an indexed load in the (hopefully) common case.
+Then we will make a memory/speed trade-off. We will allocate space for the
+aforementioned *expected map* and the *cached index* mentioned earlier. This
+lets us do a really fast check followed by an indexed load in the (hopefully)
+common case.
 
 The logic is as follows:
 
