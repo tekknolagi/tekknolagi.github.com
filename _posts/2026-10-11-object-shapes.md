@@ -373,6 +373,23 @@ not even be a `Point`...
 What does it mean that two objects with different classes can have the same
 shape?
 
+```python
+Foo = Class(name="Foo", base_class=OBJECT, fields={}, metaclass=TYPE)
+F = Instance(Foo)
+F.write_attr("x", 1)
+F.write_attr("y", 2)
+
+Bar = Class(name="Bar", base_class=OBJECT, fields={}, metaclass=TYPE)
+B = Instance(Bar)
+B.write_attr("x", 3)
+B.write_attr("y", 4)
+
+# Same shape/map!
+assert F.map is B.map
+# But different class!
+assert F.cls != B.cls
+```
+
 For one, it means that the inline cache may have a higher hit rate. Instances
 of subclasses that share code, for example, may still count as *monomorphic* in
 the IC.
