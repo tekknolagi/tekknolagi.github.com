@@ -299,7 +299,13 @@ storage as intended in an *inline cache*.
 ## Inline caches
 
 Let's start by looking at the string attribute API. We'll make a point class and
-read the `x` attribute.
+read the `x` attribute. We'll keep the attribute name constant since this is
+generally fixed in the program: `obj.x` normally looks like some bytecode
+`LOAD_ATTRIBUTE, "x"` where the name `x` is embedded in the bytecode somehow.
+
+This is important for the inline cache: varying the receiver is one thing but
+varying the name being looked up adds a lot more complexity. It's doable but
+irritating.
 
 ```python
 Point = Class(name="Point", base_class=OBJECT, fields={}, metaclass=TYPE)
