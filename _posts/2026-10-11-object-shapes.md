@@ -382,8 +382,8 @@ class. If you have something like `attr_reader` in Ruby, where the VM generates
 a synthetic method just for looking up an instance variable, you need to do two
 things:
 
-1. resolve the method based on the object's class to find out that it's `attr_reader`
-2. resolve the instance variable based on the object's shape
+1. resolve the method based on the *object's class* to find out that it's `attr_reader`
+2. resolve the instance variable based on the *object's shape*
 
 This two-stage lookup adds both complexity and run-time overhead. If we
 specialized maps so that having a different class implied having a different
