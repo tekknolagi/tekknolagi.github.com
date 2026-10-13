@@ -370,6 +370,34 @@ not even be a `Point`...
 
 ## Class vs shape
 
+What does it mean that two objects with different classes can have the same
+shape?
+
+For one, it means that the inline cache may have a higher hit rate. Instances
+of subclasses that share code, for example, may still count as *monomorphic* in
+the IC.
+
+It also means that you can't use the shape as a proxy for knowing about the
+class. If you have something like `attr_reader` in Ruby, where the VM generates
+a synthetic method just for looking up an instance variable, you need to do two
+things:
+
+1. resolve the method based on the object's class to find out that it's `attr_reader`
+2. resolve the instance variable based on the object's shape
+
+This two-stage lookup adds both complexity and run-time overhead. If we
+specialized maps so that having a different class implied having a different
+map, we would be able to specialize that two-stage dispatch with just one field
+load.
+
+This is kind of an interesting idea: what else can we specialize the map on?
+
+## Storage strategies
+
+Perhaps unsurprisingly, CF Bolz-Tereick reappears with Lukas Diekmann and
+Laurence Tratt in [Storage Strategies for Collections in Dynamically Typed
+Languages](https://dl.acm.org/doi/pdf/10.1145/2544173.2509531) (PDF).
+
 <!-- A map by any other name would be as fleet -->
 
 TODO: remove indirection (C++ object allocator)
@@ -377,8 +405,6 @@ TODO: remove indirection (C++ object allocator)
 TODO: shape id in header
 
 TODO: class in the shape?
-
-TODO: storage strategies
 
 TODO: Rails column optimization
 
