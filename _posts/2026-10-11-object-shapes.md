@@ -417,6 +417,8 @@ Languages](https://dl.acm.org/doi/pdf/10.1145/2544173.2509531) (PDF).
 
 <!-- A map by any other name would be as fleet -->
 
+TODO: order of adding attributes matters (navigation in trie/tree)
+
 TODO: remove indirection (C++ object allocator)
 
 TODO: shape id in header
