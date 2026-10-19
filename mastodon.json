@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 627,
     "following_count": 288,
-    "statuses_count": 1564,
-    "last_status_at": "2026-10-05",
+    "statuses_count": 1565,
+    "last_status_at": "2026-10-18",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -81483,6 +81483,44 @@
       "quotes_count": 0,
       "edited_at": null,
       "content": "<p>They&#39;re playing a Eurythmics+Sean Paul remix at this wedding and I&#39;m into it?</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117464474734892701": {
+      "id": "117464474734892701",
+      "created_at": "2026-10-18T23:20:42.411Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117464474734892701",
+      "url": "https://mastodon.social/@tekknolagi/117464474734892701",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Just set up Home Assistant. I am about to become insufferable.</p>",
       "reblog": null,
       "application": {
         "name": "Mastodon for Android",
