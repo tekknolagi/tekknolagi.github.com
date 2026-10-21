@@ -148,9 +148,6 @@ class Runtime {
     return obj;
   }
 
-  const Shape *integer_shape() const { return integer_shape_; }
-  uint32_t integer_shape_id() const { return integer_shape_->id; }
-
   private:
   std::vector<Shape *> shapes_;
   Shape *empty_shape_ = nullptr;
