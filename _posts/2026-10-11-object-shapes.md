@@ -242,7 +242,7 @@ maps](https://aosabook.org/en/500L/a-simple-object-model.html#instance-optimizat
 because it goes into a little more detail.
 
 Keeping all of that in mind, let's take a look at CF's Python implementation of
-objects with maps and maps themselves:
+objects-with-maps and also of maps themselves:
 
 ```python
 class Instance(Instance):
