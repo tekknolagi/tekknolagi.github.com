@@ -4,8 +4,8 @@ layout: post
 ---
 
 In many dynamically typed programming languages, objects look like a big ol'
-hash table of names mapping to values. The languages encourage this
-flexibility. Consider for example Python:
+mapping of names to values. The languages encourage this flexibility. Consider
+for example Python:
 
 ```python
 class C:
@@ -50,8 +50,8 @@ obj.a = 1;
 obj.b = 2;
 ```
 
-This might encourage the VM implementor to actually model objects the way that
-they behave: as a class and a hash table:
+This might encourage the VM implementor to model object attributes using a hash
+table. Hash tables, after all, are very good at mapping names to values.
 
 ```python
 MISSING = object()
@@ -81,7 +81,8 @@ This has its benefits:
 
 It also has its drawbacks:
 
-* it uses a hash table for a very common operation
+* it uses a hash table for a very common operation: while this is technically
+  O(1), hashing and probing are very slow
 * it has an indirection: object attributes are accessed frequently and should
   therefore be stored in-line on the object instead of another memory access
   (and potentially cache miss) away
