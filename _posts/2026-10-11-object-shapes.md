@@ -234,7 +234,7 @@ data structure. Every new object starts with an empty map. As the program adds
 attributes, it follows the edges in the tree to find or create its new map.
 
 <figure>
-<object class="png" data="/assets/img/maptransition.png"></object>
+<object class="invert" data="/assets/img/maptransition.png"></object>
 <figcaption>Image from CF Bolz-Tereick, CC BY 3.0.</figcaption>
 </figure>
 
