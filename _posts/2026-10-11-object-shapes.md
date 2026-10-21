@@ -100,6 +100,10 @@ It also has its drawbacks:
 fragmentation.</figcaption>
 </figure>
 
+This means that literally every operation `a.b` is doing hundreds or thousands
+of CPU instructions, including multiple dependent memory loads. This is *not
+good* for performance.
+
 So runtime implementors tend to implement this thing called maps, or layouts,
 or shapes, or hidden classes, or structures, or probably a secret sixth name I
 don't know about, which optimizes reading, writing, and storage of attributes.
