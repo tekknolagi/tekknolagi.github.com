@@ -458,8 +458,6 @@ attributes and their types. This nesting extension is mostly motivated by the
 meta-circularity of the implementation and would have less impact for a
 "normal" runtime.
 
-TODO: order of adding attributes matters (navigation in trie/tree)
-
 TODO: remove indirection (C++ object allocator)
 
 TODO: shape id in header
