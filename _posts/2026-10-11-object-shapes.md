@@ -480,18 +480,24 @@ attributes and their types. This nesting extension is mostly motivated by the
 meta-circularity of the implementation and would have less impact for a
 "normal" runtime.
 
+## Once more with ~~feeling~~ C++
+
+I felt like this blog post would not be complete without a manual memory layout
+rehashing of CF's article. It's all well and good to write the Python but what
+do "real" runtimes look like?
+
+So I made a very very small runtime in C++ that allocates objects and adds
+attributes and has a shape system. It is probably *riddled* with bugs. But it
+sketches the kind of memory layouts that underpin Skybison, V8, JSC, and so on.
+
+[Take a look](https://gist.github.com/tekknolagi/caf8462b75ac8ba7e33f6ade06b3f914).
+
 ## And more
 
 I fear I am running out of steam on this blog post but there is more to talk
-about. For example, I originally wanted to make a Rust or C++ version of CF's
-article that did all the manual memory layout: it stored attributes inline, it
-stored the shape ID inline in the header, and so on. Perhaps I will come back
-and update this post. Or perhaps you will write a sequel.
+about. Perhaps I will come back and update this post. Or perhaps you will write
+a sequel.
 
 <!--
-TODO: remove indirection (C++ object allocator)
-
-TODO: shape id in header
-
 TODO: shape GC (because of classes?)
 -->
