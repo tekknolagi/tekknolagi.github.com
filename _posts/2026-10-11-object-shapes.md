@@ -399,9 +399,13 @@ post](https://caiolima.github.io/jsc/2020/03/12/jsc-inline-cache.html) that
 
 Another thing to notice is that **order matters**. Adding attributes in different
 orders (e.g. `a` then `b` vs `b` then `a`) will result in different shapes.
-This is not really visible to the application programmer except in performance
-regressions[^attribute-order], where either your inline caches will frequently
-miss or you will not have optimal (monomorphic) caches.
+Another frequent cause of this is conditionally storing attributes in
+initialization (e.g. `if cond: self.a = 1`).
+
+This shape and cache behavior is not really visible to the application
+programmer except in performance regressions[^attribute-order], where either
+your inline caches will frequently miss or you will not have optimal
+(monomorphic) caches.
 
 [^attribute-order]: See [this Rails
     PR](https://github.com/rails/rails/pull/57020) by Hartley to make shapes
@@ -416,6 +420,12 @@ miss or you will not have optimal (monomorphic) caches.
     research](/assets/img/optimization-coaching-js.pdf) (PDF) about
     intelligibly surfacing this kind of information to the application
     programmer.
+
+Also, **quantity matters**. VM implementors measured and determined that most
+objects are small (<20 ish fields). You may find that putting too many fields
+on an object leads to it getting penalized and put back in "hash table mode".
+Ruby, for example, has some fixed number of in-object instance variables
+(attributes) before its shape becomes "complex".
 
 Last, notice that this cache is not specific to this object; any number of
 `Point` instances can get a cache hit. Actually, looking at it, an object need
