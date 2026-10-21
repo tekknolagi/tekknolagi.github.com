@@ -159,4 +159,4 @@ Wahoo!
 * Static is better than dynamic. Burn in those constants.
 * In particular, `public_send` is slow!
 * We can fix performance issues upstream! Especially if the upstream libraries
-  already do code generation. No all problems require a custom compiler.
+  already do code generation. Not all problems require a custom compiler.
