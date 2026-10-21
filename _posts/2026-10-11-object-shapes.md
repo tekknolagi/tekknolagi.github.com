@@ -364,11 +364,13 @@ You may note that I used `is` instead of `==`. This is intentional! Because we
 are guaranteeing the maps are immutable, we don't need to check equality on the
 fields of the map; just its pointer/numeric ID.
 
-This is mostly just a "sketch" of what an inline cache does. It does definitely
-improve performance---I recommend benchmarking a silly little attribute lookup
-function---but most runtimes with inline caches also come with JIT compilers.
-These compilers try to remove the "interpreted"-ness of the inline cache
-implementation above. See for example:
+This `InlineCache` class is mostly just a "sketch" of what an inline cache
+does. It is an "interpreted IC". This shape, if you make sure the fast path is
+inlined and the slow path is outlined, can help your interpreter a lot. It does
+definitely improve performance---I recommend benchmarking a silly little
+attribute lookup function---but most runtimes with inline caches also come with
+JIT compilers. These compilers try to remove the "interpreted"-ness of the
+inline cache implementation. See for example:
 
 * [Slava's post](https://mrale.ph/blog/2015-01-11-whats-up-with-monomorphism.html) that
   explains with IR sketches and JS-like pseudocode
