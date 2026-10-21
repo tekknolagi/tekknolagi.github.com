@@ -364,7 +364,25 @@ You may note that I used `is` instead of `==`. This is intentional! Because we
 are guaranteeing the maps are immutable, we don't need to check equality on the
 fields of the map; just its pointer/numeric ID.
 
-Notice also that this cache is not specific to this object; any number of
+Another thing to notice is that order matters. Adding attributes in different
+orders (e.g. `a` then `b` vs `b` then `a`) will result in different shapes.
+This is not really visible to the application programmer except in performance
+regressions[^attribute-order].
+
+[^attribute-order]: See [this Rails
+    PR](https://github.com/rails/rails/pull/57020) by Hartley to make shapes
+    more monomorphic. It was initially filed because ZJIT was not capable of
+    handling shape polymorphic reads, but it helps other JITs stay monomorphic
+    too. Also in this vein is [my PR to
+    optcarrot](https://github.com/mame/optcarrot/pull/59). ZJIT now does much
+    better with polymorphic shapes but this kind of stuff is generally
+    important across languages and runtimes. Enough for people to do [large
+    bodies](/assets/img/optimization-coaching.pdf) (PDF) [of
+    research](/assets/img/optimization-coaching-js.pdf) (PDF) about
+    intelligibly surfacing this kind of information
+    to the application programmer.
+
+Last, notice that this cache is not specific to this object; any number of
 `Point` instances can get a cache hit. Actually, looking at it, an object need
 not even be a `Point`...
 
