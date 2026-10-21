@@ -479,6 +479,16 @@ attributes and their types. This nesting extension is mostly motivated by the
 meta-circularity of the implementation and would have less impact for a
 "normal" runtime.
 
+See also:
+
+* [Optimizing Dynamically-Dispatched Calls with Run-Time Type Feedback](https://dl.acm.org/doi/pdf/10.1145/178243.178478) (PDF, 1994)
+* [An Object Storage Model for the Truffle Language Implementation Framework](https://dl.acm.org/doi/pdf/10.1145/2647508.2647517) (PDF, 2014)
+* [Extending Basic Block Versioning with Typed Object Shapes](https://arxiv.org/pdf/1507.02437) (PDF, 2015)
+* [Just-in-Time Data Structures](https://dl.acm.org/doi/pdf/10.1145/2814228.2814231) (PDF, 2015)
+* [Efficient and thread-safe objects for dynamically-typed languages](https://dl.acm.org/doi/10.1145/2983990.2984001) (PDF, 2016)
+* [Parallelization of dynamic languages: synchronizing built-in collections](https://dl.acm.org/doi/pdf/10.1145/3276478) (PDF, 2018)
+* [Optimizations for Dynamic Collections](https://www.jot.fm/issues/issue_2025_01/a1.pdf) (PDF, 2025)
+
 ## Once more with ~~feeling~~ C++
 
 I felt like this blog post would not be complete without a manual memory layout
