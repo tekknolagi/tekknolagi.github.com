@@ -3,6 +3,8 @@ title: "Objects, attributes, maps, oh my!"
 layout: post
 ---
 
+Or, *IC UC we all C for ICs*.
+
 In many dynamically typed programming languages, objects look like a big ol'
 mapping of names to values. The languages encourage this flexibility. Consider
 for example Python:
