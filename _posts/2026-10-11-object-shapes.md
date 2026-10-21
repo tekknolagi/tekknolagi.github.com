@@ -107,7 +107,7 @@ page of code and hold the whole thing in your head at once.
 
 ## 500 lines or less
 
-I decided to give try once more to give CF Bolz-Tereick's [A Simple Object
+I decided to once more give CF Bolz-Tereick's [A Simple Object
 Model](https://aosabook.org/en/500L/a-simple-object-model.html) the thorough
 read it deserves. In the past, I tried a couple times and bounced off of it
 because it models with reasonable fideltiy something close to Python and the
