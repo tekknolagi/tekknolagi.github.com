@@ -374,13 +374,14 @@ regressions[^attribute-order].
     more monomorphic. It was initially filed because ZJIT was not capable of
     handling shape polymorphic reads, but it helps other JITs stay monomorphic
     too. Also in this vein is [my PR to
-    optcarrot](https://github.com/mame/optcarrot/pull/59). ZJIT now does much
-    better with polymorphic shapes but this kind of stuff is generally
-    important across languages and runtimes. Enough for people to do [large
-    bodies](/assets/img/optimization-coaching.pdf) (PDF) [of
+    optcarrot](https://github.com/mame/optcarrot/pull/59).
+
+    ZJIT now does much better with polymorphic shapes but this kind of stuff is
+    generally important across languages and runtimes. Enough for people to do
+    [large bodies](/assets/img/optimization-coaching.pdf) (PDF) [of
     research](/assets/img/optimization-coaching-js.pdf) (PDF) about
-    intelligibly surfacing this kind of information
-    to the application programmer.
+    intelligibly surfacing this kind of information to the application
+    programmer.
 
 Last, notice that this cache is not specific to this object; any number of
 `Point` instances can get a cache hit. Actually, looking at it, an object need
