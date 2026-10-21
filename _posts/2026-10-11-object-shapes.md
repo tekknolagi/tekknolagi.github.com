@@ -405,7 +405,8 @@ initialization (e.g. `if cond: self.a = 1`).
 This shape and cache behavior is not really visible to the application
 programmer except in performance regressions[^attribute-order], where either
 your inline caches will frequently miss or you will not have optimal
-(monomorphic) caches.
+(monomorphic) caches. This might not sound scary but the difference between a
+cache hit and a cache miss in a hot path could be 2x performance or more.
 
 [^attribute-order]: See [this Rails
     PR](https://github.com/rails/rails/pull/57020) by Hartley to make shapes
