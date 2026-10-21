@@ -462,10 +462,6 @@ TODO: remove indirection (C++ object allocator)
 
 TODO: shape id in header
 
-TODO: class in the shape?
-
-TODO: Rails column optimization
-
 TODO: shape GC (because of classes?)
 
 TODO: IC
