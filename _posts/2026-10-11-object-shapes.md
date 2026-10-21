@@ -484,5 +484,3 @@ TODO: remove indirection (C++ object allocator)
 TODO: shape id in header
 
 TODO: shape GC (because of classes?)
-
-TODO: JIT IC
