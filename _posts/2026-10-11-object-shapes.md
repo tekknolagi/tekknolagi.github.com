@@ -413,9 +413,31 @@ This is kind of an interesting idea: what else can we specialize the map on?
 
 Perhaps unsurprisingly, CF Bolz-Tereick reappears with Lukas Diekmann and
 Laurence Tratt in [Storage Strategies for Collections in Dynamically Typed
-Languages](https://dl.acm.org/doi/pdf/10.1145/2544173.2509531) (PDF).
+Languages](https://dl.acm.org/doi/pdf/10.1145/2544173.2509531) (PDF, 2013).
 
-<!-- A map by any other name would be as fleet -->
+The main idea is that some facts about objects (properties, attributes, har
+har) are both:
+
+* worth splitting/monomorphizing on (there is some kind of "payoff" for the
+  increase in branches and code size)
+* similarly sensitive to code location (TODO)
+
+Their treatment is for collections (for example, optimizing the common cases of
+an empty list, or a list of small integers, ...). In addition to giving more
+information to the optimizer, it helps both reduce memory and reduce pointer
+chasing.
+
+This kind of thinking extends beyond collections: do you ever have objects
+where an attribute is always a certain type? Maybe your `Point` class always
+has floats in it? Consider, then, what I think of as CF's follow-up paper, type
+freezing: [Type Freezing: Exploiting Attribute Type Monomorphism in Tracing JIT
+Compilers](https://dl.acm.org/doi/pdf/10.1145/3368826.3377907) (PDF, 2020)
+
+This paper changes object maps from `{name: offset}` to `{name: (offset,
+type)}` to reduce guards. Then it goes further by even addressing nested
+attributes and their types. This nesting extension is mostly motivated by the
+meta-circularity of the implementation and would have less impact for a
+"normal" runtime.
 
 TODO: order of adding attributes matters (navigation in trie/tree)
 
