@@ -523,3 +523,8 @@ a sequel.
 <!--
 TODO: shape GC (because of classes?)
 -->
+
+## Thank you
+
+Thank you to CF Bolz-Tereick and Nery Campusano for thoughtful feedback on this
+post.
