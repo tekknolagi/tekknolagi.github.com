@@ -200,8 +200,8 @@ three things:
 
 1. Get out of the business of dealing with strings and hashing in the fast
    path. We would like to instead do operations on small integers.
-2. Remove the hash table indirection. We would like to store the attributes
-   in-line in the object.
+2. Remove the indirection. We would like to store the attributes in-line in the
+   object instead of elsewhere in memory.
 3. Be/have a stable identifier that describes a particular object layout.
 
 **For the former**, we can think of an object's map field as an (database) index or
@@ -226,10 +226,10 @@ re-use the offset. This mostly appears in an interpreter feature called an
 inline cache.
 
 This brings us to **the second bit**: if we have the offset into the object, we
-can read right off of it. No need to go through another region of memory and
-hash a string. We have the object in hand. Load.
+can read right off of it. No need to go do a second load from another region of
+memory. We have the object in hand and hopefully already in the cache.
 
-...At least, until the map *changes*. Remember, these languages encourage this
+...At least, until the map *changes*. Then we can't re-use the offset. Remember, these languages encourage this
 flexibility. An object could gain or lose an attribute at any time. What then?
 Ideally we have a very fast check that can tell us if the object's in-memory
 layout changed.
