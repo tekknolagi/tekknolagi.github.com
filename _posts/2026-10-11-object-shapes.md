@@ -460,7 +460,8 @@ har) are both:
 
 * worth splitting/monomorphizing on (there is some kind of "payoff" for the
   increase in branches and code size)
-* similarly sensitive to code location (TODO)
+* similarly sensitive to code location (int lists allocated here, float lists
+  over there)
 
 Their treatment is for collections (for example, optimizing the common cases of
 an empty list, or a list of small integers, ...). In addition to giving more
@@ -478,6 +479,14 @@ type)}` to reduce guards. Then it goes further by even addressing nested
 attributes and their types. This nesting extension is mostly motivated by the
 meta-circularity of the implementation and would have less impact for a
 "normal" runtime.
+
+## And more
+
+I fear I am running out of steam on this blog post but there is more to talk
+about. For example, I originally wanted to make a Rust or C++ version of CF's
+article that did all the manual memory layout: it stored attributes inline, it
+stored the shape ID inline in the header, and so on. Perhaps I will come back
+and update this post. Or perhaps you will write a sequel.
 
 <!--
 TODO: remove indirection (C++ object allocator)
