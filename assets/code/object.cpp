@@ -93,6 +93,7 @@ class Runtime {
         return transition.target_shape;
       }
     }
+    // TODO(max): Handle attribute removal
     Shape *result = new_shape_with_attributes(shape->attributes);
     result->attributes.push_back(Attribute{name});
     shape->transitions.push_back(Transition{kind, name, result});
