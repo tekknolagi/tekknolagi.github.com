@@ -222,7 +222,8 @@ Just looking at the diagram, it may seem silly: after all, we have exchanged
 one hash table for another. There's one big difference, though, which is that
 in the shape model, we don't *have* to always use the hash table. If we
 remember the offset since the last time we looked it up in the shape, we can
-re-use the offset.
+re-use the offset. This mostly appears in an interpreter feature called an
+inline cache.
 
 This brings us to **the second bit**: if we have the offset into the object, we
 can read right off of it. No need to go through another region of memory and
