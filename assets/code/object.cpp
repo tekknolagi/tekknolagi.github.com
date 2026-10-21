@@ -107,6 +107,8 @@ class Runtime {
     return Object::allocate(header);
   }
 
+  // Most runtimes have some kind of pointer tagging instead of storing small
+  // integers in heap-allocated containers
   Object *new_integer(int64_t value) {
     Header header;
     header.shape_id = integer_shape_->id;
