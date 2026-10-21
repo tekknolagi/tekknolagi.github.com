@@ -552,5 +552,5 @@ TODO: shape GC (because of classes?)
 
 ## Thank you
 
-Thank you to CF Bolz-Tereick and Nery Campusano for thoughtful feedback on this
-post.
+Thank you to CF Bolz-Tereick, Nery Campusano, and Jacob Denbeaux for thoughtful
+feedback on this post.
