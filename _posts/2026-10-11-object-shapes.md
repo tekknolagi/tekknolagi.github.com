@@ -481,6 +481,7 @@ meta-circularity of the implementation and would have less impact for a
 
 See also:
 
+* [An Efficient Implementation of SELF, a Dynamically-Typed Object-Oriented Language Based on Prototypes](https://bibliography.selflanguage.org/_static/implementation.pdf) (PDF, 1991)
 * [Optimizing Dynamically-Dispatched Calls with Run-Time Type Feedback](https://dl.acm.org/doi/pdf/10.1145/178243.178478) (PDF, 1994)
 * [An Object Storage Model for the Truffle Language Implementation Framework](https://dl.acm.org/doi/pdf/10.1145/2647508.2647517) (PDF, 2014)
 * [Extending Basic Block Versioning with Typed Object Shapes](https://arxiv.org/pdf/1507.02437) (PDF, 2015)
