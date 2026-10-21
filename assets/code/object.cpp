@@ -118,7 +118,7 @@ class Runtime {
     return result;
   }
 
-  Object *get_attribute(Object *obj, const std::string& name) {
+  Object *read_attr(Object *obj, const std::string& name) {
     const Shape *shape = this->shape(obj->header_.shape_id);
     for (uint32_t i = 0; i < shape->num_attributes(); ++i) {
       if (shape->attributes[i].name == name) {
@@ -130,7 +130,7 @@ class Runtime {
     return nullptr;
   }
 
-  Object *set_attribute(Object *obj, const std::string& name, Object *value) {
+  Object *write_attr(Object *obj, const std::string& name, Object *value) {
     Shape *shape = this->shape(obj->header_.shape_id);
     for (uint32_t i = 0; i < shape->num_attributes(); ++i) {
       if (shape->attributes[i].name == name) {
@@ -163,9 +163,9 @@ int main() {
   std::fprintf(stdout, "Integer value: %" PRId64 "\n", three->integer_value());
   Object *four = runtime.new_integer(4);
   std::fprintf(stdout, "Integer value: %" PRId64 "\n", four->integer_value());
-  runtime.set_attribute(obj, "x", three);
-  runtime.set_attribute(obj, "y", four);
-  std::fprintf(stdout, "Attribute x: %" PRId64 "\n", runtime.get_attribute(obj, "x")->integer_value());
-  std::fprintf(stdout, "Attribute y: %" PRId64 "\n", runtime.get_attribute(obj, "y")->integer_value());
+  runtime.write_attr(obj, "x", three);
+  runtime.write_attr(obj, "y", four);
+  std::fprintf(stdout, "Attribute x: %" PRId64 "\n", runtime.read_attr(obj, "x")->integer_value());
+  std::fprintf(stdout, "Attribute y: %" PRId64 "\n", runtime.read_attr(obj, "y")->integer_value());
   return 0;
 }
