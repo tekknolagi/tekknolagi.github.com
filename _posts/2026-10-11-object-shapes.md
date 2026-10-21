@@ -486,11 +486,19 @@ I felt like this blog post would not be complete without a manual memory layout
 rehashing of CF's article. It's all well and good to write the Python but what
 do "real" runtimes look like?
 
+Well, they have compact object headers that contain the shape/map and some
+other flag bits. They allocate their attributes inline with an object. And they
+probably also have an "overflow" slot for when their initial object sizing
+estimates were too small.
+
 So I made a very very small runtime in C++ that allocates objects and adds
 attributes and has a shape system. It is probably *riddled* with bugs. But it
 sketches the kind of memory layouts that underpin Skybison, V8, JSC, and so on.
 
 [Take a look](https://gist.github.com/tekknolagi/caf8462b75ac8ba7e33f6ade06b3f914).
+
+It doesn't have the overflow slot but it's a decent sketch of the underlying
+model.
 
 ## And more
 
