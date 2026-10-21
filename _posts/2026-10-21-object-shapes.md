@@ -540,8 +540,11 @@ model.
 ## And more
 
 I fear I am running out of steam on this blog post but there is more to talk
-about. Perhaps I will come back and update this post. Or perhaps you will write
-a sequel.
+about. I originally wanted to go add object shapes to someone's Lox interpreter
+and then add inline caches to the interpreter.
+
+Perhaps I will come back and update this post. Or perhaps you will write a
+sequel.
 
 <!--
 TODO: shape GC (because of classes?)
