@@ -372,9 +372,10 @@ IC.read(P, "x")
 IC.read(P, "x")
 ```
 
-You may note that I used `is` instead of `==`. This is intentional! Because we
-are guaranteeing the maps are immutable, we don't need to check equality on the
-fields of the map; just its pointer/numeric ID.
+You may note that I used `is` (pointer equality) instead of `==`
+(user-defined/deep equality). This is intentional! Because we are guaranteeing
+the maps are immutable, we don't need to check equality on the fields of the
+map; just its pointer/numeric ID.
 
 This `InlineCache` class is mostly just a "sketch" of what an inline cache
 does. It is an "interpreted IC". This shape, if you make sure the fast path is
