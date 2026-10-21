@@ -118,8 +118,8 @@ skim the class- and method-related parts and instead focus on the instance
 attribute and map parts. Inside CF's post is the core of a very clean map
 system and I wanted to experiment with that, so I extracted it out.
 
-CF's post starts off very similar to our own sketch, modeling objects as bags
-unordered bags of attributes. It also fills in some of the TODO stuff I left
+CF's post starts off very similar to our own sketch, modeling objects as
+unordered maps of attributes. It also fills in some of the TODO stuff I left
 out earlier around classes. I'll copy my reduced implementation of it here so
 you can take a gander:
 
