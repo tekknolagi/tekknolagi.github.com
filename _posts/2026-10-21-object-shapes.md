@@ -202,7 +202,7 @@ three things:
    path. We would like to instead do operations on small integers.
 2. Remove the hash table indirection. We would like to store the attributes
    in-line in the object.
-3. Be/have a stable idenfier that describes a particular object layout.
+3. Be/have a stable identifier that describes a particular object layout.
 
 **For the former**, we can think of an object's map field as an (database) index or
 a write-through cache. It is responsible for reflecting on the layout of a
