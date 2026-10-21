@@ -343,14 +343,15 @@ class InlineCache:
         self.idx = None
 
     def read(self, obj, fieldname):
-        if obj.map is self.map:
+        obj_map = obj.map
+        if obj_map is self.map:
             return obj.storage[self.idx]
-        result = obj.read_attr(fieldname)
-        if result is MISSING:
+        index = obj_map.get_index(fieldname)
+        if index == -1:
             return MISSING
-        self.map = obj.map
-        self.idx = obj.map.get_index(fieldname)
-        return result
+        self.map = obj_map
+        self.idx = index
+        return obj.storage[index]
 
 IC = InlineCache()
 # Looked up by string :(
