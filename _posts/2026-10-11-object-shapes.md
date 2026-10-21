@@ -107,14 +107,14 @@ good* for performance.
 So runtime implementors tend to implement this thing called maps, or layouts,
 or shapes, or hidden classes, or structures, or probably a secret sixth name I
 don't know about, which optimizes reading, writing, and storage of attributes.
-It's kind of like a database index for your object.
 
-But what does this code look like? A lot of big production runtimes have pretty
-hairy code with domain-specific edge cases so they may not help get a handle on
-the basics. And a lot of blog posts, while excellent high-level overviews, are
-lacking in implementation. So here we go once more, blogging where everyone
-else has already blogged before. With any luck, you should be able to write a
-page of code and hold the whole thing in your head at once.
+But what does this shape code look like? How does it actually help performance?
+A lot of big production runtimes have pretty hairy code with domain-specific
+edge cases so they may not help get a handle on the basics. And a lot of blog
+posts, while excellent high-level overviews, are lacking in implementation. So
+here we go once more, blogging where everyone else has already blogged before.
+With any luck, you should be able to write a page of code and hold the whole
+thing in your head at once.
 
 ## 500 lines or less
 
