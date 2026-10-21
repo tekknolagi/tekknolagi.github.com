@@ -364,6 +364,24 @@ You may note that I used `is` instead of `==`. This is intentional! Because we
 are guaranteeing the maps are immutable, we don't need to check equality on the
 fields of the map; just its pointer/numeric ID.
 
+This is mostly just a "sketch" of what an inline cache does. It does definitely
+improve performance---I recommend benchmarking a silly little attribute lookup
+function---but most runtimes with inline caches also come with JIT compilers.
+These compilers try to remove the "interpreted"-ness of the inline cache
+implementation above. See for example:
+
+* [Slava's post](https://mrale.ph/blog/2015-01-11-whats-up-with-monomorphism.html) that
+  explains with IR sketches and JS-like pseudocode
+  * also [this older one](https://mrale.ph/blog/2012-06-03-explaining-js-vms-in-js-inline-caches.html)
+    which is similar
+* [Caio's
+post](https://caiolima.github.io/jsc/2020/03/12/jsc-inline-cache.html) that
+  explains what this looks like in JavaScriptCore with x86 asm
+* [Matthew's post](https://www.mgaudet.ca/technical/2018/6/5/an-inline-cache-isnt-just-a-cache)
+  that explains what this looks like in pseudo-asm for speculative numeric addition
+  * mostly runtimes don't do self-modifying asm ICs like this because of W^X
+    protection and also you need to flush the icache
+
 Another thing to notice is that **order matters**. Adding attributes in different
 orders (e.g. `a` then `b` vs `b` then `a`) will result in different shapes.
 This is not really visible to the application programmer except in performance
