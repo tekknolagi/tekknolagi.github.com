@@ -56,7 +56,7 @@ This might encourage the VM implementor to model object attributes using a hash
 table. Hash tables, after all, are very good at mapping names to values.
 
 Here is, by way of example, a Python sketch of what this object model looks
-like. Because it is a skethc, it uses `write_attr` and `read_attr` instead of
+like. Because it is a sketch, it uses `write_attr` and `read_attr` instead of
 the much more common syntax that your programming language comes with.
 
 ```python
