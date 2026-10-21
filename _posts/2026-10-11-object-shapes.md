@@ -96,7 +96,7 @@ fragmentation.</figcaption>
 So runtime implementors tend to implement this thing called maps, or layouts,
 or shapes, or hidden classes, or structures, or probably a secret sixth name I
 don't know about, which optimizes reading, writing, and storage of attributes.
-It's basically a database index for your object.
+It's kind of like a database index for your object.
 
 But what does this code look like? A lot of big production runtimes have pretty
 hairy code with domain-specific edge cases so they may not help get a handle on
