@@ -488,6 +488,7 @@ See also:
 * [Just-in-Time Data Structures](https://dl.acm.org/doi/pdf/10.1145/2814228.2814231) (PDF, 2015)
 * [Efficient and thread-safe objects for dynamically-typed languages](https://dl.acm.org/doi/10.1145/2983990.2984001) (PDF, 2016)
 * [Parallelization of dynamic languages: synchronizing built-in collections](https://dl.acm.org/doi/pdf/10.1145/3276478) (PDF, 2018)
+* [Profile Guided Offline Optimization of Hidden Class Graphs for JavaScript VMs in Embedded Systems](https://dl.acm.org/doi/pdf/10.1145/3563838.3567678) (PDF, 2022)
 * [Optimizations for Dynamic Collections](https://www.jot.fm/issues/issue_2025_01/a1.pdf) (PDF, 2025)
 
 ## Once more with ~~feeling~~ C++
