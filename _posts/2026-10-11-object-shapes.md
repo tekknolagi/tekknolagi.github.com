@@ -55,6 +55,10 @@ obj.b = 2;
 This might encourage the VM implementor to model object attributes using a hash
 table. Hash tables, after all, are very good at mapping names to values.
 
+Here is, by way of example, a Python sketch of what this object model looks
+like. Because it is a skethc, it uses `write_attr` and `read_attr` instead of
+the much more common syntax that your programming language comes with.
+
 ```python
 MISSING = object()
 
@@ -85,9 +89,10 @@ It also has its drawbacks:
 
 * it uses a hash table for a very common operation: while this is technically
   O(1), hashing and probing are very slow
-* it has an indirection: object attributes are accessed frequently and should
-  therefore be stored in-line on the object instead of another memory access
-  (and potentially cache miss) away
+* it has an indirection: jumping from an object to its separate hash table
+  field storage requires a lot of dependent memory loads. object attributes are
+  accessed frequently and should therefore be stored in-line on the object
+  instead of another memory access (and potentially cache miss) away
 
 <figure>
 <object class="svg" type="image/svg+xml" data="/assets/img/hashtable-memory.excalidraw.svg"></object>
