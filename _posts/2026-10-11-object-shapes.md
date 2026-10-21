@@ -364,7 +364,7 @@ You may note that I used `is` instead of `==`. This is intentional! Because we
 are guaranteeing the maps are immutable, we don't need to check equality on the
 fields of the map; just its pointer/numeric ID.
 
-Another thing to notice is that order matters. Adding attributes in different
+Another thing to notice is that **order matters**. Adding attributes in different
 orders (e.g. `a` then `b` vs `b` then `a`) will result in different shapes.
 This is not really visible to the application programmer except in performance
 regressions[^attribute-order].
