@@ -31,6 +31,10 @@ glass/clay and how that informs all of my programming.
 
 ## Small examples
 
-I learned a lot about static analysis this year. If you have been even
-occasionally following my blog, you may have seen posts such as [Type-based
-alias analysis in the Toy Optimizer](/blog/toy-tbaa/)
+I learned a lot about static analysis in the last 12 months. If you have been
+even occasionally following my blog, you may have seen posts such as
+[Type-based alias analysis in the Toy Optimizer](/blog/toy-tbaa/) and [ Load
+and store forwarding in the Toy Optimizer](/blog/toy-load-store/).
+
+I have also done other small project such as [zero-knowledge
+proofs](/blog/zkp/).
