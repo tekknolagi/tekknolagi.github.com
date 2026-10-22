@@ -37,4 +37,5 @@ even occasionally following my blog, you may have seen posts such as
 and store forwarding in the Toy Optimizer](/blog/toy-load-store/).
 
 I have also done other small project such as [zero-knowledge
-proofs](/blog/zkp/).
+proofs](/blog/zkp/) and [a shape/inline cache
+implementation](/blog/object-shapes/).
