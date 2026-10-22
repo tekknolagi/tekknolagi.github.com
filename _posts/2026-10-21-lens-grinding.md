@@ -41,3 +41,7 @@ proofs](/blog/zkp/) and [a shape/inline cache
 implementation](/blog/object-shapes/).
 
 All of these
+
+## Throw it away
+
+## Write about it
