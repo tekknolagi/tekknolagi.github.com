@@ -16,9 +16,12 @@ trying to make is that frequent, iterative practice and starting repeatedly
 from scratch are super important for learning.
 
 Only now, when trying to find this fable, did I learn that it's from *Art &amp;
-fear* by David Bayles and Ted Orland, and it's actually about ceramics. I have
-no earthly idea how I confused it with lens grinding. Perhaps I was reading too
-much Neal Stephenson when I started talking about this[^quicksilver].
+fear* by David Bayles and Ted Orland, and it's actually about
+ceramics[^photography]. I have no earthly idea how I confused it with lens
+grinding. Perhaps I was reading too much Neal Stephenson when I started talking
+about this[^quicksilver].
+
+[^photography]: [*Or is it*](https://austinkleon.com/2020/12/10/quantity-leads-to-quality-the-origin-of-a-parable/)?
 
 [^quicksilver]: Somewhere in the absolute tome Quicksilver is some fanciful
     description of the Royal Society but I do not presently have the patience
