@@ -29,4 +29,3 @@ much Neal Stephenson when I started talking about this[^quicksilver].
 In this post, I will tell you my experience of profligate metaphorical wasted
 glass/clay and how that informs all of my programming.
 
-
