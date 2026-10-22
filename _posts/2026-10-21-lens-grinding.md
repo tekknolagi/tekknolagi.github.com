@@ -29,4 +29,8 @@ much Neal Stephenson when I started talking about this[^quicksilver].
 In this post, I will tell you my experience of profligate metaphorical wasted
 glass/clay and how that informs all of my programming.
 
+## Small examples
 
+I learned a lot about static analysis this year. If you have been even
+occasionally following my blog, you may have seen posts such as [Type-based
+alias analysis in the Toy Optimizer](/blog/toy-tbaa/)
