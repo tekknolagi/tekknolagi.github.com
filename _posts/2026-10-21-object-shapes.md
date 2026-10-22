@@ -517,6 +517,12 @@ See also:
 * [Profile Guided Offline Optimization of Hidden Class Graphs for JavaScript VMs in Embedded Systems](https://dl.acm.org/doi/pdf/10.1145/3563838.3567678) (PDF, 2022)
 * [Optimizations for Dynamic Collections](https://www.jot.fm/issues/issue_2025_01/a1.pdf) (PDF, 2025)
 
+## Class versioning
+
+You can make even stronger bets about classes. See for example the [PyPy blog
+class versioning
+section](https://pypy.org/posts/2011/03/controlling-tracing-of-interpreter-with_21-6524148550848694588.html#versioning-of-classes).
+
 ## Once more with ~~feeling~~ C++
 
 I felt like this blog post would not be complete without a manual memory layout
