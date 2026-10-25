@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 628,
     "following_count": 289,
-    "statuses_count": 1568,
-    "last_status_at": "2026-10-23",
+    "statuses_count": 1569,
+    "last_status_at": "2026-10-25",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -81828,6 +81828,44 @@
         }
       },
       "application": null,
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117501727122079326": {
+      "id": "117501727122079326",
+      "created_at": "2026-10-25T13:14:28.650Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117501727122079326",
+      "url": "https://mastodon.social/@tekknolagi/117501727122079326",
+      "replies_count": 1,
+      "reblogs_count": 0,
+      "favourites_count": 2,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>My launch day security report about being able to pop a root shell on Muse was just closed with &quot;that&#39;s intended behavior&quot;</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
       "media_attachments": [],
       "mentions": [],
       "tags": [],
