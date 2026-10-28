@@ -12,7 +12,7 @@ sweet spot in PL design: the type system is quite expressive, and there are
 well known type inference algorithms that require absolutely no annotations
 from the programmer.
 
-[hm-wiki]: https://bernsteinbear.com/blog/type-inference/
+[hm-wiki]: https://en.wikipedia.org/wiki/Hindley–Milner_type_system
 
 It seems to have been discovered independently multiple times over the years,
 but the most famous papers are the [original][original-milner] (PDF) by Milner
