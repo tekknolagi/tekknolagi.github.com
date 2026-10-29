@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 628,
     "following_count": 289,
-    "statuses_count": 1570,
-    "last_status_at": "2026-10-25",
+    "statuses_count": 1571,
+    "last_status_at": "2026-10-29",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -81919,6 +81919,44 @@
           "acct": "pkhuong@discuss.systems"
         }
       ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117521914623927573": {
+      "id": "117521914623927573",
+      "created_at": "2026-10-29T02:48:25.468Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117521914623927573",
+      "url": "https://mastodon.social/@tekknolagi/117521914623927573",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Honestly don&#39;t know what I would do without grapefruit spindrift</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
