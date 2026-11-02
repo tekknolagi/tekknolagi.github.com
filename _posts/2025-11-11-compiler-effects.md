@@ -810,6 +810,8 @@ https://github.com/servo/mozjs/blob/77645ed41f588297fd8d7edaee71500f4c83d070/moz
 https://github.com/servo/mozjs/blob/77645ed41f588297fd8d7edaee71500f4c83d070/mozjs-sys/mozjs/js/src/jit/MIR.h#L9658
 https://github.com/mozilla-firefox/firefox/blob/6c74efe2fcddf84b6f320959064a66946b4a1759/js/src/jit/MIR.h#L356
 AliasSet
+https://github.com/mozilla-firefox/firefox/blob/c456c07567b74194f62bfabc6676457737d0b650/js/src/jit/InstructionReordering.cpp#L75
+ReorderInstructions
 
 Cinder LIR
 https://github.com/facebookincubator/cinderx/blob/main/cinderx/Jit/lir/instruction.h
