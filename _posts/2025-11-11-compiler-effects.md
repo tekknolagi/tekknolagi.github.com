@@ -808,6 +808,8 @@ https://github.com/chakra-core/ChakraCore/blob/2dba810c925eb366e44a1f7d7a5b2e289
 SpiderMonkey
 https://github.com/servo/mozjs/blob/77645ed41f588297fd8d7edaee71500f4c83d070/mozjs-sys/mozjs/js/src/jit/MIR.h#L935
 https://github.com/servo/mozjs/blob/77645ed41f588297fd8d7edaee71500f4c83d070/mozjs-sys/mozjs/js/src/jit/MIR.h#L9658
+https://github.com/mozilla-firefox/firefox/blob/6c74efe2fcddf84b6f320959064a66946b4a1759/js/src/jit/MIR.h#L356
+AliasSet
 
 Cinder LIR
 https://github.com/facebookincubator/cinderx/blob/main/cinderx/Jit/lir/instruction.h
