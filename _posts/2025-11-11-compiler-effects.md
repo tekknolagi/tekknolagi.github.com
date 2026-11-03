@@ -344,6 +344,8 @@ like this made it make a lot more sense for me.
     pre-order-post-order comparison. This in retrospect makes a lot of sense.
     It's just a tree.
 
+    <!-- (For more, see [Tree numbering](/tree-numbering/). -->
+
 <!--
 So how do we compute subtyping relationships with `HeapRange`s? We check range
 overlap! Here is [DOMJIT's C++ implementation][domjit-is-subtype-of]:

@@ -644,6 +644,8 @@ dominance check][dominance-check] (now in [Waffle](https://github.com/bytecodeal
 [scoped]: https://github.com/bytecodealliance/wasmtime/blob/d5657d4038b4aedda619ca8d9bd21c84ea2e2878/cranelift/codegen/src/scoped_hash_map.rs
 [dominance-check]: https://gist.github.com/Amanieu/c7d43dfdeebc094494cfdfcf55bc9c7a
 
+<!-- (For more, see [Tree numbering](/tree-numbering/). -->
+
 This iteration order is a different iteration order but the resulting algorithm
 is equivalent (except that the RPO does a lot more allocating). This is because
 the shared property is that if block A dominates block B, A will be visited
