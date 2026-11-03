@@ -15,3 +15,5 @@ permalink: /tree-numbering/
 reverse post-order (on the left). Center: its dominator tree (where, if <i>i</i> has <i>j</i> as a child, then <i>i</i> is the immediate dominator of <i>j</i>). Right: dominator tree (solid arrows), annotated with a DFS traversal (dotted arrows), and its
 corresponding DFS intervals.</figcaption>
 </figure>
+
+See also [paren_repr.py](https://gist.github.com/pervognsen/9caf4042e1cd9c492077f47485dbc7aa).
