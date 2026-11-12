@@ -182,6 +182,7 @@ parameters. Perhaps more on that in another post, but for now, you may enjoy
 I originally wanted to title this blog post "you could have invented abstract
 interpretation" or similar, but I decided that I find those titles obnoxious
 because they assume the reader is or thinks of themself as unintelligent.
+Perhaps *we* could have invented it.
 
 The title is a bit of a tongue-in-cheek nod to the "functional pearl" papers
 that I always felt should be simpler than they are but leave me confused. And
