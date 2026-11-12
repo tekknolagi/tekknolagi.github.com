@@ -62,7 +62,7 @@ the bytecode, we can run the stack parts of it at compile-time.
 We don't *really* need to know what the values on the stack are; we only need
 to keep track of where they came from. And when I say "where they came from", I
 mean that we name each instruction and refer to its output by the instruction's
-name. I like how the paper [Design of the Java HotSpot&tm; Client Compiler for
+name. I like how the paper [Design of the Java HotSpot&trade; Client Compiler for
 Java 6](/assets/img/design-hotspot-client-compiler.pdf) (PDF) puts it:
 
 > An instruction that loads or computes a value represents both the operation
@@ -187,3 +187,12 @@ The title is a bit of a tongue-in-cheek nod to the "functional pearl" papers
 that I always felt should be simpler than they are but leave me confused. And
 also kind of a nicer nod to [SSA is Functional
 Programming](/img/appel-basic-block-arguments.pdf) (PDF) by Andrew Appel.
+
+## References
+
+* [A New Approach to Forth Native Code Generation](/assets/img/ertl92.pdf) (PDF, 1992)
+* [Java Bytecode to Native Code Translation: The Caffeine Prototype and Preliminary Results](/assets/img/caffeine.pdf) (PDF, 1996) section 3.2
+* [CACAO - A 64 bit JavaVM Just-in-Time Compiler](/assets/img/cacao.pdf) (PDF, 1997) section 3
+* [Fast, Effective Code Generation in a Just-In-Time Java Compiler](https://dl.acm.org/doi/pdf/10.1145/277650.277740) (PDF, 1998) section 2.2, the mimic stack
+* [The Jalapeño Dynamic Optimizing Compiler for Java&trade;](https://dl.acm.org/doi/pdf/10.1145/304065.304113) (PDF, 1999)
+* [Dynamic optimization through the use of automatic runtime specialization](https://dspace.mit.edu/entities/publication/6896835b-c46b-4ebb-8ecc-1f5cbac364b5) (1999) section 3.4
