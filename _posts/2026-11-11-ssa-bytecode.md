@@ -88,8 +88,89 @@ instructions can directly reference their inputs. You may notice, though, that
 `v0` and `v2` both end up in the same stack slot (the first element). This is
 why I said earlier "giving an SSA value to each stack slot, *ish*".
 
-The difference between the two is *time*. This is kind of why I describe SSA as
-"pushing time through the IR".
+The difference between the two is *time*. `v0` was in the operand stack at one
+point but now `v2` is. This is kind of why I describe SSA as "pushing time
+through the IR".
+
+Alright, let's implement it.
+
+## Implementation
+
+We'll start with the real ("concrete") interpreter of the bytecode, which
+operates on a value stack. This gives you a simplified version of how Ruby
+internals work:
+
+```ruby
+def interpret(bytecode)
+  stack = []
+  bytecode.each do |op|
+    case op
+    in [:push, c]
+      stack << c
+    in [:add]
+      right = stack.pop
+      left = stack.pop
+      stack << left + right
+    else
+      raise "Unknown op #{op}"
+    end
+  end
+  stack.pop
+end
+
+bytecode = [
+  [:push, 3],
+  [:push, 4],
+  [:add],
+]
+
+puts interpret(bytecode)  # 7
+```
+
+Now let's look at the abstract intepreter, which by contrast operates on an SSA
+stack. You can see that they are quite similar looking:
+
+```ruby
+def to_ssa(bytecode)
+  code = []
+  stack = []
+  bytecode.each do |op|
+    case op
+    in [:push, c]
+      name = :"v#{code.length}"
+      code << "#{name} = const #{c}"
+      stack << name
+    in [:add]
+      name = :"v#{code.length}"
+      right = stack.pop
+      left = stack.pop
+      code << "#{name} = add #{left}, #{right}"
+      stack << name
+    else
+      raise "Unknown op #{op}"
+    end
+  end
+  code
+end
+
+bytecode = [
+  [:push, 3],
+  [:push, 4],
+  [:add],
+]
+
+puts to_ssa(bytecode)
+# v0 = const 3
+# v1 = const 4
+# v2 = add v0, v1
+```
+
+Ta da! You have built a small abstract interpreter.
+
+Now to make it global (to handle control flow) you need some kind of
+inter-basic-block data flow mechanism such as phi nodes or basic block
+parameters. Perhaps more on that in another post, but for now, you may enjoy
+[my collection of other people's writing](/blog/ssa/) about that.
 
 ## Conclusion
 
