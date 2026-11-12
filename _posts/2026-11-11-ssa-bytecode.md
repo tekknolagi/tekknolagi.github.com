@@ -165,6 +165,10 @@ puts to_ssa(bytecode)
 # v2 = add v0, v1
 ```
 
+The `name`s could be anything as long as they are unique. For simplicity and
+ease of reading, I picked the length of the `code` array, which grows
+monotonically.
+
 Ta da! You have built a small abstract interpreter.
 
 Now to make it global (to handle control flow) you need some kind of
