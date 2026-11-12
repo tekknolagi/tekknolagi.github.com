@@ -167,7 +167,8 @@ puts to_ssa(bytecode)
 
 The `name`s could be anything as long as they are unique. For simplicity and
 ease of reading, I picked the length of the `code` array, which grows
-monotonically.
+monotonically. This is an array/vector-based analogue to the real-pointer
+approach in the HotSpot paper from above.
 
 Ta da! You have built a small abstract interpreter.
 
