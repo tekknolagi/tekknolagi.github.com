@@ -3,9 +3,10 @@
 
 # A small Jekyll-compatible static site builder, specialized for this site.
 #
-# Usage: bundle exec ruby build.rb [--future]
+# Usage: bundle exec ruby build.rb [build] [options]
 #
-#   --future   Include posts dated in the future (overrides `future` in _config.yml).
+#   build          Build the site into _site (the default).
+#   --future       Include posts dated in the future (overrides `future` in _config.yml).
 #
 # Markdown, Liquid, and syntax highlighting are the same libraries Jekyll uses
 # (kramdown, liquid, rouge), configured the way Jekyll configures them, so the
@@ -23,6 +24,7 @@
 require "date"
 require "fileutils"
 require "json"
+require "optparse"
 require "time"
 require "yaml"
 
@@ -588,4 +590,19 @@ def build(future:)
   Site.new(future: future).write(DEST)
 end
 
-build(future: ARGV.include?("--future") || CONFIG["future"])
+# ---------------------------------------------------------------------------
+# Command line
+# ---------------------------------------------------------------------------
+
+options = { future: CONFIG["future"] }
+OptionParser.new do |parser|
+  parser.banner = "Usage: bundle exec ruby build.rb [build] [options]"
+  parser.on("--future", "Include posts dated in the future") { options[:future] = true }
+end.parse!
+
+case ARGV.fetch(0, "build")
+when "build"
+  build(future: options[:future])
+else
+  abort "Unknown command #{ARGV[0].inspect}; expected build"
+end
