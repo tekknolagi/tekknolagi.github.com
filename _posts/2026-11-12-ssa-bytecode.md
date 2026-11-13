@@ -193,7 +193,7 @@ Programming](/assets/img/appel-basic-block-arguments.pdf) (PDF) by Andrew Appel.
 
 * [A New Approach to Forth Native Code Generation](/assets/img/ertl92.pdf) (PDF, 1992)
 * [Java Bytecode to Native Code Translation: The Caffeine Prototype and Preliminary Results](/assets/img/caffeine.pdf) (PDF, 1996) section 3.2
-* [CACAO - A 64 bit JavaVM Just-in-Time Compiler](/assets/img/cacao.pdf) (PDF, 1997) section 3
+* [CACAO - A 64 bit JavaVM Just-in-Time Compiler](/assets/img/cacao-jvm.pdf) (PDF, 1997) section 3
 * [Fast, Effective Code Generation in a Just-In-Time Java Compiler](https://dl.acm.org/doi/pdf/10.1145/277650.277740) (PDF, 1998) section 2.2, the mimic stack
 * [The Jalapeño Dynamic Optimizing Compiler for Java&trade;](https://dl.acm.org/doi/pdf/10.1145/304065.304113) (PDF, 1999)
 * [Dynamic optimization through the use of automatic runtime specialization](https://dspace.mit.edu/entities/publication/6896835b-c46b-4ebb-8ecc-1f5cbac364b5) (1999) section 3.4
