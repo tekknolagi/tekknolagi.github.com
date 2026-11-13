@@ -454,10 +454,11 @@ class Site
 
   # Write the site to `dest`. The site is built in a temporary directory and
   # swapped in at the end, so a failed build never leaves a half-written site
-  # behind.
+  # behind, and there is always a complete site at `dest`.
   def write(dest)
     tmp = "#{dest}.tmp"
-    FileUtils.rm_rf(tmp)
+    old = "#{dest}.old"
+    FileUtils.rm_rf([tmp, old])
 
     copied = static_files.reject { |path| urls.key?(path) }
     copied.each do |path|
@@ -479,9 +480,13 @@ class Site
       write_file(tmp, path) { |file| File.write(file, contents.call) }
     end
 
-    FileUtils.rm_rf(dest)
+    File.rename(dest, old) if File.exist?(dest)
     File.rename(tmp, dest)
-
+    FileUtils.rm_rf(old)
+  rescue StandardError
+    FileUtils.rm_rf(tmp)
+    raise
+  else
     puts "Rendered #{documents.size} documents and copied #{copied.size} static files to #{dest}"
   end
 
