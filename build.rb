@@ -3,10 +3,12 @@
 
 # A small Jekyll-compatible static site builder, specialized for this site.
 #
-# Usage: bundle exec ruby build.rb [build] [options]
+# Usage: bundle exec ruby build.rb [build|serve] [options]
 #
 #   build          Build the site into _site (the default).
+#   serve          Build, serve _site on localhost, and rebuild on changes.
 #   --future       Include posts dated in the future (overrides `future` in _config.yml).
+#   --port PORT    Port for serve (default 4000).
 #
 # Markdown, Liquid, and syntax highlighting are the same libraries Jekyll uses
 # (kramdown, liquid, rouge), configured the way Jekyll configures them, so the
@@ -19,7 +21,8 @@
 #   their layout. Everything else under STATIC is copied verbatim.
 # * Each document's `content` is computed lazily and memoized, so pages like
 #   feed.xml can read `post.content` regardless of render order.
-# * A Site holds everything read in one build: documents, URLs, and layouts.
+# * A Site holds everything read in one build. `serve` rebuilds from scratch
+#   when anything changes, since a full build only takes about a second.
 
 require "date"
 require "fileutils"
@@ -36,6 +39,7 @@ require "rouge"
 SRC = __dir__
 DEST = File.join(SRC, "_site")
 
+# Like `jekyll serve`, changes to _config.yml need a restart.
 CONFIG = YAML.safe_load_file(File.join(SRC, "_config.yml"))
 
 # Static files and directories copied to the output. Files in here that have
@@ -454,7 +458,7 @@ class Site
 
   # Write the site to `dest`. The site is built in a temporary directory and
   # swapped in at the end, so a failed build never leaves a half-written site
-  # behind, and there is always a complete site at `dest`.
+  # behind (and `serve` keeps serving the old one).
   def write(dest)
     tmp = "#{dest}.tmp"
     old = "#{dest}.old"
@@ -592,22 +596,110 @@ class Site
 end
 
 def build(future:)
+  TEMPLATES.clear # Includes and layouts may have changed since the last build.
   Site.new(future: future).write(DEST)
+end
+
+# ---------------------------------------------------------------------------
+# serve
+# ---------------------------------------------------------------------------
+
+# Everything a build reads, except _config.yml.
+WATCHED = [
+  "_posts/*.md",
+  "_blog_lisp/*.md",
+  "_recipes/*.md",
+  "_layouts/*",
+  "_includes/*",
+  "*.{md,html,xml}",
+  "{#{STATIC.join(",")}}{,/**/*}",
+].freeze
+
+def source_fingerprint
+  paths = Dir.glob(WATCHED, base: SRC).sort
+  paths.filter_map do |path|
+    [path, File.mtime(File.join(SRC, path))]
+  rescue Errno::ENOENT # Deleted since the glob.
+    nil
+  end
+end
+
+def rebuild_on_change(future:)
+  fingerprint = source_fingerprint
+  loop do
+    sleep 1
+    current = source_fingerprint
+    next if current == fingerprint
+
+    fingerprint = current
+    puts "Change detected, rebuilding..."
+    begin
+      build(future: future)
+    rescue StandardError => e
+      # Usually a Liquid or YAML error in the site, so skip the library backtrace.
+      warn "Build failed, still serving the previous build:"
+      warn "  #{e.message}"
+      warn "  #{e.backtrace.find { |line| line.start_with?(__FILE__) }}"
+    end
+  end
+end
+
+def serve(port:, future:)
+  require "webrick"
+  $stdout.sync = true # Keep build messages in order with errors when piped.
+
+  # Serves _site/404.html for missing files, like GitHub Pages and `jekyll serve`.
+  servlet = Class.new(WEBrick::HTTPServlet::FileHandler) do
+    def service(request, response)
+      super
+    rescue WEBrick::HTTPStatus::NotFound
+      not_found = File.join(DEST, "404.html")
+      raise unless File.exist?(not_found)
+
+      response.status = 404
+      response.content_type = "text/html"
+      response.body = File.read(not_found)
+    end
+  end
+
+  build(future: future)
+
+  server = WEBrick::HTTPServer.new(
+    BindAddress: "127.0.0.1",
+    Port: port,
+    # For the browser to apply assets/rss.xsl to feed.xml.
+    MimeTypes: WEBrick::HTTPUtils::DefaultMimeTypes.merge("xsl" => "text/xsl"),
+    # Only log problems, not every request.
+    Logger: WEBrick::Log.new($stderr, WEBrick::Log::WARN),
+    AccessLog: [],
+  )
+  # Look up DEST on every request rather than holding on to the directory,
+  # since each build swaps in a new one.
+  server.mount("/", servlet, DEST)
+  trap("INT") { server.shutdown }
+
+  watcher = Thread.new { rebuild_on_change(future: future) }
+  puts "Serving #{DEST} at http://127.0.0.1:#{port}/ (Ctrl-C to stop)"
+  server.start
+  watcher.kill
 end
 
 # ---------------------------------------------------------------------------
 # Command line
 # ---------------------------------------------------------------------------
 
-options = { future: CONFIG["future"] }
+options = { future: CONFIG["future"], port: 4000 }
 OptionParser.new do |parser|
-  parser.banner = "Usage: bundle exec ruby build.rb [build] [options]"
+  parser.banner = "Usage: bundle exec ruby build.rb [build|serve] [options]"
   parser.on("--future", "Include posts dated in the future") { options[:future] = true }
+  parser.on("--port PORT", Integer, "Port for serve (default 4000)") { |port| options[:port] = port }
 end.parse!
 
 case ARGV.fetch(0, "build")
 when "build"
   build(future: options[:future])
+when "serve"
+  serve(port: options[:port], future: options[:future])
 else
-  abort "Unknown command #{ARGV[0].inspect}; expected build"
+  abort "Unknown command #{ARGV[0].inspect}; expected build or serve"
 end

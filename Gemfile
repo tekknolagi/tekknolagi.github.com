@@ -7,6 +7,7 @@ gem 'kramdown-parser-gfm'
 gem 'liquid', '~> 4.0'
 gem 'rouge', '>= 4.7'  # specific version to get Python match/case
 gem 'bigdecimal'
+gem 'webrick'  # build.rb serve
 
 # Jekyll stuff below:
 
@@ -17,7 +18,6 @@ group :jekyll_plugins do
   gem 'jekyll-feed'
   gem 'jekyll-seo-tag'
   gem 'jekyll-sitemap'
-  gem 'webrick'
 end
 
 gem 'csv'
