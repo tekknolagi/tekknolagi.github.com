@@ -159,12 +159,15 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  bigdecimal
   csv
   jekyll (= 4.4)
   jekyll-feed
   jekyll-seo-tag
   jekyll-sitemap
   kramdown
+  kramdown-parser-gfm
+  liquid (~> 4.0)
   liquid-c
   rouge (>= 4.7)
   webrick
