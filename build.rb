@@ -18,6 +18,7 @@
 #   their layout. Everything else under STATIC is copied verbatim.
 # * Each document's `content` is computed lazily and memoized, so pages like
 #   feed.xml can read `post.content` regardless of render order.
+# * A Site holds everything read in one build: documents, URLs, and layouts.
 
 require "date"
 require "fileutils"
@@ -34,8 +35,6 @@ SRC = __dir__
 DEST = File.join(SRC, "_site")
 
 CONFIG = YAML.safe_load_file(File.join(SRC, "_config.yml"))
-FUTURE = ARGV.include?("--future") || CONFIG["future"]
-BUILD_TIME = Time.now
 
 # Static files and directories copied to the output. Files in here that have
 # frontmatter are rendered as pages instead (e.g. assets/rss.xsl).
@@ -66,15 +65,6 @@ def template(source)
   TEMPLATES[source] ||= Liquid::Template.parse(source, error_mode: :strict)
 end
 
-def render_liquid(source, page, extra_vars = {})
-  vars = {
-    "site" => SITE,
-    "page" => page,
-    "jekyll" => { "environment" => ENV.fetch("JEKYLL_ENV", "development") },
-  }
-  template(source).render!(vars.merge(extra_vars), strict_filters: true)
-end
-
 # {% include css.md %} -- Jekyll-style, with an unquoted file name.
 class IncludeTag < Liquid::Tag
   def initialize(tag_name, markup, parse_context)
@@ -95,8 +85,8 @@ class LinkTag < Liquid::Tag
     @path = markup.strip
   end
 
-  def render(_context)
-    URLS.fetch(@path) { raise "{% link %} to unknown document: #{@path}" }
+  def render(context)
+    context.registers[:site].urls.fetch(@path) { raise "{% link %} to unknown document: #{@path}" }
   end
 end
 
@@ -272,7 +262,8 @@ Liquid::Template.register_filter(JekyllFilters)
 class Document
   attr_reader :path, :data
 
-  def initialize(path, data, body)
+  def initialize(site, path, data, body)
+    @site = site
     @path = path
     @data = data
     @body = body
@@ -288,14 +279,14 @@ class Document
 
   # The rendered body, before the layout is applied.
   def content
-    @content ||= convert(render_liquid(@body, data))
+    @content ||= convert(@site.render_liquid(@body, data))
   end
 
   # Jekyll's excerpt: everything up to the first excerpt separator (by default
   # the first paragraph), rendered like the body. jekyll-seo-tag uses it as the
   # description for pages that don't have one.
   def excerpt
-    @excerpt ||= convert(render_liquid(excerpt_source, data.except("layout", "excerpt")))
+    @excerpt ||= convert(@site.render_liquid(excerpt_source, data.except("layout", "excerpt")))
   end
 
   # The full output, with the layout applied.
@@ -303,8 +294,8 @@ class Document
     name = data["layout"]
     return content if name.nil? || name == "none"
 
-    layout = LAYOUTS.fetch(name) { raise "#{path}: unknown layout #{name.inspect}" }
-    render_liquid(layout, data, "content" => content)
+    layout = @site.layouts.fetch(name) { raise "#{path}: unknown layout #{name.inspect}" }
+    @site.render_liquid(layout, data, "content" => content)
   end
 
   private
@@ -375,48 +366,8 @@ def parse_date(value)
   Time.parse(value.to_s).localtime
 end
 
-# Read the document at `path` (relative to SRC), or return nil if it has no
-# frontmatter. The block computes the document's URL from its path and data;
-# a `permalink` in the frontmatter takes precedence.
-#
-# Like Jekyll, collection documents (posts, blog_lisp, recipes) always have a
-# date (the build time if nothing else) and an excerpt; pages have neither
-# unless they set them in their frontmatter.
-def read_document(path, collection: false)
-  full_path = File.join(SRC, path)
-  return nil unless frontmatter?(full_path)
-
-  match = File.read(full_path).match(FRONTMATTER)
-  return nil unless match
-
-  data = YAML.safe_load(match[1], permitted_classes: [Date, Time]) || {}
-  data["path"] = path
-  date = data["date"] || path[/\A_posts\/(\d{4}-\d\d-\d\d)-/, 1]
-  data["date"] = parse_date(date) if date
-  data["date"] ||= BUILD_TIME if collection
-  data["url"] = data["permalink"] || yield(path, data)
-
-  document = Document.new(path, data, match.post_match)
-  # Liquid calls Procs found in hashes and memoizes the result, so
-  # `post.content` is rendered on first use.
-  data["content"] = -> { document.content }
-  data["excerpt"] ||= -> { document.excerpt } if collection
-  document
-end
-
-def read_documents(glob, collection: false, &url)
-  Dir.glob(glob, base: SRC).sort.filter_map do |path|
-    read_document(path, collection: collection, &url)
-  end
-end
-
 def basename(path)
   File.basename(path, ".*")
-end
-
-# Jekyll's sort order for collection documents: by date, then by path.
-def sort_by_date(documents)
-  documents.sort_by { |document| [document.data["date"], document.path] }
 end
 
 # Jekyll's URLs for pages: dir/foo.md and dir/foo.html become /dir/foo/,
@@ -437,136 +388,204 @@ def page_url(path)
   end
 end
 
-posts = read_documents("_posts/*.md", collection: true) do |path, data|
-  slug = data["slug"] || basename(path).sub(/\A\d{4}-\d\d-\d\d-/, "")
-  CONFIG["permalink"].sub(":slug", slug)
-end
-posts = posts.select { |post| FUTURE || post.data["date"] <= BUILD_TIME }
-posts = sort_by_date(posts).reverse
-
-blog_lisp = read_documents("_blog_lisp/*.md", collection: true) { |path| "/blog/lisp/#{basename(path)}/" }
-blog_lisp = sort_by_date(blog_lisp)
-recipes = read_documents("_recipes/*.md", collection: true) { |path| "/recipes/#{basename(path)}/" }
-recipes = sort_by_date(recipes)
-
-# Dotfiles are skipped, except for directories named explicitly in STATIC.
-static_files = Dir.glob("{#{STATIC.join(",")}}{,/**/*}", base: SRC)
-static_files = static_files.select { |path| File.file?(File.join(SRC, path)) }.sort
-
-root_pages = read_documents("*.{md,html,xml}") { |path| page_url(path) }
-static_pages = static_files.filter_map { |path| read_document(path) { page_url(path) } }
-pages = (root_pages + static_pages).sort_by { |page| [File.basename(page.path), page.path] }
-
-SITE = CONFIG.merge(
-  "time" => BUILD_TIME,
-  "posts" => posts.map(&:data),
-  "pages" => pages.map(&:data),
-  "blog_lisp" => blog_lisp.map(&:data),
-  "recipes" => recipes.map(&:data),
-)
-
-DOCUMENTS = posts + blog_lisp + recipes + pages
-URLS = DOCUMENTS.to_h { |document| [document.path, document.url] }
-
-LAYOUTS = Dir.glob(File.join(SRC, "_layouts", "*")).to_h do |path|
-  [basename(path), File.read(path)]
+# Jekyll's sort order for collection documents: by date, then by path.
+def sort_by_date(documents)
+  documents.sort_by { |document| [document.data["date"], document.path] }
 end
 
 # ---------------------------------------------------------------------------
-# sitemap.xml and robots.txt -- a port of jekyll-sitemap 1.4.0
+# Site
 # ---------------------------------------------------------------------------
 
-SITEMAP_STATIC_EXTENSIONS = %w[.htm .html .xhtml .pdf].freeze
+class Site
+  attr_reader :time, :posts, :blog_lisp, :recipes, :pages, :static_files,
+              :documents, :urls, :layouts
 
-def sitemap_entry(url, lastmod)
-  loc = FILTERS.xml_escape(FILTERS.absolute_url(url.gsub("/index.html", "/")))
-  lines = ["<url>", "<loc>#{loc}</loc>"]
-  lines << "<lastmod>#{lastmod.xmlschema}</lastmod>" if lastmod
-  lines << "</url>"
-  lines
-end
+  def initialize(future: false)
+    @time = Time.now
 
-# Collection documents (collections in alphabetical order, documents oldest
-# first), then HTML pages, then static HTML and PDF files.
-def sitemap_xml(collections, pages, static_files)
-  lines = [
-    %(<?xml version="1.0" encoding="UTF-8"?>),
-    %(<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ) +
-      %(xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 ) +
-      %(http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" ) +
-      %(xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">),
-  ]
+    @posts = read_documents("_posts/*.md", collection: true) do |path, data|
+      slug = data["slug"] || basename(path).sub(/\A\d{4}-\d\d-\d\d-/, "")
+      CONFIG["permalink"].sub(":slug", slug)
+    end
+    @posts = @posts.select { |post| future || post.data["date"] <= @time }
+    @posts = sort_by_date(@posts).reverse
 
-  collections.sort.each do |_name, documents|
+    @blog_lisp = read_documents("_blog_lisp/*.md", collection: true) { |path| "/blog/lisp/#{basename(path)}/" }
+    @blog_lisp = sort_by_date(@blog_lisp)
+    @recipes = read_documents("_recipes/*.md", collection: true) { |path| "/recipes/#{basename(path)}/" }
+    @recipes = sort_by_date(@recipes)
+
+    # Dotfiles are skipped, except for directories named explicitly in STATIC.
+    @static_files = Dir.glob("{#{STATIC.join(",")}}{,/**/*}", base: SRC)
+    @static_files = @static_files.select { |path| File.file?(File.join(SRC, path)) }.sort
+
+    root_pages = read_documents("*.{md,html,xml}") { |path| page_url(path) }
+    static_pages = @static_files.filter_map { |path| read_document(path) { page_url(path) } }
+    @pages = (root_pages + static_pages).sort_by { |page| [File.basename(page.path), page.path] }
+
+    @documents = @posts + @blog_lisp + @recipes + @pages
+    @urls = @documents.to_h { |document| [document.path, document.url] }
+
+    @layouts = Dir.glob(File.join(SRC, "_layouts", "*")).to_h do |path|
+      [basename(path), File.read(path)]
+    end
+
+    # `site` in Liquid.
+    @liquid = CONFIG.merge(
+      "time" => @time,
+      "posts" => @posts.map(&:data),
+      "pages" => @pages.map(&:data),
+      "blog_lisp" => @blog_lisp.map(&:data),
+      "recipes" => @recipes.map(&:data),
+    )
+  end
+
+  def render_liquid(source, page, extra_vars = {})
+    vars = {
+      "site" => @liquid,
+      "page" => page,
+      "jekyll" => { "environment" => ENV.fetch("JEKYLL_ENV", "development") },
+    }
+    template(source).render!(vars.merge(extra_vars), registers: { site: self }, strict_filters: true)
+  end
+
+  # Write the site to `dest`. The site is built in a temporary directory and
+  # swapped in at the end, so a failed build never leaves a half-written site
+  # behind.
+  def write(dest)
+    tmp = "#{dest}.tmp"
+    FileUtils.rm_rf(tmp)
+
+    copied = static_files.reject { |path| urls.key?(path) }
+    copied.each do |path|
+      write_file(tmp, path) { |file| FileUtils.cp(File.join(SRC, path), file) }
+    end
+
     documents.each do |document|
-      next if document.data["sitemap"] == false
+      write_file(tmp, document.output_path) { |file| File.write(file, document.output) }
+    end
 
-      lastmod = parse_date(document.data["last_modified_at"] || document.data["date"])
-      lines.concat(sitemap_entry(document.url, lastmod))
+    # Like jekyll-sitemap, don't overwrite a sitemap.xml or robots.txt from the source.
+    generated = {
+      "sitemap.xml" => -> { sitemap_xml(copied) },
+      "robots.txt" => -> { robots_txt },
+    }
+    generated.each do |path, contents|
+      next if File.exist?(File.join(tmp, path))
+
+      write_file(tmp, path) { |file| File.write(file, contents.call) }
+    end
+
+    FileUtils.rm_rf(dest)
+    File.rename(tmp, dest)
+
+    puts "Rendered #{documents.size} documents and copied #{copied.size} static files to #{dest}"
+  end
+
+  private
+
+  # Read the document at `path` (relative to SRC), or return nil if it has no
+  # frontmatter. The block computes the document's URL from its path and data;
+  # a `permalink` in the frontmatter takes precedence.
+  #
+  # Like Jekyll, collection documents (posts, blog_lisp, recipes) always have a
+  # date (the build time if nothing else) and an excerpt; pages have neither
+  # unless they set them in their frontmatter.
+  def read_document(path, collection: false)
+    full_path = File.join(SRC, path)
+    return nil unless frontmatter?(full_path)
+
+    match = File.read(full_path).match(FRONTMATTER)
+    return nil unless match
+
+    data = YAML.safe_load(match[1], permitted_classes: [Date, Time]) || {}
+    data["path"] = path
+    date = data["date"] || path[/\A_posts\/(\d{4}-\d\d-\d\d)-/, 1]
+    data["date"] = parse_date(date) if date
+    data["date"] ||= @time if collection
+    data["url"] = data["permalink"] || yield(path, data)
+
+    document = Document.new(self, path, data, match.post_match)
+    # Liquid calls Procs found in hashes and memoizes the result, so
+    # `post.content` is rendered on first use.
+    data["content"] = -> { document.content }
+    data["excerpt"] ||= -> { document.excerpt } if collection
+    document
+  end
+
+  def read_documents(glob, collection: false, &url)
+    Dir.glob(glob, base: SRC).sort.filter_map do |path|
+      read_document(path, collection: collection, &url)
     end
   end
 
-  pages.each do |page|
-    next if page.data["sitemap"] == false
-    next if page.url == "/404.html"
-    next unless page.output_path.end_with?(".html")
-
-    lastmod = page.data["last_modified_at"]
-    lines.concat(sitemap_entry(page.url, lastmod && parse_date(lastmod)))
+  def write_file(root, relative_path)
+    file = File.join(root, relative_path)
+    FileUtils.mkdir_p(File.dirname(file))
+    yield file
   end
 
-  static_files.each do |path|
-    next unless SITEMAP_STATIC_EXTENSIONS.include?(File.extname(path))
-    next if File.basename(path) == "404.html"
+  # sitemap.xml and robots.txt -- a port of jekyll-sitemap 1.4.0.
 
-    lines.concat(sitemap_entry("/#{path}", File.mtime(File.join(SRC, path))))
+  SITEMAP_STATIC_EXTENSIONS = %w[.htm .html .xhtml .pdf].freeze
+
+  def sitemap_entry(url, lastmod)
+    loc = FILTERS.xml_escape(FILTERS.absolute_url(url.gsub("/index.html", "/")))
+    lines = ["<url>", "<loc>#{loc}</loc>"]
+    lines << "<lastmod>#{lastmod.xmlschema}</lastmod>" if lastmod
+    lines << "</url>"
+    lines
   end
 
-  lines << "</urlset>"
-  lines.map { |line| "#{line}\n" }.join
+  # Collection documents (collections in alphabetical order, documents oldest
+  # first), then HTML pages, then static HTML and PDF files.
+  def sitemap_xml(copied_static_files)
+    lines = [
+      %(<?xml version="1.0" encoding="UTF-8"?>),
+      %(<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ) +
+        %(xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 ) +
+        %(http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" ) +
+        %(xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">),
+    ]
+
+    collections = { "posts" => posts.reverse, "blog_lisp" => blog_lisp, "recipes" => recipes }
+    collections.sort.each do |_name, documents|
+      documents.each do |document|
+        next if document.data["sitemap"] == false
+
+        lastmod = parse_date(document.data["last_modified_at"] || document.data["date"])
+        lines.concat(sitemap_entry(document.url, lastmod))
+      end
+    end
+
+    pages.each do |page|
+      next if page.data["sitemap"] == false
+      next if page.url == "/404.html"
+      next unless page.output_path.end_with?(".html")
+
+      lastmod = page.data["last_modified_at"]
+      lines.concat(sitemap_entry(page.url, lastmod && parse_date(lastmod)))
+    end
+
+    copied_static_files.each do |path|
+      next unless SITEMAP_STATIC_EXTENSIONS.include?(File.extname(path))
+      next if File.basename(path) == "404.html"
+
+      lines.concat(sitemap_entry("/#{path}", File.mtime(File.join(SRC, path))))
+    end
+
+    lines << "</urlset>"
+    lines.map { |line| "#{line}\n" }.join
+  end
+
+  def robots_txt
+    "Sitemap: #{FILTERS.absolute_url("/sitemap.xml")}\n"
+  end
 end
 
-def robots_txt
-  "Sitemap: #{FILTERS.absolute_url("/sitemap.xml")}\n"
+def build(future:)
+  Site.new(future: future).write(DEST)
 end
 
-# ---------------------------------------------------------------------------
-# Output
-# ---------------------------------------------------------------------------
-
-# Build into a temporary directory and swap it in at the end, so a failed
-# build never leaves a half-written site behind.
-tmp = "#{DEST}.tmp"
-FileUtils.rm_rf(tmp)
-
-def write(root, relative_path)
-  dest = File.join(root, relative_path)
-  FileUtils.mkdir_p(File.dirname(dest))
-  yield dest
-end
-
-copied = static_files.reject { |path| URLS.key?(path) }
-copied.each do |path|
-  write(tmp, path) { |dest| FileUtils.cp(File.join(SRC, path), dest) }
-end
-
-DOCUMENTS.each do |document|
-  write(tmp, document.output_path) { |dest| File.write(dest, document.output) }
-end
-
-# Like jekyll-sitemap, don't overwrite a sitemap.xml or robots.txt from the source.
-collections = { "posts" => posts.reverse, "blog_lisp" => blog_lisp, "recipes" => recipes }
-generated = {
-  "sitemap.xml" => -> { sitemap_xml(collections, pages, copied) },
-  "robots.txt" => -> { robots_txt },
-}
-generated.each do |path, contents|
-  next if File.exist?(File.join(tmp, path))
-
-  write(tmp, path) { |dest| File.write(dest, contents.call) }
-end
-
-FileUtils.rm_rf(DEST)
-File.rename(tmp, DEST)
-
-puts "Rendered #{DOCUMENTS.size} documents and copied #{copied.size} static files to #{DEST}"
+build(future: ARGV.include?("--future") || CONFIG["future"])
