@@ -603,18 +603,28 @@ class _JekyllRenderer(HtmlRenderer):
         if md_footnotes and md_footnote_order:
             parent_link_refs = dict(token.footnotes)  # link ref defs
             fn_items = []
-            for key in md_footnote_order:
+            # Index-based loop: footnote bodies may reference other
+            # footnotes (e.g. [^roadmap] inside [^opsem]), which append to
+            # md_footnote_order while we iterate. Like kramdown, those get
+            # numbered after all references in the main text.
+            i = 0
+            while i < len(md_footnote_order):
+                key = md_footnote_order[i]
+                i += 1
                 body_lines = md_footnotes.get(key)
                 if body_lines is None:
                     continue
-                num = token.md_footnote_nums[key]
 
                 # Parse footnote body as a sub-document, sharing parent
                 # link-reference definitions so [text][ref] links resolve.
                 # Pre-seed _root_node.footnotes before tokenization.
+                # Share the parent's footnote state so nested references are
+                # numbered and emitted in the parent's footnotes section.
                 sub_doc = Document.__new__(Document)
                 sub_doc.footnotes = dict(parent_link_refs)
-                sub_doc.md_footnotes = {}
+                sub_doc.md_footnotes = md_footnotes
+                sub_doc.md_footnote_order = md_footnote_order
+                sub_doc.md_footnote_nums = token.md_footnote_nums
                 sub_doc.line_number = 1
                 _token._root_node = sub_doc
                 lines = body_lines
