@@ -187,7 +187,7 @@ Perhaps *we* could have invented it.
 The title is a bit of a tongue-in-cheek nod to the "functional pearl" papers
 that I always felt should be simpler than they are but leave me confused. And
 also kind of a nicer nod to [SSA is Functional
-Programming](/img/appel-basic-block-arguments.pdf) (PDF) by Andrew Appel.
+Programming](/assets/img/appel-basic-block-arguments.pdf) (PDF) by Andrew Appel.
 
 ## References
 
