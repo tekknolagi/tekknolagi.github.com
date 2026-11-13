@@ -21,7 +21,7 @@
     "header_description": "",
     "followers_count": 632,
     "following_count": 289,
-    "statuses_count": 1575,
+    "statuses_count": 1576,
     "last_status_at": "2026-11-12",
     "hide_collections": false,
     "show_media": true,
@@ -82220,6 +82220,51 @@
           }
         ]
       },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117606052522775206": {
+      "id": "117606052522775206",
+      "created_at": "2026-11-12T23:25:47.917Z",
+      "in_reply_to_id": "117605967075831675",
+      "in_reply_to_account_id": "109337913296719557",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117606052522775206",
+      "url": "https://mastodon.social/@tekknolagi/117606052522775206",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://fediscience.org/@MatthieuLemerre\" class=\"u-url mention\">@<span>MatthieuLemerre</span></a></span> we can still discuss :) thank you for sharing. Looking forward to your papers</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "109337913296719557",
+          "username": "MatthieuLemerre",
+          "url": "https://fediscience.org/@MatthieuLemerre",
+          "acct": "MatthieuLemerre@fediscience.org"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
       "poll": null,
       "quote_approval": {
         "automatic": [
