@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 632,
     "following_count": 289,
-    "statuses_count": 1576,
-    "last_status_at": "2026-11-12",
+    "statuses_count": 1577,
+    "last_status_at": "2026-11-14",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -82260,6 +82260,44 @@
           "acct": "MatthieuLemerre@fediscience.org"
         }
       ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117613249791510891": {
+      "id": "117613249791510891",
+      "created_at": "2026-11-14T05:56:09.523Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117613249791510891",
+      "url": "https://mastodon.social/@tekknolagi/117613249791510891",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Nothing says &quot;a lifetime of love&quot; like wedding guest list pivot tables</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
       "tags": [],
       "emojis": [],
       "tagged_collections": [],
