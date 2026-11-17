@@ -311,6 +311,8 @@ I wish some stuff were different, or at least modifiable:
   heap. After all, RPython is in control of all the memory and the code.
 * It would be neat if, in addition to a JIT, it also helped you build an AOT
   compiler for your guest language.
+* What if your language is statically typed? Should the toolkit provide
+  functionality for type checking? Type inference?
 
 I will probably add more to this list as I continue to remember some years of
 these conversations.
