@@ -296,3 +296,5 @@ I wish some stuff were different, or at least modifiable:
   results. I kind of want to see what a meta-method-JIT would look like.
 * The user experience leaves something to be desired. I want better error
   messages, faster compiles, and less output. I want thorough docs.
+
+## Now what?
