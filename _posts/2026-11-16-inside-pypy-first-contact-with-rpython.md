@@ -328,3 +328,12 @@ to be huge and ossify along the way, and what a bummer that would be.
 If you have any pointers to existing projects or a way to implement such a
 thing in a really lightweight form (read: sub 10k lines, portable ideas), I
 would be very interested.
+
+Here are some pointers to other projects in the neighborhood:
+
+* Weval, which turns an interpreter into a baseline AOT compiler. Its current
+  implementation requires the interpreter to be compilable to Wasm and then its
+  heap snapshottable with Wizer. One can imagine this technique being used
+  instead to implement a JIT instead of an AOT, thereby also sidestepping the
+  snapshot requirement. One might also imagine this applying to another IR than
+  WebAssembly. Say, LLVM...
