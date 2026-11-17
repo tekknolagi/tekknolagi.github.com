@@ -286,7 +286,9 @@ I think there is a lot of good stuff in RPython:
   the PyPy authors think about it for you.
 * It is possible to do manual memory layout via `lltype` so that you can write
   better data structures than Python would otherwise let you express.
-* It provides a garbage collector for you.
+* It provides a garbage collector for you. Furthermore, it handles all the
+  stack scanning stuff and "oop maps" so you don't have to build
+  handles/`GC_PROTECT`/... yourself.
 
 I wish some stuff were different, or at least modifiable:
 
@@ -340,7 +342,8 @@ Here are some pointers to other projects in the neighborhood:
 * semPy, which is an executable semantics for Python.
 * Zig and other languages such as the more nascent k1 have the ability to run
   and generate code at build-time. Perhaps someone could implement a VM toolkit
-  in one of these languages.
+  in one of these languages. I think a lot of the effort would still go toward
+  something like GC handles if you want a moving GC.
 
 ## Thank you
 
