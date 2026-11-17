@@ -220,3 +220,48 @@ flow into `x`, boom, complaint.[^variables]
 
 [^variables]: I initially thought any variable had to be monomorphic but I
     could not get an error from programs such as `x = "a"; x = 3`.
+
+To get around this, we do what all good C++ programmers do and we templatize
+the function. The RPython spelling of this is, as with many other features, a
+function annotation:
+
+```python
+from rpython.rlib.objectmodel import specialize
+
+@specialize.argtype(0)
+def double(x):
+    return x + x
+
+# ...
+```
+
+You will find now that RPython happily compiles the program. This works because
+it makes a new copy of `double` for every input type of the first (`0`)
+argument.
+
+"Hey wait a minute,", you might ask, "doesn't this mean it stops being a valid
+Python 2 program?"
+
+Great question. No.
+
+You can still run the program as long as you provide the location of the
+RPython libraries via `PYTHONPATH` (as before):
+
+```
+$ PYTHONPATH=/path/to/pypy pypy double.py
+aa
+6
+$
+```
+
+This runs ~instantly, which is a big relief. Developing an interpreter project
+with a 30 second or more turnaround time for each compile would be really
+frustrating.
+
+This has been a taste of RPython, great and somewhat frustrating. I bring it up
+because I want to rehash something that occasionally grumble about in the
+vicinity of PLDI but for some reason have not written about online.
+
+## A new meta-programming toolkit
+
+
