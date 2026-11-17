@@ -286,6 +286,7 @@ I think there is a lot of good stuff in RPython:
   the PyPy authors think about it for you.
 * It is possible to do manual memory layout via `lltype` so that you can write
   better data structures than Python would otherwise let you express.
+* It provides a garbage collector for you.
 
 I wish some stuff were different, or at least modifiable:
 
