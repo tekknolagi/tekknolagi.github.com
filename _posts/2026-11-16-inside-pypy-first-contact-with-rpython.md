@@ -7,7 +7,7 @@ I get restless now and then and I want to implement a programming language.
 Then after mustering the resolve, I stew, for there is no good implementation
 language.[^come-at-me] What am I to do, build my own programming language so
 that I can then use it to implement the first language? So I go back to
-modifying an existing implementation.
+modifying an existing implementation instead.
 
 [^come-at-me]: I don't want to implement atop Racket. C++ and C give me endless
     nightmares and are completely DIY. Yes, yes, I have built large VMs on C++
