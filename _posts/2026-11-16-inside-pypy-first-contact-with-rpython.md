@@ -338,3 +338,8 @@ Here are some pointers to other projects in the neighborhood:
   snapshot requirement. One might also imagine this applying to another IR than
   WebAssembly. Say, LLVM...
 * semPy, which is an executable semantics for Python.
+
+## Thank you
+
+Thanks for CF Bolz-Tereick first for allowing me to talk their ear off about
+this for years and second for reviewing this post.
