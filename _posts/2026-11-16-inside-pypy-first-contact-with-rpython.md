@@ -113,7 +113,8 @@ def target(*args):
 This `target` function looks unused, but it is actually a hint to RPython: this
 is where the compiler should start translating.
 
-Either inside the PyPy directory or with `PYTHONPATH=/path/to/pypy`, run:
+Let us now compile this program. Either inside the PyPy directory or with
+`PYTHONPATH=/path/to/pypy`, run:
 
 ```
 $ python2 /path/to/pypy/rpython/bin/rpython double.py
