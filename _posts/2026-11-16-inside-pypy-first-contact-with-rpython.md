@@ -47,3 +47,84 @@ They each take different approaches:
 While none of these *spark joy*, they do each have benefits, including
 accomplishing the primary goal of offloading a lot of the language runtime
 choices and nasty details.
+
+In this post we will take a first look at RPython because it is the kind of
+VM implementor's programming language that I keep thinking about. More on that
+later.
+
+Before we continue, please heed this warning: RPython is an implementation
+detail of PyPy. It has not had the years of polish that the rest of the system
+has had. Please do not badger maintainers.
+
+## A little Python
+
+We're going to build a little program in RPython.
+
+```python
+def double(x):
+    return x + x
+
+def entry_point(argv):
+    print double(3)
+    return 0
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(entry_point(sys.argv))
+```
+
+There's a little more ceremony than you might be used to and that's because
+we're going to run this file in two modes: normal Python 2 interpreter and
+compiled to C. This is the weirdness of RPython.
+
+Run it:
+
+```
+$ python2 double.py
+```
+
+If you don't have `python2` installed, you can install PyPy, which helpfully
+still implements Python 2.
+
+If this all went fine, you will see it print `6`.
+
+None of this is RPython *yet*.
+
+## First contact
+
+Either inside the PyPy directory or with `PYTHONPATH=/path/to/pypy`, run:
+
+```
+$ python2 double.py
+```
+
+If you don't have `python2` installed, you can install PyPy, which helpfully
+still implements Python 2.
+
+```python
+def double(x):
+    return x + x
+
+def entry_point(argv):
+    print double(3)
+    return 0
+
+def target(*args):
+    return entry_point
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(entry_point(sys.argv))
+```
+
+
+Start by opening up [the docs](https://rpython.readthedocs.io/en/latest/),
+specifically [Getting Started with
+RPython](https://rpython.readthedocs.io/en/latest/getting-started.html).
+
+You'll also want to clone PyPy:
+
+```
+$ git clone --depth=1 https://github.com/pypy/pypy
+```
+
