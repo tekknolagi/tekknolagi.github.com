@@ -296,5 +296,32 @@ I wish some stuff were different, or at least modifiable:
   results. I kind of want to see what a meta-method-JIT would look like.
 * The user experience leaves something to be desired. I want better error
   messages, faster compiles, and less output. I want thorough docs.
+* I want better performance feedback. This is in line with the rest of my
+  ramblings about mechanical sympathy: the runtime should tell you what is
+  wrong. I (or CF) shouldn't have to stare at IR in traces and go "hmmmmm..."
+* It requires writing a lot of your tooling anew. Even if I had, for example, a
+  JavaScript parser written in Python, it likely wouldn't be in Python 2 and it
+  likely would not work well with RPython's special rules. Runtimes such as
+  JRuby get around this by compiling parsers (Prism) to WebAssembly and then
+  bundling a WebAssembly interpreter written in Java.
+* Along these lines, I would like more help with lexing and parsing, for which
+  I have so little patience.
+* I think it would be neat if it had a way to pause and save an "image" of the
+  heap. After all, RPython is in control of all the memory and the code.
+* It would be neat if, in addition to a JIT, it also helped you build an AOT
+  compiler for your guest language.
+
+I will probably add more to this list as I continue to remember some years of
+these conversations.
+
+Wouldn't this be neat?
 
 ## Now what?
+
+I don't really have the time, energy, or expertise to build such a thing. There
+are so many design decisions along the way. It would probably accidentally grow
+to be huge and ossify along the way, and what a bummer that would be.
+
+If you have any pointers to existing projects or a way to implement such a
+thing in a really lightweight form (read: sub 10k lines, portable ideas), I
+would be very interested.
