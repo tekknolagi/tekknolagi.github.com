@@ -258,10 +258,39 @@ This runs ~instantly, which is a big relief. Developing an interpreter project
 with a 30 second or more turnaround time for each compile would be really
 frustrating.
 
-This has been a taste of RPython, great and somewhat frustrating. I bring it up
-because I want to rehash something that occasionally grumble about in the
-vicinity of PLDI but for some reason have not written about online.
+This has been a taste of RPython, both great and somewhat frustrating. I
+intentionally made it about RPython *as a programming language* rather than
+being so focused on RPython *as a programming language implementation tool*
+because I want some of its features to exist in a general purpose programming
+language... that then also might be used to implement other programming
+languages.
 
-## A new meta-programming toolkit
+I bring it up because I want to rehash the stuff that I occasionally grumble
+about in the vicinity of PLDI but for some reason have not written about
+online. Perhaps writing about it will encourage people.
 
+## A new (meta-)programming toolkit
 
+I think there is a lot of good stuff in RPython:
+
+* Compile to native AOT with additional JIT. Seems like this provides good
+  start-up performance with (optional!) tier-up as the runtime system observes
+  the system's behavior.
+* Automatic memory optimization. There is no good way to syntactically express
+  how an object should be allocated---Python is, after all, a very high-level
+  language---so Python programs are profligate allocators of memory. RPython
+  programs *would be* the same except that the AOT compiler does a
+  whole-program analysis to try and remove these allocations. The JIT does too,
+  but via a different mechanism.
+* The JIT is provided to you. You don't have to think about program analysis;
+  the PyPy authors think about it for you.
+
+I wish some stuff were different, or at least modifiable:
+
+* RPython does its partial evaluation and automatic JIT creation via
+  *meta-tracing*. It is one of the last surviving tracing JIT compilers
+  (alongside LuaJIT and, kind of, HHVM). For a lot of programs, method-based
+  compilers seem to have produced better, or at least more predictable,
+  results. I kind of want to see what a meta-method-JIT would look like.
+* The user experience leaves something to be desired. I want better error
+  messages, faster compiles, and less output. I want thorough docs.
