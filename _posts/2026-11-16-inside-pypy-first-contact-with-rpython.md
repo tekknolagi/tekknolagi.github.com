@@ -170,7 +170,7 @@ Under normal Python 2, this will work just fine, printing `aa` and then `6`.
 Under RPython, though, you get this inscrutable error (again, rough edges):
 
 ```
-[translation:ERROR] UnionError: 
+[translation:ERROR] UnionError:
 
 Offending annotations:
   SomeChar(const='a', no_nul=True)
@@ -191,16 +191,16 @@ Happened at file double.py line 6
 Known variable annotations:
 
 Processing block:
- block@6[argv_0] is a <class 'rpython.flowspace.flowcontext.SpamBlock'> 
- in (double:4)entry_point 
- containing the following operations: 
-       v3 = simple_call((function double), ('a')) 
-       v4 = str(v3) 
-       v5 = simple_call((function rpython_print_item), v4) 
-       v6 = simple_call((function rpython_print_newline)) 
-       v2 = simple_call((function double), (3)) 
-       v7 = str(v2) 
-       v8 = simple_call((function rpython_print_item), v7) 
+ block@6[argv_0] is a <class 'rpython.flowspace.flowcontext.SpamBlock'>
+ in (double:4)entry_point
+ containing the following operations:
+       v3 = simple_call((function double), ('a'))
+       v4 = str(v3)
+       v5 = simple_call((function rpython_print_item), v4)
+       v6 = simple_call((function rpython_print_newline))
+       v2 = simple_call((function double), (3))
+       v7 = str(v2)
+       v8 = simple_call((function rpython_print_item), v7)
        v9 = simple_call((function rpython_print_newline))
 ```
 
