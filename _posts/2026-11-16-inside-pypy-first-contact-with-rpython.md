@@ -338,6 +338,9 @@ Here are some pointers to other projects in the neighborhood:
   snapshot requirement. One might also imagine this applying to another IR than
   WebAssembly. Say, LLVM...
 * semPy, which is an executable semantics for Python.
+* Zig and other languages such as the more nascent k1 have the ability to run
+  and generate code at build-time. Perhaps someone could implement a VM toolkit
+  in one of these languages.
 
 ## Thank you
 
