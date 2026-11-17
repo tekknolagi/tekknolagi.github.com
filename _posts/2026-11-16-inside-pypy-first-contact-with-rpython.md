@@ -1,0 +1,47 @@
+---
+title: "Inside PyPy: first contact with RPython"
+layout: post
+---
+
+I get restless now and then and I want to implement a programming language.
+Then after mustering the resolve, I stew, for there is no good implementation
+language.[^come-at-me] What am I to do, build my own programming language so
+that I can then use it to implement the first language? So I go back to
+modifying an existing implementation.
+
+[^come-at-me]: I don't want to implement atop Racket. C++ and C have endless
+    nightmares and are completely DIY. I don't really want to try to think
+    about GC in Rust.
+
+There do exist established general-purpose tools for building fast programming
+language implementations:
+
+* RPython, which has PyPy (Python) as its primary success story but also can
+  claim Topaz (Ruby) and a couple of other smaller ones
+* Truffle, which is the foundation of TruffleRuby, GraalPython, GraalJS, and
+  even Sulong (LLVM)
+
+And more nascent ones such as [Deegen][], which was used to reimplement Lua.
+
+[Deegen]: https://github.com/luajit-remake/luajit-remake
+
+They each take different approaches:
+
+* Deegen requires you to write your bytecode interpreter and type system in a
+  C++ DSL. From this it generates an interpreter, a baseline JIT compiler, and,
+  hopefully eventually, an optimizing JIT compiler.
+* Truffle requires you to write an AST or (newly) bytecode interpreter in an
+  Annotation-based Java DSL. From this it specializes guest language code
+  before emitting Graal IR, which uses aggressive partial evaluation to
+  generate optimized code.
+* RPython requires you to write an interpreter in a restricted dialect of
+  Python 2 that acts more like C than Python. The RPython compiler will then
+  analyze your code, translate your "Python" program into C code bundled with
+  RPython IR, and then "tier up" from the C code to JITed code at run-time. In
+  order to go from "random RPython program" to "JIT compiler", you need to
+  participate in its *meta-tracing*, which requires annotating where your
+  interpreter loop loops.
+
+While none of these *spark joy*, they do each have benefits, including
+accomplishing the primary goal of offloading a lot of the language runtime
+choices and nasty details.
