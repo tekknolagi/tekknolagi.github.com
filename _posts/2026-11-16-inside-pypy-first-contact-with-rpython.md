@@ -348,6 +348,8 @@ Here are some pointers to other projects in the neighborhood:
   and generate code at build-time. Perhaps someone could implement a VM toolkit
   in one of these languages. I think a lot of the effort would still go toward
   something like GC handles if you want a moving GC.
+* Virgil
+* Mojo
 
 ## Thank you
 
