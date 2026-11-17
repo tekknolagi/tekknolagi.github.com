@@ -9,9 +9,11 @@ language.[^come-at-me] What am I to do, build my own programming language so
 that I can then use it to implement the first language? So I go back to
 modifying an existing implementation.
 
-[^come-at-me]: I don't want to implement atop Racket. C++ and C have endless
-    nightmares and are completely DIY. I don't really want to try to think
-    about GC in Rust.
+[^come-at-me]: I don't want to implement atop Racket. C++ and C give me endless
+    nightmares and are completely DIY. Yes, yes, I have built large VMs on C++
+    and C before. One time I posted so hard about the frustration that my tech
+    lead unfollowed me on Twitter. I don't really want to try to think about GC
+    in Rust.
 
 There do exist established general-purpose tools for building fast programming
 language implementations:
