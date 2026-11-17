@@ -315,6 +315,10 @@ I wish some stuff were different, or at least modifiable:
   compiler for your guest language.
 * What if your language is statically typed? Should the toolkit provide
   functionality for type checking? Type inference?
+* Some solution for C code. You can call it and stuff just fine but there's no
+  Sulong equivalent so it's a totally opaque barrier to optimization. Don't
+  write your runtime helpers in C, sure, but at some point you have to interact
+  with outside code.
 
 I will probably add more to this list as I continue to remember some years of
 these conversations.
