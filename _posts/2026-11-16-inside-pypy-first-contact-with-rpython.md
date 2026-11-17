@@ -58,9 +58,13 @@ has had. Please do not badger maintainers.
 
 ## A little Python
 
-We're going to build a little program in RPython.
+We're going to build a little program in RPython. I am mostly following along
+with [the docs](https://rpython.readthedocs.io/en/latest/), specifically
+[Getting Started with
+RPython](https://rpython.readthedocs.io/en/latest/getting-started.html).
 
 ```python
+# double.py
 def double(x):
     return x + x
 
@@ -88,43 +92,55 @@ still implements Python 2.
 
 If this all went fine, you will see it print `6`.
 
-None of this is RPython *yet*.
+None of this is RPython *yet*. For that, we need a hint more ceremony.
 
 ## First contact
 
-Either inside the PyPy directory or with `PYTHONPATH=/path/to/pypy`, run:
-
-```
-$ python2 double.py
-```
-
-If you don't have `python2` installed, you can install PyPy, which helpfully
-still implements Python 2.
-
-```python
-def double(x):
-    return x + x
-
-def entry_point(argv):
-    print double(3)
-    return 0
-
-def target(*args):
-    return entry_point
-
-if __name__ == "__main__":
-    import sys
-    sys.exit(entry_point(sys.argv))
-```
-
-
-Start by opening up [the docs](https://rpython.readthedocs.io/en/latest/),
-specifically [Getting Started with
-RPython](https://rpython.readthedocs.io/en/latest/getting-started.html).
-
-You'll also want to clone PyPy:
+This is when we clone the PyPy project, in which we will find RPython.
 
 ```
 $ git clone --depth=1 https://github.com/pypy/pypy
 ```
 
+Now edit the Python program. Below the `entry_point` definition, add the
+following function:
+
+```python
+def target(*args):
+    return entry_point
+```
+
+This `target` function is apparently unused, but it is actually a hint to
+RPython: this is where the compiler should start translating.
+
+Either inside the PyPy directory or with `PYTHONPATH=/path/to/pypy`, run:
+
+```
+$ python2 /path/to/pypy/rpython/bin/rpython double.py
+```
+
+If all goes well, you will see a whole mess of output, including a partially
+rendered Mandelbrot fractal. Finally, you will see something like:
+
+```
+...
+[Timer] Timings:
+[Timer] loading target                 ---  0.0 s
+[Timer] annotate                       ---  0.5 s
+[Timer] rtype_lltype                   ---  0.5 s
+[Timer] backendopt_lltype              ---  0.3 s
+[Timer] stackcheckinsertion_lltype     ---  0.0 s
+[Timer] database_c                     --- 10.6 s
+[Timer] source_c                       ---  1.2 s
+[Timer] compile_c                      ---  1.5 s
+[Timer] =========================================
+[Timer] Total:                         --- 18.0 s
+$
+```
+
+This is the RPython compilation process. In it, RPython is analyzing types,
+removing memory allocations, monomorphizing functions, and generating C code.
+Then it hands this C code off to a C compiler to compile.
+
+You should have in your current directory an executable named `double-c`, which
+you can run like `./double-c`. It should also print `6`.
