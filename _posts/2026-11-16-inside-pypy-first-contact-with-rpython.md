@@ -37,7 +37,7 @@ They each take different approaches:
   before emitting Graal IR, which uses aggressive partial evaluation to
   generate optimized code.
 * RPython requires you to write an interpreter in a restricted dialect of
-  Python 2 that acts more like C than Python. The RPython compiler will then
+  Python 2 that acts more like Java or Go than Python. The RPython compiler will then
   analyze your code, translate your "Python" program into C code bundled with
   RPython IR, and then "tier up" from the C code to JITed code at run-time. In
   order to go from "random RPython program" to "JIT compiler", you need to
