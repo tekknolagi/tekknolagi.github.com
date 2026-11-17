@@ -317,7 +317,7 @@ I wish some stuff were different, or at least modifiable:
 I will probably add more to this list as I continue to remember some years of
 these conversations.
 
-Wouldn't this be neat?
+Wouldn't this be great?
 
 ## Now what?
 
