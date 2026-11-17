@@ -110,8 +110,8 @@ def target(*args):
     return entry_point
 ```
 
-This `target` function is apparently unused, but it is actually a hint to
-RPython: this is where the compiler should start translating.
+This `target` function looks unused, but it is actually a hint to RPython: this
+is where the compiler should start translating.
 
 Either inside the PyPy directory or with `PYTHONPATH=/path/to/pypy`, run:
 
