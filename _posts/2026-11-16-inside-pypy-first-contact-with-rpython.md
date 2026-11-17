@@ -145,3 +145,78 @@ Then it hands this C code off to a C compiler to compile.
 
 You should have in your current directory an executable named `double-c`, which
 you can run like `./double-c`. It should also print `6`.
+
+So far, this is not so different from Python. But let's try something Pythonic.
+Let's see what happens when we also use `+` to mean string concatenation.
+
+```python
+def double(x):
+    return x + x
+
+def entry_point(argv):
+    print double("a")
+    print double(3)
+    return 0
+
+def target(*args):
+    return entry_point
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(entry_point(sys.argv))
+```
+
+Under normal Python 2, this will work just fine, printing `aa` and then `6`.
+Under RPython, though, you get this inscrutable error (again, rough edges):
+
+```
+[translation:ERROR] UnionError: 
+
+Offending annotations:
+  SomeChar(const='a', no_nul=True)
+  SomeInteger(const=3, knowntype=int, nonneg=True, unsigned=False)
+
+
+Occurred processing the following simple_call:
+  function double <double.py, line 1> returning
+
+    v2 = simple_call((function double), (3))
+
+In <FunctionGraph of (double:4)entry_point at 0x59c0ad837b40>:
+Happened at file double.py line 6
+
+        print double("a")
+==>     print double(3)
+
+Known variable annotations:
+
+Processing block:
+ block@6[argv_0] is a <class 'rpython.flowspace.flowcontext.SpamBlock'> 
+ in (double:4)entry_point 
+ containing the following operations: 
+       v3 = simple_call((function double), ('a')) 
+       v4 = str(v3) 
+       v5 = simple_call((function rpython_print_item), v4) 
+       v6 = simple_call((function rpython_print_newline)) 
+       v2 = simple_call((function double), (3)) 
+       v7 = str(v2) 
+       v8 = simple_call((function rpython_print_item), v7) 
+       v9 = simple_call((function rpython_print_newline))
+```
+
+and are unceremoniously dropped into the debugger, Pdb (hit Ctrl-D or type
+`exit`).
+
+From this message you are meant to intuit that RPython did not enjoy that two
+different types flowed into the `double` function. It helpfully tells you that
+there was a `UnionError` when trying to reconcile the `SomeChar` and
+`SomeInteger` types that flowed into the function's first parameter. It then
+gives you a pointer to the offending line and an IR dump.
+
+This happens because RPython requires function parameters to be monomorphic.
+Though the variables are syntactically untyped, RPython computes a type
+analysis to discover what type each variable should be. When `"a"` and `3` both
+flow into `x`, boom, complaint.[^variables]
+
+[^variables]: I initially thought any variable had to be monomorphic but I
+    could not get an error from programs such as `x = "a"; x = 3`.
