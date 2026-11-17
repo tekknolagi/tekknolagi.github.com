@@ -337,3 +337,4 @@ Here are some pointers to other projects in the neighborhood:
   instead to implement a JIT instead of an AOT, thereby also sidestepping the
   snapshot requirement. One might also imagine this applying to another IR than
   WebAssembly. Say, LLVM...
+* semPy, which is an executable semantics for Python.
