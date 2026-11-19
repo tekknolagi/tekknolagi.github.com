@@ -343,6 +343,8 @@ Here are some pointers to other projects in the neighborhood:
   instead to implement a JIT instead of an AOT, thereby also sidestepping the
   snapshot requirement. One might also imagine this applying to another IR than
   WebAssembly. Say, LLVM...
+* Yk, which is another tracing framework that you can add to an existing
+  interpreter. It traces and optimizes LLVM IR.
 * semPy, which is an executable semantics for Python.
 * Zig and other languages such as the more nascent k1 have the ability to run
   and generate code at build-time. Perhaps someone could implement a VM toolkit
