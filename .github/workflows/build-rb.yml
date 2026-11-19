@@ -1,4 +1,4 @@
-name: build.py CI
+name: build.rb CI
 
 on:
   push:
@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
-    - uses: astral-sh/setup-uv@v5
+    - uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
     - name: Build site
-      run: uv run build.py
+      run: bundle exec ruby build.rb build
