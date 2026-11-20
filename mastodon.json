@@ -21,8 +21,8 @@
     "header_description": "",
     "followers_count": 633,
     "following_count": 288,
-    "statuses_count": 1579,
-    "last_status_at": "2026-11-19",
+    "statuses_count": 1581,
+    "last_status_at": "2026-11-20",
     "hide_collections": false,
     "show_media": true,
     "show_media_replies": true,
@@ -82459,6 +82459,95 @@
           }
         ]
       },
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117648690112412726": {
+      "id": "117648690112412726",
+      "created_at": "2026-11-20T12:09:05.914Z",
+      "in_reply_to_id": null,
+      "in_reply_to_account_id": null,
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117648690112412726",
+      "url": "https://mastodon.social/@tekknolagi/117648690112412726",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p>Uber driver listening to a woman&#39;s dance/house cover of Country Roads was not on my bingo card</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
+      "poll": null,
+      "quote_approval": {
+        "automatic": [
+          "public"
+        ],
+        "manual": [],
+        "current_user": "denied"
+      }
+    },
+    "117648689741601602": {
+      "id": "117648689741601602",
+      "created_at": "2026-11-20T12:09:00.249Z",
+      "in_reply_to_id": "117646945267133323",
+      "in_reply_to_account_id": "64048",
+      "sensitive": false,
+      "spoiler_text": "",
+      "visibility": "public",
+      "language": "en",
+      "uri": "https://mastodon.social/users/tekknolagi/statuses/117648689741601602",
+      "url": "https://mastodon.social/@tekknolagi/117648689741601602",
+      "replies_count": 0,
+      "reblogs_count": 0,
+      "favourites_count": 0,
+      "quotes_count": 0,
+      "edited_at": null,
+      "content": "<p><span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@cfbolz\" class=\"u-url mention\">@<span>cfbolz</span></a></span> <span class=\"h-card\" translate=\"no\"><a href=\"https://mastodon.social/@pervognsen\" class=\"u-url mention\">@<span>pervognsen</span></a></span> the trick, or treat</p>",
+      "reblog": null,
+      "application": {
+        "name": "Mastodon for Android",
+        "website": "https://app.joinmastodon.org/android"
+      },
+      "media_attachments": [],
+      "mentions": [
+        {
+          "id": "64048",
+          "username": "cfbolz",
+          "url": "https://mastodon.social/@cfbolz",
+          "acct": "cfbolz"
+        },
+        {
+          "id": "523512",
+          "username": "pervognsen",
+          "url": "https://mastodon.social/@pervognsen",
+          "acct": "pervognsen"
+        }
+      ],
+      "tags": [],
+      "emojis": [],
+      "tagged_collections": [],
+      "quote": null,
+      "card": null,
       "poll": null,
       "quote_approval": {
         "automatic": [
