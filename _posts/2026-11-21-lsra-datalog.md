@@ -4,6 +4,11 @@ layout: post
 co_authors: Yannis Smaragdakis
 ---
 
+*Note: This was supposed to be published basically immediately after PLDI 2026
+but I got hung up on posting it because I am not a Datalog native like Yannis
+is and I like understanding everything I post. But I guess that's what expert
+co-authors are for, right? Happy reading.*
+
 Last year I wrote [my first register allocator](/blog/linear-scan): a small
 linear scan implementation in Ruby on SSA. Immediately after publishing the
 post, I had a call with [Waleed Khan](https://waleedkhan.name) where he walked
