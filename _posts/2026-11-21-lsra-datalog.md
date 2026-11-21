@@ -338,7 +338,11 @@ be compared in the course of execution.
 
 ## Conclusion
 
-[Implementation](https://gist.github.com/yanniss/c04e75faf8dc395a5055cdabe7c6e3d4)
+Datalog is fun. It's not for everyone or everything. But I love nerd sniping
+people at conferences. Thank you to Yannis for playing along and writing half
+this article and being so patient for it to be published!
+
+See the [implementation](https://gist.github.com/yanniss/c04e75faf8dc395a5055cdabe7c6e3d4).
 
 <!--
 .type Block <: number
