@@ -7,7 +7,8 @@ co_authors: Yannis Smaragdakis
 *Note: This was supposed to be published basically immediately after PLDI 2026
 but I got hung up on posting it because I am not a Datalog native like Yannis
 is and I like understanding everything I post. But I guess that's what expert
-co-authors are for, right? Happy reading.*
+co-authors are for, right? It's a little rough but it's been so long that the
+editing is holding up the posting. Happy reading.*
 
 Last year I wrote [my first register allocator](/blog/linear-scan): a small
 linear scan implementation in Ruby on SSA. Immediately after publishing the
