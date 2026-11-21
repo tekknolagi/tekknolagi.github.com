@@ -36,14 +36,32 @@ glass/clay and how that informs all of my programming.
 
 I learned a lot about static analysis in the last 12 months. If you have been
 even occasionally following my blog, you may have seen posts such as
-[Type-based alias analysis in the Toy Optimizer](/blog/toy-tbaa/) and [ Load
+[Type-based alias analysis in the Toy Optimizer](/blog/toy-tbaa/) and [Load
 and store forwarding in the Toy Optimizer](/blog/toy-load-store/).
 
 I have also done other small project such as [zero-knowledge
 proofs](/blog/zkp/) and [a shape/inline cache
 implementation](/blog/object-shapes/).
 
-All of these
+All of these implementations are under 200 lines of code. Many of them are
+under 100 lines of code. They are either tiny components of a larger
+system---an optimization pass, or a slice of an optimization pass, of a bigger
+compiler under a microscope---or a simplified model of a problem and its
+solution.
+
+This lets you focus on the part you want to think about and understand rather
+than every other inane detail. For example, I want to think about static
+analysis. If I wanted to build a small static analysis engine for a small
+programming language, I might also have to either:
+
+* build all sorts of other things like a parser, a backend, a way to test it,
+  or
+* find an existing implementation to understand and modify
+
+If I only do the simple model, I can focus on the details of the problem at
+hand.
+
+You only see the prose and the small code snippets. You *don't* see
 
 ## Throw it away
 
