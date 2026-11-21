@@ -157,7 +157,9 @@ jump(12, 3).
 ret(16).
 ```
 
+<!--
 TODO explain `min_instruction`, `max_instruction`
+-->
 
 We also model the control-flow in terms of instructions: we have jumps between
 instructions from which we (in Datalog!) recover the basic block boundaries and
