@@ -61,8 +61,21 @@ programming language, I might also have to either:
 If I only do the simple model, I can focus on the details of the problem at
 hand.
 
-You only see the prose and the small code snippets. You *don't* see
+You also don't see the process. You only see the prose and the small code
+snippets. You *don't* see the thirty-odd hours building and editing and leaving
+it on my disk for months and stewing about it. But you *have* to throw your
+code away.
 
 ## Throw it away
+
+It's kind of like a backtracking search. If you start building/searching on the
+wrong path, you might not find a good solution. So you have to get used to
+extreme amounts of undo/redo or just starting afresh. This lets you explore a
+lot of different paths.
+
+There are a dozen ways I could have modeled some of the data structures for
+these little projects. I tried a lot of them for each. Sometimes you can
+immediately tell when it's not the right one but sometimes you need to discover
+that feeling creeping in
 
 ## Write about it
