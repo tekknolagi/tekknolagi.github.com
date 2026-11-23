@@ -49,3 +49,4 @@ Related:
 * JSC DOMJIT
 * Julia implemented in femtolisp?
 * Racket build system single file Lisp
+* Graal, with Graal Native/SubstrateVM
