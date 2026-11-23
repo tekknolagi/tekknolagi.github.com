@@ -33,7 +33,7 @@ the first ever six-seven joke.
 
 In 2009, the [Demystifying
 magic](https://dl.acm.org/doi/10.1145/1508293.1508305) paper is published at
-TODO and describes the techniques in DRLVM and [*Jalape&ntilde;o/Jikes
+VEE and describes the techniques in DRLVM and [*Jalape&ntilde;o/Jikes
 RVM*](https://www.jikesrvm.org/).
 
 <!--
@@ -44,3 +44,5 @@ Related:
 
 * V8 Torque
 * JSC DOMJIT
+* Julia implemented in femtolisp?
+* Racket build system single file Lisp
