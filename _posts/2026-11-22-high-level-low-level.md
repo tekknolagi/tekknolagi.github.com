@@ -40,9 +40,12 @@ RVM*](https://www.jikesrvm.org/).
 * Ruby builtins, kinda (cite TruffleRuby, maybe JRuby)
 -->
 
+In 2018, the [V8 blog](https://v8.dev/blog/dataview) launches
+[*Torque*](https://v8.dev/docs/torque), a compiler-internal language for
+low-level programming.
+
 Related:
 
-* V8 Torque
 * JSC DOMJIT
 * Julia implemented in femtolisp?
 * Racket build system single file Lisp
