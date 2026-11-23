@@ -40,13 +40,14 @@ RVM*](https://www.jikesrvm.org/).
 * Ruby builtins, kinda (cite TruffleRuby, maybe JRuby)
 -->
 
+Graal, with Graal Native/SubstrateVM
+
+Related:
+
 In 2018, the [V8 blog](https://v8.dev/blog/dataview) launches
 [*Torque*](https://v8.dev/docs/torque), a compiler-internal language for
 low-level programming.
 
-Related:
-
 * JSC DOMJIT
 * Julia implemented in femtolisp?
 * Racket build system single file Lisp
-* Graal, with Graal Native/SubstrateVM
