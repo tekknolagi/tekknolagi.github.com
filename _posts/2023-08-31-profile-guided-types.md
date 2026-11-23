@@ -78,6 +78,10 @@ just-in-time compiler?"---great question.
   interprocedural analysis
 * It is hard to build a mental performance model even if you are an engineer
   working on the JIT
+* Sometimes the language semantics actively prohibit some kinds of
+  optimizations, but the programmer is not aware that they are (accidentally)
+  requesting The Slow Thing instead of something faster and equivalent for
+  their purposes
 
 That's not to say that JITs are bad---I have worked on several; they are
 not---but they are not a perfect fit for every situation.
