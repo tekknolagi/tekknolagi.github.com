@@ -31,16 +31,25 @@ PyPy](https://pypy.org/posts/2018/09/the-first-15-years-of-pypy-3412615975376972
 with their new RPython compiler. They cite Squeak's Slang and also make perhaps
 the first ever six-seven joke.
 
+Also in 2005, Sun releases Maxine VM, a JVM that compiles itself AOT and later
+also JITs itself and guest code.
+
+Out of the ashes of Maxine rises the Graal project, a Java JIT compiler that
+integrates with the OpenJDK JVMCI.
+
 In 2009, the [Demystifying
 magic](https://dl.acm.org/doi/10.1145/1508293.1508305) paper is published at
 VEE and describes the techniques in DRLVM and [*Jalape&ntilde;o/Jikes
-RVM*](https://www.jikesrvm.org/).
+RVM*](https://www.jikesrvm.org/), and, later, Maxine VM.
+
+In 2018, Graal grows an aggressively optimizing closed-world AOT compiler
+called Graal Native and runtime components called SubstrateVM. This makes it
+possible to have a full Graal JVM (or Graal Native based Truffle language).
+
 
 <!--
 * Ruby builtins, kinda (cite TruffleRuby, maybe JRuby)
 -->
-
-Graal, with Graal Native/SubstrateVM
 
 Related:
 
