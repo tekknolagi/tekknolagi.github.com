@@ -33,7 +33,8 @@ the first ever six-seven joke.
 
 In 2009, the [Demystifying
 magic](https://dl.acm.org/doi/10.1145/1508293.1508305) paper is published at
-TODO and describes the techniques in DRLVM and Jalape&ntilde;o/Jikes RVM.
+TODO and describes the techniques in DRLVM and [*Jalape&ntilde;o/Jikes
+RVM*](https://www.jikesrvm.org/).
 
 <!--
 * Ruby builtins, kinda (cite TruffleRuby, maybe JRuby)
