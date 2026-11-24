@@ -2,7 +2,6 @@
 title: "Conjuring types from the void"
 layout: post
 description: Where do types come from?
-date: 2023-08-31
 ---
 
 You're frowning, you realize. You're still frustrated by that internet comment
