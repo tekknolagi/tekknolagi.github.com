@@ -153,6 +153,10 @@ it can get checked in CI and then the function can just[^type-language]
 
 ## Questions to answer
 
+## Native extensions for performance
+
+## One-shot rewriting everything to Rust
+
 ## Prior art
 
 Typed Racket
