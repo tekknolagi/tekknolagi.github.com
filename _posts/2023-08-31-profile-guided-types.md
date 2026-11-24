@@ -125,7 +125,9 @@ so you do something to fix the cache.
 The last light is actually letting you know that the runtime thinks some code
 is dead. It has not been run in over a year (precluding rare stuff like tax
 season code) but it keeps getting loaded at application boot and is taking up
-hundreds of megabytes of heap space.
+hundreds of megabytes of heap space. Deleting this code reduces heap pressure,
+eliminating major GC cycles and also letting you process more web requests
+concurrently.
 
 ## Questions to answer
 
