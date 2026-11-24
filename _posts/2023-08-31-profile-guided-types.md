@@ -137,7 +137,8 @@ The runtime's profiler[^profiler] has observed that, whenever it samples the sta
 this very hot untyped function over here is passed an integer. The JIT has
 prepared an optimized version for the integer path but it still has to keep the
 checks in case this ever changes. If you add a type annotation to the function,
-it can get checked in CI and then the function can just[^type-language]
+it can get checked in CI and then the compiler need not check anything at
+run-time[^type-language].
 
 [^profiler]: This kind of thing exists in the form of
     [MonkeyType](https://github.com/Instagram/MonkeyType) and
