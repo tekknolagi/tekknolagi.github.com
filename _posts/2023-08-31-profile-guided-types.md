@@ -121,13 +121,6 @@ by an ad-hoc application-level cache. The cache keeps some closures alive which
 keep some call stacks alive which keep a bunch of big strings alive which ...
 so you do something to fix the cache.
 
-The last light is actually letting you know that the runtime thinks some code
-is dead. It has not been run in over a year (precluding rare stuff like tax
-season code) but it keeps getting loaded at application boot and is taking up
-hundreds of megabytes of heap space. Deleting this code reduces heap pressure,
-eliminating major GC cycles and also letting you process more web requests
-concurrently.
-
 There are some other signals, not angry blinking lights, below the performance
 warnings. They are observations and suggestions for improvement.
 
@@ -156,6 +149,13 @@ Even better, in this other function, it has observed that the integer is only
 ever in the range of 0-255. If you narrow the range on the type to an
 `uint8_t`, the compiler can even unbox the number and avoid a bunch of boxing
 (tagged pointer or heap-allocated integer) nonsense.
+
+is letting you know that the runtime thinks some code
+is dead. It has not been run in over a year (precluding rare stuff like tax
+season code) but it keeps getting loaded at application boot and is taking up
+hundreds of megabytes of heap space. Deleting this code reduces heap pressure,
+eliminating major GC cycles and also letting you process more web requests
+concurrently.
 
 You can see this kind of thing in the evolution of the Java language. In order
 to avoid heap allocation and a bunch of other associated overhead, Java
