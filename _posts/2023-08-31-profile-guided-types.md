@@ -128,6 +128,11 @@ hundreds of megabytes of heap space. Deleting this code reduces heap pressure,
 eliminating major GC cycles and also letting you process more web requests
 concurrently.
 
+There are some other signals, not lights, below the performance warnings. They
+are observations and suggestions for improvement.
+
+## Suggestions from the runtime
+
 ## Questions to answer
 
 ## Prior art
