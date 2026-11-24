@@ -133,6 +133,23 @@ warnings. They are observations and suggestions for improvement.
 
 ## Suggestions from the runtime
 
+The runtime's profiler[^profiler] has observed that, whenever it samples the stack,
+this very hot untyped function over here is passed an integer. The JIT has
+prepared an optimized version for the integer path but it still has to keep the
+checks in case this ever changes. If you add a type annotation to the function,
+it can get checked in CI and then the function can just[^type-language]
+
+[^profiler]: This kind of thing exists in the form of
+    [MonkeyType](https://github.com/Instagram/MonkeyType) and
+    [PyAnnotate](https://github.com/dropbox/pyannotate) and
+    [RightTyper](https://github.com/RightTyper/RightTyper) and ...
+
+[^type-language]: Unfortunately, many type languages [are not sufficiently
+    expressive](/blog/typed-python/) to encode the checks that you would want
+    for this situation. It's very possible to *add* this to the type language
+    but it's not already present in the well-known and well-used type languages
+    such as Python's PEP 484.
+
 ## Questions to answer
 
 ## Prior art
