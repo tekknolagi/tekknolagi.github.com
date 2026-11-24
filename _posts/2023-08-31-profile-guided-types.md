@@ -157,6 +157,13 @@ hundreds of megabytes of heap space. Deleting this code reduces heap pressure,
 eliminating major GC cycles and also letting you process more web requests
 concurrently.
 
+These are not limited to semantically-identical changes, either. One might
+imagine a situation where the runtime suggests a different object
+representation based on use. Using a full hash-based set but only storing and
+checking small integers? Maybe use a bitset. Using an long array as a set?
+Maybe consider a set. Things like that. I don't know why my ideas are all
+set-related.
+
 You can see this kind of thing in the evolution of the Java language. In order
 to avoid heap allocation and a bunch of other associated overhead, Java
 introduced [value
