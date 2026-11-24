@@ -164,6 +164,14 @@ checking small integers? Maybe use a bitset. Using an long array as a set?
 Maybe consider a set. Things like that. I don't know why my ideas are all
 set-related.
 
+Perhaps you are calling a function F from two different unrelated functions A
+and B. Function A sends it integers and function B sends it floats. For
+whatever reason, F can't be inlined into each of A and B so F ends up
+containing code for both integers and floats. Bummer! Perhaps the runtime could
+suggest an annotation such as "monomorphize this function based on argument
+types" (as demonstrated in the [RPython
+post](/blog/inside-pypy-first-contact-with-rpython/)).
+
 You can see this kind of thing in the evolution of the Java language. In order
 to avoid heap allocation and a bunch of other associated overhead, Java
 introduced [value
