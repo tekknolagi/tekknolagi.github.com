@@ -107,7 +107,25 @@ which parts are unnecessarily slow?
 You pull up the diagnostics tab for your fleet of servers and sure enough,
 there are some metaphorical angry blinking red lights.
 
+The first light indicates that some function is allocating a lot of memory,
+and, furthermore, this memory is very short-lived. A closer inspection reveals
+that the function is using string concatenation instead of a string buffer API.
 
+The second light indicates that another function is very big and therefore the
+JIT is refusing to compile it. But it is very hot, so you would really like it
+compiled. You look more closely and notice that it is a ten thousand line match
+expression generated from your protobuf/thrift/... binding generator when it
+could be a static lookup table. You go fix the binding generator.
+
+The third light lets you know of a memory leak caused, indirectly/transitively,
+by an ad-hoc application-level cache. The cache keeps some closures alive which
+keep some call stacks alive which keep a bunch of big strings alive which ...
+so you do something to fix the cache.
+
+The last light is actually letting you know that the runtime thinks some code
+is dead. It has not been run in over a year (precluding rare stuff like tax
+season code) but it keeps getting loaded at application boot and is taking up
+hundreds of megabytes of heap space.
 
 ## Questions to answer
 
