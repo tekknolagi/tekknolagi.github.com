@@ -20,7 +20,7 @@ don't want to try to do that yet.
 
 This is because if we have no new ideas, we'll have an *amazing* compiler.
 Instead of having new ideas, I plan on taking advantage of the last 40 years of
-dynamic language runtimes and compilers research, which has had a bountiful
+dynamic language runtimes and compilers research, which has produced a bountiful
 harvest.
 
 ## People have been thinking about this for a long time
@@ -59,3 +59,8 @@ inter-library loan.
 * Always browsing other compilers and hlrz
 * But Ruby is so different
   * Alluded to this in RubyKaigi talk but Ruby can kind of become just Java
+
+The problem with this is this is that it requires a lot of spelunking. I've
+been reading papers, talking to other people, and talking to other people about
+reading papers for a couple years now so I'm maybe caught up to 1% of it? But I
+think I've digested at least 30% of The Good Ideas.
