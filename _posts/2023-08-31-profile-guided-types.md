@@ -153,6 +153,8 @@ it can get checked in CI and then the function can just[^type-language]
 
 ## Questions to answer
 
+## A gradual migration
+
 ## Native extensions for performance
 
 ## One-shot rewriting everything to Rust
@@ -163,3 +165,15 @@ Typed Racket
 Static Python (IG)
 mypyc (black)
 Julia
+
+## Blah
+
+Right now, these signals are generally surfaced some oblique way to the people
+who develop and deploy the JIT and its runtime. I used to have a little
+dashboard that I maintained that tracked a SQL view of certain slow signals in
+the Cinder JIT. Every so often I would look at the table, sigh, and go fix the
+slow part of the application. But why was I, the compiler developer, the only
+one getting these signals? Part of it is because there is some amount of
+"reading tea leaves" that is necessary to determine where and how the fix
+should be made, but part of it is just laziness! This stuff should absolutely
+be made available to anyone who wants to look.
