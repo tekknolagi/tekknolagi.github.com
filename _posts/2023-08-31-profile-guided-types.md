@@ -148,7 +148,8 @@ it can get checked in CI and then the function can just[^type-language]
     expressive](/blog/typed-python/) to encode the checks that you would want
     for this situation. It's very possible to *add* this to the type language
     but it's not already present in the well-known and well-used type languages
-    such as Python's PEP 484.
+    such as Python's PEP 484. The Cinder project's Static Python has added some
+    of these richer types and checks.
 
 ## Questions to answer
 
