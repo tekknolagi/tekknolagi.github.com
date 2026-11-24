@@ -51,6 +51,27 @@ papers, blog posts, and half-hidden but illuminating scraps of code all across
 the internet. And what's not already on the internet can be found with an
 inter-library loan.
 
+The problem with this is this is that it requires a lot of spelunking. I've
+been reading papers, talking to other people, and talking to other people about
+reading papers for a couple years now so I'm maybe caught up to 1% of it? But I
+think I've internalized at least 30% of The Good Ideas.
+
+Basically my approach to building software has been the following state
+machine:
+
+1. Encounter a problem. If I have an idea of what to do about it *that is
+   already backed up by successful implementations in production runtimes*,
+   goto step 5.
+2. Determine what other VMs, compilers, research projects, etc do about the
+   problem and if there is at least a partial consensus. If they have
+   reasonably agreed-upon good ideas, goto step 5.
+3. If they do not have ideas, post in various nerd channels asking why that is
+   in the hopes of baiting some bored retirees (&lt;3). If there is a
+   compelling answer, goto step 5.
+4. Do some capital-r Research and capital-p Prototyping to figure out what to
+   do.
+5. Build it!
+
 * If we have no new ideas, we'll have an amazing compiler
 * Beg/borrow/steal
 * The last 40 years of dynamic language runtimes research
@@ -59,8 +80,3 @@ inter-library loan.
 * Always browsing other compilers and hlrz
 * But Ruby is so different
   * Alluded to this in RubyKaigi talk but Ruby can kind of become just Java
-
-The problem with this is this is that it requires a lot of spelunking. I've
-been reading papers, talking to other people, and talking to other people about
-reading papers for a couple years now so I'm maybe caught up to 1% of it? But I
-think I've digested at least 30% of The Good Ideas.
