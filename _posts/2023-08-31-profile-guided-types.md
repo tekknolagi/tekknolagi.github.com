@@ -152,6 +152,16 @@ run-time[^type-language].
     such as Python's PEP 484. The Cinder project's Static Python has added some
     of these richer types and checks.
 
+Even better, in this other function, it has observed that the integer is only
+ever in the range of 0-255. If you narrow the range on the type to an
+`uint8_t`, the compiler can even unbox the number and avoid a bunch of boxing
+(tagged pointer or heap-allocated integer) nonsense.
+
+You can see this kind of thing in the evolution of the Java language. In order
+to avoid heap allocation and a bunch of other associated overhead, Java
+introduced [value
+objects](https://openjdk.org/projects/valhalla/value-objects).
+
 ## Questions to answer
 
 ## A gradual migration
