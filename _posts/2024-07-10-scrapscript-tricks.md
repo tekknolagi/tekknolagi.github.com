@@ -2,6 +2,7 @@
 title: "Some tricks from the Scrapscript compiler"
 layout: post
 date: 2024-07-10
+series: scrapscript
 ---
 
 [Scrapscript](https://scrapscript.org/) is a small, pure, functional,

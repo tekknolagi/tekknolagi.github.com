@@ -2,6 +2,7 @@
 title: "A baseline scrapscript compiler"
 layout: post
 date: 2024-06-01
+series: scrapscript
 ---
 
 [Scrapscript](https://scrapscript.org/) is a small, pure, functional,
